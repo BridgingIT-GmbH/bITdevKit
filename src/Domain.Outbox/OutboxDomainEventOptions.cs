@@ -1,0 +1,30 @@
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Domain.Outbox;
+
+using System;
+using BridgingIT.DevKit.Common;
+
+public class OutboxDomainEventOptions : OptionsBase
+{
+    public bool Enabled { get; set; } = true;
+
+    public TimeSpan StartupDelay { get; set; } = new TimeSpan(0, 0, 15);
+
+    public TimeSpan ProcessingInterval { get; set; } = new TimeSpan(0, 0, 30);
+
+    public TimeSpan ProcessingDelay { get; set; } = new TimeSpan(0, 0, 0, 0, 1);
+
+    public OutboxDomainEventProcessMode ProcessingMode { get; set; }
+
+    public bool PurgeOnStartup { get; set; }
+
+    public ISerializer Serializer { get; set; }
+
+    public bool AutoSave { get; set; } = true;
+
+    public int ProcessingCount { get; set; } = int.MaxValue; // worker Take each interval
+}

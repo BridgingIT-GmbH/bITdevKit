@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing</RootNamespace>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain.EventSourcing\Domain.EventSourcing.csproj" />
+    <ProjectReference Include="..\Infrastructure.AutoMapper\Infrastructure.AutoMapper.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

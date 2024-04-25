@@ -1,0 +1,126 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Solution - build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/BridgingIT.DevKit.sln",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "DinnerFiesta - build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/examples/DinnerFiesta/Presentation.Web.Server/DinnerFiesta.Presentation.Web.Server.csproj",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "DinnerFiesta - publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/examples/DinnerFiesta/Presentation.Web.Server/DinnerFiesta.Presentation.Web.Server.csproj",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "DinnerFiesta - watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/examples/DinnerFiesta/Presentation.Web.Server/DinnerFiesta.Presentation.Web.Server.csproj",
+        "--nologo"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "DinnerFiesta - tests (unit)",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "test",
+        "${workspaceFolder}/examples/DinnerFiesta/Modules/Core/Core.UnitTests/DinnerFiesta.Core.UnitTests.csproj"
+      ],
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "DinnerFiesta - tests (integration)",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "test",
+        "${workspaceFolder}/examples/DinnerFiesta/Modules/Core/Core.IntegrationTests/DinnerFiesta.Core.IntegrationTests.csproj"
+      ],
+      "group": "test",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "WeatherForecast - build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "WeatherForecast - publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "WeatherForecast - watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+        "--nologo"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

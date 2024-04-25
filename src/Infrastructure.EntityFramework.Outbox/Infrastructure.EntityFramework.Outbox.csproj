@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands.Outbox\Application.Commands.Outbox.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>

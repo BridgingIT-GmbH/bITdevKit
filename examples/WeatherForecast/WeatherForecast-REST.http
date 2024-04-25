@@ -1,0 +1,58 @@
+@baseUrl = https://localhost:44352
+@city_id = ddf66783-5cd3-d02a-2d09-83e3cd9a2b94
+
+###################################################################################
+### API [GET] City FindAll                                                        #
+GET {{baseUrl}}/api/core/cities HTTP/1.1
+
+###################################################################################
+### API [GET] City FindOne ByName                                                 #
+GET {{baseUrl}}/api/core/cities/Paris HTTP/1.1
+
+###################################################################################
+### API [GET] City FindOne ByLocation                                             #
+GET {{baseUrl}}/api/core/cities/location?longitude=2.3486&latitude=48.853401 HTTP/1.1
+
+###################################################################################
+### API [GET] City FindOne ByName (=does not exists)                              #
+GET {{baseUrl}}/api/core/cities/Unknown HTTP/1.1
+
+###################################################################################
+### API [DELETE] City Delete                                                      #
+DELETE {{baseUrl}}/api/core/cities/Amsterdam HTTP/1.1
+
+###################################################################################
+### API [DELETE] City Delete (does not exists)                                    #
+DELETE {{baseUrl}}/api/core/cities/Unknown HTTP/1.1
+
+###################################################################################
+### API [GET] City Create                                                         #
+# @name create_city
+@city_id = {{create_city.response.headers.X-Entity-Id}}
+POST {{baseUrl}}/api/core/cities HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Utrecht",
+  "country": "NL",
+  "longitude": 5.104480,
+  "latitude": 52.092876
+}
+
+###################################################################################
+### API [GET] City Update                                                         #
+PUT {{baseUrl}}/api/core/cities/{{city_id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "{{city_id}}",
+  "name": "Utrecht UPDATED",
+  "country": "NL",
+  "longitude": 5.104481,
+  "latitude": 52.092877
+}
+
+###################################################################################
+### API [GET] Forecast FindAll                                                    #
+GET {{baseUrl}}/api/core/forecasts HTTP/1.1
+Content-Type: application/json

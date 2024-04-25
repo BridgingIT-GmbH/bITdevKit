@@ -1,0 +1,271 @@
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Domain.Repositories;
+
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Specifications;
+
+public static class RepositoryResultExtensions
+{
+    public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TEntity>>.Success(await source.FindAllAsync(
+                options: options,
+                cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TEntity>>.Success(await source.FindAllAsync(
+                specification: specification,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TEntity>>.Success(
+                await source.FindAllAsync(
+                    specifications: specifications,
+                    options: options,
+                    cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<Result<IEnumerable<TID>>> FindAllIdsResultAsync<TEntity, TID>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TID>>.Success(
+                await source.FindAllIdsAsync<TEntity, TID>(
+                options: options,
+                cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<Result<IEnumerable<TID>>> FindAllIdsResultAsync<TEntity, TID>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TID>>.Success(
+                await source.FindAllIdsAsync<TEntity, TID>(
+                specification: specification,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<Result<IEnumerable<TID>>> FindAllIdsResultAsync<TEntity, TID>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity =>
+            Result<IEnumerable<TID>>.Success(
+                await source.FindAllIdsAsync<TEntity, TID>(
+                specifications: specifications,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext());
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        string ordering, // of the form >   fieldname [ascending|descending], ...
+        int page = 1, int pageSize = 10,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            options: new FindOptions<TEntity>
+            {
+                Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        Expression<Func<TEntity, object>> orderingExpression,
+        int page = 1, int pageSize = 10,
+        OrderDirection orderDirection = OrderDirection.Ascending,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            options: new FindOptions<TEntity>
+            {
+                Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        string ordering, // of the form >   fieldname [ascending|descending], ...
+        int page = 1, int pageSize = 10,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             specification: specification,
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            specification: specification,
+            options: new FindOptions<TEntity>
+            {
+                Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        Expression<Func<TEntity, object>> orderingExpression,
+        int page = 1, int pageSize = 10,
+        OrderDirection orderDirection = OrderDirection.Ascending,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             specification: specification,
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            specification: specification,
+            options: new FindOptions<TEntity>
+            {
+                Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        string ordering, // of the form >   fieldname [ascending|descending], ...
+        int page = 1, int pageSize = 10,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             specifications: specifications,
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            specifications: specifications,
+            options: new FindOptions<TEntity>
+            {
+                Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+
+    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, object>> orderingExpression,
+        int page = 1, int pageSize = 10,
+        OrderDirection orderDirection = OrderDirection.Ascending,
+        Expression<Func<TEntity, object>> includeExpression = null,
+        string includePath = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var count = await source.CountAsync(
+             specifications: specifications,
+             cancellationToken: cancellationToken).AnyContext();
+
+        var entities = await source.FindAllAsync(
+            specifications: specifications,
+            options: new FindOptions<TEntity>
+            {
+                Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null
+                    ? new IncludeOption<TEntity>(includeExpression)
+                    : !includePath.IsNullOrEmpty()
+                        ? new IncludeOption<TEntity>(includePath)
+                        : null,
+            },
+            cancellationToken: cancellationToken).AnyContext();
+
+        return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+    }
+}

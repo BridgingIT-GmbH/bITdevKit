@@ -1,0 +1,16 @@
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Domain.Repositories;
+
+using BridgingIT.DevKit.Domain.Model;
+
+public interface IEntityIdGenerator<TEntity>
+    where TEntity : class, IEntity
+{
+    bool IsNew(object id);
+
+    void SetNew(TEntity entity);
+}

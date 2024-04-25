@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Client</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Client</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <!--<PackageReference Include="System.Net.Http" />-->
+    <!--<PackageReference Include="System.Net.Http.Json" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Modules\Core\Core.Presentation.Web.Client\DinnerFiesta.Core.Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\Modules\Marketing\Marketing.Presentation.Web.Client\DinnerFiesta.Marketing.Presentation.Web.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Components\Layout\Resources\Global.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Global.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Components\Layout\Resources\Global.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Global.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

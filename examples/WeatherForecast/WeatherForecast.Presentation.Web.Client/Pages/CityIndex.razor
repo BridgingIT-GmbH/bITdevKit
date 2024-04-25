@@ -1,0 +1,70 @@
+﻿@page "/cities"
+@inject IStringLocalizer<Global> Localizer
+@inject IApiClient ApiClient
+@inject IDialogService DialogService;
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-16">
+	<MudGrid>
+		<MudItem xs="12" lg="1">
+			<MudTooltip Text="@Localizer["Title_CreateCity"]">
+				<MudFab OnClick="(e => OnCreate())" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+			</MudTooltip>
+		</MudItem>
+		<MudItem xs="12" lg="11">
+			<MudText Typo="Typo.h3" GutterBottom="true">@Localizer["Title_Cities"]</MudText>
+		</MudItem>
+		<MudItem xs="12" lg="6">
+			@if (cities is null)
+			{
+				<MudProgressCircular Color="Color.Default" Indeterminate="true" />
+			}
+			else
+			{
+				<MudTable Items="cities" Hover="true" SortLabel="Sort By" Elevation="0">
+					<HeaderContent>
+						<MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<CityModel, object>(x=>x.Name)">@Localizer["Label_CityName"]</MudTableSortLabel></MudTh>
+						<MudTh><MudTableSortLabel SortBy="new Func<CityModel, object>(x=>x.Country)">@Localizer["Label_CountryName"]</MudTableSortLabel></MudTh>
+					</HeaderContent>
+					<RowTemplate>
+						<MudTooltip Text="@context.Id.ToString()">
+							<MudTd DataLabel="CityName">@Localizer[context.Name]</MudTd>
+						</MudTooltip>
+						<MudTd DataLabel="CountryName">@Localizer[@context.Country]</MudTd>
+					</RowTemplate>
+					<PagerContent>
+						<MudTablePager PageSizeOptions="new int[]{10, 50, 100}" />
+					</PagerContent>
+				</MudTable>
+			}
+		</MudItem>
+	</MudGrid>
+</MudContainer>
+
+@code {
+	private ICollection<CityModel> cities;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cities = (await ApiClient.City_GetAllAsync().ConfigureAwait(false)).Result.ToList();
+    }
+
+	private async Task OnCreate()
+	{
+		var dialog = await DialogService.Show<CityEditor>(Localizer["Title_CreateCity"]).Result;
+		if(dialog is not null && dialog.Data is CityModel model)
+		{
+			try
+			{
+				var response = await ApiClient.City_PostAsync(model);
+				model.Id = response.Headers.GetValueOrDefault("x-entity-id").FirstOrDefault().To<Guid>();
+				cities.Add(model);
+				Snackbar.Add($"{Localizer["Notification_CityCreated"]}: {Localizer[model.Name]} ({model.Id})");
+			}
+			catch(ApiException<ProblemDetails> ex)
+			{
+				Snackbar.Add(Localizer["Notification_Error"] + $": [{ex.StatusCode}] {ex.Result.Detail} {ex.Result.AdditionalProperties.FirstOrDefault()}");
+			}
+		}
+	}
+}

@@ -1,0 +1,257 @@
+openapi: 3.0.0
+info:
+  title: DinnerFiesta Marketing API
+  version: 1.0.0
+servers:
+  - url: https://localhost:5001
+
+paths:
+  /api/marketing/echo:
+    summary: This resource represents an echo in the module
+    get:
+      summary: Gets an echo
+      tags:
+        - marketing/dummy
+      operationId: Marketing_Echo-Get
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultResponseModel'
+              example:
+                messages:
+                  - echo
+                isSuccess: true
+
+
+  # Customer =============================================================
+  /api/marketing/customers/{customerId}:
+    summary: TODO
+    get:
+      tags:
+        - marketing/customers
+      operationId: Marketing_CustomerFindOne
+      parameters:
+        - name: customerId
+          in: path
+          description: Customer Id
+          required: true
+          schema:
+            type: string
+            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfCustomerResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfCustomerResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/marketing/customers/{customerId}/unsubscribe:
+    post:
+      tags:
+        - marketing/customers
+      operationId: Marketing_CustomerEmailUnsubscribe
+      parameters:
+        - name: customerId
+          in: path
+          description: Customer Id
+          required: true
+          schema:
+            type: string
+            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/marketing/customers:
+    summary: TODO
+    get:
+      tags:
+        - marketing/customers
+      operationId: Marketing_CustomerFindAll
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfCustomersResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfCustomersResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+components:
+  schemas:
+    ResultResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+        - messages
+        - isSuccess
+      properties:
+        messages:
+          type: array
+          nullable: true
+          items:
+            type: string
+        isSuccess:
+          type: boolean
+    ProblemDetailsModel:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    ValidationProblemDetailsModel:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetailsModel'
+        - type: object
+          additionalProperties: false
+          required:
+            - errors
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+
+    # Customer =======================================================
+    ResultOfCustomerResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: object
+              $ref: '#/components/schemas/CustomerResponseModel'
+    ResultOfCustomersResponseModel:
+     allOf:
+       - $ref: '#/components/schemas/ResultResponseModel'
+       - type: object
+         additionalProperties: false
+         properties:
+           value:
+             nullable: true
+             type: array
+             items:
+               $ref: '#/components/schemas/CustomerResponseModel'
+    CustomerResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        emailOptOut:
+          type: boolean
+
+  # securitySchemes:
+  #   JWT:
+  #     type: apiKey
+  #     description: "Send the JWT token in this format - Request Header: Authorization=Bearer [access_token]"
+  #     name: Authorization
+  #     in: header
+
+#security:
+#  # - JWT: []
+#  - Permissions.Carts.Add: []
+#  - Permissions.Carts.Update: []
+#  - Permissions.Carts.Delete: []

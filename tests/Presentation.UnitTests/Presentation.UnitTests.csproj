@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Presentation.UnitTests</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Presentation.UnitTests</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="Bogus" />
+    <Using Include="Bogus.DataSets" />
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NBuilder" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />
+  </ItemGroup>
+
+</Project>

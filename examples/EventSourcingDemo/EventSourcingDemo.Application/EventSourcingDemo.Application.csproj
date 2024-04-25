@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>BridgingIT.DevKit.Examples.EventSourcingDemo.Application</RootNamespace>
+    <AssemblyName>BridgingIT.DevKit.Examples.EventSourcingDemo.Application</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Application.Commands.EventSourcing\Application.Commands.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

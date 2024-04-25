@@ -1,0 +1,17 @@
+@baseUrl = https://localhost:5001
+@customerID = 74e70998-0486-33ce-8b76-2ae5fb8b2fd0
+
+###################################################################################
+### API [GET] Customers FindOne                                                       #
+GET {{baseUrl}}/api/v1/marketing/customers/{customerId} HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### API [GET] Customers FindAll                                                       #
+GET {{baseUrl}}/api/v1/marketing/customers HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### API [POST] Customers Unsubscribe                                                  #
+POST {{baseUrl}}/api/v1/marketing/customers/{{{{customerID}}}}/unsubscribe HTTP/1.1
+Content-Type: application/json

@@ -1,20 +1,73 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+![bITDevKit](src/bitDevKit_logo.png)
+=====================================
+Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+This repository includes the complete source code for the bITDevKit, along with a variety of sample applications located in the ./examples folder within the solution. These samples serve as practical demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All components are available as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+For the latest updates and release notes, please refer to the [RELEASES](./RELEASES.md).
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Join us in advancing the world of software development with the bITDevKit!
+
+
+Supported patterns, elements:
+--------------------------------
+- Entity
+- AggregateRoot
+- ValueObjects
+  - TypedId
+- DomainEvents
+- BusinesRules, Check
+- Repository
+- Specifications
+- Commands/Queries
+- Outbox 
+  - DomainEvents 
+  - Messaging
+- Decorator (Behavior)
+
+Features (excerpt):
+-------------------------------------
+- EventStore (CQRS)
+- Job Scheduling
+- Storage
+  - Documents
+  - Files (TODO)
+- Caching
+- Messaging
+- Queuing (TODO)
+- Modules
+
+Libraries used (excerpt):
+-------------------------------------
+- [Xunit](https://github.com/xunit/xunit)
+- [MediatR](https://github.com/jbogard/MediatR)
+- [EnsureThat.Core](https://github.com/danielwertheim/Ensure.That)
+- [AutoMapper](https://github.com/AutoMapper/AutoMapper)
+- [Mapster](https://github.com/MapsterMapper/Mapster)
+- [FluentValidation](https://github.com/FluentValidation/FluentValidation)
+- [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
+- [Humanizer](https://github.com/Humanizr/Humanizer)
+- [Polly](https://github.com/App-vNext/Polly)
+- [Scrutor](https://github.com/khellang/Scrutor)
+- [Serilog](https://github.com/serilog/serilog)
+- [Quartz](https://github.com/quartz-scheduler/quartz)
+- [Shouldly](https://github.com/shouldly/shouldly)
+- [Testcontainer](https://github.com/testcontainers)
+- EntityFramework Core
+- Azure Storage
+- Azure ServiceBus
+- Azure CosmosDb
+- RabbitMQ
+
+Example projects
+-----------------
+- [EventStore](https://github.com/bridgingit/bitdevkit/examples)
+- [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
+- [Shop](https://github.com/bridgingit/bitdevkit/examples)
+- [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
+
+Collaboration
+---------
+Simply create a pull request with your ideas or contact us.

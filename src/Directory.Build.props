@@ -1,0 +1,26 @@
+<Project>
+
+ <PropertyGroup Condition="$(Configuration) == 'Release' AND (!$(MSBuildProjectDirectory.Contains('examples')) and !$(MSBuildProjectDirectory.Contains('Pulsar')) and !$(MSBuildProjectDirectory.Contains('tests')) and !$(MSBuildProjectDirectory.Contains('Xunit')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.EntityFramework.Sqlite')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.Azure')) and !$(MSBuildProjectDirectory.Contains('Presentation.Web')) and !$(MSBuildProjectDirectory.Contains('Tests'))) ">
+   <SignAssembly>True</SignAssembly>
+   <AssemblyOriginatorKeyFile>..\bIT.snk</AssemblyOriginatorKeyFile>
+ </PropertyGroup>
+
+  <PropertyGroup>
+    <Icon>icon.png</Icon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/bridgingit/bitdevkit</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <ItemGroup>
+    <Compile Include="..\..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+</Project>

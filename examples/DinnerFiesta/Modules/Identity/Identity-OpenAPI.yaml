@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: DinnerFiesta Identity API
+  version: 1.0.0
+servers:
+  - url: https://localhost:5001
+
+paths:
+  /api/v1/identity/echo:
+    summary: This resource represents an echo in the module
+    get:
+      summary: Gets an echo
+      tags:
+        - identity/dummy
+      operationId: Identity_Echo-Get
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultModel'
+              example:
+                messages:
+                  - echo
+                isSuccess: true
+
+components:
+  schemas:
+    ResultModel:
+      type: object
+      additionalProperties: false
+      required:
+        - messages
+        - isSuccess
+      properties:
+        messages:
+          type: array
+          nullable: true
+          items:
+            type: string
+        isSuccess:
+          type: boolean
+    ProblemDetailsModel:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    ValidationProblemDetailsModel:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetailsModel'
+        - type: object
+          additionalProperties: false
+          required:
+            - errors
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string

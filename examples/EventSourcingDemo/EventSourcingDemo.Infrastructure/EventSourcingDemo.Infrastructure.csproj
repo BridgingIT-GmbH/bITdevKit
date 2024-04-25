@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

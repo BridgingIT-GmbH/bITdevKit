@@ -1,0 +1,264 @@
+variables:
+- group: global
+- group: NuGetOrg
+- name: solution
+  value: "**/*.sln"
+- name: buildConfiguration
+  value: 'Release'
+
+trigger:
+  tags:
+    include:
+    - '*'
+  batch: 'true'
+  branches:
+    include:
+      - main
+      - features/*
+  paths:
+    exclude:
+      - README.md
+
+pr:
+  autoCancel: 'true'
+  branches:
+    include:
+      - main
+
+resources:
+- repo: self
+  fetchDepth: '0'
+
+#######################################################################################################
+# VERSION
+#
+stages:
+- stage: version
+  displayName: Version stage
+  jobs:
+  - job: version
+    displayName: Version
+    variables:
+      MinVerDefaultPreReleaseIdentifiers: preview.0
+      # MinVerBuildMetadata: $(Build.SourceVersion) # use git commit hash in version
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - checkout: self
+        fetchDepth: '0'
+
+      - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+        displayName: Use .NET SDK
+        condition: succeeded()
+        inputs:
+          version: '8.0.x'
+          performMultiLevelLookup: true
+          includePreviewVersions: false
+
+      - bash: |
+          export ASPNETCORE_ENVIRONMENT=Development
+          whereis dotnet
+          /usr/bin/dotnet --info
+        displayName: Inspect environment
+        condition: succeeded()
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Install version tool'
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'install --global minver-cli --version 4.3.0'
+
+      - powershell: |
+          $version = $(minver -v d) # https://github.com/adamralph/minver#options
+          $buildName = "$version" # + "_" + $env:BUILD_SOURCEBRANCHNAME
+          Write-Host "##vso[build.updatebuildnumber]$buildName"
+          Write-Host "##vso[task.setvariable variable=BUILD_VERSION;isOutput=true]$buildName"
+        displayName: Calculate version
+        name: CalculateVersion
+
+      - powershell: |
+          Get-ChildItem Env:
+        displayName: Show environment variables
+
+#######################################################################################################
+# BUILD
+#
+- stage: build
+  displayName: Build stage
+  dependsOn: [version]
+  jobs:
+  - job: build
+    displayName: Build & Package
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+    steps:
+      - checkout: self
+        fetchDepth: '0'
+
+      - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+        displayName: Use .NET SDK
+        condition: succeeded()
+        inputs:
+          version: '8.0.x'
+          performMultiLevelLookup: true
+          includePreviewVersions: false
+
+      - bash: |
+          export ASPNETCORE_ENVIRONMENT=Development
+          whereis dotnet
+          /usr/bin/dotnet --info
+        displayName: Inspect environment
+        condition: succeeded()
+
+      - task: NuGetToolInstaller@1
+        displayName: 'Install nuget tool'
+
+      - task: Cache@2 # https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#cache-nuget-packages-1
+        displayName: Dotnet cache (nuget)
+        inputs:
+          key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+          restoreKeys: |
+             nuget | "$(Agent.OS)"
+             nuget
+          path: '$(NUGET_PACKAGES)'
+          cacheHitVar: 'CACHE_RESTORED'
+
+      - task: DownloadSecureFile@1
+        name: signkey
+        displayName: Download Secure File
+        inputs:
+          secureFile: 'bIT.snk'
+
+      - task: Bash@3
+        displayName: Copy secure file
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Copy secure file
+            cp -fr $(signkey.secureFilePath) $(Build.SourcesDirectory)/src/bIT.snk
+      - task: DotNetCoreCLI@2
+        displayName: Dotnet restore (nuget)
+        condition: succeeded()
+        # condition: and(succeeded(), ne(variables.CACHE_RESTORED, true))
+        inputs:
+          command: restore
+          verbosityRestore: Normal
+
+      - task: DotNetCoreCLI@2
+        displayName: Dotnet build
+        condition: succeeded()
+        inputs:
+          command: build
+          projects: "$(solution)"
+          arguments: "--configuration $(buildConfiguration) --no-restore --nologo"
+
+      - task: Bash@3
+        displayName: Vulnerability scan (nuget)
+        continueOnError: true
+        inputs:
+          targetType: 'inline'
+          script: |
+            dotnet list $(Build.SourcesDirectory)/BridgingIT.DevKit.sln package --vulnerable --include-transitive 2>&1 | tee build.log
+            test `grep -cm 1 'has the following vulnerable packages' build.log` = 0
+
+      - bash: |
+          docker-compose up -d
+        displayName: Docker start containers
+
+      - bash: |
+          docker ps -a
+        displayName: Docker list containers
+        condition: succeeded()
+
+      - task: DotNetCoreCLI@2
+        displayName: Dotnet test (unit)
+        condition: succeeded()
+        inputs:
+          command: test
+          projects: "**/*[Tt]ests/*UnitTests.csproj"
+          arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo"
+
+      - task: DotNetCoreCLI@2
+        displayName: Dotnet test (integration)
+        condition: succeeded()
+        inputs:
+          command: test
+          projects: "**/*[Tt]ests/*IntegrationTests.csproj"
+          arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+
+      - task: DotNetCoreCLI@2
+        displayName: Dotnet test (end2end)
+        condition: succeeded()
+        inputs:
+          command: test
+          projects: "**/*[Tt]ests/*EndToEndTests.csproj"
+          arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+
+      - bash: |
+          docker-compose stop
+          docker container stop $(docker container ls -aq)
+          docker container rm $(docker container ls -aq)
+        displayName: Docker cleanup
+        condition: succeeded()
+        continueOnError: true
+
+      - task: DotNetCoreCLI@2
+        displayName: Package pack (nuget)
+        condition: |
+          and
+          (
+            succeeded(),
+            or
+            (
+              eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+              contains(variables['Build.SourceBranch'], 'refs/tags')
+            )
+          )
+        inputs:
+          command: pack
+          configuration: $(buildConfiguration)
+          packagesToPack: '**/*.csproj;!**/*Tests.csproj;!$(Build.SourcesDirectory)/examples/**/*.csproj'
+          nobuild: true
+          arguments: "--no-restore --no-build --nologo"
+          packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+          verbosityPack: Normal
+
+      - task: DotNetCoreCLI@2
+        displayName: Package push (nuget)
+        condition: |
+          and
+          (
+            succeeded(),
+            or
+            (
+              eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+              contains(variables['Build.SourceBranch'], 'refs/tags')
+            )
+          )
+        inputs:
+            command: custom
+            custom: nuget
+            arguments: >
+                push $(Build.ArtifactStagingDirectory)/packages/*.nupkg
+                -s https://api.nuget.org/v3/index.json
+                -k $(NugetOrgApiKey)
+                --skip-duplicate
+
+      - task: PublishPipelineArtifact@1
+        displayName: Publish package artifacts
+        condition: |
+          and
+          (
+            succeeded(),
+            or
+            (
+              eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+              contains(variables['Build.SourceBranch'], 'refs/tags')
+            )
+          )
+        inputs:
+          targetPath: "$(Build.ArtifactStagingDirectory)/packages"
+          artifactName: packages

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.Azure.HealthChecks</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.Azure.HealthChecks</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" />
+    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\bIT.snk">
+      <Link>bIT.snk</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />
+    <ProjectReference Include="..\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
+  </ItemGroup>
+
+
+</Project>

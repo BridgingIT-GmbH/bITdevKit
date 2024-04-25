@@ -1,0 +1,1073 @@
+openapi: 3.0.0
+info:
+  title: DinnerFiesta Core API
+  version: 1.0.0
+servers:
+  - url: https://localhost:5001
+
+paths:
+  /api/core/echo:
+    summary: This resource represents an echo in the module
+    get:
+      summary: Gets an echo
+      tags:
+        - core/dummy
+      operationId: Core_Echo-Get
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultResponseModel'
+              example:
+                messages:
+                  - echo
+                isSuccess: true
+
+  # Bill =============================================================
+
+  # Guest ============================================================
+
+  # Host =============================================================
+  /api/core/hosts/{hostId}:
+    summary: TODO
+    get:
+      tags:
+        - core/hosts
+      operationId: Core_HostFindOne
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfHostResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfHostResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/core/hosts:
+    summary: TODO
+    get:
+      tags:
+        - core/hosts
+      operationId: Core_HostFindAll
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfHostsResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfHostsResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+    post:
+      tags:
+        - core/hosts
+      operationId: Core_HostCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostCreateRequestModel'
+        description: The Host to add
+        required: true
+      responses:
+        201:
+          description: Resource was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfHostResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfHostResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  # Dinner ===========================================================
+  /api/core/hosts/{hostId}/dinners/{dinnerId}:
+    get:
+      tags:
+        - core/dinners
+      operationId: Core_DinnerFindOneForHost
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+        - name: dinnerId
+          in: path
+          description: Dinner Id
+          required: true
+          schema:
+            type: string
+            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfDinnerResponseModel'
+              examples:
+                objectExample:
+                  $ref: '#/components/examples/ResultOfDinnerResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/core/hosts/{hostId}/dinners:
+    summary: TODO
+    get:
+      tags:
+        - core/dinners
+      operationId: Core_DinnerFindAllForHost
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfDinnersResponseModel'
+              examples:
+                objectExample:
+                  $ref: '#/components/examples/ResultOfDinnersResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+    post:
+      tags:
+        - core/dinners
+      operationId: Core_DinnerCreate
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DinnerCreateRequestModel'
+        description: The Dinner to add
+        required: true
+      responses:
+        201:
+          description: Resource was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfDinnerResponseModel'
+              examples:
+                objectExample:
+                  $ref: '#/components/examples/ResultOfDinnerResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  # Menu =============================================================
+  /api/core/hosts/{hostId}/menus/{menuId}:
+    summary: TODO
+    get:
+      tags:
+        - core/menus
+      operationId: Core_MenuFindOneForHost
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+        - name: menuId
+          in: path
+          description: Menu Id
+          required: true
+          schema:
+            type: string
+            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfMenuResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfMenuResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/core/hosts/{hostId}/menus:
+    summary: TODO
+    get:
+      tags:
+        - core/menus
+      operationId: Core_MenuFindAllForHost
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfMenusResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfMenusResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+    post:
+      tags:
+        - core/menus
+      operationId: Core_MenuCreate
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id
+          required: true
+          schema:
+            type: string
+            example: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+            nullable: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCreateRequestModel'
+        description: The Menu to add
+        required: true
+      responses:
+        201:
+          description: Resource was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfMenuResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfMenuResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  # MenuReview =======================================================
+
+  # User =============================================================
+  /api/core/users/{userId}:
+    summary: TODO
+    get:
+      tags:
+        - core/users
+      operationId: Core_UserFindOne
+      parameters:
+        - name: userId
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: string
+            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            nullable: false
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfUserResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfUserResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+  /api/core/users:
+    summary: TODO
+    get:
+      tags:
+        - core/hosts
+      operationId: Core_UserFindAll
+      responses:
+        200:
+          description: Resource request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfUsersResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfUsersResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+    post:
+      tags:
+        - core/hosts
+      operationId: Core_UserCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequestModel'
+        description: The User to add
+        required: true
+      responses:
+        201:
+          description: Resource was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfUserResponseModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/ResultOfUserResponseModel'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+components:
+  schemas:
+    ResultResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+        - messages
+        - isSuccess
+      properties:
+        messages:
+          type: array
+          nullable: true
+          items:
+            type: string
+        isSuccess:
+          type: boolean
+    ProblemDetailsModel:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    ValidationProblemDetailsModel:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetailsModel'
+        - type: object
+          additionalProperties: false
+          required:
+            - errors
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+
+    # Bill =======================================================
+
+    # Dinner =====================================================
+    DinnerCreateRequestModel:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        schedule:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/DinnerScheduleModel'
+        maxGuests:
+          type: integer
+          minimum: 1
+        isPublic:
+          type: boolean
+        price:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/PriceModel'
+        hostId:
+          type: string
+        menuId:
+          type: string
+        imageUrl:
+          type: string
+        location:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/DinnerLocationModel'
+      required:
+        - Name
+        - Description
+        - Schedule
+        - MaxGuests
+        - IsPublic
+        - Price
+        - MenuId
+        - Location
+    ResultOfDinnerResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: object
+              $ref: '#/components/schemas/DinnerResponseModel'
+    ResultOfDinnersResponseModel:
+     allOf:
+       - $ref: '#/components/schemas/ResultResponseModel'
+       - type: object
+         additionalProperties: false
+         properties:
+           value:
+             nullable: true
+             type: array
+             items:
+               $ref: '#/components/schemas/DinnerResponseModel'
+    DinnerResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        schedule:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/DinnerScheduleModel'
+        startedDateTime:
+          type: string
+          format: date-time
+          nullable: true
+        endedDateTime:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          # enum: [Draft, Upcoming, InProgress, Ended, Cancelled]
+        maxGuests:
+          type: integer
+          minimum: 1
+        isPublic:
+          type: boolean
+        price:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/PriceModel'
+        menuId:
+          type: string
+        hostId:
+          type: string
+        imageUrl:
+          type: string
+        location:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/DinnerLocationModel'
+    DinnerScheduleModel:
+      type: object
+      properties:
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+    PriceModel:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+    DinnerLocationModel:
+      type: object
+      properties:
+        name:
+          type: string
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        websiteUrl:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+
+    # Guest =======================================================
+
+    # Host ========================================================
+    HostCreateRequestModel:
+      type: object
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userId:
+          type: string
+        profileImage:
+          type: string
+      required:
+        - firstName
+        - lastName
+        - userId
+    ResultOfHostResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: object
+              $ref: '#/components/schemas/HostResponseModel'
+    ResultOfHostsResponseModel:
+     allOf:
+       - $ref: '#/components/schemas/ResultResponseModel'
+       - type: object
+         additionalProperties: false
+         properties:
+           value:
+             nullable: true
+             type: array
+             items:
+               $ref: '#/components/schemas/HostResponseModel'
+    HostResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        profileImage:
+          type: string
+        userId:
+          type: string
+
+    # Menu =======================================================
+    MenuCreateRequestModel:
+      type: object
+      additionalProperties: false
+      properties:
+        hostId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        sections:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/MenuSectionModel'
+      required:
+        - hostId
+        - name
+    ResultOfMenuResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: object
+              $ref: '#/components/schemas/MenuResponseModel'
+    ResultOfMenusResponseModel:
+     allOf:
+       - $ref: '#/components/schemas/ResultResponseModel'
+       - type: object
+         additionalProperties: false
+         properties:
+           value:
+             nullable: true
+             type: array
+             items:
+               $ref: '#/components/schemas/MenuResponseModel'
+    MenuResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        hostId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        averageRating:
+          type: number
+          minimum: 0
+        sections:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/MenuSectionModel'
+    MenuSectionModel:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        items:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/MenuSectionItemModel'
+      required:
+        - name
+    MenuSectionItemModel:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - name
+
+    # MenuReview =================================================
+
+    # User =======================================================
+    UserCreateRequestModel:
+      type: object
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        profileImage:
+          type: string
+      required:
+        - FirstName
+        - LastName
+        - Email
+        - Password
+    ResultOfUserResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: object
+              $ref: '#/components/schemas/UserResponseModel'
+    ResultOfUsersResponseModel:
+     allOf:
+       - $ref: '#/components/schemas/ResultResponseModel'
+       - type: object
+         additionalProperties: false
+         properties:
+           value:
+             nullable: true
+             type: array
+             items:
+               $ref: '#/components/schemas/UserResponseModel'
+    UserResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+
+  examples:
+    ResultOfDinnerResponseModel:
+      summary: A sample Dinner
+      value:
+        isSuccess: true
+        value:
+          id: dfda0d02-a0b2-4830-a434-067e3cb3c236
+          name: Fancy Dinner Party
+          description: A luxurious evening of fine dining and great company.
+          schedule:
+            startDateTime: 2023-05-15T19:00:00.0000000Z
+            endDateTime: 2023-05-15T22:00:00.0000000Z
+          startedDateTime:
+          endedDateTime:
+          status: Ended
+          maxGuests: 10
+          isPublic: true
+          price:
+            amount: 250.0
+            currency: USD
+          menuId: 1
+          hostId: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+          imageUrl: https://example.com/dinner.jpg
+          location:
+            name: My House
+            addressLine1: 123 Main St
+            addressLine2:
+            postalCode: 12345
+            city: Anytown
+            country: USA
+            latitude: 37.7749
+            longitude: -122.4194
+
+    ResultOfDinnersResponseModel:
+      summary: A sample Dinner
+      value:
+        isSuccess: true
+        value:
+        - id: dfda0d02-a0b2-4830-a434-067e3cb3c236
+          name: Fancy Dinner Party
+          description: A luxurious evening of fine dining and great company.
+          schedule:
+            startDateTime: 2023-05-15T19:00:00.0000000Z
+            endDateTime: 2023-05-15T22:00:00.0000000Z
+          startedDateTime:
+          endedDateTime:
+          status: Ended
+          maxGuests: 10
+          isPublic: true
+          price:
+            amount: 250.0
+            currency: USD
+          menuId: 1
+          hostId: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+          imageUrl: https://example.com/dinner.jpg
+          location:
+            name: My House
+            addressLine1: 123 Main St
+            addressLine2:
+            postalCode: 12345
+            city: Anytown
+            country: USA
+            latitude: 37.7749
+            longitude: -122.4194
+
+  #  ResultOfCartDto:
+  #    summary: A sample cart
+  #    value:
+  #      id: dfda0d02-a0b2-4830-a434-067e3cb3c236
+  #      identity: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+  #      totalPrice: 99.99
+  #      items:
+  #      - id: a1e3b861-5b32-4e7a-8c86-549cc683e5c1
+  #        sku: SKU0123456789
+  #        name: Product X
+  #        quantity: 3
+  #        unitPrice: 3.99
+  #        totalPrice: 11.97
+  #      - id: a602d155-da1e-48b9-af53-cf2bbdae25a9
+  #        sku: SKU9876543210
+  #        name: Product Y
+  #        quantity: 2
+  #        unitPrice: 2.99
+  #        totalPrice: 5.98
+
+  # securitySchemes:
+  #   JWT:
+  #     type: apiKey
+  #     description: "Send the JWT token in this format - Request Header: Authorization=Bearer [access_token]"
+  #     name: Authorization
+  #     in: header
+
+#security:
+#  # - JWT: []
+#  - Permissions.Carts.Add: []
+#  - Permissions.Carts.Update: []
+#  - Permissions.Carts.Delete: []

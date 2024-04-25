@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Core</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).Application</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dinner\Events\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+  </ItemGroup>
+
+</Project>

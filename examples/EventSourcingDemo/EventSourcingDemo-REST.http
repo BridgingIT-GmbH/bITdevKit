@@ -1,0 +1,31 @@
+@baseUrl = https://localhost:44328
+
+###################################################################################
+### API [GET] get the names of all persons                                        #
+GET {{baseUrl}}/api/person HTTP/1.1
+
+###################################################################################
+### API [GET] City FindAll firstname/lastname/skip/take                           #
+GET {{baseUrl}}/api/person/a/b/0/10 HTTP/1.1
+#Content-Type: application/json
+
+
+###################################################################################
+### API [GET] Person Create                                                       #
+POST {{baseUrl}}/api/person HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstname": "Anna",
+  "lastname": "Bear"
+}
+
+###################################################################################
+### API [GET] Person Update Lastname                                              #
+PUT {{baseUrl}}/api/person/changesurname/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "ad9361a2-a9fb-4329-abaf-65d040535ce8",
+  "lastname": "Muster"
+}

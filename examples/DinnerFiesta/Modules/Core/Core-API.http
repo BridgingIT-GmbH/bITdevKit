@@ -1,0 +1,31 @@
+@baseUrl = https://localhost:5001
+@hostId = da4eede3-bf5f-5a6d-1b4a-a5a7c9ebbe91
+@menuId = 7386367e-71ca-41cf-41f5-f7089af7e7a3
+
+
+###################################################################################
+### API [GET] Echo                                                                #
+GET {{baseUrl}}/api/v1/core/echo HTTP/1.1
+
+Content-Type: application/json
+###################################################################################
+### API [GET] Menus FindOne                                                       #
+GET {{baseUrl}}/api/v1/core/hosts/{{hostId}}/menus/{{menuId}} HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### API [GET] Menus FindAll                                                       #
+GET {{baseUrl}}/api/v1/core/hosts/{{hostId}}/menus HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### API [POST] Users Create                                                       #
+POST {{baseUrl}}/api/v1/core/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "John{{$randomInt 1000 9999}}",
+  "lastName": "Doe{{$randomInt 1000 9999}}",
+  "email": "jdoe{{$randomInt 1000 9999}}@gmail.com",
+  "password": "{{$guid}}!"
+}

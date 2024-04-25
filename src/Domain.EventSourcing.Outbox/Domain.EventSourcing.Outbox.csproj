@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Domain.EventSourcing.Outbox</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Domain.EventSourcing.Outbox</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+  </ItemGroup>
+
+</Project>

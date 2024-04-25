@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Application.Commands.EventSourcing</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Application.Commands.EventSourcing</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+  </ItemGroup>
+
+</Project>

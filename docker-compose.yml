@@ -1,0 +1,83 @@
+version: '3.7'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: bdk_mssql
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Abcd1234!
+      - MSSQL_PID=Developer
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U SA -P 'Abcd1234!' -Q 'select 1'
+    ports:
+      - 14333:1433
+    volumes:
+      - mssql:/var/opt/mssql
+    networks:
+      - bdk
+
+  mssqlscripts:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: bdk_mssqlscripts
+    depends_on:
+      - mssql
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P "Abcd1234!" -Q "SELECT @@VERSION"; do sleep 5; done'
+    networks:
+      - bdk
+
+  seq:
+    image: datalust/seq:preview
+    container_name: bdk_seq
+    restart: unless-stopped
+    ports:
+      - 15347:80 # http://localhost:15347 azure:https://ml-software.ch/posts/running-seq-on-azure
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINUSERNAME=admin
+      # https://blog.datalust.co/setting-an-initial-password-when-deploying-seq-to-docker/
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=FIQIay86/lqTJOWoq8jeh1KUr3wSfubJJ+/mB+fluLSK+ZhBQQ==
+    volumes:
+      - seq:/data
+    networks:
+    - bdk
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: bdk_jaeger
+    restart: unless-stopped
+    ports:
+      - 5775:5775/udp
+      - 5778:5778
+      - 6831:6831/udp
+      - 6832:6832/udp # AgentPort
+      - 9411:9411
+      - 14268:14268
+      - 16688:16686 # http://localhost:16688
+    environment:
+      # https://www.jaegertracing.io/docs/1.16/deployment/#badger---local-storage
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    volumes:
+      - jaeger:/badger
+    networks:
+      - bdk
+
+volumes:
+  mssql:
+    name: bdk_mssql
+    driver: local
+  seq:
+    name: bdk_seq
+    driver: local
+  jaeger:
+    name: bdk_jaeger
+    driver: local
+
+networks:
+  bdk:
+    name: bdk
+    driver: bridge

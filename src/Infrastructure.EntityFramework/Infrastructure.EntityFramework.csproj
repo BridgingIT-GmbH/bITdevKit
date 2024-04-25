@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <!--
+  <ItemGroup>
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.UnitTests" PublicKey="7916c6c4079920f2"/>
+  </ItemGroup> -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="System.Linq.Dynamic.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+  </ItemGroup>
+
+</Project>

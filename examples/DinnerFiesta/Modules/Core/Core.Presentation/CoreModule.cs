@@ -120,9 +120,9 @@ public class CoreModule : WebModuleBase
         //     //.WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Bill, CoreDbContext>()
-            .WithTransactions<NullRepositoryTransaction<Bill>>()
-            .WithBehavior<RepositoryTracingBehavior<Bill>>()
-            .WithBehavior<RepositoryLoggingBehavior<Bill>>()
+        .WithTransactions<NullRepositoryTransaction<Bill>>()
+        .WithBehavior<RepositoryTracingBehavior<Bill>>()
+        .WithBehavior<RepositoryLoggingBehavior<Bill>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Bill>(e => e.AuditState, inner));
             .WithBehavior<RepositoryDomainEventBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Bill>>()

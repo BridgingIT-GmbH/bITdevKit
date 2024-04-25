@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Integratio
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
-using FluentAssertions;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Presentation")]

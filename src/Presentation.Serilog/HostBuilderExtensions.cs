@@ -34,7 +34,7 @@ public static class HostBuilderExtensions
 
                 c.ClearProviders();
                 c.AddSerilog(logger);
-                //builder.UseSerilog(logger);
+                builder.UseSerilog(logger);
 
                 Log.Logger = logger;
             });

@@ -1,4 +1,4 @@
-![bITDevKit](src/bitDevKit_logo.png)
+![bITDevKit](bitDevKit_logo.png)
 =====================================
 Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
 

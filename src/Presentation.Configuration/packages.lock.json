@@ -15,9 +15,9 @@
       },
       "Azure.Identity": {
         "type": "Direct",
-        "requested": "[1.11.1, )",
-        "resolved": "1.11.1",
-        "contentHash": "gxdWsy9hQVijmPkgz0ZrrjGTfyTYs2YGe60JXHn2MWXSkt1sB/b9HcGkN8vaYmspkdGWDvdReNuHhDg423IOMw==",
+        "requested": "[1.11.2, )",
+        "resolved": "1.11.2",
+        "contentHash": "mihECA1msfwdjTPXHwK9N3n4ln8jMB0DuT0r2caDGPriRT1vca4/Jgmo6FmFZPo8RQsQt1fVn1Gxv5WqkyHVeA==",
         "dependencies": {
           "Azure.Core": "1.38.0",
           "Microsoft.Identity.Client": "4.60.3",
@@ -1066,7 +1066,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.0, )",
+          "FluentValidation": "[11.9.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Configuration.Binder": "[8.0.1, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
@@ -1133,9 +1133,9 @@
       },
       "FluentValidation": {
         "type": "CentralTransitive",
-        "requested": "[11.9.0, )",
-        "resolved": "11.9.0",
-        "contentHash": "VneVlTvwYDkfHV5av3QrQ0amALgrLX6LV94wlYyEsh0B/klJBW7C8y2eAtj5tOZ3jH6CAVpr4s1ZGgew/QWyig=="
+        "requested": "[11.9.1, )",
+        "resolved": "11.9.1",
+        "contentHash": "C+PqISSMdlOZZJx0Hx25atW32tv4vbpsaiQB+PLjK+ZGLzOFuHl1fUJ3Lny77mIZ31ZtYtNG0JgUjxa3wwLsWg=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

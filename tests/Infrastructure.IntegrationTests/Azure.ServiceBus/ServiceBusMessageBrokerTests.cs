@@ -105,7 +105,7 @@
 //    private IMessageBroker CreateMessageBroker()
 //    {
 //        return new ServiceBusMessageBroker(o => o
-//            .ConnectionString("Endpoint=sb://global-sb01.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Him5iahSr78fBSYwRMmVKP137d4jPNKgY+ASbKyiW0U=")
+//            .ConnectionString("")
 //            .HandlerFactory(new ServiceProviderMessageHandlerFactory(this.fixture.ServiceProvider))
 //            .MachineTopicScope("_test")
 //            .Serializer(new SystemTextJsonSerializer()));

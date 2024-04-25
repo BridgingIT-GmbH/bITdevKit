@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.4
         with:
           fetch-depth: 0
 
@@ -84,20 +84,20 @@ jobs:
       - name: Integration tests
         run: dotnet test '**/*[Tt]ests/*IntegrationTests.csproj' --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples
 
-      - name: Package pack (nuget)
-        run: dotnet pack --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo ${{ env.Solution_Name }} --no-build --output ${{ env.NuGet_Directory }}
+      # - name: Package pack (nuget)
+      #   run: dotnet pack --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo ${{ env.Solution_Name }} --no-build --output ${{ env.NuGet_Directory }}
 
-      - name: Package push (nuget) # Push only when creating a GitHub Release
-        env:
-          SOURCE: ${{ secrets.NUGET_PUSH_SOURCE }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
-          API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-        if: github.event_name == 'release' && (env.SOURCE != '' || env.API_KEY != '')
-        run: dotnet nuget push ${{ env.NuGet_Directory }}/*.nupkg --source ${{ env.SOURCE }} --api-key ${{ env.API_KEY }}
+      # - name: Package push (nuget) # Push only when creating a GitHub Release
+      #   env:
+      #     SOURCE: ${{ secrets.NUGET_PUSH_SOURCE }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
+      #     API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+      #   if: github.event_name == 'release' && (env.SOURCE != '' || env.API_KEY != '')
+      #   run: dotnet nuget push ${{ env.NuGet_Directory }}/*.nupkg --source ${{ env.SOURCE }} --api-key ${{ env.API_KEY }}
 
-      - name: Publish package artifacts
-        uses: actions/upload-artifact@v4.3.1
-        with:
-          name: NuGet packages
-          if-no-files-found: error
-          retention-days: 7
-          path: ${{ env.NuGet_Directory }}/*.nupkg
+      # - name: Publish package artifacts
+      #   uses: actions/upload-artifact@v4.3.3
+      #   with:
+      #     name: NuGet packages
+      #     if-no-files-found: error
+      #     retention-days: 7
+      #     path: ${{ env.NuGet_Directory }}/*.nupkg

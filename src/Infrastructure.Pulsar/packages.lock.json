@@ -4,12 +4,12 @@
     "net8.0": {
       "DotPulsar": {
         "type": "Direct",
-        "requested": "[3.2.0, )",
-        "resolved": "3.2.0",
-        "contentHash": "Qo0MMAIjwTfAMAuSZ5juGI87nNgjmiWGnZMxbE9uiyStGZ5aRgXPc8qLA7fDD3nBnBUdOEFC4xjk0EB8Ilr3wg==",
+        "requested": "[3.2.1, )",
+        "resolved": "3.2.1",
+        "contentHash": "JfCfip/HL+OhmwrIqL7X2CFUh5rv8w8vCOMo0A4S0PwIwAJqvDpKqE1bu98WU5txkxZ4gT/mO2g5Lsi/COxYDg==",
         "dependencies": {
           "HashDepot": "2.0.3",
-          "Microsoft.Extensions.ObjectPool": "8.0.3",
+          "Microsoft.Extensions.ObjectPool": "8.0.4",
           "System.IO.Pipelines": "8.0.0",
           "protobuf-net": "3.2.30"
         }
@@ -309,8 +309,8 @@
       },
       "Microsoft.Extensions.ObjectPool": {
         "type": "Transitive",
-        "resolved": "8.0.3",
-        "contentHash": "sk/TGiccSeXUtVeBfFlWJnzp6xLlAxIW+bCHs7uVPLFPQk8vICNmu9Gc3JsKOn6fQuRkrPetQ8EHv4dCiMqhxg=="
+        "resolved": "8.0.4",
+        "contentHash": "6FPHZ6lxtsrlFKE1LeHEco0BxevHSDdxngh37GxwGqiHm8zQz78ttM2OIevqQ8IAvtB01+5xEWBcYsjvSnhhoQ=="
       },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",
@@ -961,7 +961,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.0, )",
+          "FluentValidation": "[11.9.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Configuration.Binder": "[8.0.1, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
@@ -1028,9 +1028,9 @@
       },
       "FluentValidation": {
         "type": "CentralTransitive",
-        "requested": "[11.9.0, )",
-        "resolved": "11.9.0",
-        "contentHash": "VneVlTvwYDkfHV5av3QrQ0amALgrLX6LV94wlYyEsh0B/klJBW7C8y2eAtj5tOZ3jH6CAVpr4s1ZGgew/QWyig=="
+        "requested": "[11.9.1, )",
+        "resolved": "11.9.1",
+        "contentHash": "C+PqISSMdlOZZJx0Hx25atW32tv4vbpsaiQB+PLjK+ZGLzOFuHl1fUJ3Lny77mIZ31ZtYtNG0JgUjxa3wwLsWg=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

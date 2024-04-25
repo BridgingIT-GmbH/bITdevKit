@@ -27,7 +27,7 @@
     <PackageVersion Include="Bogus" Version="35.5.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Dapper" Version="2.1.44" />
-    <PackageVersion Include="DotPulsar" Version="3.2.0" />
+    <PackageVersion Include="DotPulsar" Version="3.2.1" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
     <!--<PackageVersion Include="EntityFrameworkCore.Exceptions.Sqlite" Version="8.0.0" />
     <PackageVersion Include="EntityFrameworkCore.Exceptions.SqlServer" Version="8.0.0.2" />-->

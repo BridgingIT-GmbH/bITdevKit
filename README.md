@@ -1,4 +1,4 @@
-![bITDevKit](bitDevKit_logo.png)
+![bITDevKit](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/bITDevKit_Logo.png)
 =====================================
 Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
 

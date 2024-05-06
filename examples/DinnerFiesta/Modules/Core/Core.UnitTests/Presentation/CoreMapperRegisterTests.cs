@@ -49,26 +49,24 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, entity).Generate();
 
         // Act
-        var target = this.sut.Map<Result<Dinner>, ResultOfDinnerResponseModel>(source);
+        var target = this.sut.Map<Dinner, DinnerResponseModel>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
-        target.IsSuccess.ShouldBeTrue();
-        target.Messages.ShouldBe(source.Messages);
-        target.Value.Name.ShouldBe(source.Value.Name);
-        target.Value.Description.ShouldBe(source.Value.Description);
-        target.Value.HostId.ShouldBe(source.Value.HostId.ToString());
-        target.Value.MenuId.ShouldBe(source.Value.MenuId.ToString());
-        target.Value.MaxGuests.ShouldBe(source.Value.MaxGuests);
-        target.Value.Status.ShouldBe(DinnerStatus.InProgress.ToString());
-        target.Value.Price.Amount.ShouldBe(source.Value.Price.Amount);
-        target.Value.Price.Currency.ShouldBe(source.Value.Price.Currency);
-        target.Value.Location.Name.ShouldBe(source.Value.Location.Name);
-        target.Value.Location.AddressLine1.ShouldBe(source.Value.Location.AddressLine1);
-        target.Value.Location.AddressLine2.ShouldBe(source.Value.Location.AddressLine2);
-        target.Value.Location.PostalCode.ShouldBe(source.Value.Location.PostalCode);
-        target.Value.Location.City.ShouldBe(source.Value.Location.City);
-        target.Value.Location.Country.ShouldBe(source.Value.Location.Country);
+        target.Name.ShouldBe(source.Value.Name);
+        target.Description.ShouldBe(source.Value.Description);
+        target.HostId.ShouldBe(source.Value.HostId.ToString());
+        target.MenuId.ShouldBe(source.Value.MenuId.ToString());
+        target.MaxGuests.ShouldBe(source.Value.MaxGuests);
+        target.Status.ShouldBe(DinnerStatus.InProgress.ToString());
+        target.Price.Amount.ShouldBe(source.Value.Price.Amount);
+        target.Price.Currency.ShouldBe(source.Value.Price.Currency);
+        target.Location.Name.ShouldBe(source.Value.Location.Name);
+        target.Location.AddressLine1.ShouldBe(source.Value.Location.AddressLine1);
+        target.Location.AddressLine2.ShouldBe(source.Value.Location.AddressLine2);
+        target.Location.PostalCode.ShouldBe(source.Value.Location.PostalCode);
+        target.Location.City.ShouldBe(source.Value.Location.City);
+        target.Location.Country.ShouldBe(source.Value.Location.Country);
     }
 
     [Fact]
@@ -83,28 +81,26 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() }).Generate();
 
         // Act
-        var target = this.sut.Map<Result<IEnumerable<Dinner>>, ResultOfDinnersResponseModel>(source);
+        var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerResponseModel>>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
-        target.IsSuccess.ShouldBeTrue();
-        target.Messages.ShouldBe(source.Messages);
-        target.Value.First().Name.ShouldBe(source.Value.First().Name);
-        target.Value.First().Description.ShouldBe(source.Value.First().Description);
-        target.Value.First().HostId.ShouldBe(source.Value.First().HostId);
-        target.Value.First().MenuId.ShouldBe(source.Value.First().MenuId);
-        target.Value.First().MaxGuests.ShouldBe(source.Value.First().MaxGuests);
-        target.Value.First().Status.ShouldBe(DinnerStatus.InProgress.ToString());
-        target.Value.First().Price.Amount.ShouldBe(source.Value.First().Price.Amount);
-        target.Value.First().Price.Currency.ShouldBe(source.Value.First().Price.Currency);
-        target.Value.First().Location.Name.ShouldBe(source.Value.First().Location.Name);
-        target.Value.First().Location.AddressLine1.ShouldBe(source.Value.First().Location.AddressLine1);
-        target.Value.First().Location.AddressLine2.ShouldBe(source.Value.First().Location.AddressLine2);
-        target.Value.First().Location.PostalCode.ShouldBe(source.Value.First().Location.PostalCode);
-        target.Value.First().Location.City.ShouldBe(source.Value.First().Location.City);
-        target.Value.First().Location.Country.ShouldBe(source.Value.First().Location.Country);
-        target.Value.First().Schedule.StartDateTime.ShouldBe(source.Value.First().Schedule.StartDateTime);
-        target.Value.First().Schedule.EndDateTime.ShouldBe(source.Value.First().Schedule.EndDateTime);
+        target.First().Name.ShouldBe(source.Value.First().Name);
+        target.First().Description.ShouldBe(source.Value.First().Description);
+        target.First().HostId.ShouldBe(source.Value.First().HostId);
+        target.First().MenuId.ShouldBe(source.Value.First().MenuId);
+        target.First().MaxGuests.ShouldBe(source.Value.First().MaxGuests);
+        target.First().Status.ShouldBe(DinnerStatus.InProgress.ToString());
+        target.First().Price.Amount.ShouldBe(source.Value.First().Price.Amount);
+        target.First().Price.Currency.ShouldBe(source.Value.First().Price.Currency);
+        target.First().Location.Name.ShouldBe(source.Value.First().Location.Name);
+        target.First().Location.AddressLine1.ShouldBe(source.Value.First().Location.AddressLine1);
+        target.First().Location.AddressLine2.ShouldBe(source.Value.First().Location.AddressLine2);
+        target.First().Location.PostalCode.ShouldBe(source.Value.First().Location.PostalCode);
+        target.First().Location.City.ShouldBe(source.Value.First().Location.City);
+        target.First().Location.Country.ShouldBe(source.Value.First().Location.Country);
+        target.First().Schedule.StartDateTime.ShouldBe(source.Value.First().Schedule.StartDateTime);
+        target.First().Schedule.EndDateTime.ShouldBe(source.Value.First().Schedule.EndDateTime);
     }
 
     [Fact]
@@ -157,16 +153,14 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, entity).Generate();
 
         // Act
-        var target = this.sut.Map<Result<Menu>, ResultOfMenuResponseModel>(source);
+        var target = this.sut.Map<Menu, MenuResponseModel>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
-        target.IsSuccess.ShouldBeTrue();
-        target.Messages.ShouldBe(source.Messages);
-        target.Value.Name.ShouldBe(source.Value.Name);
-        target.Value.Description.ShouldBe(source.Value.Description);
-        target.Value.HostId.ShouldBe(source.Value.HostId.ToString());
-        target.Value.AverageRating.ShouldBe(source.Value.AverageRating.Value.Value);
+        target.Name.ShouldBe(source.Value.Name);
+        target.Description.ShouldBe(source.Value.Description);
+        target.HostId.ShouldBe(source.Value.HostId.ToString());
+        target.AverageRating.ShouldBe(source.Value.AverageRating.Value.Value);
     }
 
     [Fact]

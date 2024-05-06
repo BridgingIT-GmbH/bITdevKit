@@ -30,15 +30,10 @@ public class MenuFindOneForHostQueryHandler : QueryHandlerBase<MenuFindOneForHos
     {
         var hostId = HostId.Create(query.HostId);
         var dinnerId = HostId.Create(query.MenuId);
-        var result = await this.repository.FindAllResultAsync(
-            specification: new Specification<Menu>(e => e.HostId == hostId && e.Id == dinnerId),
-            cancellationToken: cancellationToken).AnyContext();
 
-        if (!result.Value.SafeAny())
-        {
-            return QueryResponse.Fail<Menu, NotFoundResultError>();
-        }
-
-        return QueryResponse.Success(result.Value.FirstOrDefault(), result.Messages);
+        return QueryResponse.For(
+            await this.repository.FindOneResultAsync(
+                specification: new Specification<Menu>(e => e.HostId == hostId && e.Id == dinnerId),
+                cancellationToken: cancellationToken).AnyContext());
     }
 }

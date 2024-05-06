@@ -12,20 +12,13 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
-public class HealthCheckJob : JobBase
+public class HealthCheckJob(
+    ILoggerFactory loggerFactory,
+    HealthCheckService healthCheckService,
+    IHubContext<SignalRHub> hub) : JobBase(loggerFactory)
 {
-    private readonly HealthCheckService healthCheckService;
-    private readonly IHubContext<SignalRHub> hub;
-
-    public HealthCheckJob(
-        ILoggerFactory loggerFactory,
-        HealthCheckService healthCheckService,
-        IHubContext<SignalRHub> hub)
-        : base(loggerFactory)
-    {
-        this.healthCheckService = healthCheckService;
-        this.hub = hub;
-    }
+    private readonly HealthCheckService healthCheckService = healthCheckService;
+    private readonly IHubContext<SignalRHub> hub = hub;
 
     public override async Task Process(Quartz.IJobExecutionContext context, CancellationToken cancellationToken = default)
     {

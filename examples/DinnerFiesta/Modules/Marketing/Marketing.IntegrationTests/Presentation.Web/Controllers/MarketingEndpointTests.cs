@@ -11,14 +11,9 @@ using FluentAssertions;
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
 [Module("Marketing")]
-public class MarketingEndpointTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class MarketingEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
-    private readonly CustomWebApplicationFactoryFixture<Program> fixture;
-
-    public MarketingEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
     [Theory]
     [InlineData("api/marketing/echo")]

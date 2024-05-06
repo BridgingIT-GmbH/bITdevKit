@@ -30,21 +30,21 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/marketing/echo", Name = "Marketing_Echo-Get")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultResponseModel>> EchoGet();
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultResponseModel>> EchoGet(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="customerId">Customer Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/marketing/customers/{customerId}", Name = "Marketing_CustomerFindOne")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(string customerId);
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(string customerId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="customerId">Customer Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("api/marketing/customers/{customerId}/unsubscribe", Name = "Marketing_CustomerEmailUnsubscribe")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(string customerId);
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(string customerId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/marketing/customers", Name = "Marketing_CustomerFindAll")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll();
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 

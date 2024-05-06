@@ -40,7 +40,7 @@ public class User : AuditableAggregateRoot<UserId, Guid>
 
         Check.Throw(new IBusinessRule[]
         {
-            new IsValidUserPasswordRule(email),
+            new IsValidUserPasswordRule(password),
         });
 
         var user = new User(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email), password);

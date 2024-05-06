@@ -213,7 +213,7 @@ public partial class RepositoryLoggingBehavior<TEntity> : IGenericRepository<TEn
     {
         TypedLogger.LogFindOne(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
-        this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+        this.Logger.LogDebug("{LogKey} repository: specification={Specification}", Constants.LogKey, specification.GetType().PrettyName());
 
         return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
@@ -228,7 +228,7 @@ public partial class RepositoryLoggingBehavior<TEntity> : IGenericRepository<TEn
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository: specification={Specification}", Constants.LogKey, specification.GetType().PrettyName());
         }
 
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
@@ -259,19 +259,19 @@ public partial class RepositoryLoggingBehavior<TEntity> : IGenericRepository<TEn
     {
         if (options?.Distinct?.Expression is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository distinct: {DistinctExpression}", Constants.LogKey, options.Distinct.Expression);
+            this.Logger.LogDebug("{LogKey} repository: distinct={DistinctExpression}", Constants.LogKey, options.Distinct.Expression);
         }
 
         foreach (var order in (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
             if (order.Expression != null)
             {
-                this.Logger.LogDebug("{LogKey} repository order: {OrderExpression} [{OrderDirection}]", Constants.LogKey, order.Expression, order.Direction);
+                this.Logger.LogDebug("{LogKey} repository: order={OrderExpression} [{OrderDirection}]", Constants.LogKey, order.Expression, order.Direction);
             }
 
             if (order.Ordering != null)
             {
-                this.Logger.LogDebug("{LogKey} repository order: {Ordering}", Constants.LogKey, order.Ordering); // includes direction
+                this.Logger.LogDebug("{LogKey} repository: order={Ordering}", Constants.LogKey, order.Ordering); // includes direction
             }
         }
 
@@ -279,28 +279,28 @@ public partial class RepositoryLoggingBehavior<TEntity> : IGenericRepository<TEn
         {
             if (include.Expression is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository include: {IncludeExpression}", Constants.LogKey, include.Expression);
+                this.Logger.LogDebug("{LogKey} repository: include={IncludeExpression}", Constants.LogKey, include.Expression);
             }
 
             if (include.Path is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository include: {IncludePath}", Constants.LogKey, include.Path);
+                this.Logger.LogDebug("{LogKey} repository: include={IncludePath}", Constants.LogKey, include.Path);
             }
         }
 
-        this.Logger.LogDebug("{LogKey} repository notracking: {NoTracking}", Constants.LogKey, options is not null && options.NoTracking);
+        this.Logger.LogDebug("{LogKey} repository: notracking={NoTracking}", Constants.LogKey, options is not null && options.NoTracking);
 
         if (options?.Skip.HasValue == true && options?.Take.HasValue == true)
         {
-            this.Logger.LogDebug("{LogKey} repository skip: {Skip}, take: {Take}", Constants.LogKey, options.Skip.Value, options.Take.Value);
+            this.Logger.LogDebug("{LogKey} repository: skip={Skip}, take={Take}", Constants.LogKey, options.Skip.Value, options.Take.Value);
         }
         else if (options?.Skip.HasValue == true && options?.Take.HasValue == false)
         {
-            this.Logger.LogDebug("{LogKey} repository skip: {Skip}", Constants.LogKey, options.Skip.Value);
+            this.Logger.LogDebug("{LogKey} repository: skip={Skip}", Constants.LogKey, options.Skip.Value);
         }
         else if (options?.Skip.HasValue == false && options?.Take.HasValue == true)
         {
-            this.Logger.LogDebug("{LogKey} repository take: {Take}", Constants.LogKey, options.Take.Value);
+            this.Logger.LogDebug("{LogKey} repository: take={Take}", Constants.LogKey, options.Take.Value);
         }
     }
 

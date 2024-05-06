@@ -17,7 +17,7 @@ public interface IActionResultMapper
     ActionResult<TModel> Ok<TModel>(IResult result, Action<TModel> action)
         where TModel : new();
 
-    ActionResult<IEnumerable<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models);
+    ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models);
 
     ActionResult<PagedResult<TModel>> Ok<TModel>(PagedResult<TModel> result);
 
@@ -57,7 +57,7 @@ public interface IActionResultMapper
 
     ActionResult<TModel> Object<TModel>(IResult result, TModel model, int statusCode);
 
-    ActionResult<IEnumerable<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode);
+    ActionResult<ICollection<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode);
 
     ActionResult<PagedResult<TModel>> Object<TModel>(PagedResult<TModel> result, int statusCode);
 }

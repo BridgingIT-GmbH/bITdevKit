@@ -63,7 +63,7 @@ public class CorrelationIdProviderMiddleware
         // TODO: is the ControllerActionDescriptor also available when using .net60 minimal apis? if not the flowId will be 00000000000000000000000000000000
         flowId = flowId != "00000000000000000000000000000000" ? flowId : GuidGenerator.Create(httpContext.Request.Path).ToString("N");
         httpContext.Response.Headers.AddOrUpdate(FlowKey, flowId);
-        httpContext.Items.AddOrUpdate(FlowKey, flowId.ToString());
+        httpContext.Items.AddOrUpdate(FlowKey, flowId);
 
         var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity; // Enrich the request activity created by ASP.NET Core
         if (activity is not null)

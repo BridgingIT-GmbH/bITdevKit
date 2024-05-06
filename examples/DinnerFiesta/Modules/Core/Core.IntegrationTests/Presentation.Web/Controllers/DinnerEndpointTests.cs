@@ -14,14 +14,9 @@ using FluentAssertions;
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
 [Module("Core")]
-public class DinnerEndpointTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
-    private readonly CustomWebApplicationFactoryFixture<Program> fixture;
-
-    public DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
     [Theory]
     [InlineData("api/core/hosts/{hostId}/dinners")]
@@ -32,6 +27,27 @@ public class DinnerEndpointTests : IClassFixture<CustomWebApplicationFactoryFixt
         var menu = await this.PostMenuCreate(route.Replace("/dinners", "/menus"));
         var model = await this.PostDinnerCreate(route, menu.HostId, menu.Id);
         route = route.Replace("{hostId}", model.HostId) + $"/{model.Id}";
+
+        // Act
+        var response = await this.fixture.CreateClient()
+            .GetAsync(route).AnyContext();
+        this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
+
+        // Assert
+        response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
+        response.Should().MatchInContent($"*{model.HostId}*");
+        response.Should().MatchInContent($"*{model.Name}*");
+    }
+
+    [Theory]
+    [InlineData("api/core/hosts/{hostId}/dinners")]
+    public async Task Get_MultipleExisting_ReturnsOk(string route)
+    {
+        // Arrange
+        this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
+        var menu = await this.PostMenuCreate(route.Replace("/dinners", "/menus"));
+        var model = await this.PostDinnerCreate(route, menu.HostId, menu.Id);
+        route = route.Replace("{hostId}", model.HostId);
 
         // Act
         var response = await this.fixture.CreateClient()
@@ -148,7 +164,7 @@ public class DinnerEndpointTests : IClassFixture<CustomWebApplicationFactoryFixt
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return (await response.Content.ReadAsAsync<ResultOfDinnerResponseModel>()).Value;
+        return await response.Content.ReadAsAsync<DinnerResponseModel>();
     }
 
     private async Task<MenuResponseModel> PostMenuCreate(string route)
@@ -166,6 +182,6 @@ public class DinnerEndpointTests : IClassFixture<CustomWebApplicationFactoryFixt
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return (await response.Content.ReadAsAsync<ResultOfMenuResponseModel>()).Value;
+        return await response.Content.ReadAsAsync<MenuResponseModel>();
     }
 }

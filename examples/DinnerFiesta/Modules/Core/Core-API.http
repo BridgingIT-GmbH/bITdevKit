@@ -5,22 +5,22 @@
 
 ###################################################################################
 ### API [GET] Echo                                                                #
-GET {{baseUrl}}/api/v1/core/echo HTTP/1.1
+GET {{baseUrl}}/api/core/echo HTTP/1.1
 
 Content-Type: application/json
 ###################################################################################
 ### API [GET] Menus FindOne                                                       #
-GET {{baseUrl}}/api/v1/core/hosts/{{hostId}}/menus/{{menuId}} HTTP/1.1
+GET {{baseUrl}}/api/core/hosts/{{hostId}}/menus/{{menuId}} HTTP/1.1
 Content-Type: application/json
 
 ###################################################################################
 ### API [GET] Menus FindAll                                                       #
-GET {{baseUrl}}/api/v1/core/hosts/{{hostId}}/menus HTTP/1.1
+GET {{baseUrl}}/api/core/hosts/{{hostId}}/menus HTTP/1.1
 Content-Type: application/json
 
 ###################################################################################
 ### API [POST] Users Create                                                       #
-POST {{baseUrl}}/api/v1/core/users HTTP/1.1
+POST {{baseUrl}}/api/core/users HTTP/1.1
 Content-Type: application/json
 
 {

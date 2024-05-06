@@ -14,14 +14,9 @@ using FluentAssertions;
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
 [Module("Core")]
-public class MenuEndpointTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
-    private readonly CustomWebApplicationFactoryFixture<Program> fixture;
-
-    public MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
     [Theory]
     [InlineData("api/core/hosts/{hostId}/menus")]
@@ -131,6 +126,6 @@ public class MenuEndpointTests : IClassFixture<CustomWebApplicationFactoryFixtur
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return (await response.Content.ReadAsAsync<ResultOfMenuResponseModel>()).Value;
+        return await response.Content.ReadAsAsync<MenuResponseModel>();
     }
 }

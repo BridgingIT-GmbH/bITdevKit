@@ -13,44 +13,38 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-public class MarketingController : MarketingControllerBase
+public class MarketingController(IMapper mapper, IMediator mediator) : MarketingControllerBase
 {
-    private readonly IMapper mapper;
-    private readonly IMediator mediator;
+    private readonly IMapper mapper = mapper;
+    private readonly IMediator mediator = mediator;
 
-    public MarketingController(IMapper mapper, IMediator mediator)
+    public override async Task<ActionResult<ResultResponseModel>> EchoGet(CancellationToken cancellationToken)
     {
-        this.mapper = mapper;
-        this.mediator = mediator;
-    }
-
-    public override async Task<ActionResult<ResultResponseModel>> EchoGet()
-    {
-        await Task.Delay(1);
+        await Task.Delay(1, cancellationToken);
         return new OkObjectResult(Result.Success().WithMessage("echo"));
     }
 
     // Customer =====================================================================================
-    public override async Task<ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(string customerId)
+    public override async Task<ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(string customerId, CancellationToken cancellationToken)
     {
         var query = new CustomerFindOneQuery(customerId);
-        var result = (await this.mediator.Send(query)).Result;
+        var result = (await this.mediator.Send(query, cancellationToken)).Result;
 
         return result.ToOkActionResult<Customer, ResultOfCustomerResponseModel>(this.mapper);
     }
 
-    public override async Task<ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll()
+    public override async Task<ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll(CancellationToken cancellationToken)
     {
         var query = new CustomerFindAllQuery();
-        var result = (await this.mediator.Send(query).AnyContext()).Result;
+        var result = (await this.mediator.Send(query, cancellationToken).AnyContext()).Result;
 
         return result.ToOkActionResult<IEnumerable<Customer>, ResultOfCustomersResponseModel>(this.mapper);
     }
 
-    public override async Task<ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(string customerId)
+    public override async Task<ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(string customerId, CancellationToken cancellationToken)
     {
         var command = new CustomerUnsubscribeCommand { CustomerId = customerId };
-        var result = (await this.mediator.Send(command).AnyContext()).Result;
+        var result = (await this.mediator.Send(command, cancellationToken).AnyContext()).Result;
 
         return result.ToOkActionResult<ResultResponseModel>(this.mapper);
     }

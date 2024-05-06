@@ -1791,7 +1791,7 @@
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.4, )",
           "Microsoft.IdentityModel.JsonWebTokens": "[7.5.1, )",
           "System.IdentityModel.Tokens.Jwt": "[7.5.1, )",
-          "System.Linq.Dynamic.Core": "[1.3.13, )",
+          "System.Linq.Dynamic.Core": "[1.3.14, )",
           "System.Net.Http": "[4.3.4, )",
           "System.Text.Json": "[8.0.3, )",
           "System.Text.RegularExpressions": "[4.3.1, )"
@@ -2256,9 +2256,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.3.13, )",
-        "resolved": "1.3.13",
-        "contentHash": "/RiLoDaNaQCoAXGPkM6HLT/ee0cL2dBaSCwJoIfuuZtmaOquT+bMMCghPj628PjsnuHH1SbfWjFtJdjSk8sO0w=="
+        "requested": "[1.3.14, )",
+        "resolved": "1.3.14",
+        "contentHash": "aiDKm/1/Bjz6vpB800Vftg2VIjnffvBSufpP9wpShD6zfb9cU+dSVdmrIu2S59z6x7Iwule6feEwxJP2kpyfgA=="
       },
       "System.Threading.Tasks.Extensions": {
         "type": "CentralTransitive",

@@ -18,10 +18,10 @@ public class CoreMapperRegister : IRegister
             .Map(d => d.FirstName, s => s.FirstName)
             .Map(d => d.Email, s => s.Email.Value);
 
-        config.ForType<Result<User>, ResultOfUserResponseModel>()
-            .Map(d => d.Value, s => s.Value.Adapt<UserResponseModel>(config));
+        config.ForType<Result<User>, UserResponseModel>()
+            .Map(d => d, s => s.Value.Adapt<UserResponseModel>(config));
 
-        config.ForType<Result<IEnumerable<User>>, ResultOfUsersResponseModel>()
+        config.ForType<Result<IEnumerable<User>>, UsersResponseModel>()
             .Map(d => d.Value, s => s.Value.Adapt<IEnumerable<UserResponseModel>>(config));
     }
 }

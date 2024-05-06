@@ -30,15 +30,10 @@ public class DinnerFindOneForHostQueryHandler : QueryHandlerBase<DinnerFindOneFo
     {
         var hostId = HostId.Create(query.HostId);
         var dinnerId = HostId.Create(query.DinnerId);
-        var result = await this.repository.FindAllResultAsync(
-            specification: new Specification<Dinner>(e => e.HostId == hostId && e.Id == dinnerId),
-            cancellationToken: cancellationToken).AnyContext();
 
-        if (!result.Value.SafeAny())
-        {
-            return QueryResponse.Fail<Dinner, NotFoundResultError>();
-        }
-
-        return QueryResponse.Success(result.Value.FirstOrDefault(), result.Messages);
+        return QueryResponse.For(
+            await this.repository.FindOneResultAsync(
+                specification: new Specification<Dinner>(e => e.HostId == hostId && e.Id == dinnerId),
+                cancellationToken: cancellationToken).AnyContext());
     }
 }

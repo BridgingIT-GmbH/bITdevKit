@@ -30,7 +30,7 @@ public class CoreModule : WebModuleBase
 
         services.AddJobScheduling()
             .WithJob<EchoMessageJob>(CronExpressions.Every5Minutes)
-            .WithJob<DinnerSnapshotExportJob>(CronExpressions.Every60Minutes);
+            .WithJob<DinnerSnapshotExportJob>(CronExpressions.EveryHour);
             //.WithJob<HealthCheckJob>(CronExpressions.EveryMinute);
 
         services.AddStartupTasks()
@@ -120,9 +120,9 @@ public class CoreModule : WebModuleBase
         //     //.WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Bill, CoreDbContext>()
-        .WithTransactions<NullRepositoryTransaction<Bill>>()
-        .WithBehavior<RepositoryTracingBehavior<Bill>>()
-        .WithBehavior<RepositoryLoggingBehavior<Bill>>()
+            .WithTransactions<NullRepositoryTransaction<Bill>>()
+            .WithBehavior<RepositoryTracingBehavior<Bill>>()
+            .WithBehavior<RepositoryLoggingBehavior<Bill>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Bill>(e => e.AuditState, inner));
             .WithBehavior<RepositoryDomainEventBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Bill>>()

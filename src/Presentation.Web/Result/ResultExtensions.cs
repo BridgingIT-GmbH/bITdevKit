@@ -45,14 +45,14 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToOkActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, model)
             : new DefaultActionResultMapper().Ok(result, model);
     }
 
-    public static ActionResult<IEnumerable<TModel>> ToOkActionResult<TModel>(this IResult<IEnumerable<TModel>> result, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<ICollection<TModel>> ToOkActionResult<TModel>(this IResult<IEnumerable<TModel>> result, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
         return actionResultMapper is not null
@@ -60,10 +60,10 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Ok(result, result.Value);
     }
 
-    public static ActionResult<IEnumerable<TModel>> ToOkActionResult<TModel, TSource>(this IResult<IEnumerable<TSource>> result, IMapper mapper, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<ICollection<TModel>> ToOkActionResult<TSource, TModel>(this IResult<IEnumerable<TSource>> result, IMapper mapper, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(v => mapper.Map<TSource, TModel>(v));
+        var models = result.Value.Select(mapper.Map<TSource, TModel>);
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, models)
@@ -78,10 +78,10 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Ok(result);
     }
 
-    public static ActionResult<PagedResult<TModel>> ToOkActionResult<TModel, TSource>(this PagedResult<TSource> result, IMapper mapper, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<PagedResult<TModel>> ToOkActionResult<TSource, TModel>(this PagedResult<TSource> result, IMapper mapper, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(v => mapper.Map<TSource, TModel>(v));
+        var models = result.Value.Select(mapper.Map<TSource, TModel>);
         var pagedResult = new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize) { IsSuccess = result.IsSuccess };
 
         foreach (var error in result.Errors.SafeNull())
@@ -113,7 +113,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string routeName = null, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, routeName, routeValues)
@@ -147,7 +147,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string actionName, string controllerName, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, actionName, controllerName, routeValues)
@@ -181,7 +181,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string routeName = null, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, routeName, routeValues)
@@ -215,7 +215,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string actionName, string controllerName, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, actionName, controllerName, routeValues)
@@ -249,7 +249,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string routeName = null, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, routeName, routeValues)
@@ -283,7 +283,7 @@ public static class ResultExtensions
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(this IResult<TSource> result, IMapper mapper, string actionName, string controllerName, object routeValues = null, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult<TSource>, TModel>(result);
+        var model = mapper.Map<TSource, TModel>(result.Value);
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, actionName, controllerName, routeValues)
@@ -348,7 +348,7 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Object(result, model, statusCode);
     }
 
-    public static ActionResult<IEnumerable<TModel>> ToObjectActionResult<TModel>(this IResult<IEnumerable<TModel>> result, int statusCode, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(this IResult<IEnumerable<TModel>> result, int statusCode, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
         return actionResultMapper is not null
@@ -356,17 +356,17 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Object(result, result.Value, statusCode);
     }
 
-    public static ActionResult<IEnumerable<TModel>> ToObjectActionResult<TModel, TSource>(this IResult<IEnumerable<TSource>> result, IMapper mapper, int statusCode, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel, TSource>(this IResult<IEnumerable<TSource>> result, IMapper mapper, int statusCode, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(v => mapper.Map<TSource, TModel>(v));
+        var models = result.Value.Select(mapper.Map<TSource, TModel>);
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, models, statusCode)
             : new DefaultActionResultMapper().Object(result, models, statusCode);
     }
 
-    public static ActionResult<IEnumerable<TModel>> ToObjectActionResult<TModel>(this PagedResult<TModel> result, int statusCode, IActionResultMapper actionResultMapper = null)
+    public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(this PagedResult<TModel> result, int statusCode, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
         return actionResultMapper is not null
@@ -377,7 +377,7 @@ public static class ResultExtensions
     public static ActionResult<PagedResult<TModel>> ToObjectActionResult<TModel, TSource>(this PagedResult<TSource> result, IMapper mapper, int statusCode, IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(v => mapper.Map<TSource, TModel>(v));
+        var models = result.Value.Select(mapper.Map<TSource, TModel>);
         var pagedResult = new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize) { IsSuccess = result.IsSuccess };
 
         foreach (var error in result.Errors.SafeNull())

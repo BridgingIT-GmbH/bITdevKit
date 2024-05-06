@@ -81,7 +81,7 @@ public class DefaultActionResultMapper : IActionResultMapper
         }
     }
 
-    public virtual ActionResult<IEnumerable<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models)
+    public virtual ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models)
     {
         if (!result.HasError())
         {
@@ -556,7 +556,7 @@ public class DefaultActionResultMapper : IActionResultMapper
         }
     }
 
-    public virtual ActionResult<IEnumerable<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode)
+    public virtual ActionResult<ICollection<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode)
     {
         if (!result.HasError())
         {

@@ -21,7 +21,7 @@ public class ProjectionTests
     public static readonly string PersonInfinityImmutableTypeIdentifierName = "PersonImmutable";
 
     [Fact]
-    public async void RequestProjectionTest()
+    public async Task RequestProjectionTest()
     {
         var person = new Person("GB", "Microsoft");
         var id1 = person.Id;
@@ -38,7 +38,7 @@ public class ProjectionTests
     }
 
     [Fact]
-    public async void RequestProjectionTest2()
+    public async Task RequestProjectionTest2()
     {
         var person1 = new Person("GB", "Microsoft");
         var person2 = new Person("GB", "Webfrontends");

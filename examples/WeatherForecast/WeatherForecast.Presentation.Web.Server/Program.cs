@@ -91,7 +91,10 @@ ConfigureHealth(builder.Services);
 builder.Services.AddMetrics();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
-builder.Services.AddProblemDetails(Configure.ProblemDetails); // TODO: replace this with the new .NET8 error handling with IExceptionHandler https://www.milanjovanovic.tech/blog/global-error-handling-in-aspnetcore-8 and AddProblemDetails https://youtu.be/4NfflZilTvk?t=596
+builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+//builder.Services.AddProblemDetails(Configure.ProblemDetails); // TODO: replace this with the new .NET8 error handling with IExceptionHandler https://www.milanjovanovic.tech/blog/global-error-handling-in-aspnetcore-8 and AddProblemDetails https://youtu.be/4NfflZilTvk?t=596
+//builder.Services.AddExceptionHandler();
+//builder.Services.AddProblemDetails();
 
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
@@ -117,6 +120,7 @@ else
 }
 
 app.UseProblemDetails();
+//app.UseExceptionHandler();
 app.UseRouting();
 
 app.UseRequestCorrelation();

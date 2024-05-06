@@ -31,7 +31,6 @@ paths:
 
   # Host =============================================================
   /api/core/hosts/{hostId}:
-    summary: TODO
     get:
       tags:
         - core/hosts
@@ -51,10 +50,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfHostResponseModel'
+                $ref: '#/components/schemas/HostResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfHostResponseModel'
+              #     $ref: '#/components/examples/HostResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -77,7 +76,6 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailsModel'
 
   /api/core/hosts:
-    summary: TODO
     get:
       tags:
         - core/hosts
@@ -88,10 +86,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfHostsResponseModel'
+                type: array
+                items:
+                  $ref: '#/components/schemas/HostResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfHostsResponseModel'
+              #     $ref: '#/components/examples/HostResponseExamples'
         400:
           description: Resource request was invalid.
           content:
@@ -128,10 +128,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfHostResponseModel'
+                $ref: '#/components/schemas/HostResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfHostResponseModel'
+              #     $ref: '#/components/examples/HostResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -174,7 +174,7 @@ paths:
           required: true
           schema:
             type: string
-            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            example: 85c2b996-fc0e-76a7-c5e2-3d83ebf73c8e
             nullable: false
       responses:
         200:
@@ -182,10 +182,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfDinnerResponseModel'
+                $ref: '#/components/schemas/DinnerResponseModel'
               examples:
                 objectExample:
-                  $ref: '#/components/examples/ResultOfDinnerResponseModel'
+                  $ref: '#/components/examples/DinnerResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -228,10 +228,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfDinnersResponseModel'
+                type: array
+                items:
+                  $ref: '#/components/schemas/DinnerResponseModel'
               examples:
                 objectExample:
-                  $ref: '#/components/examples/ResultOfDinnersResponseModel'
+                  $ref: '#/components/examples/DinnerResponseExamples'
         400:
           description: Resource request was invalid.
           content:
@@ -277,10 +279,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfDinnerResponseModel'
+                $ref: '#/components/schemas/DinnerResponseModel'
               examples:
                 objectExample:
-                  $ref: '#/components/examples/ResultOfDinnerResponseModel'
+                  $ref: '#/components/examples/DinnerResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -324,7 +326,7 @@ paths:
           required: true
           schema:
             type: string
-            example: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+            example: a5f2e140-6907-86b2-8534-a5ff96897c77
             nullable: false
       responses:
         200:
@@ -332,10 +334,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfMenuResponseModel'
-              # examples:
-              #   objectExample:
-              #     $ref: '#/components/examples/ResultOfMenuResponseModel'
+                $ref: '#/components/schemas/MenuResponseModel'
+              examples:
+                objectExample:
+                  $ref: '#/components/examples/MenuResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -378,10 +380,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfMenusResponseModel'
-              # examples:
-              #   objectExample:
-              #     $ref: '#/components/examples/ResultOfMenusResponseModel'
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuResponseModel'
+              examples:
+                objectExample:
+                  $ref: '#/components/examples/MenuResponseExamples'
         400:
           description: Resource request was invalid.
           content:
@@ -427,10 +431,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfMenuResponseModel'
-              # examples:
-              #   objectExample:
-              #     $ref: '#/components/examples/ResultOfMenuResponseModel'
+                $ref: '#/components/schemas/MenuResponseModel'
+              examples:
+                 objectExample:
+                  $ref: '#/components/examples/MenuResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -476,10 +480,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfUserResponseModel'
+                $ref: '#/components/schemas/UserResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfUserResponseModel'
+              #     $ref: '#/components/examples/UserResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -513,10 +517,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfUsersResponseModel'
+                $ref: '#/components/schemas/UsersResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfUsersResponseModel'
+              #     $ref: '#/components/examples/UserResponseExamples'
         400:
           description: Resource request was invalid.
           content:
@@ -553,10 +557,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultOfUserResponseModel'
+                $ref: '#/components/schemas/UserResponseModel'
               # examples:
               #   objectExample:
-              #     $ref: '#/components/examples/ResultOfUserResponseModel'
+              #     $ref: '#/components/examples/UserResponseExample'
         400:
           description: Resource request was invalid.
           content:
@@ -678,27 +682,6 @@ components:
         - Price
         - MenuId
         - Location
-    ResultOfDinnerResponseModel:
-      allOf:
-        - $ref: '#/components/schemas/ResultResponseModel'
-        - type: object
-          additionalProperties: false
-          properties:
-            value:
-              nullable: true
-              type: object
-              $ref: '#/components/schemas/DinnerResponseModel'
-    ResultOfDinnersResponseModel:
-     allOf:
-       - $ref: '#/components/schemas/ResultResponseModel'
-       - type: object
-         additionalProperties: false
-         properties:
-           value:
-             nullable: true
-             type: array
-             items:
-               $ref: '#/components/schemas/DinnerResponseModel'
     DinnerResponseModel:
       type: object
       properties:
@@ -801,27 +784,6 @@ components:
         - firstName
         - lastName
         - userId
-    ResultOfHostResponseModel:
-      allOf:
-        - $ref: '#/components/schemas/ResultResponseModel'
-        - type: object
-          additionalProperties: false
-          properties:
-            value:
-              nullable: true
-              type: object
-              $ref: '#/components/schemas/HostResponseModel'
-    ResultOfHostsResponseModel:
-     allOf:
-       - $ref: '#/components/schemas/ResultResponseModel'
-       - type: object
-         additionalProperties: false
-         properties:
-           value:
-             nullable: true
-             type: array
-             items:
-               $ref: '#/components/schemas/HostResponseModel'
     HostResponseModel:
       type: object
       properties:
@@ -855,27 +817,6 @@ components:
       required:
         - hostId
         - name
-    ResultOfMenuResponseModel:
-      allOf:
-        - $ref: '#/components/schemas/ResultResponseModel'
-        - type: object
-          additionalProperties: false
-          properties:
-            value:
-              nullable: true
-              type: object
-              $ref: '#/components/schemas/MenuResponseModel'
-    ResultOfMenusResponseModel:
-     allOf:
-       - $ref: '#/components/schemas/ResultResponseModel'
-       - type: object
-         additionalProperties: false
-         properties:
-           value:
-             nullable: true
-             type: array
-             items:
-               $ref: '#/components/schemas/MenuResponseModel'
     MenuResponseModel:
       type: object
       properties:
@@ -941,19 +882,8 @@ components:
         - LastName
         - Email
         - Password
-    ResultOfUserResponseModel:
-      allOf:
-        - $ref: '#/components/schemas/ResultResponseModel'
-        - type: object
-          additionalProperties: false
-          properties:
-            value:
-              nullable: true
-              type: object
-              $ref: '#/components/schemas/UserResponseModel'
-    ResultOfUsersResponseModel:
+    UsersResponseModel:
      allOf:
-       - $ref: '#/components/schemas/ResultResponseModel'
        - type: object
          additionalProperties: false
          properties:
@@ -975,14 +905,54 @@ components:
           type: string
 
   examples:
-    ResultOfDinnerResponseModel:
+    MenuResponseExample:
+      summary: A sample Menu
+      value:
+        id: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+        name: Sample Menu 001
+        description: Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.
+    MenuResponseExamples:
+      summary: A few sample Menus
+      value:
+        - id: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
+          name: Sample Menu 001
+          description: Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.
+
+    DinnerResponseExample:
       summary: A sample Dinner
       value:
-        isSuccess: true
-        value:
-          id: dfda0d02-a0b2-4830-a434-067e3cb3c236
-          name: Fancy Dinner Party
-          description: A luxurious evening of fine dining and great company.
+        id: 85c2b996-fc0e-76a7-c5e2-3d83ebf73c8e
+        name: Sample Dinner 001
+        description: Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.
+        schedule:
+          startDateTime: 2023-05-15T19:00:00.0000000Z
+          endDateTime: 2023-05-15T22:00:00.0000000Z
+        startedDateTime:
+        endedDateTime:
+        status: Ended
+        maxGuests: 10
+        isPublic: true
+        price:
+          amount: 250.0
+          currency: USD
+        menuId: 1
+        hostId: 2af8160a-6eb5-fb82-c731-8baadc602ed6
+        imageUrl: https://example.com/dinner.jpg
+        location:
+          name: My House
+          addressLine1: 123 Main St
+          addressLine2:
+          postalCode: 12345
+          city: Anytown
+          country: USA
+          latitude: 37.7749
+          longitude: -122.4194
+    DinnerResponseExamples:
+      summary: A few sample Dinners
+      value:
+        - id: 85c2b996-fc0e-76a7-c5e2-3d83ebf73c8e
+          name: Sample Dinner 001
+          description: Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.
           schedule:
             startDateTime: 2023-05-15T19:00:00.0000000Z
             endDateTime: 2023-05-15T22:00:00.0000000Z
@@ -1007,42 +977,10 @@ components:
             latitude: 37.7749
             longitude: -122.4194
 
-    ResultOfDinnersResponseModel:
-      summary: A sample Dinner
-      value:
-        isSuccess: true
-        value:
-        - id: dfda0d02-a0b2-4830-a434-067e3cb3c236
-          name: Fancy Dinner Party
-          description: A luxurious evening of fine dining and great company.
-          schedule:
-            startDateTime: 2023-05-15T19:00:00.0000000Z
-            endDateTime: 2023-05-15T22:00:00.0000000Z
-          startedDateTime:
-          endedDateTime:
-          status: Ended
-          maxGuests: 10
-          isPublic: true
-          price:
-            amount: 250.0
-            currency: USD
-          menuId: 1
-          hostId: 2af8160a-6eb5-fb82-c731-8baadc602ed6
-          imageUrl: https://example.com/dinner.jpg
-          location:
-            name: My House
-            addressLine1: 123 Main St
-            addressLine2:
-            postalCode: 12345
-            city: Anytown
-            country: USA
-            latitude: 37.7749
-            longitude: -122.4194
-
-  #  ResultOfCartDto:
+  #  CartDto:
   #    summary: A sample cart
   #    value:
-  #      id: dfda0d02-a0b2-4830-a434-067e3cb3c236
+  #      id: 85c2b996-fc0e-76a7-c5e2-3d83ebf73c8e
   #      identity: f5d87eba-c374-45db-a5e4-7b43fd25e7bf
   #      totalPrice: 99.99
   #      items:

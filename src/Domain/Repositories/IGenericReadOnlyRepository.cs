@@ -19,7 +19,7 @@ public interface IReadOnlyGenericRepository<TEntity> : IGenericReadOnlyRepositor
 {
 }
 
-public interface IGenericReadOnlyRepository<TEntity> : IRepository // TODO: rename to IGenericReadOnlyRepository
+public interface IGenericReadOnlyRepository<TEntity> : IRepository
     where TEntity : class, IEntity
 {
     Task<IEnumerable<TEntity>> FindAllAsync(

@@ -24,7 +24,7 @@ public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture
     }
 
     [Fact]
-    public async void GenericRepositoryFindAllAsync()
+    public async Task GenericRepositoryFindAllAsync()
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
@@ -41,7 +41,7 @@ public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture
     }
 
     [Fact]
-    public async void PersonRepositoryFindAllAsync()
+    public async Task PersonRepositoryFindAllAsync()
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
@@ -55,7 +55,7 @@ public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture
     }
 
     [Fact]
-    public async void PersonRepositoryFindAllNoTrackingAsync()
+    public async Task PersonRepositoryFindAllNoTrackingAsync()
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
@@ -69,7 +69,7 @@ public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture
     }
 
     [Fact]
-    public async void PersonRepositoryFindOne()
+    public async Task PersonRepositoryFindOne()
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
@@ -80,7 +80,7 @@ public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture
     }
 
     [Fact]
-    public async void PersonRepositoryFindAllLastnames()
+    public async Task PersonRepositoryFindAllLastnames()
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();

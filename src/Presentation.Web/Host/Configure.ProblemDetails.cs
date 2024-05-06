@@ -11,13 +11,24 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+//using Microsoft.Extensions.DependencyInjection;
 using MvcProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
+//public static class ServiceCollectionExtensions
+//{
+//    public static IServiceCollection AddProblemDetails(this IServiceCollection source)
+//    {
+//        return Hellang.Middleware.ProblemDetails.ProblemDetailsExtensions
+//            .AddProblemDetails(source, Configure.ProblemDetails);
+//    }
+//}
+
 public static class Configure
 {
-    public static void ProblemDetails(
-        ProblemDetailsOptions options)
+    public static void ProblemDetails(ProblemDetailsOptions options)
     {
         ProblemDetails(options, false);
     }
@@ -26,14 +37,20 @@ public static class Configure
         ProblemDetailsOptions options,
         bool includeExceptionDetails = false,
         IEnumerable<Func<Exception, MvcProblemDetails>> mappings = null,
-        IEnumerable<string> allowHeaderNames = null)
+        IEnumerable<string> allowedHeaderNames = null)
     {
-        options.IncludeExceptionDetails = (ctx, ex) => includeExceptionDetails;  //ctx.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment();
+        //options.IncludeExceptionDetails = (ctx, ex) => includeExceptionDetails;  //ctx.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment();
+        options.IncludeExceptionDetails = (ctx, ex) =>
+        {
+            var env = ctx.RequestServices.GetRequiredService<IHostEnvironment>();
+            return includeExceptionDetails || env.IsDevelopment() || env.IsStaging();
+        };
+        //options.ShouldLogUnhandledException = (ctx, e, d) => d.Status >= 500;
         options.AllowedHeaderNames.Add("CorrelationId");
         options.AllowedHeaderNames.Add("FlowId");
         options.AllowedHeaderNames.Add("TraceId");
 
-        foreach (var allowHeaderName in allowHeaderNames.SafeNull())
+        foreach (var allowHeaderName in allowedHeaderNames.SafeNull())
         {
             options.AllowedHeaderNames.Add(allowHeaderName);
         }

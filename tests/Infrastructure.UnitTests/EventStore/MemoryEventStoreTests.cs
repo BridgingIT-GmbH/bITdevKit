@@ -34,7 +34,7 @@ public class MemoryEventStoreTests
     }
 
     [Fact]
-    public async void AddEventsToMemoryEventstore()
+    public async Task AddEventsToMemoryEventstore()
     {
         var aggregateRegistration = Substitute.For<IEventStoreAggregateRegistration>();
         var store = new InMemoryEventStoreRepository(this.eventSerializer, aggregateRegistration);
@@ -49,7 +49,7 @@ public class MemoryEventStoreTests
     }
 
     [Fact]
-    public async void AddEventsToMemoryEventstoreAndCheckForCorrectData()
+    public async Task AddEventsToMemoryEventstoreAndCheckForCorrectData()
     {
         var aggregateRegistration = Substitute.For<IEventStoreAggregateRegistration>();
         var store = new InMemoryEventStoreRepository(this.eventSerializer, aggregateRegistration);
@@ -69,7 +69,7 @@ public class MemoryEventStoreTests
     }
 
     [Fact]
-    public async void AddEventsToMemoryEventstoreGetIds()
+    public async Task AddEventsToMemoryEventstoreGetIds()
     {
         var aggregateRegistration = Substitute.For<IEventStoreAggregateRegistration>();
         var store = new InMemoryEventStoreRepository(this.eventSerializer, aggregateRegistration);
@@ -93,7 +93,7 @@ public class MemoryEventStoreTests
     }
 
     [Fact]
-    public async void AddEventsToMemoryEventstoreGetPersonIds()
+    public async Task AddEventsToMemoryEventstoreGetPersonIds()
     {
         var aggregateRegistration = Substitute.For<IEventStoreAggregateRegistration>();
         aggregateRegistration.GetImmutableName<Person>().Returns(PersonInfinityImmutableTypeIdentifierName);
@@ -122,7 +122,7 @@ public class MemoryEventStoreTests
     }
 
     [Fact]
-    public async void AddEventToMemoryEventstore()
+    public async Task AddEventToMemoryEventstore()
     {
         var aggregateRegistration = Substitute.For<IEventStoreAggregateRegistration>();
         var store = new InMemoryEventStoreRepository(this.eventSerializer, aggregateRegistration);

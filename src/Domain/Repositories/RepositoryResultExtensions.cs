@@ -14,6 +14,57 @@ using BridgingIT.DevKit.Domain.Specifications;
 
 public static class RepositoryResultExtensions
 {
+    public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        object id,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var entity = await source.FindOneAsync(
+                id,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext();
+
+        return entity is null
+            ? Result<TEntity>.Failure<NotFoundResultError>()
+            : Result<TEntity>.Success(entity);
+    }
+
+    public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var entity = await source.FindOneAsync(
+                specification,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext();
+
+        return entity is null
+            ? Result<TEntity>.Failure<NotFoundResultError>()
+            : Result<TEntity>.Success(entity);
+    }
+
+    public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        var entity = await source.FindOneAsync(
+                specifications,
+                options: options,
+                cancellationToken: cancellationToken).AnyContext();
+
+        return entity is null
+            ? Result<TEntity>.Failure<NotFoundResultError>()
+            : Result<TEntity>.Success(entity);
+    }
+
     public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         IFindOptions<TEntity> options = null,

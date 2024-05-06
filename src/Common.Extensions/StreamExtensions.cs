@@ -12,7 +12,6 @@ public static class StreamExtensions
     /// <summary>
     /// Read the contents of a stream into a byte array.
     /// </summary>
-    /// <param name="buffer">A byte array filled with the contents of the file.</param>
     public static int TryReadAll(this Stream source, byte[] buffer, int offset, int count)
     {
         return TryReadAll(source, buffer.AsSpan(offset, count));
@@ -39,7 +38,6 @@ public static class StreamExtensions
     /// <summary>
     /// Read the contents of a stream into a byte array.
     /// </summary>
-    /// <param name="buffer">A byte array filled with the contents of the file.</param>
     public static Task<int> TryReadAllAsync(this Stream source, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
     {
         return TryReadAllAsync(source, buffer.AsMemory(offset, count), cancellationToken);
@@ -48,7 +46,6 @@ public static class StreamExtensions
     /// <summary>
     /// Read the contents of a stream into a byte array.
     /// </summary>
-    /// <param name="buffer">A byte array filled with the contents of the file.</param>
     public static async Task<int> TryReadAllAsync(this Stream source, Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var total = 0;

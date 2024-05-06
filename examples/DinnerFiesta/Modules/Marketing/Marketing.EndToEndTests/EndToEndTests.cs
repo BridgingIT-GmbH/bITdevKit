@@ -3,11 +3,11 @@
 using Microsoft.Playwright.NUnit;
 using Xunit;
 
-public class BlazorUiTests : PageTest, IClassFixture<KestrelWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class EndToEndTests : PageTest, IClassFixture<KestrelWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly string serverAddress;
 
-    public BlazorUiTests(ITestOutputHelper output, KestrelWebApplicationFactoryFixture<Program> fixture)
+    public EndToEndTests(ITestOutputHelper output, KestrelWebApplicationFactoryFixture<Program> fixture)
     {
         Microsoft.Playwright.Program.Main(new[] { "install" }); // install the playwritght browsers https://github.com/microsoft/playwright-dotnet/issues/1788#issuecomment-943908634
 

@@ -36,11 +36,11 @@
       },
       "Microsoft.Azure.AppConfiguration.AspNetCore": {
         "type": "Direct",
-        "requested": "[7.1.0, )",
-        "resolved": "7.1.0",
-        "contentHash": "49pMzA2cYjDzKs+mil80Nek87uMKT0goFsQpHYAtCrGl/meNabOstP+y5zUMmCB2wI08OkFw2Les1y5VzgWg3Q==",
+        "requested": "[7.2.0, )",
+        "resolved": "7.2.0",
+        "contentHash": "BESfMzGnfENnkAR0odR5vmzx9LhWXjANtInmfPMhDcgFoA225mFgq7WGv8XtRqk8MMI2znej7tcb86bt4m159w==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.AzureAppConfiguration": "7.1.0"
+          "Microsoft.Extensions.Configuration.AzureAppConfiguration": "7.2.0"
         }
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
@@ -143,10 +143,10 @@
       },
       "Azure.Data.AppConfiguration": {
         "type": "Transitive",
-        "resolved": "1.3.0",
-        "contentHash": "9f+HzKqf56R2clVMBbbC6u1aQiiL6ov+7e3evcrMFo+cuhKGZhPWKO7vLLun8u3pY2jQ6VJ7ltZZyvzapYZNhA==",
+        "resolved": "1.4.1",
+        "contentHash": "O5p41AsutXizwH/HPyavCBqDC2WSZrdiK2Vf4ps/UP+JDnFh3FWhgzy9FAw10UlyGZ9BVwMz1CJW/SL9pEzmBg==",
         "dependencies": {
-          "Azure.Core": "1.35.0",
+          "Azure.Core": "1.38.0",
           "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
           "System.Text.Json": "4.7.2"
         }
@@ -201,10 +201,10 @@
       },
       "Microsoft.Extensions.Configuration.AzureAppConfiguration": {
         "type": "Transitive",
-        "resolved": "7.1.0",
-        "contentHash": "BJNqzZUcPhpRF55EQLu/zWVXlAxzWVRpxZvfjjebw/hSix0spSwjPsjXVzaFvKscUro86k7dvJtvah2vScysRA==",
+        "resolved": "7.2.0",
+        "contentHash": "q5sVAC8Gdfg0zln+YZ8ayXkjvnp/l1mwxq9TTQMp4H/bwNZyQAbqBCFJuERjTBXkYvqS1LQ5+g7Gt03TxOyoeg==",
         "dependencies": {
-          "Azure.Data.AppConfiguration": "1.3.0",
+          "Azure.Data.AppConfiguration": "1.4.1",
           "Azure.Messaging.EventGrid": "4.7.0",
           "Azure.Security.KeyVault.Secrets": "4.3.0",
           "DnsClient": "1.7.0",

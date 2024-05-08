@@ -42,6 +42,15 @@
         "resolved": "6.0.2",
         "contentHash": "bJShQ6uWRTQ100ZeyiMqcFlhP7WJ+bCuabUs885dJiBEzMsJMSFr7BOyeCw4rgvQokteGi5rKQTlkhfQPUXg2A=="
       },
+      "Dumpify": {
+        "type": "Direct",
+        "requested": "[0.6.6, )",
+        "resolved": "0.6.6",
+        "contentHash": "KDPmd681ltvJKRWRfbc7WLzOztYV8BXBSwoDaZVLlaq9Y45X3sZeh8FDF2MyfTErcKVp4fPEWyDiKyizInCptg==",
+        "dependencies": {
+          "Spectre.Console": "0.48.0"
+        }
+      },
       "Ensure.That": {
         "type": "Direct",
         "requested": "[10.1.0, )",
@@ -1572,6 +1581,14 @@
         "resolved": "1.4.2",
         "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
       },
+      "Spectre.Console": {
+        "type": "Transitive",
+        "resolved": "0.48.0",
+        "contentHash": "4Mc1UT7Azgtyb8FyNwK5FZmoZbKuT5PmY7ZwaKUytjD5kGFMNBACpOZTwYtkuY377YkYtZYBeDDTJUwTW86QXw==",
+        "dependencies": {
+          "System.Memory": "4.5.5"
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3": {
         "type": "Transitive",
         "resolved": "2.1.6",
@@ -1914,8 +1931,8 @@
       },
       "System.Memory": {
         "type": "Transitive",
-        "resolved": "4.5.4",
-        "contentHash": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw=="
+        "resolved": "4.5.5",
+        "contentHash": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw=="
       },
       "System.Memory.Data": {
         "type": "Transitive",

@@ -136,7 +136,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         var rules = (this.rules ??= new()).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
-        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandId}, handler={CommandHandler})", Commands.Constants.LogKey, command.GetType().Name, command.Id, this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Commands.Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);
         this.Logger.LogInformation($"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Commands.Constants.LogKey);
 
         await Check.ThrowAsync(rules, entity);

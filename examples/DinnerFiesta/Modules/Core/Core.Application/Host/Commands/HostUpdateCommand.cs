@@ -11,26 +11,26 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class HostCreateCommand : CommandRequestBase<Result<Host>>
+public class HostUpdateCommand : CommandRequestBase<Result<Host>>
 {
+    public string Id { get; set; }
+
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
-
-    public string UserId { get; set; }
 
     public string ImageUrl { get; set; }
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);
 
-    public class Validator : AbstractValidator<HostCreateCommand>
+    public class Validator : AbstractValidator<HostUpdateCommand>
     {
         public Validator()
         {
+            this.RuleFor(c => c.Id).NotNull().NotEmpty().WithMessage("Must not be empty.");
             this.RuleFor(c => c.FirstName).NotNull().NotEmpty().WithMessage("Must not be empty.");
             this.RuleFor(c => c.LastName).NotNull().NotEmpty().WithMessage("Must not be empty.");
-            this.RuleFor(c => c.UserId).NotNull().NotEmpty().WithMessage("Must not be empty.");
         }
     }
 }

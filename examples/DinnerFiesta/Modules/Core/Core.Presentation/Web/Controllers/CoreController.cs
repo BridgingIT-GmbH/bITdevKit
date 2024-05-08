@@ -18,7 +18,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     private readonly IMapper mapper = mapper;
     private readonly IMediator mediator = mediator;
 
-    public override async Task<ActionResult<ResultResponseModel>> EchoGet(CancellationToken cancellationToken)
+    public override async Task<ActionResult<ResultModel>> EchoGet(CancellationToken cancellationToken)
     {
         await Task.Delay(1, cancellationToken); // TODO: remove or Task.Run
         return new OkObjectResult(
@@ -30,60 +30,93 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     // Guest =======================================================================================
 
     // Host ========================================================================================
-    public override async Task<ActionResult<HostResponseModel>> HostFindOne(string hostId, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new HostFindOneQuery(hostId), cancellationToken)).Result
-                .ToOkActionResult<Host, HostResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<ICollection<HostResponseModel>>> HostFindAll(CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new HostFindAllQuery(), cancellationToken)).Result
-            .ToOkActionResult<Host, HostResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<HostResponseModel>> HostCreate([FromBody] HostCreateRequestModel body, CancellationToken cancellationToken)
+    public override async Task<ActionResult<HostModel>> HostFindOne(string hostId, CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<HostCreateRequestModel, HostCreateCommand>(body), cancellationToken).AnyContext()).Result;
-        return result.ToCreatedActionResult<Host, HostResponseModel>(this.mapper, $"Core_{nameof(this.HostFindOne)}", new { hostId = result.Value.Id });
+        var result = (await this.mediator.Send(
+            new HostFindOneQuery(hostId), cancellationToken)).Result;
+        return result.ToOkActionResult<Host, HostModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<ICollection<HostModel>>> HostFindAll(CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            new HostFindAllQuery(), cancellationToken)).Result;
+        return result.ToOkActionResult<Host, HostModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<HostModel>> HostCreate([FromBody] HostModel body, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken)).Result;
+        return result.ToCreatedActionResult<Host, HostModel>(this.mapper, $"Core_{nameof(this.HostFindOne)}", new { hostId = result.Value?.Id });
+    }
+
+    public override async Task<ActionResult<HostModel>> HostUpdate([FromBody] HostModel body, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken)).Result;
+        return result.ToUpdatedActionResult<Host, HostModel>(this.mapper, $"Core_{nameof(this.HostFindOne)}", new { hostId = result.Value?.Id });
     }
 
     // Dinner ======================================================================================
-    public override async Task<ActionResult<DinnerResponseModel>> DinnerFindOneForHost(string hostId, string dinnerId, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new DinnerFindOneForHostQuery(hostId, dinnerId), cancellationToken)).Result
-            .ToOkActionResult<Dinner, DinnerResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<ICollection<DinnerResponseModel>>> DinnerFindAllForHost(string hostId, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new DinnerFindAllForHostQuery(hostId), cancellationToken)).Result
-            .ToOkActionResult<Dinner, DinnerResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<DinnerResponseModel>> DinnerCreate(string hostId, DinnerCreateRequestModel body, CancellationToken cancellationToken)
+    public override async Task<ActionResult<DinnerModel>> DinnerFindOneForHost(string hostId, string dinnerId, CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<DinnerCreateRequestModel, DinnerCreateCommand>(body), cancellationToken)).Result;
-        return result.ToCreatedActionResult<Dinner, DinnerResponseModel>(this.mapper, $"Core_{nameof(this.DinnerFindOneForHost)}", new { hostId, dinnerId = result.Value.Id });
+        var result = (await this.mediator.Send(
+            new DinnerFindOneForHostQuery(hostId, dinnerId), cancellationToken)).Result;
+        return result.ToOkActionResult<Dinner, DinnerModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<ICollection<DinnerModel>>> DinnerFindAllForHost(string hostId, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            new DinnerFindAllForHostQuery(hostId), cancellationToken)).Result;
+        return result.ToOkActionResult<Dinner, DinnerModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<DinnerModel>> DinnerCreate(string hostId, DinnerModel body, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            this.mapper.Map<DinnerModel, DinnerCreateCommand>(body), cancellationToken)).Result;
+        return result.ToCreatedActionResult<Dinner, DinnerModel>(this.mapper, $"Core_{nameof(this.DinnerFindOneForHost)}", new { hostId, dinnerId = result.Value?.Id });
     }
 
     // Menu ========================================================================================
-    public override async Task<ActionResult<MenuResponseModel>> MenuFindOneForHost(string hostId, string menuId, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new MenuFindOneForHostQuery(hostId, menuId), cancellationToken)).Result
-            .ToOkActionResult<Menu, MenuResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<ICollection<MenuResponseModel>>> MenuFindAllForHost(string hostId, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(new MenuFindAllForHostQuery(hostId), cancellationToken)).Result
-            .ToOkActionResult<Menu, MenuResponseModel>(this.mapper);
-
-    public override async Task<ActionResult<MenuResponseModel>> MenuCreate(string hostId, [FromBody] MenuCreateRequestModel body, CancellationToken cancellationToken)
+    public override async Task<ActionResult<MenuModel>> MenuFindOneForHost(string hostId, string menuId, CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<MenuCreateRequestModel, MenuCreateCommand>(body), cancellationToken)).Result;
-        return result.ToCreatedActionResult<Menu, MenuResponseModel>(this.mapper, $"Core_{nameof(this.MenuFindOneForHost)}", new { hostId, menuId = result.Value.Id });
+        var result = (await this.mediator.Send(
+            new MenuFindOneForHostQuery(hostId, menuId), cancellationToken)).Result;
+        return result.ToOkActionResult<Menu, MenuModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<ICollection<MenuModel>>> MenuFindAllForHost(string hostId, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            new MenuFindAllForHostQuery(hostId), cancellationToken)).Result;
+        return result.ToOkActionResult<Menu, MenuModel>(this.mapper);
+    }
+
+    public override async Task<ActionResult<MenuModel>> MenuCreate(string hostId, [FromBody] MenuModel body, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            this.mapper.Map<MenuModel, MenuCreateCommand>(body), cancellationToken)).Result;
+        return result.ToCreatedActionResult<Menu, MenuModel>(this.mapper, $"Core_{nameof(this.MenuFindOneForHost)}", new { hostId, menuId = result.Value?.Id });
     }
 
     // MenuReview ==================================================================================
 
     // User ========================================================================================
-    public override Task<ActionResult<UserResponseModel>> UserFindOne(string userId, CancellationToken cancellationToken) =>
+    public override Task<ActionResult<UserModel>> UserFindOne(string userId, CancellationToken cancellationToken)
+    {
         throw new NotImplementedException();
+    }
 
-    public override Task<ActionResult<UsersResponseModel>> UserFindAll(CancellationToken cancellationToken) =>
+    public override Task<ActionResult<ICollection<UserModel>>> UserFindAll(CancellationToken cancellationToken)
+    {
         throw new NotImplementedException();
+    }
 
-    public override async Task<ActionResult<UserResponseModel>> UserCreate([FromBody] UserCreateRequestModel body, CancellationToken cancellationToken) =>
-        (await this.mediator.Send(this.mapper.Map<UserCreateRequestModel, UserCreateCommand>(body), cancellationToken)).Result
-            .ToCreatedActionResult<User, UserResponseModel>(this.mapper, $"Core_{nameof(this.UserFindOne)}", new { userId = (await this.mediator.Send((UserCreateCommand)this.mapper.Map<UserCreateRequestModel, UserCreateCommand>(body), cancellationToken)).Result.Value.Id });
+    public override async Task<ActionResult<UserModel>> UserCreate([FromBody] UserModel body, CancellationToken cancellationToken)
+    {
+        var result = (await this.mediator.Send(
+            this.mapper.Map<UserModel, UserCreateCommand>(body), cancellationToken)).Result;
+        return result.ToCreatedActionResult<User, UserModel>(this.mapper, $"Core_{nameof(this.UserFindOne)}", new { userId = (await this.mediator.Send((UserCreateCommand)this.mapper.Map<UserModel, UserCreateCommand>(body), cancellationToken)).Result.Value.Id });
+    }
 }

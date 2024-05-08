@@ -165,7 +165,7 @@ stages:
             test `grep -cm 1 'has the following vulnerable packages' build.log` = 0
 
       - bash: |
-          docker-compose up -d
+          docker compose up -d
         displayName: Docker start containers
 
       - bash: |
@@ -198,7 +198,7 @@ stages:
           arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
 
       - bash: |
-          docker-compose stop
+          docker compose stop
           docker container stop $(docker container ls -aq)
           docker container rm $(docker container ls -aq)
         displayName: Docker cleanup

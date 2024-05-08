@@ -16,7 +16,7 @@ public class DomainEvents // TODO: create interface?
     /// <summary>
     /// The domain registered events.
     /// </summary>
-    private readonly ICollection<IDomainEvent> registrations = new List<IDomainEvent>(); // TODO: concurrent collection?
+    private ICollection<IDomainEvent> registrations = new List<IDomainEvent>(); // TODO: concurrent collection?
 
     /// <summary>
     /// Gets all registered domain events.
@@ -28,9 +28,15 @@ public class DomainEvents // TODO: create interface?
     /// Domain Events are only registered on the aggregate root because it is ensuring the integrity of the aggregate as a whole.
     /// </summary>
     /// <param name="event">The event.</param>
-    public void Register(IDomainEvent @event)
+    public void Register(IDomainEvent @event, bool ensureSingleByType = false)
     {
         EnsureArg.IsNotNull(@event, nameof(@event));
+
+        if (ensureSingleByType)
+        {
+            this.registrations = this.registrations.Where(r =>
+                r.IsNotOfType(@event.GetType())).ToList();
+        }
 
         this.registrations.Add(@event);
     }

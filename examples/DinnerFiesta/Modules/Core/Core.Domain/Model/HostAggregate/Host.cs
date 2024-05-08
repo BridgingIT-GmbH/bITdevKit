@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 
 public class Host : AuditableAggregateRoot<HostId, Guid>
@@ -50,21 +51,48 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
         UserId userId,
         Uri profileImage = null)
     {
-        return new Host(
+        var host = new Host(
             firstName,
             lastName,
             userId,
             AverageRating.Create(),
             profileImage);
+
+        host.DomainEvents.Register(
+                new HostCreatedDomainEvent(host));
+
+        return host;
     }
 
-    public void ChangeName(string firstName, string lastName)
+    public Host ChangeName(string firstName, string lastName)
     {
-        // TODO: replace with Rules
-        EnsureArg.IsNotNull(firstName, nameof(firstName));
-        EnsureArg.IsNotNull(lastName, nameof(lastName));
+        if (string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName))
+        {
+            return this;
+        }
 
         this.FirstName = firstName;
         this.LastName = lastName;
+
+        this.DomainEvents.Register(
+            new HostUpdatedDomainEvent(this), true);
+
+        return this;
+    }
+
+    public Host ChangeProfileImage(Uri uri)
+    {
+        // TODO: replace with Rules
+        if (uri == null)
+        {
+            return this;
+        }
+
+        this.ProfileImage = uri;
+
+        this.DomainEvents.Register(
+            new HostUpdatedDomainEvent(this), true);
+
+        return this;
     }
 }

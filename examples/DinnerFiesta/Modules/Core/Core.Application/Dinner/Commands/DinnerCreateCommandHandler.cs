@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 public class DinnerCreateCommandHandler : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>
@@ -63,9 +64,6 @@ public class DinnerCreateCommandHandler : CommandHandlerBase<DinnerCreateCommand
 
         await this.repository.InsertAsync(dinner, cancellationToken);
 
-        return new CommandResponse<Result<Dinner>>
-        {
-            Result = Result<Dinner>.Success(dinner)
-        };
+        return CommandResponse.Success(dinner);
     }
 }

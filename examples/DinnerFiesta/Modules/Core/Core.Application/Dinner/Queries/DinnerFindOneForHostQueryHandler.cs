@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Linq;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Common;

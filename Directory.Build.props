@@ -19,10 +19,9 @@
     <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
+  <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASES.md"))</PackageReleaseNotes>
-    <!--<PackageReadmeFile>../../README.md</PackageReadmeFile>-->
-  </PropertyGroup>
+  </PropertyGroup>-->
 
   <!--<ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\"/>

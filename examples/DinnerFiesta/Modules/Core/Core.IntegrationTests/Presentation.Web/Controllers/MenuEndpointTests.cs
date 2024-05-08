@@ -9,6 +9,7 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
+using Dumpify;
 using FluentAssertions;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -36,6 +37,9 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().MatchInContent($"*{menu.HostId}*");
         response.Should().MatchInContent($"*{menu.Name}*");
         response.Should().MatchInContent($"*{menu.Id}*");
+        var responseModel = await response.Content.ReadAsAsync<MenuModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -57,12 +61,12 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
     [Theory]
     [InlineData("api/core/hosts/{hostId}/menus")]
-    public async Task Post_ValidEntity_ReturnsCreated(string route)
+    public async Task Post_ValidModel_ReturnsCreated(string route)
     {
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
-        var model = new MenuCreateRequestModel
+        var model = new MenuModel
         {
             HostId = entity.HostId.ToString(),
             Name = entity.Name,
@@ -81,6 +85,9 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Headers.Location.Should().NotBeNull();
         response.Should().MatchInContent($"*{model.HostId}*");
         response.Should().MatchInContent($"*{model.Name}*");
+        var responseModel = await response.Content.ReadAsAsync<MenuModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -90,7 +97,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
-        var model = new MenuCreateRequestModel
+        var model = new MenuModel
         {
             HostId = null,
             Name = null,
@@ -111,10 +118,10 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().MatchInContent($"*{nameof(model.Name)}*");
     }
 
-    private async Task<MenuResponseModel> PostMenuCreate(string route)
+    private async Task<MenuModel> PostMenuCreate(string route)
     {
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
-        var model = new MenuCreateRequestModel
+        var model = new MenuModel
         {
             HostId = entity.HostId.ToString(),
             Name = entity.Name,
@@ -126,6 +133,6 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsAsync<MenuResponseModel>();
+        return await response.Content.ReadAsAsync<MenuModel>();
     }
 }

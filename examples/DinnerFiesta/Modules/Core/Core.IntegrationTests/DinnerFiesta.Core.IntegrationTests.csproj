@@ -22,6 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" />
     <PackageReference Include="Bogus" />
+    <PackageReference Include="Dumpify" />
     <PackageReference Include="FluentAssertions.Web" />
     <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="Microsoft.Playwright.NUnit" />

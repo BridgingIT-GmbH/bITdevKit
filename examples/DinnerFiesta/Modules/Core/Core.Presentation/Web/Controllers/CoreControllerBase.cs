@@ -30,74 +30,79 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/echo", Name = "Core_Echo-Get")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultResponseModel>> EchoGet(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<ResultModel>> EchoGet(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}", Name = "Core_HostFindOne")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HostResponseModel>> HostFindOne(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HostModel>> HostFindOne(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <param name="body">The Host to update</param>
+        /// <returns>Resource was updaed successfully.</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPut, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}", Name = "Core_HostUpdate")]
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HostModel>> HostUpdate([Microsoft.AspNetCore.Mvc.FromBody] HostModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts", Name = "Core_HostFindAll")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<HostResponseModel>>> HostFindAll(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<HostModel>>> HostFindAll(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="body">The Host to add</param>
         /// <returns>Resource was created successfully.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("api/core/hosts", Name = "Core_HostCreate")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HostResponseModel>> HostCreate([Microsoft.AspNetCore.Mvc.FromBody] HostCreateRequestModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HostModel>> HostCreate([Microsoft.AspNetCore.Mvc.FromBody] HostModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <param name="dinnerId">Dinner Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/dinners/{dinnerId}", Name = "Core_DinnerFindOneForHost")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<DinnerResponseModel>> DinnerFindOneForHost(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<DinnerModel>> DinnerFindOneForHost(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/dinners", Name = "Core_DinnerFindAllForHost")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<DinnerResponseModel>>> DinnerFindAllForHost(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<DinnerModel>>> DinnerFindAllForHost(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <param name="body">The Dinner to add</param>
         /// <returns>Resource was created successfully.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/dinners", Name = "Core_DinnerCreate")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<DinnerResponseModel>> DinnerCreate(string hostId, [Microsoft.AspNetCore.Mvc.FromBody] DinnerCreateRequestModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<DinnerModel>> DinnerCreate(string hostId, [Microsoft.AspNetCore.Mvc.FromBody] DinnerModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <param name="menuId">Menu Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/menus/{menuId}", Name = "Core_MenuFindOneForHost")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<MenuResponseModel>> MenuFindOneForHost(string hostId, string menuId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<MenuModel>> MenuFindOneForHost(string hostId, string menuId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/menus", Name = "Core_MenuFindAllForHost")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<MenuResponseModel>>> MenuFindAllForHost(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<MenuModel>>> MenuFindAllForHost(string hostId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="hostId">Host Id</param>
         /// <param name="body">The Menu to add</param>
         /// <returns>Resource was created successfully.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("api/core/hosts/{hostId}/menus", Name = "Core_MenuCreate")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<MenuResponseModel>> MenuCreate(string hostId, [Microsoft.AspNetCore.Mvc.FromBody] MenuCreateRequestModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<MenuModel>> MenuCreate(string hostId, [Microsoft.AspNetCore.Mvc.FromBody] MenuModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="userId">User Id</param>
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/users/{userId}", Name = "Core_UserFindOne")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<UserResponseModel>> UserFindOne(string userId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<UserModel>> UserFindOne(string userId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <returns>Resource request was successful.</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/core/users", Name = "Core_UserFindAll")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<UsersResponseModel>> UserFindAll(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<System.Collections.Generic.ICollection<UserModel>>> UserFindAll(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="body">The User to add</param>
         /// <returns>Resource was created successfully.</returns>
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("api/core/users", Name = "Core_UserCreate")]
-        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<UserResponseModel>> UserCreate([Microsoft.AspNetCore.Mvc.FromBody] UserCreateRequestModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public abstract System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<UserModel>> UserCreate([Microsoft.AspNetCore.Mvc.FromBody] UserModel body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ResultResponseModel
+    public partial class ResultModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("messages")]
@@ -134,50 +139,12 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("errors")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.IEnumerable<string>> Errors { get; set; } = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+        public System.Collections.Generic.IDictionary<string, System.Collections.Generic.IEnumerable<string>> Errors { get; set; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DinnerCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public string Description { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("schedule")]
-        public DinnerScheduleModel Schedule { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("maxGuests")]
-        [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
-        public int MaxGuests { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("isPublic")]
-        public bool IsPublic { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("price")]
-        public PriceModel Price { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("hostId")]
-        public string HostId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
-        public string MenuId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("imageUrl")]
-        public string ImageUrl { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("location")]
-        public DinnerLocationModel Location { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DinnerResponseModel
+    public partial class DinnerModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -192,15 +159,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         [System.Text.Json.Serialization.JsonPropertyName("schedule")]
         public DinnerScheduleModel Schedule { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("startedDateTime")]
-        public System.DateTimeOffset? StartedDateTime { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("endedDateTime")]
-        public System.DateTimeOffset? EndedDateTime { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public string Status { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("maxGuests")]
         [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
         public int MaxGuests { get; set; }
@@ -211,26 +169,20 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         [System.Text.Json.Serialization.JsonPropertyName("price")]
         public PriceModel Price { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
-        public string MenuId { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("hostId")]
         public string HostId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
+        public string MenuId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("imageUrl")]
         public string ImageUrl { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public string Status { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("location")]
         public DinnerLocationModel Location { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -320,28 +272,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class HostCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("firstName")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string FirstName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("lastName")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string LastName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("userId")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string UserId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("profileImage")]
-        public string ProfileImage { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class HostResponseModel
+    public partial class HostModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -371,27 +302,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class MenuCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("hostId")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string HostId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("name")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public string Description { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("sections")]
-        public System.Collections.Generic.IEnumerable<MenuSectionModel> Sections { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class MenuResponseModel
+    public partial class MenuModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -428,8 +339,10 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     public partial class MenuSectionModel
     {
 
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string Id { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("name")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
@@ -453,8 +366,10 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     public partial class MenuSectionItemModel
     {
 
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string Id { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("name")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Name { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
@@ -472,8 +387,11 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserCreateRequestModel
+    public partial class UserModel
     {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string Id { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("firstName")]
         public string FirstName { get; set; }
@@ -489,57 +407,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
 
         [System.Text.Json.Serialization.JsonPropertyName("profileImage")]
         public string ProfileImage { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UsersResponseModel : Anonymous
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserResponseModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("firstName")]
-        public string FirstName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("lastName")]
-        public string LastName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("email")]
-        public string Email { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("value")]
-        public System.Collections.Generic.IEnumerable<UserResponseModel> Value { get; set; }
 
     }
 

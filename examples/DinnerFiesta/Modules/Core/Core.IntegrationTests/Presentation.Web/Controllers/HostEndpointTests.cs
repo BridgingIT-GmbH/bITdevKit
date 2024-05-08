@@ -9,7 +9,9 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
+using Dumpify;
 using FluentAssertions;
+using Microsoft.Diagnostics.Runtime;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
@@ -35,6 +37,9 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
         response.Should().MatchInContent($"*{model.FirstName}*");
         response.Should().MatchInContent($"*{model.LastName}*");
+        var responseModel = await response.Content.ReadAsAsync<HostModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -54,6 +59,9 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
         response.Should().MatchInContent($"*{model.FirstName}*");
         response.Should().MatchInContent($"*{model.LastName}*");
+        var responseModel = await response.Content.ReadAsAsync<IEnumerable<HostModel>>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -74,12 +82,12 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
     [Theory]
     [InlineData("api/core/hosts")]
-    public async Task Post_ValidEntity_ReturnsCreated(string route)
+    public async Task Post_ValidModel_ReturnsCreated(string route)
     {
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
-        var model = new HostCreateRequestModel
+        var model = new HostModel
         {
             FirstName = entity.FirstName,
             LastName = entity.LastName,
@@ -98,6 +106,36 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Headers.Location.Should().NotBeNull();
         response.Should().MatchInContent($"*{model.FirstName}*");
         response.Should().MatchInContent($"*{model.LastName}*");
+        var responseModel = await response.Content.ReadAsAsync<HostModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
+    }
+
+    [Theory]
+    [InlineData("api/core/hosts")]
+    public async Task Put_ValidModel_ReturnsOk(string route)
+    {
+        // Arrange
+        this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
+        var model = await this.PostHostCreate(route);
+        model.FirstName += "changed";
+        model.LastName += "changed";
+        var content = new StringContent(
+            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+
+        // Act
+        var response = await this.fixture.CreateClient()
+            .PutAsync(route + $"/{model.Id}", content).AnyContext();
+        this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
+
+        // Assert
+        response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
+        response.Headers.Location.Should().NotBeNull();
+        response.Should().MatchInContent($"*{model.FirstName}*");
+        response.Should().MatchInContent($"*{model.LastName}*");
+        var responseModel = await response.Content.ReadAsAsync<HostModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -107,7 +145,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
-        var model = new HostCreateRequestModel
+        var model = new HostModel
         {
             FirstName = string.Empty,
             LastName = string.Empty,
@@ -128,10 +166,10 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().MatchInContent($"*{nameof(model.LastName)}*");
     }
 
-    private async Task<HostResponseModel> PostHostCreate(string route)
+    private async Task<HostModel> PostHostCreate(string route)
     {
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
-        var model = new HostCreateRequestModel
+        var model = new HostModel
         {
             FirstName = entity.FirstName,
             LastName = entity.LastName,
@@ -143,6 +181,6 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
             .PostAsync(route, content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsAsync<HostResponseModel>();
+        return await response.Content.ReadAsAsync<HostModel>();
     }
 }

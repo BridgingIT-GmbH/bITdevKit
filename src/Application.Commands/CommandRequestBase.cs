@@ -12,39 +12,40 @@ using FluentValidation.Results;
 public abstract class CommandRequestBase : ICommandRequest<CommandResponse>
 {
     protected CommandRequestBase()
-        : this(GuidGenerator.CreateSequential().ToString("N"))
+        : this(GuidGenerator.CreateSequential())
     {
     }
 
-    protected CommandRequestBase(string id)
+    protected CommandRequestBase(Guid id)
     {
-        this.Id = id;
-        this.Timestamp = DateTime.UtcNow;
+        this.RequestId = id;
+        this.RequestTimestamp = DateTime.UtcNow;
     }
 
-    public string Id { get; private set; }
+    public Guid RequestId { get; private set; }
 
-    public DateTimeOffset Timestamp { get; private set; }
+    public DateTimeOffset RequestTimestamp { get; private set; }
 
     public virtual ValidationResult Validate() => new();
 }
 
-public abstract class CommandRequestBase<TResult> : ICommandRequest<CommandResponse<TResult>>
+public abstract class CommandRequestBase<TResult> :
+    ICommandRequest<CommandResponse<TResult>>
 {
     protected CommandRequestBase()
-        : this(GuidGenerator.CreateSequential().ToString("N"))
+        : this(GuidGenerator.CreateSequential())
     {
     }
 
-    protected CommandRequestBase(string id)
+    protected CommandRequestBase(Guid id)
     {
-        this.Id = id;
-        this.Timestamp = DateTime.UtcNow;
+        this.RequestId = id;
+        this.RequestTimestamp = DateTime.UtcNow;
     }
 
-    public string Id { get; private set; }
+    public Guid RequestId { get; private set; }
 
-    public DateTimeOffset Timestamp { get; }
+    public DateTimeOffset RequestTimestamp { get; }
 
     public virtual ValidationResult Validate() => new();
 }

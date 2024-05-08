@@ -86,7 +86,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
         var rules = (this.rules ??= new()).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
-        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandId}, handler={CommandHandler})", Constants.LogKey, command.GetType().Name, command.Id, this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);
         this.Logger.LogInformation($"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Constants.LogKey);
 
         await Check.ThrowAsync(rules, command.Entity, this.localizer);

@@ -12,14 +12,13 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-public class HostCreateCommandHandler : CommandHandlerBase<HostCreateCommand, Result<Host>>
+public class HostUpdateCommandHandler : CommandHandlerBase<HostUpdateCommand, Result<Host>>
 {
     private readonly IGenericRepository<Host> repository;
 
-    public HostCreateCommandHandler(
+    public HostUpdateCommandHandler(
         ILoggerFactory loggerFactory,
         IGenericRepository<Host> repository)
         : base(loggerFactory)
@@ -29,22 +28,23 @@ public class HostCreateCommandHandler : CommandHandlerBase<HostCreateCommand, Re
         this.repository = repository;
     }
 
-    public override async Task<CommandResponse<Result<Host>>> Process(HostCreateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<Result<Host>>> Process(HostUpdateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var host = Host.Create(
-            command.FirstName,
-            command.LastName,
-            UserId.Create(command.UserId),
-            command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
-
-        Check.Throw(new IBusinessRule[]
+        var hostResult = await this.repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken);
+        var host = hostResult.Value;
+        if (hostResult.IsFailure)
         {
-            new HostUserMustBeUniqueRule(this.repository, host.UserId),
-        });
+            return CommandResponse.For(hostResult);
+        }
 
-        await this.repository.InsertAsync(host, cancellationToken);
+        Check.Throw(new IBusinessRule[] { /*no rules yet*/ });
+
+        host.ChangeName(command.FirstName, command.LastName)
+            .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
+
+        await this.repository.UpdateAsync(host, cancellationToken);
 
         return CommandResponse.Success(host);
     }

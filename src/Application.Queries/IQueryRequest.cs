@@ -11,9 +11,9 @@ using MediatR;
 
 public interface IQueryRequest<out TResult> : IRequest<TResult>
 {
-    string Id { get; }
+    Guid RequestId { get; }
 
-    DateTimeOffset Timestamp { get; }
+    DateTimeOffset RequestTimestamp { get; }
 
     ValidationResult Validate();
 }

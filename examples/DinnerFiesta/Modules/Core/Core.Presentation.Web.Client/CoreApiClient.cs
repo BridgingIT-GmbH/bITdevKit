@@ -29,7 +29,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultResponseModel> Core_EchoGetAsync();
+        System.Threading.Tasks.Task<ResultModel> Core_EchoGetAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -37,143 +37,154 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ResultResponseModel> Core_EchoGetAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ResultModel> Core_EchoGetAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<HostResponseModel> Core_HostFindOneAsync(string hostId);
+        System.Threading.Tasks.Task<HostModel> Core_HostFindOneAsync(string hostId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<HostResponseModel> Core_HostFindOneAsync(string hostId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<HostModel> Core_HostFindOneAsync(string hostId, System.Threading.CancellationToken cancellationToken);
+
+        /// <param name="body">The Host to update</param>
+        /// <returns>Resource was updaed successfully.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<HostModel> Core_HostUpdateAsync(HostModel body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="body">The Host to update</param>
+        /// <returns>Resource was updaed successfully.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<HostModel> Core_HostUpdateAsync(HostModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostResponseModel>> Core_HostFindAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostModel>> Core_HostFindAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostResponseModel>> Core_HostFindAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostModel>> Core_HostFindAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <param name="body">The Host to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<HostResponseModel> Core_HostCreateAsync(HostCreateRequestModel body);
+        System.Threading.Tasks.Task<HostModel> Core_HostCreateAsync(HostModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="body">The Host to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<HostResponseModel> Core_HostCreateAsync(HostCreateRequestModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<HostModel> Core_HostCreateAsync(HostModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <param name="dinnerId">Dinner Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId);
+        System.Threading.Tasks.Task<DinnerModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <param name="dinnerId">Dinner Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<DinnerModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerResponseModel>> Core_DinnerFindAllForHostAsync(string hostId);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerModel>> Core_DinnerFindAllForHostAsync(string hostId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerResponseModel>> Core_DinnerFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerModel>> Core_DinnerFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <param name="body">The Dinner to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerCreateAsync(string hostId, DinnerCreateRequestModel body);
+        System.Threading.Tasks.Task<DinnerModel> Core_DinnerCreateAsync(string hostId, DinnerModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <param name="body">The Dinner to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerCreateAsync(string hostId, DinnerCreateRequestModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<DinnerModel> Core_DinnerCreateAsync(string hostId, DinnerModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <param name="menuId">Menu Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MenuResponseModel> Core_MenuFindOneForHostAsync(string hostId, string menuId);
+        System.Threading.Tasks.Task<MenuModel> Core_MenuFindOneForHostAsync(string hostId, string menuId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <param name="menuId">Menu Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MenuResponseModel> Core_MenuFindOneForHostAsync(string hostId, string menuId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MenuModel> Core_MenuFindOneForHostAsync(string hostId, string menuId, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuResponseModel>> Core_MenuFindAllForHostAsync(string hostId);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuModel>> Core_MenuFindAllForHostAsync(string hostId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuResponseModel>> Core_MenuFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuModel>> Core_MenuFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken);
 
-        /// <param name="hostId">Host Id</param>
-        /// <param name="body">The Menu to add</param>
-        /// <returns>Resource was created successfully.</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MenuResponseModel> Core_MenuCreateAsync(string hostId, MenuCreateRequestModel body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="hostId">Host Id</param>
         /// <param name="body">The Menu to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<MenuResponseModel> Core_MenuCreateAsync(string hostId, MenuCreateRequestModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<MenuModel> Core_MenuCreateAsync(string hostId, MenuModel body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="hostId">Host Id</param>
+        /// <param name="body">The Menu to add</param>
+        /// <returns>Resource was created successfully.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<MenuModel> Core_MenuCreateAsync(string hostId, MenuModel body, System.Threading.CancellationToken cancellationToken);
 
         /// <param name="userId">User Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserResponseModel> Core_UserFindOneAsync(string userId);
+        System.Threading.Tasks.Task<UserModel> Core_UserFindOneAsync(string userId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="userId">User Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserResponseModel> Core_UserFindOneAsync(string userId, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<UserModel> Core_UserFindOneAsync(string userId, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UsersResponseModel> Core_UserFindAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserModel>> Core_UserFindAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UsersResponseModel> Core_UserFindAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserModel>> Core_UserFindAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <param name="body">The User to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserResponseModel> Core_UserCreateAsync(UserCreateRequestModel body);
+        System.Threading.Tasks.Task<UserModel> Core_UserCreateAsync(UserModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <param name="body">The User to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserResponseModel> Core_UserCreateAsync(UserCreateRequestModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<UserModel> Core_UserCreateAsync(UserModel body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -226,7 +237,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ResultResponseModel> Core_EchoGetAsync()
+        public virtual System.Threading.Tasks.Task<ResultModel> Core_EchoGetAsync()
         {
             return Core_EchoGetAsync(System.Threading.CancellationToken.None);
         }
@@ -237,7 +248,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// </summary>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ResultResponseModel> Core_EchoGetAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ResultModel> Core_EchoGetAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -278,7 +289,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ResultResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResultModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -308,7 +319,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<HostResponseModel> Core_HostFindOneAsync(string hostId)
+        public virtual System.Threading.Tasks.Task<HostModel> Core_HostFindOneAsync(string hostId)
         {
             return Core_HostFindOneAsync(hostId, System.Threading.CancellationToken.None);
         }
@@ -317,7 +328,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<HostResponseModel> Core_HostFindOneAsync(string hostId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<HostModel> Core_HostFindOneAsync(string hostId, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -362,7 +373,130 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HostResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<HostModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidationProblemDetailsModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ValidationProblemDetailsModel>("Resource request was invalid.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetailsModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetailsModel>("Authorization information is missing or invalid.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Resource was not found.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetailsModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetailsModel>("Unexpected error.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="body">The Host to update</param>
+        /// <returns>Resource was updaed successfully.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<HostModel> Core_HostUpdateAsync(HostModel body)
+        {
+            return Core_HostUpdateAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <param name="body">The Host to update</param>
+        /// <returns>Resource was updaed successfully.</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<HostModel> Core_HostUpdateAsync(HostModel body, System.Threading.CancellationToken cancellationToken)
+        {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "api/core/hosts/{hostId}"
+                    urlBuilder_.Append("api/core/hosts/");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 201)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<HostModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -427,7 +561,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
 
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostResponseModel>> Core_HostFindAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostModel>> Core_HostFindAllAsync()
         {
             return Core_HostFindAllAsync(System.Threading.CancellationToken.None);
         }
@@ -435,7 +569,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostResponseModel>> Core_HostFindAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<HostModel>> Core_HostFindAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -476,7 +610,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<HostResponseModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<HostModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -536,7 +670,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Host to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<HostResponseModel> Core_HostCreateAsync(HostCreateRequestModel body)
+        public virtual System.Threading.Tasks.Task<HostModel> Core_HostCreateAsync(HostModel body)
         {
             return Core_HostCreateAsync(body, System.Threading.CancellationToken.None);
         }
@@ -545,7 +679,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Host to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<HostResponseModel> Core_HostCreateAsync(HostCreateRequestModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<HostModel> Core_HostCreateAsync(HostModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -593,7 +727,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HostResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<HostModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -660,7 +794,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="dinnerId">Dinner Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId)
+        public virtual System.Threading.Tasks.Task<DinnerModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId)
         {
             return Core_DinnerFindOneForHostAsync(hostId, dinnerId, System.Threading.CancellationToken.None);
         }
@@ -670,7 +804,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="dinnerId">Dinner Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<DinnerModel> Core_DinnerFindOneForHostAsync(string hostId, string dinnerId, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -720,7 +854,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DinnerResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<DinnerModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -786,7 +920,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerResponseModel>> Core_DinnerFindAllForHostAsync(string hostId)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerModel>> Core_DinnerFindAllForHostAsync(string hostId)
         {
             return Core_DinnerFindAllForHostAsync(hostId, System.Threading.CancellationToken.None);
         }
@@ -795,7 +929,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerResponseModel>> Core_DinnerFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DinnerModel>> Core_DinnerFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -841,7 +975,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<DinnerResponseModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<DinnerModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -902,7 +1036,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Dinner to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerCreateAsync(string hostId, DinnerCreateRequestModel body)
+        public virtual System.Threading.Tasks.Task<DinnerModel> Core_DinnerCreateAsync(string hostId, DinnerModel body)
         {
             return Core_DinnerCreateAsync(hostId, body, System.Threading.CancellationToken.None);
         }
@@ -912,7 +1046,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Dinner to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<DinnerResponseModel> Core_DinnerCreateAsync(string hostId, DinnerCreateRequestModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<DinnerModel> Core_DinnerCreateAsync(string hostId, DinnerModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -965,7 +1099,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DinnerResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<DinnerModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1032,7 +1166,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="menuId">Menu Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MenuResponseModel> Core_MenuFindOneForHostAsync(string hostId, string menuId)
+        public virtual System.Threading.Tasks.Task<MenuModel> Core_MenuFindOneForHostAsync(string hostId, string menuId)
         {
             return Core_MenuFindOneForHostAsync(hostId, menuId, System.Threading.CancellationToken.None);
         }
@@ -1042,7 +1176,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="menuId">Menu Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MenuResponseModel> Core_MenuFindOneForHostAsync(string hostId, string menuId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MenuModel> Core_MenuFindOneForHostAsync(string hostId, string menuId, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -1092,7 +1226,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<MenuResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MenuModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1158,7 +1292,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuResponseModel>> Core_MenuFindAllForHostAsync(string hostId)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuModel>> Core_MenuFindAllForHostAsync(string hostId)
         {
             return Core_MenuFindAllForHostAsync(hostId, System.Threading.CancellationToken.None);
         }
@@ -1167,7 +1301,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="hostId">Host Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuResponseModel>> Core_MenuFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MenuModel>> Core_MenuFindAllForHostAsync(string hostId, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -1213,7 +1347,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MenuResponseModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MenuModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1274,7 +1408,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Menu to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<MenuResponseModel> Core_MenuCreateAsync(string hostId, MenuCreateRequestModel body)
+        public virtual System.Threading.Tasks.Task<MenuModel> Core_MenuCreateAsync(string hostId, MenuModel body)
         {
             return Core_MenuCreateAsync(hostId, body, System.Threading.CancellationToken.None);
         }
@@ -1284,7 +1418,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The Menu to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<MenuResponseModel> Core_MenuCreateAsync(string hostId, MenuCreateRequestModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<MenuModel> Core_MenuCreateAsync(string hostId, MenuModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (hostId == null)
                 throw new System.ArgumentNullException("hostId");
@@ -1337,7 +1471,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<MenuResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<MenuModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1403,7 +1537,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="userId">User Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UserResponseModel> Core_UserFindOneAsync(string userId)
+        public virtual System.Threading.Tasks.Task<UserModel> Core_UserFindOneAsync(string userId)
         {
             return Core_UserFindOneAsync(userId, System.Threading.CancellationToken.None);
         }
@@ -1412,7 +1546,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="userId">User Id</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UserResponseModel> Core_UserFindOneAsync(string userId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<UserModel> Core_UserFindOneAsync(string userId, System.Threading.CancellationToken cancellationToken)
         {
             if (userId == null)
                 throw new System.ArgumentNullException("userId");
@@ -1457,7 +1591,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UserResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<UserModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1522,7 +1656,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
 
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UsersResponseModel> Core_UserFindAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserModel>> Core_UserFindAllAsync()
         {
             return Core_UserFindAllAsync(System.Threading.CancellationToken.None);
         }
@@ -1530,7 +1664,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Resource request was successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UsersResponseModel> Core_UserFindAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserModel>> Core_UserFindAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1571,7 +1705,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UsersResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<UserModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1631,7 +1765,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The User to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UserResponseModel> Core_UserCreateAsync(UserCreateRequestModel body)
+        public virtual System.Threading.Tasks.Task<UserModel> Core_UserCreateAsync(UserModel body)
         {
             return Core_UserCreateAsync(body, System.Threading.CancellationToken.None);
         }
@@ -1640,7 +1774,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         /// <param name="body">The User to add</param>
         /// <returns>Resource was created successfully.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UserResponseModel> Core_UserCreateAsync(UserCreateRequestModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<UserModel> Core_UserCreateAsync(UserModel body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -1688,7 +1822,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UserResponseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<UserModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1861,7 +1995,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ResultResponseModel
+    public partial class ResultModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("messages")]
@@ -1904,44 +2038,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DinnerCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public string Description { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("schedule")]
-        public DinnerScheduleModel Schedule { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("maxGuests")]
-        [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
-        public int MaxGuests { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("isPublic")]
-        public bool IsPublic { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("price")]
-        public PriceModel Price { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("hostId")]
-        public string HostId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
-        public string MenuId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("imageUrl")]
-        public string ImageUrl { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("location")]
-        public DinnerLocationModel Location { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DinnerResponseModel
+    public partial class DinnerModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -1956,15 +2053,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         [System.Text.Json.Serialization.JsonPropertyName("schedule")]
         public DinnerScheduleModel Schedule { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("startedDateTime")]
-        public System.DateTimeOffset? StartedDateTime { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("endedDateTime")]
-        public System.DateTimeOffset? EndedDateTime { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("status")]
-        public string Status { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("maxGuests")]
         [System.ComponentModel.DataAnnotations.Range(1, int.MaxValue)]
         public int MaxGuests { get; set; }
@@ -1975,26 +2063,20 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
         [System.Text.Json.Serialization.JsonPropertyName("price")]
         public PriceModel Price { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
-        public string MenuId { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("hostId")]
         public string HostId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("menuId")]
+        public string MenuId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("imageUrl")]
         public string ImageUrl { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public string Status { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("location")]
         public DinnerLocationModel Location { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -2084,28 +2166,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class HostCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("firstName")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string FirstName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("lastName")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string LastName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("userId")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string UserId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("profileImage")]
-        public string ProfileImage { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class HostResponseModel
+    public partial class HostModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -2135,27 +2196,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class MenuCreateRequestModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("hostId")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string HostId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("name")]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("description")]
-        public string Description { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("sections")]
-        public System.Collections.Generic.IEnumerable<MenuSectionModel> Sections { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class MenuResponseModel
+    public partial class MenuModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -2236,8 +2277,11 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserCreateRequestModel
+    public partial class UserModel
     {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string Id { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("firstName")]
         public string FirstName { get; set; }
@@ -2253,57 +2297,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.
 
         [System.Text.Json.Serialization.JsonPropertyName("profileImage")]
         public string ProfileImage { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UsersResponseModel : Anonymous
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserResponseModel
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("firstName")]
-        public string FirstName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("lastName")]
-        public string LastName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("email")]
-        public string Email { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Anonymous
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("value")]
-        public System.Collections.Generic.IEnumerable<UserResponseModel> Value { get; set; }
 
     }
 

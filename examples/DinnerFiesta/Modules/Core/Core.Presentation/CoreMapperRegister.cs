@@ -14,14 +14,11 @@ public class CoreMapperRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.ForType<User, UserResponseModel>()
+        config.ForType<User, UserModel>()
             .Map(d => d.FirstName, s => s.FirstName)
             .Map(d => d.Email, s => s.Email.Value);
 
-        config.ForType<Result<User>, UserResponseModel>()
-            .Map(d => d, s => s.Value.Adapt<UserResponseModel>(config));
-
-        config.ForType<Result<IEnumerable<User>>, UsersResponseModel>()
-            .Map(d => d.Value, s => s.Value.Adapt<IEnumerable<UserResponseModel>>(config));
+        config.ForType<Result<User>, UserModel>()
+            .Map(d => d, s => s.Value.Adapt<UserModel>(config));
     }
 }

@@ -14,19 +14,19 @@ public abstract class QueryRequestBase<TResult> :
     IQueryHandler
 {
     protected QueryRequestBase()
-        : this(GuidGenerator.CreateSequential().ToString("N"))
+        : this(GuidGenerator.CreateSequential())
     {
     }
 
-    protected QueryRequestBase(string id)
+    protected QueryRequestBase(Guid id)
     {
-        this.Id = id;
-        this.Timestamp = DateTime.UtcNow;
+        this.RequestId = id;
+        this.RequestTimestamp = DateTime.UtcNow;
     }
 
-    public string Id { get; }
+    public Guid RequestId { get; private set; }
 
-    public DateTimeOffset Timestamp { get; }
+    public DateTimeOffset RequestTimestamp { get; }
 
     public virtual ValidationResult Validate() => new();
 }

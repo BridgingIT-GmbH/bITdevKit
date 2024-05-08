@@ -19,7 +19,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResultResponseModel'
+                $ref: '#/components/schemas/ResultModel'
               example:
                 messages:
                   - echo
@@ -50,7 +50,49 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HostResponseModel'
+                $ref: '#/components/schemas/HostModel'
+              # examples:
+              #   objectExample:
+              #     $ref: '#/components/examples/HostResponseExample'
+        400:
+          description: Resource request was invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        401:
+          description: Authorization information is missing or invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: Resource was not found.
+        500:
+          description: Unexpected error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+
+    put:
+      tags:
+        - core/hosts
+      operationId: Core_HostUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostModel'
+        description: The Host to update
+        required: true
+      responses:
+        201:
+          description: Resource was updaed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/HostResponseExample'
@@ -88,7 +130,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/HostResponseModel'
+                  $ref: '#/components/schemas/HostModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/HostResponseExamples'
@@ -119,7 +161,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HostCreateRequestModel'
+              $ref: '#/components/schemas/HostModel'
         description: The Host to add
         required: true
       responses:
@@ -128,7 +170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HostResponseModel'
+                $ref: '#/components/schemas/HostModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/HostResponseExample'
@@ -182,7 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DinnerResponseModel'
+                $ref: '#/components/schemas/DinnerModel'
               examples:
                 objectExample:
                   $ref: '#/components/examples/DinnerResponseExample'
@@ -230,7 +272,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DinnerResponseModel'
+                  $ref: '#/components/schemas/DinnerModel'
               examples:
                 objectExample:
                   $ref: '#/components/examples/DinnerResponseExamples'
@@ -270,7 +312,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DinnerCreateRequestModel'
+              $ref: '#/components/schemas/DinnerModel'
         description: The Dinner to add
         required: true
       responses:
@@ -279,7 +321,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DinnerResponseModel'
+                $ref: '#/components/schemas/DinnerModel'
               examples:
                 objectExample:
                   $ref: '#/components/examples/DinnerResponseExample'
@@ -334,7 +376,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MenuResponseModel'
+                $ref: '#/components/schemas/MenuModel'
               examples:
                 objectExample:
                   $ref: '#/components/examples/MenuResponseExample'
@@ -382,7 +424,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MenuResponseModel'
+                  $ref: '#/components/schemas/MenuModel'
               examples:
                 objectExample:
                   $ref: '#/components/examples/MenuResponseExamples'
@@ -422,7 +464,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MenuCreateRequestModel'
+              $ref: '#/components/schemas/MenuModel'
         description: The Menu to add
         required: true
       responses:
@@ -431,7 +473,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MenuResponseModel'
+                $ref: '#/components/schemas/MenuModel'
               examples:
                  objectExample:
                   $ref: '#/components/examples/MenuResponseExample'
@@ -480,7 +522,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponseModel'
+                $ref: '#/components/schemas/UserModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/UserResponseExample'
@@ -517,7 +559,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersResponseModel'
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/UserResponseExamples'
@@ -548,7 +592,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreateRequestModel'
+              $ref: '#/components/schemas/UserModel'
         description: The User to add
         required: true
       responses:
@@ -557,7 +601,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponseModel'
+                $ref: '#/components/schemas/UserModel'
               # examples:
               #   objectExample:
               #     $ref: '#/components/examples/UserResponseExample'
@@ -584,12 +628,9 @@ paths:
 
 components:
   schemas:
-    ResultResponseModel:
+    ResultModel:
       type: object
       additionalProperties: false
-      required:
-        - messages
-        - isSuccess
       properties:
         messages:
           type: array
@@ -601,12 +642,6 @@ components:
     ProblemDetailsModel:
       type: object
       additionalProperties: false
-      required:
-        - type
-        - title
-        - status
-        - detail
-        - instance
       properties:
         type:
           type: string
@@ -629,8 +664,6 @@ components:
         - $ref: '#/components/schemas/ProblemDetailsModel'
         - type: object
           additionalProperties: false
-          required:
-            - errors
           properties:
             errors:
               type: object
@@ -642,48 +675,9 @@ components:
     # Bill =======================================================
 
     # Dinner =====================================================
-    DinnerCreateRequestModel:
+    DinnerModel:
       type: object
       additionalProperties: false
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        schedule:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/DinnerScheduleModel'
-        maxGuests:
-          type: integer
-          minimum: 1
-        isPublic:
-          type: boolean
-        price:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/PriceModel'
-        hostId:
-          type: string
-        menuId:
-          type: string
-        imageUrl:
-          type: string
-        location:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/DinnerLocationModel'
-      required:
-        - Name
-        - Description
-        - Schedule
-        - MaxGuests
-        - IsPublic
-        - Price
-        - MenuId
-        - Location
-    DinnerResponseModel:
-      type: object
       properties:
         id:
           type: string
@@ -695,17 +689,6 @@ components:
           type: object
           nullable: true
           $ref: '#/components/schemas/DinnerScheduleModel'
-        startedDateTime:
-          type: string
-          format: date-time
-          nullable: true
-        endedDateTime:
-          type: string
-          format: date-time
-          nullable: true
-        status:
-          type: string
-          # enum: [Draft, Upcoming, InProgress, Ended, Cancelled]
         maxGuests:
           type: integer
           minimum: 1
@@ -715,11 +698,13 @@ components:
           type: object
           nullable: true
           $ref: '#/components/schemas/PriceModel'
-        menuId:
-          type: string
         hostId:
           type: string
+        menuId:
+          type: string
         imageUrl:
+          type: string
+        status:
           type: string
         location:
           type: object
@@ -768,23 +753,7 @@ components:
     # Guest =======================================================
 
     # Host ========================================================
-    HostCreateRequestModel:
-      type: object
-      additionalProperties: false
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        userId:
-          type: string
-        profileImage:
-          type: string
-      required:
-        - firstName
-        - lastName
-        - userId
-    HostResponseModel:
+    HostModel:
       type: object
       properties:
         id:
@@ -799,25 +768,7 @@ components:
           type: string
 
     # Menu =======================================================
-    MenuCreateRequestModel:
-      type: object
-      additionalProperties: false
-      properties:
-        hostId:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        sections:
-          type: array
-          nullable: true
-          items:
-            $ref: '#/components/schemas/MenuSectionModel'
-      required:
-        - hostId
-        - name
-    MenuResponseModel:
+    MenuModel:
       type: object
       properties:
         id:
@@ -839,6 +790,8 @@ components:
     MenuSectionModel:
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
         description:
@@ -848,25 +801,25 @@ components:
           nullable: true
           items:
             $ref: '#/components/schemas/MenuSectionItemModel'
-      required:
-        - name
     MenuSectionItemModel:
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
         description:
           type: string
-      required:
-        - name
 
     # MenuReview =================================================
 
     # User =======================================================
-    UserCreateRequestModel:
+    UserModel:
       type: object
       additionalProperties: false
       properties:
+        id:
+          type: string
         firstName:
           type: string
         lastName:
@@ -876,32 +829,6 @@ components:
         password:
           type: string
         profileImage:
-          type: string
-      required:
-        - FirstName
-        - LastName
-        - Email
-        - Password
-    UsersResponseModel:
-     allOf:
-       - type: object
-         additionalProperties: false
-         properties:
-           value:
-             nullable: true
-             type: array
-             items:
-               $ref: '#/components/schemas/UserResponseModel'
-    UserResponseModel:
-      type: object
-      properties:
-        id:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
           type: string
 
   examples:

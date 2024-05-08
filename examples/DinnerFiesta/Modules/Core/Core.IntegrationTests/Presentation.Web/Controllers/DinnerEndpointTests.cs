@@ -9,6 +9,7 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
+using Dumpify;
 using FluentAssertions;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -37,6 +38,9 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
         response.Should().MatchInContent($"*{model.HostId}*");
         response.Should().MatchInContent($"*{model.Name}*");
+        var responseModel = await response.Content.ReadAsAsync<DinnerModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -58,6 +62,9 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
         response.Should().MatchInContent($"*{model.HostId}*");
         response.Should().MatchInContent($"*{model.Name}*");
+        var responseModel = await response.Content.ReadAsAsync<ICollection<DinnerModel>>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -79,14 +86,14 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
 
     [Theory]
     [InlineData("api/core/hosts/{hostId}/dinners")]
-    public async Task Post_ValidEntity_ReturnsCreated(string route)
+    public async Task Post_ValidModel_ReturnsCreated(string route)
     {
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var menu = await this.PostMenuCreate(route.Replace("/dinners", "/menus"));
         var ticks = DateTime.UtcNow.Ticks;
         var entity = Stubs.Dinners(ticks).First();
-        var model = new DinnerCreateRequestModel
+        var model = new DinnerModel
         {
             Name = entity.Name,
             Description = entity.Description,
@@ -110,6 +117,9 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         response.Headers.Location.Should().NotBeNull();
         response.Should().MatchInContent($"*{model.HostId}*");
         response.Should().MatchInContent($"*{model.Name}*");
+        var responseModel = await response.Content.ReadAsAsync<DinnerModel>();
+        responseModel.ShouldNotBeNull();
+        this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
 
     [Theory]
@@ -120,7 +130,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var menu = await this.PostMenuCreate(route.Replace("/dinners", "/menus"));
         var entity = Stubs.Dinners(DateTime.UtcNow.Ticks).First();
-        var model = new DinnerCreateRequestModel
+        var model = new DinnerModel
         {
             HostId = menu.HostId,
             MenuId = menu.Id,
@@ -144,10 +154,10 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         response.Should().MatchInContent($"*{nameof(model.Location)}*");
     }
 
-    private async Task<DinnerResponseModel> PostDinnerCreate(string route, string hostId, string menuId)
+    private async Task<DinnerModel> PostDinnerCreate(string route, string hostId, string menuId)
     {
         var entity = Stubs.Dinners(DateTime.UtcNow.Ticks).First();
-        var model = new DinnerCreateRequestModel
+        var model = new DinnerModel
         {
             Name = entity.Name,
             Description = entity.Description,
@@ -164,13 +174,13 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsAsync<DinnerResponseModel>();
+        return await response.Content.ReadAsAsync<DinnerModel>();
     }
 
-    private async Task<MenuResponseModel> PostMenuCreate(string route)
+    private async Task<MenuModel> PostMenuCreate(string route)
     {
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
-        var model = new MenuCreateRequestModel
+        var model = new MenuModel
         {
             HostId = entity.HostId,
             Name = entity.Name,
@@ -182,6 +192,6 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsAsync<MenuResponseModel>();
+        return await response.Content.ReadAsAsync<MenuModel>();
     }
 }

@@ -11,18 +11,18 @@ using MediatR;
 
 public interface ICommandRequest : IRequest
 {
-    string Id { get; }
+    Guid RequestId { get; }
 
-    DateTimeOffset Timestamp { get; }
+    DateTimeOffset RequestTimestamp { get; }
 
     ValidationResult Validate();
 }
 
 public interface ICommandRequest<out TResult> : IRequest<TResult>
 {
-    string Id { get; }
+    Guid RequestId { get; }
 
-    DateTimeOffset Timestamp { get; }
+    DateTimeOffset RequestTimestamp { get; }
 
     ValidationResult Validate();
 }

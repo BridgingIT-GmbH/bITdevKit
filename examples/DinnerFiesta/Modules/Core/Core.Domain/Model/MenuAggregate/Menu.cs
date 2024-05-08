@@ -71,28 +71,46 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
     public Menu ChangeName(string name)
     {
-        // TODO: replace with Rules
-        EnsureArg.IsNotNull(name, nameof(name));
+        if (string.IsNullOrEmpty(name))
+        {
+            return this;
+        }
 
         this.Name = name;
+
+        this.DomainEvents.Register(
+            new MenuUpdatedDomainEvent(this), true);
+
         return this;
     }
 
     public Menu AddDinnerId(DinnerId dinnerId)
     {
-        // TODO: replace with Rules
-        EnsureArg.IsNotNull(dinnerId, nameof(dinnerId));
+        if (dinnerId == null)
+        {
+            return this;
+        }
 
         this.dinnerIds.Add(dinnerId);
+
+        this.DomainEvents.Register(
+            new MenuUpdatedDomainEvent(this), true);
+
         return this;
     }
 
     public Menu AddRating(Rating rating)
     {
-        // TODO: replace with Rules
-        EnsureArg.IsNotNull(rating, nameof(rating));
+        if (rating == null)
+        {
+            return this;
+        }
 
         this.AverageRating.Add(rating);
+
+        this.DomainEvents.Register(
+            new MenuUpdatedDomainEvent(this), true);
+
         return this;
     }
 }

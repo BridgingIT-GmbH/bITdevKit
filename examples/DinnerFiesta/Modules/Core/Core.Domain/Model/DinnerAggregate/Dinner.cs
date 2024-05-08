@@ -101,16 +101,25 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
     public Dinner ChangeName(string name)
     {
-        // TODO: replace with Rules
-        EnsureArg.IsNotNull(name, nameof(name));
+        if (string.IsNullOrEmpty(name))
+        {
+            return this;
+        }
 
         this.Name = name;
+
+        this.DomainEvents.Register(
+            new DinnerUpdatedDomainEvent(this), true);
+
         return this;
     }
 
     public Dinner ChangeSchedule(DinnerSchedule schedule)
     {
-        EnsureArg.IsNotNull(schedule, nameof(schedule));
+        if (schedule == null)
+        {
+            return this;
+        }
 
         Check.Throw(new IBusinessRule[]
         {
@@ -118,12 +127,19 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
         });
 
         this.Schedule = schedule;
+
+        this.DomainEvents.Register(
+            new DinnerUpdatedDomainEvent(this), true);
+
         return this;
     }
 
     public Dinner SetStatus(DinnerStatus status)
     {
-        EnsureArg.IsNotNull(status, nameof(status));
+        if (status == null)
+        {
+            return this;
+        }
 
         Check.Throw(new IBusinessRule[]
         {
@@ -131,6 +147,10 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
         });
 
         this.Status = status;
+
+        this.DomainEvents.Register(
+            new DinnerUpdatedDomainEvent(this), true);
+
         return this;
     }
 }

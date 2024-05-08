@@ -20,7 +20,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     : IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
     where TQuery : class, IQueryRequest<QueryResponse<TResult>>
 {
-    private const string QueryIdKey = "QueryId";
+    private const string QueryIdKey = "QueryRequestId";
     private const string QueryTypeKey = "QueryType";
 
     protected QueryHandlerBase(ILoggerFactory loggerFactory)
@@ -41,7 +41,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
         {
-            [QueryIdKey] = query.Id,
+            [QueryIdKey] = query.RequestId,
             [QueryTypeKey] = query.GetType().Name,
         }))
         {
@@ -53,8 +53,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                     $"{Constants.TraceOperationProcessName} {requestType}",
                     async (a, c) =>
                     {
-                        a?.AddEvent(new($"processing (type={requestType}, id={query.Id}, handler={handlerType})"));
-                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, query.Id, handlerType);
+                        a?.AddEvent(new($"processing (type={requestType}, id={query.RequestId}, handler={handlerType})"));
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, query.RequestId, handlerType);
 
                         this.ValidateRequest(query);
                         var watch = ValueStopwatch.StartNew();
@@ -62,8 +62,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
                         if (response?.Cancelled == true || cancellationToken.IsCancellationRequested)
                         {
-                            this.Logger.LogWarning("{LogKey} processing cancelled (type={QueryType}, id={QueryId}, handler={QueryHandler}, reason={QueryCancelledReason})", Constants.LogKey, requestType, query.Id, handlerType, response?.CancelledReason);
-                            a?.AddEvent(new($"processing cancelled (type={requestType}, id={query.Id}, handler={handlerType}, reason={response?.CancelledReason})"));
+                            this.Logger.LogWarning("{LogKey} processing cancelled (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, reason={QueryCancelledReason})", Constants.LogKey, requestType, query.RequestId, handlerType, response?.CancelledReason);
+                            a?.AddEvent(new($"processing cancelled (type={requestType}, id={query.RequestId}, handler={handlerType}, reason={response?.CancelledReason})"));
 
                             if (cancellationToken.IsCancellationRequested)
                             {
@@ -71,16 +71,16 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, query.Id, watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, query.RequestId, watch.GetElapsedMilliseconds());
 
                         return response;
                     },
-                    baggages: new Dictionary<string, string> { ["command.id"] = query.Id, ["command.type"] = requestType },
+                    baggages: new Dictionary<string, string> { ["command.id"] = query.RequestId.ToString("N"), ["command.type"] = requestType },
                     cancellationToken: cancellationToken);
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{LogKey} processing error (type={QueryType}, id={QueryId}): {ErrorMessage}", Constants.LogKey, requestType, query.Id, ex.Message);
+                this.Logger.LogError(ex, "{LogKey} processing error (type={QueryType}, id={QueryRequestId}): {ErrorMessage}", Constants.LogKey, requestType, query.RequestId, ex.Message);
                 throw;
             }
         }
@@ -92,7 +92,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     private void ValidateRequest(TQuery request)
     {
-        this.Logger.LogDebug("{LogKey} validating (type={QueryType}, id={QueryId}, handler={QueryHandler})", Constants.LogKey, request.GetType().Name, request.Id, this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} validating (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})", Constants.LogKey, request.GetType().Name, request.RequestId, this.GetType().Name);
 
         var validationResult = request.Validate();
         if (validationResult?.IsValid == false)
@@ -103,10 +103,10 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={QueryType}, id={QueryId}, handler={QueryHandler})")]
-        public static partial void LogProcessing(ILogger logger, string logKey, string queryType, string queryId, string queryHandler);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, string queryType, Guid queryRequestId, string queryHandler);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={QueryType}, id={QueryId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string queryType, string queryId, long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={QueryType}, id={QueryRequestId}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string queryType, Guid queryRequestId, long timeElapsed);
     }
 }

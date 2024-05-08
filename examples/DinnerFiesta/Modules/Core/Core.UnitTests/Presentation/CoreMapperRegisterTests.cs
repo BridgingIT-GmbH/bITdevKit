@@ -49,7 +49,7 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, entity).Generate();
 
         // Act
-        var target = this.sut.Map<Dinner, DinnerResponseModel>(source.Value);
+        var target = this.sut.Map<Dinner, DinnerModel>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
@@ -81,7 +81,7 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() }).Generate();
 
         // Act
-        var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerResponseModel>>(source.Value);
+        var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerModel>>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
@@ -104,11 +104,11 @@ public class CoreMapperRegisterTests
     }
 
     [Fact]
-    public void MapsterMap_DinnerCreateRequestModel_ToCommand()
+    public void MapsterMap_DinnerCreateModel_ToCommand()
     {
         // Arrange
         var entity = Stubs.Dinners(DateTime.UtcNow.Ticks).First();
-        var source = new Faker<DinnerCreateRequestModel>()
+        var source = new Faker<DinnerModel>()
             .RuleFor(u => u.Name, entity.Name)
             .RuleFor(u => u.Description, entity.Description)
             .RuleFor(u => u.HostId, entity.HostId)
@@ -119,7 +119,7 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Schedule, new DinnerScheduleModel { StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime }).Generate();
 
         // Act
-        var target = this.sut.Map<DinnerCreateRequestModel, DinnerCreateCommand>(source);
+        var target = this.sut.Map<DinnerModel, DinnerCreateCommand>(source);
 
         // Assert
         target.ShouldNotBeNull();
@@ -153,7 +153,7 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Value, entity).Generate();
 
         // Act
-        var target = this.sut.Map<Menu, MenuResponseModel>(source.Value);
+        var target = this.sut.Map<Menu, MenuModel>(source.Value);
 
         // Assert
         target.ShouldNotBeNull();
@@ -164,17 +164,17 @@ public class CoreMapperRegisterTests
     }
 
     [Fact]
-    public void MapsterMap_MenuCreateRequestModel_ToCommand()
+    public void MapsterMap_MenuCreateModel_ToCommand()
     {
         // Arrange
-        var source = new Faker<MenuCreateRequestModel>()
+        var source = new Faker<MenuModel>()
             .RuleFor(u => u.Name, f => f.Lorem.Sentence(3))
             .RuleFor(u => u.Description, f => f.Lorem.Sentence(10))
             .RuleFor(u => u.HostId, f => f.Random.Guid().ToString())
             .Generate();
 
         // Act
-        var target = this.sut.Map<MenuCreateRequestModel, MenuCreateCommand>(source);
+        var target = this.sut.Map<MenuModel, MenuCreateCommand>(source);
 
         // Assert
         target.ShouldNotBeNull();

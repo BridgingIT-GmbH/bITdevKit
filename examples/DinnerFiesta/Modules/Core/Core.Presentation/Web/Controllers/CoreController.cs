@@ -46,13 +46,15 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
 
     public override async Task<ActionResult<HostModel>> HostCreate([FromBody] HostModel body, CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken)).Result;
+        var result = (await this.mediator.Send(
+            this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken)).Result;
         return result.ToCreatedActionResult<Host, HostModel>(this.mapper, $"Core_{nameof(this.HostFindOne)}", new { hostId = result.Value?.Id });
     }
 
     public override async Task<ActionResult<HostModel>> HostUpdate([FromBody] HostModel body, CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken)).Result;
+        var result = (await this.mediator.Send(
+            this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken)).Result;
         return result.ToUpdatedActionResult<Host, HostModel>(this.mapper, $"Core_{nameof(this.HostFindOne)}", new { hostId = result.Value?.Id });
     }
 

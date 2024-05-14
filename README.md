@@ -1,5 +1,9 @@
 ![bITDevKit](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/bITDevKit_Logo.png)
 =====================================
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bridgingIT/bITdevKit/github-actions.yml?style=flat)](https://github.com/bridgingIT/bITdevKit/actions/workflows/github-actions.yml)
+[![NuGet](https://img.shields.io/nuget/v/BridgingIT.DevKit.Common.Utilities?style=flat-square&label=nuget%20packages)](https://www.nuget.org/packages?q=bitdevkit)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+
 Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
 
 Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
@@ -63,10 +67,11 @@ Libraries used (excerpt):
 
 Example projects
 -----------------
+- [GettingStarted](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
 - [EventStore](https://github.com/bridgingit/bitdevkit/examples)
+- [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
 - [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
 - [Shop](https://github.com/bridgingit/bitdevkit/examples)
-- [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
 
 Collaboration
 ---------

@@ -23,6 +23,14 @@ public struct CronExpressions
 
     public const string EveryHour = "0 0 * * * ?";
 
+    public const string EveryTwoHours = "0 0 */2 * * ?";
+
+    public const string EverySixHours = "0 0 */6 * * ?";
+
+    public const string EveryNineHours = "0 0 */9 * * ?";
+
+    public const string EveryTwelveHours = "0 0 */12 * * ?";
+
     public const string DailyAtMidnight = "0 0 0 * * ?";
 
     public const string DailyAtNoon = "0 0 12 * * ?";

@@ -13,27 +13,20 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class MarketingDomainSeederTask : IStartupTask // TODO: move to domain layer?
+public class MarketingDomainSeederTask(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Customer> userRepository) : IStartupTask
 {
-    private readonly ILogger<MarketingDomainSeederTask> logger;
-    private readonly IGenericRepository<Customer> userRepository;
-
-    public MarketingDomainSeederTask(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Customer> userRepository)
-    {
-        this.logger = loggerFactory?.CreateLogger<MarketingDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<MarketingDomainSeederTask>();
-        this.userRepository = userRepository;
-    }
+    private readonly ILogger<MarketingDomainSeederTask> logger = loggerFactory?.CreateLogger<MarketingDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<MarketingDomainSeederTask>();
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await this.SeedCustomers(this.userRepository);
+        await this.SeedCustomers(userRepository);
     }
 
     private async Task SeedCustomers(IGenericRepository<Customer> repository)
     {
-        foreach (var entity in MarketingSeeds.Customers(0))
+        foreach (var entity in MarketingSeedModels.Customers(0))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {

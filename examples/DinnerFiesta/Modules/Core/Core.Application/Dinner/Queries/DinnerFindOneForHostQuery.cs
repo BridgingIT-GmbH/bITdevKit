@@ -11,17 +11,11 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class DinnerFindOneForHostQuery : QueryRequestBase<Result<Dinner>>
+public class DinnerFindOneForHostQuery(string hostId, string dinnerId) : QueryRequestBase<Result<Dinner>>
 {
-    public DinnerFindOneForHostQuery(string hostId, string dinnerId)
-    {
-        this.HostId = hostId;
-        this.DinnerId = dinnerId;
-    }
+    public string HostId { get; } = hostId;
 
-    public string HostId { get; }
-
-    public string DinnerId { get; }
+    public string DinnerId { get; } = dinnerId;
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
 using BridgingIT.DevKit.Common;
 
-public static class MarketingSeeds
+public static class MarketingSeedModels
 {
     public static IEnumerable<Customer> Customers(long ticks) =>
         new[]

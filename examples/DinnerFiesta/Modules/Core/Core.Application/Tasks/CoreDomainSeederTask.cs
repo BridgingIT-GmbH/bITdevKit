@@ -13,39 +13,26 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class CoreDomainSeederTask : IStartupTask // TODO: move to domain layer?
+public class CoreDomainSeederTask(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<User> userRepository,
+    IGenericRepository<Host> hostRepository,
+    IGenericRepository<Menu> menuRepository,
+    IGenericRepository<Dinner> dinnerRepository) : IStartupTask
 {
-    private readonly ILogger<CoreDomainSeederTask> logger;
-    private readonly IGenericRepository<User> userRepository;
-    private readonly IGenericRepository<Host> hostRepository;
-    private readonly IGenericRepository<Menu> menuRepository;
-    private readonly IGenericRepository<Dinner> dinnerRepository;
-
-    public CoreDomainSeederTask(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<User> userRepository,
-        IGenericRepository<Host> hostRepository,
-        IGenericRepository<Menu> menuRepository,
-        IGenericRepository<Dinner> dinnerRepository)
-    {
-        this.logger = loggerFactory?.CreateLogger<CoreDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreDomainSeederTask>();
-        this.userRepository = userRepository;
-        this.hostRepository = hostRepository;
-        this.menuRepository = menuRepository;
-        this.dinnerRepository = dinnerRepository;
-    }
+    private readonly ILogger<CoreDomainSeederTask> logger = loggerFactory?.CreateLogger<CoreDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreDomainSeederTask>();
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await this.SeedUsers(this.userRepository);
-        await this.SeedHosts(this.hostRepository);
-        await this.SeedMenus(this.menuRepository);
-        await this.SeedDinners(this.dinnerRepository);
+        await this.SeedUsers(userRepository);
+        await this.SeedHosts(hostRepository);
+        await this.SeedMenus(menuRepository);
+        await this.SeedDinners(dinnerRepository);
     }
 
     private async Task SeedUsers(IGenericRepository<User> repository)
     {
-        foreach (var entity in CoreSeeds.Users(0))
+        foreach (var entity in CoreSeedModels.Users(0))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
@@ -58,7 +45,7 @@ public class CoreDomainSeederTask : IStartupTask // TODO: move to domain layer?
 
     private async Task SeedHosts(IGenericRepository<Host> repository)
     {
-        foreach (var entity in CoreSeeds.Hosts(0))
+        foreach (var entity in CoreSeedModels.Hosts(0))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
@@ -71,7 +58,7 @@ public class CoreDomainSeederTask : IStartupTask // TODO: move to domain layer?
 
     private async Task SeedMenus(IGenericRepository<Menu> repository)
     {
-        foreach (var entity in CoreSeeds.Menus(0))
+        foreach (var entity in CoreSeedModels.Menus(0))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
@@ -84,7 +71,7 @@ public class CoreDomainSeederTask : IStartupTask // TODO: move to domain layer?
 
     private async Task SeedDinners(IGenericRepository<Dinner> repository)
     {
-        foreach (var entity in CoreSeeds.Dinners(0))
+        foreach (var entity in CoreSeedModels.Dinners(0))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {

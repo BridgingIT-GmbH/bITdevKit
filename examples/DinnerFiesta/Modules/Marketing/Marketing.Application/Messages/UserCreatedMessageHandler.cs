@@ -13,21 +13,13 @@ using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class UserCreatedMessageHandler : MessageHandlerBase<UserCreatedMessage>,
+public class UserCreatedMessageHandler(
+    ILoggerFactory loggerFactory,
+    IMediator mediator) : MessageHandlerBase<UserCreatedMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
     //IChaosExceptionMessageHandler
 {
-    private readonly IMediator mediator;
-
-    public UserCreatedMessageHandler(
-        ILoggerFactory loggerFactory,
-        IMediator mediator)
-        : base(loggerFactory)
-    {
-        this.mediator = mediator;
-    }
-
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     TimeoutMessageHandlerOptions ITimeoutMessageHandler.Options => new() { Timeout = new TimeSpan(0, 0, 0, 10) };
@@ -48,7 +40,7 @@ public class UserCreatedMessageHandler : MessageHandlerBase<UserCreatedMessage>,
         using (this.Logger.BeginScope(loggerState))
         {
             var command = new CustomerCreateCommand { FirstName = message.FirstName, LastName = message.LastName, Email = message.Email };
-            await this.mediator.Send(command, cancellationToken).AnyContext();
+            await mediator.Send(command, cancellationToken).AnyContext();
 
             this.Logger.LogInformation($"{{LogKey}} >>>>> user created {message.Email} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
         }

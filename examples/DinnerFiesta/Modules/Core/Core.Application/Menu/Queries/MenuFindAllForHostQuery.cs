@@ -12,14 +12,9 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class MenuFindAllForHostQuery : QueryRequestBase<Result<IEnumerable<Menu>>>
+public class MenuFindAllForHostQuery(string hostId) : QueryRequestBase<Result<IEnumerable<Menu>>>
 {
-    public MenuFindAllForHostQuery(string hostId)
-    {
-        this.HostId = hostId;
-    }
-
-    public string HostId { get; set; }
+    public string HostId { get; set; } = hostId;
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);

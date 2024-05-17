@@ -24,13 +24,31 @@ public class DomainEvents // TODO: create interface?
     public IEnumerable<IDomainEvent> GetAll() => this.registrations;
 
     /// <summary>
+    /// Registers the domain events to publish.
+    /// Domain Events are only registered on the aggregate root because it is ensuring the integrity of the aggregate as a whole.
+    /// </summary>
+    /// <param name="events">The events.</param>
+    public DomainEvents Register(IEnumerable<IDomainEvent> events, bool ensureSingleByType = false)
+    {
+        foreach (var @event in events.SafeNull())
+        {
+            this.Register(@event, ensureSingleByType);
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Registers the domain event to publish.
     /// Domain Events are only registered on the aggregate root because it is ensuring the integrity of the aggregate as a whole.
     /// </summary>
     /// <param name="event">The event.</param>
-    public void Register(IDomainEvent @event, bool ensureSingleByType = false)
+    public DomainEvents Register(IDomainEvent @event, bool ensureSingleByType = false)
     {
-        EnsureArg.IsNotNull(@event, nameof(@event));
+        if (@event is null)
+        {
+            return this;
+        }
 
         if (ensureSingleByType)
         {
@@ -39,6 +57,7 @@ public class DomainEvents // TODO: create interface?
         }
 
         this.registrations.Add(@event);
+        return this;
     }
 
     public async Task DispatchAsync(IMediator mediator)

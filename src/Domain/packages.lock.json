@@ -16,9 +16,9 @@
       },
       "Microsoft.Extensions.Localization.Abstractions": {
         "type": "Direct",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "Zzjz61V0CxceIJm5vAMlhYQOrvD1ANhOTy5jvraAd+ly6Fw5m1/WkSbff29BR7ESKvxdoDdvzeolxV9Cf6LE1w=="
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "vGasVdd+yo/+xLL/sqkCk97FAipjD+r2DHVOSZngYnu+GZ0F1oN2l0keBL/eLrv5ylFXMyEWJr8Xy6n/vX7ivg=="
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Direct",

@@ -11,14 +11,9 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class CustomerFindOneQuery : QueryRequestBase<Result<Customer>>
+public class CustomerFindOneQuery(string customerId) : QueryRequestBase<Result<Customer>>
 {
-    public CustomerFindOneQuery(string customerId)
-    {
-        this.CustomerId = customerId;
-    }
-
-    public string CustomerId { get; }
+    public string CustomerId { get; } = customerId;
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);

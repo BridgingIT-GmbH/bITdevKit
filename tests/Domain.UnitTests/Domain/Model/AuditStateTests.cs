@@ -21,7 +21,7 @@ public class AuditStateTests
     public void SetCreated_SetsCreatedBy()
     {
         // Arrange
-        var createdBy = "John Doe";
+        const string createdBy = "John Doe";
 
         // Act
         this.sut.SetCreated(createdBy);
@@ -29,7 +29,7 @@ public class AuditStateTests
         // Assert
         this.sut.CreatedBy.ShouldBe(createdBy);
         this.sut.IsDeleted().ShouldBeFalse();
-        this.sut.IsUpdated().ShouldBeFalse();
+        this.sut.IsUpdated().ShouldBeTrue();
         //this.auditState.CreatedDate.ShouldNotBeNull();
     }
 
@@ -37,7 +37,7 @@ public class AuditStateTests
     public void SetUpdated_SetsUpdatedBy()
     {
         // Arrange
-        var updatedBy = "John Doe";
+        const string updatedBy = "John Doe";
 
         // Act
         this.sut.SetUpdated(by: updatedBy);
@@ -52,7 +52,7 @@ public class AuditStateTests
     public void SetDeactivated_SetsDeactivatedBy()
     {
         // Arrange
-        var deactivatedBy = "John Doe";
+        const string deactivatedBy = "John Doe";
 
         // Act
         this.sut.SetDeactivated(by: deactivatedBy);
@@ -68,7 +68,7 @@ public class AuditStateTests
     public void SetDeleted_SetsDeletedBy()
     {
         // Arrange
-        var deletedBy = "John Doe";
+        const string deletedBy = "John Doe";
 
         // Act
         this.sut.SetDeleted(by: deletedBy);
@@ -82,7 +82,7 @@ public class AuditStateTests
     public void SetDeleted_SetsDeletedReason()
     {
         // Arrange
-        var deletedReason = "Invalid data";
+        const string deletedReason = "Invalid data";
 
         // Act
         this.sut.SetDeleted(reason: deletedReason);

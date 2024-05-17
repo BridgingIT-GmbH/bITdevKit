@@ -10,9 +10,9 @@
       },
       "Microsoft.Extensions.Localization.Abstractions": {
         "type": "Direct",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "Zzjz61V0CxceIJm5vAMlhYQOrvD1ANhOTy5jvraAd+ly6Fw5m1/WkSbff29BR7ESKvxdoDdvzeolxV9Cf6LE1w=="
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "vGasVdd+yo/+xLL/sqkCk97FAipjD+r2DHVOSZngYnu+GZ0F1oN2l0keBL/eLrv5ylFXMyEWJr8Xy6n/vX7ivg=="
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Direct",
@@ -1025,7 +1025,7 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "MediatR.Contracts": "[2.0.1, )",
-          "Microsoft.Extensions.Localization.Abstractions": "[8.0.4, )",
+          "Microsoft.Extensions.Localization.Abstractions": "[8.0.5, )",
           "Microsoft.IdentityModel.JsonWebTokens": "[7.5.2, )",
           "Scrutor": "[4.2.2, )",
           "System.IdentityModel.Tokens.Jwt": "[7.5.2, )",

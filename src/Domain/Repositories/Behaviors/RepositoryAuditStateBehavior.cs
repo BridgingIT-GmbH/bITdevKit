@@ -16,21 +16,6 @@ using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 
-[Obsolete("Use GenericRepositorySoftDeleteBehavior instead")]
-public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDeleteBehavior<TEntity>
-    where TEntity : class, IEntity, ISoftDeletable
-{
-    public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner)
-        : base(ínner)
-    {
-    }
-
-    public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner, bool excludeDeleted)
-        : base(ínner, excludeDeleted)
-    {
-    }
-}
-
 /// <summary>
 /// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
 /// <para>
@@ -43,28 +28,31 @@ public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDelet
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
-    where TEntity : class, IEntity, ISoftDeletable
+public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
+    where TEntity : class, IEntity, IAuditable
 {
-    public RepositorySoftDeleteBehavior(
-        IGenericRepository<TEntity> ínner)
-        : this(ínner, true)
+    private readonly AuditStateByType byType;
+    private readonly ICurrentUserService currentUserService;
+
+    public RepositoryAuditStateBehavior(
+        IGenericRepository<TEntity> ínner,
+        AuditStateByType byType = AuditStateByType.ByUserName,
+        ICurrentUserService currentUserService = null)
+        : this(ínner)
     {
+        this.byType = byType;
+        this.currentUserService = currentUserService ?? new NullCurrentUserService();
     }
 
-    public RepositorySoftDeleteBehavior(
-        IGenericRepository<TEntity> ínner,
-        bool excludeDeleted)
+    public RepositoryAuditStateBehavior(
+        IGenericRepository<TEntity> ínner)
     {
         EnsureArg.IsNotNull(ínner, nameof(ínner));
 
-        this.Specification = excludeDeleted ? new Specification<TEntity>(e => e.Deleted != true) : null;
         this.Inner = ínner;
     }
 
     protected IGenericRepository<TEntity> Inner { get; }
-
-    protected ISpecification<TEntity> Specification { get; }
 
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
@@ -76,12 +64,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken: cancellationToken).AnyContext();
         if (entity is not null)
         {
-            entity.SetDeleted();
-            var result = (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
-            if (result == RepositoryActionResult.Updated)
-            {
-                return RepositoryActionResult.Deleted;
-            }
+            return await this.DeleteAsync(entity, cancellationToken).AnyContext();
         }
 
         return RepositoryActionResult.None;
@@ -89,15 +72,15 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        return await this.DeleteAsync(entity?.Id, cancellationToken).AnyContext();
+        entity.AuditState ??= new AuditState();
+        entity.AuditState.SetDeleted(this.GetByValue());
+
+        return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        var entity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
-        return entity is not null && this.Specification.IsSatisfiedBy(entity);
+        return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(IFindOptions<TEntity> options = null,
@@ -106,8 +89,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         return await this.FindAllAsync(
             [],
             options,
-            cancellationToken)
-            .AnyContext();
+            cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -127,7 +109,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         CancellationToken cancellationToken = default)
     {
         return await this.Inner.FindAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
+            specifications,
             options,
             cancellationToken).AnyContext();
     }
@@ -141,8 +123,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
             [],
             projection,
             options,
-            cancellationToken)
-            .AnyContext();
+            cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -165,7 +146,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
+            specifications,
             projection,
             options,
             cancellationToken).AnyContext();
@@ -176,8 +157,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
-        return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : default;
+        return await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -185,8 +165,7 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            this.Specification.And(specification), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -194,42 +173,73 @@ public class RepositorySoftDeleteBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.AuditState ??= new AuditState();
+        entity.AuditState.SetCreated(this.GetByValue());
+
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.AuditState ??= new AuditState();
+        entity.AuditState.SetUpdated(this.GetByValue());
+
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.AuditState ??= new AuditState();
+        entity.AuditState.SetUpdated(this.GetByValue());
+
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync([], cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(specification, cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }
+
+    private string GetByValue()
+    {
+        switch (this.byType)
+        {
+            case AuditStateByType.ByUserName:
+                return this.currentUserService.UserName;
+            case AuditStateByType.ByEmail:
+                return this.currentUserService.Email;
+            case AuditStateByType.ByUserId:
+                break;
+            default:
+                return this.currentUserService.UserId;
+        }
+
+        return this.currentUserService.UserId;
+    }
+}
+
+public enum AuditStateByType
+{
+    ByUserId = 0,
+    ByUserName = 1,
+    ByEmail = 2
 }

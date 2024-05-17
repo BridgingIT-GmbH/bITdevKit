@@ -124,6 +124,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Bill>>()
             .WithBehavior<RepositoryLoggingBehavior<Bill>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Bill>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Bill>>();
@@ -134,6 +135,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Dinner>>()
             .WithBehavior<RepositoryLoggingBehavior<Dinner>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Dinner>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Dinner>>();
@@ -144,6 +146,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Guest>>()
             .WithBehavior<RepositoryLoggingBehavior<Guest>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Guest>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Guest>>();
@@ -154,6 +157,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Domain.Host>>()
             .WithBehavior<RepositoryLoggingBehavior<Domain.Host>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Domain.Host>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Domain.Host>>();
@@ -164,6 +168,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Menu>>()
             .WithBehavior<RepositoryLoggingBehavior<Menu>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Menu>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Menu>>();
@@ -174,6 +179,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<MenuReview>>()
             .WithBehavior<RepositoryLoggingBehavior<MenuReview>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<MenuReview>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<MenuReview>>();
@@ -184,6 +190,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<User>>()
             .WithBehavior<RepositoryLoggingBehavior<User>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Domain.User>(e => e.AuditState, inner));
+            .WithBehavior<RepositoryAuditStateBehavior<User>>()
             .WithBehavior<RepositoryDomainEventBehavior<User>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<User>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<User>>();

@@ -10,5 +10,5 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
 public static class Stubs
 {
-    public static IEnumerable<Customer> Customers(long ticks) => MarketingSeeds.Customers(ticks);
+    public static IEnumerable<Customer> Customers(long ticks) => MarketingSeedModels.Customers(ticks);
 }

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Common;
 
-public static class CoreSeeds
+public static class CoreSeedModels
 {
     public static IEnumerable<User> Users(long ticks) =>
         new[]

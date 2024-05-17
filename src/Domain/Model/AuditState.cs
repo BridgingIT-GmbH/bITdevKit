@@ -89,6 +89,8 @@ public class AuditState
     public virtual void SetCreated(string by = null, string description = null)
     {
         this.CreatedDate = DateTime.UtcNow;
+        this.UpdatedDate = this.CreatedDate;
+
         if (!by.IsNullOrEmpty())
         {
             this.CreatedBy = by;

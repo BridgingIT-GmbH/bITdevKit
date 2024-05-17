@@ -624,6 +624,17 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "BridgingIT.DevKit.Common.Abstractions": {
+        "type": "Project",
+        "dependencies": {
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.5.2, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.5.2, )",
+          "System.Net.Http": "[4.3.4, )",
+          "System.Text.Json": "[8.0.3, )",
+          "System.Text.RegularExpressions": "[4.3.1, )"
+        }
+      },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",
         "requested": "[8.0.1, )",

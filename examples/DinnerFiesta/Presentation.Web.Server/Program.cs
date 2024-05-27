@@ -76,6 +76,8 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"))
 
 builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+    //.WithTask(sp =>
+    //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>()
     //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
     .WithBehavior<RetryStartupTaskBehavior>()

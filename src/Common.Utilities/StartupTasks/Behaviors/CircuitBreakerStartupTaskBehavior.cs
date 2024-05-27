@@ -10,13 +10,8 @@ using Microsoft.Extensions.Logging;
 using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
 using Polly.Retry;
 
-public class CircuitBreakerStartupTaskBehavior : StartupTaskBehaviorBase
+public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
-    public CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

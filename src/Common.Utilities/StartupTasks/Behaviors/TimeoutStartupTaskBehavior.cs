@@ -12,13 +12,8 @@ using Polly.Timeout;
 using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
 using Humanizer;
 
-public class TimeoutStartupTaskBehavior : StartupTaskBehaviorBase
+public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
-    public TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

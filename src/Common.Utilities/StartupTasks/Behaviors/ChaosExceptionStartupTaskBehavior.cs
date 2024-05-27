@@ -9,13 +9,8 @@ using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
-public class ChaosExceptionStartupTaskBehavior : StartupTaskBehaviorBase
+public class ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
-    public ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

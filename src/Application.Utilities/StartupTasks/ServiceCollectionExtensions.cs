@@ -5,6 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System;
+using System.Linq.Expressions;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -75,6 +77,45 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    public static StartupTasksBuilderContext WithTask(
+        this StartupTasksBuilderContext context,
+        Func<IServiceProvider, IStartupTask> implementationFactory)
+    {
+        return context.WithTask(implementationFactory, new StartupTaskOptions());
+    }
+
+    public static StartupTasksBuilderContext WithTask(
+        this StartupTasksBuilderContext context,
+        Func<IServiceProvider, IStartupTask> implementationFactory,
+        Builder<StartupTaskOptionsBuilder, StartupTaskOptions> optionsBuilder)
+    {
+        return context.WithTask(implementationFactory, optionsBuilder(new StartupTaskOptionsBuilder()).Build());
+    }
+
+    public static StartupTasksBuilderContext WithTask(
+        this StartupTasksBuilderContext context,
+        Func<IServiceProvider, IStartupTask> implementationFactory,
+        StartupTaskOptions options)
+    {
+        if (implementationFactory is not null)
+        {
+            // Temporarily create an instance to infer the type
+            using var serviceProvider = context.Services.BuildServiceProvider();
+            var instance = implementationFactory(serviceProvider);
+            var implementationType = instance.GetType();
+
+            context.Services.AddSingleton(sp =>
+                new StartupTaskDefinition
+                {
+                    TaskType = implementationType,
+                    Options = options ?? new StartupTaskOptions()
+                });
+            context.Services.AddScoped(implementationType, implementationFactory);
+        }
+
+        return context;
+    }
+
     public static StartupTasksBuilderContext WithBehavior<TBehavior>(
         this StartupTasksBuilderContext context,
         IStartupTaskBehavior behavior = null)
@@ -114,5 +155,38 @@ public static class ServiceCollectionExtensions
         }
 
         return context;
+    }
+
+    private static Type GetImplementationType(Func<IServiceProvider, IStartupTask> factory)
+    {
+        // Create an expression representing the delegate
+        Expression<Func<IServiceProvider, IStartupTask>> expression = sp => factory(sp);
+
+        // Extract the body of the expression
+        if (expression.Body is MethodCallExpression methodCall)
+        {
+            // Handle the case where the body is a method call
+            if (methodCall.Method.ReturnType != typeof(IStartupTask))
+            {
+                throw new InvalidOperationException("The delegate does not return IStartupTask.");
+            }
+
+            // Analyze the method call to get the return type
+            return methodCall.Method.ReturnType;
+        }
+        else if (expression.Body is NewExpression newExpression)
+        {
+            // Handle the case where the body is a new expression
+            return newExpression.Type;
+        }
+        else if (expression.Body is MemberInitExpression memberInitExpression)
+        {
+            // Handle the case where the body is a member initialization expression
+            return memberInitExpression.NewExpression.Type;
+        }
+        else
+        {
+            throw new InvalidOperationException("Unable to determine the implementation type.");
+        }
     }
 }

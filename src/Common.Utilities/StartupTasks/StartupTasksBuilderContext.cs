@@ -7,15 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 
-public class StartupTasksBuilderContext
+public class StartupTasksBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public StartupTasksBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }

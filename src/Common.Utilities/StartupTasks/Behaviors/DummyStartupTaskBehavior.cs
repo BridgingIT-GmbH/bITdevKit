@@ -7,13 +7,8 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 
-public class DummyStartupTaskBehavior : StartupTaskBehaviorBase
+public class DummyStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
-    public DummyStartupTaskBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

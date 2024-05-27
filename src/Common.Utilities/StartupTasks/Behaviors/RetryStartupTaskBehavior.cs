@@ -11,13 +11,8 @@ using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.
 using Humanizer;
 using System.Diagnostics;
 
-public class RetryStartupTaskBehavior : StartupTaskBehaviorBase
+public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
-    public RetryStartupTaskBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

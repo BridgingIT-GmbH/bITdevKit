@@ -51,7 +51,11 @@ public interface IActionResultMapper
     ActionResult<TModel> Accepted<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
         where TModel : new();
 
+    ActionResult Deleted(IResult result);
+
     ActionResult<TModel> Deleted<TModel>(IResult result);
+
+    ActionResult NoContent(IResult result);
 
     ActionResult<TModel> NoContent<TModel>(IResult result);
 

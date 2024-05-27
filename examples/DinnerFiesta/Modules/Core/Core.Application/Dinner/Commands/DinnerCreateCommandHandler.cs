@@ -12,7 +12,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 public class DinnerCreateCommandHandler : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>

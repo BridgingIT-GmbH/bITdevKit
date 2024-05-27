@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,16 +31,16 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAuditable
 {
     private readonly AuditStateByType byType;
-    private readonly ICurrentUserService currentUserService;
+    private readonly ICurrentUserAccessor currentUserAccessor;
 
     public RepositoryAuditStateBehavior(
         IGenericRepository<TEntity> ínner,
         AuditStateByType byType = AuditStateByType.ByUserName,
-        ICurrentUserService currentUserService = null)
+        ICurrentUserAccessor currentUserAccessor = null)
         : this(ínner)
     {
         this.byType = byType;
-        this.currentUserService = currentUserService ?? new NullCurrentUserService();
+        this.currentUserAccessor = currentUserAccessor ?? new NullCurrentUserAccessor();
     }
 
     public RepositoryAuditStateBehavior(
@@ -224,16 +223,16 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         switch (this.byType)
         {
             case AuditStateByType.ByUserName:
-                return this.currentUserService.UserName;
+                return this.currentUserAccessor.UserName;
             case AuditStateByType.ByEmail:
-                return this.currentUserService.Email;
+                return this.currentUserAccessor.Email;
             case AuditStateByType.ByUserId:
                 break;
             default:
-                return this.currentUserService.UserId;
+                return this.currentUserAccessor.UserId;
         }
 
-        return this.currentUserService.UserId;
+        return this.currentUserAccessor.UserId;
     }
 }
 

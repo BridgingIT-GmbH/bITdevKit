@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
 
-public class AuthorizeRolesAttribute : AuthorizeAttribute
+public abstract class EndpointsBase : IEndpoints
 {
-    public AuthorizeRolesAttribute(params string[] roles) =>
-        this.Roles = string.Join(",", roles);
+    public bool Enabled { get; set; } = true;
+
+    public bool IsRegistered { get; set; }
+
+    public abstract void Map(IEndpointRouteBuilder app);
 }

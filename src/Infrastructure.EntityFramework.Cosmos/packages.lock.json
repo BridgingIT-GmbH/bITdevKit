@@ -1245,7 +1245,7 @@
       },
       "Microsoft.Azure.Cosmos": {
         "type": "CentralTransitive",
-        "requested": "[3.39.1, )",
+        "requested": "[3.40.0, )",
         "resolved": "3.37.0",
         "contentHash": "NTNIGWBMVc/gwS2utRvSQ2pULeNC+BomgYh4sb5lQAVH/kkWUDcRgHwd3/YQE9xuo5U6jkEe1VHFME0szC1z3g==",
         "dependencies": {

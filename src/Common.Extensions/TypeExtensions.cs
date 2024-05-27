@@ -128,15 +128,8 @@ public static class TypeExtensions
     [DebuggerStepThrough]
     public static FieldInfo GetFieldUnambiguous(this Type source, string name, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
     {
-        if (source is null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
-
-        if (name is null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(name);
 
         flags |= BindingFlags.DeclaredOnly;
 
@@ -158,15 +151,8 @@ public static class TypeExtensions
     [DebuggerStepThrough]
     public static PropertyInfo GetPropertyUnambiguous(this Type source, string name, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
     {
-        if (source is null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
-
-        if (name is null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(name);
 
         flags |= BindingFlags.DeclaredOnly;
 
@@ -193,6 +179,8 @@ public static class TypeExtensions
     [DebuggerStepThrough]
     public static bool ImplementsInterface(this Type source, Type @interface)
     {
+        //EnsureArg.IsTrue(@interface?.IsInterface == true);
+
         if (source is null || @interface is null)
         {
             return false;
@@ -210,6 +198,8 @@ public static class TypeExtensions
     [DebuggerStepThrough]
     public static bool ImplementsOpenGenericInterface(this Type source, Type @interface)
     {
+        //EnsureArg.IsTrue(@interface?.IsInterface == true);
+
         if (source is null || @interface is null)
         {
             return false;

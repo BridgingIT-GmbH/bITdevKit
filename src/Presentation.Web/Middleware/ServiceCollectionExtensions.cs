@@ -1,8 +1,14 @@
-﻿namespace BridgingIT.DevKit.Presentation.Web.Middleware;
-using BridgingIT.DevKit.Presentation.Web.Host;
-using Microsoft.Extensions.DependencyInjection;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-public static class ServiceCollectionExtensions
+namespace Microsoft.Extensions.DependencyInjection;
+
+using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.Host;
+
+public static partial class ServiceCollectionExtensions
 {
     public static IServiceCollection AddExceptionHandler(
         this IServiceCollection services)

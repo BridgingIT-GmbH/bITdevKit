@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class NullCurrentUserService : ICurrentUserService
+public class NullCurrentUserAccessor : ICurrentUserAccessor
 {
     public string UserId => null;
 

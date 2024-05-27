@@ -7,10 +7,6 @@ namespace Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-public class UpdatedAtActionResult : CreatedAtActionResult
+public class UpdatedAtActionResult(string actionName, string controllerName, object routeValues, [ActionResultObjectValue] object value) : CreatedAtActionResult(actionName, controllerName, routeValues, value)
 {
-    public UpdatedAtActionResult(string actionName, string controllerName, object routeValues, [ActionResultObjectValue] object value)
-        : base(actionName, controllerName, routeValues, value)
-    {
-    }
 }

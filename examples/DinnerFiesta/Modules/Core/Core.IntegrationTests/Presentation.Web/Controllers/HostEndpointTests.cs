@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Cont
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
 using Dumpify;
 using FluentAssertions;
-using Microsoft.Diagnostics.Runtime;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]

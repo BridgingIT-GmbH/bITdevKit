@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 
 public class Host : AuditableAggregateRoot<HostId, Guid>

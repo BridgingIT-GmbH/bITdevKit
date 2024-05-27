@@ -3,15 +3,15 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common;
+namespace BridgingIT.DevKit.Presentation.Web;
 
-public interface ICurrentUserService
+using Microsoft.AspNetCore.Routing;
+
+public interface IEndpoints
 {
-    public string UserId { get; }
+    bool Enabled { get; set; }
 
-    public string UserName { get; }
+    bool IsRegistered { get; set; }
 
-    public string Email { get; }
-
-    public string[] Roles { get; }
+    void Map(IEndpointRouteBuilder app);
 }

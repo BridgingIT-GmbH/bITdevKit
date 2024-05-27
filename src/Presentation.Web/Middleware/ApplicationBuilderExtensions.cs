@@ -3,10 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web;
+namespace Microsoft.AspNetCore.Builder;
 
 using System;
-using Microsoft.AspNetCore.Builder;
+using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -12,7 +12,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 public class HostCreateCommandHandler : CommandHandlerBase<HostCreateCommand, Result<Host>>

@@ -62,6 +62,14 @@ jobs:
 
       - run: dotnet --info
 
+      - name: Cache nuget packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore nuget packages
         run: dotnet restore --verbosity Normal
 
@@ -91,7 +99,7 @@ jobs:
       # - name: Package push (nuget) # Push only when creating a GitHub Release
       #   env:
       #     SOURCE: ${{ secrets.NUGET_PUSH_SOURCE }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
-      #     API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+      #     API_KEY: ${{ secrets.\_PUSH_API_KEY }}
       #   if: github.event_name == 'release' && (env.SOURCE != '' || env.API_KEY != '')
       #   run: dotnet nuget push ${{ env.NuGet_Directory }}/*.nupkg --source ${{ env.SOURCE }} --api-key ${{ env.API_KEY }}
 

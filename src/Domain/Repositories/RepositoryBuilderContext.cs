@@ -79,6 +79,15 @@ public class RepositoryBuilderContext<TEntity>
         return this;
     }
 
+    public RepositoryBuilderContext<TEntity> WithBehavior2<TBehavior>()
+        where TBehavior : class, IGenericRepository<TEntity>
+    {
+        this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>, TBehavior>());
+        this.RegisterBehaviors();
+
+        return this;
+    }
+
     public RepositoryBuilderContext<TEntity> WithBehavior<TBehavior>(Func<IGenericRepository<TEntity>, TBehavior> behavior)
         where TBehavior : notnull, IGenericRepository<TEntity>
     {

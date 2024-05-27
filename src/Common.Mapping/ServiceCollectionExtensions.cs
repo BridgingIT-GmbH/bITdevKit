@@ -34,7 +34,8 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
 
         return context.WithAutoMapper(
-            BridgingIT.DevKit.Common.AssemblyExtensions.SafeGetTypes(AppDomain.CurrentDomain.GetAssemblies(), typeof(Profile)).Select(t => t.Assembly).Distinct(),
+            BridgingIT.DevKit.Common.AssemblyExtensions
+                .SafeGetTypes(AppDomain.CurrentDomain.GetAssemblies(), typeof(Profile)).Select(t => t.Assembly).Distinct(),
             configuration,
             section);
     }

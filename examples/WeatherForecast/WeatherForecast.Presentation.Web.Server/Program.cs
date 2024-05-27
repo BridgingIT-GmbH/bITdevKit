@@ -99,6 +99,10 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
+builder.Services.AddEndpoints<SystemEndpoints>();
+//builder.Services.AddEndpoints(
+//    new SystemEndpoints(
+//        new SystemEndpointsOptions { GroupPrefix = "/api/system" }));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument);
 
@@ -149,6 +153,7 @@ if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
 app.MapModules();
 app.MapRazorPages();
 app.MapControllers();
+app.MapEndpoints();
 app.MapHealthChecks();
 app.MapFallbackToFile("index.html");
 app.MapHub<NotificationHub>("/notificationhub");

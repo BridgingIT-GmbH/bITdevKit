@@ -72,7 +72,8 @@ public class CoreModule : WebModuleBase
                     //c.UseQuerySplittingBehavior(Microsoft.EntityFrameworkCore.QuerySplittingBehavior.SplitQuery);
                 })
             .WithHealthChecks()
-            .WithDatabaseMigratorService()
+            .WithDatabaseMigratorService(o => o
+                .Enabled(environment.IsDevelopment()))
             //.WithDatabaseCreatorService(o => o.DeleteOnStartup())
             //.WithOutboxMessageService(o => o
             //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs

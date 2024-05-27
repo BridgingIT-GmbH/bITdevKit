@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System;
 using BridgingIT.DevKit.Common;
 
-public class FakeCurrentUserService : ICurrentUserService
+public class FakeCurrentUserAccessor : ICurrentUserAccessor
 {
     private static readonly List<User> Users =
     [
@@ -29,7 +29,7 @@ public class FakeCurrentUserService : ICurrentUserService
     private static readonly Dictionary<string, User> UserStore =[];
     private static readonly Random Random = new();
 
-    static FakeCurrentUserService()
+    static FakeCurrentUserAccessor()
     {
         foreach (var user in Users)
         {
@@ -40,7 +40,7 @@ public class FakeCurrentUserService : ICurrentUserService
         }
     }
 
-    public FakeCurrentUserService()
+    public FakeCurrentUserAccessor()
     {
         var user = GetRandomUser();
         this.UserId = user.Key;

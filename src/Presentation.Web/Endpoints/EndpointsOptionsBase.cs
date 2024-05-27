@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using Microsoft.AspNetCore.Authorization;
-
-public class AuthorizeRolesAttribute : AuthorizeAttribute
+public abstract class EndpointsOptionsBase
 {
-    public AuthorizeRolesAttribute(params string[] roles) =>
-        this.Roles = string.Join(",", roles);
+    public bool Enabled { get; set; } = true;
+
+    public string GroupPrefix { get; set; } = "/api";
+
+    public string GroupTag { get; set; } = string.Empty;
+
+    public bool RequireAuthorization { get; set; }
 }

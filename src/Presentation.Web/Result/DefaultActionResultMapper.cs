@@ -527,9 +527,26 @@ public class DefaultActionResultMapper : IActionResultMapper
         }
     }
 
+    public virtual ActionResult Deleted(IResult result)
+    {
+        return this.NoContent(result);
+    }
+
     public virtual ActionResult<TModel> Deleted<TModel>(IResult result)
     {
         return this.NoContent<TModel>(result);
+    }
+
+    public virtual ActionResult NoContent(IResult result)
+    {
+        if (!result.HasError())
+        {
+            return new NoContentResult();
+        }
+        else
+        {
+            return MapError(result);
+        }
     }
 
     public virtual ActionResult<TModel> NoContent<TModel>(IResult result)

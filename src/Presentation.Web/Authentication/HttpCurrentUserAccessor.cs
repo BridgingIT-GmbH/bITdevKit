@@ -9,7 +9,7 @@ using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 
-public class HttpCurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
+public class HttpCurrentUserAccessor(IHttpContextAccessor httpContextAccessor) : ICurrentUserAccessor
 {
     public string UserId =>
         httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -21,5 +21,5 @@ public class HttpCurrentUserService(IHttpContextAccessor httpContextAccessor) : 
         httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
 
     public string[] Roles =>
-        httpContextAccessor.HttpContext.User?.FindAll(ClaimTypes.Role).Select(r => r.Value).ToArray();
+        httpContextAccessor.HttpContext.User?.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray();
 }

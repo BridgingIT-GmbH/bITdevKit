@@ -154,11 +154,11 @@
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "Direct",
-        "requested": "[1.8.0, )",
-        "resolved": "1.8.0",
-        "contentHash": "Ma7TL1leE/8qtD1mg8iiNND9VxmPpb81JCVfuSHKZImtaFHCfwKBtVB9SJ42/hHdy6I0Oi/TBQzWnfZvx0or2A==",
+        "requested": "[1.8.1, )",
+        "resolved": "1.8.1",
+        "contentHash": "eorE+GDtia+UNC5j1g5SqhnR7ghqiqsoCsEqnKYtKqj1jzhk90Di6e4fA8sSJLTQYYVqiZY/pLbnGTycnavBfg==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.8.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.8.1, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.SqlClient": {
@@ -2613,7 +2613,7 @@
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Humanizer.Core": "[2.14.1, )",
-          "Microsoft.Azure.Cosmos": "[3.39.1, )",
+          "Microsoft.Azure.Cosmos": "[3.40.0, )",
           "Microsoft.IdentityModel.JsonWebTokens": "[7.5.2, )",
           "System.IdentityModel.Tokens.Jwt": "[7.5.2, )",
           "System.Net.Http": "[4.3.4, )",
@@ -2987,9 +2987,9 @@
       },
       "Microsoft.Azure.Cosmos": {
         "type": "CentralTransitive",
-        "requested": "[3.39.1, )",
-        "resolved": "3.39.1",
-        "contentHash": "wiciBTz1WfzwPnK1lZxZJhuliL9WfbfTgQnVNdORV4QYQxDpO8mIoBYho9w/WA8d0QM7p/GnQedxDJ8TKN2CvA==",
+        "requested": "[3.40.0, )",
+        "resolved": "3.40.0",
+        "contentHash": "aORS4mzRk2nHav6kWo0fMCgOpF5IW2n+K7XHWPkpyxQvXuSkFMh0QD3h//YQzF/eqSJj1BMo33BOjXvTy7/Pow==",
         "dependencies": {
           "Azure.Core": "1.19.0",
           "Microsoft.Bcl.AsyncInterfaces": "1.0.0",

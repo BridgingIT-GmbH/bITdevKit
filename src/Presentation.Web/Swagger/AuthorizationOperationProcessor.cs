@@ -12,14 +12,9 @@ using NSwag;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-public class AuthorizationOperationProcessor : IOperationProcessor
+public class AuthorizationOperationProcessor(string name) : IOperationProcessor
 {
-    private readonly string name;
-
-    public AuthorizationOperationProcessor(string name)
-    {
-        this.name = name;
-    }
+    private readonly string name = name;
 
     public bool Process(OperationProcessorContext context)
     {

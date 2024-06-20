@@ -129,7 +129,7 @@
     <PackageVersion Include="System.Text.Json" Version="8.0.3" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.2" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageVersion Include="Testcontainers.Azurite" Version="3.8.0" />
     <PackageVersion Include="Testcontainers.CosmosDb" Version="3.8.0" />

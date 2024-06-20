@@ -9,14 +9,9 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-public class SystemTextJsonSerializer : ISerializer, ITextSerializer
+public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : ISerializer, ITextSerializer
 {
-    private readonly JsonSerializerOptions options;
-
-    public SystemTextJsonSerializer(JsonSerializerOptions options = null)
-    {
-        this.options = options ?? DefaultSystemTextJsonSerializerOptions.Create();
-    }
+    private readonly JsonSerializerOptions options = options ?? DefaultSystemTextJsonSerializerOptions.Create();
 
     /// <summary>
     /// Serializes the specified value.

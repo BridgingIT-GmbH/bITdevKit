@@ -17,13 +17,9 @@ using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 
 [Obsolete("Use GenericRepositoryTracingBehavior instead")]
-public class GenericRepositoryTracingDecorator<TEntity> : RepositoryTracingBehavior<TEntity>
+public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEntity> inner) : RepositoryTracingBehavior<TEntity>(inner)
     where TEntity : class, IEntity
 {
-    public GenericRepositoryTracingDecorator(IGenericRepository<TEntity> inner)
-        : base(inner)
-    {
-    }
 }
 
 /// <summary>

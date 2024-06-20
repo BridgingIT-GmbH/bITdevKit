@@ -9,16 +9,10 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkSqliteDocumentStoreProviderTests : EntityFrameworkDocumentStoreProviderTestsBase
+public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
-    private readonly TestEnvironmentFixture fixture;
-    private readonly ITestOutputHelper output;
-
-    public EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-        this.output = output;
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
+    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task DeleteAsync_DeletesEntity()

@@ -10,20 +10,16 @@ using System.Linq;
 using System.Threading;
 using BridgingIT.DevKit.Common;
 
-public class InMemoryDocumentStoreContext
+public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 {
     private readonly ReaderWriterLockSlim @lock = new();
 
     public InMemoryDocumentStoreContext()
+        : this(Enumerable.Empty<DocumentEntity>())
     {
     }
 
-    public InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
-    {
-        this.Entities = entities.SafeNull().ToList();
-    }
-
-    protected List<DocumentEntity> Entities { get; } = new();
+    protected List<DocumentEntity> Entities { get; } = entities.SafeNull().ToList();
 
     public virtual IEnumerable<T> Find<T>()
         where T : class, new()

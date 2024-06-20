@@ -7,16 +7,10 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkInMemoryGenericRepositoryTests : EntityFrameworkGenericRepositoryTestsBase
+public class EntityFrameworkInMemoryGenericRepositoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkGenericRepositoryTestsBase
 {
-    private readonly TestEnvironmentFixture fixture;
-    private readonly ITestOutputHelper output;
-
-    public EntityFrameworkInMemoryGenericRepositoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-        this.output = output;
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
+    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task DeleteAsync_ByEntity_EntityDeleted()

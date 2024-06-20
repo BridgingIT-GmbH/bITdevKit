@@ -10,13 +10,8 @@ using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
-public class ChaosExceptionMessageHandlerBehavior : MessageHandlerBehaviorBase
+public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    public ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

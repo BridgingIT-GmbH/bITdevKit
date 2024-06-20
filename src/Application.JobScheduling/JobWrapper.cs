@@ -13,40 +13,36 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public class JobWrapper : IJob, IDisposable
+public class JobWrapper(
+    IServiceProvider serviceProvider,
+    IJob innerJob,
+    IEnumerable<IModuleContextAccessor> moduleAccessors) : IJob, IDisposable
 {
     private const string CorrelationKey = "CorrelationId";
     private const string FlowKey = "FlowId";
     private const string JobIdKey = "JobId";
     private const string JobTypeKey = "JobType";
-    private readonly IServiceProvider serviceProvider;
+    private readonly IServiceProvider serviceProvider = serviceProvider;
 
-    public JobWrapper(
-        IServiceProvider serviceProvider,
-        IJob innerJob,
-        IEnumerable<IModuleContextAccessor> moduleAccessors)
-    {
-        this.serviceProvider = serviceProvider;
-        this.InnerJob = innerJob;
-        this.ModuleAccessors = moduleAccessors;
-    }
+    public IJob InnerJob { get; set; } = innerJob;
 
-    public IJob InnerJob { get; set; }
-
-    public IEnumerable<IModuleContextAccessor> ModuleAccessors { get; set; }
+    public IEnumerable<IModuleContextAccessor> ModuleAccessors { get; set; } = moduleAccessors;
 
     public virtual async Task Execute(IJobExecutionContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
         var logger = this.serviceProvider?.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
+        context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
+        var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
+        var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
         var jobId = context.JobDetail.JobDataMap.GetString(JobIdKey) ?? context.FireInstanceId;
-        var jobTypeName = context.JobDetail.JobType.Name;
+        var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
         {
-            [CorrelationKey] = GuidGenerator.CreateSequential().ToString("N"),
-            [FlowKey] = GuidGenerator.Create(this.GetType().ToString()).ToString("N"),
+            [CorrelationKey] = correlationId,
+            [FlowKey] = flowId,
             [JobIdKey] = jobId,
             [JobTypeKey] = jobTypeName,
         }))
@@ -58,11 +54,12 @@ public class JobWrapper : IJob, IDisposable
                 // Activity.Current?.AddEvent(new($"behaviours: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute"));
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
+                context.Put(Constants.CorrelationIdKey, correlationId);
+                context.Put(Constants.FlowIdKey, flowId);
+                context.Trigger.JobDataMap.TryGetString(Constants.TriggeredByKey, out var triggeredBy);
+                context.Put(Constants.TriggeredByKey, triggeredBy.EmptyToNull() ?? context.Scheduler.SchedulerName);
 
-                async Task JobExecutor() => await this.InnerJob.Execute(context).AnyContext();
-                await behaviors.SafeNull().Reverse()
-                  .Aggregate((JobDelegate)JobExecutor, (next, pipeline) => async () =>
-                      await pipeline.Execute(context, next))();
+                await this.ExecutePipeline(context, behaviors);
             }
             catch (Exception ex)
             {
@@ -74,5 +71,13 @@ public class JobWrapper : IJob, IDisposable
     public virtual void Dispose()
     {
         (this.InnerJob as IDisposable)?.Dispose();
+    }
+
+    private async Task ExecutePipeline(IJobExecutionContext context, IEnumerable<IJobSchedulingBehavior> behaviors)
+    {
+        async Task JobExecutor() => await this.InnerJob.Execute(context).AnyContext();
+        await behaviors.SafeNull().Reverse()
+          .Aggregate((JobDelegate)JobExecutor, (next, pipeline) => async () =>
+              await pipeline.Execute(context, next))();
     }
 }

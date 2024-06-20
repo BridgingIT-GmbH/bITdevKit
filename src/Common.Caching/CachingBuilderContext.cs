@@ -8,15 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-public class CachingBuilderContext
+public class CachingBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public CachingBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }

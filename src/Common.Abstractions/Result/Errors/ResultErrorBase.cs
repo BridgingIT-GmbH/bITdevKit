@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public abstract class ResultErrorBase : IResultError
+public abstract class ResultErrorBase(string message = null) : IResultError
 {
-    protected ResultErrorBase(string message = null)
-    {
-        this.Message = message;
-    }
-
-    public string Message { get; init; }
+    public string Message { get; init; } = message;
 }

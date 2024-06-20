@@ -32,7 +32,7 @@ public class DinnerSchedule : ValueObject
     {
         Check.Throw(new IBusinessRule[]
         {
-            new ScheduleShouldBeValidRule(startDateTime, endDateTime),
+            DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime),
         });
 
         return new DinnerSchedule(startDateTime, endDateTime);

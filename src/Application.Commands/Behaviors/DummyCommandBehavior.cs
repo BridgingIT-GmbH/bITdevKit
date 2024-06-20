@@ -11,14 +11,9 @@ using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class DummyCommandBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class DummyCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    public DummyCommandBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     protected override bool CanProcess(TRequest request)
     {
         return true;

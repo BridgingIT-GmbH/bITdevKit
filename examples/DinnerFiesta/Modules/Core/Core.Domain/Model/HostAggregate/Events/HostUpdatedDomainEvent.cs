@@ -7,12 +7,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class HostUpdatedDomainEvent : DomainEventBase
+public class HostUpdatedDomainEvent(Host host) : DomainEventBase
 {
-    public HostUpdatedDomainEvent(Host host)
-    {
-        this.Host = host;
-    }
-
-    public Host Host { get; }
+    public Host Host { get; } = host;
 }

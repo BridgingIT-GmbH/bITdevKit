@@ -25,7 +25,7 @@ public class Rating : ValueObject
     {
         Check.Throw(new IBusinessRule[]
         {
-            new RatingShouldBeInRangeRule(value),
+            RatingRules.ShouldBeInRange(value),
         });
 
         return new Rating(value);

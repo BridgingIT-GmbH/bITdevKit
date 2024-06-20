@@ -7,15 +7,10 @@ namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class EntityCannotBeDeletedAgainRule<TEntity> : IBusinessRule
+public class EntityCannotBeDeletedAgainRule<TEntity>(TEntity entity) : IBusinessRule
     where TEntity : class, IEntity, IAuditable
 {
-    private readonly bool? deleted;
-
-    public EntityCannotBeDeletedAgainRule(TEntity entity)
-    {
-        this.deleted = entity?.AuditState?.IsDeleted();
-    }
+    private readonly bool? deleted = entity?.AuditState?.IsDeleted();
 
     public string Message => "An already deleted entity cannot be deleted again.";
 

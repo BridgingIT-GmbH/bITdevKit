@@ -13,15 +13,10 @@ using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-public class LiteDbGenericRepository<TEntity> :
-    LiteDbReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
+public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options) :
+    LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    public LiteDbGenericRepository(ILiteDbRepositoryOptions options)
-        : base(options)
-    {
-    }
-
     public LiteDbGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build())
     {

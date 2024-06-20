@@ -14,20 +14,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class HostCreateCommandHandler : CommandHandlerBase<HostCreateCommand, Result<Host>>
+public class HostCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Host> repository) : CommandHandlerBase<HostCreateCommand, Result<Host>>(loggerFactory)
 {
-    private readonly IGenericRepository<Host> repository;
-
-    public HostCreateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Host> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result<Host>>> Process(HostCreateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
@@ -40,10 +30,10 @@ public class HostCreateCommandHandler : CommandHandlerBase<HostCreateCommand, Re
 
         Check.Throw(new IBusinessRule[]
         {
-            new HostUserMustBeUniqueRule(this.repository, host.UserId),
+            HostRules.UserMustBeUnique(repository, host.UserId),
         });
 
-        await this.repository.InsertAsync(host, cancellationToken);
+        await repository.InsertAsync(host, cancellationToken);
 
         return CommandResponse.Success(host);
     }

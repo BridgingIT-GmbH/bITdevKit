@@ -14,20 +14,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class DinnerCreateCommandHandler : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>
+public class DinnerCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Dinner> repository) : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>(loggerFactory)
 {
-    private readonly IGenericRepository<Dinner> repository;
-
-    public DinnerCreateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Dinner> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result<Dinner>>> Process(DinnerCreateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
@@ -57,11 +47,11 @@ public class DinnerCreateCommandHandler : CommandHandlerBase<DinnerCreateCommand
 
         Check.Throw(new IBusinessRule[]
         {
-            new DinnerNameMustBeUniqueRule(this.repository, dinner.Name),
-            new DinnerScheduleMustNotOverlapRule(this.repository, dinner.HostId, dinner.Schedule),
+            new DinnerNameMustBeUniqueRule(repository, dinner.Name),
+            new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule),
         });
 
-        await this.repository.InsertAsync(dinner, cancellationToken);
+        await repository.InsertAsync(dinner, cancellationToken);
 
         return CommandResponse.Success(dinner);
     }

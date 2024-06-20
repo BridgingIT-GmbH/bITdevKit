@@ -17,6 +17,7 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 
 public class MarketingModule : WebModuleBase
 {
@@ -35,20 +36,18 @@ public class MarketingModule : WebModuleBase
 
         services.AddSqlServerDbContext<MarketingDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                //.UseLogger()
-                //.UseSimpleLogger()
+                //.UseLogger().UseSimpleLogger()
                 .UseCommandLogger(),
                 //.UseIntercepter<ModuleScopeInterceptor>()
                 //.UseIntercepter<CommandLoggerInterceptor>(),
-                c =>
-                {
-                    c.CommandTimeout(30);
-                    //c.UseQuerySplittingBehavior(Microsoft.EntityFrameworkCore.QuerySplittingBehavior.SplitQuery);
-                })
+                c => c
+                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                    .CommandTimeout(30))
             .WithHealthChecks()
-            .WithDatabaseMigratorService(o => o
-                .Enabled(environment.IsDevelopment()));
-            //.WithDatabaseCreatorService(o => o.DeleteOnStartup())
+            //.WithDatabaseMigratorService(o => o
+            //    .Enabled(environment.IsDevelopment())
+            //    /*.PurgeOnStartup()*/);
+            .WithDatabaseCreatorService(/*o => o.DeleteOnStartup()*/);
             //.WithOutboxMessageService(o => o
             //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
             //.WithOutboxDomainEventService(o => o //

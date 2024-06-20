@@ -9,17 +9,17 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class HostForUserSpecification : Specification<Host>
+public class HostForUserSpecification(UserId hostId) : Specification<Host>
 {
-    private readonly UserId userId;
-
-    public HostForUserSpecification(UserId hostId)
-    {
-        this.userId = hostId;
-    }
+    private readonly UserId userId = hostId;
 
     public override Expression<Func<Host, bool>> ToExpression()
     {
         return d => d.UserId == this.userId;
     }
+}
+
+public static partial class HostSpecifications
+{
+    public static ISpecification<Host> ForUser(UserId hostId) => new HostForUserSpecification(hostId);
 }

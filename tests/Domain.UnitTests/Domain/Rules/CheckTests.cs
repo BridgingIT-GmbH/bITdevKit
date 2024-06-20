@@ -267,16 +267,10 @@ public class CheckTests
     }
 }
 
-public class StubBusinessRule : IBusinessRule
+public class StubBusinessRule(bool isSatisfied, bool fail = false) : IBusinessRule
 {
-    private readonly bool isSatisfied;
-    private readonly bool fail;
-
-    public StubBusinessRule(bool isSatisfied, bool fail = false)
-    {
-        this.isSatisfied = isSatisfied;
-        this.fail = fail;
-    }
+    private readonly bool isSatisfied = isSatisfied;
+    private readonly bool fail = fail;
 
     public string Message => "help";
 

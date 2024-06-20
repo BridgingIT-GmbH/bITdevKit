@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 
-public class Price : ValueObject
+public class Price : ValueObject // TODO: or use Money?
 {
     private Price()
     {
@@ -28,7 +28,7 @@ public class Price : ValueObject
     {
         Check.Throw(new IBusinessRule[]
         {
-            new PriceShouldBeInRangeRule(amount),
+            PriceRules.ShouldBeInRange(amount),
         });
 
         return new Price(amount, currency);

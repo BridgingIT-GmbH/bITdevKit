@@ -9,17 +9,17 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class MenuForHostSpecification : Specification<Menu>
+public class MenuForHostSpecification(HostId hostId) : Specification<Menu>
 {
-    private readonly HostId hostId;
-
-    public MenuForHostSpecification(HostId hostId)
-    {
-        this.hostId = hostId;
-    }
+    private readonly HostId hostId = hostId;
 
     public override Expression<Func<Menu, bool>> ToExpression()
     {
         return e => e.HostId == this.hostId;
     }
+}
+
+public static partial class MenuSpecifications
+{
+    public static ISpecification<Menu> ForHost(HostId hostId) => new MenuForHostSpecification(hostId);
 }

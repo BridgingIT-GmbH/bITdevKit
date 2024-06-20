@@ -20,15 +20,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext> : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
+public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context) : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext
     where TDatabaseEntity : class
 {
-    public EntityFrameworkReadOnlyRepositoryWrapper(ILoggerFactory loggerFactory, TContext context)
-        : base(loggerFactory, context)
-    {
-    }
 }
 
 public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> : // TODO: rename to EntityFrameworkReadOnlykRepository + Obsolete

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Retry;
 
 public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)

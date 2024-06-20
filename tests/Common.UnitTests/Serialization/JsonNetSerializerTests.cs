@@ -6,13 +6,8 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 [UnitTest("Common")]
-public class JsonNetSerializerTests : SerializerTestsBase
+public class JsonNetSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
-    public JsonNetSerializerTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public override void CanRoundTripStream_Test()
     {
@@ -61,13 +56,8 @@ public class JsonNetSerializerTests : SerializerTestsBase
     }
 }
 
-public class JsonNetSerializerBenchmark : SerializerBenchmarkBase
+public class JsonNetSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
 {
-    public JsonNetSerializerBenchmark(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     protected override ISerializer GetSerializer()
     {
         return new JsonNetSerializer();

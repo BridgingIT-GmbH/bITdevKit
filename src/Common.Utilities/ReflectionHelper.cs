@@ -96,7 +96,7 @@ public static class ReflectionHelper
     public static Func<TParam, TReturn> CreateGetter<TParam, TReturn>(FieldInfo field)
     {
         var methodName = $"{field.ReflectedType.FullName}.get_{field.Name}";
-        var method = new DynamicMethod(methodName, typeof(TReturn), new[] { typeof(TParam) }, typeof(TParam), true);
+        var method = new DynamicMethod(methodName, typeof(TReturn), [typeof(TParam)], typeof(TParam), true);
         var ilGen = method.GetILGenerator();
         ilGen.Emit(OpCodes.Ldarg_0);
         ilGen.Emit(OpCodes.Ldfld, field);

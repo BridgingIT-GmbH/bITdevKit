@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class RatingShouldBeInRangeRule : IBusinessRule
+public class RatingShouldBeInRangeRule(int value) : IBusinessRule
 {
-    private readonly double? value;
-
-    public RatingShouldBeInRangeRule(int value)
-    {
-        this.value = value;
-    }
+    private readonly double? value = value;
 
     public string Message => "Rating should be between 1 and 5";
 
@@ -22,4 +17,9 @@ public class RatingShouldBeInRangeRule : IBusinessRule
     {
         return Task.FromResult(this.value >= 1 && this.value <= 5);
     }
+}
+
+public static partial class RatingRules
+{
+    public static IBusinessRule ShouldBeInRange(int value) => new RatingShouldBeInRangeRule(value);
 }

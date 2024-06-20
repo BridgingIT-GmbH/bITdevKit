@@ -5,14 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-public class RepositoryOptions : IRepositoryOptions
+public class RepositoryOptions(IEntityMapper mapper) : IRepositoryOptions
 {
-    public RepositoryOptions(IEntityMapper mapper)
-    {
-        this.Mapper = mapper;
-    }
-
-    public IEntityMapper Mapper { get; set; }
+    public IEntityMapper Mapper { get; set; } = mapper;
 
     public bool Autosave { get; set; } = true;
 }

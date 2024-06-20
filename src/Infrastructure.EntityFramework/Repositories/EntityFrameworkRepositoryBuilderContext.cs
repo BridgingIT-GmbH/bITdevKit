@@ -11,15 +11,10 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext> : RepositoryBuilderContext<TEntity>
+public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
     where TEntity : class, IEntity
     where TContext : DbContext
 {
-    public EntityFrameworkRepositoryBuilderContext(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null)
-        : base(services, lifetime, configuration)
-    {
-    }
-
     public EntityFrameworkRepositoryBuilderContext<TEntity, TContext> WithTransactions()
     {
         switch (this.Lifetime)

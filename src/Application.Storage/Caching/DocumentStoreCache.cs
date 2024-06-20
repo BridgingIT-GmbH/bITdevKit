@@ -103,7 +103,7 @@ public class DocumentStoreCache : IDistributedCache
 
     private async Task RefreshDocumentAsync(string key, CacheDocument document, CancellationToken token = default)
     {
-        if (document == null)
+        if (document is null)
         {
             return;
         }

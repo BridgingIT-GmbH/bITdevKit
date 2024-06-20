@@ -5,6 +5,7 @@
 
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.JobScheduling;
@@ -15,8 +16,10 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -46,6 +49,8 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithRequestModuleContextAccessors()
     .WithModuleControllers(c => c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 
+builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
+
 // ===============================================================================================
 // Configure the services
 builder.Services.AddMediatR(); // or AddDomainEvents()?
@@ -68,7 +73,7 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(RetryQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"))
+builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
@@ -78,6 +83,12 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    //.WithTask(sp =>
+    //    new SqlServerQuartzSeederStartupTask(
+    //        sp.GetRequiredService<ILoggerFactory>(),
+    //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+    //        "[dbo].QRTZ444_"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>()
     //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
     .WithBehavior<RetryStartupTaskBehavior>()
@@ -113,6 +124,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
+builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
@@ -190,7 +202,9 @@ void ConfiguraApiBehavior(ApiBehaviorOptions options)
 
 void ConfigureJsonOptions(JsonOptions options)
 {
+    options.JsonSerializerOptions.WriteIndented = true;
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 }
 
@@ -198,14 +212,14 @@ void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
         .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "self" });
-        //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
-        //.AddCheck<RandomHealthCheck>("random")
-        //.AddAp/plicationInsightsPublisher()
+    //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
+    //.AddCheck<RandomHealthCheck>("random")
+    //.AddAp/plicationInsightsPublisher()
 
     ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
     services.AddHealthChecksUI() // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
         .AddInMemoryStorage();
-        //.AddSqliteStorage($"Data Source=data_health.db");
+    //.AddSqliteStorage($"Data Source=data_health.db");
 }
 
 void ConfigureMetrics(MeterProviderBuilder provider)

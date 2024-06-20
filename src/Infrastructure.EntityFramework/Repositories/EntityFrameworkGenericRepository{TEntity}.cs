@@ -14,14 +14,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkRepositoryWrapper<TEntity, TContext> : EntityFrameworkGenericRepository<TEntity>
+public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context) : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext
 {
-    public EntityFrameworkRepositoryWrapper(ILoggerFactory loggerFactory, TContext context)
-        : base(loggerFactory, context)
-    {
-    }
 }
 
 public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to EntityFrameworkRepository + Obsolete

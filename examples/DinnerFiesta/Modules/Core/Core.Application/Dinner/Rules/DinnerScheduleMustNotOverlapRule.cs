@@ -11,27 +11,14 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-public class DinnerScheduleMustNotOverlapRule : IBusinessRule
+public class DinnerScheduleMustNotOverlapRule(IGenericRepository<Dinner> repository, HostId hostId, DinnerSchedule schedule) : IBusinessRule
 {
-    private readonly IGenericRepository<Dinner> repository;
-    private readonly HostId hostId;
-    private readonly DinnerSchedule schedule;
-
-    public DinnerScheduleMustNotOverlapRule(IGenericRepository<Dinner> repository, HostId hostId, DinnerSchedule schedule)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-        this.hostId = hostId;
-        this.schedule = schedule;
-    }
-
     public string Message => "Dinners for same host cannot overlap";
 
     public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
     {
-        var dinners = await this.repository.FindAllAsync(
-            new DinnerForScheduleSpecification(this.hostId, this.schedule),
+        var dinners = await repository.FindAllAsync(
+            DinnerSpecifications.ForSchedule(hostId, schedule),
             cancellationToken: cancellationToken);
 
         return !dinners.SafeAny();

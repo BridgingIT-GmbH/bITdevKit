@@ -12,18 +12,13 @@ using System;
 /// </summary>
 /// <typeparam name="TSource">The type of the object to map from.</typeparam>
 /// <typeparam name="TTarget">The type of the object to map to.</typeparam>
-public class ObjectMapper<TSource, TTarget> : IMapper<TSource, TTarget>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ObjectMapper{TSource, TDestination}"/> class.
+/// </remarks>
+/// <param name="action">The action.</param>
+public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : IMapper<TSource, TTarget>
 {
-    private readonly Action<TSource, TTarget> action;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObjectMapper{TSource, TDestination}"/> class.
-    /// </summary>
-    /// <param name="action">The action.</param>
-    public ObjectMapper(Action<TSource, TTarget> action)
-    {
-        this.action = action;
-    }
+    private readonly Action<TSource, TTarget> action = action;
 
     /// <summary>
     /// Maps the specified source object into the destination object.

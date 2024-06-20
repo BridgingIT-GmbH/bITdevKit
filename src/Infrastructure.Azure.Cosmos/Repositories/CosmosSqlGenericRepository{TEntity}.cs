@@ -19,14 +19,10 @@ using EnsureThat;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class CosmosSqlRepositoryWrapper<TEntity, TProvider> : CosmosSqlGenericRepository<TEntity>
+public class CosmosSqlRepositoryWrapper<TEntity, TProvider>(ILoggerFactory loggerFactory, TProvider provider) : CosmosSqlGenericRepository<TEntity>(loggerFactory, provider)
     where TEntity : class, IEntity
     where TProvider : ICosmosSqlProvider<TEntity>
 {
-    public CosmosSqlRepositoryWrapper(ILoggerFactory loggerFactory, TProvider provider)
-        : base(loggerFactory, provider)
-    {
-    }
 }
 
 public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>

@@ -12,14 +12,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading.Tasks;
 using System.Threading;
 
-public partial class CommandLoggerInterceptor : DbCommandInterceptor
+public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : DbCommandInterceptor
 {
-    private readonly ILogger<CommandLoggerInterceptor> logger;
-
-    public CommandLoggerInterceptor(ILoggerFactory loggerFactory)
-    {
-        this.logger = loggerFactory?.CreateLogger<CommandLoggerInterceptor>() ?? NullLoggerFactory.Instance.CreateLogger<CommandLoggerInterceptor>();
-    }
+    private readonly ILogger<CommandLoggerInterceptor> logger = loggerFactory?.CreateLogger<CommandLoggerInterceptor>() ?? NullLoggerFactory.Instance.CreateLogger<CommandLoggerInterceptor>();
 
     public override InterceptionResult<int> NonQueryExecuting(DbCommand command, CommandEventData eventData, InterceptionResult<int> result)
     {

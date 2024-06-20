@@ -12,17 +12,12 @@ using BridgingIT.DevKit.Common;
 using Humanizer;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Retry;
 
-public class CircuitBreakerQueryBehavior<TRequest, TResponse> : QueryBehaviorBase<TRequest, TResponse>
+public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    public CircuitBreakerQueryBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     protected override bool CanProcess(TRequest request)
     {
         return request is ICircuitBreakerQuery;

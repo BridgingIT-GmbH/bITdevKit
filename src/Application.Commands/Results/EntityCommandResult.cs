@@ -7,16 +7,11 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class EntityCommandResult<TEntity>
+public class EntityCommandResult<TEntity>(TEntity entity)
     where TEntity : class, IEntity
 {
-    public EntityCommandResult(TEntity entity)
-    {
-        this.Entity = entity;
-    }
-
     /// <summary>
     /// The entity id
     /// </summary>
-    public TEntity Entity { get; }
+    public TEntity Entity { get; } = entity;
 }

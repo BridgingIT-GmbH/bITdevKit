@@ -30,7 +30,7 @@ public class EmailAddress : ValueObject
 
         Check.Throw(new IBusinessRule[]
         {
-            new IsValidEmailAddressRule(value),
+            EmailAddressRules.IsValid(value),
         });
 
         return new EmailAddress(value);

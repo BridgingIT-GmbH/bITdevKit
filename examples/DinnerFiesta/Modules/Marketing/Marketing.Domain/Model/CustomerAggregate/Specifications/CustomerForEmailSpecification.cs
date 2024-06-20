@@ -9,14 +9,9 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class CustomerForEmailSpecification : Specification<Customer>
+public class CustomerForEmailSpecification(EmailAddress email) : Specification<Customer>
 {
-    private readonly EmailAddress email;
-
-    public CustomerForEmailSpecification(EmailAddress email)
-    {
-        this.email = email;
-    }
+    private readonly EmailAddress email = email;
 
     public override Expression<Func<Customer, bool>> ToExpression()
     {

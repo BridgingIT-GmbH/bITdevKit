@@ -8,13 +8,8 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositorie
 using System;
 using Microsoft.EntityFrameworkCore;
 
-public class TestDbContext : DbContext
+public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
 {
-    public TestDbContext(DbContextOptions<TestDbContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<PersonDtoStub> Persons { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

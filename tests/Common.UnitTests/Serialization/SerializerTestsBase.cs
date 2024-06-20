@@ -9,13 +9,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 
-public abstract class SerializerTestsBase : TestsBase
+public abstract class SerializerTestsBase(ITestOutputHelper output) : TestsBase(output)
 {
-    protected SerializerTestsBase(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     public virtual void CanRoundTripStream_Test()
     {
         // Arrange

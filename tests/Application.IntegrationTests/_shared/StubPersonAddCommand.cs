@@ -9,14 +9,9 @@ using BridgingIT.DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class StubPersonAddCommand : CommandRequestBase<bool>
+public class StubPersonAddCommand(PersonStub person) : CommandRequestBase<bool>
 {
-    public StubPersonAddCommand(PersonStub person)
-    {
-        this.Person = person;
-    }
-
-    public PersonStub Person { get; }
+    public PersonStub Person { get; } = person;
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);

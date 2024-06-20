@@ -14,14 +14,9 @@ using BridgingIT.DevKit.Infrastructure.Mapping;
 using global::AutoMapper;
 
 [UnitTest("Infrastructure")]
-public class EntityFrameworkRepositoryTests : IClassFixture<TestDbContextFixture>
+public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : IClassFixture<TestDbContextFixture>
 {
-    private readonly TestDbContextFixture fixture;
-
-    public EntityFrameworkRepositoryTests(TestDbContextFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly TestDbContextFixture fixture = fixture;
 
     [Fact]
     public async Task GenericRepositoryFindAllAsync()

@@ -9,19 +9,12 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 
-public class EntityDeletedMessage<TEntity> : MessageBase
+public class EntityDeletedMessage<TEntity>(TEntity entity) : MessageBase
     where TEntity : class, IEntity
 {
-    public EntityDeletedMessage(TEntity entity)
-    {
-        this.Entity = entity;
-        this.EntityId = entity?.Id?.ToString();
-        this.EntityType = entity?.GetType().PrettyName();
-    }
+    public TEntity Entity { get; } = entity;
 
-    public TEntity Entity { get; }
+    public string EntityId { get; } = entity?.Id?.ToString();
 
-    public string EntityId { get; }
-
-    public string EntityType { get; }
+    public string EntityType { get; } = entity?.GetType().PrettyName();
 }

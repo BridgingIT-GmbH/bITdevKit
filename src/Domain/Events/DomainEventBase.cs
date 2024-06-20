@@ -8,19 +8,13 @@ namespace BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Common;
 using System;
 
-public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase> // TODO: move to Domain.Mediator
+public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase>
 {
     private int? hashCode;
 
-    protected DomainEventBase()
-    {
-        this.EventId = GuidGenerator.CreateSequential();
-        this.Timestamp = DateTime.UtcNow;
-    }
+    public Guid EventId { get; } = GuidGenerator.CreateSequential();
 
-    public Guid EventId { get; }
-
-    public DateTimeOffset Timestamp { get; }
+    public DateTimeOffset Timestamp { get; } = DateTime.UtcNow;
 
     public bool Equals(DomainEventBase other)
     {

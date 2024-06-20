@@ -16,25 +16,17 @@ using System.IO;
 using Serilog;
 using Xunit.Abstractions;
 
-public class CustomWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
+public class CustomWebApplicationFactory<TEntryPoint>(
+    ITestOutputHelper output = null,
+    Action<IServiceCollection> services = null,
+    bool fakeAuthenticationEnabled = false,
+    string environment = "Development") : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    private readonly ITestOutputHelper output;
-    private readonly string environment;
-    private readonly bool fakeAuthenticationEnabled;
-    private readonly Action<IServiceCollection> services;
-
-    public CustomWebApplicationFactory(
-        ITestOutputHelper output = null,
-        Action<IServiceCollection> services = null,
-        bool fakeAuthenticationEnabled = false,
-        string environment = "Development")
-    {
-        this.output = output;
-        this.services = services;
-        this.fakeAuthenticationEnabled = fakeAuthenticationEnabled;
-        this.environment = environment;
-    }
+    private readonly ITestOutputHelper output = output;
+    private readonly string environment = environment;
+    private readonly bool fakeAuthenticationEnabled = fakeAuthenticationEnabled;
+    private readonly Action<IServiceCollection> services = services;
 
     protected override IHost CreateHost(IHostBuilder builder)
     {

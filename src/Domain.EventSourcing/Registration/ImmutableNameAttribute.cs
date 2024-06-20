@@ -8,12 +8,7 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 using System;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ImmutableNameAttribute : Attribute
+public class ImmutableNameAttribute(string immutableName) : Attribute
 {
-    public ImmutableNameAttribute(string immutableName)
-    {
-        this.ImmutableName = immutableName;
-    }
-
-    public string ImmutableName { get; }
+    public string ImmutableName { get; } = immutableName;
 }

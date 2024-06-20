@@ -12,18 +12,8 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class DinnerCreatedDomainEventHandler : DomainEventHandlerBase<DinnerCreatedDomainEvent>
+public class DinnerCreatedDomainEventHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository) : DomainEventHandlerBase<DinnerCreatedDomainEvent>(loggerFactory)
 {
-    private readonly IGenericRepository<Menu> repository;
-
-    public DinnerCreatedDomainEventHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override bool CanHandle(DinnerCreatedDomainEvent notification)
     {
         return true;
@@ -39,13 +29,13 @@ public class DinnerCreatedDomainEventHandler : DomainEventHandlerBase<DinnerCrea
 
         Check.Throw(new IBusinessRule[]
         {
-            new MenuForHostMustExistRule(this.repository, @event.Dinner.HostId, @event.Dinner.MenuId),
+            new MenuForHostMustExistRule(repository, @event.Dinner.HostId, @event.Dinner.MenuId),
         });
 
-        var menu = await this.repository.FindOneAsync(@event.Dinner.MenuId, cancellationToken: cancellationToken);
+        var menu = await repository.FindOneAsync(@event.Dinner.MenuId, cancellationToken: cancellationToken);
         menu.AddDinnerId((DinnerId)@event.Dinner.Id); // TODO: akward cast here
         //menu.AddDinnerId(@event.Dinner.Id);
 
-        await this.repository.UpdateAsync(menu, cancellationToken);
+        await repository.UpdateAsync(menu, cancellationToken);
     }
 }

@@ -11,24 +11,17 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 using Scrutor;
 
-public class RepositoryBuilderContext<TEntity>
+public class RepositoryBuilderContext<TEntity>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null)
     where TEntity : class, IEntity
 {
     private readonly List<Action<IServiceCollection>> behaviors = new();
     private ServiceDescriptor repositoryDescriptor;
 
-    public RepositoryBuilderContext(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Lifetime = lifetime;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public ServiceLifetime Lifetime { get; } = lifetime;
 
-    public ServiceLifetime Lifetime { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     public RepositoryBuilderContext<TEntity> WithTransactions<TTransactions>()
         where TTransactions : class, IRepositoryTransaction<TEntity>

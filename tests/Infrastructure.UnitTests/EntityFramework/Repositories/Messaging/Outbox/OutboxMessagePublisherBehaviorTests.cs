@@ -13,14 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Infrastructure")]
-public class OutboxMessagePublisherBehaviorTests : IClassFixture<StubDbContextFixture>
+public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture;
-
-    public OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly StubDbContextFixture fixture = fixture;
 
     [Fact]
     public async Task Publish_IsCalled_OutboxReceivedMessage()

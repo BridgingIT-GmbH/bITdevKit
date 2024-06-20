@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System;
 
-public abstract class LongTypedId : IEquatable<LongTypedId>, IComparable<LongTypedId>
+public abstract class LongTypedId(long value) : IEquatable<LongTypedId>, IComparable<LongTypedId>
 {
-    protected LongTypedId(long value)
-    {
-        this.Value = value;
-    }
-
-    public long Value { get; }
+    public long Value { get; } = value;
 
     public static implicit operator long(LongTypedId typedId) => typedId.Value;
 

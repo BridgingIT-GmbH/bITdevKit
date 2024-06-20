@@ -15,6 +15,7 @@ using EnsureThat;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract partial class QueryHandlerBase<TQuery, TResult>
     : IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
@@ -24,11 +25,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     private const string QueryTypeKey = "QueryType";
 
     protected QueryHandlerBase(ILoggerFactory loggerFactory)
-    {
-        EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
-
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
+        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     protected ILogger Logger { get; }
 

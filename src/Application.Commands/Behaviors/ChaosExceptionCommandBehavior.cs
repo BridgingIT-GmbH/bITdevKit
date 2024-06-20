@@ -11,14 +11,9 @@ using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
-public class ChaosExceptionCommandBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class ChaosExceptionCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    public ChaosExceptionCommandBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     protected override bool CanProcess(TRequest request)
     {
         return request is IChaosExceptionCommand;

@@ -29,6 +29,11 @@ public class HostUserMustBeUniqueRule : IBusinessRule
     public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
     {
         return !(await this.repository.FindAllAsync(
-            new HostForUserSpecification(this.userId), cancellationToken: cancellationToken)).SafeAny();
+            HostSpecifications.ForUser(this.userId), cancellationToken: cancellationToken)).SafeAny();
     }
+}
+
+public static partial class HostRules
+{
+    public static IBusinessRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId) => new HostUserMustBeUniqueRule(repository, userId);
 }

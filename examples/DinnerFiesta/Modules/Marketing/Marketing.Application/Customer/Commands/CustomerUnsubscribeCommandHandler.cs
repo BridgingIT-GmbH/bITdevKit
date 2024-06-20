@@ -14,31 +14,21 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using Microsoft.Extensions.Logging;
 
-public class CustomerUnsubscribeCommandHandler : CommandHandlerBase<CustomerUnsubscribeCommand, Result>
+public class CustomerUnsubscribeCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Customer> repository) : CommandHandlerBase<CustomerUnsubscribeCommand, Result>(loggerFactory)
 {
-    private readonly IGenericRepository<Customer> repository;
-
-    public CustomerUnsubscribeCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Customer> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result>> Process(CustomerUnsubscribeCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
         Check.Throw(Array.Empty<IBusinessRule>());
 
-        var customer = await this.repository.FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken).AnyContext();
+        var customer = await repository.FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken).AnyContext();
         if (customer is not null)
         {
             customer.Unsubscribe();
-            await this.repository.UpsertAsync(customer, cancellationToken);
+            await repository.UpsertAsync(customer, cancellationToken);
 
             return new CommandResponse<Result>
             {

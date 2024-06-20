@@ -21,15 +21,15 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
 
     private static void ConfigureHostMenuIdsTable(EntityTypeBuilder<Host> builder)
     {
-        builder.OwnsMany(h => h.MenuIds, mib =>
+        builder.OwnsMany(h => h.MenuIds, mb =>
         {
-            mib.WithOwner().HasForeignKey("HostId");
+            mb.WithOwner().HasForeignKey("HostId");
 
-            mib.ToTable("HostMenuIds");
+            mb.ToTable("HostMenuIds");
 
-            mib.HasKey("Id");
+            mb.HasKey("Id");
 
-            mib.Property(mi => mi.Value)
+            mb.Property(mi => mi.Value)
                 .ValueGeneratedNever()
                 .HasColumnName("HostMenuId");
         });
@@ -40,15 +40,15 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
 
     private static void ConfigureHostDinnerIdsTable(EntityTypeBuilder<Host> builder)
     {
-        builder.OwnsMany(h => h.DinnerIds, mib =>
+        builder.OwnsMany(h => h.DinnerIds, mb =>
         {
-            mib.WithOwner().HasForeignKey("HostId");
+            mb.WithOwner().HasForeignKey("HostId");
 
-            mib.ToTable("HostDinnerIds");
+            mb.ToTable("HostDinnerIds");
 
-            mib.HasKey("Id");
+            mb.HasKey("Id");
 
-            mib.Property(mi => mi.Value)
+            mb.Property(mi => mi.Value)
                 .ValueGeneratedNever()
                 .HasColumnName("HostDinnerId");
         });
@@ -77,7 +77,13 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
             .IsRequired()
             .HasMaxLength(128);
 
-        builder.OwnsOne(h => h.AverageRating);
+        builder.OwnsOne(h => h.AverageRating, ab =>
+        {
+            ab.Property(e => e.Value)
+                .IsRequired(false);
+
+            ab.Property(e => e.NumRatings);
+        });
 
         builder.Property(h => h.UserId)
             .HasConversion(

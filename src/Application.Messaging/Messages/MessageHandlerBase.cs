@@ -6,14 +6,13 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract class MessageHandlerBase<TMessage> : IMessageHandler<TMessage>
     where TMessage : IMessage
 {
     protected MessageHandlerBase(ILoggerFactory loggerFactory)
-    {
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
+        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     protected ILogger Logger { get; }
 

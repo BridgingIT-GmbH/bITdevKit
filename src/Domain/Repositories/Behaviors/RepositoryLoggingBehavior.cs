@@ -18,13 +18,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 [Obsolete("Use GenericRepositoryLoggingBehavior instead")]
-public class GenericRepositoryLoggingDecorator<TEntity> : RepositoryLoggingBehavior<TEntity>
+public class GenericRepositoryLoggingDecorator<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner) : RepositoryLoggingBehavior<TEntity>(loggerFactory, inner)
     where TEntity : class, IEntity
 {
-    public GenericRepositoryLoggingDecorator(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
-        : base(loggerFactory, inner)
-    {
-    }
 }
 
 /// <summary>

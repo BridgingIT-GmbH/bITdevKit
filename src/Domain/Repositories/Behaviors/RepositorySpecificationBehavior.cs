@@ -17,13 +17,9 @@ using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 
 [Obsolete("Use GenericRepositorySpecificationBehavior instead")]
-public class GenericRepositorySpecificationDecorator<TEntity> : RepositorySpecificationBehavior<TEntity>
+public class GenericRepositorySpecificationDecorator<TEntity>(ISpecification<TEntity> specification, IGenericRepository<TEntity> inner) : RepositorySpecificationBehavior<TEntity>(specification, inner)
     where TEntity : class, IEntity
 {
-    public GenericRepositorySpecificationDecorator(ISpecification<TEntity> specification, IGenericRepository<TEntity> inner)
-        : base(specification, inner)
-    {
-    }
 }
 
 /// <summary>

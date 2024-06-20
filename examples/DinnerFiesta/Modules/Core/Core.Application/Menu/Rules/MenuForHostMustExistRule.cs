@@ -10,27 +10,14 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-public class MenuForHostMustExistRule : IBusinessRule
+public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : IBusinessRule
 {
-    private readonly IGenericRepository<Menu> repository;
-    private readonly HostId hostId;
-    private readonly MenuId menuId;
-
-    public MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-        this.hostId = hostId;
-        this.menuId = menuId;
-    }
-
     public string Message => "Menu for host must exist";
 
     public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
     {
-        var menu = await this.repository.FindOneAsync(this.menuId, cancellationToken: cancellationToken);
+        var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
 
-        return menu?.HostId == this.hostId;
+        return menu?.HostId == hostId;
     }
 }

@@ -73,11 +73,10 @@ public class MapperExtensionsTests
     {
         var mapper = new StubMapper();
         var targets = mapper.Map(
-            new PersonStub[]
-            {
+            [
                 new() { Age = 1 },
                 new() { Age = 2 }
-            });
+            ]);
 
         Assert.Equal(2, targets.Count());
         Assert.Equal(1, targets.FirstOrDefault()?.Age);

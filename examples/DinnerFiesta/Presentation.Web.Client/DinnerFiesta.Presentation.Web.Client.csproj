@@ -16,18 +16,12 @@
     <PackageReference Include="Microsoft.Extensions.Localization" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="System.ComponentModel.Annotations" />
-    <!--<PackageReference Include="System.Net.Http" />-->
-    <!--<PackageReference Include="System.Net.Http.Json" />-->
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Modules\Core\Core.Presentation.Web.Client\DinnerFiesta.Core.Presentation.Web.Client.csproj" />
     <ProjectReference Include="..\Modules\Marketing\Marketing.Presentation.Web.Client\DinnerFiesta.Marketing.Presentation.Web.Client.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
   <ItemGroup>

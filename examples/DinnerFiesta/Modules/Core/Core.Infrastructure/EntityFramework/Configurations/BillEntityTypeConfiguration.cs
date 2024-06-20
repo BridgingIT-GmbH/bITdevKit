@@ -42,8 +42,10 @@ public class BillEntityTypeConfiguration : IEntityTypeConfiguration<Bill>
         builder.OwnsOne(b => b.Price, pb =>
         {
             pb.Property(e => e.Currency)
+                .IsRequired()
                 .HasMaxLength(8);
             pb.Property(p => p.Amount)
+                .IsRequired()
                 .HasColumnType("decimal(5,2)");
         });
 

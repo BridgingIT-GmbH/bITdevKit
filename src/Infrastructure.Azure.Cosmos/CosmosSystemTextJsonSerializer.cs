@@ -13,14 +13,9 @@ using Microsoft.Azure.Cosmos;
 /// <summary>
 /// Uses <see cref="Azure.Core.Serialization.JsonObjectSerializer"/> which leverages System.Text.Json
 /// </summary>
-public class CosmosSystemTextJsonSerializer : CosmosSerializer // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
+public class CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions) : CosmosSerializer // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
 {
-    private readonly JsonObjectSerializer serializer;
-
-    public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
-    {
-        this.serializer = new JsonObjectSerializer(jsonSerializerOptions);
-    }
+    private readonly JsonObjectSerializer serializer = new JsonObjectSerializer(jsonSerializerOptions);
 
     public override T FromStream<T>(Stream stream)
     {

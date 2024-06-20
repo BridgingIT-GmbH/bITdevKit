@@ -11,11 +11,7 @@ using Domain.Model;
 using Domain.Repositories;
 using Models;
 
-public class PersonOverviewRepository : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>,
+public class PersonOverviewRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder) : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(optionsBuilder),
     IPersonOverviewRepository
 {
-    public PersonOverviewRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : base(optionsBuilder)
-    {
-    }
 }

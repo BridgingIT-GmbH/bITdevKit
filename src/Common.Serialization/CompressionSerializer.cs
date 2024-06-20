@@ -9,18 +9,13 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-public class CompressionSerializer : ISerializer
+/// <summary>
+/// Initializes a new instance of the <see cref="CompressionSerializer"/> class.
+/// </summary>
+/// <param name="settings">The settings.</param>
+public class CompressionSerializer(ISerializer inner) : ISerializer
 {
-    private readonly ISerializer inner;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CompressionSerializer"/> class.
-    /// </summary>
-    /// <param name="settings">The settings.</param>
-    public CompressionSerializer(ISerializer inner)
-    {
-        this.inner = inner;
-    }
+    private readonly ISerializer inner = inner;
 
     /// <summary>
     /// Serializes the specified value.

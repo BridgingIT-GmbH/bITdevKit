@@ -12,25 +12,16 @@ using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
 using MediatR;
 
-public class PublishAggregateEventSender : IPublishAggregateEventSender
+public class PublishAggregateEventSender(IMediator mediator, EventStorePublishingModes eventStorePublishingModes,
+    IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender,
+    IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender,
+    IAggregateEventOutboxSender aggregateEventOutboxSender) : IPublishAggregateEventSender
 {
-    private readonly IMediator mediator;
-    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender;
-    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender;
-    private readonly IAggregateEventOutboxSender aggregateEventOutboxSender;
-    private readonly EventStorePublishingModes eventStorePublishingModes;
-
-    public PublishAggregateEventSender(IMediator mediator, EventStorePublishingModes eventStorePublishingModes,
-        IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender,
-        IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender,
-        IAggregateEventOutboxSender aggregateEventOutboxSender)
-    {
-        this.mediator = mediator;
-        this.aggregateEventMediatorRequestSender = aggregateEventMediatorRequestSender;
-        this.aggregateEventMediatorNotificationSender = aggregateEventMediatorNotificationSender;
-        this.aggregateEventOutboxSender = aggregateEventOutboxSender;
-        this.eventStorePublishingModes = eventStorePublishingModes;
-    }
+    private readonly IMediator mediator = mediator;
+    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender = aggregateEventMediatorRequestSender;
+    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender = aggregateEventMediatorNotificationSender;
+    private readonly IAggregateEventOutboxSender aggregateEventOutboxSender = aggregateEventOutboxSender;
+    private readonly EventStorePublishingModes eventStorePublishingModes = eventStorePublishingModes;
 
     /// <summary>
     /// Veröffentlicht das DomänenEvent <see cref="currentEvent"/> für das Aggregat <see cref="aggregate"/> unter Nutzung von <see cref="aggregateEventOutboxSender"/>.

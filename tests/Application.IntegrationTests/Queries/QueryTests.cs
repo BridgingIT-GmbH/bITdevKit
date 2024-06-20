@@ -12,18 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class QueryTests : TestsBase
-{
-    public QueryTests(ITestOutputHelper output)
-        : base(output, s =>
+public class QueryTests(ITestOutputHelper output) : TestsBase(output, s =>
         {
             s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(a =>
                 !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)).ToArray()));
             s.AddTransient(typeof(IPipelineBehavior<,>), typeof(Application.Queries.DummyQueryBehavior<,>));
         })
-    {
-    }
-
+{
     //[Fact]
     //public async Task InvalidQueryHandler_Test()
     //{

@@ -12,14 +12,9 @@ using Mapster;
 /// </summary>
 /// <typeparam name="TSource">The type of the object to map from.</typeparam>
 /// <typeparam name="TDestination">The type of the object to map to.</typeparam>
-public class MapsterMapper<TSource, TDestination> : IMapper<TSource, TDestination>
+public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = null) : IMapper<TSource, TDestination>
 {
-    private readonly TypeAdapterConfig config;
-
-    public MapsterMapper(TypeAdapterConfig config = null)
-    {
-        this.config = config ?? TypeAdapterConfig.GlobalSettings;
-    }
+    private readonly TypeAdapterConfig config = config ?? TypeAdapterConfig.GlobalSettings;
 
     /// <summary>
     /// Maps the specified source object into the destination object.
@@ -40,14 +35,9 @@ public class MapsterMapper<TSource, TDestination> : IMapper<TSource, TDestinatio
 /// </summary>
 /// <typeparam name="TSource">The type of the object to map from.</typeparam>
 /// <typeparam name="TDestination">The type of the object to map to.</typeparam>
-public class MapsterMapper : IMapper
+public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
 {
-    private readonly TypeAdapterConfig config;
-
-    public MapsterMapper(TypeAdapterConfig config = null)
-    {
-        this.config = config ?? TypeAdapterConfig.GlobalSettings;
-    }
+    private readonly TypeAdapterConfig config = config ?? TypeAdapterConfig.GlobalSettings;
 
     public TTarget Map<TSource, TTarget>(TSource source)
         where TTarget : class

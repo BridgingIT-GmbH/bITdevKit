@@ -8,23 +8,17 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using FluentValidation.Results;
 
-public abstract class MessageBase : IMessage
+/// <summary>
+/// Initializes a new instance of the <see cref="MessageBase"/> class.
+/// </summary>
+public abstract class MessageBase(string id) : IMessage
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageBase"/> class.
     /// </summary>
-    public MessageBase()
+    protected MessageBase()
         : this(GuidGenerator.CreateSequential().ToString("N"))
     {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MessageBase"/> class.
-    /// </summary>
-    protected MessageBase(string id)
-    {
-        this.Id = id;
-        this.Timestamp = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -33,7 +27,7 @@ public abstract class MessageBase : IMessage
     /// <value>
     /// The message identifier.
     /// </value>
-    public string Id { get; set; }
+    public string Id { get; set; } = id;
 
     /// <summary>
     /// Gets the timestamp when this message was created.
@@ -41,7 +35,7 @@ public abstract class MessageBase : IMessage
     /// <value>
     /// The message identifier.
     /// </value>
-    public DateTimeOffset Timestamp { get; set; }
+    public DateTimeOffset Timestamp { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// Hold extra properties for this message.

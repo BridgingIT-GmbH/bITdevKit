@@ -7,41 +7,23 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 
-public class MappingBuilderContext
+public class MappingBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public MappingBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }
 
-public class AutoMapperBuilderContext
+public class AutoMapperBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public AutoMapperBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }
 
-public class MapsterBuilderContext
+public class MapsterBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public MapsterBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }

@@ -7,16 +7,11 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class DinnerReservationStatus : Enumeration
+public class DinnerReservationStatus(int id, string name) : Enumeration(id, name)
 {
     public static DinnerReservationStatus PendingGuestApproval = new(1, nameof(PendingGuestApproval));
     public static DinnerReservationStatus Reserved = new(2, nameof(Reserved));
     public static DinnerReservationStatus Cancelled = new(3, nameof(Cancelled));
-
-    public DinnerReservationStatus(int id, string name)
-        : base(id, name)
-    {
-    }
 
     public static IEnumerable<DinnerStatus> GetAll() => GetAll<DinnerStatus>();
 }

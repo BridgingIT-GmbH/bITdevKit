@@ -10,16 +10,10 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-public class CityHasLocationSpecification : Specification<City>
+public class CityHasLocationSpecification(double? longitude, double? latitude) : Specification<City>
 {
-    private readonly double? longitude;
-    private readonly double? latitude;
-
-    public CityHasLocationSpecification(double? longitude, double? latitude)
-    {
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
+    private readonly double? longitude = longitude;
+    private readonly double? latitude = latitude;
 
     public override Expression<Func<City, bool>> ToExpression()
     {

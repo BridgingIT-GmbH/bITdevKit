@@ -1,18 +1,18 @@
-﻿namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Messaging;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Messaging;
 
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.Logging;
 
-public class OutboxMessagePublisherBehaviorTests : IClassFixture<StubDbContextFixture>
+public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture;
-
-    public OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly StubDbContextFixture fixture = fixture;
 
     [Fact]
     public async Task Publish_IsCalled_OutboxReceivedEvent()

@@ -39,7 +39,7 @@ public class TraceActivityDecorator<TDecorated> : DispatchProxy
         var noActivityAttribute = method.GetCustomAttribute<NoTraceActivityAttribute>(false);
         var traceActivityAttribute = method.GetCustomAttribute<TraceActivityAttribute>(false);
 
-        if (noActivityAttribute == null && (this.decorateAllMethods || traceActivityAttribute != null))
+        if (noActivityAttribute is null && (this.decorateAllMethods || traceActivityAttribute != null))
         {
             var name = this.namingSchema.GetName(this.ínner.GetType(), method);
             using var activity = this.activitySources.StartActivity(traceActivityAttribute?.Name ?? name);

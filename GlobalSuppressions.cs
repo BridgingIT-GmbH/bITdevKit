@@ -299,3 +299,9 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "<Pending>")]
 
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1114:Parameter list should follow declaration", Justification = "<Pending>")]
+
+[assembly: SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1010:Opening square brackets should be spaced correctly", Justification = "<Pending>")]
+
+[assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1111:Closing parenthesis should be on line of last parameter", Justification = "<Pending>")]
+
+[assembly: SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1502:Element should not be on a single line", Justification = "<Pending>")]

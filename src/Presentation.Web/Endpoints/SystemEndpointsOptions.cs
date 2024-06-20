@@ -13,7 +13,7 @@ public class SystemEndpointsOptions : EndpointsOptionsBase
         this.GroupTag = "_system";
     }
 
-    public bool EchoEnabled { get; set; } = false;
+    public bool EchoEnabled { get; set; } = true;
 
     public bool InfoEnabled { get; set; } = true;
 

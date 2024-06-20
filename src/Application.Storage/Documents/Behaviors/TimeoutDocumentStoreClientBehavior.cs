@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Timeout;
 
 public class TimeoutDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>

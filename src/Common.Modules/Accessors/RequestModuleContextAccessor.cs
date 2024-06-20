@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 public class RequestModuleContextAccessor : IRequestModuleContextAccessor
 {
     private readonly IEnumerable<IModule> modules;
-    private readonly string[] pathSelectors = new[] { "/api/v", "/api" };
+    private readonly string[] pathSelectors = ["/api/v", "/api"];
 
     public RequestModuleContextAccessor(
         IEnumerable<IModule> modules = null,

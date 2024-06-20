@@ -59,7 +59,7 @@ public static class HashHelper
 
     private static byte[] SerializeToBytes(object input)
     {
-        if (input == null)
+        if (input is null)
         {
             return null;
         }

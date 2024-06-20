@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 using Polly.Retry;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Humanizer;
 using System.Diagnostics;
 

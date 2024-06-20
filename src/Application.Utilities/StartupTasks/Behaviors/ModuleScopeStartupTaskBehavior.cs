@@ -12,20 +12,13 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class ModuleScopeStartupTaskBehavior : StartupTaskBehaviorBase
+public class ModuleScopeStartupTaskBehavior(
+    ILoggerFactory loggerFactory,
+    IEnumerable<ActivitySource> activitySources = null,
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null) : StartupTaskBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<ActivitySource> activitySources;
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
-
-    public ModuleScopeStartupTaskBehavior(
-        ILoggerFactory loggerFactory,
-        IEnumerable<ActivitySource> activitySources = null,
-        IEnumerable<IModuleContextAccessor> moduleAccessors = null)
-        : base(loggerFactory)
-    {
-        this.activitySources = activitySources;
-        this.moduleAccessors = moduleAccessors;
-    }
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
 
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
@@ -36,7 +29,7 @@ public class ModuleScopeStartupTaskBehavior : StartupTaskBehaviorBase
             [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
         }))
         {
-            if (module is not null && !module.Enabled)
+            if (module?.Enabled == false)
             {
                 throw new ModuleNotEnabledException(module.Name);
             }

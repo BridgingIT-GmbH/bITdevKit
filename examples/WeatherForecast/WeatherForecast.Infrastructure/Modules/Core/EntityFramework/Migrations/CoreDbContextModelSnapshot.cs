@@ -18,7 +18,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("core")
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -230,7 +230,11 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(MAX)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("datetimeoffset");
@@ -259,7 +263,11 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedDate");
+
                     b.HasIndex("EventId");
+
+                    b.HasIndex("ProcessedDate");
 
                     b.HasIndex("Type");
 
@@ -273,7 +281,11 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(MAX)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContentHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("datetimeoffset");
@@ -302,7 +314,11 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedDate");
+
                     b.HasIndex("MessageId");
+
+                    b.HasIndex("ProcessedDate");
 
                     b.HasIndex("Type");
 

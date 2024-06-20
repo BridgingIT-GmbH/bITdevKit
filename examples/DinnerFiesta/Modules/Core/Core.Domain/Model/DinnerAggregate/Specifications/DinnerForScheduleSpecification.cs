@@ -9,16 +9,10 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class DinnerForScheduleSpecification : Specification<Dinner>
+public class DinnerForScheduleSpecification(HostId hostId, DinnerSchedule schedule) : Specification<Dinner>
 {
-    private readonly HostId hostId;
-    private readonly DinnerSchedule schedule;
-
-    public DinnerForScheduleSpecification(HostId hostId, DinnerSchedule schedule)
-    {
-        this.hostId = hostId;
-        this.schedule = schedule;
-    }
+    private readonly HostId hostId = hostId;
+    private readonly DinnerSchedule schedule = schedule;
 
     public override Expression<Func<Dinner, bool>> ToExpression()
     {
@@ -26,4 +20,9 @@ public class DinnerForScheduleSpecification : Specification<Dinner>
             ((d.Schedule.StartDateTime >= this.schedule.StartDateTime && d.Schedule.StartDateTime < this.schedule.EndDateTime) ||
             (d.Schedule.EndDateTime > this.schedule.StartDateTime && d.Schedule.EndDateTime <= this.schedule.EndDateTime));
     }
+}
+
+public static partial class DinnerSpecifications
+{
+    public static ISpecification<Dinner> ForSchedule(HostId hostId, DinnerSchedule schedule) => new DinnerForScheduleSpecification(hostId, schedule);
 }

@@ -67,9 +67,9 @@ public class DinnerLocation : ValueObject
     {
         Check.Throw(new IBusinessRule[]
         {
-            new CountryShouldBeKnownRule(country),
-            new LongitudeShouldBeInRangeRule(longitude),
-            new LatitudeShouldBeInRangeRule(latitude)
+            DinnerRules.CountryShouldBeKnown(country),
+            DinnerRules.LongitudeShouldBeInRange(longitude),
+            DinnerRules.LatitudeShouldBeInRange(latitude)
         });
 
         return new DinnerLocation(

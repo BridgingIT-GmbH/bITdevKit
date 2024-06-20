@@ -39,31 +39,31 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
 
         group.MapGet(string.Empty, this.GetSystem)
                 //.AllowAnonymous()
-                .Produces<Dictionary<string, string>>(200)
-                .Produces<ProblemDetails>(500);
+                .Produces<Dictionary<string, string>>((int)HttpStatusCode.OK)
+                .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
                 //.AllowAnonymous()
-                .Produces<string>(200)
-                .Produces<ProblemDetails>(500);
+                .Produces<string>((int)HttpStatusCode.OK)
+                .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
 
         if (this.options.InfoEnabled)
         {
             group.MapGet("info", this.GetInfo)
                 //.AllowAnonymous()
-                .Produces<SystemInfo>(200)
-                .Produces<ProblemDetails>(500);
+                .Produces<SystemInfo>((int)HttpStatusCode.OK)
+                .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
 
         if (this.options.ModulesEnabled)
         {
             group.MapGet("modules", this.GetModules)
                 //.AllowAnonymous()
-                .Produces<IEnumerable<IModule>>(200)
-                .Produces<ProblemDetails>(500);
+                .Produces<IEnumerable<IModule>>((int)HttpStatusCode.OK)
+                .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
     }
 
@@ -95,7 +95,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         return Results.Ok(response.Result);
     }
 
-    public async Task<IResult> GetInfo(IMediator mediator, HttpContext httpContext)
+    public async Task<IResult> GetInfo(IMediator mediator, HttpContext httpContext, CancellationToken cancellationToken)
     {
         var result = new SystemInfo
         {
@@ -103,7 +103,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
             {
                 ["isLocal"] = IsLocal(httpContext?.Request),
                 ["host"] = Dns.GetHostName(),
-                ["ip"] = (await Dns.GetHostAddressesAsync(Dns.GetHostName())).Select(i => i.ToString()).Where(i => i.Contains('.')),
+                ["ip"] = (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)).Select(i => i.ToString()).Where(i => i.Contains('.')),
             },
             Runtime = new Dictionary<string, string>
             {

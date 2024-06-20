@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class DeleteMustBeProvidedReasonRule : IBusinessRule
+public class DeleteMustBeProvidedReasonRule(string reason) : IBusinessRule
 {
-    private readonly string reason;
-
-    public DeleteMustBeProvidedReasonRule(string reason)
-    {
-        this.reason = reason;
-    }
+    private readonly string reason = reason;
 
     public string Message => "Reason of deleting a must be provided";
 

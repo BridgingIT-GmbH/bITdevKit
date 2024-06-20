@@ -10,11 +10,15 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 public static class Stubs
 {
-    public static IEnumerable<User> Users(long ticks) => CoreSeedModels.Users(ticks);
+    public static IEnumerable<User> Users(long ticks) =>
+        CoreSeedModels.Users(ticks);
 
-    public static IEnumerable<Host> Hosts(long ticks) => CoreSeedModels.Hosts(ticks);
+    public static IEnumerable<Host> Hosts(long ticks) =>
+        CoreSeedModels.Hosts(ticks);
 
-    public static IEnumerable<Menu> Menus(long ticks) => CoreSeedModels.Menus(ticks);
+    public static IEnumerable<Menu> Menus(long ticks) =>
+        CoreSeedModels.Menus(ticks);
 
-    public static IEnumerable<Dinner> Dinners(long ticks) => CoreSeedModels.Dinners(ticks);
+    public static IEnumerable<Dinner> Dinners(long ticks) =>
+        CoreSeedModels.Dinners(ticks);
 }

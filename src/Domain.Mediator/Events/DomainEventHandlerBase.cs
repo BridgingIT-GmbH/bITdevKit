@@ -12,16 +12,13 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandler<TEvent>
     where TEvent : class, IDomainEvent
 {
-    protected DomainEventHandlerBase(ILoggerFactory loggerFactory)
-    {
-        EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
-
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
+    protected DomainEventHandlerBase(ILoggerFactory loggerFactory) =>
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     protected ILogger Logger { get; }
 

@@ -11,14 +11,9 @@ using System.Reflection;
 using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
 using Newtonsoft.Json.Serialization;
 
-public class JsonNetSerializer : ISerializer, ITextSerializer
+public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerializer, ITextSerializer
 {
-    private readonly JsonSerializer serializer;
-
-    public JsonNetSerializer(JsonSerializerSettings settings = null)
-    {
-        this.serializer = JsonSerializer.Create(settings ?? DefaultJsonNetSerializerSettings.Create());
-    }
+    private readonly JsonSerializer serializer = JsonSerializer.Create(settings ?? DefaultJsonNetSerializerSettings.Create());
 
     /// <summary>
     /// Serializes the specified value.

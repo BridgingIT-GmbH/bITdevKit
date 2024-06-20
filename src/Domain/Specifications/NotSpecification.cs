@@ -8,24 +8,14 @@ namespace BridgingIT.DevKit.Domain.Specifications;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using EnsureThat;
 
-public class NotSpecification<T> : Specification<T>
+public class NotSpecification<T>(ISpecification<T> specification) : Specification<T>
 {
-    private readonly ISpecification<T> specification;
-
-    public NotSpecification(ISpecification<T> specification)
-    {
-        EnsureArg.IsNotNull(specification);
-
-        this.specification = specification;
-    }
-
     public override Expression<Func<T, bool>> ToExpression()
     {
-        var expression = this.specification.ToExpression();
-
+        var expression = specification.ToExpression();
         var notepression = Expression.Not(expression.Body);
+
         return Expression.Lambda<Func<T, bool>>(notepression, expression.Parameters.Single());
     }
 

@@ -65,7 +65,7 @@ public class RequestLoggingOptions
     /// The path patterns to ignore.
     /// </summary>
     public string[] PathBlackListPatterns { get; set; } =
-        new[] { "/*.js", "/*.css", "/*.map", "/*.html", "/swagger*", "/favicon.ico", "/_framework*", "/_vs*", "/health*", "/notificationhub*", "/_content*", "/signalrhub*" };
+        ["/*.js", "/*.css", "/*.map", "/*.html", "/swagger*", "/favicon.ico", "/_framework*", "/_vs*", "/health*", "/notificationhub*", "/_content*", "/signalrhub*"];
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     private static LogEventLevel DefaultGetLevel(HttpContext ctx, double _, Exception ex) =>

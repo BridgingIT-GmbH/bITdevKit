@@ -10,15 +10,9 @@ using System.Threading;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class MetricsMessageHandlerBehavior : MessageHandlerBehaviorBase
+public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    private readonly IMeterFactory meterFactory;
-
-    public MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
-        : base(loggerFactory)
-    {
-        this.meterFactory = meterFactory;
-    }
+    private readonly IMeterFactory meterFactory = meterFactory;
 
     public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
     {

@@ -10,10 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests : TestsBase
-{
-    public RepositoryBuilderContextTests(ITestOutputHelper output)
-        : base(output, s =>
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
         {
             s.AddMediatR();
 
@@ -28,9 +25,7 @@ public class RepositoryBuilderContextTests : TestsBase
                 .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
                 .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>();
         })
-    {
-    }
-
+{
     [Fact]
     public void GetRepository_WhenRequested_ShouldNotBeNull()
     {
@@ -46,19 +41,14 @@ public class RepositoryBuilderContextTests : TestsBase
 }
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextNoInMemoryContextTests : TestsBase
-{
-    public RepositoryBuilderContextNoInMemoryContextTests(ITestOutputHelper output)
-        : base(output, s => s
+public class RepositoryBuilderContextNoInMemoryContextTests(ITestOutputHelper output) : TestsBase(output, s => s
             .AddMediatR()
             .AddInMemoryRepository<StubEntity>()
                 .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
                 .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
                 .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
                 .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>())
-    {
-    }
-
+{
     [Fact]
     public void GetRepository_WhenRequested_ShouldNotBeNull()
     {

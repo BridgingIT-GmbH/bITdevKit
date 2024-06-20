@@ -21,13 +21,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 [UnitTest("Infrastructure")]
-public class RepositoryIntegrationTests : TestsBase
+public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(output, s => s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies([typeof(TestsBase).Assembly])))
 {
-    public RepositoryIntegrationTests(ITestOutputHelper output)
-        : base(output, s => s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(new[] { typeof(TestsBase).Assembly })))
-    {
-    }
-
     [Fact]
     public async Task Get()
     {

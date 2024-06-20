@@ -8,32 +8,23 @@ namespace Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-public class DbContextBuilderContext<TContext>
+public class DbContextBuilderContext<TContext>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null,
+    string connectionString = null,
+    Provider provider = Provider.SqlServer)
     where TContext : DbContext
 {
-    public DbContextBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null,
-        string connectionString = null,
-        Provider provider = Provider.SqlServer)
-    {
-        this.Services = services;
-        this.Lifetime = lifetime;
-        this.Configuration = configuration;
-        this.ConnectionString = connectionString;
-        this.Provider = provider;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public ServiceLifetime Lifetime { get; } = lifetime;
 
-    public ServiceLifetime Lifetime { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
-    public IConfiguration Configuration { get; }
+    public string ConnectionString { get; } = connectionString;
 
-    public string ConnectionString { get; }
-
-    public Provider Provider { get; }
+    public Provider Provider { get; } = provider;
 }
 
 public enum Provider

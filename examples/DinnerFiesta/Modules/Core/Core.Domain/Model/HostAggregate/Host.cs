@@ -82,7 +82,7 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
     public Host ChangeProfileImage(Uri uri)
     {
         // TODO: replace with Rules
-        if (uri == null)
+        if (uri is null)
         {
             return this;
         }

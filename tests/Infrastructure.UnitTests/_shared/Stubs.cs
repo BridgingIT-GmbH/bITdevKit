@@ -40,14 +40,9 @@ public class PersonDtoStub //: AggregateRoot<string>
     public int Age { get; set; }
 }
 
-public class PersonDomainEventStub : DomainEventBase
+public class PersonDomainEventStub(long ticks) : DomainEventBase
 {
-    public PersonDomainEventStub(long ticks)
-    {
-        this.Ticks = ticks;
-    }
-
-    public long Ticks { get; }
+    public long Ticks { get; } = ticks;
 }
 
 public class StubMessage : MessageBase

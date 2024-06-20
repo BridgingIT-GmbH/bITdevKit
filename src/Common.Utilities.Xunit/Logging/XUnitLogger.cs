@@ -9,21 +9,14 @@ using System;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-public class XunitLogger : ILogger
+public class XunitLogger(
+    ITestOutputHelper output,
+    LoggerExternalScopeProvider scopeProvider,
+    string categoryName) : ILogger
 {
-    private readonly ITestOutputHelper output;
-    private readonly string categoryName;
-    private readonly LoggerExternalScopeProvider scopeProvider;
-
-    public XunitLogger(
-        ITestOutputHelper output,
-        LoggerExternalScopeProvider scopeProvider,
-        string categoryName)
-    {
-        this.output = output;
-        this.scopeProvider = scopeProvider;
-        this.categoryName = categoryName;
-    }
+    private readonly ITestOutputHelper output = output;
+    private readonly string categoryName = categoryName;
+    private readonly LoggerExternalScopeProvider scopeProvider = scopeProvider;
 
     public static ILogger Create(ITestOutputHelper output) =>
         new XunitLogger(output, new LoggerExternalScopeProvider(), string.Empty);

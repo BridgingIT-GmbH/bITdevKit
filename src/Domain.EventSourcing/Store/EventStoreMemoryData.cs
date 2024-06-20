@@ -8,18 +8,11 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 using System;
 using System.Collections.Generic;
 
-public class EventStoreMemoryData
+public class EventStoreMemoryData(Guid aggregateId, string aggregateType)
 {
-    public EventStoreMemoryData(Guid aggregateId, string aggregateType)
-    {
-        this.AggregateId = aggregateId;
-        this.AggregateType = aggregateType;
-        this.EventBlobs = new List<EventBlob>();
-    }
+    public Guid AggregateId { get; private set; } = aggregateId;
 
-    public Guid AggregateId { get; private set; }
+    public string AggregateType { get; private set; } = aggregateType;
 
-    public string AggregateType { get; private set; }
-
-    public List<EventBlob> EventBlobs { get; private set; }
+    public List<EventBlob> EventBlobs { get; private set; } = new List<EventBlob>();
 }

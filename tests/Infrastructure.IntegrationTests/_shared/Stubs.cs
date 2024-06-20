@@ -141,14 +141,9 @@ public class LocationStub : Entity<Guid>
     }
 }
 
-public class PersonByEmailSpecification : Specification<PersonStub>
+public class PersonByEmailSpecification(string email) : Specification<PersonStub>
 {
-    private readonly string email;
-
-    public PersonByEmailSpecification(string email)
-    {
-        this.email = email;
-    }
+    private readonly string email = email;
 
     public override Expression<Func<PersonStub, bool>> ToExpression()
     {
@@ -164,14 +159,9 @@ public class PersonIsAdultSpecification : Specification<PersonStub>
     }
 }
 
-public class PersonDomainEventStub : DomainEventBase
+public class PersonDomainEventStub(long ticks) : DomainEventBase
 {
-    public PersonDomainEventStub(long ticks)
-    {
-        this.Ticks = ticks;
-    }
-
-    public long Ticks { get; }
+    public long Ticks { get; } = ticks;
 }
 
 public class MessageStub : MessageBase

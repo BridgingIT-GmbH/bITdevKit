@@ -657,10 +657,22 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure.En
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX___Outbox_DomainEvents_CreatedDate",
+                schema: "core",
+                table: "__Outbox_DomainEvents",
+                column: "CreatedDate");
+
+            migrationBuilder.CreateIndex(
                 name: "IX___Outbox_DomainEvents_EventId",
                 schema: "core",
                 table: "__Outbox_DomainEvents",
                 column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX___Outbox_DomainEvents_ProcessedDate",
+                schema: "core",
+                table: "__Outbox_DomainEvents",
+                column: "ProcessedDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX___Outbox_DomainEvents_Type",
@@ -669,10 +681,22 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure.En
                 column: "Type");
 
             migrationBuilder.CreateIndex(
+                name: "IX___Outbox_Messages_CreatedDate",
+                schema: "core",
+                table: "__Outbox_Messages",
+                column: "CreatedDate");
+
+            migrationBuilder.CreateIndex(
                 name: "IX___Outbox_Messages_MessageId",
                 schema: "core",
                 table: "__Outbox_Messages",
                 column: "MessageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX___Outbox_Messages_ProcessedDate",
+                schema: "core",
+                table: "__Outbox_Messages",
+                column: "ProcessedDate");
 
             migrationBuilder.CreateIndex(
                 name: "IX___Outbox_Messages_Type",

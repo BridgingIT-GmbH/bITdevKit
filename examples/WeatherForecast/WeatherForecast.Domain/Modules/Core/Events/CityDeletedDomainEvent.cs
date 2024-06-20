@@ -8,15 +8,9 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 using System;
 using BridgingIT.DevKit.Domain;
 
-public class CityDeletedDomainEvent : DomainEventBase
+public class CityDeletedDomainEvent(Guid cityId, string reason) : DomainEventBase
 {
-    public CityDeletedDomainEvent(Guid cityId, string reason)
-    {
-        this.CityId = cityId;
-        this.Reason = reason;
-    }
+    public Guid CityId { get; init; } = cityId;
 
-    public Guid CityId { get; init; }
-
-    public string Reason { get; init; }
+    public string Reason { get; init; } = reason;
 }

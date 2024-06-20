@@ -11,10 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests : TestsBase
-{
-    public RepositoryBuilderContextTests(ITestOutputHelper output)
-        : base(output, s =>
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
         {
             s.AddMediatR()
                 .AddSqlServerDbContext<StubDbContext>("dummy")
@@ -33,9 +30,7 @@ public class RepositoryBuilderContextTests : TestsBase
                 .WithBehavior<RepositoryOutboxDomainEventBehavior<PersonStub, StubDbContext>>();
             //.WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
         })
-    {
-    }
-
+{
     [Fact]
     public void GetDbContext_WhenRequested_ShouldNotBeNull()
     {

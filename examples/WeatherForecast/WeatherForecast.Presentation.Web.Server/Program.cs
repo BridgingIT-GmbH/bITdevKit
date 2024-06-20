@@ -3,21 +3,28 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Queries;
+using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server;
+using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NSwag;
+using NSwag.AspNetCore;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using OpenTelemetry;
@@ -34,46 +41,56 @@ builder.Host.ConfigureAppConfiguration();
 
 // ===============================================================================================
 // Configure the modules
-builder.Services.AddModules(builder.Configuration)
+builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>()
     .WithModuleContextAccessors()
     .WithRequestModuleContextAccessors()
-    .WithModuleControllers(c => c.AddJsonOptions(ConfiguraJsonOptions));
+    .WithModuleControllers(c => c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
+
+builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
 
 // ===============================================================================================
 // Configure the services
 builder.Services.AddMediatR(); // or AddDomainEvents()?
-builder.Services.AddMapping().WithAutoMapper();
+builder.Services.AddMapping().WithMapster();
 builder.Services.AddCaching(builder.Configuration)
-    //.UseEntityFrameworkDocumentStoreProvider<CoreDbContext>()
-    //.UseAzureBlobDocumentStoreProvider()
-    //.UseAzureTableDocumentStoreProvider()
-    //.UseCosmosDocumentStoreProvider()
+    //.WithEntityFrameworkDocumentStoreProvider<CoreDbContext>()
+    //.WithAzureBlobDocumentStoreProvider()
+    //.WithAzureTableDocumentStoreProvider()
+    //.WithCosmosDocumentStoreProvider()
     .WithInMemoryProvider();
 
 builder.Services.AddCommands()
     .WithBehavior(typeof(ModuleScopeCommandBehavior<,>))
-    .WithBehavior(typeof(ChaosExceptionCommandBehavior<,>))
+    //.WithBehavior(typeof(ChaosExceptionCommandBehavior<,>))
     .WithBehavior(typeof(RetryCommandBehavior<,>))
-    .WithBehavior(typeof(CircuitBreakerCommandBehavior<,>))
-    .WithBehavior(typeof(TimeoutCommandBehavior<,>))
-    .WithBehavior(typeof(CacheInvalidateCommandBehavior<,>));
-
+    .WithBehavior(typeof(TimeoutCommandBehavior<,>));
 builder.Services.AddQueries()
     .WithBehavior(typeof(ModuleScopeQueryBehavior<,>))
-    .WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
-    .WithBehavior(typeof(CacheQueryBehavior<,>))
+    //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
     .WithBehavior(typeof(RetryQueryBehavior<,>))
-    .WithBehavior(typeof(CircuitBreakerQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling()
+builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
-    .WithBehavior<DummyJobSchedulingBehavior>()
-    //.WithBehavior(new DummyJobSchedulingBehavior(null))
-    //.WithBehavior(sp => new DummyJobSchedulingBehavior(sp.GetRequiredService<ILoggerFactory>()))
+    //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
-    .WithBehavior<ChaosExceptionJobSchedulingBehavior>();
+    .WithBehavior<TimeoutJobSchedulingBehavior>();
+
+builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
+    .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+    //.WithTask(sp =>
+    //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+                                                         //.WithTask(sp =>
+                                                         //    new SqlServerQuartzSeederStartupTask(
+                                                         //        sp.GetRequiredService<ILoggerFactory>(),
+                                                         //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+                                                         //        "[dbo].QRTZ444_"))
+    .WithBehavior<ModuleScopeStartupTaskBehavior>()
+    //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
+    .WithBehavior<RetryStartupTaskBehavior>()
+    .WithBehavior<TimeoutStartupTaskBehavior>();
 
 builder.Services.AddMessaging(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
@@ -84,11 +101,16 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     //.WithBehavior<ChaosExceptionMessageHandlerBehavior>()
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
+    .WithOutbox<CoreDbContext>(o => o // registers the outbox publisher behavior and worker service at once
+        .ProcessingInterval("00:00:30")
+        .ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
+        .StartupDelay("00:00:15")
+        .PurgeOnStartup())
     .WithInProcessBroker(); //.WithRabbitMQBroker();
 
 ConfigureHealth(builder.Services);
 
-builder.Services.AddMetrics();
+builder.Services.AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
@@ -99,13 +121,12 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
-builder.Services.AddEndpoints<SystemEndpoints>();
-//builder.Services.AddEndpoints(
-//    new SystemEndpoints(
-//        new SystemEndpointsOptions { GroupPrefix = "/api/system" }));
+builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
+builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument);
+builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
+builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
 builder.Services.AddOpenTelemetry()
     .WithMetrics(ConfigureMetrics)
     .WithTracing(ConfigureTracing);
@@ -132,13 +153,25 @@ app.UseRequestModuleContext();
 app.UseRequestLogging();
 
 app.UseOpenApi();
-app.UseSwaggerUi();
+app.UseSwaggerUi(ConfigureSwaggerUi);
 
 //app.UseResponseCompression();
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = CreateContentTypeProvider(),
+    OnPrepareResponse = context =>
+    {
+        if (context.Context.Response.ContentType == ContentType.YAML.MimeType()) // Disable caching for yaml (OpenAPI) files
+        {
+            context.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+            context.Context.Response.Headers.Expires = "-1";
+            context.Context.Response.Headers.Pragma = "no-cache";
+        }
+    }
+});
 
 app.UseModules();
 
@@ -156,7 +189,7 @@ app.MapControllers();
 app.MapEndpoints();
 app.MapHealthChecks();
 app.MapFallbackToFile("index.html");
-app.MapHub<NotificationHub>("/notificationhub");
+//app.MapHub<SignalRHub>("/signalrhub");
 
 app.Run();
 
@@ -165,56 +198,26 @@ void ConfiguraApiBehavior(ApiBehaviorOptions options)
     options.SuppressModelStateInvalidFilter = true;
 }
 
-void ConfiguraJsonOptions(JsonOptions options)
+void ConfigureJsonOptions(JsonOptions options)
 {
+    options.JsonSerializerOptions.WriteIndented = true;
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
 }
 
 void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
-        .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "ready" });
+        .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "self" });
+    //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
     //.AddCheck<RandomHealthCheck>("random")
-    //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]);
-    // ^^ NET 7.0 runtime issue
-    //.AddApplicationInsightsPublisher()
+    //.AddAp/plicationInsightsPublisher()
 
-    // TODO: .NET8 issue with HealthChecks name conflic https://github.com/dotnet/aspnetcore/issues/50836
-    services.AddHealthChecksUI(s => s.SetEvaluationTimeInSeconds(180)) // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
+    ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+    services.AddHealthChecksUI() // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
         .AddInMemoryStorage();
     //.AddSqliteStorage($"Data Source=data_health.db");
-}
-
-void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)
-{
-    settings.DocumentName = "v1";
-    settings.Version = "v1";
-    settings.Title = "Backend API";
-    settings.AddSecurity(
-        "bearer",
-        [],
-        new OpenApiSecurityScheme
-        {
-            Type = OpenApiSecuritySchemeType.OAuth2,
-            Flow = OpenApiOAuth2Flow.Implicit,
-            Description = "Oidc Authentication",
-            Flows = new OpenApiOAuthFlows
-            {
-                Implicit = new OpenApiOAuthFlow
-                {
-                    AuthorizationUrl = $"{builder.Configuration["Oidc:Authority"]}/protocol/openid-connect/auth",
-                    TokenUrl = $"{builder.Configuration["Oidc:Authority"]}/protocol/openid-connect/token",
-                    Scopes = new Dictionary<string, string>
-                    {
-                        //{"openid", "openid"},
-                    }
-                }
-            },
-        });
-    settings.OperationProcessors.Add(new AuthorizeRolesSummaryOperationProcessor());
-    settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
-    settings.OperationProcessors.Add(new AuthorizationOperationProcessor("bearer"));
 }
 
 void ConfigureMetrics(MeterProviderBuilder provider)
@@ -304,6 +307,56 @@ void ConfigureTracing(TracerProviderBuilder provider)
             o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ?? Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
         });
     }
+}
+
+void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)
+{
+    settings.DocumentName = "v1";
+    settings.Version = "v1";
+    settings.Title = "Backend API";
+    settings.AddSecurity(
+        "bearer",
+        [],
+        new OpenApiSecurityScheme
+        {
+            Type = OpenApiSecuritySchemeType.OAuth2,
+            Flow = OpenApiOAuth2Flow.Implicit,
+            Description = "Oidc Authentication",
+            Flows = new OpenApiOAuthFlows
+            {
+                Implicit = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = $"{builder.Configuration["Oidc:Authority"]}/protocol/openid-connect/auth",
+                    TokenUrl = $"{builder.Configuration["Oidc:Authority"]}/protocol/openid-connect/token",
+                    Scopes = new Dictionary<string, string>
+                    {
+                        //{"openid", "openid"},
+                    }
+                }
+            },
+        });
+    settings.OperationProcessors.Add(new AuthorizeRolesSummaryOperationProcessor());
+    settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
+    settings.OperationProcessors.Add(new AuthorizationOperationProcessor("bearer"));
+}
+
+void ConfigureSwaggerUi(SwaggerUiSettings settings)
+{
+    settings.CustomStylesheetPath = "css/swagger.css";
+    settings.SwaggerRoutes.Add(new SwaggerUiRoute("All (generated)", "/swagger/generated/swagger.json")); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
+
+    foreach (var module in ModuleExtensions.Modules.SafeNull().Where(m => m.Enabled))
+    {
+        settings.SwaggerRoutes.Add(
+            new SwaggerUiRoute(module.Name, $"/openapi/{module.Name}-OpenAPI.yaml"));
+    }
+}
+
+static FileExtensionContentTypeProvider CreateContentTypeProvider()
+{
+    var provider = new FileExtensionContentTypeProvider();
+    provider.Mappings.Add(".yaml", ContentType.YAML.MimeType());
+    return provider;
 }
 
 public partial class Program

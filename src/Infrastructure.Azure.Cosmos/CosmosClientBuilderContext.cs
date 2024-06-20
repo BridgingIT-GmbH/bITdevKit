@@ -8,27 +8,19 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 
-public class CosmosClientBuilderContext
+public class CosmosClientBuilderContext(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null,
+    string connectionString = null)
 {
-    public CosmosClientBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null,
-        string connectionString = null)
-    {
-        this.Services = services;
-        this.Lifetime = lifetime;
-        this.Configuration = configuration;
-        this.ConnectionString = connectionString;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public ServiceLifetime Lifetime { get; } = lifetime;
 
-    public ServiceLifetime Lifetime { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
-    public IConfiguration Configuration { get; }
-
-    public string ConnectionString { get; }
+    public string ConnectionString { get; } = connectionString;
 
     public string AccountName
     {

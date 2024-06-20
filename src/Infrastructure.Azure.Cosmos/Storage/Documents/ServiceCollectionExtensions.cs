@@ -120,27 +120,20 @@ public static partial class ServiceCollectionExtensions
     }
 }
 
-public class CosmosDocumentStoreClientBuilderContext<T>
+public class CosmosDocumentStoreClientBuilderContext<T>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null)
     where T : class, new()
 {
     private readonly List<Action<IServiceCollection>> behaviors = new();
     private ServiceDescriptor repositoryDescriptor;
 
-    public CosmosDocumentStoreClientBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Lifetime = lifetime;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public ServiceLifetime Lifetime { get; } = lifetime;
 
-    public ServiceLifetime Lifetime { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     public CosmosDocumentStoreClientBuilderContext<T> WithBehavior<TBehavior>()
         where TBehavior : class, IDocumentStoreClient<T>

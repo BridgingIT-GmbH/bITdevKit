@@ -61,15 +61,15 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestMenuReviewIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.MenuReviewIds, dib =>
+        builder.OwnsMany(d => d.MenuReviewIds, mb =>
         {
-            dib.ToTable("GuestMenuReviewIds");
+            mb.ToTable("GuestMenuReviewIds");
 
-            dib.WithOwner().HasForeignKey("GuestId");
+            mb.WithOwner().HasForeignKey("GuestId");
 
-            dib.HasKey("Id");
+            mb.HasKey("Id");
 
-            dib.Property(di => di.Value)
+            mb.Property(di => di.Value)
                 .HasColumnName("MenuReviewId");
         });
 
@@ -79,15 +79,15 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestBillIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.BillIds, dib =>
+        builder.OwnsMany(d => d.BillIds, bp =>
         {
-            dib.ToTable("GuestBillIds");
+            bp.ToTable("GuestBillIds");
 
-            dib.WithOwner().HasForeignKey("GuestId");
+            bp.WithOwner().HasForeignKey("GuestId");
 
-            dib.HasKey("Id");
+            bp.HasKey("Id");
 
-            dib.Property(di => di.Value)
+            bp.Property(di => di.Value)
                 .HasColumnName("BillId");
         });
 
@@ -97,15 +97,15 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestPendingDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.PendingDinnerIds, dib =>
+        builder.OwnsMany(d => d.PendingDinnerIds, pb =>
         {
-            dib.ToTable("GuestPendingDinnerIds");
+            pb.ToTable("GuestPendingDinnerIds");
 
-            dib.WithOwner().HasForeignKey("GuestId");
+            pb.WithOwner().HasForeignKey("GuestId");
 
-            dib.HasKey("Id");
+            pb.HasKey("Id");
 
-            dib.Property(di => di.Value)
+            pb.Property(di => di.Value)
                 .HasColumnName("DinnerId");
         });
 
@@ -115,15 +115,15 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestPastDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.PastDinnerIds, dib =>
+        builder.OwnsMany(d => d.PastDinnerIds, pb =>
         {
-            dib.ToTable("GuestPastDinnerIds");
+            pb.ToTable("GuestPastDinnerIds");
 
-            dib.WithOwner().HasForeignKey("GuestId");
+            pb.WithOwner().HasForeignKey("GuestId");
 
-            dib.HasKey("Id");
+            pb.HasKey("Id");
 
-            dib.Property(di => di.Value)
+            pb.Property(di => di.Value)
                 .HasColumnName("DinnerId");
         });
 
@@ -133,15 +133,15 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestUpcomingDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.UpcomingDinnerIds, dib =>
+        builder.OwnsMany(d => d.UpcomingDinnerIds, ub =>
         {
-            dib.ToTable("GuestUpcomingDinnerIds");
+            ub.ToTable("GuestUpcomingDinnerIds");
 
-            dib.WithOwner().HasForeignKey("GuestId");
+            ub.WithOwner().HasForeignKey("GuestId");
 
-            dib.HasKey("Id");
+            ub.HasKey("Id");
 
-            dib.Property(di => di.Value)
+            ub.Property(di => di.Value)
                 .HasColumnName("DinnerId");
         });
 

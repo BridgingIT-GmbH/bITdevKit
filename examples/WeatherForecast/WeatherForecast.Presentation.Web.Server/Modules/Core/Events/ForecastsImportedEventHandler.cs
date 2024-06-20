@@ -13,14 +13,9 @@ using EnsureThat;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
-public class ForecastsImportedEventHandler : INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
+public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub) : INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
 {
-    private readonly IHubContext<NotificationHub> hub;
-
-    public ForecastsImportedEventHandler(IHubContext<NotificationHub> hub)
-    {
-        this.hub = hub;
-    }
+    private readonly IHubContext<NotificationHub> hub = hub;
 
     public async Task Handle(ForecastsImportedEvent notification, CancellationToken cancellationToken)
     {

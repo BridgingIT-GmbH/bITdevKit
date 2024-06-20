@@ -16,13 +16,9 @@ using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 
 [Obsolete("Use GenericRepositoryCancellationBehavior instead")]
-public class GenericRepositoryCancellationDecorator<TEntity> : RepositoryCancellationBehavior<TEntity>
+public class GenericRepositoryCancellationDecorator<TEntity>(IGenericRepository<TEntity> inner) : RepositoryCancellationBehavior<TEntity>(inner)
     where TEntity : class, IEntity
 {
-    public GenericRepositoryCancellationDecorator(IGenericRepository<TEntity> inner)
-        : base(inner)
-    {
-    }
 }
 
 /// <summary>

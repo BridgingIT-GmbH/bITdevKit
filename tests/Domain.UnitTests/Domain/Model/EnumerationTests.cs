@@ -86,16 +86,11 @@ public class EnumerationTests
     }
 }
 
-public class StubEnumeration : Enumeration
+public class StubEnumeration(int id, string name) : Enumeration(id, name)
 {
     public static StubEnumeration Stub01 = new(1, "Stub01");
     public static StubEnumeration Stub02 = new(2, "Stub02");
     public static StubEnumeration Stub03 = new(3, "Stub03");
-
-    public StubEnumeration(int id, string name)
-        : base(id, name)
-    {
-    }
 
     public static IEnumerable<StubEnumeration> GetAll() => GetAll<StubEnumeration>();
 }

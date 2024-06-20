@@ -5,27 +5,31 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Collections.Specialized;
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using Quartz.Impl;
 using Quartz.Spi;
 
 public static class ServiceCollectionExtensions
 {
     private static JobSchedulingOptions contextOptions;
+    //private static bool schedulerIsAdded;
 
     /// <summary>
     /// Adds the job scheduler
     /// </summary>
     public static JobSchedulingBuilderContext AddJobScheduling(
         this IServiceCollection services,
-        Builder<JobSchedulingOptionsBuilder, JobSchedulingOptions> optionsBuilder)
+        Builder<JobSchedulingOptionsBuilder, JobSchedulingOptions> optionsBuilder,
+        IConfiguration configuration = null,
+        NameValueCollection properties = null)
     {
         return services.AddJobScheduling(
-            optionsBuilder(new JobSchedulingOptionsBuilder()).Build());
+            optionsBuilder(new JobSchedulingOptionsBuilder()).Build(), null, configuration, properties);
     }
 
     /// <summary>
@@ -33,22 +37,48 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static JobSchedulingBuilderContext AddJobScheduling(
         this IServiceCollection services,
-        JobSchedulingOptions options = null)
+        Builder<JobSchedulingOptionsBuilder, JobSchedulingOptions> optionsBuilder,
+        Action<IServiceCollectionQuartzConfigurator> configure,
+        IConfiguration configuration = null,
+        NameValueCollection properties = null)
+    {
+        return services.AddJobScheduling(
+            optionsBuilder(new JobSchedulingOptionsBuilder()).Build(), configure, configuration, properties);
+    }
+
+    /// <summary>
+    /// Adds the job scheduler
+    /// </summary>
+    public static JobSchedulingBuilderContext AddJobScheduling(
+        this IServiceCollection services,
+        JobSchedulingOptions options = null,
+        Action<IServiceCollectionQuartzConfigurator> configure = null,
+        IConfiguration configuration = null,
+        NameValueCollection properties = null)
     {
         contextOptions ??= options;
 
-        // TODO: modernize quartz setup (example: https://github.com/quartznet/quartznet/tree/main/src/Quartz.Examples.AspNetCore)
-        //       quartz 3.3 includes official support for Microsoft DI and ASP.NET Core Hosted Services. (http://disq.us/p/2ag47yp)
-        services.TryAddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+#pragma warning disable SA1010 // Opening square brackets should be spaced correctly
+        properties ??= [];
+#pragma warning restore SA1010 // Opening square brackets should be spaced correctly
+        if (configuration != null)
+        {
+            services.Configure<QuartzOptions>(configuration.GetSection("JobScheduling:Quartz"));
+        }
+
         services.TryAddSingleton<IJobFactory, ScopedJobFactory>();
+        services.AddQuartz(properties, configure); // https://github.com/quartznet/quartznet/blob/main/src/Quartz/Configuration/ServiceCollectionExtensions.cs#L31
 
         services.AddHostedService(sp =>
-            new JobSchedulingService(
+            new JobSchedulingService( // QuartzHostedService https://github.com/quartznet/quartznet/blob/main/src/Quartz/Hosting/QuartzHostedService.cs#L21
                 sp.GetService<ILoggerFactory>(),
                 sp.GetRequiredService<ISchedulerFactory>(),
                 sp.GetRequiredService<IJobFactory>(),
                 sp.GetServices<JobSchedule>(),
                 contextOptions));
+
+        //schedulerIsAdded = true;
+        //}
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);
     }
@@ -56,6 +86,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a scoped scheduled job
     /// </summary>
+    /// <param name="context">The builder context</param>
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithJob<TJob>(
         this JobSchedulingBuilderContext context,
@@ -68,6 +99,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a scoped scheduled job
     /// </summary>
+    /// <param name="context">The builder context</param>
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithScopedJob<TJob>(
         this JobSchedulingBuilderContext context,
@@ -85,6 +117,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a singleton scheduled job
     /// </summary>
+    /// <param name="context">The builder context</param>
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithSingletonJob<TJob>(
         this JobSchedulingBuilderContext context,

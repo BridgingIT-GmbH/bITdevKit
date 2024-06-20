@@ -12,19 +12,13 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class InMemoryDocumentStoreProvider : IDocumentStoreProvider
+public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
+    ILoggerFactory loggerFactory,
+    InMemoryDocumentStoreContext context = null) : IDocumentStoreProvider
 {
-    public InMemoryDocumentStoreProvider( // TODO: add Options ctor
-        ILoggerFactory loggerFactory,
-        InMemoryDocumentStoreContext context = null)
-    {
-        this.Logger = loggerFactory?.CreateLogger<InMemoryDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<InMemoryDocumentStoreProvider>();
-        this.Context = context ?? new InMemoryDocumentStoreContext();
-    }
+    protected ILogger<InMemoryDocumentStoreProvider> Logger { get; } = loggerFactory?.CreateLogger<InMemoryDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<InMemoryDocumentStoreProvider>();
 
-    protected ILogger<InMemoryDocumentStoreProvider> Logger { get; }
-
-    protected InMemoryDocumentStoreContext Context { get; }
+    protected InMemoryDocumentStoreContext Context { get; } = context ?? new InMemoryDocumentStoreContext();
 
     /// <summary>
     /// Retrieves entities of type T from document store asynchronously

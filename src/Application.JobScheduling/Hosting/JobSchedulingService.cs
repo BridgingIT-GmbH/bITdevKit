@@ -79,14 +79,33 @@ public class JobSchedulingService : BackgroundService
             {
                 var jobDetail = CreateJobDetail(jobSchedule);
                 var trigger = CreateTrigger(jobSchedule);
+                var jobTypeName = jobDetail.JobType.FullName;
 
-                try
+                if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext()) // trigger could have been changed (cron)
                 {
-                    await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
+                    var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
+                    if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
+                    {
+                        await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
+                        this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                    }
                 }
-                catch (ObjectAlreadyExistsException ex)
+
+                if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
                 {
-                    this.logger.LogError(ex, "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})", Constants.LogKey, ex.Message, jobDetail.JobType);
+                    try
+                    {
+                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                        await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
+                    }
+                    catch (ObjectAlreadyExistsException ex)
+                    {
+                        this.logger.LogError(ex, "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})", Constants.LogKey, ex.Message, jobTypeName);
+                    }
+                }
+                else
+                {
+                    this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
                 }
             }
 
@@ -101,8 +120,7 @@ public class JobSchedulingService : BackgroundService
 
     private static ITrigger CreateTrigger(JobSchedule schedule)
     {
-        return TriggerBuilder
-            .Create()
+        return TriggerBuilder.Create()
             .WithIdentity($"{schedule.JobType.FullName}.trigger")
             .WithCronSchedule(schedule.CronExpression)
             .WithDescription(schedule.CronExpression)
@@ -111,11 +129,11 @@ public class JobSchedulingService : BackgroundService
 
     private static IJobDetail CreateJobDetail(JobSchedule schedule)
     {
-        return JobBuilder
-            .Create(schedule.JobType)
+        return JobBuilder.Create(schedule.JobType)
             .WithIdentity(schedule.JobType.FullName)
             .UsingJobData("JobId", GuidGenerator.CreateSequential().ToString("N"))
             .WithDescription(schedule.JobType.Name)
+            .StoreDurably(true)
             .Build();
     }
 }

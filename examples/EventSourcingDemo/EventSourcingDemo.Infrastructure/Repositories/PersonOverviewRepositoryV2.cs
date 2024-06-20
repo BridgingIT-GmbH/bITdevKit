@@ -12,14 +12,9 @@ using Domain.Model;
 using Domain.Repositories;
 using Models;
 
-public class PersonOverviewRepositoryV2 : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>,
+public class PersonOverviewRepositoryV2(EntityFrameworkRepositoryOptions options = null) : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(options),
     IPersonOverviewRepositoryV2
 {
-    public PersonOverviewRepositoryV2(EntityFrameworkRepositoryOptions options = null)
-        : base(options)
-    {
-    }
-
     public async Task AddPersonAsync(PersonOverview person)
     {
         await base.InsertAsync(person).AnyContext();

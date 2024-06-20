@@ -15,21 +15,14 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Domain.Specifications;
 using Microsoft.Extensions.Logging;
 
-public class OutboxWorkerService : IOutboxWorkerService
+public class OutboxWorkerService(
+    IOutboxMessageWorkerRepository repository,
+    IAggregateEventOutboxReceiver receiver,
+    ILoggerOptions loggerOptions) : IOutboxWorkerService
 {
-    private readonly IOutboxMessageWorkerRepository repository;
-    private readonly IAggregateEventOutboxReceiver receiver;
-    private readonly ILogger<OutboxWorkerService> logger;
-
-    public OutboxWorkerService(
-        IOutboxMessageWorkerRepository repository,
-        IAggregateEventOutboxReceiver receiver,
-        ILoggerOptions loggerOptions)
-    {
-        this.repository = repository;
-        this.receiver = receiver;
-        this.logger = loggerOptions.CreateLogger<OutboxWorkerService>();
-    }
+    private readonly IOutboxMessageWorkerRepository repository = repository;
+    private readonly IAggregateEventOutboxReceiver receiver = receiver;
+    private readonly ILogger<OutboxWorkerService> logger = loggerOptions.CreateLogger<OutboxWorkerService>();
 
     public async Task DoWorkAsync()
     {

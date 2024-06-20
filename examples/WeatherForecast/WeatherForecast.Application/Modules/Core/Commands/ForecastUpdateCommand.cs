@@ -10,14 +10,9 @@ using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class ForecastUpdateCommand : CommandRequestBase
+public class ForecastUpdateCommand(City city) : CommandRequestBase
 {
-    public ForecastUpdateCommand(City city)
-    {
-        this.City = city;
-    }
-
-    public City City { get; }
+    public City City { get; } = city;
 
     public override ValidationResult Validate() =>
         new Validator().Validate(this);

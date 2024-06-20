@@ -11,17 +11,12 @@ using BridgingIT.DevKit.Common;
 using Humanizer;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Timeout;
 
-public class TimeoutCommandBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class TimeoutCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    public TimeoutCommandBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     protected override bool CanProcess(TRequest request)
     {
         return request is ITimeoutCommand;

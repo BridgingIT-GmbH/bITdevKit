@@ -8,32 +8,31 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 public class MarketingDomainSeederTask(
-    ILoggerFactory loggerFactory,
-    IGenericRepository<Customer> userRepository) : IStartupTask
+    ILoggerFactory loggerFactory
+    /*IGenericRepository<Customer> userRepository*/) : IStartupTask
 {
     private readonly ILogger<MarketingDomainSeederTask> logger = loggerFactory?.CreateLogger<MarketingDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<MarketingDomainSeederTask>();
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    public Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await this.SeedCustomers(userRepository);
+        // no need to seed customers, as they are created by the UserCreatedMessageHandler
+        //await this.SeedCustomers(userRepository);
+
+        return Task.CompletedTask;
     }
 
-    private async Task SeedCustomers(IGenericRepository<Customer> repository)
-    {
-        foreach (var entity in MarketingSeedModels.Customers(0))
-        {
-            if (!await repository.ExistsAsync(entity.Id))
-            {
-                entity.AuditState.SetCreated("seed");
-
-                await repository.InsertAsync(entity);
-            }
-        }
-    }
+    //private async Task SeedCustomers(IGenericRepository<Customer> repository)
+    //{
+    //    foreach (var entity in MarketingSeedModels.Customers(0))
+    //    {
+    //        if (!await repository.ExistsAsync(entity.Id))
+    //        {
+    //            await repository.InsertAsync(entity);
+    //        }
+    //    }
+    //}
 }

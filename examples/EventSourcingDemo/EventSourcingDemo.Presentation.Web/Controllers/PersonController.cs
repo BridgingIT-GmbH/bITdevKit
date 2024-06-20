@@ -24,18 +24,11 @@ using Microsoft.AspNetCore.Mvc;
 /// the table person.</remarks>
 [Route("api/[controller]")]
 [ApiController]
-public class PersonController
+public class PersonController(IPersonService personService, IProjectionRequester<Person> personProjectionRequester, IOutboxWorkerService outboxWorkerService)
 {
-    private readonly IPersonService personService;
-    private readonly IProjectionRequester<Person> personProjectionRequester;
-    private readonly IOutboxWorkerService outboxWorkerService;
-
-    public PersonController(IPersonService personService, IProjectionRequester<Person> personProjectionRequester, IOutboxWorkerService outboxWorkerService)
-    {
-        this.personService = personService;
-        this.personProjectionRequester = personProjectionRequester;
-        this.outboxWorkerService = outboxWorkerService;
-    }
+    private readonly IPersonService personService = personService;
+    private readonly IProjectionRequester<Person> personProjectionRequester = personProjectionRequester;
+    private readonly IOutboxWorkerService outboxWorkerService = outboxWorkerService;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PersonOverviewViewModel>>> Get()

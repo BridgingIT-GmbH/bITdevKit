@@ -18,13 +18,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 [Obsolete("Use GenericRepositoryDomainEventBehavior instead")]
-public class GenericRepositoryDomainEventDecorator<TEntity> : RepositoryDomainEventBehavior<TEntity>
+public class GenericRepositoryDomainEventDecorator<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner) : RepositoryDomainEventBehavior<TEntity>(loggerFactory, inner)
     where TEntity : class, IEntity, IAggregateRoot
 {
-    public GenericRepositoryDomainEventDecorator(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
-        : base(loggerFactory, inner)
-    {
-    }
 }
 
 /// <summary>

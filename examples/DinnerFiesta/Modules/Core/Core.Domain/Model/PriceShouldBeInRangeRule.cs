@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class PriceShouldBeInRangeRule : IBusinessRule
+public class PriceShouldBeInRangeRule(decimal amount) : IBusinessRule
 {
-    private readonly decimal amount;
-
-    public PriceShouldBeInRangeRule(decimal amount)
-    {
-        this.amount = amount;
-    }
+    private readonly decimal amount = amount;
 
     public string Message => "Price should be between 1 and 100";
 
@@ -22,4 +17,9 @@ public class PriceShouldBeInRangeRule : IBusinessRule
     {
         return Task.FromResult(this.amount >= 1 && this.amount <= 100);
     }
+}
+
+public static partial class PriceRules
+{
+    public static IBusinessRule ShouldBeInRange(decimal amount) => new PriceShouldBeInRangeRule(amount);
 }

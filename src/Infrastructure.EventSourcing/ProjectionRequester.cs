@@ -18,20 +18,13 @@ using Microsoft.Extensions.Logging;
 /// Über diese Klasse kann eine (erneute) Projektion für alle Aggregates eines Typs ausgelöst werden
 /// </summary>
 /// <typeparam name="TAggregate">Aggregateklasse, für welches die Projektion ausgelöst werden soll</typeparam>
-public class ProjectionRequester<TAggregate> : IProjectionRequester<TAggregate>
+public class ProjectionRequester<TAggregate>(IEventStore<TAggregate> eventStore,
+    IPublishAggregateEventSender sender, ILoggerFactory logger) : IProjectionRequester<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
-    private readonly IEventStore<TAggregate> eventStore;
-    private readonly IPublishAggregateEventSender publishAggregateEventSender;
-    private readonly ILogger logger;
-
-    public ProjectionRequester(IEventStore<TAggregate> eventStore,
-        IPublishAggregateEventSender sender, ILoggerFactory logger)
-    {
-        this.eventStore = eventStore;
-        this.publishAggregateEventSender = sender;
-        this.logger = logger.CreateLogger<ProjectionRequester<TAggregate>>();
-    }
+    private readonly IEventStore<TAggregate> eventStore = eventStore;
+    private readonly IPublishAggregateEventSender publishAggregateEventSender = sender;
+    private readonly ILogger logger = logger.CreateLogger<ProjectionRequester<TAggregate>>();
 
     /// <summary>
     /// Triggers a projection for all aggregates

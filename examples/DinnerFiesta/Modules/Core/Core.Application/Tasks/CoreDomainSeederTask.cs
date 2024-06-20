@@ -36,8 +36,6 @@ public class CoreDomainSeederTask(
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
-                entity.AuditState.SetCreated("seed");
-
                 await repository.InsertAsync(entity);
             }
         }
@@ -49,8 +47,6 @@ public class CoreDomainSeederTask(
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
-                entity.AuditState.SetCreated("seed");
-
                 await repository.InsertAsync(entity);
             }
         }
@@ -62,8 +58,6 @@ public class CoreDomainSeederTask(
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
-                entity.AuditState.SetCreated("seed");
-
                 await repository.InsertAsync(entity);
             }
         }
@@ -75,8 +69,6 @@ public class CoreDomainSeederTask(
         {
             if (!await repository.ExistsAsync(entity.Id))
             {
-                entity.AuditState.SetCreated("seed");
-
                 await repository.InsertAsync(entity);
             }
         }

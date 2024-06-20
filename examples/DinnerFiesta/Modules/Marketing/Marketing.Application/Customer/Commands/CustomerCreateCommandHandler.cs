@@ -14,20 +14,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using Microsoft.Extensions.Logging;
 
-public class CustomerCreateCommandHandler : CommandHandlerBase<CustomerCreateCommand, Result<Customer>>
+public class CustomerCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Customer> repository) : CommandHandlerBase<CustomerCreateCommand, Result<Customer>>(loggerFactory)
 {
-    private readonly IGenericRepository<Customer> repository;
-
-    public CustomerCreateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Customer> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result<Customer>>> Process(CustomerCreateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
@@ -39,11 +29,11 @@ public class CustomerCreateCommandHandler : CommandHandlerBase<CustomerCreateCom
 
         Check.Throw(Array.Empty<IBusinessRule>());
 
-        var existingCustomer = (await this.repository.FindAllAsync(
+        var existingCustomer = (await repository.FindAllAsync(
             new CustomerForEmailSpecification(customer.Email), cancellationToken: cancellationToken).AnyContext()).FirstOrDefault();
         if (existingCustomer is null) // only insert new customers
         {
-            await this.repository.InsertAsync(customer, cancellationToken);
+            await repository.InsertAsync(customer, cancellationToken);
 
             return new CommandResponse<Result<Customer>>
             {

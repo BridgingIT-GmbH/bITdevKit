@@ -9,7 +9,7 @@ using System;
 using BridgingIT.DevKit.Common;
 using FluentValidation.Results;
 
-public abstract class QueryRequestBase<TResult> :
+public abstract class QueryRequestBase<TResult>(Guid id) :
     IQueryRequest<QueryResponse<TResult>>,
     IQueryHandler
 {
@@ -18,15 +18,9 @@ public abstract class QueryRequestBase<TResult> :
     {
     }
 
-    protected QueryRequestBase(Guid id)
-    {
-        this.RequestId = id;
-        this.RequestTimestamp = DateTime.UtcNow;
-    }
+    public Guid RequestId { get; private set; } = id;
 
-    public Guid RequestId { get; private set; }
-
-    public DateTimeOffset RequestTimestamp { get; }
+    public DateTimeOffset RequestTimestamp { get; } = DateTime.UtcNow;
 
     public virtual ValidationResult Validate() => new();
 }

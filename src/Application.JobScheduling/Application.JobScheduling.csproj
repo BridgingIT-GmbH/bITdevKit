@@ -13,6 +13,7 @@
     <PackageReference Include="Polly" />
     <PackageReference Include="Polly.Contrib.Simmy" />
     <PackageReference Include="Quartz" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>

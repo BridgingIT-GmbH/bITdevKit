@@ -10,15 +10,10 @@ using BridgingIT.DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class CityUpdateCommand : CommandRequestBase<AggregateUpdatedCommandResult>,
+public class CityUpdateCommand(CityModel model) : CommandRequestBase<AggregateUpdatedCommandResult>,
     ICacheInvalidateCommand, IRetryCommand
 {
-    public CityUpdateCommand(CityModel model)
-    {
-        this.Model = model;
-    }
-
-    public CityModel Model { get; }
+    public CityModel Model { get; } = model;
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 

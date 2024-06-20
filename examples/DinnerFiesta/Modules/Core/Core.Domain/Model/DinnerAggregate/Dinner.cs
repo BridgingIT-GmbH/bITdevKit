@@ -116,14 +116,14 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
     public Dinner ChangeSchedule(DinnerSchedule schedule)
     {
-        if (schedule == null)
+        if (schedule is null)
         {
             return this;
         }
 
         Check.Throw(new IBusinessRule[]
         {
-            new ScheduleShouldBeValidRule(schedule.StartDateTime, schedule.EndDateTime),
+            DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime),
         });
 
         this.Schedule = schedule;
@@ -136,7 +136,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
     public Dinner SetStatus(DinnerStatus status)
     {
-        if (status == null)
+        if (status is null)
         {
             return this;
         }

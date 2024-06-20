@@ -15,20 +15,13 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-public class SnapshotRepository :
-    EntityFrameworkGenericRepository<EventStoreSnapshot/*, EventStoreSnapshotForDatabase*/>,
+public class SnapshotRepository(IEventStoreAggregateRegistration aggregateRegistration,
+    EntityFrameworkRepositoryOptions options) :
+    EntityFrameworkGenericRepository<EventStoreSnapshot/*, EventStoreSnapshotForDatabase*/>(options),
     ISnapshotRepository
 {
-    private IEventStoreAggregateRegistration aggregateRegistration;
-    private EventStoreDbContext context;
-
-    public SnapshotRepository(IEventStoreAggregateRegistration aggregateRegistration,
-        EntityFrameworkRepositoryOptions options)
-        : base(options)
-    {
-        this.aggregateRegistration = aggregateRegistration;
-        this.context = options.DbContext as EventStoreDbContext;
-    }
+    private IEventStoreAggregateRegistration aggregateRegistration = aggregateRegistration;
+    private EventStoreDbContext context = options.DbContext as EventStoreDbContext;
 
     public SnapshotRepository(IEventStoreAggregateRegistration aggregateRegistration,
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)

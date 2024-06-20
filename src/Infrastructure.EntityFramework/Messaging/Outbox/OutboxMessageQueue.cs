@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public partial class OutboxMessageQueue : IOutboxMessageQueue
 {
@@ -14,7 +15,7 @@ public partial class OutboxMessageQueue : IOutboxMessageQueue
 
     public OutboxMessageQueue(ILoggerFactory loggerFactory, Action<string> action = null)
     {
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
         if (action is not null)
         {
@@ -30,7 +31,7 @@ public partial class OutboxMessageQueue : IOutboxMessageQueue
 
     //public OutboxMessageQueue(ILoggerFactory loggerFactory, IOutboxMessageWorker worker)
     //{
-    //    this.Logger = loggerFactory.CreateLogger(this.GetType());
+    //    this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     //    this.messageIds = new ActionBlock<string>(messageId => // dequeued
     //    {

@@ -7,15 +7,10 @@ namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class EntityCannotBeSoftDeletedAgainRule<TEntity> : IBusinessRule
+public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : IBusinessRule
     where TEntity : class, IEntity, ISoftDeletable
 {
-    private readonly bool? deleted;
-
-    public EntityCannotBeSoftDeletedAgainRule(TEntity entity)
-    {
-        this.deleted = entity?.Deleted;
-    }
+    private readonly bool? deleted = entity?.Deleted;
 
     public string Message => "An already deleted entity cannot be deleted again.";
 

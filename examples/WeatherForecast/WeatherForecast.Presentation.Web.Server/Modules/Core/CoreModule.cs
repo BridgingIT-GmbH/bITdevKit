@@ -129,7 +129,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<UserAccount>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<UserAccount>>();
 
-        // UserAccount specific repository, demonstrates how dapper (raw sql) can be used inside normal EF repos
+        // UserAccount specific repository, demonstrates how Capper (raw sql) can be used inside normal EF repos
         services.AddScoped(sp =>
             new UserAccountRepository(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())

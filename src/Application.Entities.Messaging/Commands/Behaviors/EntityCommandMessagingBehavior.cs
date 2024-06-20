@@ -14,21 +14,14 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class EntityCommandMessagingBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class EntityCommandMessagingBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    IMessageBroker messageBroker = null,
+    EntityCommandMessagingBehaviorOptions options = null) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    private readonly IMessageBroker messageBroker;
-    private readonly EntityCommandMessagingBehaviorOptions options;
-
-    public EntityCommandMessagingBehavior(
-        ILoggerFactory loggerFactory,
-        IMessageBroker messageBroker = null,
-        EntityCommandMessagingBehaviorOptions options = null)
-        : base(loggerFactory)
-    {
-        this.messageBroker = messageBroker;
-        this.options = options ?? new EntityCommandMessagingBehaviorOptions();
-    }
+    private readonly IMessageBroker messageBroker = messageBroker;
+    private readonly EntityCommandMessagingBehaviorOptions options = options ?? new EntityCommandMessagingBehaviorOptions();
 
     protected override bool CanProcess(TRequest request)
     {
@@ -60,7 +53,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse> : CommandBehavi
     {
         var result = await next().AnyContext(); // continue pipeline
 
-        if (this.messageBroker == null)
+        if (this.messageBroker is null)
         {
             this.Logger.LogWarning("{LogKey} cannot send entity message, no messagebroker specified", Commands.Constants.LogKey);
             return result;

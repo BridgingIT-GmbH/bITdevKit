@@ -17,15 +17,11 @@ using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 
-public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext> : InMemoryRepository<TEntity, TDatabaseEntity>
+public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context, Func<TDatabaseEntity, object> idSelector) : InMemoryRepository<TEntity, TDatabaseEntity>(loggerFactory, context, idSelector)
     where TEntity : class, IEntity
     where TContext : InMemoryContext<TEntity>
     where TDatabaseEntity : class
 {
-    public InMemoryRepositoryWrapper(ILoggerFactory loggerFactory, TContext context, Func<TDatabaseEntity, object> idSelector)
-        : base(loggerFactory, context, idSelector)
-    {
-    }
 }
 
 /// <summary>

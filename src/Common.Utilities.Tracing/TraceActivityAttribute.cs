@@ -6,15 +6,9 @@
 namespace BridgingIT.DevKit.Common;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class TraceActivityAttribute : Attribute
+public class TraceActivityAttribute(string name = null, bool recordExceptions = true) : Attribute
 {
-    public TraceActivityAttribute(string name = null, bool recordExceptions = true)
-    {
-        this.Name = name;
-        this.RecordExceptions = recordExceptions;
-    }
+    public string Name { get; } = name;
 
-    public string Name { get; }
-
-    public bool RecordExceptions { get; }
+    public bool RecordExceptions { get; } = recordExceptions;
 }

@@ -18,4 +18,6 @@ public struct Constants
     public const string JobIdKey = "JobId";
 
     public const string JobTypeKey = "JobType";
+
+    public const string TriggeredByKey = "TriggeredBy";
 }

@@ -9,12 +9,8 @@ using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
 
-public class InMemoryRepositoryBuilderContext<TEntity, TContext> : RepositoryBuilderContext<TEntity>
+public class InMemoryRepositoryBuilderContext<TEntity, TContext>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
     where TEntity : class, IEntity
     where TContext : InMemoryContext<TEntity>
 {
-    public InMemoryRepositoryBuilderContext(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null)
-        : base(services, lifetime, configuration)
-    {
-    }
 }

@@ -7,15 +7,9 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
 using BridgingIT.DevKit.Application.Messaging;
 
-public class StubMessage : MessageBase
+public class StubMessage(string firstname, long ticks) : MessageBase
 {
-    public StubMessage(string firstname, long ticks)
-    {
-        this.FirstName = firstname;
-        this.Ticks = ticks;
-    }
+    public string FirstName { get; } = firstname;
 
-    public string FirstName { get; }
-
-    public long Ticks { get; }
+    public long Ticks { get; } = ticks;
 }

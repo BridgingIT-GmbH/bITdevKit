@@ -9,13 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 
-public class EchoQueryHandler : QueryHandlerBase<EchoQuery, string>
+public class EchoQueryHandler(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory) : QueryHandlerBase<EchoQuery, string>(loggerFactory)
 {
-    public EchoQueryHandler(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task<QueryResponse<string>> Process(
         EchoQuery request,
         CancellationToken cancellationToken)

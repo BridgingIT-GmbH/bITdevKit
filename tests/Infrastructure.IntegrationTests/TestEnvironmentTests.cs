@@ -12,14 +12,9 @@ using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class TestEnvironmentTests
+public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {
-    private readonly TestEnvironmentFixture fixture;
-
-    public TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
 
     // MsSql container ===================================================================
     [Fact]

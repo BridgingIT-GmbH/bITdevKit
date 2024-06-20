@@ -10,23 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-public class StubPersonAddedDomainEvent : DomainEventBase
+public class StubPersonAddedDomainEvent(Guid personId) : DomainEventBase
 {
-    public StubPersonAddedDomainEvent(Guid personId)
-    {
-        this.PersonId = personId;
-    }
-
-    public Guid PersonId { get; }
+    public Guid PersonId { get; } = personId;
 }
 
-public class StubPersonAddedDomainEventHandler : DomainEventHandlerBase<StubPersonAddedDomainEvent>
+public class StubPersonAddedDomainEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<StubPersonAddedDomainEvent>(loggerFactory)
 {
-    public StubPersonAddedDomainEventHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public static Guid PersonId { get; internal set; }
 
     public static bool Handled { get; internal set; }

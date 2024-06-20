@@ -10,15 +10,10 @@ using System.Threading;
 using System.Threading.Tasks;
 
 [UnitTest("Common")]
-public class RetryTests : TestsBase
+public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 {
     private static readonly Func<int, TimeSpan> Progressive = x => TimeSpan.FromMilliseconds(
         Convert.ToInt32(Math.Round((1 / (1 + Math.Exp(-x + 5))) * 100)) * 100);
-
-    public RetryTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
 
     [Fact]
     public void WhenRetryTaskThat_does_not_fail()

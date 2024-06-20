@@ -11,10 +11,7 @@ using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class MessagingBuilderContextTests : TestsBase
-{
-    public MessagingBuilderContextTests(ITestOutputHelper output)
-        : base(output, s =>
+public class MessagingBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
         {
             s.AddMediatR();
 
@@ -28,9 +25,7 @@ public class MessagingBuilderContextTests : TestsBase
                     MessageExpiration = new TimeSpan(0, 1, 0)
                 });
         })
-    {
-    }
-
+{
     [Fact]
     public void GetBroker_WhenRequested_ShouldNotBeNull()
     {

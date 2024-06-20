@@ -10,16 +10,10 @@ using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkCosmosDocumentStoreProviderTests : EntityFrameworkDocumentStoreProviderTestsBase
+public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
-    private readonly TestEnvironmentFixture fixture;
-    private readonly ITestOutputHelper output;
-
-    public EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-        this.output = output;
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
+    private readonly ITestOutputHelper output = output;
 
     [SkippableFact]
     public override async Task DeleteAsync_DeletesEntity()

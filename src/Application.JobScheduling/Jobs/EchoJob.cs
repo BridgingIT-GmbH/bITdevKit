@@ -10,23 +10,18 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-[DisallowConcurrentExecution]
-public class EchoJob : JobBase,
+public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory),
     IRetryJobScheduling,
     IChaosExceptionJobScheduling
 {
-    public EchoJob(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     RetryJobSchedulingOptions IRetryJobScheduling.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     ChaosExceptionJobSchedulingOptions IChaosExceptionJobScheduling.Options => new() { InjectionRate = 0.10 };
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        this.Logger.LogInformation("{LogKey} echo (jobKey={jobKey})", Constants.LogKey, context.JobDetail.Key);
+        this.Logger.LogInformation("{LogKey} echo (jobKey={JobKey}, lastProcessed={LastProcessed})", Constants.LogKey, context.JobDetail.Key, this.ProcessedDate);
+
         await Task.Delay(5000, cancellationToken);
     }
 }

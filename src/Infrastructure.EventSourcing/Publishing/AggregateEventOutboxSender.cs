@@ -15,19 +15,12 @@ using BridgingIT.DevKit.Domain.Outbox;
 using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class AggregateEventOutboxSender : IAggregateEventOutboxSender
+public class AggregateEventOutboxSender(IOutboxMessageWriterRepository outboxMessageWriterRepository, IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
+    IEventStoreAggregateRegistration eventStoreAggregateRegistration) : IAggregateEventOutboxSender
 {
-    private readonly IOutboxMessageWriterRepository outboxMessageWriterRepository;
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration;
-    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration;
-
-    public AggregateEventOutboxSender(IOutboxMessageWriterRepository outboxMessageWriterRepository, IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
-        IEventStoreAggregateRegistration eventStoreAggregateRegistration)
-    {
-        this.outboxMessageWriterRepository = outboxMessageWriterRepository;
-        this.eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
-        this.eventStoreAggregateRegistration = eventStoreAggregateRegistration;
-    }
+    private readonly IOutboxMessageWriterRepository outboxMessageWriterRepository = outboxMessageWriterRepository;
+    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
+    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
 
     public async Task WriteToOutboxAsync<TAggregate>(AggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot

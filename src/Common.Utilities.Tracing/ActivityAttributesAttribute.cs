@@ -6,14 +6,9 @@
 namespace BridgingIT.DevKit.Common;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-public class ActivityAttributesAttribute : Attribute
+public class ActivityAttributesAttribute(params string[] extraAttributes) : Attribute
 {
-    public ActivityAttributesAttribute(params string[] extraAttributes)
-    {
-        this.Attributes = TraceAttributesInputsFormat.ActivityAttributesStringsToDictionary(extraAttributes);
-    }
-
-    public IDictionary<string, string> Attributes { get; }
+    public IDictionary<string, string> Attributes { get; } = TraceAttributesInputsFormat.ActivityAttributesStringsToDictionary(extraAttributes);
 }
 
 internal static class TraceAttributesInputsFormat

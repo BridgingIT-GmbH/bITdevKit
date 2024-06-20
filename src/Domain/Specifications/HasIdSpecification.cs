@@ -8,19 +8,11 @@ namespace BridgingIT.DevKit.Domain.Specifications;
 using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Model;
-using EnsureThat;
 
-public class HasIdSpecification<T> : Specification<T>
+public class HasIdSpecification<T>(object id) : Specification<T>
     where T : IEntity
 {
-    public HasIdSpecification(object id)
-    {
-        EnsureArg.IsNotNull(id);
-
-        this.Id = id;
-    }
-
-    protected object Id { get; }
+    protected object Id { get; } = id;
 
     public override Expression<Func<T, bool>> ToExpression()
     {

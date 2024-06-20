@@ -65,7 +65,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 }
 
                 var generic = method.MakeGenericMethod(entry);
-                generic.Invoke(this.aggregateRegistration, new object[] { attr.ImmutableName });
+                generic.Invoke(this.aggregateRegistration, [attr.ImmutableName]);
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 }
 
                 var generic = method.MakeGenericMethod(entry);
-                generic.Invoke(this.aggregateEventRegistration, new object[] { attr.ImmutableName });
+                generic.Invoke(this.aggregateEventRegistration, [attr.ImmutableName]);
             }
             catch (Exception ex)
             {

@@ -15,16 +15,10 @@ using Domain.Model.Events;
 using Domain.Repositories;
 using MediatR;
 
-public sealed class PersonCreatedNotificationProjection : INotificationHandler<PublishAggregateEvent<Person>> // <1>
+public sealed class PersonCreatedNotificationProjection(IPersonOverviewRepository personOverviewRepository, IEntityMapper mapper) : INotificationHandler<PublishAggregateEvent<Person>> // <1>
 {
-    private readonly IPersonOverviewRepository personOverviewRepository;
-    private readonly IEntityMapper mapper;
-
-    public PersonCreatedNotificationProjection(IPersonOverviewRepository personOverviewRepository, IEntityMapper mapper) // <2>
-    {
-        this.personOverviewRepository = personOverviewRepository;
-        this.mapper = mapper;
-    }
+    private readonly IPersonOverviewRepository personOverviewRepository = personOverviewRepository;
+    private readonly IEntityMapper mapper = mapper;
 
     async Task INotificationHandler<PublishAggregateEvent<Person>>.Handle(
         PublishAggregateEvent<Person> notification, CancellationToken cancellationToken) // <3>

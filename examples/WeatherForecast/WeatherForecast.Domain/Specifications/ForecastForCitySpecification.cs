@@ -10,14 +10,9 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-public class ForecastForCitySpecification : Specification<Forecast>
+public class ForecastForCitySpecification(Guid cityId) : Specification<Forecast>
 {
-    private readonly Guid cityId;
-
-    public ForecastForCitySpecification(Guid cityId)
-    {
-        this.cityId = cityId;
-    }
+    private readonly Guid cityId = cityId;
 
     public override Expression<Func<Forecast, bool>> ToExpression()
     {

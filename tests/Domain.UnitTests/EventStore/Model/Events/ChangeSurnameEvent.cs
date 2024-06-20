@@ -8,13 +8,7 @@ namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
 using System;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-public class ChangeSurnameEvent : AggregateEvent
+public class ChangeSurnameEvent(Guid aggregateId, int version, string surname) : AggregateEvent(aggregateId, version)
 {
-    public ChangeSurnameEvent(Guid aggregateId, int version, string surname)
-        : base(aggregateId, version)
-    {
-        this.Surname = surname;
-    }
-
-    public string Surname { get; set; }
+    public string Surname { get; set; } = surname;
 }

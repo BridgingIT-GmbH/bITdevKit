@@ -11,20 +11,10 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 using BridgingIT.DevKit.Application.Messaging;
 
-internal class UserCreatedDomainEventHandler : DomainEventHandlerBase<UserCreatedDomainEvent>
+public class UserCreatedDomainEventHandler(
+    ILoggerFactory loggerFactory,
+    IMessageBroker messageBroker) : DomainEventHandlerBase<UserCreatedDomainEvent>(loggerFactory)
 {
-    private readonly IMessageBroker messageBroker;
-
-    public UserCreatedDomainEventHandler(
-        ILoggerFactory loggerFactory,
-        IMessageBroker messageBroker)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(messageBroker, nameof(messageBroker));
-
-        this.messageBroker = messageBroker;
-    }
-
     public override bool CanHandle(UserCreatedDomainEvent notification)
     {
         return true;
@@ -36,6 +26,6 @@ internal class UserCreatedDomainEventHandler : DomainEventHandlerBase<UserCreate
         EnsureArg.IsNotNull(@event.User, nameof(@event.User));
 
         var message = new UserCreatedMessage { FirstName = @event.User.FirstName, LastName = @event.User.LastName, Email = @event.User.Email };
-        await this.messageBroker.Publish(message, cancellationToken);
+        await messageBroker.Publish(message, cancellationToken);
     }
 }

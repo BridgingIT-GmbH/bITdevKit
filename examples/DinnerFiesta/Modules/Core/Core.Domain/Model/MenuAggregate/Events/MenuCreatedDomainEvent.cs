@@ -7,12 +7,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class MenuCreatedDomainEvent : DomainEventBase
+public class MenuCreatedDomainEvent(Menu menu) : DomainEventBase
 {
-    public MenuCreatedDomainEvent(Menu menu)
-    {
-        this.Menu = menu;
-    }
-
-    public Menu Menu { get; }
+    public Menu Menu { get; } = menu;
 }

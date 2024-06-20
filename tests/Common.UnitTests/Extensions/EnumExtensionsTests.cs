@@ -113,14 +113,9 @@ public enum StubIntEnum
 }
 
 [AttributeUsage(AttributeTargets.All)]
-public class CustomAttribute : Attribute
+public class CustomAttribute(int value) : Attribute
 {
-    public CustomAttribute(int value)
-    {
-        this.Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 }
 
 [Custom(500)]

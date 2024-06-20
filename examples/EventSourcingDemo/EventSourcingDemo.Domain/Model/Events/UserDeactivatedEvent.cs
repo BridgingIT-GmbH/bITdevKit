@@ -10,12 +10,7 @@ using BridgingIT.DevKit.Domain.EventSourcing.Model;
 using BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
 [ImmutableName("PersonAggregate_DeactivateUserEvent_v1_13.05.2019")]
-public class UserDeactivatedEvent : AggregateEvent
+public class UserDeactivatedEvent(Guid aggregateId, int version) : AggregateEvent(aggregateId, version)
 {
-    public UserDeactivatedEvent(Guid aggregateId, int version)
-        : base(aggregateId, version)
-    {
-    }
-
     public string Surname { get; set; }
 }

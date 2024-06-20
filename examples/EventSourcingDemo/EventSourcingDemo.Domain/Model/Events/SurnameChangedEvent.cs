@@ -10,13 +10,7 @@ using BridgingIT.DevKit.Domain.EventSourcing.Model;
 using BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
 [ImmutableName("PersonAggregate_ChangeSurnameEvent_v1_13.05.2019")]
-public class SurnameChangedEvent : AggregateEvent
+public class SurnameChangedEvent(Guid aggregateId, int version, string surname) : AggregateEvent(aggregateId, version)
 {
-    public SurnameChangedEvent(Guid aggregateId, int version, string surname)
-        : base(aggregateId, version)
-    {
-        this.Surname = surname;
-    }
-
-    public string Surname { get; set; }
+    public string Surname { get; set; } = surname;
 }

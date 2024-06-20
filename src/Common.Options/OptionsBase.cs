@@ -11,13 +11,13 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract class OptionsBase : ILoggerOptions
 {
+    protected OptionsBase()
+    {
+    }
+
     protected OptionsBase(ILoggerFactory loggerFactory)
     {
         this.LoggerFactory = loggerFactory;
-    }
-
-    protected OptionsBase()
-    {
     }
 
     /// <summary>
@@ -32,13 +32,16 @@ public abstract class OptionsBase : ILoggerOptions
     /// Creates the logger.
     /// </summary>
     /// <param name="categoryName">Name of the category.</param>
-    public ILogger CreateLogger(string categoryName) => this.LoggerFactory is null
-        ? NullLogger.Instance
-        : this.LoggerFactory.CreateLogger(categoryName);
+    public ILogger CreateLogger(string categoryName) =>
+        this.LoggerFactory is null
+            ? NullLogger.Instance
+            : this.LoggerFactory.CreateLogger(categoryName);
 
     /// <summary>
     /// Creates the typed logger.
     /// </summary>
     public ILogger<T> CreateLogger<T>() =>
-        this.LoggerFactory is null ? new NullLogger<T>() : this.LoggerFactory.CreateLogger<T>();
+        this.LoggerFactory is null
+            ? new NullLogger<T>()
+            : this.LoggerFactory.CreateLogger<T>();
 }

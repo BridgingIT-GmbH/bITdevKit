@@ -21,6 +21,8 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Routing;
+using BridgingIT.DevKit.Application.JobScheduling;
+using Microsoft.EntityFrameworkCore;
 
 public class CoreModule : WebModuleBase
 {
@@ -29,7 +31,8 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         services.AddJobScheduling()
-            .WithJob<EchoMessageJob>(CronExpressions.Every5Minutes)
+            .WithJob<EchoJob>(CronExpressions.Every5Minutes) // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithJob<EchoMessageJob>(CronExpressions.Every30Minutes)
             .WithJob<DinnerSnapshotExportJob>(CronExpressions.EveryHour);
             //.WithJob<HealthCheckJob>(CronExpressions.EveryMinute);
 
@@ -61,20 +64,18 @@ public class CoreModule : WebModuleBase
 
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                //.UseLogger()
-                //.UseSimpleLogger()
+                //.UseLogger().UseSimpleLogger()
                 .UseCommandLogger(),
                 //.UseIntercepter<ModuleScopeInterceptor>()
                 //.UseIntercepter<CommandLoggerInterceptor>(),
-                c =>
-                {
-                    c.CommandTimeout(30);
-                    //c.UseQuerySplittingBehavior(Microsoft.EntityFrameworkCore.QuerySplittingBehavior.SplitQuery);
-                })
+                c => c
+                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                    .CommandTimeout(30))
             .WithHealthChecks()
-            .WithDatabaseMigratorService(o => o
-                .Enabled(environment.IsDevelopment()))
-            //.WithDatabaseCreatorService(o => o.DeleteOnStartup())
+            //.WithDatabaseMigratorService(o => o
+            //    .Enabled(environment.IsDevelopment())
+            //    /*.PurgeOnStartup()*/)
+            .WithDatabaseCreatorService(/*o => o.DeleteOnStartup()*/)
             //.WithOutboxMessageService(o => o
             //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
             .WithOutboxDomainEventService(o => o

@@ -173,7 +173,7 @@ public static class Factory
 
         try
         {
-            return Activator.CreateInstance(type.MakeGenericType(new[] { genericType }), parameters);
+            return Activator.CreateInstance(type.MakeGenericType([genericType]), parameters);
         }
         catch (MissingMethodException)
         {

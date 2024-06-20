@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public static class EntityTypeBuilderExtensions
 {
-    public static EntityTypeBuilder<TEntity> OwnsOneAuditState<TEntity>(this EntityTypeBuilder<TEntity> builder)
+    public static EntityTypeBuilder<TEntity> OwnsOneAuditState<TEntity>(this EntityTypeBuilder<TEntity> builder) // TODO: also provide a ToJson variant
         where TEntity : class, IEntity, IAuditable
     {
         var valueComparer = new ValueComparer<string[]>(
@@ -70,7 +70,7 @@ public static class EntityTypeBuilderExtensions
         return builder;
     }
 
-    public static OwnedNavigationBuilder<TOwnerEntity, TEntity> OwnsOneAuditState<TOwnerEntity, TEntity>(this OwnedNavigationBuilder<TOwnerEntity, TEntity> builder)
+    public static OwnedNavigationBuilder<TOwnerEntity, TEntity> OwnsOneAuditState<TOwnerEntity, TEntity>(this OwnedNavigationBuilder<TOwnerEntity, TEntity> builder) // TODO: also provide a ToJson variant
         where TOwnerEntity : class
         where TEntity : class, IEntity, IAuditable
     {

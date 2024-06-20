@@ -7,15 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 
-public class ModuleBuilderContext
+public class ModuleBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
-    public ModuleBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 }

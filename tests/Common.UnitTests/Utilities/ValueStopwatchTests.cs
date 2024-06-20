@@ -9,13 +9,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 
 [UnitTest("Common")]
-public class ValueStopwatchTests : TestsBase
+public class ValueStopwatchTests(ITestOutputHelper output) : TestsBase(output)
 {
-    public ValueStopwatchTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public void StartNew_IsNotActive_ReturnsFalse()
     {

@@ -7,11 +7,7 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
 using System;
 
-public abstract class AggregateCreatedEvent<TAggregate> : AggregateEvent
+public abstract class AggregateCreatedEvent<TAggregate>(Guid id) : AggregateEvent(id, 1)
     where TAggregate : class
 {
-    protected AggregateCreatedEvent(Guid id)
-        : base(id, 1)
-    {
-    }
 }

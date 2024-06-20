@@ -9,20 +9,18 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 [Obsolete("Use the new AddDatabaseMigratorService() service extension from now on")]
-public class MigrationsHostedService<TContext> : DatabaseMigratorService<TContext>
+public class MigrationsHostedService<TContext>(ILoggerFactory loggerFactory, IServiceProvider serviceProvider) : DatabaseMigratorService<TContext>(loggerFactory, serviceProvider)
     where TContext : DbContext
 {
-    public MigrationsHostedService(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
-        : base(loggerFactory, serviceProvider)
-    {
-    }
 }
 
 public class DatabaseMigratorService<TContext> : IHostedService
@@ -51,44 +49,78 @@ public class DatabaseMigratorService<TContext> : IHostedService
             return;
         }
 
+        var contextName = typeof(TContext).Name;
+
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {
-            this.logger.LogDebug("{LogKey} database migrator startup delayed (context={DbContextType})", Constants.LogKey, typeof(TContext).Name);
+            this.logger.LogDebug("{LogKey} database migrator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
 
             await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
         }
 
         try
         {
+            //this.logger.LogDebug("{LogKey} database migrator initializing (context={DbContextType})", Constants.LogKey, contextName);
             using var scope = this.serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<TContext>();
-
-            if (this.options.EnsureDeleted)
+            if (!this.IsInMemoryContext(context))
             {
-                await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
-            }
+                this.logger.LogDebug("{LogKey} database migrator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
 
-            if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory" &&
-                (await context.Database.GetPendingMigrationsAsync(cancellationToken: cancellationToken)).Any())
-            {
-                this.logger.LogInformation("{LogKey} database migrator started (context={DbContextType})", Constants.LogKey, typeof(TContext).Name);
+                var exists = await context.Database.CanConnectAsync(cancellationToken);
+                if (exists && this.options.EnsureDeleted)
+                {
+                    this.logger.LogDebug("{LogKey} database migrator delete tables (context={DbContextType})", Constants.LogKey, contextName);
+                    await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
+                    exists = false;
+                }
 
-                await context.Database.MigrateAsync(cancellationToken).AnyContext();
-                this.logger.LogInformation("{LogKey} database migrator finished (context={DbContextType})", Constants.LogKey, typeof(TContext).Name);
-            }
-            else
-            {
-                this.logger.LogDebug("{LogKey} database migrator skipped, no pending migrations (context={DbContextType})", Constants.LogKey, typeof(TContext).Name);
+                if (exists && this.options.EnsureTruncated)
+                {
+                    this.logger.LogDebug("{LogKey} database migrator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
+                    if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
+                    {
+                        await context.Database.ExecuteSqlRawAsync(
+                            SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                    }
+                    else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                    {
+                        await context.Database.ExecuteSqlRawAsync(
+                            SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                    }
+                }
+
+                this.logger.LogDebug("{LogKey} database migrator get pending migrations (context={DbContextType})", Constants.LogKey, contextName);
+                if (!exists || (await context.Database.GetPendingMigrationsAsync(cancellationToken: cancellationToken)).Any())
+                {
+                    await context.Database.MigrateAsync(cancellationToken).AnyContext();
+                    exists = true;
+
+                    this.logger.LogInformation("{LogKey} database migrator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
+                }
+                else
+                {
+                    this.logger.LogDebug("{LogKey} database migrator skipped, no pending migrations (context={DbContextType})", Constants.LogKey, contextName);
+                }
             }
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, typeof(TContext).Name);
+            this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
         }
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    private bool IsInMemoryContext(TContext context)
+    {
+        return context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory";
     }
 }

@@ -13,21 +13,14 @@ using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class ModuleScopeQueryBehavior<TRequest, TResponse> : QueryBehaviorBase<TRequest, TResponse>
+public class ModuleScopeQueryBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null,
+    IEnumerable<ActivitySource> activitySources = null) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
-    private readonly IEnumerable<ActivitySource> activitySources;
-
-    public ModuleScopeQueryBehavior(
-        ILoggerFactory loggerFactory,
-        IEnumerable<IModuleContextAccessor> moduleAccessors = null,
-        IEnumerable<ActivitySource> activitySources = null)
-        : base(loggerFactory)
-    {
-        this.moduleAccessors = moduleAccessors;
-        this.activitySources = activitySources;
-    }
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     protected override bool CanProcess(TRequest request)
     {

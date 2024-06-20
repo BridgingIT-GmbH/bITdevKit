@@ -8,16 +8,10 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using System;
 using BridgingIT.DevKit.Domain;
 
-public class ScheduleShouldBeValidRule : IBusinessRule
+public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime) : IBusinessRule
 {
-    private readonly DateTimeOffset startDateTime;
-    private readonly DateTimeOffset endDateTime;
-
-    public ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime)
-    {
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-    }
+    private readonly DateTimeOffset startDateTime = startDateTime;
+    private readonly DateTimeOffset endDateTime = endDateTime;
 
     public string Message => "StartDate should be earlier than the EndDate";
 
@@ -25,4 +19,9 @@ public class ScheduleShouldBeValidRule : IBusinessRule
     {
         return Task.FromResult(this.startDateTime < this.endDateTime);
     }
+}
+
+public static partial class DinnerRules
+{
+    public static IBusinessRule ScheduleShouldBeValid(DateTimeOffset startDateTime, DateTimeOffset endDateTime) => new ScheduleShouldBeValidRule(startDateTime, endDateTime);
 }

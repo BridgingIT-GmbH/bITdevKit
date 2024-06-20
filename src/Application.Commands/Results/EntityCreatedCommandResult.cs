@@ -5,28 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-public class EntityCreatedCommandResult
+public class EntityCreatedCommandResult(string entityId)
 {
-    public EntityCreatedCommandResult(string entityId)
-    {
-        this.EntityId = entityId;
-    }
-
     /// <summary>
     /// The entity id
     /// </summary>
-    public string EntityId { get; }
+    public string EntityId { get; } = entityId;
 }
 
-public class EntityCreatedCommandResult<TId>
+public class EntityCreatedCommandResult<TId>(TId entityId)
 {
-    public EntityCreatedCommandResult(TId entityId)
-    {
-        this.EntityId = entityId;
-    }
-
     /// <summary>
     /// The entity id
     /// </summary>
-    public TId EntityId { get; }
+    public TId EntityId { get; } = entityId;
 }

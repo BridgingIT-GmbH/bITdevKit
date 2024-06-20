@@ -8,17 +8,12 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Retry;
 using System.Diagnostics;
 
-public class RetryMessageHandlerBehavior : MessageHandlerBehaviorBase
+public class RetryMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    public RetryMessageHandlerBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

@@ -8,14 +8,9 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Queries;
 using BridgingIT.DevKit.Application.Queries;
 using FluentValidation.Results;
 
-public class StubPersonQuery : QueryRequestBase<IEnumerable<PersonStub>>
+public class StubPersonQuery(string firstName) : QueryRequestBase<IEnumerable<PersonStub>>
 {
-    public StubPersonQuery(string firstName)
-    {
-        this.FirstName = firstName;
-    }
-
-    public string FirstName { get; }
+    public string FirstName { get; } = firstName;
 
     public override ValidationResult Validate() =>
         new StubPersonQueryValidator().Validate(this);

@@ -11,20 +11,14 @@ using BridgingIT.DevKit.Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
-public abstract class EntityDeleteCommandBase<TEntity>
+public abstract class EntityDeleteCommandBase<TEntity>(string id, string identity = null)
     : CommandRequestBase<Result<EntityDeletedCommandResult>>,
     IEntityDeleteCommand<TEntity>
     where TEntity : class, IEntity
 {
     private List<AbstractValidator<EntityDeleteCommandBase<TEntity>>> validators;
 
-    protected EntityDeleteCommandBase(string id, string identity = null)
-    {
-        this.EntityId = id;
-        this.Identity = identity;
-    }
-
-    public string EntityId { get; }
+    public string EntityId { get; } = id;
 
     public TEntity Entity { get; set; }
 
@@ -34,7 +28,7 @@ public abstract class EntityDeleteCommandBase<TEntity>
         set { this.Entity = (TEntity)value; }
     }
 
-    public string Identity { get; }
+    public string Identity { get; } = identity;
 
     public EntityDeleteCommandBase<TEntity> AddValidator(
         AbstractValidator<EntityDeleteCommandBase<TEntity>> validator)

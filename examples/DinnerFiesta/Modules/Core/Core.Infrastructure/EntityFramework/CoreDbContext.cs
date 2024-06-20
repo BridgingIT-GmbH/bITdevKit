@@ -8,14 +8,11 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
-public class CoreDbContext : ModuleDbContextBase, IDocumentStoreContext, IOutboxDomainEventContext, IOutboxMessageContext
+public class CoreDbContext(DbContextOptions<CoreDbContext> options)
+    : ModuleDbContextBase(options), IDocumentStoreContext, IOutboxDomainEventContext, IOutboxMessageContext
 {
-    public CoreDbContext(DbContextOptions<CoreDbContext> options)
-        : base(options)
-    {
-    }
-
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Host> Hosts { get; set; }
 
@@ -43,4 +40,9 @@ public class CoreDbContext : ModuleDbContextBase, IDocumentStoreContext, IOutbox
 
         base.OnModelCreating(modelBuilder);
     }
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+    //}
 }

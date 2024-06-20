@@ -10,17 +10,11 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using System.Diagnostics;
 
-public class ModuleScopeJobSchedulingBehavior : JobSchedulingBehaviorBase
+public class ModuleScopeJobSchedulingBehavior(
+    ILoggerFactory loggerFactory,
+    IEnumerable<ActivitySource> activitySources = null) : JobSchedulingBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<ActivitySource> activitySources;
-
-    public ModuleScopeJobSchedulingBehavior(
-        ILoggerFactory loggerFactory,
-        IEnumerable<ActivitySource> activitySources = null)
-        : base(loggerFactory)
-    {
-        this.activitySources = activitySources;
-    }
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
@@ -39,7 +33,7 @@ public class ModuleScopeJobSchedulingBehavior : JobSchedulingBehaviorBase
             else
             {
                 var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
-                var jobType = context.JobDetail.JobType.Name;
+                var jobTypeName = context.JobDetail.JobType.FullName;
                 var correlationId = context.Get(Constants.CorrelationIdKey) as string;
                 var flowId = context.Get(Constants.FlowIdKey) as string;
 
@@ -53,12 +47,12 @@ public class ModuleScopeJobSchedulingBehavior : JobSchedulingBehaviorBase
                         }))
                         {
                             await this.activitySources.Find(module?.Name).StartActvity(
-                                $"JOB_EXECUTE {context.JobDetail.JobType.Name}",
+                                $"JOB_EXECUTE {jobTypeName}",
                                 async (a, c) => await next().AnyContext(),
                                 tags: new Dictionary<string, string>
                                 {
                                     ["job.id"] = jobId,
-                                    ["job.type"] = jobType
+                                    ["job.type"] = jobTypeName
                                 }, cancellationToken: c);
                         }
                     },

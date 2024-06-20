@@ -77,12 +77,12 @@ public class DinnerEntityTypeConfiguration : IEntityTypeConfiguration<Dinner>
             .IsRequired()
             .HasMaxLength(512);
 
-        builder.OwnsOne(d => d.Schedule, s =>
+        builder.OwnsOne(d => d.Schedule, sb =>
         {
-            s.Property(d => d.StartDateTime)
+            sb.Property(d => d.StartDateTime)
                 .IsRequired();
 
-            s.Property(d => d.EndDateTime)
+            sb.Property(d => d.EndDateTime)
                 .IsRequired();
         });
 
@@ -92,8 +92,10 @@ public class DinnerEntityTypeConfiguration : IEntityTypeConfiguration<Dinner>
                 value => Enumeration.From<DinnerStatus>(value));
 
         builder.OwnsOne(d => d.Price, pb =>
+        {
             pb.Property(p => p.Amount)
-                .HasColumnType("decimal(5,2)"));
+                .HasColumnType("decimal(5,2)");
+        });
 
         builder.Property(d => d.HostId)
             .HasConversion(
@@ -105,30 +107,34 @@ public class DinnerEntityTypeConfiguration : IEntityTypeConfiguration<Dinner>
                 id => id.Value,
                 value => MenuId.Create(value));
 
-        builder.OwnsOne(d => d.Location, l =>
+        builder.OwnsOne(d => d.Location, lb =>
         {
-            l.Property(e => e.AddressLine1)
-             .HasMaxLength(256);
+            lb.Property(e => e.AddressLine1)
+                .IsRequired()
+                .HasMaxLength(256);
 
-            l.Property(e => e.AddressLine2)
-             .HasMaxLength(256);
+            lb.Property(e => e.AddressLine2)
+                .HasMaxLength(256);
 
-            l.Property(e => e.PostalCode)
-             .HasMaxLength(16);
+            lb.Property(e => e.PostalCode)
+                .IsRequired()
+                .HasMaxLength(16);
 
-            l.Property(e => e.City)
-             .HasMaxLength(128);
+            lb.Property(e => e.City)
+                .IsRequired()
+                .HasMaxLength(128);
 
-            l.Property(e => e.Country)
-             .HasMaxLength(128);
+            lb.Property(e => e.Country)
+                .IsRequired()
+                .HasMaxLength(128);
 
-            l.Property(e => e.Latitude)
-             .HasColumnType("decimal(10,7)")
-             .IsRequired(false);
+            lb.Property(e => e.Latitude)
+                 .HasColumnType("decimal(10,7)")
+                 .IsRequired(false);
 
-            l.Property(e => e.Longitude)
-             .HasColumnType("decimal(10,7)")
-             .IsRequired(false);
+            lb.Property(e => e.Longitude)
+                 .HasColumnType("decimal(10,7)")
+                 .IsRequired(false);
         });
 
         builder.OwnsOneAuditState();

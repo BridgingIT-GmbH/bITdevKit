@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html#timeout-in-v7
+using Polly;
 
 public static class Program
 {
@@ -29,7 +29,6 @@ public static class Program
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
             .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
         builder.Services.AddScoped(sp => HttpClientFactory(sp, configuration));
-        builder.Services.AddScoped<IApiClient>(sp => new ApiClient(sp.GetRequiredService<HttpClient>()));
 
         builder.Services.AddMudServices(config =>
         {

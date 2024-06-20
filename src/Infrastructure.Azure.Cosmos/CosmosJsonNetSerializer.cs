@@ -14,18 +14,13 @@ using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
 /// <summary>
 /// The default Cosmos JSON.NET serializer, replicated here to allow for custom settings.
 /// </summary>
-public class CosmosJsonNetSerializer : CosmosSerializer// source: https://raw.githubusercontent.com/Azure/azure-cosmos-dotnet-v3/master/Microsoft.Azure.Cosmos.Encryption/src/CosmosJsonDotNetSerializer.cs
+public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettings = null) : CosmosSerializer// source: https://raw.githubusercontent.com/Azure/azure-cosmos-dotnet-v3/master/Microsoft.Azure.Cosmos.Encryption/src/CosmosJsonDotNetSerializer.cs
 {
     private static readonly Encoding DefaultEncoding = new UTF8Encoding(
         encoderShouldEmitUTF8Identifier: false,
         throwOnInvalidBytes: true);
 
-    private readonly JsonSerializerSettings serializerSettings;
-
-    public CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettings = null)
-    {
-        this.serializerSettings = jsonSerializerSettings;
-    }
+    private readonly JsonSerializerSettings serializerSettings = jsonSerializerSettings;
 
     /// <summary>
     /// Convert a Stream to the passed in type.
@@ -35,7 +30,7 @@ public class CosmosJsonNetSerializer : CosmosSerializer// source: https://raw.gi
     /// <returns>The object representing the deserialized stream</returns>
     public override T FromStream<T>(Stream stream)
     {
-        if (stream == null)
+        if (stream is null)
         {
             throw new ArgumentNullException(nameof(stream));
         }

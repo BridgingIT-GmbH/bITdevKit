@@ -15,4 +15,8 @@ public class DatabaseCreatorOptions : OptionsBase
     public TimeSpan StartupDelay { get; set; } = TimeSpan.Zero;
 
     public bool EnsureDeleted { get; set; }
+
+    public bool EnsureTruncated { get; set; }
+
+    public List<string> EnsureTruncatedIgnoreTables { get; set; } = ["MigrationsHistory"];
 }

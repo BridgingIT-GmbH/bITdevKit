@@ -8,13 +8,8 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Commands;
 using BridgingIT.DevKit.Application.Commands;
 using Microsoft.Extensions.Logging;
 
-public class StubPersonAddCommandHandler : CommandHandlerBase<StubPersonAddCommand, bool>
+public class StubPersonAddCommandHandler(ILoggerFactory loggerFactory) : CommandHandlerBase<StubPersonAddCommand, bool>(loggerFactory)
 {
-    public StubPersonAddCommandHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task<CommandResponse<bool>> Process(StubPersonAddCommand request, CancellationToken cancellationToken)
     {
         var validationResult = request.Validate();

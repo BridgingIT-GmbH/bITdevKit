@@ -18,25 +18,17 @@ using BridgingIT.DevKit.Domain.EventSourcing.Store;
 using EnsureThat;
 using MediatR;
 
-public class EventStore<TAggregate> : IEventStore<TAggregate>
+public class EventStore<TAggregate>(
+    IMediator mediator,
+    IEventStoreRepository eventStoreRepository,
+    IPublishAggregateEventSender eventSender,
+    IEventStoreOptions<TAggregate> eventStoreOptions) : IEventStore<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
-    private readonly IMediator mediator;
-    private readonly IEventStoreRepository eventStoreRepository;
-    private readonly IPublishAggregateEventSender eventSender;
-    private readonly IEventStoreOptions<TAggregate> eventStoreOptions;
-
-    public EventStore(
-        IMediator mediator,
-        IEventStoreRepository eventStoreRepository,
-        IPublishAggregateEventSender eventSender,
-        IEventStoreOptions<TAggregate> eventStoreOptions)
-    {
-        this.mediator = mediator;
-        this.eventStoreRepository = eventStoreRepository;
-        this.eventSender = eventSender;
-        this.eventStoreOptions = eventStoreOptions;
-    }
+    private readonly IMediator mediator = mediator;
+    private readonly IEventStoreRepository eventStoreRepository = eventStoreRepository;
+    private readonly IPublishAggregateEventSender eventSender = eventSender;
+    private readonly IEventStoreOptions<TAggregate> eventStoreOptions = eventStoreOptions;
 
     public async Task<TAggregate> GetAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
@@ -54,16 +46,16 @@ public class EventStore<TAggregate> : IEventStore<TAggregate>
                 return null;
             }
 
-            var methodInfo = typeof(TAggregate).GetConstructor(new Type[]
-            {
+            var methodInfo = typeof(TAggregate).GetConstructor(
+            [
                 typeof(Guid), typeof(IEnumerable<IAggregateEvent>)
-            });
+            ]);
             if (methodInfo is null)
             {
                 throw new AggregateCouldNotBeConstructedException();
             }
 
-            var aggregate = methodInfo.Invoke(new object[] { aggregateId, events }) as TAggregate;
+            var aggregate = methodInfo.Invoke([aggregateId, events]) as TAggregate;
             if (aggregate is null)
             {
                 throw new AggregateException($"Aggregate {typeof(TAggregate)} with id {aggregateId} could not be created");

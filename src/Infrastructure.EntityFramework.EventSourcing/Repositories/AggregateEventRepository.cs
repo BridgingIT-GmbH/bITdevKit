@@ -18,20 +18,13 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-public class AggregateEventRepository :
-    EntityFrameworkGenericRepository<EventStoreAggregateEvent>,
+public class AggregateEventRepository(IEventStoreAggregateRegistration aggregateRegistration,
+    EntityFrameworkRepositoryOptions options) :
+    EntityFrameworkGenericRepository<EventStoreAggregateEvent>(options),
     IAggregateEventRepository
 {
-    private readonly IEventStoreAggregateRegistration aggregateRegistration;
-    private readonly EventStoreDbContext context;
-
-    public AggregateEventRepository(IEventStoreAggregateRegistration aggregateRegistration,
-        EntityFrameworkRepositoryOptions options)
-        : base(options)
-    {
-        this.aggregateRegistration = aggregateRegistration;
-        this.context = options.DbContext as EventStoreDbContext;
-    }
+    private readonly IEventStoreAggregateRegistration aggregateRegistration = aggregateRegistration;
+    private readonly EventStoreDbContext context = options.DbContext as EventStoreDbContext;
 
     public AggregateEventRepository(IEventStoreAggregateRegistration aggregateRegistration,
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)

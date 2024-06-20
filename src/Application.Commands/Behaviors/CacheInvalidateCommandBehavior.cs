@@ -12,16 +12,10 @@ using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class CacheInvalidateCommandBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    private readonly ICacheProvider provider;
-
-    public CacheInvalidateCommandBehavior(ILoggerFactory loggerFactory, ICacheProvider provider)
-        : base(loggerFactory)
-    {
-        this.provider = provider ?? throw new ArgumentNullException(nameof(provider));
-    }
+    private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
     protected override bool CanProcess(TRequest request)
     {

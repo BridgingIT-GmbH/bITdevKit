@@ -14,36 +14,20 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public class DinnerSnapshotExportJob : JobBase //IRetryJob, IChaosExceptionJobScheduling
+public class DinnerSnapshotExportJob(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Dinner> dinnerRepository,
+    IGenericRepository<Menu> menuRepository,
+    IDocumentStoreClient<DinnerSnapshotDocument> documentStoreClient) : JobBase(loggerFactory) //IRetryJob, IChaosExceptionJobScheduling
 {
-    private readonly IGenericRepository<Dinner> dinnerRepository;
-    private readonly IGenericRepository<Menu> menuRepository;
-    private readonly IDocumentStoreClient<DinnerSnapshotDocument> documentStoreClient;
-
-    public DinnerSnapshotExportJob(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Dinner> dinnerRepository,
-        IGenericRepository<Menu> menuRepository,
-        IDocumentStoreClient<DinnerSnapshotDocument> documentStoreClient)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(dinnerRepository, nameof(dinnerRepository));
-        EnsureArg.IsNotNull(menuRepository, nameof(menuRepository));
-        EnsureArg.IsNotNull(documentStoreClient, nameof(documentStoreClient));
-
-        this.dinnerRepository = dinnerRepository;
-        this.menuRepository = menuRepository;
-        this.documentStoreClient = documentStoreClient;
-    }
-
     //RetryJobOptions IRetryJob.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     //ChaosExceptionJobSchedulingOptions IChaosExceptionJobScheduling.Options => new() { InjectionRate = 0.10 };
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        var dinners = await this.dinnerRepository.FindAllAsync(cancellationToken: cancellationToken);
-        var menus = await this.menuRepository.FindAllAsync(cancellationToken: cancellationToken);
+        var dinners = await dinnerRepository.FindAllAsync(cancellationToken: cancellationToken);
+        var menus = await menuRepository.FindAllAsync(cancellationToken: cancellationToken);
 
         foreach (var dinner in dinners.SafeNull())
         {
@@ -62,7 +46,7 @@ public class DinnerSnapshotExportJob : JobBase //IRetryJob, IChaosExceptionJobSc
             };
             // TODO: map everything incl. the menus to the snapshot
 
-            await this.documentStoreClient.UpsertAsync(
+            await documentStoreClient.UpsertAsync(
                 new DocumentKey("Dinner", document.Id),
                 document, cancellationToken);
         }

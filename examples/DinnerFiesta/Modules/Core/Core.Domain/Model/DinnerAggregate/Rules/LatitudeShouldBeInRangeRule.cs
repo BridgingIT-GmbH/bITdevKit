@@ -28,3 +28,8 @@ public class LatitudeShouldBeInRangeRule : IBusinessRule
         return Task.FromResult(this.value is null || (this.value >= -180 && this.value <= 180));
     }
 }
+
+public static partial class DinnerRules
+{
+    public static IBusinessRule LatitudeShouldBeInRange(double? value) => new LatitudeShouldBeInRangeRule(value);
+}

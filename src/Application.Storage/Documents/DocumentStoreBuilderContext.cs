@@ -10,27 +10,20 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Configuration;
 using Scrutor;
 
-public class DocumentStoreBuilderContext<T>
+public class DocumentStoreBuilderContext<T>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null)
     where T : class, new()
 {
     private readonly List<Action<IServiceCollection>> behaviors = new();
     private ServiceDescriptor clientDescriptor;
 
-    public DocumentStoreBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null)
-    {
-        this.Services = services;
-        this.Lifetime = lifetime;
-        this.Configuration = configuration;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public ServiceLifetime Lifetime { get; } = lifetime;
 
-    public ServiceLifetime Lifetime { get; }
-
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
     public DocumentStoreBuilderContext<T> WithBehavior<TBehavior>()
         where TBehavior : class, IDocumentStoreClient<T>

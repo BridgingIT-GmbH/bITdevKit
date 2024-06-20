@@ -11,13 +11,8 @@ using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 using Quartz;
 
-public class ChaosExceptionJobSchedulingBehavior : JobSchedulingBehaviorBase
+public class ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
-    public ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var options = ((context.JobInstance as JobWrapper)?.InnerJob as IChaosExceptionJobScheduling)?.Options;

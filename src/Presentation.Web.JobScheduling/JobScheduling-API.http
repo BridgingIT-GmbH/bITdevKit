@@ -1,0 +1,16 @@
+@baseUrl = https://localhost:5001
+
+
+###################################################################################
+### API [GET] GetJobs                                                             #
+GET {{baseUrl}}/api/_system/jobs HTTP/1.1
+
+Content-Type: application/json
+
+###################################################################################
+### API [POST] PostJob                                                            #
+POST {{baseUrl}}/api/_system/jobs/BridgingIT.DevKit.Application.JobScheduling.EchoJob HTTP/1.1
+Content-Type: application/json
+
+{
+}

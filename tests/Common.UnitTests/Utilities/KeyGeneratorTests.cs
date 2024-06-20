@@ -6,13 +6,8 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 [UnitTest("Common")]
-public class KeyGeneratorTests : TestsBase
+public class KeyGeneratorTests(ITestOutputHelper output) : TestsBase(output)
 {
-    public KeyGeneratorTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public void Create_AsExpected()
     {

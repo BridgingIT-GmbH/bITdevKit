@@ -9,20 +9,13 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-public class ModuleScopeMessageHandlerBehavior : MessageHandlerBehaviorBase
+public class ModuleScopeMessageHandlerBehavior(
+    ILoggerFactory loggerFactory,
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null,
+    IEnumerable<ActivitySource> activitySources = null) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
-    private readonly IEnumerable<ActivitySource> activitySources;
-
-    public ModuleScopeMessageHandlerBehavior(
-        ILoggerFactory loggerFactory,
-        IEnumerable<IModuleContextAccessor> moduleAccessors = null,
-        IEnumerable<ActivitySource> activitySources = null)
-        : base(loggerFactory)
-    {
-        this.moduleAccessors = moduleAccessors;
-        this.activitySources = activitySources;
-    }
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
     {

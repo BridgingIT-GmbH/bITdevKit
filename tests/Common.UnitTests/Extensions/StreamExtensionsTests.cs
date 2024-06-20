@@ -21,7 +21,7 @@ public class StreamExtensionsTests
 
         var result = stream.ReadToEnd();
 
-        result.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
+        result.ShouldBe([0, 1, 2, 3, 4]);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class StreamExtensionsTests
 
         var result = await stream.ReadToEndAsync();
 
-        result.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
+        result.ShouldBe([0, 1, 2, 3, 4]);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class StreamExtensionsTests
         var buffer = new byte[5];
         stream.TryReadAll(buffer, 0, 5);
 
-        buffer.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
+        buffer.ShouldBe([0, 1, 2, 3, 4]);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class StreamExtensionsTests
         var buffer = new byte[5];
         await stream.TryReadAllAsync(buffer, 0, 5);
 
-        buffer.ShouldBe(new byte[] { 0, 1, 2, 3, 4 });
+        buffer.ShouldBe([0, 1, 2, 3, 4]);
     }
 
     [Fact]
@@ -71,6 +71,6 @@ public class StreamExtensionsTests
 
         using var copy = await stream.ToMemoryStreamAsync();
 
-        copy.ToArray().ShouldBe(new byte[] { 1, 2, 3, 4 });
+        copy.ToArray().ShouldBe([1, 2, 3, 4]);
     }
 }

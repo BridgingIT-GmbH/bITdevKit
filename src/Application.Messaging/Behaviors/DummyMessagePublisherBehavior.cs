@@ -10,13 +10,8 @@ using Microsoft.Extensions.Logging;
 
 // generate a xunit test for this class and its methods, use nsubstitute and shoulpublic class DummyMessagePublisherBehaviorTests
 
-public class DummyMessagePublisherBehavior : MessagePublisherBehaviorBase
+public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : MessagePublisherBehaviorBase(loggerFactory)
 {
-    public DummyMessagePublisherBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
     {
         this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})", Constants.LogKey, message.Id);

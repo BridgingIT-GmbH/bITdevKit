@@ -12,13 +12,8 @@ using BridgingIT.DevKit.Domain;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 
-public class CityDeletedDomainEventHandler : DomainEventHandlerBase<CityDeletedDomainEvent>
+public class CityDeletedDomainEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<CityDeletedDomainEvent>(loggerFactory)
 {
-    public CityDeletedDomainEventHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override bool CanHandle(CityDeletedDomainEvent notification)
     {
         EnsureArg.IsNotNull(notification, nameof(notification));

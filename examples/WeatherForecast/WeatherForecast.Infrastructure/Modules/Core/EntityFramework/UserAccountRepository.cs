@@ -28,5 +28,6 @@ public class UserAccountRepository : EntityFrameworkGenericRepository<UserAccoun
         return (await this.GetDbConnection().QueryAsync<string>(
             "SELECT EmailAddress FROM core.UserAccounts",
             transaction: this.GetDbTransaction())).ToList();
+        //return await this.ProjectAllAsync<string>(e => e.Email);
     }
 }

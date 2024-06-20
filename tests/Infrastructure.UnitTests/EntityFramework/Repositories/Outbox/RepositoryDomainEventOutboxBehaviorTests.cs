@@ -13,14 +13,9 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Infrastructure")]
-public class RepositoryDomainEventOutboxBehaviorTests : IClassFixture<StubDbContextFixture>
+public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture;
-
-    public RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly StubDbContextFixture fixture = fixture;
 
     [Fact]
     public async Task Insert_IsCalled_OutboxReceivedEvent()

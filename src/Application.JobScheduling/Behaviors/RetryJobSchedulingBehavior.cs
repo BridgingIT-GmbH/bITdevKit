@@ -8,18 +8,13 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Polly.Retry;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Quartz;
 using Humanizer;
 using System.Diagnostics;
 
-public class RetryJobSchedulingBehavior : JobSchedulingBehaviorBase
+public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
-    public RetryJobSchedulingBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var options = ((context.JobInstance as JobWrapper)?.InnerJob as IRetryJobScheduling)?.Options;
@@ -31,6 +26,7 @@ public class RetryJobSchedulingBehavior : JobSchedulingBehaviorBase
             }
 
             var attempts = 1;
+            var jobTypeName = context.JobDetail.JobType.FullName;
             AsyncRetryPolicy retryPolicy;
             if (!options.BackoffExponential)
             {
@@ -42,8 +38,8 @@ public class RetryJobSchedulingBehavior : JobSchedulingBehaviorBase
                             : 0),
                     onRetry: (ex, wait) =>
                     {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
+                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
+                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}", Constants.LogKey, attempts, wait.Humanize(), jobTypeName);
                         attempts++;
                     });
             }
@@ -58,8 +54,8 @@ public class RetryJobSchedulingBehavior : JobSchedulingBehaviorBase
                         * Math.Pow(2, attempt)),
                     (ex, wait) =>
                     {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
+                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
+                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}", Constants.LogKey, attempts, wait.Humanize(), jobTypeName);
                         attempts++;
                     });
             }

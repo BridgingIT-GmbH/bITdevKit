@@ -50,7 +50,7 @@ public static class Check
     public static async Task ThrowAsync<TEntity>(IEntityCommandRule<TEntity> rule, TEntity entity, IStringLocalizer localizer = null, Action satisfied = null)
         where TEntity : class, IEntity
     {
-        if (rule == null)
+        if (rule is null)
         {
             return;
         }
@@ -69,7 +69,7 @@ public static class Check
     public static async Task<TResult> ThrowAsync<TEntity, TResult>(IEntityCommandRule<TEntity> rule, TEntity entity, IStringLocalizer localizer = null, Func<TResult> satisfied = null)
         where TEntity : class, IEntity
     {
-        if (rule == null)
+        if (rule is null)
         {
             return default;
         }
@@ -108,7 +108,7 @@ public static class Check
     public static async Task<bool> ReturnAsync<TEntity>(IEntityCommandRule<TEntity> rule, TEntity entity)
         where TEntity : class, IEntity
     {
-        if (rule == null)
+        if (rule is null)
         {
             return true;
         }

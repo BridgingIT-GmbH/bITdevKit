@@ -14,23 +14,13 @@ using BridgingIT.DevKit.Domain.Specifications;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class MenuFindAllForHostQueryHandler : QueryHandlerBase<MenuFindAllForHostQuery, Result<IEnumerable<Menu>>>
+public class MenuFindAllForHostQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository) : QueryHandlerBase<MenuFindAllForHostQuery, Result<IEnumerable<Menu>>>(loggerFactory)
 {
-    private readonly IGenericRepository<Menu> repository;
-
-    public MenuFindAllForHostQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<QueryResponse<Result<IEnumerable<Menu>>>> Process(MenuFindAllForHostQuery query, CancellationToken cancellationToken)
     {
         var hostId = HostId.Create(query.HostId);
 
-        return QueryResponse.For(await this.repository.FindAllResultAsync(
+        return QueryResponse.For(await repository.FindAllResultAsync(
             specification: new Specification<Menu>(e => e.HostId == hostId),
             cancellationToken: cancellationToken).AnyContext());
     }

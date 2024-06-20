@@ -87,7 +87,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
 
     private void EnsureEntityFound(TCommand command, TEntity entity)
     {
-        if (entity == null)
+        if (entity is null)
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
         }

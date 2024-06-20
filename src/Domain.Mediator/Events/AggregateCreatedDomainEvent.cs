@@ -6,17 +6,9 @@
 namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
-using EnsureThat;
 
-public class AggregateCreatedDomainEvent<TEntity> : DomainEventBase
+public class AggregateCreatedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
     where TEntity : class, IEntity, IAggregateRoot
 {
-    public AggregateCreatedDomainEvent(TEntity entity)
-    {
-        EnsureArg.IsNotNull(entity, nameof(entity));
-
-        this.Entity = entity;
-    }
-
-    public TEntity Entity { get; }
+    public TEntity Entity { get; } = entity;
 }

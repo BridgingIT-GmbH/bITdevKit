@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class AdAccountShouldBePartOfDomain : IBusinessRule
+public class AdAccountShouldBePartOfDomain(string value) : IBusinessRule
 {
-    private readonly string value;
-
-    public AdAccountShouldBePartOfDomain(string value)
-    {
-        this.value = value;
-    }
+    private readonly string value = value;
 
     public string Message => "AD Account should be part of a domain";
 

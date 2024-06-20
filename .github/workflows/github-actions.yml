@@ -76,17 +76,18 @@ jobs:
       - name: Build solution
         run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo
 
-      # - name: Vulnerability scan (nuget)
-      #   run: |
-      #     dotnet list ${{ github.workspace }}/BridgingIT.DevKit.sln package --vulnerable --include-transitive 2>&1 | tee build.log
-      #     test `grep -cm 1 'has the following vulnerable packages' build.log` = 0 || exit 1
+      - name: Vulnerability scan (nuget)
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+          echo "Analyze dotnet list package command log output..."
+          grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
       - name: Run tests
         run: dotnet test --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
 
       - name: Report test results # https://octopus.com/blog/githubactions-running-unit-tests
         uses: dorny/test-reporter@v1
-        if: always()
+        # if: always()
         with:
           name: Tests
           path: "**/test-results.trx"

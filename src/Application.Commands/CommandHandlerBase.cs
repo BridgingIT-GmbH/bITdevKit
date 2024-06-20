@@ -15,6 +15,7 @@ using EnsureThat;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract partial class CommandHandlerBase<TCommand> :
     IRequestHandler<TCommand, CommandResponse>,
@@ -25,11 +26,7 @@ public abstract partial class CommandHandlerBase<TCommand> :
     private const string CommandTypeKey = "CommandType";
 
     protected CommandHandlerBase(ILoggerFactory loggerFactory)
-    {
-        EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
-
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
+        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     protected ILogger Logger { get; }
 
@@ -112,21 +109,14 @@ public abstract partial class CommandHandlerBase<TCommand> :
     }
 }
 
-public abstract partial class CommandHandlerBase<TCommand, TResult>
+public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFactory loggerFactory)
     : IRequestHandler<TCommand, CommandResponse<TResult>>, ICommandRequestHandler
     where TCommand : class, ICommandRequest<CommandResponse<TResult>>
 {
     private const string CommandIdKey = "CommandRequestId";
     private const string CommandTypeKey = "CommandType";
 
-    protected CommandHandlerBase(ILoggerFactory loggerFactory)
-    {
-        EnsureArg.IsNotNull(loggerFactory, nameof(loggerFactory));
-
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
-
-    protected ILogger Logger { get; }
+    protected ILogger Logger { get; } = loggerFactory?.CreateLogger<CommandHandlerBase<TCommand, TResult>>() ?? NullLoggerFactory.Instance.CreateLogger<CommandHandlerBase<TCommand, TResult>>();
 
     public virtual async Task<CommandResponse<TResult>> Handle(
         TCommand command,

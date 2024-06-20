@@ -155,14 +155,15 @@ stages:
           projects: "$(solution)"
           arguments: "--configuration $(buildConfiguration) --no-restore --nologo"
 
-      - task: Bash@3
+      - task: Bash@3 # https://www.mytechramblings.com/posts/check-if-your-dotnet-app-dependencies-has-a-security-vulnerability-on-you-cicd-pipelines/
         displayName: Vulnerability scan (nuget)
         continueOnError: true
         inputs:
           targetType: 'inline'
           script: |
-            dotnet list $(Build.SourcesDirectory)/BridgingIT.DevKit.sln package --vulnerable --include-transitive 2>&1 | tee build.log
-            test `grep -cm 1 'has the following vulnerable packages' build.log` = 0
+            dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+            echo "Analyze dotnet list package command log output..."
+            grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
       - bash: |
           docker compose up -d

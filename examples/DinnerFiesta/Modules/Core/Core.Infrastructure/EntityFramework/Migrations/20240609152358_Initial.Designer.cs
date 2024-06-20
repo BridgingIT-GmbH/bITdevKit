@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    [Migration("20240110174640_Initial2")]
-    partial class Initial2
+    [Migration("20240609152358_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure.En
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("core")
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

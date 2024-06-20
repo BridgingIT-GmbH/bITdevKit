@@ -10,18 +10,11 @@ using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
 using MediatR;
 
-public class ForecastsImportedEvent : INotification // TODO: umstellen auf Message
+public class ForecastsImportedEvent(IEnumerable<string> cities) : INotification // TODO: umstellen auf Message
 {
-    public ForecastsImportedEvent(IEnumerable<string> cities)
-    {
-        this.EventId = GuidGenerator.CreateSequential();
-        this.Timestamp = DateTime.UtcNow;
-        this.Cities = cities;
-    }
+    public IEnumerable<string> Cities { get; } = cities;
 
-    public IEnumerable<string> Cities { get; }
+    public Guid EventId { get; } = GuidGenerator.CreateSequential();
 
-    public Guid EventId { get; }
-
-    public DateTimeOffset Timestamp { get; }
+    public DateTimeOffset Timestamp { get; } = DateTime.UtcNow;
 }

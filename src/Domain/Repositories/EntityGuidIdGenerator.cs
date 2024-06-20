@@ -15,7 +15,7 @@ public class EntityGuidIdGenerator<TEntity> : IEntityIdGenerator<TEntity>
 {
     public bool IsNew(object id)
     {
-        if (id == null)
+        if (id is null)
         {
             return true;
         }

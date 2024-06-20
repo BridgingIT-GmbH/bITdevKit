@@ -8,26 +8,16 @@ namespace BridgingIT.DevKit.Domain.Specifications;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using EnsureThat;
 
-public class AndSpecification<T> : Specification<T>
+public class AndSpecification<T>(
+    ISpecification<T> leftSpecification,
+    ISpecification<T> rightSpecification)
+    : Specification<T>
 {
-    private readonly ISpecification<T> leftSpecification;
-    private readonly ISpecification<T> rightSpecification;
-
-    public AndSpecification(ISpecification<T> leftSpecification, ISpecification<T> rightSpecification)
-    {
-        EnsureArg.IsNotNull(leftSpecification);
-        EnsureArg.IsNotNull(rightSpecification);
-
-        this.rightSpecification = rightSpecification;
-        this.leftSpecification = leftSpecification;
-    }
-
     public override Expression<Func<T, bool>> ToExpression()
     {
-        var leftExpression = this.leftSpecification.ToExpression();
-        var rightExpression = this.rightSpecification.ToExpression();
+        var leftExpression = leftSpecification.ToExpression();
+        var rightExpression = rightSpecification.ToExpression();
 
         //var andExpression = Expression.AndAlso(leftExpression.Body, rightExpression.Body);
         var andExpression = Expression.AndAlso(

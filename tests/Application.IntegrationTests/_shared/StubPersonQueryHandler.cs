@@ -9,13 +9,8 @@ using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class StubPersonQueryHandler : QueryHandlerBase<StubPersonQuery, IEnumerable<PersonStub>>
+public class StubPersonQueryHandler(ILoggerFactory loggerFactory) : QueryHandlerBase<StubPersonQuery, IEnumerable<PersonStub>>(loggerFactory)
 {
-    public StubPersonQueryHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task<QueryResponse<IEnumerable<PersonStub>>> Process(StubPersonQuery request, CancellationToken cancellationToken)
     {
         var validationResult = request.Validate();

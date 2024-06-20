@@ -18,15 +18,11 @@ using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 
-public class CosmosSqlRepositoryWrapper<TEntity, TProvider, TDatabaseEntity> : CosmosSqlGenericRepository<TEntity, TDatabaseEntity>
+public class CosmosSqlRepositoryWrapper<TEntity, TProvider, TDatabaseEntity>(ILoggerFactory loggerFactory, TProvider provider, IEntityMapper mapper) : CosmosSqlGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, provider, mapper)
     where TEntity : class, IEntity
     where TProvider : ICosmosSqlProvider<TDatabaseEntity>
     where TDatabaseEntity : class
 {
-    public CosmosSqlRepositoryWrapper(ILoggerFactory loggerFactory, TProvider provider, IEntityMapper mapper)
-        : base(loggerFactory, provider, mapper)
-    {
-    }
 }
 
 public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepository<TEntity>

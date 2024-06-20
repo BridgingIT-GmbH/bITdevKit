@@ -12,16 +12,10 @@ using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public partial class CacheQueryBehavior<TRequest, TResponse> : QueryBehaviorBase<TRequest, TResponse>
+public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    private readonly ICacheProvider provider;
-
-    public CacheQueryBehavior(ILoggerFactory loggerFactory, ICacheProvider provider)
-        : base(loggerFactory)
-    {
-        this.provider = provider ?? throw new ArgumentNullException(nameof(provider));
-    }
+    private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
     protected override bool CanProcess(TRequest request)
     {

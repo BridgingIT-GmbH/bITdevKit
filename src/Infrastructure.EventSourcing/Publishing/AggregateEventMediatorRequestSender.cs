@@ -15,14 +15,9 @@ using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
 using MediatR;
 
-public class AggregateEventMediatorRequestSender : IAggregateEventMediatorRequestSender
+public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregateEventMediatorRequestSender
 {
-    private readonly IMediator mediator;
-
-    public AggregateEventMediatorRequestSender(IMediator mediator)
-    {
-        this.mediator = mediator;
-    }
+    private readonly IMediator mediator = mediator;
 
     /// <summary>
     /// Sendet das Event <see cref="savedEvent"/> über den Mediator als Request.
@@ -36,7 +31,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
                 out var genericPublishAggregateCommandConstructor);
         if (genericPublishAggregateCommandConstructor is not null)
         {
-            var @event = genericPublishAggregateCommandConstructor.Invoke(new object[] { aggregate, savedEvent });
+            var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
             var commandResult = await this.mediator.Send(@event).AnyContext() as CommandResponse<bool>;
         }
         else
@@ -53,7 +48,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
                 out var genericPublishAggregateCommandConstructor);
         if (genericPublishAggregateCommandConstructor is not null)
         {
-            var @event = genericPublishAggregateCommandConstructor.Invoke(new object[] { aggregate, savedEvent });
+            var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
             return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult && commandResult.Cancelled == false && commandResult.Result;
         }
         else
@@ -71,7 +66,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
                 out var genericPublishAggregateCommandConstructor);
         if (genericPublishAggregateCommandConstructor is not null)
         {
-            var @event = genericPublishAggregateCommandConstructor.Invoke(new object[] { aggregate, savedEvent });
+            var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
             var commandResult = await this.mediator.Send(@event).AnyContext() as CommandResponse<bool>;
         }
         else
@@ -88,7 +83,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
                 out var genericPublishAggregateCommandConstructor);
         if (genericPublishAggregateCommandConstructor is not null)
         {
-            var @event = genericPublishAggregateCommandConstructor.Invoke(new object[] { aggregate, savedEvent });
+            var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
             return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult && commandResult.Cancelled == false && commandResult.Result;
         }
         else
@@ -104,7 +99,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
         var eventType = typeof(AggregateEventProjectionCommand<>);
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
-        geni = gent.GetConstructor(new Type[] { aggregateType, typeof(AggregateEvent) });
+        geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
         return gent;
     }
 
@@ -113,7 +108,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
         var eventType = typeof(AggregateEventProjectionCommand<>);
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
-        geni = gent.GetConstructor(new Type[] { aggregateType, typeof(AggregateEvent) });
+        geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
         return gent;
     }
 
@@ -123,7 +118,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
         var eventType = typeof(AggregateEventOccuredCommand<>);
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
-        geni = gent.GetConstructor(new Type[] { aggregateType, typeof(AggregateEvent) });
+        geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
         return gent;
     }
 
@@ -132,7 +127,7 @@ public class AggregateEventMediatorRequestSender : IAggregateEventMediatorReques
         var eventType = typeof(AggregateEventOccuredCommand<>);
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
-        geni = gent.GetConstructor(new Type[] { aggregateType, typeof(AggregateEvent) });
+        geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
         return gent;
     }
 }

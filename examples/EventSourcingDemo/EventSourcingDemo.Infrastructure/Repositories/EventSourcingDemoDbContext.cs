@@ -9,13 +9,8 @@ using DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
-public class EventSourcingDemoDbContext : EventStoreDbContext
+public class EventSourcingDemoDbContext(DbContextOptions<EventSourcingDemoDbContext> options) : EventStoreDbContext(options, new EventStoreConfiguration() { DefaultSchema = "EventStore" })
 {
-    public EventSourcingDemoDbContext(DbContextOptions<EventSourcingDemoDbContext> options)
-        : base(options, new EventStoreConfiguration() { DefaultSchema = "EventStore" })
-    {
-    }
-
     public DbSet<PersonDatabaseEntity> Person { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

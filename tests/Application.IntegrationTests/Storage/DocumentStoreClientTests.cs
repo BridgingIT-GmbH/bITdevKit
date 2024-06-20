@@ -9,15 +9,9 @@ using BridgingIT.DevKit.Application.Storage;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class DocumentStoreClientTests // TODO: implement the tests with the InMemoryProvider together
+public class DocumentStoreClientTests(ITestOutputHelper output, TestEnvironmentFixture fixture) // TODO: implement the tests with the InMemoryProvider together
 {
-    private readonly TestEnvironmentFixture fixture;
-    private readonly IDocumentStoreClient<PersonStub> sut;
-
-    public DocumentStoreClientTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture;
-        this.sut = new DocumentStoreClient<PersonStub>(
+    private readonly TestEnvironmentFixture fixture = fixture;
+    private readonly IDocumentStoreClient<PersonStub> sut = new DocumentStoreClient<PersonStub>(
             new InMemoryDocumentStoreProvider(XunitLoggerFactory.Create(output)));
-    }
 }

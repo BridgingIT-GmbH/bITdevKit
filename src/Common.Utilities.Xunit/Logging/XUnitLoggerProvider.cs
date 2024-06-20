@@ -8,15 +8,10 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-public sealed class XunitLoggerProvider : ILoggerProvider
+public sealed class XunitLoggerProvider(ITestOutputHelper output) : ILoggerProvider
 {
-    private readonly ITestOutputHelper output;
+    private readonly ITestOutputHelper output = output;
     private readonly LoggerExternalScopeProvider scopeProvider = new();
-
-    public XunitLoggerProvider(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
 
     public ILogger CreateLogger(string categoryName)
     {

@@ -10,10 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class InProcessBrokerTests : TestsBase
-{
-    public InProcessBrokerTests(ITestOutputHelper output)
-        : base(output, s =>
+public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output, s =>
         {
             s.AddMessaging()
                 .WithSubscription<EchoMessage, EchoMessageHandler>() // TODO: needed?
@@ -25,9 +22,7 @@ public class InProcessBrokerTests : TestsBase
                     MessageExpiration = new TimeSpan(0, 1, 0)
                 });
         })
-    {
-    }
-
+{
     [Fact]
     public async Task Publish_SingleMessage_MessageHandledBySingleHandler()
     {

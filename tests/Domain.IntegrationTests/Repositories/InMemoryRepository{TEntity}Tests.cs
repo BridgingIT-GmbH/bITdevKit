@@ -349,14 +349,9 @@ public class InMemoryRepositoryTests
         }
     }
 
-    private class StubHasMinimumAgeSpecification : Specification<StubEntityString>
+    private class StubHasMinimumAgeSpecification(int age) : Specification<StubEntityString>
     {
-        private readonly int age;
-
-        public StubHasMinimumAgeSpecification(int age)
-        {
-            this.age = age;
-        }
+        private readonly int age = age;
 
         public override Expression<Func<StubEntityString, bool>> ToExpression()
         {

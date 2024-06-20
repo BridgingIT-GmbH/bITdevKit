@@ -13,28 +13,23 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public class ScopedJobWrapper : JobWrapper
+public class ScopedJobWrapper(
+    IServiceScope scope,
+    IJob innerJob,
+    IEnumerable<IModuleContextAccessor> moduleAccessors) : JobWrapper(null, innerJob, moduleAccessors)
 {
-    private readonly IServiceScope scope;
-
-    public ScopedJobWrapper(
-        IServiceScope scope,
-        IJob innerJob,
-        IEnumerable<IModuleContextAccessor> moduleAccessors)
-        : base(null, innerJob, moduleAccessors)
-    {
-        this.scope = scope;
-    }
+    private readonly IServiceScope scope = scope;
 
     public override async Task Execute(IJobExecutionContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        var correlationId = GuidGenerator.CreateSequential().ToString("N");
+        context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
+        var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
         var logger = this.scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
-        var jobTypeName = context.JobDetail.JobType.Name;
+        var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
         {
@@ -52,6 +47,9 @@ public class ScopedJobWrapper : JobWrapper
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
                 context.Put(Constants.CorrelationIdKey, correlationId);
                 context.Put(Constants.FlowIdKey, flowId);
+                context.Trigger.JobDataMap.TryGetString(Constants.TriggeredByKey, out var triggeredBy);
+                context.Put(Constants.TriggeredByKey, triggeredBy.EmptyToNull() ?? context.Scheduler.SchedulerName);
+
                 await this.ExecutePipeline(context, behaviors);
             }
             catch (Exception ex)

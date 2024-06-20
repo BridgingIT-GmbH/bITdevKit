@@ -15,17 +15,11 @@ public class MessageState
     public List<string> HandledMessageResults { get; set; } = new List<string>();
 }
 
-public class MessageStubHandler : MessageHandlerBase<MessageStub>,
+public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messageState) : MessageHandlerBase<MessageStub>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    private readonly MessageState messageState;
-
-    public MessageStubHandler(ILoggerFactory loggerFactory, MessageState messageState)
-        : base(loggerFactory)
-    {
-        this.messageState = messageState;
-    }
+    private readonly MessageState messageState = messageState;
 
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
@@ -49,17 +43,11 @@ public class MessageStubHandler : MessageHandlerBase<MessageStub>,
     }
 }
 
-public class AnotherMessageStubHandler : MessageHandlerBase<MessageStub>,
+public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageState messageState) : MessageHandlerBase<MessageStub>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    private readonly MessageState messageState;
-
-    public AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageState messageState)
-        : base(loggerFactory)
-    {
-        this.messageState = messageState;
-    }
+    private readonly MessageState messageState = messageState;
 
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 

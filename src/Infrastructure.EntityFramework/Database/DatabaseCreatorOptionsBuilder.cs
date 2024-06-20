@@ -11,39 +11,67 @@ using BridgingIT.DevKit.Common;
 public class DatabaseCreatorOptionsBuilder :
     OptionsBuilderBase<DatabaseCreatorOptions, DatabaseCreatorOptionsBuilder>
 {
+    /// <summary>
+    /// Enable or Disable the database migrator.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder Enabled(bool value = true)
     {
         this.Target.Enabled = value;
         return this;
     }
 
+    /// <summary>
+    /// Disable the database migrator.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder Disabled()
     {
         this.Target.Enabled = false;
         return this;
     }
 
+    /// <summary>
+    /// Delay the startup of the database migrator.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(TimeSpan timespan)
     {
         this.Target.StartupDelay = timespan;
         return this;
     }
 
+    /// <summary>
+    /// Delay the startup of the database migrator.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(int milliseconds)
     {
         this.Target.StartupDelay = TimeSpan.FromMilliseconds(milliseconds);
         return this;
     }
 
+    /// <summary>
+    /// Delay the startup of the database migrator.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(string value)
     {
         this.Target.StartupDelay = TimeSpan.Parse(value);
         return this;
     }
 
+    /// <summary>
+    /// Delete database on startup.
+    /// </summary>
     public DatabaseCreatorOptionsBuilder DeleteOnStartup(bool value = true)
     {
         this.Target.EnsureDeleted = value;
+        return this;
+    }
+
+    /// <summary>
+    /// Truncate the database on startup.
+    /// </summary>
+    public DatabaseCreatorOptionsBuilder PurgeOnStartup(bool value = true, IEnumerable<string> ignoreTables = null)
+    {
+        this.Target.EnsureTruncated = value;
+        this.Target.EnsureTruncatedIgnoreTables.AddRange(ignoreTables.SafeNull());
         return this;
     }
 }

@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class DeleteCannotBeDoneTwiceRule : IBusinessRule
+public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : IBusinessRule
 {
-    private readonly bool isDeleted;
-
-    public DeleteCannotBeDoneTwiceRule(bool isDeleted)
-    {
-        this.isDeleted = isDeleted;
-    }
+    private readonly bool isDeleted = isDeleted;
 
     public string Message => "Deleting can only be done once";
 

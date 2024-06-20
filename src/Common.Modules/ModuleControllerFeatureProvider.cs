@@ -12,15 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-public class ModuleControllerFeatureProvider : ControllerFeatureProvider
+public class ModuleControllerFeatureProvider(
+    IEnumerable<IModuleContextAccessor> moduleAccessors) : ControllerFeatureProvider
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
-
-    public ModuleControllerFeatureProvider(
-        IEnumerable<IModuleContextAccessor> moduleAccessors)
-    {
-        this.moduleAccessors = moduleAccessors;
-    }
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
 
     protected override bool IsController(TypeInfo typeInfo)
     {

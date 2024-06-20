@@ -10,19 +10,14 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using EnsureThat;
 
-public class InMemoryEntityIdGenerator<TEntity> : IEntityIdGenerator<TEntity>
+public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context) : IEntityIdGenerator<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly InMemoryContext<TEntity> context;
-
-    public InMemoryEntityIdGenerator(InMemoryContext<TEntity> context)
-    {
-        this.context = context;
-    }
+    private readonly InMemoryContext<TEntity> context = context;
 
     public bool IsNew(object id)
     {
-        if (id == null)
+        if (id is null)
         {
             return true;
         }

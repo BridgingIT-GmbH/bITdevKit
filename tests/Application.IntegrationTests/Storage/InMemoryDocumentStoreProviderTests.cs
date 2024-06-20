@@ -10,15 +10,9 @@ using BridgingIT.DevKit.Application.Storage;
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 
-public class InMemoryDocumentStoreProviderTests : TestsBase
+public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : TestsBase(output)
 {
-    private readonly InMemoryDocumentStoreProvider sut;
-
-    public InMemoryDocumentStoreProviderTests(ITestOutputHelper output)
-        : base(output)
-    {
-        this.sut = new InMemoryDocumentStoreProvider(XunitLoggerFactory.Create(output));
-    }
+    private readonly InMemoryDocumentStoreProvider sut = new InMemoryDocumentStoreProvider(XunitLoggerFactory.Create(output));
 
     [Fact]
     public async Task FindAsync_WithoutFilter_ReturnsEntities()

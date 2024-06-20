@@ -326,7 +326,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             };
         }
 
-        if (requestOptions.PartitionKey == null
+        if (requestOptions.PartitionKey is null
             && this.options.PartitionKey.SafeEquals(CosmosSqlProviderOptions<TItem>.DefaultPartitionKey)
             && !id.IsNullOrEmpty())
         {
@@ -354,7 +354,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             };
         }
 
-        if (requestOptions.PartitionKey == null && item != null)
+        if (requestOptions.PartitionKey is null && item != null)
         {
             if (this.options.PartitionKeyStringExpression is not null)
             {

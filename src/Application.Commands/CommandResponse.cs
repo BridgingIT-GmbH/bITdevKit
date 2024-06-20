@@ -185,12 +185,7 @@ public class CommandResponse
     }
 }
 
-public class CommandResponse<TResult> : CommandResponse
+public class CommandResponse<TResult>(string cancelledReason = null) : CommandResponse(cancelledReason)
 {
-    public CommandResponse(string cancelledReason = null)
-        : base(cancelledReason)
-    {
-    }
-
     public TResult Result { get; set; }
 }

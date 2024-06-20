@@ -29,6 +29,11 @@ public class UserEmailMustBeUniqueRule : IBusinessRule
     public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
     {
         return !(await this.repository.FindAllAsync(
-            new UserForEmailSpecification(this.user.Email), cancellationToken: cancellationToken)).SafeAny();
+            UserSpecifications.ForEmail(this.user.Email), cancellationToken: cancellationToken)).SafeAny();
     }
+}
+
+public static partial class UserRules
+{
+    public static IBusinessRule EmailMustBeUnique(IGenericRepository<User> repository, User user) => new UserEmailMustBeUniqueRule(repository, user);
 }

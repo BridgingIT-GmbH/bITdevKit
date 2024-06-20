@@ -187,7 +187,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                             // create a behavior pipeline and run it (handler > next)
                             this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
-                            async Task Handler() => await ((Task)handlerMethod.Invoke(handlerInstance, new object[] { message, messageRequest.CancellationToken })).AnyContext();
+                            async Task Handler() => await ((Task)handlerMethod.Invoke(handlerInstance, [message, messageRequest.CancellationToken])).AnyContext();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             this.HandlerBehaviors.SafeNull().Reverse()
                                 .Aggregate((MessageHandlerDelegate)Handler, (next, pipeline) => async () =>

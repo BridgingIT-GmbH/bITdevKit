@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
-public abstract class EntityFindAllQueryBase<TEntity> :
+public abstract class EntityFindAllQueryBase<TEntity>(int pageNumber = 1, int pageSize = int.MaxValue, string searchString = null, string orderBy = null, string include = null) :
     QueryRequestBase<PagedResult<TEntity>>, IEntityFindAllQuery<TEntity>
     where TEntity : class, IEntity
 {
@@ -22,24 +22,15 @@ public abstract class EntityFindAllQueryBase<TEntity> :
     {
     }
 
-    protected EntityFindAllQueryBase(int pageNumber = 1, int pageSize = int.MaxValue, string searchString = null, string orderBy = null, string include = null)
-    {
-        this.PageNumber = pageNumber <= 0 ? 1 : pageNumber;
-        this.PageSize = pageSize <= 0 ? int.MaxValue : pageSize;
-        this.SearchString = searchString ?? string.Empty;
-        this.OrderBy = orderBy;
-        this.Include = include;
-    }
+    public int PageNumber { get; set; } = pageNumber <= 0 ? 1 : pageNumber;
 
-    public int PageNumber { get; set; }
+    public int PageSize { get; set; } = pageSize <= 0 ? int.MaxValue : pageSize;
 
-    public int PageSize { get; set; }
+    public string SearchString { get; set; } = searchString ?? string.Empty;
 
-    public string SearchString { get; set; }
+    public string OrderBy { get; set; } = orderBy;
 
-    public string OrderBy { get; set; } // of the form fieldname [ascending|descending],fieldname [ascending|descending]...
-
-    public string Include { get; set; }
+    public string Include { get; set; } = include;
 
     public EntityFindAllQueryBase<TEntity> AddValidator(
         AbstractValidator<EntityFindAllQueryBase<TEntity>> validator)

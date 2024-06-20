@@ -8,13 +8,8 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class DummyMessageHandlerBehavior : MessageHandlerBehaviorBase
+public class DummyMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    public DummyMessageHandlerBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

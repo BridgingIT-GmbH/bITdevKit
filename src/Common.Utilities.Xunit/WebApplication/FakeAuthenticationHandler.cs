@@ -13,19 +13,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-public class FakeAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class FakeAuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> schemeOptions,
+    ILoggerFactory logger,
+    UrlEncoder encoder,
+    FakeAuthenticationHandlerOptions options = null) : AuthenticationHandler<AuthenticationSchemeOptions>(schemeOptions, logger, encoder)
 {
-    private readonly FakeAuthenticationHandlerOptions options;
-
-    public FakeAuthenticationHandler(
-        IOptionsMonitor<AuthenticationSchemeOptions> schemeOptions,
-        ILoggerFactory logger,
-        UrlEncoder encoder,
-        FakeAuthenticationHandlerOptions options = null)
-        : base(schemeOptions, logger, encoder)
-    {
-        this.options = options ?? new FakeAuthenticationHandlerOptions();
-    }
+    private readonly FakeAuthenticationHandlerOptions options = options ?? new FakeAuthenticationHandlerOptions();
 
     public static string SchemeName => "Fake";
 

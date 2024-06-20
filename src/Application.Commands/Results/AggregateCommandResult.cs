@@ -7,16 +7,11 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class AggregateCommandResult<TEntity>
+public class AggregateCommandResult<TEntity>(TEntity entity)
     where TEntity : class, IAggregateRoot
 {
-    public AggregateCommandResult(TEntity entity)
-    {
-        this.Entity = entity;
-    }
-
     /// <summary>
     /// The aggregate id
     /// </summary>
-    public TEntity Entity { get; }
+    public TEntity Entity { get; } = entity;
 }

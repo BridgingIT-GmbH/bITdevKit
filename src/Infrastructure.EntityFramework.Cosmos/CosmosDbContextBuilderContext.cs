@@ -8,16 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-public class CosmosDbContextBuilderContext<TContext> : DbContextBuilderContext<TContext>
+public class CosmosDbContextBuilderContext<TContext>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null,
+    string connectionString = null,
+    Provider provider = Provider.SqlServer) : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
     where TContext : DbContext
 {
-    public CosmosDbContextBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null,
-        string connectionString = null,
-        Provider provider = Provider.SqlServer)
-        : base(services, lifetime, configuration, connectionString, provider)
-    {
-    }
 }

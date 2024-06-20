@@ -12,22 +12,12 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class HostFindOneQueryHandler : QueryHandlerBase<HostFindOneQuery, Result<Host>>
+public class HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Host> repository) : QueryHandlerBase<HostFindOneQuery, Result<Host>>(loggerFactory)
 {
-    private readonly IGenericRepository<Host> repository;
-
-    public HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Host> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<QueryResponse<Result<Host>>> Process(HostFindOneQuery query, CancellationToken cancellationToken)
     {
         return QueryResponse.For(
-            await this.repository.FindOneResultAsync(
+            await repository.FindOneResultAsync(
                 HostId.Create(query.HostId),
                 cancellationToken: cancellationToken).AnyContext());
     }

@@ -13,15 +13,11 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext> : EntityFrameworkGenericRepository<TEntity, TDatabaseEntity>
+public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context, IEntityMapper mapper) : EntityFrameworkGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context, mapper)
     where TEntity : class, IEntity
     where TDatabaseEntity : class
     where TContext : DbContext
 {
-    public EntityFrameworkRepositoryWrapper(ILoggerFactory loggerFactory, TContext context, IEntityMapper mapper)
-        : base(loggerFactory, context, mapper)
-    {
-    }
 }
 
 public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO: rename to EntityFrameworkRepository + Obsolete
@@ -84,7 +80,7 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         var isNew = entity.Id == default;
         var existingEntity = isNew
             ? null
-            : await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync(new object[] { this.ConvertEntityId(entity.Id) }, cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+            : await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         isNew = isNew || existingEntity is null;
 
         if (isNew)
@@ -127,7 +123,7 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         }
 
         var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>()
-            .FindAsync(new object[] { this.ConvertEntityId(id)/*, cancellationToken: cancellationToken*/}, cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+            .FindAsync([this.ConvertEntityId(id)/*, cancellationToken: cancellationToken*/], cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         if (existingEntity is not null)
         {
             this.Options.DbContext.Remove(existingEntity);

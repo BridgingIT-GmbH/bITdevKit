@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System;
 
-public abstract class IntTypedId : IEquatable<IntTypedId>, IComparable<IntTypedId>
+public abstract class IntTypedId(int value) : IEquatable<IntTypedId>, IComparable<IntTypedId>
 {
-    protected IntTypedId(int value)
-    {
-        this.Value = value;
-    }
-
-    public int Value { get; }
+    public int Value { get; } = value;
 
     public static implicit operator int(IntTypedId typedId) => typedId.Value;
 

@@ -10,15 +10,10 @@ using BridgingIT.DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
-public class CityDeleteCommand : CommandRequestBase<AggregateDeletedCommandResult>,
+public class CityDeleteCommand(string name) : CommandRequestBase<AggregateDeletedCommandResult>,
     ICacheInvalidateCommand //, IRetryCommand
 {
-    public CityDeleteCommand(string name)
-    {
-        this.Name = name;
-    }
-
-    public string Name { get; }
+    public string Name { get; } = name;
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 

@@ -11,14 +11,9 @@ using BridgingIT.DevKit.Presentation;
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Presentation")]
 [Module("Core")]
-public class EndpointTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
-    private readonly CustomWebApplicationFactoryFixture<Program> fixture;
-
-    public EndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
     [Theory]
     [InlineData("api/_system/echo")]
@@ -32,7 +27,7 @@ public class EndpointTests : IClassFixture<CustomWebApplicationFactoryFixture<Pr
 
         // asert
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
-        response.Should().MatchInContent("echo");
+        response.Should().MatchInContent("*echo*");
     }
 
     [Theory]

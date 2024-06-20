@@ -10,7 +10,7 @@ using BenchmarkDotNet.Attributes;
 
 [MemoryDiagnoser]
 [ShortRunJob]
-public abstract class SerializerBenchmarkBase : TestsBase
+public abstract class SerializerBenchmarkBase(ITestOutputHelper output) : TestsBase(output)
 {
     private readonly StubModel data = new()
     {
@@ -23,11 +23,6 @@ public abstract class SerializerBenchmarkBase : TestsBase
     private ISerializer serializer;
 
     private byte[] serializedData;
-
-    protected SerializerBenchmarkBase(ITestOutputHelper output)
-        : base(output)
-    {
-    }
 
     [GlobalSetup]
     public void Setup()

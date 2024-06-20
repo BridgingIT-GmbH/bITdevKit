@@ -15,13 +15,8 @@ using Domain.Repositories;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))]
-public class EventStoreTests : EventstoreTestBase
+public class EventStoreTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EventstoreTestBase(output, fixture)
 {
-    public EventStoreTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    : base(output, fixture)
-    {
-    }
-
     [Fact]
     public async Task CreateAndChangePersonAggregate()
     {

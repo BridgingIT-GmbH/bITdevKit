@@ -195,16 +195,10 @@ public static class AzureTableEntityConverter
     }
 }
 
-public class PropertyConverter<T>
+public class PropertyConverter<T>(Func<T, object> toTableEntityProperty, Action<T, object> setObjectProperty)
 {
-    public PropertyConverter(Func<T, object> toTableEntityProperty, Action<T, object> setObjectProperty)
-    {
-        this.ToTableEntityProperty = toTableEntityProperty;
-        this.SetObjectProperty = setObjectProperty;
-    }
-
-    public Func<T, object> ToTableEntityProperty { get; }
-    public Action<T, object> SetObjectProperty { get; }
+    public Func<T, object> ToTableEntityProperty { get; } = toTableEntityProperty;
+    public Action<T, object> SetObjectProperty { get; } = setObjectProperty;
 }
 
 public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>>

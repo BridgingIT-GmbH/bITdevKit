@@ -9,15 +9,9 @@ using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class MetricsMessagePublisherBehavior : MessagePublisherBehaviorBase
+public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null) : MessagePublisherBehaviorBase(loggerFactory)
 {
-    private readonly IMeterFactory meterFactory;
-
-    public MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
-        : base(loggerFactory)
-    {
-        this.meterFactory = meterFactory;
-    }
+    private readonly IMeterFactory meterFactory = meterFactory;
 
     public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
     {

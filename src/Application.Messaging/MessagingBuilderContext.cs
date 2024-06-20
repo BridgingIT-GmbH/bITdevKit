@@ -8,18 +8,11 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-public class MessagingBuilderContext
+public class MessagingBuilderContext(IServiceCollection services, IConfiguration configuration = null, MessagingOptions options = null)
 {
-    public MessagingBuilderContext(IServiceCollection services, IConfiguration configuration = null, MessagingOptions options = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-        this.Options = options;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
-    public IConfiguration Configuration { get; }
-
-    public MessagingOptions Options { get; }
+    public MessagingOptions Options { get; } = options;
 }

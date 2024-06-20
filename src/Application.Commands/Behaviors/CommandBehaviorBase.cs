@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 // https://github.com/jbogard/MediatR/wiki/Behaviors
 public abstract class CommandBehaviorBase<TRequest, TResponse>
@@ -17,9 +18,7 @@ public abstract class CommandBehaviorBase<TRequest, TResponse>
     where TRequest : class, IRequest<TResponse>
 {
     protected CommandBehaviorBase(ILoggerFactory loggerFactory)
-    {
-        this.Logger = loggerFactory.CreateLogger(this.GetType());
-    }
+        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
     protected ILogger Logger { get; }
 

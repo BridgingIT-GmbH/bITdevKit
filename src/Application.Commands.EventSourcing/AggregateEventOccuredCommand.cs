@@ -8,25 +8,19 @@ namespace BridgingIT.DevKit.Application.Commands.EventSourcing;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-public class AggregateEventOccuredCommand<TAggregate> : CommandRequestBase<bool>
+/// <summary>
+/// Initializes a new instance of the <see cref="AggregateEventOccuredCommand{TAggregate}"/> class.
+///
+/// </summary>
+/// <param name="aggregate">Aggregate.</param>
+/// <param name="aggregateEvent">Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.</param>
+public class AggregateEventOccuredCommand<TAggregate>(TAggregate aggregate, AggregateEvent aggregateEvent) : CommandRequestBase<bool>
     where TAggregate : EventSourcingAggregateRoot
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AggregateEventOccuredCommand{TAggregate}"/> class.
-    ///
-    /// </summary>
-    /// <param name="aggregate">Aggregate.</param>
-    /// <param name="aggregateEvent">Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.</param>
-    public AggregateEventOccuredCommand(TAggregate aggregate, AggregateEvent aggregateEvent)
-    {
-        this.Aggregate = aggregate;
-        this.AggregateEvent = aggregateEvent;
-    }
-
-    public TAggregate Aggregate { get; private set; }
+    public TAggregate Aggregate { get; private set; } = aggregate;
 
     /// <summary>
     /// Event
     /// </summary>
-    public AggregateEvent AggregateEvent { get; private set; }
+    public AggregateEvent AggregateEvent { get; private set; } = aggregateEvent;
 }

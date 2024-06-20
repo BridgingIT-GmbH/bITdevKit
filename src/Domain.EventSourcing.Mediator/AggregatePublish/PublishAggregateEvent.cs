@@ -8,25 +8,19 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
 using MediatR;
 
-public class PublishAggregateEvent<TAggregate> : INotification
+/// <summary>
+/// Initializes a new instance of the <see cref="PublishAggregateEvent{TAggregate}"/> class.
+///
+/// </summary>
+/// <param name="aggregate">Aggregate.</param>
+/// <param name="aggregateEvent">Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.</param>
+public class PublishAggregateEvent<TAggregate>(TAggregate aggregate, IAggregateEvent aggregateEvent) : INotification
     where TAggregate : EventSourcingAggregateRoot
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PublishAggregateEvent{TAggregate}"/> class.
-    ///
-    /// </summary>
-    /// <param name="aggregate">Aggregate.</param>
-    /// <param name="aggregateEvent">Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.</param>
-    public PublishAggregateEvent(TAggregate aggregate, IAggregateEvent aggregateEvent)
-    {
-        this.Aggregate = aggregate;
-        this.AggregateEvent = aggregateEvent;
-    }
-
-    public TAggregate Aggregate { get; private set; }
+    public TAggregate Aggregate { get; private set; } = aggregate;
 
     /// <summary>
     /// Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.
     /// </summary>
-    public IAggregateEvent AggregateEvent { get; private set; }
+    public IAggregateEvent AggregateEvent { get; private set; } = aggregateEvent;
 }

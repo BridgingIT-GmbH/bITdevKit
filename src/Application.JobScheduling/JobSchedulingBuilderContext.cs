@@ -8,18 +8,11 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-public class JobSchedulingBuilderContext
+public class JobSchedulingBuilderContext(IServiceCollection services, IConfiguration configuration = null, JobSchedulingOptions options = null)
 {
-    public JobSchedulingBuilderContext(IServiceCollection services, IConfiguration configuration = null, JobSchedulingOptions options = null)
-    {
-        this.Services = services;
-        this.Configuration = configuration;
-        this.Options = options;
-    }
+    public IServiceCollection Services { get; } = services;
 
-    public IServiceCollection Services { get; }
+    public IConfiguration Configuration { get; } = configuration;
 
-    public IConfiguration Configuration { get; }
-
-    public JobSchedulingOptions Options { get; }
+    public JobSchedulingOptions Options { get; } = options;
 }

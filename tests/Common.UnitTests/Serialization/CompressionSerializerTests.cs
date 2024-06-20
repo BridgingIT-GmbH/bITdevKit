@@ -6,13 +6,8 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 [UnitTest("Common")]
-public class CompressionSerializerTests : SerializerTestsBase
+public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
-    public CompressionSerializerTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public override void CanRoundTripStream_Test()
     {
@@ -61,13 +56,8 @@ public class CompressionSerializerTests : SerializerTestsBase
     }
 }
 
-public class CompressionSerializerBenchmark : SerializerBenchmarkBase
+public class CompressionSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
 {
-    public CompressionSerializerBenchmark(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     protected override ISerializer GetSerializer()
     {
         return new CompressionSerializer(new JsonNetSerializer());

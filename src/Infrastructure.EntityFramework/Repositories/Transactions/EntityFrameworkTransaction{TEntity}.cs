@@ -12,24 +12,16 @@ using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-public class EntityFrameworkTransactionWrapper<TEntity, TContext> : EntityFrameworkTransaction<TEntity>
+public class EntityFrameworkTransactionWrapper<TEntity, TContext>(TContext context) : EntityFrameworkTransaction<TEntity>(context)
     where TEntity : class, IEntity
     where TContext : DbContext
 {
-    public EntityFrameworkTransactionWrapper(TContext context)
-        : base(context)
-    {
-    }
 }
 
 [Obsolete("Use EntityFrameworkTransaction instead")]
-public class GenericRepositoryTransaction<TEntity> : EntityFrameworkTransaction<TEntity>
+public class GenericRepositoryTransaction<TEntity>(DbContext context) : EntityFrameworkTransaction<TEntity>(context)
     where TEntity : class, IEntity
 {
-    public GenericRepositoryTransaction(DbContext context)
-        : base(context)
-    {
-    }
 }
 
 public class EntityFrameworkTransaction<TEntity> : IRepositoryTransaction<TEntity>

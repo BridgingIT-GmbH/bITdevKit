@@ -82,19 +82,4 @@ public class DinnerScheduleShouldNotOverlapRuleTests
         // Assert
         result.ShouldBeFalse();
     }
-
-    [Fact]
-    public void Constructor_NullRepository_ThrowsArgumentNullException()
-    {
-        // Arrange
-        IGenericRepository<Dinner> repository = null;
-        var hostId = HostId.CreateUnique();
-        var startDateTime = new DateTimeOffset(2023, 5, 10, 18, 0, 0, TimeSpan.Zero);
-        var endDateTime = new DateTimeOffset(2023, 5, 10, 19, 0, 0, TimeSpan.Zero);
-        var schedule = DinnerSchedule.Create(startDateTime, endDateTime);
-
-        // Act & Assert
-        Should.Throw<ArgumentNullException>(() => new DinnerScheduleMustNotOverlapRule(repository, hostId, schedule))
-            .ParamName.ShouldBe("repository");
-    }
 }

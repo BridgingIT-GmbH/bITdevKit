@@ -10,16 +10,10 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkSqliteDocumentStoreCacheProviderTests : EntityFrameworkDocumentStoreCacheProviderTestsBase
+public class EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreCacheProviderTestsBase
 {
-    private readonly TestEnvironmentFixture fixture;
-    private readonly ITestOutputHelper output;
-
-    public EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-        this.output = output;
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
+    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task GetAsync_WithInvalidKey_ShouldNotReturnValue()

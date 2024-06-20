@@ -8,13 +8,8 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 using System;
 
 [UnitTest("Common")]
-public class GuidGeneratorTests : TestsBase
+public class GuidGeneratorTests(ITestOutputHelper output) : TestsBase(output)
 {
-    public GuidGeneratorTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public void Create_AsExpected()
     {

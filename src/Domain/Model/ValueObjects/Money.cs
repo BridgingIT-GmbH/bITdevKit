@@ -25,9 +25,16 @@ public class Money : DecimalValueObject
 
     public Currency Currency { get; }
 
-    //public static implicit operator Money(decimal amount) => new(amount, currency);
+    public static Money Zero() => For(0);
 
+    public static Money Zero(Currency currency) => For(0, currency);
+
+    public bool IsZero() => this.Amount == 0;
+
+#pragma warning disable SA1201 // Elements should appear in the correct order
     public static implicit operator decimal(Money value) => value.Amount;
+    //public static implicit operator Money(decimal amount) => new(amount, currency);
+#pragma warning restore SA1201 // Elements should appear in the correct order
 
     public static bool operator ==(Money a, Money b)
     {

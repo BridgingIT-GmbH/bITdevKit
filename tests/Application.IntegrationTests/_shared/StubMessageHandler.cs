@@ -8,15 +8,10 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 using BridgingIT.DevKit.Application.Messaging;
 using Microsoft.Extensions.Logging;
 
-public class StubMessageHandler : MessageHandlerBase<StubMessage>,
+public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<StubMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    public StubMessageHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public static bool Processed { get; set; }
 
     public static string Result { get; set; }
@@ -43,15 +38,10 @@ public class StubMessageHandler : MessageHandlerBase<StubMessage>,
     }
 }
 
-public class AnotherStubMessageHandler : MessageHandlerBase<StubMessage>,
+public class AnotherStubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<StubMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    public AnotherStubMessageHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public static bool Processed { get; set; }
 
     public static string Result { get; set; }

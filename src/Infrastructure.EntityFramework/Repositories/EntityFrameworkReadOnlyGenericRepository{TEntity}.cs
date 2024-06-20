@@ -21,14 +21,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext> : EntityFrameworkReadOnlyGenericRepository<TEntity>
+public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context) : EntityFrameworkReadOnlyGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext
 {
-    public EntityFrameworkReadOnlyRepositoryWrapper(ILoggerFactory loggerFactory, TContext context)
-        : base(loggerFactory, context)
-    {
-    }
 }
 
 public class EntityFrameworkReadOnlyGenericRepository<TEntity> : // TODO: rename to EntityFrameworkReadOnlykRepository + Obsolete
@@ -205,7 +201,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity> : // TODO: rename
             return false;
         }
 
-        return await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken: cancellationToken).AnyContext() is not null;
+        var result = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken: cancellationToken).AnyContext() is not null;
+        return result;
     }
 
     public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)

@@ -14,7 +14,7 @@ public static class CompressionHelper
 
     public static async Task<string> CompressAsync(string source)
     {
-        if (source == null)
+        if (source is null)
         {
             return null;
         }
@@ -26,7 +26,7 @@ public static class CompressionHelper
 
     public static async Task<string> DecompressAsync(string source)
     {
-        if (source == null)
+        if (source is null)
         {
             return null;
         }
@@ -38,7 +38,7 @@ public static class CompressionHelper
 
     public static async Task<byte[]> CompressAsync(byte[] source)
     {
-        if (source == null)
+        if (source is null)
         {
             return null;
         }
@@ -52,7 +52,7 @@ public static class CompressionHelper
 
     public static async Task<byte[]> DecompressAsync(byte[] source)
     {
-        if (source == null)
+        if (source is null)
         {
             return null;
         }
@@ -68,7 +68,7 @@ public static class CompressionHelper
     {
         EnsureArg.IsNotNull(destination, nameof(destination));
 
-        if (source == null)
+        if (source is null)
         {
             return;
         }
@@ -82,7 +82,7 @@ public static class CompressionHelper
     {
         EnsureArg.IsNotNull(destination, nameof(destination));
 
-        if (source == null)
+        if (source is null)
         {
             return;
         }
@@ -94,7 +94,7 @@ public static class CompressionHelper
 
     public static bool IsCompressed(byte[] source)
     {
-        if (source == null || source.Length < 2)
+        if (source is null || source.Length < 2)
         {
             return false;
         }

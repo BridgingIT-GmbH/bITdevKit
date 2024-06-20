@@ -8,22 +8,13 @@ namespace BridgingIT.DevKit.Domain.Model;
 using System;
 
 [Obsolete("To be removed. Please use TypedId")]
-public abstract class TypedIdValueBase : GuidTypedId
+public abstract class TypedIdValueBase(Guid value) : GuidTypedId(value)
 {
-    protected TypedIdValueBase(Guid value)
-        : base(value)
-    {
-    }
 }
 
-public abstract class GuidTypedId : IEquatable<GuidTypedId>, IComparable<GuidTypedId>
+public abstract class GuidTypedId(Guid value) : IEquatable<GuidTypedId>, IComparable<GuidTypedId>
 {
-    protected GuidTypedId(Guid value)
-    {
-        this.Value = value;
-    }
-
-    public Guid Value { get; }
+    public Guid Value { get; } = value;
 
     public static implicit operator Guid(GuidTypedId typedId) => typedId.Value;
 

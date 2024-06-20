@@ -13,18 +13,8 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class MenuCreateCommandHandler : CommandHandlerBase<MenuCreateCommand, Result<Menu>>
+public class MenuCreateCommandHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository) : CommandHandlerBase<MenuCreateCommand, Result<Menu>>(loggerFactory)
 {
-    private readonly IGenericRepository<Menu> repository;
-
-    public MenuCreateCommandHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result<Menu>>> Process(MenuCreateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
@@ -40,7 +30,7 @@ public class MenuCreateCommandHandler : CommandHandlerBase<MenuCreateCommand, Re
                     item.Name,
                     item.Description)))));
 
-        await this.repository.InsertAsync(menu, cancellationToken);
+        await repository.InsertAsync(menu, cancellationToken);
 
         return CommandResponse.Success(menu);
     }

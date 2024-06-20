@@ -9,17 +9,17 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class DinnerForNameSpecification : Specification<Dinner>
+public class DinnerForNameSpecification(string name) : Specification<Dinner>
 {
-    private readonly string name;
-
-    public DinnerForNameSpecification(string name)
-    {
-        this.name = name;
-    }
+    private readonly string name = name;
 
     public override Expression<Func<Dinner, bool>> ToExpression()
     {
         return d => d.Name == this.name;
     }
+}
+
+public static partial class DinnerSpecifications
+{
+    public static ISpecification<Dinner> ForName(string name) => new DinnerForNameSpecification(name);
 }

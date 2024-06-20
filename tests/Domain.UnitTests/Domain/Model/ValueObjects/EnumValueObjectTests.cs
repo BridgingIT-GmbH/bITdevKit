@@ -125,16 +125,11 @@ public class EnumValueObjectTests
     }
 }
 
-public sealed class StubEnumValueObject : EnumValueObject<StubEnumValueObject>
+public sealed class StubEnumValueObject(string key) : EnumValueObject<StubEnumValueObject>(key)
 {
     public static readonly StubEnumValueObject One = new(nameof(One));
 
     public static readonly StubEnumValueObject Two = new(nameof(Two));
-
-    public StubEnumValueObject(string key)
-        : base(key)
-    {
-    }
 }
 
 public sealed class AnotherStubEnumValueObject : EnumValueObject<AnotherStubEnumValueObject, long>

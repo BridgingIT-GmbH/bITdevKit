@@ -9,13 +9,8 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-public class MarketingDbContext : ModuleDbContextBase
+public class MarketingDbContext(DbContextOptions<MarketingDbContext> options) : ModuleDbContextBase(options)
 {
-    public MarketingDbContext(DbContextOptions<MarketingDbContext> options)
-        : base(options)
-    {
-    }
-
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Customer> Customers { get; set; }
 

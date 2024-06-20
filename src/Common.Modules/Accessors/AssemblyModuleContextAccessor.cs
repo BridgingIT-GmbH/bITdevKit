@@ -7,14 +7,9 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Generic;
 
-public class AssemblyModuleContextAccessor : IModuleContextAccessor
+public class AssemblyModuleContextAccessor(IEnumerable<IModule> modules = null) : IModuleContextAccessor
 {
-    private readonly IEnumerable<IModule> modules;
-
-    public AssemblyModuleContextAccessor(IEnumerable<IModule> modules = null)
-    {
-        this.modules = modules.SafeNull();
-    }
+    private readonly IEnumerable<IModule> modules = modules.SafeNull();
 
     public virtual IModule Find(Type type)
     {

@@ -12,13 +12,8 @@ using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 
-public class CityCreatedDomainEventHandler : DomainEventHandlerBase<AggregateCreatedDomainEvent<City>>
+public class CityCreatedDomainEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<AggregateCreatedDomainEvent<City>>(loggerFactory)
 {
-    public CityCreatedDomainEventHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     public override bool CanHandle(AggregateCreatedDomainEvent<City> notification)
     {
         return true;

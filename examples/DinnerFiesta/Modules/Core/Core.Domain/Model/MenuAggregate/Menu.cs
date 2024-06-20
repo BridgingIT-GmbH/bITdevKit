@@ -86,7 +86,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
     public Menu AddDinnerId(DinnerId dinnerId)
     {
-        if (dinnerId == null)
+        if (dinnerId is null)
         {
             return this;
         }
@@ -101,7 +101,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
     public Menu AddRating(Rating rating)
     {
-        if (rating == null)
+        if (rating is null)
         {
             return this;
         }

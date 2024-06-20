@@ -8,13 +8,8 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 using System.Threading;
 
 [UnitTest("Common")]
-public class IdGeneratorTests : TestsBase
+public class IdGeneratorTests(ITestOutputHelper output) : TestsBase(output)
 {
-    public IdGeneratorTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public void Create_AsExpected()
     {

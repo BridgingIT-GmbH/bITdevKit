@@ -9,17 +9,20 @@ using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class UserForEmailSpecification : Specification<User>
+public class UserForEmailSpecification(EmailAddress email) : Specification<User>
 {
-    private readonly EmailAddress email;
-
-    public UserForEmailSpecification(EmailAddress email)
-    {
-        this.email = email;
-    }
+    private readonly EmailAddress email = email;
 
     public override Expression<Func<User, bool>> ToExpression()
     {
         return e => e.Email.Value == this.email.Value;
     }
+}
+
+public static partial class UserSpecifications
+{
+    public static ISpecification<User> ForEmail(EmailAddress email) => new UserForEmailSpecification(email);
+
+    public static Specification<User> ForEmail2(EmailAddress email) // INFO: short version to define a specification
+        => new(e => e.Email.Value == email.Value);
 }

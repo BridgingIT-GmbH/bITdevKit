@@ -10,12 +10,7 @@ using Xunit.Sdk;
 
 [TraitDiscoverer(CategoryDiscoverer.TypeName, CategoryDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-public class CategoryAttribute : Attribute, ITraitAttribute
+public class CategoryAttribute(string categoryName) : Attribute, ITraitAttribute
 {
-    public CategoryAttribute(string categoryName)
-    {
-        this.Name = categoryName;
-    }
-
-    public string Name { get; }
+    public string Name { get; } = categoryName;
 }

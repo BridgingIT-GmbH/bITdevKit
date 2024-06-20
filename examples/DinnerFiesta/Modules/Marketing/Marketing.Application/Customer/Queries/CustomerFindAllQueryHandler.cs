@@ -13,21 +13,11 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 using Microsoft.Extensions.Logging;
 
-public class CustomerFindAllQueryHandler : QueryHandlerBase<CustomerFindAllQuery, Result<IEnumerable<Customer>>>
+public class CustomerFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository) : QueryHandlerBase<CustomerFindAllQuery, Result<IEnumerable<Customer>>>(loggerFactory)
 {
-    private readonly IGenericRepository<Customer> repository;
-
-    public CustomerFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<QueryResponse<Result<IEnumerable<Customer>>>> Process(CustomerFindAllQuery query, CancellationToken cancellationToken)
     {
         return QueryResponse.For(
-            await this.repository.FindAllResultAsync(cancellationToken: cancellationToken).AnyContext());
+            await repository.FindAllResultAsync(cancellationToken: cancellationToken).AnyContext());
     }
 }

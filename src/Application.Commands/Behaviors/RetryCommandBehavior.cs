@@ -13,17 +13,12 @@ using BridgingIT.DevKit.Common;
 using Humanizer;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Polly; // TODO: migrate to Polly 8 https://www.pollydocs.org/migration-v8.html
+using Polly;
 using Polly.Retry;
 
-public class RetryCommandBehavior<TRequest, TResponse> : CommandBehaviorBase<TRequest, TResponse>
+public class RetryCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
-    public RetryCommandBehavior(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     protected override bool CanProcess(TRequest request)
     {
         return request is IRetryCommand;

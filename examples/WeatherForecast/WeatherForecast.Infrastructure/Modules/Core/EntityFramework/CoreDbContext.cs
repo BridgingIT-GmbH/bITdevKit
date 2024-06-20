@@ -11,13 +11,8 @@ using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-public class CoreDbContext : ModuleDbContextBase, IOutboxDomainEventContext, IOutboxMessageContext
+public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbContextBase(options), IOutboxDomainEventContext, IOutboxMessageContext
 {
-    public CoreDbContext(DbContextOptions<CoreDbContext> options)
-        : base(options)
-    {
-    }
-
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Forecast> Forecasts { get; set; }
 

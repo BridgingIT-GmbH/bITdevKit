@@ -9,16 +9,11 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
-public class EchoMessageHandler : MessageHandlerBase<EchoMessage>,
+public class EchoMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<EchoMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler,
     IChaosExceptionMessageHandler
 {
-    public EchoMessageHandler(ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-    }
-
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     TimeoutMessageHandlerOptions ITimeoutMessageHandler.Options => new() { Timeout = new TimeSpan(0, 0, 0, 10) };

@@ -13,9 +13,9 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-		<MudTooltip Text="Swagger API documentation">
-			<MudIconButton Icon="@Icons.Material.Filled.Api"  Color="Color.Inherit" Href="https://localhost:5001/swagger/index.html" Target="_blank" />
-		</MudTooltip>
+        <MudTooltip Text="Swagger API documentation">
+            <MudIconButton Icon="@Icons.Material.Filled.Api"  Color="Color.Inherit" Href="https://localhost:5001/swagger/index.html" Target="_blank" />
+        </MudTooltip>
         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
             Href="https://github.com/Garderoben/MudBlazor" Target="_blank" />
@@ -35,39 +35,39 @@
     bool drawerOpen = true;
     private HubConnection hubConnection;
 
-	protected override async Task OnInitializedAsync()
-	{
-		hubConnection = new HubConnectionBuilder()
-			.WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
-			.Build();
-		hubConnection.On<string>("ReceiveMessage", (notification) =>
-		{
-			Snackbar.Add(notification);
-		});
-		await hubConnection.StartAsync();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/notificationhub"))
+            .Build();
+        hubConnection.On<string>("ReceiveMessage", (notification) =>
+        {
+            Snackbar.Add(notification);
+        });
+        await hubConnection.StartAsync();
+    }
 
     void DrawerToggle()
     {
         drawerOpen = !drawerOpen;
     }
 
-	public async ValueTask DisposeAsync()
-	{
-		await hubConnection.DisposeAsync();
-	}
+    public async ValueTask DisposeAsync()
+    {
+        await hubConnection.DisposeAsync();
+    }
 
-	private string Localize(string value)
-	{
-		if(string.IsNullOrEmpty(value))
-		{
-			return value;
-		}
+    private string Localize(string value)
+    {
+        if(string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
 
-		// localize specific parts of a string, parts marked with [TEXT] will be localized
-		return System.Text.RegularExpressions.Regex.Replace(
-			value,
-			@"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
-			System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-	}
+        // localize specific parts of a string, parts marked with [TEXT] will be localized
+        return System.Text.RegularExpressions.Regex.Replace(
+            value,
+            @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    }
 }

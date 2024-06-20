@@ -11,7 +11,7 @@ using Xunit;
 using Shouldly;
 
 [UnitTest("Common")]
-public class SafeTests
+public class SafeNullTests
 {
     [Fact]
     public void SafeNull_GivenNullEnumerable_ReturnsEmptyEnumerable()

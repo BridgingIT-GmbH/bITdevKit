@@ -7,12 +7,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using Microsoft.Extensions.DependencyInjection;
 
-public class CommandBuilderContext
+public class CommandBuilderContext(IServiceCollection services)
 {
-    public CommandBuilderContext(IServiceCollection services)
-    {
-        this.Services = services;
-    }
-
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; } = services;
 }

@@ -8,16 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-public class SqliteDbContextBuilderContext<TContext> : DbContextBuilderContext<TContext>
+public class SqliteDbContextBuilderContext<TContext>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null,
+    string connectionString = null,
+    Provider provider = Provider.SqlServer) : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
     where TContext : DbContext
 {
-    public SqliteDbContextBuilderContext(
-        IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        IConfiguration configuration = null,
-        string connectionString = null,
-        Provider provider = Provider.SqlServer)
-        : base(services, lifetime, configuration, connectionString, provider)
-    {
-    }
 }

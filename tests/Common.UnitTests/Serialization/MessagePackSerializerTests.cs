@@ -6,13 +6,8 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 [UnitTest("Common")]
-public class MessagePackSerializerTests : SerializerTestsBase
+public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
-    public MessagePackSerializerTests(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     [Fact]
     public override void CanRoundTripStream_Test()
     {
@@ -61,13 +56,8 @@ public class MessagePackSerializerTests : SerializerTestsBase
     }
 }
 
-public class MessagePackSerializerBenchmark : SerializerBenchmarkBase
+public class MessagePackSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
 {
-    public MessagePackSerializerBenchmark(ITestOutputHelper output)
-        : base(output)
-    {
-    }
-
     protected override ISerializer GetSerializer()
     {
         return new MessagePackSerializer();

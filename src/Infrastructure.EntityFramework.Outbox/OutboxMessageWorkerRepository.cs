@@ -9,11 +9,7 @@ using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.Models;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-public class OutboxMessageWorkerRepository : EntityFrameworkGenericRepository<OutboxMessage, Outbox>,
+public class OutboxMessageWorkerRepository(EntityFrameworkRepositoryOptions options) : EntityFrameworkGenericRepository<OutboxMessage, Outbox>(options),
     IOutboxMessageWorkerRepository
 {
-    public OutboxMessageWorkerRepository(EntityFrameworkRepositoryOptions options)
-        : base(options)
-    {
-    }
 }

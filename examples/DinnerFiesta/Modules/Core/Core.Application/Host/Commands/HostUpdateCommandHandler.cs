@@ -14,25 +14,15 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class HostUpdateCommandHandler : CommandHandlerBase<HostUpdateCommand, Result<Host>>
+public class HostUpdateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Host> repository) : CommandHandlerBase<HostUpdateCommand, Result<Host>>(loggerFactory)
 {
-    private readonly IGenericRepository<Host> repository;
-
-    public HostUpdateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Host> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<Result<Host>>> Process(HostUpdateCommand command, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var hostResult = await this.repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken);
+        var hostResult = await repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken);
         var host = hostResult.Value;
         if (hostResult.IsFailure)
         {
@@ -44,7 +34,7 @@ public class HostUpdateCommandHandler : CommandHandlerBase<HostUpdateCommand, Re
         host.ChangeName(command.FirstName, command.LastName)
             .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        await this.repository.UpdateAsync(host, cancellationToken);
+        await repository.UpdateAsync(host, cancellationToken);
 
         return CommandResponse.Success(host);
     }

@@ -16,30 +16,20 @@ using BridgingIT.DevKit.Domain.Outbox;
 using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class AggregateEventOutboxReceiver : IAggregateEventOutboxReceiver
+public class AggregateEventOutboxReceiver(
+    IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
+    IEventStoreAggregateRegistration eventStoreAggregateRegistration,
+    IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender,
+    IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender,
+    IEventTypeSelector eventTypeSelector,
+    IAggregateTypeSelector aggregateTypeSelector) : IAggregateEventOutboxReceiver
 {
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration;
-    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration;
-    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender;
-    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender;
-    private readonly IEventTypeSelector eventTypeSelector;
-    private readonly IAggregateTypeSelector aggregateTypeSelector;
-
-    public AggregateEventOutboxReceiver(
-        IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
-        IEventStoreAggregateRegistration eventStoreAggregateRegistration,
-        IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender,
-        IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender,
-        IEventTypeSelector eventTypeSelector,
-        IAggregateTypeSelector aggregateTypeSelector)
-    {
-        this.eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
-        this.eventStoreAggregateRegistration = eventStoreAggregateRegistration;
-        this.aggregateEventMediatorRequestSender = aggregateEventMediatorRequestSender;
-        this.aggregateEventMediatorNotificationSender = aggregateEventMediatorNotificationSender;
-        this.eventTypeSelector = eventTypeSelector;
-        this.aggregateTypeSelector = aggregateTypeSelector;
-    }
+    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
+    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
+    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender = aggregateEventMediatorRequestSender;
+    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender = aggregateEventMediatorNotificationSender;
+    private readonly IEventTypeSelector eventTypeSelector = eventTypeSelector;
+    private readonly IAggregateTypeSelector aggregateTypeSelector = aggregateTypeSelector;
 
     public async Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)> ReceiveAndPublishAsync(OutboxMessage message)
     {
@@ -89,10 +79,10 @@ public class AggregateEventOutboxReceiver : IAggregateEventOutboxReceiver
         var aggregateEventType = this.eventTypeSelector.FindType(aggregateEventTypeName);
         var method = methods.First();
         var genericAggregate = method.MakeGenericMethod(aggregateType);
-        var aggregate = genericAggregate.Invoke(null, new object[] { message.Aggregate, settings });
+        var aggregate = genericAggregate.Invoke(null, [message.Aggregate, settings]);
 
         var genericAggregateEvent = method.MakeGenericMethod(aggregateEventType);
-        var aggregateEvent = genericAggregateEvent.Invoke(null, new object[] { message.AggregateEvent, settings });
+        var aggregateEvent = genericAggregateEvent.Invoke(null, [message.AggregateEvent, settings]);
         return (aggregate, aggregateEvent);
     }
 }

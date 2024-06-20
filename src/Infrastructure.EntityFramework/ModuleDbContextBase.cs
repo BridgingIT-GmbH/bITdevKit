@@ -9,13 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-public abstract class ModuleDbContextBase : DbContext
+public abstract class ModuleDbContextBase(DbContextOptions options) : DbContext(options)
 {
-    protected ModuleDbContextBase(DbContextOptions options)
-        : base(options)
-    {
-    }
-
     /// <summary>
     /// The Schema property is used to specify the schema that this context should use.
     /// If it's not specified, the name of the context class with the "DBContext" suffix removed is used.

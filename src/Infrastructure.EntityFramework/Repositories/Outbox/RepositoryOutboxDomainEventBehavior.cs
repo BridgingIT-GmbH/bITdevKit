@@ -22,19 +22,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 [Obsolete("Use RepositoryOutboxDomainEventBehavior instead")]
-public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext> : RepositoryOutboxDomainEventBehavior<TEntity, TContext>
+public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(
+    ILoggerFactory loggerFactory,
+    TContext context,
+    IGenericRepository<TEntity> inner,
+    IOutboxDomainEventQueue eventQueue = null,
+    OutboxDomainEventOptions options = null) : RepositoryOutboxDomainEventBehavior<TEntity, TContext>(loggerFactory, context, inner, eventQueue, options)
     where TEntity : class, IEntity, IAggregateRoot
     where TContext : DbContext, IOutboxDomainEventContext
 {
-    public GenericRepositoryDomainEventOutboxDecorator(
-        ILoggerFactory loggerFactory,
-        TContext context,
-        IGenericRepository<TEntity> inner,
-        IOutboxDomainEventQueue eventQueue = null,
-        OutboxDomainEventOptions options = null)
-        : base(loggerFactory, context, inner, eventQueue, options)
-    {
-    }
 }
 
 public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IGenericRepository<TEntity>

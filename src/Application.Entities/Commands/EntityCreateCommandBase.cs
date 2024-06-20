@@ -12,27 +12,21 @@ using BridgingIT.DevKit.Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
-public abstract class EntityCreateCommandBase<TEntity> :
+public abstract class EntityCreateCommandBase<TEntity>(TEntity entity, string identity = null) :
     CommandRequestBase<Result<EntityCreatedCommandResult>>,
     IEntityCreateCommand<TEntity>
     where TEntity : class, IEntity
 {
     private List<AbstractValidator<EntityCreateCommandBase<TEntity>>> validators;
 
-    protected EntityCreateCommandBase(TEntity entity, string identity = null)
-    {
-        this.Entity = entity;
-        this.Identity = identity;
-    }
-
-    public TEntity Entity { get; }
+    public TEntity Entity { get; } = entity;
 
     object IEntityCreateCommand.Entity
     {
         get { return this.Entity; }
     }
 
-    public string Identity { get; }
+    public string Identity { get; } = identity;
 
     public EntityCreateCommandBase<TEntity> AddValidator(
         AbstractValidator<EntityCreateCommandBase<TEntity>> validator)

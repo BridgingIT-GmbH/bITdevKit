@@ -48,13 +48,9 @@ public static class ModuleName
     }
 
     [AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
-    public class Attribute : System.Attribute
+    public class Attribute(string value) : System.Attribute
     {
-        private readonly string value;
-        public Attribute(string value)
-        {
-            this.value = value;
-        }
+        private readonly string value = value;
 
         public string Value => this.value.Trim('"');
     }

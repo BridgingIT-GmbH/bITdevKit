@@ -10,19 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-public abstract class Enumeration : IComparable // TODO: or use https://github.com/ardalis/SmartEnum (better webapi support)
+public abstract class Enumeration(int id, string name) : IComparable // TODO: or use https://github.com/ardalis/SmartEnum (better webapi support)
 {
-    // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types
+    public int Id { get; private set; } = id;
 
-    protected Enumeration(int id, string name)
-    {
-        this.Id = id;
-        this.Name = name;
-    }
-
-    public int Id { get; private set; }
-
-    public string Name { get; private set; }
+    public string Name { get; private set; } = name;
 
     public static IEnumerable<T> GetAll<T>()
         where T : Enumeration

@@ -10,16 +10,10 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Specifications;
 using BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-public class AggregateSnapshotSpecification : Specification<EventStoreSnapshot>
+public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateType) : Specification<EventStoreSnapshot>
 {
-    private readonly Guid aggregateId;
-    private readonly string aggregateType;
-
-    public AggregateSnapshotSpecification(Guid aggregateId, string aggregateType)
-    {
-        this.aggregateId = aggregateId;
-        this.aggregateType = aggregateType;
-    }
+    private readonly Guid aggregateId = aggregateId;
+    private readonly string aggregateType = aggregateType;
 
     public override Expression<Func<EventStoreSnapshot, bool>> ToExpression()
     {

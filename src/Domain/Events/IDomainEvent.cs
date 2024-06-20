@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain;
 using System;
 using MediatR;
 
-public interface IDomainEvent : INotification // TODO: move to Domain.Mediator
+public interface IDomainEvent : INotification
 {
     Guid EventId { get; }
 

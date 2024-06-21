@@ -17,7 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-[Obsolete("Use the new AddDatabaseMigratorService() service extension from now on")]
+[Obsolete("Use the new DatabaseMigratorService service extension from now on")]
 public class MigrationsHostedService<TContext>(ILoggerFactory loggerFactory, IServiceProvider serviceProvider) : DatabaseMigratorService<TContext>(loggerFactory, serviceProvider)
     where TContext : DbContext
 {
@@ -95,8 +95,11 @@ public class DatabaseMigratorService<TContext> : IHostedService
                 }
 
                 this.logger.LogDebug("{LogKey} database migrator get pending migrations (context={DbContextType})", Constants.LogKey, contextName);
-                if (!exists || (await context.Database.GetPendingMigrationsAsync(cancellationToken: cancellationToken)).Any())
+                var migrations = await context.Database.GetPendingMigrationsAsync(cancellationToken: cancellationToken);
+                if (!exists || migrations.SafeAny())
                 {
+                    this.logger.LogDebug($"{{LogKey}} database migrator apply pending migrations (context={{DbContextType}}) {migrations.ToString(", ")}", Constants.LogKey, contextName);
+
                     await context.Database.MigrateAsync(cancellationToken).AnyContext();
                     exists = true;
 

@@ -8,25 +8,29 @@ namespace BridgingIT.DevKit.Common.UnitTests;
 [UnitTest("Common")]
 public class SliceTillTests
 {
-    [Fact]
-    public void From_All_Positions()
+    [Theory]
+    [InlineData("a", "a", "")]
+    [InlineData("aaa", ":", "aaa")]
+    [InlineData("aaa.bbb", ".", "aaa")]
+    [InlineData("aaa.bbb", "b", "aaa.")]
+    [InlineData("aaa.bbb", "bbb", "aaa.")]
+    [InlineData("aaa.bbb", "z", "aaa.bbb")]
+    [InlineData("aaa.bbb", "a", "")]
+    [InlineData("aaa.bbb", "aaa", "")]
+    [InlineData("abcdef.jpg", ".", "abcdef")]
+    [InlineData("abcdef.jpg.jpg", ".", "abcdef")]
+    public void Till_All_Positions(string source, string till, string expected)
     {
-        Assert.Equal(string.Empty, "a".SliceTill("a"));
-        Assert.Equal("aaa", "aaa".SliceTill(":"));
-        Assert.Equal("aaa", "aaa.bbb".SliceTill("."));
-        Assert.Equal("aaa.", "aaa.bbb".SliceTill("b"));
-        Assert.Equal("aaa.", "aaa.bbb".SliceTill("bbb"));
-        Assert.Equal("aaa.bbb", "aaa.bbb".SliceTill("z"));
-        Assert.Equal(string.Empty, "aaa.bbb".SliceTill("a"));
-        Assert.Equal(string.Empty, "aaa.bbb".SliceTill("aaa"));
+        source.SliceTill(till).ShouldBe(expected);
     }
 
-    [Fact]
-    public void From_Last_Positions()
+    [Theory]
+    [InlineData("abcdef.jpg", ".", "abcdef")]
+    [InlineData("abcdef.jpg", ".jpg", "abcdef")]
+    [InlineData("abcdef.jpgn", "n", "abcdef.jpg")]
+    [InlineData("abcdef.jpg.jpg", ".", "abcdef.jpg")]
+    public void TillLast_All_Positions(string source, string till, string expected)
     {
-        Assert.Equal("abcdef", "abcdef.jpg".SliceTill("."));
-        Assert.Equal("abcdef", "abcdef.jpg.jpg".SliceTill("."));
-        Assert.Equal("abcdef", "abcdef.jpg".SliceTillLast("."));
-        Assert.Equal("abcdef.jpg", "abcdef.jpg.jpg".SliceTillLast("."));
+        source.SliceTillLast(till).ShouldBe(expected);
     }
 }

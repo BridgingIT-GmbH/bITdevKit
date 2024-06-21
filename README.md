@@ -26,8 +26,8 @@ Supported patterns, elements:
 - Repository
 - Specifications
 - Commands/Queries
-- Outbox 
-  - DomainEvents 
+- Outbox
+  - DomainEvents
   - Messaging
 - Decorator (Behavior)
 

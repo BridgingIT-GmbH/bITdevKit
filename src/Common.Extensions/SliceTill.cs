@@ -14,12 +14,7 @@ public static partial class Extensions
     public static string SliceTill(this string source, string till,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (source.IsNullOrEmpty())
-        {
-            return source;
-        }
-
-        if (till.IsNullOrEmpty())
+        if (source.IsNullOrEmpty() || till.IsNullOrEmpty())
         {
             return source;
         }
@@ -31,12 +26,7 @@ public static partial class Extensions
     public static string SliceTillLast(this string source, string till,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (source.IsNullOrEmpty())
-        {
-            return source;
-        }
-
-        if (till.IsNullOrEmpty())
+        if (source.IsNullOrEmpty() || till.IsNullOrEmpty())
         {
             return source;
         }
@@ -58,7 +48,7 @@ public static partial class Extensions
 
         if (tillIndex > 0)
         {
-            return source.Substring(0, tillIndex);
+            return source[..tillIndex];
         }
 
         return source;

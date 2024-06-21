@@ -89,6 +89,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
                     }
                 }
 
+                this.logger.LogDebug("{LogKey} database creator create tables (context={DbContextType})", Constants.LogKey, contextName);
                 //await context.Database.EnsureCreatedAsync(cancellationToken).AnyContext();
 
                 // alternative way for EnsureCreatedAsync
@@ -96,6 +97,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
                 var databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
                 if (!exists)
                 {
+                    this.logger.LogDebug("{LogKey} database creator create database (context={DbContextType})", Constants.LogKey, contextName);
                     await databaseCreator?.CreateAsync(cancellationToken);
                     exists = true;
                 }

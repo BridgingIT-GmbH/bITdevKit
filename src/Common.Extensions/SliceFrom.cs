@@ -14,12 +14,7 @@ public static partial class Extensions
     public static string SliceFrom(this string source, string from,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (source.IsNullOrEmpty())
-        {
-            return source;
-        }
-
-        if (from.IsNullOrEmpty())
+        if (source.IsNullOrEmpty() || from.IsNullOrEmpty())
         {
             return source;
         }
@@ -31,12 +26,7 @@ public static partial class Extensions
     public static string SliceFromLast(this string source, string from,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
-        if (source.IsNullOrEmpty())
-        {
-            return source;
-        }
-
-        if (from.IsNullOrEmpty())
+        if (source.IsNullOrEmpty() || from.IsNullOrEmpty())
         {
             return source;
         }
@@ -51,24 +41,21 @@ public static partial class Extensions
             return source;
         }
 
-        if (from.IsNullOrEmpty())
+        var sourceLength = source.Length;
+
+        if (fromIndex == 0 && fromIndex + from.Length < sourceLength)
         {
-            return source;
+            return source[(fromIndex + from.Length)..];
         }
 
-        if (fromIndex == 0 && fromIndex + from.Length < source.Length)
-        {
-            return source.Substring(fromIndex + from.Length);
-        }
-
-        if (fromIndex > 0 && fromIndex == source.Length)
+        if (fromIndex > 0 && fromIndex == sourceLength)
         {
             return string.Empty;
         }
 
-        if (fromIndex > 0 && fromIndex + from.Length < source.Length)
+        if (fromIndex > 0 && fromIndex + from.Length < sourceLength)
         {
-            return source.Substring(fromIndex + from.Length);
+            return source[(fromIndex + from.Length)..];
         }
 
         return string.Empty;

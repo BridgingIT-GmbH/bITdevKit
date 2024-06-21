@@ -14,6 +14,11 @@ public static partial class Extensions
     public static string Slice(this string source, string start, string end,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
+        if (source.IsNullOrEmpty())
+        {
+            return source;
+        }
+
         return SliceFrom(source, start, comparison)
             .SliceTill(end, comparison);
     }
@@ -26,11 +31,11 @@ public static partial class Extensions
             return source;
         }
 
-        if (end < 0)
+        if (end < start)
         {
-            end = source.Length + end;
+            end = source.Length;
         }
 
-        return source.Substring(start, end - start);
+        return source[start..end];
     }
 }

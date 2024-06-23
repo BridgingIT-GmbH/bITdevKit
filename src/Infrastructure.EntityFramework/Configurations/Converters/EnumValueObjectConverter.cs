@@ -16,7 +16,7 @@ public class EnumValueObjectConverter<TEnumeration, TKey>
     public EnumValueObjectConverter()
         : base(
             v => v.Key,
-            v => EnumValueObject<TEnumeration, TKey>.ForKey(v))
+            v => EnumValueObject<TEnumeration, TKey>.Create(v))
     {
     }
 }

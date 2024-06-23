@@ -34,20 +34,12 @@ public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEnti
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositoryTracingBehavior<TEntity> : IGenericRepository<TEntity>
+public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly string type;
+    private readonly string type = typeof(TEntity).Name;
 
-    public RepositoryTracingBehavior(IGenericRepository<TEntity> inner)
-    {
-        EnsureArg.IsNotNull(inner, nameof(inner));
-
-        this.Inner = inner;
-        this.type = typeof(TEntity).Name;
-    }
-
-    protected IGenericRepository<TEntity> Inner { get; }
+    protected IGenericRepository<TEntity> Inner { get; } = inner;
 
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,

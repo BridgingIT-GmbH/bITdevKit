@@ -60,12 +60,12 @@ public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
         return !(right == left);
     }
 
-    public static TEnumeration ForKey(TKey key)
+    public static TEnumeration Create(TKey key)
     {
         return ByKey.ContainsKey(key) ? ByKey[key] : default;
     }
 
-    public static TEnumeration ForName(string name)
+    public static TEnumeration Create(string name)
     {
         return ByName.ContainsKey(name) ? ByName[name] : default;
     }

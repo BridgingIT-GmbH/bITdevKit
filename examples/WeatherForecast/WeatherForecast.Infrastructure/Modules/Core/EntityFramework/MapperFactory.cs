@@ -40,7 +40,7 @@ public static class MapperFactory
     {
         public AdAccount Resolve(DbUserAccount source, UserAccount destination, AdAccount destMember, ResolutionContext context)
         {
-            return AdAccount.For($"{source.AdDomain}\\{source.AdName}");
+            return AdAccount.Create($"{source.AdDomain}\\{source.AdName}");
         }
     }
 }

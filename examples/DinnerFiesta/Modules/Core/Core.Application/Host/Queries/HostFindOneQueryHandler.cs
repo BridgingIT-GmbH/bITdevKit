@@ -16,7 +16,7 @@ public class HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepos
 {
     public override async Task<QueryResponse<Result<Host>>> Process(HostFindOneQuery query, CancellationToken cancellationToken)
     {
-        return QueryResponse.For(
+        return QueryResponse.Create(
             await repository.FindOneResultAsync(
                 HostId.Create(query.HostId),
                 cancellationToken: cancellationToken).AnyContext());

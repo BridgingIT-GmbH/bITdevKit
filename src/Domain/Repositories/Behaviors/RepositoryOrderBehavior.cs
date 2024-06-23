@@ -58,7 +58,6 @@ public class RepositoryOrderBehavior<TEntity> : IGenericRepository<TEntity>
         IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));
-        EnsureArg.IsNotNull(inner, nameof(inner));
 
         this.Expression = expression;
         this.Direction = direction;

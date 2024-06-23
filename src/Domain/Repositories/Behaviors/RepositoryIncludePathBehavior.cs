@@ -39,7 +39,6 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNullOrEmpty(path, nameof(path));
-        EnsureArg.IsNotNull(inner, nameof(inner));
 
         this.Paths = new[] { path };
         this.Inner = inner;

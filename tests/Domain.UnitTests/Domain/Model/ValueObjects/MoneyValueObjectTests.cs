@@ -15,10 +15,10 @@ public class MoneyValueObjectTests
     {
         // Arrange
         // Act
-        var sut00usd = Money.For(00, Currency.USDollar);
-        var sut10usd = Money.For(10, Currency.USDollar);
-        var sut10eur = Money.For(10, Currency.Euro);
-        var sut99usd = Money.For(99, Currency.USDollar);
+        var sut00usd = Money.Create(00, Currency.USDollar);
+        var sut10usd = Money.Create(10, Currency.USDollar);
+        var sut10eur = Money.Create(10, Currency.Euro);
+        var sut99usd = Money.Create(99, Currency.USDollar);
 
         // Assert
         sut10usd.Amount.ShouldBe(10);
@@ -31,7 +31,7 @@ public class MoneyValueObjectTests
         (sut10usd == sut99usd).ShouldBe(false);
         (sut10usd == sut10eur).ShouldBe(false);
         (sut10usd != sut10eur).ShouldBe(true);
-        (sut10usd == Money.For(10, Currency.USDollar)).ShouldBe(true);
+        (sut10usd == Money.Create(10, Currency.USDollar)).ShouldBe(true);
         (sut10usd == 10).ShouldBe(true);
         (sut00usd == 0).ShouldBe(true);
         (sut10usd + sut99usd).Amount.ShouldBe(109);
@@ -46,10 +46,10 @@ public class MoneyValueObjectTests
     {
         // Arrange
         // Act
-        var sut01usd = Money.For(1.99m);
-        var sut02usd = Money.For(1000.99m);
-        var sut10usd = Money.For(10, Currency.USDollar);
-        var sut10eur = Money.For(10, Currency.Euro);
+        var sut01usd = Money.Create(1.99m);
+        var sut02usd = Money.Create(1000.99m);
+        var sut10usd = Money.Create(10, Currency.USDollar);
+        var sut10eur = Money.Create(10, Currency.Euro);
 
         // Assert
         sut01usd.ToString().ShouldBe("$1.99");

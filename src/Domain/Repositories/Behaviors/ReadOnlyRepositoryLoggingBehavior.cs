@@ -53,9 +53,6 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
         ILogger<IGenericRepository<TEntity>> logger,
         IGenericRepository<TEntity> inner)
     {
-        EnsureArg.IsNotNull(logger, nameof(logger));
-        EnsureArg.IsNotNull(inner, nameof(inner));
-
         this.Logger = logger;
         this.Inner = inner;
         this.type = typeof(TEntity).Name;

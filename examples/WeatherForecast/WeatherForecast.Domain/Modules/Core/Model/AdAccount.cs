@@ -27,7 +27,7 @@ public class AdAccount : ValueObject
 
     public string Name { get; }
 
-    public static AdAccount For(string value)
+    public static AdAccount Create(string value)
     {
         EnsureArg.IsNotNullOrEmpty(value, nameof(value));
 

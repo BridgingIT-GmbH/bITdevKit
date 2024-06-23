@@ -25,7 +25,7 @@ public abstract class DecimalValueObject : ComparableValueObject
 
     //public static DecimalValueObject Zero => new(0);
 
-    public decimal Amount { get; }
+    public decimal Amount { get; protected set; }
 
     //public static implicit operator DecimalValueObject(decimal value) => new(value);
 
@@ -60,7 +60,7 @@ public abstract class DecimalValueObject : ComparableValueObject
 
     //public static DecimalValueObject operator -(DecimalValueObject a, DecimalValueObject b) => a.Value - b.Value;
 
-    //public static DecimalValueObject For(decimal value) => new DecimalValueObject(value);
+    //public static DecimalValueObject Create(decimal value) => new DecimalValueObject(value);
 
     public virtual bool HasDecimals()
     {

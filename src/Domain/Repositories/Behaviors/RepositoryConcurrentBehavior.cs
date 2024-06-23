@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,21 +14,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
-
-[Obsolete("Use GenericRepositorySoftDeleteBehavior instead")]
-public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDeleteBehavior<TEntity>
-    where TEntity : class, IEntity, ISoftDeletable
-{
-    public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner)
-        : base(ínner)
-    {
-    }
-
-    public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner, bool excludeDeleted)
-        : base(ínner, excludeDeleted)
-    {
-    }
-}
 
 /// <summary>
 /// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
@@ -43,20 +27,11 @@ public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDelet
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositorySoftDeleteBehavior<TEntity>(
-    IGenericRepository<TEntity> ínner,
-    bool excludeDeleted) : IGenericRepository<TEntity>
-    where TEntity : class, IEntity, ISoftDeletable
+public class RepositoryConcurrentBehavior<TEntity>(
+    IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
+    where TEntity : class, IEntity, IConcurrent
 {
-    public RepositorySoftDeleteBehavior(
-        IGenericRepository<TEntity> ínner)
-        : this(ínner, true)
-    {
-    }
-
-    protected IGenericRepository<TEntity> Inner { get; } = ínner;
-
-    protected ISpecification<TEntity> Specification { get; } = excludeDeleted ? new Specification<TEntity>(e => e.Deleted != true) : null;
+    protected IGenericRepository<TEntity> Inner { get; } = inner;
 
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
@@ -68,18 +43,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken: cancellationToken).AnyContext();
         if (entity is not null)
         {
-            entity.SetDeleted();
-
-            if(entity is IConcurrent concurrentEntity)
-            {
-                concurrentEntity.Version = GuidGenerator.CreateSequential();
-            }
-
-            var result = (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
-            if (result == RepositoryActionResult.Updated)
-            {
-                return RepositoryActionResult.Deleted;
-            }
+            return await this.DeleteAsync(entity, cancellationToken).AnyContext();
         }
 
         return RepositoryActionResult.None;
@@ -87,15 +51,14 @@ public class RepositorySoftDeleteBehavior<TEntity>(
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        return await this.DeleteAsync(entity?.Id, cancellationToken).AnyContext();
+        entity.Version = GuidGenerator.CreateSequential();
+
+        return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        var entity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
-        return entity is not null && this.Specification.IsSatisfiedBy(entity);
+        return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(IFindOptions<TEntity> options = null,
@@ -104,8 +67,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         return await this.FindAllAsync(
             [],
             options,
-            cancellationToken)
-            .AnyContext();
+            cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -125,7 +87,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         CancellationToken cancellationToken = default)
     {
         return await this.Inner.FindAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
+            specifications,
             options,
             cancellationToken).AnyContext();
     }
@@ -139,8 +101,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
             [],
             projection,
             options,
-            cancellationToken)
-            .AnyContext();
+            cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -163,7 +124,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
+            specifications,
             projection,
             options,
             cancellationToken).AnyContext();
@@ -174,8 +135,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
-        return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : default;
+        return await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -183,8 +143,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            this.Specification.And(specification), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -192,42 +151,46 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.Version = GuidGenerator.CreateSequential();
+
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.Version = GuidGenerator.CreateSequential();
+
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        entity.Version = GuidGenerator.CreateSequential();
+
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync([], cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(specification, cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), cancellationToken).AnyContext();
+        return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }
 }

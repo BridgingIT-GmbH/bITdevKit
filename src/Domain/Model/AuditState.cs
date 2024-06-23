@@ -15,7 +15,7 @@ public class AuditState
 {
     public string CreatedBy { get; private set; }
 
-    public DateTimeOffset CreatedDate { get; private set; } = DateTime.UtcNow;
+    public DateTimeOffset CreatedDate { get; private set; } = DateTimeOffset.UtcNow;
 
     public string CreatedDescription { get; private set; }
 
@@ -88,7 +88,7 @@ public class AuditState
     /// <param name="description">The description for the creation.</param>
     public virtual void SetCreated(string by = null, string description = null)
     {
-        this.CreatedDate = DateTime.UtcNow;
+        this.CreatedDate = DateTimeOffset.UtcNow;
         this.UpdatedDate = this.CreatedDate;
 
         if (!by.IsNullOrEmpty())
@@ -109,7 +109,7 @@ public class AuditState
     /// <param name="reason">The reason of the update.</param>
     public virtual void SetUpdated(string by = null, string reason = null)
     {
-        this.UpdatedDate = DateTime.UtcNow;
+        this.UpdatedDate = DateTimeOffset.UtcNow;
 
         if (!by.IsNullOrEmpty())
         {
@@ -123,10 +123,14 @@ public class AuditState
                 this.UpdatedReasons = Enumerable.Empty<string>().ToArray();
             }
 
-            this.UpdatedReasons = this.UpdatedReasons.Concat(new[]
-            {
-                $"{by}: ({this.UpdatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-            }).ToArray();
+            this.UpdatedReasons =
+            [
+                .. this.UpdatedReasons,
+                .. new[]
+                {
+                    $"{by}: ({this.UpdatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
+                },
+            ];
         }
     }
 
@@ -153,10 +157,14 @@ public class AuditState
                 this.DeactivatedReasons = Enumerable.Empty<string>().ToArray();
             }
 
-            this.DeactivatedReasons = this.DeactivatedReasons.Concat(new[]
-            {
-                $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-            }).ToArray();
+            this.DeactivatedReasons =
+            [
+                .. this.DeactivatedReasons,
+                .. new[]
+                {
+                    $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
+                },
+            ];
         }
     }
 
@@ -168,7 +176,7 @@ public class AuditState
     public virtual void SetDeleted(string by = null, string reason = null)
     {
         this.Deleted = true;
-        this.DeletedDate = DateTime.UtcNow;
+        this.DeletedDate = DateTimeOffset.UtcNow;
         this.UpdatedDate = this.DeletedDate.Value;
 
         if (!by.IsNullOrEmpty())

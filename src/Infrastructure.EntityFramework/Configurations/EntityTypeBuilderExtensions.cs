@@ -6,12 +6,13 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Domain.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public static class EntityTypeBuilderExtensions
 {
-    public static EntityTypeBuilder<TEntity> OwnsOneAuditState<TEntity>(this EntityTypeBuilder<TEntity> builder) // TODO: also provide a ToJson variant
+    public static EntityTypeBuilder<TEntity> OwnsOneAuditState<TEntity>(this EntityTypeBuilder<TEntity> builder)
         where TEntity : class, IEntity, IAuditable
     {
         var valueComparer = new ValueComparer<string[]>(
@@ -126,6 +127,23 @@ public static class EntityTypeBuilderExtensions
             o.Property(e => e.DeletedDescription)
              .HasMaxLength(1024);
         });
+
+        return builder;
+    }
+
+    public static EntityTypeBuilder<TEntity> OwnsOneAuditStateToJson<TEntity>(this EntityTypeBuilder<TEntity> builder)
+        where TEntity : class, IEntity, IAuditable
+    {
+        builder.OwnsOne(e => e.AuditState, b => b.ToJson());
+
+        return builder;
+    }
+
+    public static OwnedNavigationBuilder<TOwnerEntity, TEntity> OwnsOneAuditStateToJson<TOwnerEntity, TEntity>(this OwnedNavigationBuilder<TOwnerEntity, TEntity> builder)
+        where TOwnerEntity : class
+        where TEntity : class, IEntity, IAuditable
+    {
+        builder.OwnsOne(e => e.AuditState, b => b.ToJson());
 
         return builder;
     }

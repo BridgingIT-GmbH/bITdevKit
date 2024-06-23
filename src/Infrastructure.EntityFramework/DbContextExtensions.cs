@@ -14,7 +14,7 @@ public static class DbContextExtensions
     /// <summary>
     /// Only save entities of the specified type <see cref="TEntity"/>
     /// </summary>
-    public static async Task<int> SaveChangesAsync<TEntity>(this DbContext context, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task<int> SaveChangesAsync<TEntity>(this DbContext context, CancellationToken cancellationToken = default)
         where TEntity : class
     {
         var states = context.ChangeTracker.Entries()

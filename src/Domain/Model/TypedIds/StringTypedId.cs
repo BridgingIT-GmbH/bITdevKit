@@ -57,7 +57,7 @@ public abstract class StringTypedId(string value) : IEquatable<StringTypedId>, I
 
     public bool IsEmpty()
     {
-        return this.Value == string.Empty;
+        return this.Value?.Length == 0;
     }
 
     public override string ToString()

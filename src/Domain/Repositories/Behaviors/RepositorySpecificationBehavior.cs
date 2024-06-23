@@ -42,7 +42,6 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(specification, nameof(specification));
-        EnsureArg.IsNotNull(inner, nameof(inner));
 
         this.Specification = specification;
         this.Inner = inner;

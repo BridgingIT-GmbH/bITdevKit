@@ -17,7 +17,7 @@ public class CustomerFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericR
 {
     public override async Task<QueryResponse<Result<IEnumerable<Customer>>>> Process(CustomerFindAllQuery query, CancellationToken cancellationToken)
     {
-        return QueryResponse.For(
+        return QueryResponse.Create(
             await repository.FindAllResultAsync(cancellationToken: cancellationToken).AnyContext());
     }
 }

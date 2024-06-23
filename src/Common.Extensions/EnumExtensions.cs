@@ -138,7 +138,7 @@ public static class EnumExtensions
 
         if (attribute is null)
         {
-            return default(TE);
+            return default;
         }
 
         return expression(attribute);
@@ -155,6 +155,6 @@ public static class EnumExtensions
             return valueSelector(att);
         }
 
-        return default(TValue);
+        return default;
     }
 }

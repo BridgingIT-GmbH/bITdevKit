@@ -21,7 +21,7 @@ public class CommandResponse
 
     public string CancelledReason { get; private set; }
 
-    public static CommandResponse<Result> For(Result result)
+    public static CommandResponse<Result> Create(Result result)
     {
         return new CommandResponse<Result>()
         {
@@ -94,7 +94,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> For<TValue>(Result<TValue> result)
+    public static CommandResponse<Result<TValue>> Create<TValue>(Result<TValue> result)
     {
         return new CommandResponse<Result<TValue>>()
         {

@@ -39,7 +39,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
                 VisitCount = 1,
                 RegisterDate = DateTime.UtcNow.AddDays(-7),
                 LastVisitDate = DateTime.UtcNow.AddHours(-6),
-                AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+                AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
             };
 
             var result = await this.sut.InsertAsync(entity).AnyContext();
@@ -60,7 +60,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -98,7 +98,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -122,7 +122,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -147,7 +147,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -172,7 +172,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -198,7 +198,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -224,7 +224,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -249,7 +249,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -274,7 +274,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -302,7 +302,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
                 VisitCount = 1,
                 RegisterDate = DateTime.UtcNow.AddDays(-7),
                 LastVisitDate = DateTime.UtcNow.AddHours(-6),
-                AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+                AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
             };
 
             await this.sut.InsertAsync(entity).AnyContext();
@@ -329,7 +329,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -350,7 +350,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();
@@ -371,7 +371,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
             VisitCount = 1,
             RegisterDate = DateTime.UtcNow.AddDays(-7),
             LastVisitDate = DateTime.UtcNow.AddHours(-6),
-            AdAccount = AdAccount.For($"domain\\john.doe.{ticks}")
+            AdAccount = AdAccount.Create($"domain\\john.doe.{ticks}")
         };
 
         await this.sut.InsertAsync(entity).AnyContext();

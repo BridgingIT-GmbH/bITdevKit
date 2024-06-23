@@ -17,8 +17,8 @@ public static class GuidGenerator
             return Guid.Empty;
         }
 
-        using var md5 = MD5.Create();
-        return new Guid(md5.ComputeHash(Encoding.Default.GetBytes(value)));
+        return new Guid(MD5.HashData(
+            Encoding.Default.GetBytes(value)));
     }
 
     public static Guid CreateSequential()

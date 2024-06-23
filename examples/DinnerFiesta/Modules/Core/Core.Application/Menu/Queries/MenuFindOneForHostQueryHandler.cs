@@ -20,7 +20,7 @@ public class MenuFindOneForHostQueryHandler(ILoggerFactory loggerFactory, IGener
         var hostId = HostId.Create(query.HostId);
         var dinnerId = HostId.Create(query.MenuId);
 
-        return QueryResponse.For(
+        return QueryResponse.Create(
             await repository.FindOneResultAsync(
                 specification: new Specification<Menu>(e => e.HostId == hostId && e.Id == dinnerId),
                 cancellationToken: cancellationToken).AnyContext());

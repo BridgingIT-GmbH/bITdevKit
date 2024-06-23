@@ -42,7 +42,7 @@ public class City : AggregateRoot<Guid>
             Id = Common.GuidGenerator.Create($"{country}-{name}"), // create repeatable id auf basis country-name (=upsert friendly)
             Name = name,
             Country = country,
-            Location = GeoLocation.For(longitude, latitude),
+            Location = GeoLocation.Create(longitude, latitude),
             CreatedDate = DateTime.UtcNow
         };
         entity.DomainEvents.Register(new CityCreatedDomainEvent(entity.Id, name));
@@ -55,7 +55,7 @@ public class City : AggregateRoot<Guid>
 
         this.Name = name;
         this.Country = country;
-        this.Location = GeoLocation.For(longitude, latitude);
+        this.Location = GeoLocation.Create(longitude, latitude);
         this.UpdatedDate = DateTime.UtcNow;
     }
 

@@ -15,9 +15,9 @@ public class DecimalValueObjectTests
     public void Operators_VariousAmounts_CompareAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
     {
         // Arrange
-        var sut00 = StubValueObject.For(00);
-        var sut10 = StubValueObject.For(10);
-        var sut99 = StubValueObject.For(99);
+        var sut00 = StubValueObject.Create(00);
+        var sut10 = StubValueObject.Create(10);
+        var sut99 = StubValueObject.Create(99);
 
         // Act
         // Assert
@@ -25,7 +25,7 @@ public class DecimalValueObjectTests
         (sut99 > sut10).ShouldBe(true);
         (sut10 != sut99).ShouldBe(true);
         (sut10 == sut99).ShouldBe(false);
-        (sut10 == StubValueObject.For(10)).ShouldBe(true);
+        (sut10 == StubValueObject.Create(10)).ShouldBe(true);
         (sut10 == 10).ShouldBe(true);
         (sut00 == 0).ShouldBe(true);
         (sut10 + sut99).ShouldBe(109);
@@ -36,9 +36,9 @@ public class DecimalValueObjectTests
     public void Comparable_VariousAmounts_OrderAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
     {
         // Arrange
-        var sut00 = StubValueObject.For(00);
-        var sut10 = StubValueObject.For(10);
-        var sut99 = StubValueObject.For(99);
+        var sut00 = StubValueObject.Create(00);
+        var sut10 = StubValueObject.Create(10);
+        var sut99 = StubValueObject.Create(99);
 
         // Act
         var result = new[] { sut99, sut00, sut10 }.OrderBy(s => s);
@@ -53,10 +53,10 @@ public class DecimalValueObjectTests
     {
         // Arrange
         // Act
-        var sut00 = StubValueObject.For(00.99m);
-        var sut10 = StubValueObject.For(10.00m);
-        var sut11 = StubValueObject.For(10);
-        var sut99 = StubValueObject.For(99.99m);
+        var sut00 = StubValueObject.Create(00.99m);
+        var sut10 = StubValueObject.Create(10.00m);
+        var sut11 = StubValueObject.Create(10);
+        var sut99 = StubValueObject.Create(99.99m);
 
         // Assert
         sut00.HasDecimals().ShouldBeTrue();
@@ -81,7 +81,7 @@ public class StubValueObject : DecimalValueObject
 
     public static StubValueObject operator -(StubValueObject a, StubValueObject b) => a.Amount - b.Amount;
 
-    public static StubValueObject For(decimal value)
+    public static StubValueObject Create(decimal value)
     {
         return new StubValueObject(value);
     }

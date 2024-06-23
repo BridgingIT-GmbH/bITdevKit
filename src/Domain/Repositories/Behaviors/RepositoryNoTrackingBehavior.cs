@@ -34,19 +34,12 @@ public class GenericRepositoryNoTrackingDecorator<TEntity>(IGenericRepository<TE
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositoryNoTrackingBehavior<TEntity> : IGenericRepository<TEntity>
+public class RepositoryNoTrackingBehavior<TEntity>(IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    public RepositoryNoTrackingBehavior(IGenericRepository<TEntity> inner)
-    {
-        EnsureArg.IsNotNull(inner, nameof(inner));
-
-        this.Inner = inner;
-    }
-
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
 
-    protected IGenericRepository<TEntity> Inner { get; }
+    protected IGenericRepository<TEntity> Inner { get; } = inner;
 
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,

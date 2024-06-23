@@ -105,7 +105,7 @@ public class EnumValueObjectTests
     {
         // Arrange
         // Act
-        var sut = AnotherStubEnumValueObject.ForKey(1);
+        var sut = AnotherStubEnumValueObject.Create(1);
 
         // Assert
         sut.ShouldNotBeNull();
@@ -117,7 +117,7 @@ public class EnumValueObjectTests
     {
         // Arrange
         // Act
-        var sut = AnotherStubEnumValueObject.ForName(AnotherStubEnumValueObject.One.Name);
+        var sut = AnotherStubEnumValueObject.Create(AnotherStubEnumValueObject.One.Name);
 
         // Assert
         sut.ShouldNotBeNull();

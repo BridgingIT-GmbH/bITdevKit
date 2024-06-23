@@ -23,11 +23,11 @@ public class Money : DecimalValueObject
         this.Currency = currency;
     }
 
-    public Currency Currency { get; }
+    public Currency Currency { get; protected set; }
 
-    public static Money Zero() => For(0);
+    public static Money Zero() => Create(0);
 
-    public static Money Zero(Currency currency) => For(0, currency);
+    public static Money Zero(Currency currency) => Create(0, currency);
 
     public bool IsZero() => this.Amount == 0;
 
@@ -73,12 +73,12 @@ public class Money : DecimalValueObject
         return new(a.Amount - b.Amount, a.Currency);
     }
 
-    public static Money For(decimal amount)
+    public static Money Create(decimal amount)
     {
         return new Money(amount, Currency.USDollar);
     }
 
-    public static Money For(decimal amount, Currency currency)
+    public static Money Create(decimal amount, Currency currency)
     {
         EnsureArg.IsNotNull(currency, nameof(currency));
 
@@ -108,7 +108,8 @@ public class Money : DecimalValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
-    public override string ToString() => this.Format(this.Amount, this.Currency.Code);
+    public override string ToString() =>
+        this.Format(this.Amount, this.Currency.Code);
 
     protected override IEnumerable<object> GetAtomicValues()
     {

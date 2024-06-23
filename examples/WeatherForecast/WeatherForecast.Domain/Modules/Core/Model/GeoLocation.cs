@@ -25,7 +25,7 @@ public class GeoLocation : ValueObject
 
     public double Latitude { get; private set; }
 
-    public static GeoLocation For(double longitude, double latitude)
+    public static GeoLocation Create(double longitude, double latitude)
     {
         Check.Throw(new IBusinessRule[]
         {

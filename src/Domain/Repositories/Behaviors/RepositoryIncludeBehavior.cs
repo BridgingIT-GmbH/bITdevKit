@@ -51,7 +51,6 @@ public class RepositoryIncludeBehavior<TEntity> : IGenericRepository<TEntity>
         IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));
-        EnsureArg.IsNotNull(inner, nameof(inner));
 
         this.Expressions = new[] { expression };
         this.Inner = inner;

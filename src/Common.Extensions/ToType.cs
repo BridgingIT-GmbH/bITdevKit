@@ -22,7 +22,7 @@ public static partial class Extensions
             }
             catch
             {
-                return default(T);
+                return default;
             }
         }
 

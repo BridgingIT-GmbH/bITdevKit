@@ -35,25 +35,16 @@ public class GenericRepositoryLoggingDecorator<TEntity>(ILoggerFactory loggerFac
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public partial class RepositoryLoggingBehavior<TEntity> : IGenericRepository<TEntity>
+public partial class RepositoryLoggingBehavior<TEntity>(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly string type;
+    private readonly string type = typeof(TEntity).Name;
 
-    public RepositoryLoggingBehavior(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<TEntity> inner)
-    {
-        EnsureArg.IsNotNull(inner, nameof(inner));
+    protected ILogger<IGenericRepository<TEntity>> Logger { get; } = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
 
-        this.Logger = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
-        this.Inner = inner;
-        this.type = typeof(TEntity).Name;
-    }
-
-    protected ILogger<IGenericRepository<TEntity>> Logger { get; }
-
-    protected IGenericRepository<TEntity> Inner { get; }
+    protected IGenericRepository<TEntity> Inner { get; } = inner;
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {

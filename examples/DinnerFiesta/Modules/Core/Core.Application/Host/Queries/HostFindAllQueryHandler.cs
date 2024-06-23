@@ -17,7 +17,7 @@ public class HostFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepos
 {
     public override async Task<QueryResponse<Result<IEnumerable<Host>>>> Process(HostFindAllQuery query, CancellationToken cancellationToken)
     {
-        return QueryResponse.For(
+        return QueryResponse.Create(
             await repository.FindAllResultAsync(cancellationToken: cancellationToken).AnyContext());
     }
 }

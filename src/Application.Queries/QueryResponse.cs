@@ -8,7 +8,7 @@ using BridgingIT.DevKit.Common;
 
 public static class QueryResponse
 {
-    public static QueryResponse<Result<TValue>> For<TValue>(Result<TValue> result)
+    public static QueryResponse<Result<TValue>> Create<TValue>(Result<TValue> result)
     {
         return new QueryResponse<Result<TValue>>()
         {

@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Domain.Model;
 public class EntityCommandMessagingBehaviorOptionsBuilder :
     OptionsBuilderBase<EntityCommandMessagingBehaviorOptions, EntityCommandMessagingBehaviorOptionsBuilder>
 {
-    private static readonly List<Type> ExcludedEntityTypes = new();
+    private static readonly List<Type> ExcludedEntityTypes = [];
 
     public EntityCommandMessagingBehaviorOptionsBuilder Enabled(bool enabled)
     {

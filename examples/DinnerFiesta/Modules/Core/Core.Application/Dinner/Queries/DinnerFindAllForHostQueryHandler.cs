@@ -17,7 +17,7 @@ public class DinnerFindAllForHostQueryHandler(ILoggerFactory loggerFactory, IGen
 {
     public override async Task<QueryResponse<Result<IEnumerable<Dinner>>>> Process(DinnerFindAllForHostQuery query, CancellationToken cancellationToken)
     {
-        return QueryResponse.Create(
+        return QueryResponse.For(
             await repository.FindAllResultAsync(
                 specification: DinnerSpecifications.ForHost(HostId.Create(query.HostId)),
                 cancellationToken: cancellationToken).AnyContext());

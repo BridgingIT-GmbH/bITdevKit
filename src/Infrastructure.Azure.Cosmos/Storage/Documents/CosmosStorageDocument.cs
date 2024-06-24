@@ -43,7 +43,7 @@ public class CosmosStorageDocument
     public string PropertiesJson
     {
         get => this.Properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.Properties = value.IsNullOrEmpty() ? new Dictionary<string, object>() : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        set => this.Properties = value.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
     }
 
     [Timestamp]

@@ -85,7 +85,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
 
     public virtual async Task Unsubscribe()
     {
-        List<(string messageType, Type handler)> subscriptions = new();
+        List<(string messageType, Type handler)> subscriptions = [];
 
         foreach (var subscription in this.Subscriptions.GetAll().SafeNull())
         {

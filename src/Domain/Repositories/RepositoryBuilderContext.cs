@@ -14,7 +14,7 @@ using Scrutor;
 public class RepositoryBuilderContext<TEntity>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null)
     where TEntity : class, IEntity
 {
-    private readonly List<Action<IServiceCollection>> behaviors = new();
+    private readonly List<Action<IServiceCollection>> behaviors = [];
     private ServiceDescriptor repositoryDescriptor;
 
     public IServiceCollection Services { get; } = services;

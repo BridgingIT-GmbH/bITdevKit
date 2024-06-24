@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 
 public class MessageState
 {
-    public List<string> HandledMessageIds { get; set; } = new List<string>();
+    public List<string> HandledMessageIds { get; set; } = [];
 
-    public List<string> HandledMessageResults { get; set; } = new List<string>();
+    public List<string> HandledMessageResults { get; set; } = [];
 }
 
 public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messageState) : MessageHandlerBase<MessageStub>(loggerFactory),

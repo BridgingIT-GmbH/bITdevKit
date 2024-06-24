@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
 using System.IO;
 using System.Text;
 using Microsoft.Azure.Cosmos;
@@ -30,10 +29,7 @@ public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettin
     /// <returns>The object representing the deserialized stream</returns>
     public override T FromStream<T>(Stream stream)
     {
-        if (stream is null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        EnsureArg.IsNotNull(stream, nameof(stream));
 
         if (typeof(Stream).IsAssignableFrom(typeof(T)))
         {

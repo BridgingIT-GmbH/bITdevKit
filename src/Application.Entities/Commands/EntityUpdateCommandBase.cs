@@ -31,7 +31,7 @@ public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string id
     public EntityUpdateCommandBase<TEntity> AddValidator(
         AbstractValidator<EntityUpdateCommandBase<TEntity>> validator)
     {
-        (this.validators ??= new()).AddOrUpdate(validator);
+        (this.validators ??= []).AddOrUpdate(validator);
 
         return this;
     }

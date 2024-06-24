@@ -12,7 +12,7 @@ using System.Reflection;
 public class ObjectMapperConfiguration<TSource, TTarget>
 {
     private readonly ObjectMapper objectMapper;
-    private readonly List<PropertyMapping<TSource, TTarget>> propertyMappings = new List<PropertyMapping<TSource, TTarget>>();
+    private readonly List<PropertyMapping<TSource, TTarget>> propertyMappings = [];
 
     internal ObjectMapperConfiguration(ObjectMapper objectMapper)
     {

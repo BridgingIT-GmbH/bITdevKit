@@ -25,7 +25,7 @@ public class PulsarMessageBroker : MessageBrokerBase, IAsyncDisposable
 {
     private readonly PulsarMessageBrokerOptions options;
     private readonly IPulsarClient client;
-    private readonly ConcurrentDictionary<string, IProducer<ReadOnlySequence<byte>>> producers = new();
+    private readonly ConcurrentDictionary<string, IProducer<ReadOnlySequence<byte>>> producers = [];
 
     public PulsarMessageBroker(PulsarMessageBrokerOptions options)
         : base(options.LoggerFactory, options.HandlerFactory, options.Serializer, options.PublisherBehaviors, options.HandlerBehaviors)

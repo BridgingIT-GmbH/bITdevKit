@@ -2,7 +2,6 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
 using System;
@@ -63,10 +62,7 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
 
     protected void ApplyEvent(IAggregateEvent @event)
     {
-        if (@event is null)
-        {
-            throw new ArgumentNullException(nameof(@event));
-        }
+        EnsureArg.IsNotNull(@event, nameof(@event));
 
         this.AsReflectionDynamic().Apply(@event);
     }

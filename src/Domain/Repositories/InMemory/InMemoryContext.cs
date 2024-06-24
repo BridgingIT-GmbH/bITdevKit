@@ -27,5 +27,5 @@ public class InMemoryContext<TEntity>
         this.Entities = entities.SafeNull().ToList();
     }
 
-    public List<TEntity> Entities { get; set; } = new List<TEntity>();
+    public List<TEntity> Entities { get; set; } = [];
 }

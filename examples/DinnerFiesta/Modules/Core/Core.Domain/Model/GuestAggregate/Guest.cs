@@ -9,12 +9,12 @@ using BridgingIT.DevKit.Domain.Model;
 
 public class Guest : AuditableAggregateRoot<GuestId, Guid>
 {
-    private readonly List<DinnerId> upcomingDinnerIds = new();
-    private readonly List<DinnerId> pastDinnerIds = new();
-    private readonly List<DinnerId> pendingDinnerIds = new();
-    private readonly List<BillId> billIds = new();
-    private readonly List<MenuReviewId> menuReviewIds = new();
-    private readonly List<GuestRating> ratings = new();
+    private readonly List<DinnerId> upcomingDinnerIds = [];
+    private readonly List<DinnerId> pastDinnerIds = [];
+    private readonly List<DinnerId> pendingDinnerIds = [];
+    private readonly List<BillId> billIds = [];
+    private readonly List<MenuReviewId> menuReviewIds = [];
+    private readonly List<GuestRating> ratings = [];
 
     private Guest()
     {

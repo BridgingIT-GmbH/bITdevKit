@@ -40,7 +40,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule(
         IEntityCreateCommandRule<TEntity> rule)
     {
-        (this.rules ??= new()).AddOrUpdate(rule);
+        (this.rules ??= []).AddOrUpdate(rule);
 
         return this;
     }
@@ -52,7 +52,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityCreateCommandRule<TEntity>> rule)
     {
-        (this.rulesFuncs ??= new()).AddOrUpdate(rule);
+        (this.rulesFuncs ??= []).AddOrUpdate(rule);
 
         return this;
     }
@@ -83,7 +83,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
 
     private async Task CheckRulesAsync(TCommand command)
     {
-        var rules = (this.rules ??= new()).Union(this.AddRules(command).SafeNull()).ToList();
+        var rules = (this.rules ??= []).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
         this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);

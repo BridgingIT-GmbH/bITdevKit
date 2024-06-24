@@ -35,5 +35,5 @@ public class SqliteOptions : OptionsBase
 
     public virtual IMemoryCache MemoryCache { get; set; }
 
-    public virtual List<Type> InterceptorTypes { get; set; } = new List<Type>();
+    public virtual List<Type> InterceptorTypes { get; set; } = [];
 }

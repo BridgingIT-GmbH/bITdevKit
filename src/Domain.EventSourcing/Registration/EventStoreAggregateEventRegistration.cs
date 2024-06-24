@@ -18,7 +18,7 @@ using BridgingIT.DevKit.Domain.EventSourcing.Model;
 /// </summary>
 public class EventStoreAggregateEventRegistration : IEventStoreAggregateEventRegistration
 {
-    private readonly Dictionary<Type, string> registration = new();
+    private readonly Dictionary<Type, string> registration = [];
 
     /// <summary>
     /// Ordnet einem AggregateEvent einen Namen zu, der während des kompletten

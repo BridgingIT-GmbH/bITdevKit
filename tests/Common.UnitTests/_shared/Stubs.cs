@@ -16,7 +16,7 @@ public class StubMapper : IMapper<PersonStub, PersonDtoStub>
 
 public class PersonStub
 {
-    private readonly List<LocationStub> locations = new();
+    private readonly List<LocationStub> locations = [];
 
     public PersonStub()
     {

@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 public class PersonStub : AggregateRoot<Guid>
 {
-    private readonly List<LocationStub> locations = new();
+    private readonly List<LocationStub> locations = [];
 
     public PersonStub()
     {

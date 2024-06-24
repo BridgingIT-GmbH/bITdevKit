@@ -16,7 +16,7 @@ public abstract class SerializerBenchmarkBase(ITestOutputHelper output) : TestsB
     {
         IntProperty = 1,
         StringProperty = "test",
-        ListProperty = new List<int> { 1 },
+        ListProperty = [1],
         ObjectProperty = new StubModel { IntProperty = 1 }
     };
 

@@ -14,5 +14,5 @@ public class EventStoreMemoryData(Guid aggregateId, string aggregateType)
 
     public string AggregateType { get; private set; } = aggregateType;
 
-    public List<EventBlob> EventBlobs { get; private set; } = new List<EventBlob>();
+    public List<EventBlob> EventBlobs { get; private set; } = [];
 }

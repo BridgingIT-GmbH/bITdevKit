@@ -17,12 +17,9 @@ public static partial class Extensions
         this IQueryable<TSource> source,
         CancellationToken cancellationToken = default)
     {
-        if (source is null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
+        EnsureArg.IsNotNull(source, nameof(source));
 
-        if (!(source is IAsyncEnumerable<TSource>))
+        if (source is not IAsyncEnumerable<TSource>)
         {
             return Task.FromResult(source.ToList());
         }

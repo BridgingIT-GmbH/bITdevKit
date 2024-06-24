@@ -35,7 +35,7 @@ public abstract class EntityFindAllQueryBase<TEntity>(int pageNumber = 1, int pa
     public EntityFindAllQueryBase<TEntity> AddValidator(
         AbstractValidator<EntityFindAllQueryBase<TEntity>> validator)
     {
-        (this.validators ??= new()).AddOrUpdate(validator);
+        (this.validators ??= []).AddOrUpdate(validator);
 
         return this;
     }

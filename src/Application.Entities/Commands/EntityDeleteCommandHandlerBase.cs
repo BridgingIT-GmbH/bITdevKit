@@ -42,7 +42,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(
         IEntityDeleteCommandRule<TEntity> rule)
     {
-        (this.rules ??= new()).AddOrUpdate(rule);
+        (this.rules ??= []).AddOrUpdate(rule);
 
         return this;
     }
@@ -54,7 +54,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityDeleteCommandRule<TEntity>> rule)
     {
-        (this.rulesFuncs ??= new()).AddOrUpdate(rule);
+        (this.rulesFuncs ??= []).AddOrUpdate(rule);
 
         return this;
     }
@@ -133,7 +133,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
 
     private async Task CheckRulesAsync(TCommand command, TEntity entity)
     {
-        var rules = (this.rules ??= new()).Union(this.AddRules(command).SafeNull()).ToList();
+        var rules = (this.rules ??= []).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
         this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Commands.Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);

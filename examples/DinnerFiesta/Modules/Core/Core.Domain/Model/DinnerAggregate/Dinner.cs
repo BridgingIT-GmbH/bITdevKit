@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Domain.Model;
 
 public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 {
-    private readonly List<DinnerReservation> reservations = new();
+    private readonly List<DinnerReservation> reservations = [];
 
     private Dinner()
     {

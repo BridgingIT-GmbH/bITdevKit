@@ -29,7 +29,7 @@ public abstract class EntityFindOneQueryBase<TEntity> :
     public EntityFindOneQueryBase<TEntity> AddValidator(
         AbstractValidator<EntityFindOneQueryBase<TEntity>> validator)
     {
-        (this.validators ??= new()).AddOrUpdate(validator);
+        (this.validators ??= []).AddOrUpdate(validator);
 
         return this;
     }

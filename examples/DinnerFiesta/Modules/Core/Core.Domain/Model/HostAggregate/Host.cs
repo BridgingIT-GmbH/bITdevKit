@@ -9,8 +9,8 @@ using BridgingIT.DevKit.Domain.Model;
 
 public class Host : AuditableAggregateRoot<HostId, Guid>
 {
-    private readonly List<MenuId> menuIds = new();
-    private readonly List<DinnerId> dinnerIds = new();
+    private readonly List<MenuId> menuIds = [];
+    private readonly List<DinnerId> dinnerIds = [];
 
     private Host()
     {

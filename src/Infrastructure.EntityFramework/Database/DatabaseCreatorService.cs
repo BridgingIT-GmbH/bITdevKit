@@ -95,14 +95,14 @@ public class DatabaseCreatorService<TContext> : IHostedService
                 // alternative way for EnsureCreatedAsync
                 // also creates tables of additional DbContexts which are housed in the same database
                 var databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                if (!exists)
+                if (!exists) // only create tabled if db does not exist
                 {
                     this.logger.LogDebug("{LogKey} database creator create database (context={DbContextType})", Constants.LogKey, contextName);
                     await databaseCreator?.CreateAsync(cancellationToken);
                     exists = true;
-                }
 
-                await databaseCreator?.CreateTablesAsync(cancellationToken);
+                    await databaseCreator?.CreateTablesAsync(cancellationToken);
+                }
 
                 this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
             }

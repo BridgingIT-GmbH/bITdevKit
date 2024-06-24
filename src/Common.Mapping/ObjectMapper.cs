@@ -36,7 +36,7 @@ public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : I
 
 public class ObjectMapper : IMapper
 {
-    private readonly Dictionary<(Type, Type), Delegate> mappings = new();
+    private readonly Dictionary<(Type, Type), Delegate> mappings = [];
 
     public TTarget Map<TSource, TTarget>(TSource source)
         where TTarget : class

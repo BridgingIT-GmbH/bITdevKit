@@ -2,7 +2,6 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Common;
 
 using System;
@@ -23,10 +22,7 @@ public static class TaskExtensions
         this Task task,
         Action<Exception> errorHandler = null)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        EnsureThat.EnsureArg.IsNotNull(task, nameof(task));
 
         task.ContinueWith(t =>
         {
@@ -270,10 +266,7 @@ public static class TaskExtensions
     [DebuggerStepThrough]
     public static ConfiguredTaskAwaitable<TResult> AnyContext<TResult>(this Task<TResult> task)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        EnsureArg.IsNotNull(task, nameof(task));
 
         return task.ConfigureAwait(false);
     }
@@ -281,10 +274,7 @@ public static class TaskExtensions
     [DebuggerStepThrough]
     public static ConfiguredTaskAwaitable AnyContext(this Task task)
     {
-        if (task is null)
-        {
-            throw new ArgumentNullException(nameof(task));
-        }
+        EnsureThat.EnsureArg.IsNotNull(task, nameof(task));
 
         return task.ConfigureAwait(false);
     }

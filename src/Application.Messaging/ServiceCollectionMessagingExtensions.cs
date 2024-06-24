@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 public static class ServiceCollectionMessagingExtensions
 {
-    public static readonly List<(Type message, Type handler)> Subscriptions = new();
+    public static readonly List<(Type message, Type handler)> Subscriptions = [];
     private static MessagingOptions contextOptions;
 
     public static MessagingBuilderContext AddMessaging(

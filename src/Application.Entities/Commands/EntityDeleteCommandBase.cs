@@ -33,7 +33,7 @@ public abstract class EntityDeleteCommandBase<TEntity>(string id, string identit
     public EntityDeleteCommandBase<TEntity> AddValidator(
         AbstractValidator<EntityDeleteCommandBase<TEntity>> validator)
     {
-        (this.validators ??= new()).AddOrUpdate(validator);
+        (this.validators ??= []).AddOrUpdate(validator);
 
         return this;
     }

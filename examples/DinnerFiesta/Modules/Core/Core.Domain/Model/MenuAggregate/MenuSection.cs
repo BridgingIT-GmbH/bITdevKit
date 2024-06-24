@@ -22,7 +22,7 @@ public class MenuSection : Entity<MenuSectionId, Guid>
     {
         this.Name = name;
         this.Description = description;
-        this.items = items?.ToList() ?? new();
+        this.items = items?.ToList() ?? [];
     }
 
     public string Name { get; private set; }

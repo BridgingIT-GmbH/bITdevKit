@@ -126,7 +126,7 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
     IConfiguration configuration = null)
     where T : class, new()
 {
-    private readonly List<Action<IServiceCollection>> behaviors = new();
+    private readonly List<Action<IServiceCollection>> behaviors = [];
     private ServiceDescriptor repositoryDescriptor;
 
     public IServiceCollection Services { get; } = services;

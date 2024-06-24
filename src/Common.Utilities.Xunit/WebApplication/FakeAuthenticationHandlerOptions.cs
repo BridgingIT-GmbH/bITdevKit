@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 public class FakeAuthenticationHandlerOptions
 {
-    private List<Claim> claims = new();
+    private List<Claim> claims = [];
 
     public IEnumerable<Claim> Claims { get => this.claims; set => this.claims = value.ToList(); }
 

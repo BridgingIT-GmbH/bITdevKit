@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Domain.EventSourcing.Model;
 
 public class DomainEventPropagationRegistration : IDomainEventPropagationRegistration
 {
-    private readonly Dictionary<string, IDomainEventPropagatorRoot> registration = new();
+    private readonly Dictionary<string, IDomainEventPropagatorRoot> registration = [];
 
     public void Register(IDomainEventWithGuid domainEvent, IDomainEventPropagatorRoot domainEventPropagation)
     {

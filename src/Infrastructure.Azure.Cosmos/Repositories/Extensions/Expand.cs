@@ -71,7 +71,7 @@ public static partial class Extensions
 
             if (this.replacementParams is null)
             {
-                replacementParams = new Dictionary<ParameterExpression, Expression>();
+                replacementParams = [];
             }
             else
             {
@@ -114,7 +114,7 @@ public static partial class Extensions
 
                 if (this.replacementParams is null)
                 {
-                    replacementParams = new Dictionary<ParameterExpression, Expression>();
+                    replacementParams = [];
                 }
                 else
                 {

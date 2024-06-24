@@ -9,8 +9,8 @@ using System.Collections.Generic;
 
 public class Result : IResult
 {
-    protected readonly List<string> messages = new();
-    protected readonly List<IResultError> errors = new();
+    protected readonly List<string> messages = [];
+    protected readonly List<IResultError> errors = [];
     protected bool success = true;
 
     protected Result()

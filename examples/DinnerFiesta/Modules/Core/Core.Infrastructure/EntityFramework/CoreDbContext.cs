@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options)
     : ModuleDbContextBase(options), IDocumentStoreContext, IOutboxDomainEventContext, IOutboxMessageContext

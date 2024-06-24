@@ -19,7 +19,7 @@ using EnsureThat;
 
 public class InMemoryEventStoreRepository : IEventStoreRepository
 {
-    private readonly Dictionary<Guid, EventStoreMemoryData> events = new();
+    private readonly Dictionary<Guid, EventStoreMemoryData> events = [];
 
     private readonly ISerializer serializer;
     private readonly IEventStoreAggregateRegistration aggregateRegistration;

@@ -34,7 +34,7 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification(
         ISpecification<TEntity> specification)
     {
-        (this.specifications ??= new()).AddOrUpdate(specification);
+        (this.specifications ??= []).AddOrUpdate(specification);
 
         return this;
     }
@@ -46,7 +46,7 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification(
         Func<TQuery, ISpecification<TEntity>> specification)
     {
-        (this.specificationFuncs ??= new()).AddOrUpdate(specification);
+        (this.specificationFuncs ??= []).AddOrUpdate(specification);
 
         return this;
     }
@@ -62,7 +62,7 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
     {
         EnsureArg.IsNotNull(query, nameof(query));
 
-        var specifications = (this.specifications ??= new()).Union(this.AddSpecifications(query).SafeNull()).ToList();
+        var specifications = (this.specifications ??= []).Union(this.AddSpecifications(query).SafeNull()).ToList();
         this.specificationFuncs?.ForEach(s => specifications.Add(s.Invoke(query)));
 
         if (specifications.SafeAny())

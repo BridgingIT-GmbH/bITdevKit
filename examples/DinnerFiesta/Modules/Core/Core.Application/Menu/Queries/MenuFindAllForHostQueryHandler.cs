@@ -20,7 +20,7 @@ public class MenuFindAllForHostQueryHandler(ILoggerFactory loggerFactory, IGener
     {
         var hostId = HostId.Create(query.HostId);
 
-        return QueryResponse.Create(await repository.FindAllResultAsync(
+        return QueryResponse.For(await repository.FindAllResultAsync(
             specification: new Specification<Menu>(e => e.HostId == hostId),
             cancellationToken: cancellationToken).AnyContext());
     }

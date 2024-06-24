@@ -15,5 +15,5 @@ public class TestIntEntity : AuditableAggregateRoot<int>
 
     public int MyProperty3 { get; set; }
 
-    public List<TestIntChildEntity> Children { get; set; } = new List<TestIntChildEntity>();
+    public List<TestIntChildEntity> Children { get; set; } = [];
 }

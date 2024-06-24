@@ -9,9 +9,9 @@ using BridgingIT.DevKit.Domain.Model;
 
 public class Menu : AuditableAggregateRoot<MenuId, Guid>
 {
-    private readonly List<MenuSection> sections = new();
-    private readonly List<DinnerId> dinnerIds = new();
-    private readonly List<MenuReviewId> menuReviewIds = new();
+    private readonly List<MenuSection> sections = [];
+    private readonly List<DinnerId> dinnerIds = [];
+    private readonly List<MenuReviewId> menuReviewIds = [];
 
     private Menu()
     {
@@ -28,7 +28,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
         this.Name = name;
         this.Description = description;
         this.AverageRating = averageRating;
-        this.sections = sections?.ToList() ?? new();
+        this.sections = sections?.ToList() ?? [];
     }
 
     public HostId HostId { get; private set; }

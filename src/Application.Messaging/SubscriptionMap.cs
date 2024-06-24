@@ -234,7 +234,7 @@ public class SubscriptionMap : ISubscriptionMap
 
         if (!this.Exists(messageName))
         {
-            this.map.Add(messageName, new List<SubscriptionDetails>());
+            this.map.Add(messageName, []);
         }
 
         if (this.map[messageName].Any(s => s.HandlerType == handler))

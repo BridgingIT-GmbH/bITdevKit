@@ -45,7 +45,7 @@ public class SpecificationTests
             //.AddExpressionMapping()
             .AddProfile<MapperProfile>());
         config.AssertConfigurationIsValid();
-        var autoMapper = new global::AutoMapper.Mapper(config);
+        var autoMapper = new Mapper(config);
         var specification = new Specification<PersonStub>(p => p.FirstName == "John");
         var specificationId = new Specification<PersonStub>(p => p.Id == sourceDto1.Identifier);
 

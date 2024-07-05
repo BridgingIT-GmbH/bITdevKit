@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Specifications;
 using BridgingIT.DevKit.Infrastructure.Mapping;
-using global::AutoMapper;
+using AutoMapper;
 
 [UnitTest("Infrastructure")]
 public class AutoMapperEntityMapperTests

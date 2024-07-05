@@ -1,0 +1,95 @@
+﻿@inherits LayoutComponentBase
+@* @inject IStringLocalizer<Global> localizer *@
+@using Microsoft.AspNetCore.SignalR.Client
+@*@implements IAsyncDisposable*@
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudTooltip Text="Swagger API documentation">
+            <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="swagger/index.html" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="SEQ Logs">
+            <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="Jaeger Traces">
+            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
+        </MudTooltip>
+        <MudTooltip Text="Health">
+            <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(this.IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
+        </MudTooltip>
+        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/Garderoben/MudBlazor" Target="_blank" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">WeatherForecast</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool drawerOpen = true;
+    private HubConnection hubConnection;
+    private bool IsConnected { get; set; }
+    private bool IsHealthy { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(this.navigationManager.ToAbsoluteUri("/signalrhub"))
+            .Build();
+        hubConnection.On<string>("CheckHealth", (notification) =>
+        {
+            this.IsHealthy = !notification.Contains("Unhealthy");
+            this.StateHasChanged();
+        });
+        await hubConnection.StartAsync();
+
+        this.IsConnected = this.hubConnection.State == HubConnectionState.Connected;
+        if (this.IsConnected)
+        {
+            this.snackbar.Add("signalr connected", Severity.Success);
+        }
+        else
+        {
+            this.snackbar.Add("signalr not connected", Severity.Error);
+        }
+    }
+
+    void DrawerToggle()
+    {
+        drawerOpen = !drawerOpen;
+    }
+
+    //public async ValueTask DisposeAsync()
+    //{
+    //	await hubConnection.DisposeAsync();
+    //}
+
+    // private string Localize(string value)
+    // {
+    //     if (string.IsNullOrEmpty(value))
+    //     {
+    //         return value;
+    //     }
+
+    //     // localize specific parts of a string, parts marked with [TEXT] will be localized
+    //     return System.Text.RegularExpressions.Regex.Replace(
+    //         value,
+    //         @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
+    //         System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    // }
+}

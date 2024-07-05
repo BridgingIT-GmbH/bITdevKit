@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
         this MappingBuilderContext context,
         AutoMapperConfiguration configuration = null,
         string section = "Mapping:AutoMapper")
-        where T : AutoMapper.Profile
+        where T : Profile
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
@@ -139,7 +139,7 @@ public static class ServiceCollectionExtensions
         this MappingBuilderContext context,
         MapsterConfiguration configuration = null,
         string section = "Mapping:Mapster")
-        where T : Mapster.IRegister
+        where T : IRegister
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
@@ -191,7 +191,7 @@ public static class ServiceCollectionExtensions
 
         configuration ??= context.Configuration?.GetSection(section)?.Get<MapsterConfiguration>() ?? new MapsterConfiguration();
 
-        var adapterConfiguration = new Mapster.TypeAdapterConfig();
+        var adapterConfiguration = new TypeAdapterConfig();
         adapterConfiguration.Scan(assemblies.ToArray());
 
         return context.WithMapster(adapterConfiguration, configuration, section);
@@ -199,7 +199,7 @@ public static class ServiceCollectionExtensions
 
     public static MapsterBuilderContext WithMapster(
         this MappingBuilderContext context,
-        Mapster.TypeAdapterConfig adapterConfiguration,
+        TypeAdapterConfig adapterConfiguration,
         MapsterConfiguration configuration = null,
         string section = "Mapping:Mapster")
     {

@@ -1,20 +1,23 @@
-﻿@using System.Net.Http
+﻿@using System.Globalization
+@using System.Net.Http
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.Extensions.Localization
 @using Microsoft.JSInterop
-@using MudBlazor
 @using Humanizer
+@using MudBlazor
+@using MudBlazor.Services
+
 @using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client
-@using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client.Components.Layout
-@using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client.Components.Layout.Resources
+@using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client.Resources
 
 @inject ISnackbar snackbar
 @inject IDialogService dialogService
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager

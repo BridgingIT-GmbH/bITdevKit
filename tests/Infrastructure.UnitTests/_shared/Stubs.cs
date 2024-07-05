@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
-using global::AutoMapper;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

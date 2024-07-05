@@ -50,7 +50,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(entityMapper, nameof(entityMapper));
 
-        services.TryAddSingleton<IEntityMapper>(entityMapper);
+        services.TryAddSingleton(entityMapper);
 
         switch (lifetime)
         {
@@ -103,7 +103,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(entityMapper, nameof(entityMapper));
 
-        services.TryAddSingleton<IEntityMapper>(entityMapper);
+        services.TryAddSingleton(entityMapper);
 
         switch (lifetime)
         {

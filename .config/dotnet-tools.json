@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "nswag.consolecore": {
+      "version": "14.0.8",
+      "commands": [
+        "nswag"
+      ],
+      "rollForward": false
+    },
+    "microsoft.dotnet-openapi": {
+      "version": "8.0.6",
+      "commands": [
+        "dotnet-openapi"
+      ],
+      "rollForward": false
+    }
+  }
+}

@@ -31,6 +31,7 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="MudBlazor" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Enrichers.Environment" />
     <PackageReference Include="Serilog.Enrichers.ShortTypeName" />
@@ -54,6 +55,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj" />
     <ProjectReference Include="..\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj" />
+    <ProjectReference Include="..\WeatherForecast.Presentation.Web.Client\WeatherForecast.Presentation.Web.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

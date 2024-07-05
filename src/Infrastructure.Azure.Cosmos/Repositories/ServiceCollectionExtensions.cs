@@ -56,7 +56,7 @@ public static partial class ServiceCollectionExtensions
                 break;
         }
 
-        return services.AddCosmosSqlRepository<TEntity>(provider: null, idGenerator, lifetime);
+        return services.AddCosmosSqlRepository(provider: null, idGenerator, lifetime);
     }
 
     public static RepositoryBuilderContext<TEntity> AddCosmosSqlRepository<TEntity>(
@@ -73,7 +73,7 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 if (provider != null)
                 {
-                    services.TryAddSingleton<ICosmosSqlProvider<TEntity>>(sp => provider);
+                    services.TryAddSingleton(sp => provider);
                 }
 
                 services.TryAddSingleton<IGenericRepository<TEntity>>(sp =>
@@ -85,7 +85,7 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Transient:
                 if (provider != null)
                 {
-                    services.TryAddTransient<ICosmosSqlProvider<TEntity>>(sp => provider);
+                    services.TryAddTransient(sp => provider);
                 }
 
                 services.TryAddTransient<IGenericRepository<TEntity>>(sp =>
@@ -97,7 +97,7 @@ public static partial class ServiceCollectionExtensions
             default:
                 if (provider != null)
                 {
-                    services.TryAddScoped<ICosmosSqlProvider<TEntity>>(sp => provider);
+                    services.TryAddScoped(sp => provider);
                 }
 
                 services.TryAddScoped<IGenericRepository<TEntity>>(sp =>
@@ -124,7 +124,7 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.TryAddSingleton<ICosmosSqlProvider<TEntity>>(providerFactory);
+                services.TryAddSingleton(providerFactory);
                 services.TryAddSingleton<IGenericRepository<TEntity>>(sp =>
                     new CosmosSqlGenericRepository<TEntity>(o => o
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -132,7 +132,7 @@ public static partial class ServiceCollectionExtensions
                         .IdGenerator(idGenerator)));
                 break;
             case ServiceLifetime.Transient:
-                services.TryAddTransient<ICosmosSqlProvider<TEntity>>(providerFactory);
+                services.TryAddTransient(providerFactory);
                 services.TryAddTransient<IGenericRepository<TEntity>>(sp =>
                     new CosmosSqlGenericRepository<TEntity>(o => o
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -140,7 +140,7 @@ public static partial class ServiceCollectionExtensions
                         .IdGenerator(idGenerator)));
                 break;
             default:
-                services.TryAddScoped<ICosmosSqlProvider<TEntity>>(providerFactory);
+                services.TryAddScoped(providerFactory);
                 services.TryAddScoped<IGenericRepository<TEntity>>(sp =>
                     new CosmosSqlGenericRepository<TEntity>(o => o
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())

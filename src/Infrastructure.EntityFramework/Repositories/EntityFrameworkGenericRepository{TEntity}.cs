@@ -101,7 +101,7 @@ public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to Enti
         {
             foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
             {
-                this.Logger.LogDebug("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                this.Logger.LogTrace("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
             }
 
             await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();

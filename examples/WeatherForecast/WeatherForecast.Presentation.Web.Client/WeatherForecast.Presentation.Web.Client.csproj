@@ -4,17 +4,48 @@
     <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client</RootNamespace>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
+
+  <!-- API Client generation (openapi2csclient) -->
+  <PropertyGroup>
+    <ApiSpecGenerate>true</ApiSpecGenerate> <!--$(BuildingInsideVisualStudio)-->
+    <ApiSpecLocation>..\WeatherForecast.Presentation.Web.Server\wwwroot\swagger.json</ApiSpecLocation>
+    <ApiClientClassName>ApiClient</ApiClientClassName>
+    <ApiClientNamespace>BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client</ApiClientNamespace>
+    <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
+      <NSwagGenerateExceptionClasses>false</NSwagGenerateExceptionClasses>
+      <Options>/GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase</Options>
+    </OpenApiReference>
+  </ItemGroup>
+  <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:ApiClient /namespace:$(RootNamespace) /output:$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+    </Exec>
+  </Target>-->
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="Microsoft.Extensions.Localization" />
     <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSwag.ApiDescription.Client">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" />
   </ItemGroup>
 
@@ -24,17 +55,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Components\Layout\Resources\Global.Designer.cs">
+    <Compile Update="Resources\Global.Designer.cs">
+      <DependentUpon>Global.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Global.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Components\Layout\Resources\Global.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+    <EmbeddedResource Update="Resources\Global.resx">
       <LastGenOutput>Global.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 

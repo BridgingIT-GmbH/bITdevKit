@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
 
 [Obsolete("Use GenericRepositoryTracingBehavior instead")]
 public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEntity> inner) : RepositoryTracingBehavior<TEntity>(inner)

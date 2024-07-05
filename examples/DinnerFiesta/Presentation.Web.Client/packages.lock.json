@@ -109,13 +109,13 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[6.20.0, )",
-        "resolved": "6.20.0",
-        "contentHash": "2MqW/E1OLszSqDhW06rpRTN4OpIRJU0iVzeiZLPzymckrKJH1Hg09St+O3kaEnsbXRcjcdM9iE5cSKzCgxvySQ==",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "kkCo95dUksJg/OA17OZnU0tiahc6/mxYdbD0aVxXJGiq+YgdhGIOQcl33teDQWT9c6/2w/4tca+mDXK+CFzikg==",
         "dependencies": {
-          "Microsoft.AspNetCore.Components": "8.0.3",
-          "Microsoft.AspNetCore.Components.Web": "8.0.3",
-          "Microsoft.Extensions.Localization": "8.0.3"
+          "Microsoft.AspNetCore.Components": "8.0.6",
+          "Microsoft.AspNetCore.Components.Web": "8.0.6",
+          "Microsoft.Extensions.Localization": "8.0.6"
         }
       },
       "StyleCop.Analyzers": {
@@ -1082,7 +1082,7 @@
       },
       "Polly": {
         "type": "CentralTransitive",
-        "requested": "[8.4.0, )",
+        "requested": "[8.4.1, )",
         "resolved": "7.2.4",
         "contentHash": "bw00Ck5sh6ekduDE3mnCo1ohzuad946uslCDEENu3091+6UKnBuKLo4e+yaNcCzXxOZCXWY2gV4a35+K1d4LDA=="
       },

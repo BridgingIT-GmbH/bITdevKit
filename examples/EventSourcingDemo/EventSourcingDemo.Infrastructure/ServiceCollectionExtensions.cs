@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
             new PersonOverviewRepository(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .DbContext(sp.GetRequiredService<EventSourcingDemoDbContext>())
-                .Mapper(new AutoMapperEntityMapper(sp.GetService<global::AutoMapper.IMapper>()))));
+                .Mapper(new AutoMapperEntityMapper(sp.GetService<AutoMapper.IMapper>()))));
         return services;
     }
 }

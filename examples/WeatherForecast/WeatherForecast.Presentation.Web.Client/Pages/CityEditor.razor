@@ -1,15 +1,15 @@
-﻿@inject IStringLocalizer<Global> Localizer
+﻿@inject IStringLocalizer<Global> localizer
 
 <MudDialog>
 	<DialogContent>
-		<MudTextField Label="@Localizer["Label_CityName"]" @bind-Value="Model.Name"></MudTextField>
-		<MudTextField Label="@Localizer["Label_CountryName"]" @bind-Value="Model.Country"></MudTextField>
-		<MudNumericField Label="@Localizer["Label_Longitude"]" @bind-Value="Model.Longitude" Format="F6"></MudNumericField>
-		<MudNumericField Label="@Localizer["Label_.Latitude"]" @bind-Value="Model.Latitude" Format="F6"></MudNumericField>
+		<MudTextField Label="@localizer["Label_CityName"]" @bind-Value="Model.Name"></MudTextField>
+		<MudTextField Label="@localizer["Label_CountryName"]" @bind-Value="Model.Country"></MudTextField>
+		<MudNumericField Label="@localizer["Label_Longitude"]" @bind-Value="Model.Longitude" Format="F6"></MudNumericField>
+		<MudNumericField Label="@localizer["Label_.Latitude"]" @bind-Value="Model.Latitude" Format="F6"></MudNumericField>
 	</DialogContent>
 	<DialogActions>
-		 <MudButton OnClick="OnCancel">@Localizer["Button_Cancel"]</MudButton>
-		 <MudButton OnClick="OnOk" Color="Color.Primary">@Localizer["Button_Ok"]</MudButton>
+		 <MudButton OnClick="OnCancel">@localizer["Button_Cancel"]</MudButton>
+		 <MudButton OnClick="OnOk" Color="Color.Primary">@localizer["Button_Ok"]</MudButton>
 	</DialogActions>
 </MudDialog>
 

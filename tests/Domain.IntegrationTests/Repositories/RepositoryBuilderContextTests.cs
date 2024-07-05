@@ -14,7 +14,7 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
         {
             s.AddMediatR();
 
-            s.AddInMemoryRepository<StubEntity>(
+            s.AddInMemoryRepository(
             new InMemoryContext<StubEntity>(new[]
                 {
                     new StubEntity() { FirstName = "John" },

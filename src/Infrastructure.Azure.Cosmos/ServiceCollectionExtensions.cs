@@ -71,15 +71,15 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton<CosmosClient>(sp =>
+                services.AddSingleton(sp =>
                     client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient<CosmosClient>(sp =>
+                services.AddTransient(sp =>
                     client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
                 break;
             default:
-                services.AddScoped<CosmosClient>(sp =>
+                services.AddScoped(sp =>
                     client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
                 break;
         }

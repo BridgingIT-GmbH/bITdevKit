@@ -42,15 +42,15 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton<BlobServiceClient>(sp =>
+                services.AddSingleton(sp =>
                     serviceClient ?? new BlobServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient<BlobServiceClient>(sp =>
+                services.AddTransient(sp =>
                     serviceClient ?? new BlobServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
             default:
-                services.AddScoped<BlobServiceClient>(sp =>
+                services.AddScoped(sp =>
                     serviceClient ?? new BlobServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
         }
@@ -88,15 +88,15 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton<TableServiceClient>(sp =>
+                services.AddSingleton(sp =>
                     serviceClient ?? new TableServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient<TableServiceClient>(sp =>
+                services.AddTransient(sp =>
                     serviceClient ?? new TableServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
             default:
-                services.AddScoped<TableServiceClient>(sp =>
+                services.AddScoped(sp =>
                     serviceClient ?? new TableServiceClient(options.ConnectionString, options.ClientOptions));
                 break;
         }

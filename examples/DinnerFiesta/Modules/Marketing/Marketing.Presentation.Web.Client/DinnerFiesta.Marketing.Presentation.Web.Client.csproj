@@ -24,7 +24,7 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
-  <!-- NSwag tool API Client generation (openapi2csclient) -->
+  <!-- API Client generation (openapi2csclient) -->
   <PropertyGroup>
     <ApiSpecGenerate>true</ApiSpecGenerate>
     <!--$(BuildingInsideVisualStudio)-->
@@ -35,7 +35,7 @@
     <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
   </PropertyGroup>
   <Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientOutputDirectory)\$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
-    <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:$(ApiClientClassName) /namespace:$(ApiClientNamespace) /output:$(ApiClientOutputDirectory)\$(ApiClientClassName).cs /GenerateClientInterfaces:true /ExceptionClass:ApiException /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
+    <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:$(ApiClientClassName) /namespace:$(ApiClientNamespace) /output:$(ApiClientOutputDirectory)\$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
       <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
     </Exec>
   </Target>

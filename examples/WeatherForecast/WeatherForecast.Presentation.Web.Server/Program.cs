@@ -1,8 +1,9 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+#pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -14,17 +15,18 @@ using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
+using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client.Pages;
+using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server;
+using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using MudBlazor.Services;
 using NSwag;
-using NSwag.AspNetCore;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using OpenTelemetry;
@@ -32,6 +34,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+#pragma warning restore SA1200 // Using directives should be placed correctly
 
 // ===============================================================================================
 // Create the webhost
@@ -81,12 +84,12 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
-    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-                                                         //.WithTask(sp =>
-                                                         //    new SqlServerQuartzSeederStartupTask(
-                                                         //        sp.GetRequiredService<ILoggerFactory>(),
-                                                         //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-                                                         //        "[dbo].QRTZ444_"))
+    //.WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    //.WithTask(sp =>
+    //    new SqlServerQuartzSeederStartupTask(
+    //        sp.GetRequiredService<ILoggerFactory>(),
+    //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+    //        "[dbo].QRTZ444_"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>()
     //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
     .WithBehavior<RetryStartupTaskBehavior>()
@@ -118,9 +121,13 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 //builder.Services.AddExceptionHandler();
 //builder.Services.AddProblemDetails();
 
-builder.Services.AddRazorPages();
-builder.Services.AddSignalR();
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddLocalization();
+builder.Services.AddMudServices();
+builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
@@ -134,44 +141,32 @@ builder.Services.AddOpenTelemetry()
 // ===============================================================================================
 // Configure the HTTP request pipeline
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
 
+//app.UseResponseCompression();
+app.UseHttpsRedirection();
+
 app.UseProblemDetails();
 //app.UseExceptionHandler();
-app.UseRouting();
 
 app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
 
 app.UseOpenApi();
-app.UseSwaggerUi(ConfigureSwaggerUi);
+app.UseSwaggerUi();
 
-//app.UseResponseCompression();
-app.UseHttpsRedirection();
-
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    ContentTypeProvider = CreateContentTypeProvider(),
-    OnPrepareResponse = context =>
-    {
-        if (context.Context.Response.ContentType == ContentType.YAML.MimeType()) // Disable caching for yaml (OpenAPI) files
-        {
-            context.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
-            context.Context.Response.Headers.Expires = "-1";
-            context.Context.Response.Headers.Pragma = "no-cache";
-        }
-    }
-});
+app.UseStaticFiles();
+app.UseAntiforgery();
 
 app.UseModules();
 
@@ -184,12 +179,16 @@ if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
 }
 
 app.MapModules();
-app.MapRazorPages();
 app.MapControllers();
 app.MapEndpoints();
 app.MapHealthChecks();
-app.MapFallbackToFile("index.html");
-//app.MapHub<SignalRHub>("/signalrhub");
+
+app.MapRazorComponents<App>()
+    .AddInteractiveWebAssemblyRenderMode()
+    //.AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(Counter).Assembly);
+
+app.MapHub<NotificationHub>("/signalrhub");
 
 app.Run();
 
@@ -338,25 +337,6 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
     settings.OperationProcessors.Add(new AuthorizeRolesSummaryOperationProcessor());
     settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
     settings.OperationProcessors.Add(new AuthorizationOperationProcessor("bearer"));
-}
-
-void ConfigureSwaggerUi(SwaggerUiSettings settings)
-{
-    settings.CustomStylesheetPath = "css/swagger.css";
-    settings.SwaggerRoutes.Add(new SwaggerUiRoute("All (generated)", "/swagger/generated/swagger.json")); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
-
-    foreach (var module in ModuleExtensions.Modules.SafeNull().Where(m => m.Enabled))
-    {
-        settings.SwaggerRoutes.Add(
-            new SwaggerUiRoute(module.Name, $"/openapi/{module.Name}-OpenAPI.yaml"));
-    }
-}
-
-static FileExtensionContentTypeProvider CreateContentTypeProvider()
-{
-    var provider = new FileExtensionContentTypeProvider();
-    provider.Mappings.Add(".yaml", ContentType.YAML.MimeType());
-    return provider;
 }
 
 public partial class Program

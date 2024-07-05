@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
 
 [Obsolete("Use GenericRepositoryCancellationBehavior instead")]
 public class GenericRepositoryCancellationDecorator<TEntity>(IGenericRepository<TEntity> inner) : RepositoryCancellationBehavior<TEntity>(inner)

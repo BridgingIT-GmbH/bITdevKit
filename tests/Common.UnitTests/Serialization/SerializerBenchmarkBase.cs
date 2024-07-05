@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
-using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 
 [MemoryDiagnoser]

@@ -170,7 +170,7 @@ public static class ModuleExtensions
             return default;
         }
 
-        return services.Configure<TOptions>(configuration, module, validationOptions, validateOnStart);
+        return services.Configure(configuration, module, validationOptions, validateOnStart);
     }
 
     public static TOptions Configure<TOptions, TValidator>(

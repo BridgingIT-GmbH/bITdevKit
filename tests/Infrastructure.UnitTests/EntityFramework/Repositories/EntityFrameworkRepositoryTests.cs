@@ -11,7 +11,7 @@ using System.Transactions;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using BridgingIT.DevKit.Infrastructure.Mapping;
-using global::AutoMapper;
+using AutoMapper;
 
 [UnitTest("Infrastructure")]
 public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : IClassFixture<TestDbContextFixture>

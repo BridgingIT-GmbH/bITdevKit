@@ -32,16 +32,4 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options)
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // TODO: seed some data here
-
-        base.OnModelCreating(modelBuilder);
-    }
-
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    optionsBuilder.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
-    //}
 }

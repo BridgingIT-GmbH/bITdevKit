@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Mapping;
 
-using global::Mapster;
+using Mapster;
 
 [UnitTest("Common")]
 public class MapsterMapperTests

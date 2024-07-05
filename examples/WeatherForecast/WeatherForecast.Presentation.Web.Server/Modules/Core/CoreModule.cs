@@ -79,7 +79,7 @@ public class CoreModule : WebModuleBase
             .WithDatabaseMigratorService();
 
         // City repository
-        services.AddInMemoryRepository<City>(new InMemoryContext<City>(new[]
+        services.AddInMemoryRepository(new InMemoryContext<City>(new[]
                 {
                     // does not trigger repo insert > domain event dispatching
                     City.Create("Berlin", "DE", 10.45, 54.033329),

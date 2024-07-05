@@ -21,7 +21,7 @@ public class MarketingMapperRegisterTests
         var config = new TypeAdapterConfig();
         config.Scan(typeof(MarketingMapperRegister).Assembly);
 
-        this.sut = new Common.MapsterMapper(config);
+        this.sut = new MapsterMapper(config);
     }
 
     [Fact]

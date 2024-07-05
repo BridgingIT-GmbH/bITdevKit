@@ -68,6 +68,6 @@ public static class ServiceCollectionExtensions
                         sp.GetRequiredService<IMediator>(),
                         projectionRequestPublishingModes, sp.GetRequiredService<IAggregateEventMediatorRequestSender>(),
                         sp.GetRequiredService<IAggregateEventMediatorNotificationSender>(),
-                        sp.GetRequiredService<IAggregateEventOutboxSender>()), sp.GetRequiredService<Microsoft.Extensions.Logging.ILoggerFactory>()));
+                        sp.GetRequiredService<IAggregateEventOutboxSender>()), sp.GetRequiredService<Logging.ILoggerFactory>()));
     }
 }

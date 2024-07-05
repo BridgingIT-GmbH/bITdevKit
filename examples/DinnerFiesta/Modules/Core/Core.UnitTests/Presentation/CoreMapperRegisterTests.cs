@@ -22,7 +22,7 @@ public class CoreMapperRegisterTests
         var config = new TypeAdapterConfig();
         config.Scan(typeof(CoreMapperRegister).Assembly);
 
-        this.sut = new Common.MapsterMapper(config);
+        this.sut = new MapsterMapper(config);
     }
 
     [Fact]

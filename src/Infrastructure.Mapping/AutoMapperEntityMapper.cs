@@ -10,8 +10,8 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Domain.Specifications;
 using EnsureThat;
-using global::AutoMapper;
-using global::AutoMapper.Extensions.ExpressionMapping;
+using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
 
 public class AutoMapperEntityMapper : IEntityMapper
 {

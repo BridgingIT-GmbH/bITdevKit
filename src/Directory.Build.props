@@ -1,6 +1,6 @@
 <Project>
 
- <PropertyGroup Condition="$(Configuration) == 'Release' AND (!$(MSBuildProjectDirectory.Contains('examples')) and !$(MSBuildProjectDirectory.Contains('Pulsar')) and !$(MSBuildProjectDirectory.Contains('tests')) and !$(MSBuildProjectDirectory.Contains('Xunit')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.EntityFramework.Sqlite')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.Azure')) and !$(MSBuildProjectDirectory.Contains('Presentation.Web')) and !$(MSBuildProjectDirectory.Contains('Tests'))) ">
+ <PropertyGroup Condition="$(Configuration) == 'Release' AND Exists('..\bIT.snk') AND (!$(MSBuildProjectDirectory.Contains('examples')) and !$(MSBuildProjectDirectory.Contains('Pulsar')) and !$(MSBuildProjectDirectory.Contains('tests')) and !$(MSBuildProjectDirectory.Contains('Xunit')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.EntityFramework.Sqlite')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.Azure')) and !$(MSBuildProjectDirectory.Contains('Presentation.Web')) and !$(MSBuildProjectDirectory.Contains('Tests'))) ">
    <SignAssembly>True</SignAssembly>
    <AssemblyOriginatorKeyFile>..\bIT.snk</AssemblyOriginatorKeyFile>
  </PropertyGroup>

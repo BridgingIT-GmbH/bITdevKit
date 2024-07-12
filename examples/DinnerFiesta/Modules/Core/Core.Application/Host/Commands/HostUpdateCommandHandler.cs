@@ -26,7 +26,7 @@ public class HostUpdateCommandHandler(
         var host = hostResult.Value;
         if (hostResult.IsFailure)
         {
-            return CommandResponse.Create(hostResult);
+            return CommandResponse.For(hostResult);
         }
 
         Check.Throw(new IBusinessRule[] { /*no rules yet*/ });

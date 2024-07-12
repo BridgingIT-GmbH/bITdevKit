@@ -16,6 +16,26 @@ public static class QueryResponse
         };
     }
 
+    public static QueryResponse<Result<TValue>> For<TValue>(Result result = null)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new QueryResponse<Result<TValue>>()
+            {
+                Result = Result<TValue>.Failure()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+            };
+        }
+
+        return new QueryResponse<Result<TValue>>()
+        {
+            Result = Result<TValue>.Success()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+        };
+    }
+
     public static QueryResponse<Result<TValue>> Success<TValue>(TValue value)
     {
         return new QueryResponse<Result<TValue>>()
@@ -48,7 +68,7 @@ public static class QueryResponse
         };
     }
 
-    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = null)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = default)
     {
         return new QueryResponse<Result<TValue>>()
         {
@@ -80,13 +100,13 @@ public static class QueryResponse
         };
     }
 
-    //public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value = default, string message = null, IResultError error = default)
-    //{
-    //    return new QueryResponse<Result<TValue>>()
-    //    {
-    //        Result = Result<TValue>.Failure(value, message).WithError(error)
-    //    };
-    //}
+    public static QueryResponse<Result<TValue>> Failure<TValue>(IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
+    {
+        return new QueryResponse<Result<TValue>>()
+        {
+            Result = Result<TValue>.Failure(messages, errors)
+        };
+    }
 
     [Obsolete]
     public static QueryResponse<Result<TValue>> Fail<TValue, TError>(TValue value = default, string message = null, IResultError error = null)

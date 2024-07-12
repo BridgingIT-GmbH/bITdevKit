@@ -25,7 +25,7 @@ public class QueryResponse<TResult>
 
     public static QueryResponse<Result<TResult>> For(Result result = null)
     {
-        if (result.IsFailure)
+        if (result?.IsFailure == true)
         {
             return new QueryResponse<Result<TResult>>()
             {

@@ -30,6 +30,11 @@ public class Result : IResult
         return new Result { IsSuccess = false };
     }
 
+    //public static Result Failure<TValue>()
+    //{
+    //    return new Result { IsSuccess = false };
+    //}
+
     public static Result Failure<TError>()
         where TError : IResultError, new()
     {

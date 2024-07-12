@@ -29,7 +29,7 @@ public class CommandResponse
             {
                 Result = Result.Failure()
                     .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                    .WithErrors(result?.Errors)
             };
         }
 
@@ -37,7 +37,7 @@ public class CommandResponse
         {
             Result = Result.Success()
                     .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                    .WithErrors(result?.Errors)
         };
     }
 
@@ -65,7 +65,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result> Fail()
+    public static CommandResponse<Result> Failure()
     {
         return new CommandResponse<Result>()
         {
@@ -73,7 +73,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result> Fail(string message, IResultError error = null)
+    public static CommandResponse<Result> Failure(string message, IResultError error = default)
     {
         return new CommandResponse<Result>()
         {
@@ -81,7 +81,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result> Fail(IEnumerable<string> messages, IEnumerable<IResultError> errors)
+    public static CommandResponse<Result> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
     {
         return new CommandResponse<Result>()
         {
@@ -89,7 +89,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result> Fail<TError>(string message = null)
+    public static CommandResponse<Result> Failure<TError>(string message = null)
         where TError : IResultError, new()
     {
         return new CommandResponse<Result>()
@@ -98,7 +98,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result> Fail<TError>(IEnumerable<string> messages = null)
+    public static CommandResponse<Result> Failure<TError>(IEnumerable<string> messages)
         where TError : IResultError, new()
     {
         return new CommandResponse<Result>()
@@ -107,7 +107,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> Create<TValue>(Result<TValue> result)
+    public static CommandResponse<Result<TValue>> For<TValue>(Result<TValue> result)
     {
         return new CommandResponse<Result<TValue>>()
         {
@@ -139,7 +139,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> Fail<TValue>(TValue value)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value)
     {
         return new CommandResponse<Result<TValue>>()
         {
@@ -147,7 +147,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> Fail<TValue>(TValue value, string message, IResultError error = null)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = default)
     {
         return new CommandResponse<Result<TValue>>()
         {
@@ -155,7 +155,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> Fail<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
     {
         return new CommandResponse<Result<TValue>>()
         {
@@ -163,7 +163,7 @@ public class CommandResponse
         };
     }
 
-    public static CommandResponse<Result<TValue>> Fail<TValue>(string message = null, IResultError error = default)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = default)
     {
         return new CommandResponse<Result<TValue>>()
         {
@@ -171,7 +171,7 @@ public class CommandResponse
         };
     }
 
-    //public static CommandResponse<Result<TValue>> Fail<TValue>(TValue value = default, string message = null, IResultError error = default)
+    //public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value = default, string message = null, IResultError error = default)
     //{
     //    return new CommandResponse<Result<TValue>>()
     //    {
@@ -179,7 +179,7 @@ public class CommandResponse
     //    };
     //}
 
-    public static CommandResponse<Result<TValue>> Fail<TValue, TError>(TValue value = default, string message = null)
+    public static CommandResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null)
         where TError : IResultError, new()
     {
         return new CommandResponse<Result<TValue>>()
@@ -205,7 +205,7 @@ public class CommandResponse<TResult>(string cancelledReason = null)
 
     public static new CommandResponse<Result<TResult>> For(Result result = null)
     {
-        if (result.IsFailure)
+        if (result?.IsFailure == true)
         {
             return new CommandResponse<Result<TResult>>()
             {

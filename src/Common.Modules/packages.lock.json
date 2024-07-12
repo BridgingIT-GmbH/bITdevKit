@@ -25,9 +25,9 @@
       },
       "Microsoft.Extensions.Configuration.Binder": {
         "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "2UKFJnLiBt7Od6nCnTqP9rTIUNhzmn9Hv1l2FchyKbz8xieB9ULwZTbQZMw+M24Qw3F5dzzH1U9PPleN0LNLOQ==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "7IQhGK+wjyGrNsPBjJcZwWAr+Wf6D4+TwOptUt77bWtgNkiV8tDEbhFS+dDamtQFZ2X7kWG9m71iZQRj2x3zgQ==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0"
         }
@@ -87,11 +87,11 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Direct",
-        "requested": "[7.6.2, )",
-        "resolved": "7.6.2",
-        "contentHash": "ySbY72MsWw7BnSZw0fCsmp/oMou8ntJkfuZUBcplV3ncXMzxcXCn3fK6Gg2YLnTT6F2G9JXl9zc2lwfVfGOWEA==",
+        "requested": "[7.6.3, )",
+        "resolved": "7.6.3",
+        "contentHash": "Qi5S6cCWXhtB4nObkBQSPU2yidPbe1td7ApcsgOK1e+FKpXY7HIIn3im9dLWVwbKQSvG63jjQG5YrJcoC51bGg==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.6.2"
+          "Microsoft.IdentityModel.Tokens": "7.6.3"
         }
       },
       "MinVer": {
@@ -124,12 +124,12 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
-        "requested": "[7.6.2, )",
-        "resolved": "7.6.2",
-        "contentHash": "dyvPIzxohovbECESKj9ep7yShujU5oN9dKYR3ivvoTM7nLANNrBC5jN9ysZfY5Hp/Xs0R1b79IsdHuu6D4xwow==",
+        "requested": "[7.6.3, )",
+        "resolved": "7.6.3",
+        "contentHash": "XUaPTViLtH/9hRWxoUWJRB4NDZTzXa/2MTw72f4YEkuXZw9uszAxKDyUgAyzq9mBhXI+y5GcDLP55HX6HM7vzw==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.6.2",
-          "Microsoft.IdentityModel.Tokens": "7.6.2"
+          "Microsoft.IdentityModel.JsonWebTokens": "7.6.3",
+          "Microsoft.IdentityModel.Tokens": "7.6.3"
         }
       },
       "System.Net.Http": {
@@ -168,9 +168,9 @@
       },
       "System.Text.Json": {
         "type": "Direct",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "hpagS9joOwv6efWfrMmV9MjQXpiXZH72PgN067Ysfr6AWMSD1/1hEcvh/U5mUpPLezEWsOJSuVrmqDIVD958iA==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "bAkhgDJ88XTsqczoxEMliSrpijKZHhbJQldhAmObj/RbrN3sU5dcokuXmWJWsdQAhiMJ9bTayWsL1C9fbbCRhw==",
         "dependencies": {
           "System.Text.Encodings.Web": "8.0.0"
         }
@@ -186,8 +186,8 @@
       },
       "MessagePack.Annotations": {
         "type": "Transitive",
-        "resolved": "2.5.168",
-        "contentHash": "SYIU9qfbVJvpi/qGoQt9bdhLzuywhx5Mx0syWbYz4V+vr3WNHkQgWok+HUDnh84BVCQlxwMZhYGBaRNN15HoxA=="
+        "resolved": "2.5.171",
+        "contentHash": "iS5Zb6uiPn3QJVL814+xWlWeH/rW+p2qPoECjOhL7RV71ppld4vDpej5rq4YrxGdLtR66zf+AQwW919sPVMWgw=="
       },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
@@ -390,23 +390,23 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "7.6.2",
-        "contentHash": "ULeyJwfYTMHOAArrBZorjPyM/BL5PFfwRzDtxlOxawO9vB/wVmHmbzZnOyHCOLJjel7XiVNmVnAs3H0jh4/9jQ=="
+        "resolved": "7.6.3",
+        "contentHash": "EycYJUD/3cZw/b6TioXOpmETjv9OX5/VRk0Tc26x6I+SxxLNxx6ymivwo2dfYeiimqg5d3k88VXnrxc7HJch6Q=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "7.6.2",
-        "contentHash": "0brV311MYxGz7Numa+pbVsxbz5tfe2nbAig1b5tQb3h/L1y5lkoPyOgD0qAfI0iX1njbwr8l9NdxIT1cDbzWKA==",
+        "resolved": "7.6.3",
+        "contentHash": "o9bF28t6WSCV3e1A856d6LRv9lotUfS6HUvyKFcOuf+5C/lAMT+XWx7/m3/1NV5WATnlfy5pEHXtha4kExi+zw==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.6.2"
+          "Microsoft.IdentityModel.Abstractions": "7.6.3"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "7.6.2",
-        "contentHash": "pLnhCq9UNKWkn83zutkObYuzA+sOzx6VZpPI8hB8gD/vAXVt14D0SJ0sKPftwufvAbYGSNRda1vw/IFLbkjxNg==",
+        "resolved": "7.6.3",
+        "contentHash": "6AED7+YFMEQAudazdnDJ/0ql60K28NORmsbCVDNuV9VcpdoDaqg817PQ2Siqf4LorYPaI2YpjeOCZekXm4GoBQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.6.2"
+          "Microsoft.IdentityModel.Logging": "7.6.3"
         }
       },
       "Microsoft.NET.StringTools": {
@@ -955,10 +955,10 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.2, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.6.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
           "System.Net.Http": "[4.3.4, )",
-          "System.Text.Json": "[8.0.3, )",
+          "System.Text.Json": "[8.0.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )"
         }
       },
@@ -968,10 +968,10 @@
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Primitives": "[8.0.0, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.2, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.6.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
           "System.Net.Http": "[4.3.4, )",
-          "System.Text.Json": "[8.0.3, )",
+          "System.Text.Json": "[8.0.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"
         }
@@ -982,10 +982,10 @@
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[8.0.1, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.2, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.6.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
           "System.Net.Http": "[4.3.4, )",
-          "System.Text.Json": "[8.0.3, )",
+          "System.Text.Json": "[8.0.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )"
         }
       },
@@ -993,12 +993,12 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
-          "MessagePack": "[2.5.168, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.2, )",
-          "Newtonsoft.Json": "[13.0.1, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.6.2, )",
+          "MessagePack": "[2.5.171, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
+          "Newtonsoft.Json": "[13.0.3, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
           "System.Net.Http": "[4.3.4, )",
-          "System.Text.Json": "[8.0.3, )",
+          "System.Text.Json": "[8.0.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"
         }
@@ -1015,14 +1015,14 @@
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[8.0.1, )",
-          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
           "NewId": "[4.0.1, )",
           "Polly": "[8.4.1, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "System.Diagnostics.DiagnosticSource": "[8.0.1, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.6.2, )",
+          "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
           "System.Net.Http": "[4.3.4, )",
-          "System.Text.Json": "[8.0.3, )",
+          "System.Text.Json": "[8.0.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )"
         }
       },
@@ -1034,11 +1034,11 @@
       },
       "MessagePack": {
         "type": "CentralTransitive",
-        "requested": "[2.5.168, )",
-        "resolved": "2.5.168",
-        "contentHash": "F2qElrtPQF9tDIcrNicsFdoELaRlXlcSXxwvX4ExH7hU6LjdeIxpgrF2o5nqaZahLbSKaqkRtOU15+gVCjNiLw==",
+        "requested": "[2.5.171, )",
+        "resolved": "2.5.171",
+        "contentHash": "eX0wTFtE4teu2iDWm/eEGqvVEeO9dqaRXu6MXu1MnhQ/wBkixEjh+1SlKaSh41LL5L7WUJlK04EBpz8FSaGOqw==",
         "dependencies": {
-          "MessagePack.Annotations": "2.5.168",
+          "MessagePack.Annotations": "2.5.171",
           "Microsoft.NET.StringTools": "17.6.3"
         }
       },
@@ -1093,9 +1093,9 @@
       },
       "Newtonsoft.Json": {
         "type": "CentralTransitive",
-        "requested": "[13.0.1, )",
-        "resolved": "13.0.1",
-        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
+        "requested": "[13.0.3, )",
+        "resolved": "13.0.3",
+        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
       },
       "Polly": {
         "type": "CentralTransitive",

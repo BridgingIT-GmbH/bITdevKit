@@ -21,7 +21,7 @@ public class CustomerFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericR
 
         if (customer is null)
         {
-            return QueryResponse.Fail<Customer, NotFoundResultError>();
+            return QueryResponse.Failure<Customer, NotFoundResultError>();
         }
 
         return QueryResponse.Success(customer);

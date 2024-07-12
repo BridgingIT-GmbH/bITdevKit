@@ -36,9 +36,10 @@ public class Result : IResult
         return new Result() { IsSuccess = false }.WithError<TError>();
     }
 
-    public static Result Failure(string message)
+    public static Result Failure(string message, IResultError error = null)
     {
-        return new Result() { IsSuccess = false }.WithMessage(message);
+        return new Result() { IsSuccess = false }
+            .WithMessage(message).WithError(error);
     }
 
     public static Result Failure<TError>(string message)
@@ -47,9 +48,10 @@ public class Result : IResult
         return new Result() { IsSuccess = false }.WithMessage(message).WithError<TError>();
     }
 
-    public static Result Failure(IEnumerable<string> messages)
+    public static Result Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
-        return new Result() { IsSuccess = false }.WithMessages(messages);
+        return new Result() { IsSuccess = false }
+            .WithMessages(messages).WithErrors(errors);
     }
 
     public static Result Failure<TError>(IEnumerable<string> messages)
@@ -90,6 +92,19 @@ public class Result : IResult
             foreach (var message in messages)
             {
                 this.WithMessage(message);
+            }
+        }
+
+        return this;
+    }
+
+    public Result WithErrors(IEnumerable<IResultError> errors)
+    {
+        if (errors is not null)
+        {
+            foreach (var error in errors)
+            {
+                this.WithError(error);
             }
         }
 
@@ -159,19 +174,22 @@ public class Result<TValue> : Result, IResult<TValue>
         return new Result<TValue> { IsSuccess = false, Value = value };
     }
 
-    public static new Result<TValue> Failure(string message)
+    public static new Result<TValue> Failure(string message, IResultError error = null)
     {
-        return new Result<TValue> { IsSuccess = false }.WithMessage(message);
+        return new Result<TValue> { IsSuccess = false }
+            .WithMessage(message).WithError(error);
     }
 
-    public static Result<TValue> Failure(TValue value, string message)
+    public static Result<TValue> Failure(TValue value, string message, IResultError error = null)
     {
-        return new Result<TValue> { IsSuccess = false, Value = value }.WithMessage(message);
+        return new Result<TValue> { IsSuccess = false, Value = value }
+            .WithMessage(message).WithError(error);
     }
 
-    public static Result<TValue> Failure(TValue value, IEnumerable<string> messages)
+    public static Result<TValue> Failure(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
-        return new Result<TValue> { IsSuccess = false, Value = value }.WithMessages(messages);
+        return new Result<TValue> { IsSuccess = false, Value = value }
+            .WithMessages(messages).WithErrors(errors);
     }
 
     public static new Result<TValue> Failure<TError>(string message)
@@ -186,9 +204,10 @@ public class Result<TValue> : Result, IResult<TValue>
         return new Result<TValue> { IsSuccess = false, Value = value }.WithMessage(message).WithError<TError>();
     }
 
-    public static new Result<TValue> Failure(IEnumerable<string> messages)
+    public static new Result<TValue> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
-        return new Result<TValue> { IsSuccess = false }.WithMessages(messages);
+        return new Result<TValue> { IsSuccess = false }
+            .WithMessages(messages).WithErrors(errors);
     }
 
     public static new Result Failure<TError>(IEnumerable<string> messages)
@@ -205,6 +224,11 @@ public class Result<TValue> : Result, IResult<TValue>
     public static new Result<TValue> Success(string message)
     {
         return new Result<TValue>().WithMessage(message);
+    }
+
+    public static new Result<TValue> Success(IEnumerable<string> messages)
+    {
+        return new Result<TValue>().WithMessages(messages);
     }
 
     public static Result<TValue> Success(TValue value)
@@ -251,6 +275,19 @@ public class Result<TValue> : Result, IResult<TValue>
         {
             this.errors.Add(error);
             this.success = false;
+        }
+
+        return this;
+    }
+
+    public new Result<TValue> WithErrors(IEnumerable<IResultError> errors)
+    {
+        if (errors is not null)
+        {
+            foreach (var error in errors)
+            {
+                this.WithError(error);
+            }
         }
 
         return this;

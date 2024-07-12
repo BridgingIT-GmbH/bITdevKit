@@ -19,7 +19,6 @@
   </PropertyGroup>
   <ItemGroup Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
-      <NSwagGenerateExceptionClasses>false</NSwagGenerateExceptionClasses>
       <Options>/GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase</Options>
     </OpenApiReference>
   </ItemGroup>

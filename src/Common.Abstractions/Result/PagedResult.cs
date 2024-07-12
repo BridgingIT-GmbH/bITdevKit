@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using System;
 using System.Collections.Generic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class PagedResult<TValue> : Result<IEnumerable<TValue>>
 {
@@ -47,14 +48,16 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
         return new PagedResult<TValue>(default) { success = false }.WithError<TError>();
     }
 
-    public static new PagedResult<TValue> Failure(string message)
+    public static new PagedResult<TValue> Failure(string message, IResultError error = null)
     {
-        return Failure().WithMessage(message);
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessage(message).WithError(error);
     }
 
-    public static new PagedResult<TValue> Failure(IEnumerable<string> messages)
+    public static new PagedResult<TValue> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors)
     {
-        return Failure().WithMessages(messages);
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessages(messages).WithErrors(errors);
     }
 
     public static PagedResult<TValue> Success(IEnumerable<TValue> value, long count = 0, int page = 1, int pageSize = 10)
@@ -111,6 +114,19 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     {
         this.WithError(Activator.CreateInstance<TError>());
         this.success = false;
+
+        return this;
+    }
+
+    public new PagedResult<TValue> WithErrors(IEnumerable<IResultError> errors)
+    {
+        if (errors is not null)
+        {
+            foreach (var error in errors)
+            {
+                this.WithError(error);
+            }
+        }
 
         return this;
     }

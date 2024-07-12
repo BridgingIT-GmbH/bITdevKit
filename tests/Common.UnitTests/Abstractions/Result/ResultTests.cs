@@ -13,7 +13,7 @@ using Xunit;
 public class ResultTests
 {
     [Fact]
-    public void Fail_WithNoArguments_ReturnsFailedResult()
+    public void Failure_WithNoArguments_ReturnsFailedResult()
     {
         // Arrange
         // Act
@@ -28,7 +28,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_WithError_ReturnsFailedResult()
+    public void Failure_WithError_ReturnsFailedResult()
     {
         // Arrange
         // Act
@@ -43,7 +43,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_WithMessage_ReturnsFailedResultWithMessage()
+    public void Failure_WithMessage_ReturnsFailedResultWithMessage()
     {
         // Arrange
         const string message = "Something went wrong";
@@ -57,7 +57,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_WithMessages_ReturnsFailedResultWithMessages()
+    public void Failure_WithMessages_ReturnsFailedResultWithMessages()
     {
         // Arrange
         var messages = new List<string> { "Something went wrong", "Try again later" };
@@ -98,7 +98,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_ValueWithNoArguments_ReturnsFailedResult()
+    public void Failure_ValueWithNoArguments_ReturnsFailedResult()
     {
         // Arrange
         // Act
@@ -113,7 +113,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_ValueWithError_ReturnsFailedResult()
+    public void Failure_ValueWithError_ReturnsFailedResult()
     {
         // Arrange
         // Act
@@ -128,7 +128,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_ValueWithMessage_ReturnsFailedResultWithMessage()
+    public void Failure_ValueWithMessage_ReturnsFailedResultWithMessage()
     {
         // Arrange
         const string message = "Something went wrong";
@@ -142,7 +142,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Fail_ValueWithMessages_ReturnsFailedResultWithMessages()
+    public void Failure_ValueWithMessages_ReturnsFailedResultWithMessages()
     {
         // Arrange
         var messages = new List<string> { "Something went wrong", "Try again later" };

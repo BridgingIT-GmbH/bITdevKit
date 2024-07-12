@@ -16,7 +16,7 @@ The tools manifest can be found [here](../../../.config/dotnet-tools.json)
 ### Start the web project
 - `dotnet run --project '.\examples\WeatherForecast\WeatherForecast.Presentation.Web.Server\WeatherForecast.Presentation.Web.Server.csproj'`
 
-### Generate the swagger file
+### Update the swagger file
 - `dotnet nswag run '.\examples\WeatherForecast\WeatherForecast.Presentation.Web.Server\nswag.json'`
 
 Rebuild the solution and the ApiClient should be updated. For details see the OpenApiReference target in the Client project.

@@ -26,6 +26,8 @@ public interface IResult
 
     Result WithMessages(IEnumerable<string> messages);
 
+    Result WithErrors(IEnumerable<IResultError> errors);
+
     bool HasError();
 
     bool HasError<TError>()

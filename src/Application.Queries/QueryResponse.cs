@@ -40,7 +40,7 @@ public static class QueryResponse
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(TValue value)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value)
     {
         return new QueryResponse<Result<TValue>>()
         {
@@ -48,52 +48,62 @@ public static class QueryResponse
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(TValue value, string message)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = null)
     {
         return new QueryResponse<Result<TValue>>()
         {
-            Result = Result<TValue>.Failure(value, message)
+            Result = Result<TValue>.Failure(value, message, error)
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(TValue value, IEnumerable<string> messages)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
         return new QueryResponse<Result<TValue>>()
         {
-            Result = Result<TValue>.Failure(value, messages)
+            Result = Result<TValue>.Failure(value, messages, errors)
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(string message)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(string message)
     {
         return new QueryResponse<Result<TValue>>()
         {
-            Result = Result<TValue>.Failure(message)
+            Result = Result<TValue>.Failure(message, null)
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(IResultError error = default, string message = null)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = default)
     {
         return new QueryResponse<Result<TValue>>()
         {
-            Result = Result<TValue>.Failure(message).WithError(error)
+            Result = Result<TValue>.Failure(message, error)
         };
     }
 
-    public static QueryResponse<Result<TValue>> Fail<TValue>(TValue value = default, IResultError error = default, string message = null)
-    {
-        return new QueryResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure(value, message).WithError(error)
-        };
-    }
+    //public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value = default, string message = null, IResultError error = default)
+    //{
+    //    return new QueryResponse<Result<TValue>>()
+    //    {
+    //        Result = Result<TValue>.Failure(value, message).WithError(error)
+    //    };
+    //}
 
-    public static QueryResponse<Result<TValue>> Fail<TValue, TError>(TValue value = default, string message = null)
+    [Obsolete]
+    public static QueryResponse<Result<TValue>> Fail<TValue, TError>(TValue value = default, string message = null, IResultError error = null)
         where TError : IResultError, new()
     {
         return new QueryResponse<Result<TValue>>()
         {
-            Result = Result<TValue>.Failure<TError>(value, message)
+            Result = Result<TValue>.Failure<TError>(value, message).WithError(error)
+        };
+    }
+
+    public static QueryResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null, IResultError error = null)
+        where TError : IResultError, new()
+    {
+        return new QueryResponse<Result<TValue>>()
+        {
+            Result = Result<TValue>.Failure<TError>(value, message).WithError(error)
         };
     }
 }

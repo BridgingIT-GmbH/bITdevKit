@@ -4,6 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Queries;
+using BridgingIT.DevKit.Common;
+
 public class QueryResponse<TResult>
 {
     public QueryResponse(string cancelledReason = null)
@@ -20,6 +22,26 @@ public class QueryResponse<TResult>
     public string CancelledReason { get; private set; }
 
     public TResult Result { get; set; }
+
+    public static QueryResponse<Result<TResult>> For(Result result = null)
+    {
+        if (result.IsFailure)
+        {
+            return new QueryResponse<Result<TResult>>()
+            {
+                Result = Result<TResult>.Failure()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+            };
+        }
+
+        return new QueryResponse<Result<TResult>>()
+        {
+            Result = Result<TResult>.Success()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+        };
+    }
 
     public void SetCancelled(string cancelledReason)
     {

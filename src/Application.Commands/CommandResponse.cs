@@ -115,6 +115,46 @@ public class CommandResponse
         };
     }
 
+    public static CommandResponse<Result<TResult>> For<TValue, TResult>(Result<TValue> result)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new CommandResponse<Result<TResult>>()
+            {
+                Result = Result<TResult>.Failure()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+            };
+        }
+
+        return new CommandResponse<Result<TResult>>()
+        {
+            Result = Result<TResult>.Success()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+        };
+    }
+
+    public static CommandResponse<Result<TValue>> For<TValue>(Result result)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new CommandResponse<Result<TValue>>()
+            {
+                Result = Result<TValue>.Failure()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+            };
+        }
+
+        return new CommandResponse<Result<TValue>>()
+        {
+            Result = Result<TValue>.Success()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+        };
+    }
+
     public static CommandResponse<Result<TValue>> Success<TValue>(TValue value)
     {
         return new CommandResponse<Result<TValue>>()
@@ -203,7 +243,7 @@ public class CommandResponse<TResult>(string cancelledReason = null)
 {
     public TResult Result { get; set; }
 
-    public static new CommandResponse<Result<TResult>> For(Result result = null)
+    public static new CommandResponse<Result<TResult>> For(Result result)
     {
         if (result?.IsFailure == true)
         {

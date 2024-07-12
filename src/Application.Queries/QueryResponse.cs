@@ -16,7 +16,27 @@ public static class QueryResponse
         };
     }
 
-    public static QueryResponse<Result<TValue>> For<TValue>(Result result = null)
+    public static QueryResponse<Result<TResult>> For<TValue, TResult>(Result<TValue> result)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new QueryResponse<Result<TResult>>()
+            {
+                Result = Result<TResult>.Failure()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+            };
+        }
+
+        return new QueryResponse<Result<TResult>>()
+        {
+            Result = Result<TResult>.Success()
+                    .WithMessages(result?.Messages)
+                    .WithErrors(result?.Errors),
+        };
+    }
+
+    public static QueryResponse<Result<TValue>> For<TValue>(Result result)
     {
         if (result?.IsFailure == true)
         {

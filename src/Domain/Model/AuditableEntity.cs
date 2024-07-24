@@ -13,6 +13,7 @@ public abstract class AuditableEntity<TId> : Entity<TId>, IAuditable
     public AuditState AuditState { get; set; } = new();
 }
 
+//[Obsolete("Just use AuditableEntity<TId> from now on")]
 [DebuggerDisplay("Type={GetType().Name}, Id={Id}")]
 public abstract class AuditableEntity<TId, TIdType> : AuditableEntity<TId>
     where TId : EntityId<TIdType>

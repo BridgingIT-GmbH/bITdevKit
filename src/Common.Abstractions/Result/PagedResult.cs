@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Common;
 
 using System;
 using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class PagedResult<TValue> : Result<IEnumerable<TValue>>
 {

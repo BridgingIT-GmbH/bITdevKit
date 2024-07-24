@@ -16,7 +16,7 @@ public static class AssemblyExtensions
     {
         if (assemblies is null)
         {
-            return[];
+            return [];
         }
 
         return assemblies.SelectMany(SafeGetTypes);
@@ -26,7 +26,7 @@ public static class AssemblyExtensions
     {
         if (assembly is null)
         {
-            return[];
+            return [];
         }
 
         try
@@ -53,7 +53,7 @@ public static class AssemblyExtensions
     {
         if (assemblies is null || @interface is null)
         {
-            return[];
+            return [];
         }
 
         return assemblies.SelectMany(t => SafeGetTypes(t, @interface));
@@ -63,7 +63,7 @@ public static class AssemblyExtensions
     {
         if (assembly is null || @interface is null)
         {
-            return[];
+            return [];
         }
 
         try

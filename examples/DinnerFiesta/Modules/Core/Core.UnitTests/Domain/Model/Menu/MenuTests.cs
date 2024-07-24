@@ -14,7 +14,7 @@ public class MenuTests
     public void Create_ShouldCreateNewAggregate_WithDefaults()
     {
         // Arrange
-        var hostId = HostId.CreateUnique();
+        var hostId = HostId.Create();
         var name = "Test Menu";
         var description = "A test menu";
         var expectedAverageRating = AverageRating.Create();
@@ -36,7 +36,7 @@ public class MenuTests
     public void Create_ShouldCreateNewAggregate_WithSections()
     {
         // Arrange
-        var hostId = HostId.CreateUnique();
+        var hostId = HostId.Create();
         var name = "Test Menu";
         var description = "A test menu";
         var sections = new List<MenuSection>

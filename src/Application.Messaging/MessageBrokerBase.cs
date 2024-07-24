@@ -25,8 +25,8 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
         this.HandlerFactory = handlerFactory;
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
-        this.PublisherBehaviors = publisherBehaviors ??[];
-        this.HandlerBehaviors = handlerBehaviors ??[];
+        this.PublisherBehaviors = publisherBehaviors ?? [];
+        this.HandlerBehaviors = handlerBehaviors ?? [];
     }
 
     protected ILogger Logger { get; }

@@ -59,7 +59,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
 
     public virtual IEnumerable<IEntityCreateCommandRule<TEntity>> AddRules(TCommand command)
     {
-        return[];
+        return [];
     }
 
     public override async Task<CommandResponse<Result<EntityCreatedCommandResult>>> Process(

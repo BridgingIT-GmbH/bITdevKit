@@ -9,11 +9,12 @@ using System;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.Azure.Cosmos.Repositories;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Constants = Constants;
 
 public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
     where TContext : DbContext, IOutboxMessageContext
@@ -52,7 +53,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
         await (await context.OutboxMessages
             .Where(e => e.ProcessedDate == null)
-            .WhereIf(e => e.MessageId == messageId, !string.IsNullOrEmpty(messageId))
+            .WhereExpressionIf(e => e.MessageId == messageId, !string.IsNullOrEmpty(messageId)) //!
             .OrderBy(e => e.CreatedDate)
             .Take(this.options.ProcessingCount).ToListAsync(cancellationToken: cancellationToken)).SafeNull()
             .Where(e => !e.Type.IsNullOrEmpty()).ForEachAsync(async (m) =>

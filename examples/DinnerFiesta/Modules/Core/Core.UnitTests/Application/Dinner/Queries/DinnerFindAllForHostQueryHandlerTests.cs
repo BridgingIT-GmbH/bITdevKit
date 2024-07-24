@@ -25,7 +25,7 @@ public class DinnerFindAllForHostQueryHandlerTests
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
-        var hostId = HostId.CreateUnique();
+        var hostId = HostId.Create();
         var dinners = Stubs.Dinners(ticks).Take(2);
         var repository = Substitute.For<IGenericRepository<Dinner>>();
         repository.FindAllAsync(

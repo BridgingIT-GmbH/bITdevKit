@@ -58,6 +58,13 @@ public class DatabaseCreatorService<TContext> : IHostedService
             //this.logger.LogDebug("{LogKey} database creator initializing (context={DbContextType})", Constants.LogKey, contextName);
             using var scope = this.serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+            if (this.options.LogModel)
+            {
+                // https://learn.microsoft.com/en-us/ef/core/modeling/#debug-view
+                this.logger.LogDebug(context.Model.ToDebugString());
+            }
+
             if (!this.IsInMemoryContext(context))
             {
                 this.logger.LogDebug("{LogKey} database creator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);

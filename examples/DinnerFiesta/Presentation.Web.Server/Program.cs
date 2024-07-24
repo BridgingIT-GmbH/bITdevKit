@@ -84,11 +84,11 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-    //.WithTask(sp =>
-    //    new SqlServerQuartzSeederStartupTask(
-    //        sp.GetRequiredService<ILoggerFactory>(),
-    //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-    //        "[dbo].QRTZ444_"))
+                                                         //.WithTask(sp =>
+                                                         //    new SqlServerQuartzSeederStartupTask(
+                                                         //        sp.GetRequiredService<ILoggerFactory>(),
+                                                         //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+                                                         //        "[dbo].QRTZ444_"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>()
     //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
     .WithBehavior<RetryStartupTaskBehavior>()

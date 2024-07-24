@@ -14,6 +14,8 @@ public class DatabaseMigratorOptions : OptionsBase
 
     public TimeSpan StartupDelay { get; set; } = TimeSpan.Zero;
 
+    public bool LogModel { get; set; }
+
     public bool EnsureDeleted { get; set; }
 
     public bool EnsureTruncated { get; set; }

@@ -26,7 +26,7 @@ public class RequestLoggingMiddleware
     private const string ElapsedKey = "TimeElapsed";
     private const string ClientIPKey = "ClientIP";
     private const string UserAgentKey = "UserAgent";
-    private static readonly LogEventProperty[] NoProperties =[];
+    private static readonly LogEventProperty[] NoProperties = [];
     private readonly RequestDelegate next;
     private readonly DiagnosticContext diagnosticContext;
     private readonly MessageTemplate messageTemplateStarted;

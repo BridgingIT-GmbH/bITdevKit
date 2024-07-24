@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Infrastructure.Azure.Cosmos.Repositories;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Constants = Constants;
 
 public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorker
     where TContext : DbContext, IOutboxDomainEventContext
@@ -68,7 +69,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
         await (await context.OutboxDomainEvents
             .Where(e => e.ProcessedDate == null)
-            .WhereIf(e => e.EventId == eventId, !string.IsNullOrEmpty(eventId))
+            .WhereExpressionIf(e => e.EventId == eventId, !string.IsNullOrEmpty(eventId)) //!!
             .OrderBy(e => e.CreatedDate)
             .Take(this.options.ProcessingCount).ToListAsync(cancellationToken: cancellationToken)).SafeNull()
             .Where(e => !e.Type.IsNullOrEmpty()).ForEachAsync(async (e) =>

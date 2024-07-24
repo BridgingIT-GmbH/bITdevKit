@@ -69,7 +69,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         {
             entity.SetDeleted();
 
-            if(entity is IConcurrent concurrentEntity)
+            if (entity is IConcurrent concurrentEntity)
             {
                 concurrentEntity.Version = GuidGenerator.CreateSequential();
             }

@@ -22,7 +22,7 @@ public class MenuId : AggregateRootId<Guid>
 
     public static implicit operator string(MenuId id) => id.Value.ToString();
 
-    public static MenuId CreateUnique()
+    public static MenuId Create()
     {
         return new MenuId(Guid.NewGuid());
     }

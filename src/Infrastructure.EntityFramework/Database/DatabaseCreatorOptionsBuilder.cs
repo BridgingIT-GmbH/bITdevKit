@@ -57,6 +57,15 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
+    /// Log the model.
+    /// </summary>
+    public DatabaseCreatorOptionsBuilder LogModel(bool value = true)
+    {
+        this.Target.LogModel = value;
+        return this;
+    }
+
+    /// <summary>
     /// Delete database on startup.
     /// </summary>
     public DatabaseCreatorOptionsBuilder DeleteOnStartup(bool value = true)

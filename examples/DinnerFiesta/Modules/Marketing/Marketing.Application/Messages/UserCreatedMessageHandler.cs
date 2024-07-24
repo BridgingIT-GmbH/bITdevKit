@@ -18,7 +18,7 @@ public class UserCreatedMessageHandler(
     IMediator mediator) : MessageHandlerBase<UserCreatedMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
-    //IChaosExceptionMessageHandler
+//IChaosExceptionMessageHandler
 {
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 

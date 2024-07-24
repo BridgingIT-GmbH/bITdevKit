@@ -171,7 +171,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //        .LogTo(output.WriteLine);
             //}
 
-            optionsBuilder.UseSqlite($"Data Source=.\\_tests_{nameof(StubDbContext)}.db");
+            optionsBuilder.UseSqlite($"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 

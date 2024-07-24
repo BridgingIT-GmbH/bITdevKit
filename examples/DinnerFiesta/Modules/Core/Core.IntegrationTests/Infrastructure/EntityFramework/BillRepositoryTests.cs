@@ -32,7 +32,8 @@ public class BillRepositoryTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = Bill.Create(HostId.CreateUnique(), DinnerId.CreateUnique(), GuestId.CreateUnique(), Price.Create(23.99m, "EUR"));
+        var entity = Bill.Create(
+            HostId.Create(), DinnerId.Create(), GuestId.Create(), Price.Create(23.99m, "EUR"));
 
         // Act
         this.context.Bills.Add(entity);
@@ -73,7 +74,8 @@ public class BillRepositoryTests
     private async Task<Bill> InsertEntityAsync()
     {
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = Bill.Create(HostId.CreateUnique(), DinnerId.CreateUnique(), GuestId.CreateUnique(), Price.Create(23.99m, "EUR"));
+        var entity = Bill.Create(
+            HostId.Create(), DinnerId.Create(), GuestId.Create(), Price.Create(23.99m, "EUR"));
         entity.Id = null;
         //using var context = this.fixture.CreateSqlServerDbContext();
         var sut = new EntityFrameworkGenericRepository<Bill>(r => r.DbContext(this.context));
@@ -84,7 +86,8 @@ public class BillRepositoryTests
     private async Task<Bill> InsertEntityAsync(CoreDbContext context)
     {
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = Bill.Create(HostId.CreateUnique(), DinnerId.CreateUnique(), GuestId.CreateUnique(), Price.Create(23.99m, "EUR"));
+        var entity = Bill.Create(
+            HostId.Create(), DinnerId.Create(), GuestId.Create(), Price.Create(23.99m, "EUR"));
         entity.Id = null;
         var sut = new EntityFrameworkGenericRepository<Bill>(r => r.DbContext(context));
 

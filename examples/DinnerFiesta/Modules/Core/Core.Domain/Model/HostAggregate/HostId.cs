@@ -22,7 +22,7 @@ public class HostId : AggregateRootId<Guid>
 
     public static implicit operator string(HostId id) => id.Value.ToString();
 
-    public static HostId CreateUnique()
+    public static HostId Create()
     {
         return new HostId(Guid.NewGuid());
     }

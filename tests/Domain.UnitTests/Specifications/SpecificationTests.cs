@@ -7,82 +7,308 @@ namespace BridgingIT.DevKit.Domain.UnitTests.Specifications;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Specifications;
-using System.Linq.Expressions;
-using AutoMapper;
-using AutoMapper.Extensions.ExpressionMapping;
+using System;
+using System.Collections.Generic;
+using Xunit;
+using Shouldly;
 
 [UnitTest("Domain")]
 public class SpecificationTests
 {
     [Fact]
-    public void ExpressionCtorIsSatisfiedBy_Test()
-    {
-        new Specification<PersonStub>(e => e.FirstName == "John")
-            .IsSatisfiedBy(new PersonStub { FirstName = "John" })
-            .ShouldBe(true);
-
-        new Specification<PersonStub>(e => e.Age == int.MaxValue)
-            .IsSatisfiedBy(new PersonStub { FirstName = "John", Age = int.MaxValue })
-            .ShouldBe(true);
-    }
-
-    [Fact]
-    public void IsNotSatisfiedBy_Test()
-    {
-        new Specification<PersonStub>(e => e.FirstName == "John")
-            .IsSatisfiedBy(new PersonStub { FirstName = "Johny" })
-            .ShouldBe(false);
-    }
-
-    [Fact]
-    public void MapSpecification_Test()
+    public void Specification_ExpressionCtorIsSatisfiedBy_ShouldReturnTrue()
     {
         // Arrange
-        var sourceDto1 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" };
-        var sourceDto2 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 5, FullName = "Mary Jane" };
-        var sourcesDto = new PersonDtoStub[] { sourceDto1, sourceDto2 }.AsQueryable();
-        var config = new MapperConfiguration(cfg => cfg
-            //.AddExpressionMapping()
-            .AddProfile<MapperProfile>());
-        config.AssertConfigurationIsValid();
-        var autoMapper = new Mapper(config);
-        var specification = new Specification<PersonStub>(p => p.FirstName == "John");
-        var specificationId = new Specification<PersonStub>(p => p.Id == sourceDto1.Identifier);
+        var sut = new Specification<PersonStub>(e => e.FirstName == "John");
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "John" };
 
         // Act
-        var expressionDto = autoMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(specification.ToExpression());
-        var expressionIdDto = autoMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(specificationId.ToExpression());
-        var sources = sourcesDto.Where(expressionDto).ToList();
-        var sources2 = sourcesDto.Where(expressionIdDto).ToList();
+        var result = sut.IsSatisfiedBy(person);
 
         // Assert
-        sources.ShouldNotBeNull();
-        sources.Count.ShouldBe(1);
-        sources[0].Age.ShouldBe(25);
-        sources[0].FullName.ShouldBe("John Doe");
-
-        sources2.ShouldNotBeNull();
-        sources2.Count.ShouldBe(1);
-        sources2[0].Age.ShouldBe(25);
-        sources2[0].FullName.ShouldBe("John Doe");
+        result.ShouldBeTrue();
     }
 
-    private class MapperProfile : Profile
+    [Fact]
+    public void Specification_ExpressionCtorIsNotSatisfiedBy_ShouldReturnFalse()
     {
-        public MapperProfile()
-        {
-            this.CreateMap<PersonStub, PersonDtoStub>()
-                .ForMember(d => d.Identifier, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.Age, o => o.MapFrom(s => s.Age))
-                .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}"))
-                .IgnoreAllUnmapped();
+        // Arrange
+        var sut = new Specification<PersonStub>(e => e.FirstName == "John");
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "Jane" };
 
-            this.CreateMap<PersonDtoStub, PersonStub>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
-                .ForMember(d => d.Age, o => o.MapFrom(s => s.Age))
-                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault()))
-                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).LastOrDefault()))
-                .IgnoreAllUnmapped();
-        }
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Specification_And_ShouldCombineSpecifications()
+    {
+        // Arrange
+        var spec1 = new Specification<PersonStub>(p => p.Age > 18);
+        var spec2 = new Specification<PersonStub>(p => p.FirstName == "John");
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var sut = spec1.And(spec2);
+
+        // Assert
+        sut.IsSatisfiedBy(person).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_Or_ShouldCombineSpecifications()
+    {
+        // Arrange
+        var spec1 = new Specification<PersonStub>(p => p.Age > 18);
+        var spec2 = new Specification<PersonStub>(p => p.FirstName == "John");
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 15, FirstName = "John" };
+
+        // Act
+        var sut = spec1.Or(spec2);
+
+        // Assert
+        sut.IsSatisfiedBy(person).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_Not_ShouldNegateSpecification()
+    {
+        // Arrange
+        var spec = new Specification<PersonStub>(p => p.Age > 18);
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 15 };
+
+        // Act
+        var sut = spec.Not();
+
+        // Assert
+        sut.IsSatisfiedBy(person).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_ComplexCombination_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var spec1 = new Specification<PersonStub>(p => p.Age > 18);
+        var spec2 = new Specification<PersonStub>(p => p.FirstName == "John");
+        var spec3 = new Specification<PersonStub>(p => p.LastName == "Doe");
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John", LastName = "Smith" };
+
+        // Act
+        var sut = spec1.And(spec2.Or(spec3));
+
+        // Assert
+        sut.IsSatisfiedBy(person).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_EmptySpecificationCollection_ShouldReturnTrue()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>();
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_SingleSatisfiedSpecification_ShouldReturnTrue()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18)
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_SingleUnsatisfiedSpecification_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 30)
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_MultipleAllSatisfiedSpecifications_ShouldReturnTrue()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18),
+            new Specification<PersonStub>(p => p.FirstName == "John")
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_MultipleSomeUnsatisfiedSpecifications_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18),
+            new Specification<PersonStub>(p => p.FirstName == "Jane")
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_NullSpecificationCollection_ShouldReturnTrue()
+    {
+        // Arrange
+        List<ISpecification<PersonStub>> sut = null;
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_ComplexSpecifications_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18),
+            new Specification<PersonStub>(p => p.FirstName == "John").Or(new Specification<PersonStub>(p => p.LastName == "Doe")),
+            new Specification<PersonStub>(p => p.Age < 60)
+        };
+        var person1 = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John", LastName = "Smith" };
+        var person2 = new PersonStub { Id = Guid.NewGuid(), Age = 35, FirstName = "Jane", LastName = "Doe" };
+        var person3 = new PersonStub { Id = Guid.NewGuid(), Age = 65, FirstName = "John", LastName = "Doe" };
+
+        // Act & Assert
+        SpecificationExtensions.IsSatisfiedBy(sut, person1).ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person2).ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person3).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_SpecificationIncludingId_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var specificId = Guid.NewGuid();
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Id == specificId),
+            new Specification<PersonStub>(p => p.Age > 18)
+        };
+        var person1 = new PersonStub { Id = specificId, Age = 25, FirstName = "John" };
+        var person2 = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act & Assert
+        SpecificationExtensions.IsSatisfiedBy(sut, person1).ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person2).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_AllUnsatisfiedSpecifications_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 30),
+            new Specification<PersonStub>(p => p.FirstName == "Jane"),
+            new Specification<PersonStub>(p => p.LastName == "Doe")
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John", LastName = "Smith" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_ComplexUnsatisfiedSpecification_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18)
+                .And(new Specification<PersonStub>(p => p.FirstName == "John"))
+                .And(new Specification<PersonStub>(p => p.LastName == "Doe"))
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John", LastName = "Smith" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_NotSpecificationUnsatisfied_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age > 18).Not()
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSatisfiedBy_OrSpecificationUnsatisfied_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = new List<ISpecification<PersonStub>>
+        {
+            new Specification<PersonStub>(p => p.Age < 18)
+                .Or(new Specification<PersonStub>(p => p.FirstName == "Jane"))
+        };
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
+
+        // Act
+        var result = SpecificationExtensions.IsSatisfiedBy(sut, person);
+
+        // Assert
+        result.ShouldBeFalse();
     }
 }

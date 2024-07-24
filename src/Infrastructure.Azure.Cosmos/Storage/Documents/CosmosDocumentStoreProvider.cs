@@ -78,7 +78,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
                 .Select(e => this.serializer.Deserialize<T>(e.Content));
         }
 
-        return[];
+        return [];
     }
 
     public async Task<IEnumerable<DocumentKey>> ListAsync<T>(CancellationToken cancellationToken = default)
@@ -121,7 +121,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
                 .Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
         }
 
-        return[];
+        return [];
     }
 
     /// <summary>

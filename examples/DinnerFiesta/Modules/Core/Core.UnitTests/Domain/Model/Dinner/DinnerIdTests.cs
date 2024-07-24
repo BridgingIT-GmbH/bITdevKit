@@ -18,8 +18,8 @@ public class DinnerIdTests
         // Arrange
 
         // Act
-        var id1 = DinnerId.CreateUnique();
-        var id2 = DinnerId.CreateUnique();
+        var id1 = DinnerId.Create();
+        var id2 = DinnerId.Create();
 
         // Assert
         id1.ShouldNotBe(id2);

@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
-        where TEnumeration : EnumValueObject<TEnumeration, TKey>
+public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
+        where TEnumeration : EnumerationValueObject<TEnumeration, TKey>
         where TKey : struct
 {
     private static readonly Dictionary<TKey, TEnumeration> ByKey = GetEnumerations().ToDictionary(e => e.Key);
@@ -22,7 +22,7 @@ public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
     public static IReadOnlyCollection<TEnumeration> All = ByKey.Values.OfType<TEnumeration>().ToList();
 #pragma warning restore SA1202 // Elements should be ordered by access
 
-    protected EnumValueObject(TKey key, string name)
+    protected EnumerationValueObject(TKey key, string name)
     {
         EnsureArg.IsNotDefault(key, nameof(key));
         EnsureArg.IsNotNullOrEmpty(name, nameof(name));
@@ -35,7 +35,7 @@ public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
 
     public string Name { get; protected set; }
 
-    public static bool operator ==(EnumValueObject<TEnumeration, TKey> left, TKey right)
+    public static bool operator ==(EnumerationValueObject<TEnumeration, TKey> left, TKey right)
     {
         if (left is null)
         {
@@ -45,17 +45,17 @@ public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
         return left.Key.Equals(right);
     }
 
-    public static bool operator !=(EnumValueObject<TEnumeration, TKey> left, TKey right)
+    public static bool operator !=(EnumerationValueObject<TEnumeration, TKey> left, TKey right)
     {
         return !(left == right);
     }
 
-    public static bool operator ==(TKey left, EnumValueObject<TEnumeration, TKey> right)
+    public static bool operator ==(TKey left, EnumerationValueObject<TEnumeration, TKey> right)
     {
         return right == left;
     }
 
-    public static bool operator !=(TKey left, EnumValueObject<TEnumeration, TKey> right)
+    public static bool operator !=(TKey left, EnumerationValueObject<TEnumeration, TKey> right)
     {
         return !(right == left);
     }
@@ -87,7 +87,7 @@ public abstract class EnumValueObject<TEnumeration, TKey> : ValueObject
         }
 
         return this.GetAtomicValues().SequenceEqual(
-            ((EnumValueObject<TEnumeration, TKey>)obj).GetAtomicValues());
+            ((EnumerationValueObject<TEnumeration, TKey>)obj).GetAtomicValues());
     }
 
     /// <summary>

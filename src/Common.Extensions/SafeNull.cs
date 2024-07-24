@@ -22,7 +22,7 @@ public static partial class Extensions
     [DebuggerStepThrough]
     public static IEnumerable<TSource> SafeNull<TSource>(this IEnumerable<TSource> source)
     {
-        return (source ??[]).Where(i => i is not null);
+        return (source ?? []).Where(i => i is not null);
     }
 
     [DebuggerStepThrough]

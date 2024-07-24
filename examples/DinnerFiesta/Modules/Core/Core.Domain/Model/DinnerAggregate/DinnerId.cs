@@ -20,7 +20,7 @@ public class DinnerId : AggregateRootId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static DinnerId CreateUnique()
+    public static DinnerId Create()
     {
         return new DinnerId(Guid.NewGuid());
     }

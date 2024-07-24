@@ -20,7 +20,7 @@ public class GuestRatingId : EntityId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static GuestRatingId CreateUnique()
+    public static GuestRatingId Create()
     {
         return new GuestRatingId(Guid.NewGuid());
     }

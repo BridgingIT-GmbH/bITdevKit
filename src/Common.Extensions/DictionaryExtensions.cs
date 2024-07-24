@@ -134,8 +134,6 @@ public static class DictionaryExtensions
         this IDictionary<TKey, TValue> source,
         IDictionary<TKey, TValue> items)
     {
-        //source ??= new Dictionary<TKey, TValue>();
-
         if (source is null)
         {
             return source;

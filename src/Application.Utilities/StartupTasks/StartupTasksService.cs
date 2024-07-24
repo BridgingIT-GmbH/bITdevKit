@@ -31,7 +31,7 @@ public class StartupTasksService : BackgroundService
 
         this.logger = loggerFactory?.CreateLogger<StartupTasksService>() ?? NullLoggerFactory.Instance.CreateLogger<StartupTasksService>();
         this.serviceProvider = serviceProvider;
-        this.definitions = definitions ??[];
+        this.definitions = definitions ?? [];
         this.options = options ?? new StartupTaskServiceOptions();
 
         if (this.definitions.Any(d => d.Options.Order > 0))

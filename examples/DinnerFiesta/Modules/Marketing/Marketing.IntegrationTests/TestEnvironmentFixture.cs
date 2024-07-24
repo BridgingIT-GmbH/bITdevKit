@@ -156,7 +156,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                 .LogTo(this.output.WriteLine);
         }
 
-        optionsBuilder.UseSqlite($"Data Source=.\\_test_{nameof(MarketingDbContext)}.db");
+        optionsBuilder.UseSqlite($"Data Source=.\\_test_{nameof(MarketingDbContext)}_sqlite.db");
 
         var context = new MarketingDbContext(optionsBuilder.Options);
         context.Database.EnsureCreated();

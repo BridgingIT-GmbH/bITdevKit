@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class BillId : AggregateRootId<Guid> //GuidTypedId
+public class BillId : AggregateRootId<Guid>
 {
     private BillId()
     {
@@ -20,7 +20,7 @@ public class BillId : AggregateRootId<Guid> //GuidTypedId
 
     public override Guid Value { get; protected set; }
 
-    public static BillId CreateUnique()
+    public static BillId Create()
     {
         return new BillId(Guid.NewGuid());
     }

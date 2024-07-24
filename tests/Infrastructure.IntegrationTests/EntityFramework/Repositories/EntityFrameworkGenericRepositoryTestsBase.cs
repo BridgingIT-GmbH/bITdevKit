@@ -306,6 +306,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         result.LastName.ShouldBe(entity.LastName);
         result.Locations.ShouldNotBeNull();
         result.Locations.ShouldNotBeEmpty();
+        result.Status.Equals(Status.Active);
     }
 
     public virtual async Task FindOneAsync_ExistingEntityBySpecification_EntityFound()
@@ -325,6 +326,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         result.LastName.ShouldBe(entity.LastName);
         result.Locations.ShouldNotBeNull();
         result.Locations.ShouldNotBeEmpty();
+        result.Status.Equals(Status.Active);
     }
 
     public virtual async Task FindOneAsync_ExistingEntityIdAsString_EntityFound()
@@ -343,6 +345,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         result.LastName.ShouldBe(entity.LastName);
         result.Locations.ShouldNotBeNull();
         result.Locations.ShouldNotBeEmpty();
+        result.Status.Equals(Status.Active);
     }
 
     public virtual async Task FindOneAsync_ExistingEntityId_EntityFound()
@@ -361,6 +364,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         result.LastName.ShouldBe(entity.LastName);
         result.Locations.ShouldNotBeNull();
         result.Locations.ShouldNotBeEmpty();
+        result.Status.Equals(Status.Active);
     }
 
     public virtual async Task FindOneAsync_NotExistingEntityId_EntityNotFound()
@@ -380,7 +384,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         // Arrange
         var faker = new Faker("en");
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24);
+        var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24, Status.Active);
         entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
         entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
         entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
@@ -397,6 +401,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Id.ShouldBe(entity.Id);
         existingEntity.Id.ShouldNotBe(Guid.Empty);
         existingEntity.FirstName.ShouldBe(entity.FirstName);
+        existingEntity.Status.Equals(Status.Active);
         existingEntity.LastName.ShouldBe(entity.LastName);
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
@@ -576,7 +581,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
     {
         var faker = new Faker("en");
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age);
+        var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age, Status.Active);
         entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
         var sut = this.CreateRepository(this.GetContext());
 

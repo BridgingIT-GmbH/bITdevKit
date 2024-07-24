@@ -20,7 +20,7 @@ public class MenuSectionId : EntityId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static MenuSectionId CreateUnique()
+    public static MenuSectionId Create()
     {
         return new MenuSectionId(Guid.NewGuid());
     }

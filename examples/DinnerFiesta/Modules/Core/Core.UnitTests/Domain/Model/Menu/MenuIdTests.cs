@@ -18,8 +18,8 @@ public class MenuIdTests
         // Arrange
 
         // Act
-        var id1 = MenuId.CreateUnique();
-        var id2 = MenuId.CreateUnique();
+        var id1 = MenuId.Create();
+        var id2 = MenuId.Create();
 
         // Assert
         id1.ShouldNotBe(id2);

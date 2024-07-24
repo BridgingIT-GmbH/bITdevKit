@@ -7,11 +7,6 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System;
 
-[Obsolete("To be removed. Please use TypedId")]
-public abstract class TypedIdValueBase(Guid value) : GuidTypedId(value)
-{
-}
-
 public abstract class GuidTypedId(Guid value) : IEquatable<GuidTypedId>, IComparable<GuidTypedId>
 {
     public Guid Value { get; } = value;

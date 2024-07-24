@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
     {
         if (services.IsNullOrEmpty())
         {
-            return default;
+            return -1;
         }
 
         var descriptor = services.Find<TServiceType>();

@@ -14,15 +14,6 @@ using Microsoft.Extensions.Primitives;
 
 public static partial class Extensions
 {
-    /// <summary>
-    /// Converts an object to a value type using <see cref="Convert.ChangeType(object,TypeCode)" />.</summary>
-    /// <typeparam name="T">The target object type.</typeparam>
-    /// <param name="source">The object to be converted.</param>
-    /// <param name="throws">if set to <c>true</c> throws exceptions when conversion fails.</param>
-    /// <param name="defaultValue">The default value to return when conversion fails.</param>
-    /// <returns>
-    /// Converted object.
-    /// </returns>
     [DebuggerStepThrough]
     public static T To<T>(this object source, bool throws = false, T defaultValue = default, CultureInfo cultureInfo = null)
     {
@@ -43,6 +34,24 @@ public static partial class Extensions
             if (targetType == typeof(Guid))
             {
                 return (T)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+            }
+
+            if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTime result))
+                {
+                    return (T)(object)result;
+                }
+
+                if (throws)
+                {
+                    throw new FormatException($"Unable to convert '{source}' to DateTime.");
+                }
+
+                return defaultValue;
             }
 
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -74,15 +83,6 @@ public static partial class Extensions
         }
     }
 
-    /// <summary>
-    /// Converts an object to a value type using <see cref="Convert.ChangeType(object,TypeCode)" />.</summary>
-    /// <param name="source">The object to be converted.</param>
-    /// <param name="targetType">The type to be converted to.</param>
-    /// <param name="throws">if set to <c>true</c> throws exceptions when conversion fails.</param>
-    /// <param name="defaultValue">The default value to return when conversion fails.</param>
-    /// <returns>
-    /// Converted object.
-    /// </returns>
     [DebuggerStepThrough]
     public static object To(this object source, Type targetType, bool throws = false, object defaultValue = default, CultureInfo cultureInfo = null)
     {
@@ -106,6 +106,24 @@ public static partial class Extensions
             if (targetType == typeof(Guid))
             {
                 return TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+            }
+
+            if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTime result))
+                {
+                    return result;
+                }
+
+                if (throws)
+                {
+                    throw new FormatException($"Unable to convert '{source}' to DateTime.");
+                }
+
+                return defaultValue;
             }
 
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -156,6 +174,21 @@ public static partial class Extensions
                 return true;
             }
 
+            if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTime dateTimeResult))
+                {
+                    result = (T)(object)dateTimeResult;
+                    return true;
+                }
+
+                result = default;
+                return false;
+            }
+
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 result = (T)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
@@ -164,8 +197,16 @@ public static partial class Extensions
 
             if (targetType.IsEnum && (source is string || source is int || source is decimal || source is double || source is float))
             {
-                result = (T)Enum.Parse(targetType, source.ToString());
-                return true;
+                try
+                {
+                    result = (T)Enum.Parse(targetType, source.ToString());
+                    return true;
+                }
+                catch (ArgumentException)
+                {
+                    result = default;
+                    return false;
+                }
             }
 
             result = (T)source;
@@ -205,6 +246,21 @@ public static partial class Extensions
                 return true;
             }
 
+            if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTime dateTimeResult))
+                {
+                    result = dateTimeResult;
+                    return true;
+                }
+
+                result = default;
+                return false;
+            }
+
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 result = Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
@@ -213,8 +269,16 @@ public static partial class Extensions
 
             if (targetType.IsEnum && source is string)
             {
-                result = Enum.Parse(targetType, source.ToString());
-                return true;
+                try
+                {
+                    result = Enum.Parse(targetType, source.ToString());
+                    return true;
+                }
+                catch (ArgumentException)
+                {
+                    result = default;
+                    return false;
+                }
             }
 
             if (targetType.IsEnum && source is int v)
@@ -253,7 +317,6 @@ public static partial class Extensions
 
         if (Enum.IsDefined(typeof(TEnum), source))
         {
-            //if a straightforward single value, return that
             return (TEnum)Enum.ToObject(typeof(TEnum), source);
         }
 
@@ -277,13 +340,9 @@ public static partial class Extensions
         if (Enum.TryParse(source.ToString(), out TEnum result)
             && (source <= maxValue || !isBitwise))
         {
-            //if it can be parsed as a bitwise enum with multiple flags,
-            //or is not bitwise, return the result of TryParse
             return result;
         }
 
-        //If the value is higher than all possible combinations,
-        //remove the high imaginary values not accounted for in the enum
         var excess = Enumerable
             .Range(0, 32)
             .Select(n => (int)Math.Pow(2, n))

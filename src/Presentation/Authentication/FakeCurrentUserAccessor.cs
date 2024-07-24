@@ -26,7 +26,7 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
 #pragma warning restore SA1010 // Opening square brackets should be spaced correctly
     ];
 
-    private static readonly Dictionary<string, User> UserStore =[];
+    private static readonly Dictionary<string, User> UserStore = [];
     private static readonly Random Random = new();
 
     static FakeCurrentUserAccessor()

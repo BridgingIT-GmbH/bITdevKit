@@ -29,7 +29,7 @@ public class MenuReviewRepositoryTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = MenuReview.Create(5, $"test comment {ticks}", HostId.CreateUnique(), MenuId.CreateUnique(), GuestId.CreateUnique(), DinnerId.CreateUnique());
+        var entity = MenuReview.Create(5, $"test comment {ticks}", HostId.Create(), MenuId.Create(), GuestId.Create(), DinnerId.Create());
 
         // Act
         this.context.MenuReviews.Add(entity);

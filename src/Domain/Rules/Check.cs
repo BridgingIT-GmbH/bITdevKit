@@ -27,7 +27,7 @@ public static class Check
         }
         catch (AggregateException ex)
         {
-            if(ex.InnerException is not null)
+            if (ex.InnerException is not null)
             {
                 throw ex.InnerException;
             }

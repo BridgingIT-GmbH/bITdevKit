@@ -53,7 +53,7 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
 
     public virtual IEnumerable<ISpecification<TEntity>> AddSpecifications(TQuery request)
     {
-        return[];
+        return [];
     }
 
     public override async Task<QueryResponse<PagedResult<TEntity>>> Process(

@@ -13,5 +13,5 @@ public class DinnerReservationStatus(int id, string name) : Enumeration(id, name
     public static DinnerReservationStatus Reserved = new(2, nameof(Reserved));
     public static DinnerReservationStatus Cancelled = new(3, nameof(Cancelled));
 
-    public static IEnumerable<DinnerStatus> GetAll() => GetAll<DinnerStatus>();
+    public static IEnumerable<DinnerReservationStatus> GetAll() => GetAll<DinnerReservationStatus>();
 }

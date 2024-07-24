@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 public class Specification<T> : ISpecification<T>
 {
-    public static readonly ISpecification<T> All = new IdentitySpecification<T>();
+    //public static readonly ISpecification<T> All = new IdentitySpecification<T>(); // why is this identityspecification needed here?
     private readonly Expression<Func<T, bool>> expression;
 
     public Specification()
@@ -45,25 +45,25 @@ public class Specification<T> : ISpecification<T>
 
     public ISpecification<T> And(ISpecification<T> specification)
     {
-        if (this == All)
-        {
-            return specification;
-        }
+        //if (this == All)
+        //{
+        //    return specification;
+        //}
 
-        if (specification == All)
-        {
-            return this;
-        }
+        //if (specification == All)
+        //{
+        //    return this;
+        //}
 
         return new AndSpecification<T>(this, specification);
     }
 
     public ISpecification<T> Or(ISpecification<T> specification)
     {
-        if (this == All || specification == All)
-        {
-            return All;
-        }
+        //if (this == All || specification == All)
+        //{
+        //    return All;
+        //}
 
         return new OrSpecification<T>(this, specification);
     }

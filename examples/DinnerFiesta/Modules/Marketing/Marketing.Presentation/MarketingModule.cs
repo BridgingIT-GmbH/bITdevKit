@@ -48,10 +48,10 @@ public class MarketingModule : WebModuleBase
             //    .Enabled(environment.IsDevelopment())
             //    /*.PurgeOnStartup()*/);
             .WithDatabaseCreatorService(/*o => o.DeleteOnStartup()*/);
-            //.WithOutboxMessageService(o => o
-            //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
-            //.WithOutboxDomainEventService(o => o //
-            //    .Interval("00:00:10").StartupDelay("00:00:05").PurgeOnStartup());
+        //.WithOutboxMessageService(o => o
+        //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
+        //.WithOutboxDomainEventService(o => o //
+        //    .Interval("00:00:10").StartupDelay("00:00:05").PurgeOnStartup());
 
         services.AddEntityFrameworkRepository<Customer, MarketingDbContext>()
             //.WithTransactions()

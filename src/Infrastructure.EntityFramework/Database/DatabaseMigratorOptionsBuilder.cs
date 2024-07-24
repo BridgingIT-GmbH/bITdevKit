@@ -57,6 +57,15 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
+    /// Log the model.
+    /// </summary>
+    public DatabaseMigratorOptionsBuilder LogModel(bool value = true)
+    {
+        this.Target.LogModel = value;
+        return this;
+    }
+
+    /// <summary>
     /// Delete database on startup.
     /// </summary>
     public DatabaseMigratorOptionsBuilder DeleteOnStartup(bool value = true)

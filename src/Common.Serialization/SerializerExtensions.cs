@@ -87,7 +87,7 @@ public static class SerializerExtensions
         byte[] bytes;
         if (input is null)
         {
-            bytes =[];
+            bytes = [];
         }
         else if (source is ITextSerializer)
         {
@@ -113,7 +113,7 @@ public static class SerializerExtensions
         byte[] bytes;
         if (input is null)
         {
-            bytes =[];
+            bytes = [];
         }
         else if (source is ITextSerializer)
         {

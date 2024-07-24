@@ -29,7 +29,7 @@ public class GuestRepositoryTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = Guest.Create($"John {ticks}", $"Doe {ticks}", UserId.CreateUnique(), null);
+        var entity = Guest.Create($"John {ticks}", $"Doe {ticks}", UserId.Create(), null);
 
         // Act
         this.context.Guests.Add(entity);

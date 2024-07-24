@@ -34,7 +34,7 @@ public class CoreModule : WebModuleBase
             .WithJob<EchoJob>(CronExpressions.Every5Minutes) // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
             .WithJob<EchoMessageJob>(CronExpressions.Every30Minutes)
             .WithJob<DinnerSnapshotExportJob>(CronExpressions.EveryHour);
-            //.WithJob<HealthCheckJob>(CronExpressions.EveryMinute);
+        //.WithJob<HealthCheckJob>(CronExpressions.EveryMinute);
 
         services.AddStartupTasks()
             .WithTask<CoreDomainSeederTask>(o => o
@@ -130,7 +130,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Bill>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Bill, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Bill, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Dinner, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Dinner>>()
@@ -141,7 +141,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Dinner>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Guest, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Guest>>()
@@ -152,7 +152,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Guest>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Guest, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Guest, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Domain.Host, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Domain.Host>>()
@@ -163,7 +163,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Domain.Host>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.Host, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.Host, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<Menu, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Menu>>()
@@ -174,7 +174,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Menu>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Menu, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Menu, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<MenuReview, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<MenuReview>>()
@@ -185,7 +185,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<MenuReview>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<MenuReview, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<MenuReview, CoreDbContext>>()
 
         services.AddEntityFrameworkRepository<User, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<User>>()
@@ -196,7 +196,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryDomainEventBehavior<User>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<User>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<User>>();
-            //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.User, CoreDbContext>>()
+        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.User, CoreDbContext>>()
 
         return services;
     }

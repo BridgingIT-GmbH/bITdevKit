@@ -23,7 +23,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
     {
         // Arrange
         var repository = Substitute.For<IGenericRepository<Dinner>>();
-        var hostId = HostId.CreateUnique();
+        var hostId = HostId.Create();
         var startDateTime = new DateTimeOffset(2023, 5, 10, 18, 0, 0, TimeSpan.Zero);
         var endDateTime = new DateTimeOffset(2023, 5, 10, 19, 0, 0, TimeSpan.Zero);
         var schedule = DinnerSchedule.Create(startDateTime, endDateTime);
@@ -43,7 +43,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
     public async Task IsSatisfiedAsync_WithOverlappingDinners_ReturnsFalse()
     {
         // Arrange
-        var hostId = HostId.CreateUnique();
+        var hostId = HostId.Create();
         var startDateTime = new DateTimeOffset(2023, 5, 10, 17, 0, 0, TimeSpan.Zero);
         var endDateTime = new DateTimeOffset(2023, 5, 10, 21, 0, 0, TimeSpan.Zero);
         var schedule = DinnerSchedule.Create(startDateTime, endDateTime);
@@ -59,7 +59,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
                     DinnerLocation.Create("Restaurant", "123 Main St", null, "postal", "city", "NL"),
                     true,
                     10,
-                    MenuId.CreateUnique(),
+                    MenuId.Create(),
                     hostId,
                     Price.Create(9.99m, "EUR"),
                     new Uri("https://example.com/image.jpg")),
@@ -70,7 +70,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
                     DinnerLocation.Create("Restaurant", "123 Main St", null, "postal", "city", "NL"),
                     true,
                     10,
-                    MenuId.CreateUnique(),
+                    MenuId.Create(),
                     hostId,
                     Price.Create(9.99m, "EUR"),
                     new Uri("https://example.com/image.jpg"))

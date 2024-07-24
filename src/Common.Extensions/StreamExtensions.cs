@@ -74,7 +74,7 @@ public static class StreamExtensions
             var length = source.Length - source.Position;
             if (length == 0)
             {
-                return[];
+                return [];
             }
 
             var buffer = new byte[length];
@@ -100,7 +100,7 @@ public static class StreamExtensions
             var length = source.Length - source.Position;
             if (length == 0)
             {
-                return[];
+                return [];
             }
 
             var buffer = new byte[length];

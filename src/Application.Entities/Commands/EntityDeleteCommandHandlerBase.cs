@@ -61,7 +61,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
 
     public virtual IEnumerable<IEntityDeleteCommandRule<TEntity>> AddRules(TCommand command)
     {
-        return[];
+        return [];
     }
 
     public override async Task<CommandResponse<Result<EntityDeletedCommandResult>>> Process(

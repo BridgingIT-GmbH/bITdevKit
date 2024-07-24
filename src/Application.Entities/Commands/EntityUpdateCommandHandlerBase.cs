@@ -61,7 +61,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
 
     public virtual IEnumerable<IEntityUpdateCommandRule<TEntity>> AddRules(TCommand command)
     {
-        return[];
+        return [];
     }
 
     public override async Task<CommandResponse<Result<EntityUpdatedCommandResult>>> Process(

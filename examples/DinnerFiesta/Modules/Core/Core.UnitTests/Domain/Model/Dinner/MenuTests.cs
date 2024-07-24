@@ -13,8 +13,8 @@ public class DinnerTests
     public void Create_ShouldCreateNewAggregate_WithDefaults()
     {
         // Arrange
-        var hostId = HostId.CreateUnique();
-        var menuId = MenuId.CreateUnique();
+        var hostId = HostId.Create();
+        var menuId = MenuId.Create();
         var name = "Test Dinner";
         var description = "A test menu";
 

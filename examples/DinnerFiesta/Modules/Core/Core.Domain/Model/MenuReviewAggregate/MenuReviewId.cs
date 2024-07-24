@@ -20,7 +20,7 @@ public class MenuReviewId : AggregateRootId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static MenuReviewId CreateUnique()
+    public static MenuReviewId Create()
     {
         return new MenuReviewId(Guid.NewGuid());
     }

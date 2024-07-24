@@ -87,7 +87,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
                 .ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
         }
 
-        return[];
+        return [];
     }
 
     public async Task<IEnumerable<DocumentKey>> ListAsync<T>(CancellationToken cancellationToken = default)
@@ -135,7 +135,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
                 .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToListAsync(cancellationToken);
         }
 
-        return[];
+        return [];
     }
 
     /// <summary>

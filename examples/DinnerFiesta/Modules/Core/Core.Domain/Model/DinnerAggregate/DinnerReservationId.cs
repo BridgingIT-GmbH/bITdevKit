@@ -20,7 +20,7 @@ public class DinnerReservationId : EntityId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static DinnerReservationId CreateUnique()
+    public static DinnerReservationId Create()
     {
         return new DinnerReservationId(Guid.NewGuid());
     }

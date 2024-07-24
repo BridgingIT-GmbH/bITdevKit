@@ -18,8 +18,8 @@ public class UserIdTests
         // Arrange
 
         // Act
-        var id1 = UserId.CreateUnique();
-        var id2 = UserId.CreateUnique();
+        var id1 = UserId.Create();
+        var id2 = UserId.Create();
 
         // Assert
         id1.ShouldNotBe(id2);

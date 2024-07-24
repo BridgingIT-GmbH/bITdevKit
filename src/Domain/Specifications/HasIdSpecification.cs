@@ -19,11 +19,11 @@ public class HasIdSpecification<T>(object id) : Specification<T>
         return t => t.Id == this.Id;
     }
 
-    public static class Factory
-    {
-        public static HasIdSpecification<T> Create(object id)
-        {
-            return new HasIdSpecification<T>(id);
-        }
-    }
+    //public static class Factory
+    //{
+    //    public static HasIdSpecification<T> Create(object id)
+    //    {
+    //        return new HasIdSpecification<T>(id);
+    //    }
+    //}
 }

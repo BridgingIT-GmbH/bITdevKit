@@ -7,11 +7,20 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Diagnostics;
 
-[DebuggerDisplay("{Value}")]
-public abstract class AggregateRootId<TId> : ValueObject
-{
-    public abstract TId Value { get; protected set; }
+//[DebuggerDisplay("{Value}")]
+//public abstract class AggregateRootId<TId> : ValueObject
+//{
+//    public abstract TId Value { get; protected set; }
 
+//    public override string ToString()
+//    {
+//        return this.Value?.ToString();
+//    }
+//}
+
+[DebuggerDisplay("{Value}")]
+public abstract class AggregateRootId<TId> : EntityId<TId>
+{
     public override string ToString()
     {
         return this.Value?.ToString();

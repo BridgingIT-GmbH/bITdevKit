@@ -109,7 +109,7 @@ public class TestEntityState
         {
             if (this.UpdatedReasons.IsNullOrEmpty())
             {
-                this.UpdatedReasons =[];
+                this.UpdatedReasons = [];
             }
 
             this.UpdatedReasons = this.UpdatedReasons.Concat(new[]

@@ -9,14 +9,14 @@ using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class EnumValueObjectConverter<TEnumeration, TKey>
-    : ValueConverter<EnumValueObject<TEnumeration, TKey>, TKey>
-    where TEnumeration : EnumValueObject<TEnumeration, TKey>
+    : ValueConverter<EnumerationValueObject<TEnumeration, TKey>, TKey>
+    where TEnumeration : EnumerationValueObject<TEnumeration, TKey>
     where TKey : struct
 {
     public EnumValueObjectConverter()
         : base(
             v => v.Key,
-            v => EnumValueObject<TEnumeration, TKey>.Create(v))
+            v => EnumerationValueObject<TEnumeration, TKey>.Create(v))
     {
     }
 }

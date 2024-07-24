@@ -23,7 +23,7 @@ public static partial class Extensions
     [DebuggerStepThrough]
     public static IEnumerable<TSource> SafeWhere<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
-        return (source ?? Enumerable.Empty<TSource>()).Where(predicate);
+        return (source ?? []).Where(predicate);
     }
 
     /// <summary>

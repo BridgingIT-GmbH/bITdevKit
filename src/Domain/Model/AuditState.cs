@@ -51,7 +51,7 @@ public class AuditState
     /// Gets the last date this instance was changed
     /// </summary>
     public DateTimeOffset? LastActionDate =>
-        new List<DateTimeOffset?> { this.CreatedDate, this.UpdatedDate, this.DeletedDate }
+        new List<DateTimeOffset?> { this.CreatedDate, this.UpdatedDate, this.DeletedDate, this.DeactivatedDate }
         .Where(d => d is not null).SafeNull().Max();
 
     /// <summary>
@@ -142,8 +142,8 @@ public class AuditState
     public virtual void SetDeactivated(string by = null, string reason = null)
     {
         this.DeactivatedDate = DateTimeOffset.UtcNow;
-        this.SetUpdated(by);
         this.Deactivated = true;
+        this.UpdatedDate = this.DeactivatedDate;
 
         if (!by.IsNullOrEmpty())
         {
@@ -177,7 +177,7 @@ public class AuditState
     {
         this.Deleted = true;
         this.DeletedDate = DateTimeOffset.UtcNow;
-        this.UpdatedDate = this.DeletedDate.Value;
+        this.UpdatedDate = this.DeletedDate;
 
         if (!by.IsNullOrEmpty())
         {

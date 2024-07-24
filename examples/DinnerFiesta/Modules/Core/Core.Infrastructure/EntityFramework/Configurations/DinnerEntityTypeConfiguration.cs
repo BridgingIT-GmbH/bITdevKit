@@ -48,7 +48,7 @@ public class DinnerEntityTypeConfiguration : IEntityTypeConfiguration<Dinner>
             rb.Property(r => r.Status)
                 .HasConversion(
                     status => status.Id,
-                    value => Enumeration.From<DinnerReservationStatus>(value));
+                    id => Enumeration.FromId<DinnerReservationStatus>(id));
 
             rb.OwnsOneAuditState();
         });
@@ -89,7 +89,7 @@ public class DinnerEntityTypeConfiguration : IEntityTypeConfiguration<Dinner>
         builder.Property(d => d.Status)
             .HasConversion(
                 status => status.Id,
-                value => Enumeration.From<DinnerStatus>(value));
+                id => Enumeration.FromId<DinnerStatus>(id));
 
         builder.OwnsOne(d => d.Price, pb =>
         {

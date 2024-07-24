@@ -24,12 +24,13 @@ public class PersonStub : AggregateRoot<Guid>
     {
     }
 
-    public PersonStub(string firstName, string lastName, string email, int age)
+    public PersonStub(string firstName, string lastName, string email, int age, Status status = null)
     {
         this.FirstName = firstName;
         this.LastName = lastName;
         this.Email = EmailAddressStub.Create(email);
         this.Age = age;
+        this.Status = status ?? Status.Inactive;
     }
 
     public string FirstName { get; set; }
@@ -39,6 +40,8 @@ public class PersonStub : AggregateRoot<Guid>
     public string Nationality { get; set; } = "USA";
 
     public EmailAddressStub Email { get; set; }
+
+    public Status Status { get; set; } = Status.Inactive;
 
     public IReadOnlyList<LocationStub> Locations => this.locations.AsReadOnly();
 
@@ -52,13 +55,26 @@ public class PersonStub : AggregateRoot<Guid>
 
     public PersonStub RemoveLocation(LocationStub location)
     {
-        if (this.locations.Contains(location))
-        {
-            this.locations.Remove(location);
-        }
+        this.locations.Remove(location);
 
         return this;
     }
+}
+
+public class Status(int id, string value, string code, string description) : Enumeration(id, value)
+{
+    public static Status Active = new(1, "Active", "ACT", "Lorem Ipsum");
+    public static Status Inactive = new(2, "Inactive", "INA", "Lorem Ipsum");
+
+    public string Code { get; } = code;
+
+    public string Description { get; } = description;
+
+    public static IEnumerable<Status> GetAll() =>
+        GetAll<Status>();
+
+    public static Status GetByCode(string code) =>
+        GetAll<Status>().FirstOrDefault(e => e.Code == code);
 }
 
 public class EmailAddressStub : ValueObject
@@ -205,6 +221,10 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
 
+    public DbSet<Blog> Blogs { get; set; } // typedids
+
+    public DbSet<Post> Posts { get; set; } // typedids
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -294,6 +314,10 @@ public class PersonStubEntityTypeConfiguration : IEntityTypeConfiguration<Person
             pb.Property(e => e.Value)
               .IsRequired().HasMaxLength(256);
         });
+
+        builder.Property(e => e.Status)
+            .HasConversion(
+                new EnumerationConverter<int, string, Status>());
 
         //builder.HasMany(e => e.Locations)
         //   .WithOne()

@@ -18,11 +18,12 @@ public class MenuFindOneForHostQueryHandler(ILoggerFactory loggerFactory, IGener
     public override async Task<QueryResponse<Result<Menu>>> Process(MenuFindOneForHostQuery query, CancellationToken cancellationToken)
     {
         var hostId = HostId.Create(query.HostId);
-        var dinnerId = HostId.Create(query.MenuId);
+        var menuId = HostId.Create(query.MenuId);
 
-        return QueryResponse.For(
-            await repository.FindOneResultAsync(
-                specification: new Specification<Menu>(e => e.HostId == hostId && e.Id == dinnerId),
-                cancellationToken: cancellationToken).AnyContext());
+        var result = await repository.FindOneResultAsync(
+            specification: new Specification<Menu>(e => /*e.HostId == hostId &&*/ e.Id == menuId),
+            cancellationToken: cancellationToken).AnyContext();
+
+        return QueryResponse.For(result);
     }
 }

@@ -41,32 +41,32 @@ public static partial class Extensions
         return source;
     }
 
-    public static IEnumerable<T> WhereIf<T>(
-        this IEnumerable<T> source,
-        Func<T, bool> predicate,
-        bool? condition = true)
-    {
-        if (condition == true && predicate is not null)
-        {
-            return source.Where(predicate);
-        }
+    //public static IEnumerable<T> WhereIf<T>(
+    //    this IEnumerable<T> source,
+    //    Func<T, bool> predicate,
+    //    bool? condition = true)
+    //{
+    //    if (condition == true && predicate is not null)
+    //    {
+    //        return source.Where(predicate);
+    //    }
 
-        return source;
-    }
+    //    return source;
+    //}
 
-    public static IEnumerable<T> WhereIf<T>(
-        this IEnumerable<T> source,
-        IEnumerable<Func<T, bool>> predicates,
-        bool? condition = true)
-    {
-        if (condition == true && predicates?.Any() == true)
-        {
-            foreach (var predicate in predicates)
-            {
-                source = source.Where(predicate);
-            }
-        }
+    //public static IEnumerable<T> WhereIf<T>(
+    //    this IEnumerable<T> source,
+    //    IEnumerable<Func<T, bool>> predicates,
+    //    bool? condition = true)
+    //{
+    //    if (condition == true && predicates?.Any() == true)
+    //    {
+    //        foreach (var predicate in predicates)
+    //        {
+    //            source = source.Where(predicate);
+    //        }
+    //    }
 
-        return source;
-    }
+    //    return source;
+    //}
 }

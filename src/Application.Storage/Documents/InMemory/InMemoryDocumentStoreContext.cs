@@ -81,7 +81,7 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
                     .Select(e => e.Content as T).Where(e => e is not null).ToList();
             }
 
-            return[];
+            return [];
         }
         finally
         {
@@ -134,7 +134,7 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
                     .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList();
             }
 
-            return[];
+            return [];
         }
         finally
         {

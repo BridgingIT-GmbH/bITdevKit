@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Domain.UnitTests.Domain;
+namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
 using System;
 using BridgingIT.DevKit.Domain.Model;
@@ -132,7 +132,7 @@ public sealed class StubEnumValueObject(string key) : EnumValueObject<StubEnumVa
     public static readonly StubEnumValueObject Two = new(nameof(Two));
 }
 
-public sealed class AnotherStubEnumValueObject : EnumValueObject<AnotherStubEnumValueObject, long>
+public sealed class AnotherStubEnumValueObject : EnumerationValueObject<AnotherStubEnumValueObject, long>
 {
     public static readonly AnotherStubEnumValueObject One = new(1, "name");
 

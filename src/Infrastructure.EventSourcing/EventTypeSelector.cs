@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Domain.EventSourcing.Store;
 
 public class EventTypeSelector : IEventTypeSelector
 {
-    private Type[] typeCache =[];
+    private Type[] typeCache = [];
 
     public Type FindType(string typename)
     {

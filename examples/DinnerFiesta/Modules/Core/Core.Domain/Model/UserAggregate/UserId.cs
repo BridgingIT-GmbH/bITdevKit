@@ -20,7 +20,7 @@ public class UserId : AggregateRootId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static UserId CreateUnique()
+    public static UserId Create()
     {
         return new UserId(Guid.NewGuid());
     }

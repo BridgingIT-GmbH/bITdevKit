@@ -7,63 +7,39 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 
-public abstract class Enumeration(int id, string name) : IComparable // TODO: or use https://github.com/ardalis/SmartEnum (better webapi support)
+// inspiration: https://codeblog.jonskeet.uk/2006/01/05/classenum/
+[DebuggerDisplay("Id={Id}, Name={Value}")]
+public abstract class Enumeration(int id, string value)
+    : Enumeration<int, string>(id, value), IEnumeration
 {
-    public int Id { get; private set; } = id;
-
-    public string Name { get; private set; } = name;
-
-    public static IEnumerable<T> GetAll<T>()
-        where T : Enumeration
+    public static new TEnumeration FromId<TEnumeration>(int id)
+        where TEnumeration : IEnumeration
     {
-        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .Select(f => f.GetValue(null)).Cast<T>();
+        return Enumeration<int, string>.FromId<TEnumeration>(id);
     }
 
-    public static T From<T>(int id)
-        where T : Enumeration
+    public static new TEnumeration FromValue<TEnumeration>(string value)
+        where TEnumeration : IEnumeration
     {
-        return Parse(id, "id", (Func<T, bool>)(i => i.Id == id));
+        return Parse<TEnumeration, string>(
+            value,
+            "value",
+            e => string.Equals(e.Value, value, StringComparison.OrdinalIgnoreCase));
     }
 
-    public static T From<T>(string name)
-        where T : Enumeration
+    public static new IEnumerable<TEnumeration> GetAll<TEnumeration>()
+        where TEnumeration : IEnumeration
     {
-        return Parse(name, "name", (Func<T, bool>)(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase)));
+        return Enumeration<int, string>.GetAll<TEnumeration>();
     }
 
-    public override string ToString() => this.Name;
-
-    public override bool Equals(object obj)
+    private static TEnumeration Parse<TEnumeration, TSearch>(TSearch searchValue, string description, Func<TEnumeration, bool> predicate)
+        where TEnumeration : IEnumeration
     {
-        var otherValue = obj as Enumeration;
-        if (otherValue is null)
-        {
-            return false;
-        }
-
-        var typeMatches = this.GetType().Equals(obj.GetType());
-        var valueMatches = this.Id.Equals(otherValue.Id);
-
-        return typeMatches && valueMatches;
-    }
-
-    public override int GetHashCode() => this.Id.GetHashCode();
-
-    public int CompareTo(object other) => this.Id.CompareTo(((Enumeration)other).Id);
-
-    private static T Parse<T, TValue>(TValue value, string description, Func<T, bool> predicate)
-        where T : Enumeration
-    {
-        var item = GetAll<T>().FirstOrDefault(predicate);
-        if (item is null)
-        {
-            throw new InvalidOperationException($"'{value}' is not a valid {description} for {typeof(T)}");
-        }
-
-        return item;
+        return GetAll<TEnumeration>().FirstOrDefault(predicate)
+            ?? throw new InvalidOperationException($"'{searchValue}' is not a valid {description} for {typeof(TEnumeration)}");
     }
 }

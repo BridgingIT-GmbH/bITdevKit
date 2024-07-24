@@ -42,10 +42,30 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
-        this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
-            .WithNetworkAliases(this.NetworkName)
-            .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
-            //.WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest")
+        //this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
+        //    .WithNetworkAliases(this.NetworkName)
+        //    .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
+        //    //.WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest")
+        //    .Build();
+
+        this.CosmosContainer = new CosmosDbBuilder()
+            .WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator")
+            .WithName("azure-cosmos-emulator")
+            .WithExposedPort(8081)
+            .WithExposedPort(10251)
+            .WithExposedPort(10252)
+            .WithExposedPort(10253)
+            .WithExposedPort(10254)
+            .WithPortBinding(8081, true)
+            .WithPortBinding(10251, true)
+            .WithPortBinding(10252, true)
+            .WithPortBinding(10253, true)
+            .WithPortBinding(10254, true)
+            .WithEnvironment("AZURE_COSMOS_EMULATOR_PARTITION_COUNT", "1")
+            .WithEnvironment("AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE", "127.0.0.1")
+            .WithEnvironment("AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE", "false")
+            .WithWaitStrategy(Wait.ForUnixContainer()
+            .UntilPortIsAvailable(8081))
             .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
@@ -117,7 +137,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
         if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
-            //await this.CosmosContainer.StartAsync().AnyContext();
+            //await this.CosmosContainer.StartAsync().AnyContext(); // not started due to issues with the tests
         }
 
         await this.AzuriteContainer.StartAsync().AnyContext();
@@ -182,7 +202,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //        .LogTo(output.WriteLine);
             //}
 
-            optionsBuilder.UseSqlite($"Data Source=.\\_tests_{nameof(StubDbContext)}.db");
+            // TODO: remove file if exists?
+            optionsBuilder.UseSqlite($"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 

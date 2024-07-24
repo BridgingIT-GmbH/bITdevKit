@@ -76,7 +76,7 @@ public class PersonService : IPersonService
     public async Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync()
     {
         var query = await this.personRepository.FindAllAsync(new FindOptions<PersonOverview>() { NoTracking = true }).AnyContext();
-        return query.Select(p=> new PersonOverviewViewModel()
+        return query.Select(p => new PersonOverviewViewModel()
         {
             Firstname = p.Firstname,
             Lastname = p.Lastname,

@@ -16,15 +16,4 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="icon.png">
-      <PackagePath>\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-    <None Update="README.md">
-      <PackagePath>\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-
 </Project>

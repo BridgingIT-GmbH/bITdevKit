@@ -109,9 +109,10 @@ namespace {namespaceName}
 
         public bool IsEmpty => this.Value{GetIsEmptyCheck(underlyingType)};
 
-        public static implicit operator {typeName}({className} id) => id?.Value ?? default;
-        public static implicit operator string({className} id) => id?.Value.ToString();
-        public static implicit operator {className}({typeName} id) => Create(id);
+        public static implicit operator {typeName}({className} id) => id?.Value ?? default; // allows a TypedId value to be implicitly converted to a type value.
+        public static implicit operator string({className} id) => id?.Value.ToString(); // allows a TypedId value to be implicitly converted to a string.
+        public static implicit operator {className}({typeName} id) => Create(id); // allows a type value to be implicitly converted to a TypedId object.
+        public static implicit operator {className}(string id) => Create(id); // allows a string value to be implicitly converted to a TypedId object.
 
         {createMethod}
 

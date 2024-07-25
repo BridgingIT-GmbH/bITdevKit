@@ -10,6 +10,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <BuildOutputTargetFolder>analyzers</BuildOutputTargetFolder>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

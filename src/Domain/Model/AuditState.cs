@@ -91,12 +91,12 @@ public class AuditState
         this.CreatedDate = DateTimeOffset.UtcNow;
         this.UpdatedDate = this.CreatedDate;
 
-        if (!by.IsNullOrEmpty())
+        if (!by.IsNullOrEmpty() && string.IsNullOrEmpty(this.CreatedBy))
         {
             this.CreatedBy = by;
         }
 
-        if (!description.IsNullOrEmpty())
+        if (!description.IsNullOrEmpty() && string.IsNullOrEmpty(this.CreatedDescription))
         {
             this.CreatedDescription = description;
         }

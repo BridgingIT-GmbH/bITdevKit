@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" />
     <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" />
+    <PackageReference Include="Azure.Storage.Queues" />
   </ItemGroup>
 
   <ItemGroup>

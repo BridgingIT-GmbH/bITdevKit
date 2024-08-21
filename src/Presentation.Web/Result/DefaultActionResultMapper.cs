@@ -613,10 +613,15 @@ public class DefaultActionResultMapper : IActionResultMapper
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
             // return this.ValidationProblem(...)
         }
-        else if (result.HasError<BusinessRuleResultError>(out errors))
+        else if (result.HasError<DomainRuleResultError>(out errors))
         {
             // TODO: not yet handled
-            // throw new BusinessRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
+            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
+        }
+        else if (result.HasError<DomainPolicyResultError>(out errors))
+        {
+            // TODO: not yet handled
+            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
 
         return new ObjectResult(new ProblemDetails

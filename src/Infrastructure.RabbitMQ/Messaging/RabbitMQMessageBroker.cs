@@ -120,7 +120,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 
         var messageName = message.GetType().PrettyName(false);
         var basicProperties = this.publisherChannel.CreateBasicProperties();
-        basicProperties.MessageId = message.Id;
+        basicProperties.MessageId = message.MessageId;
         basicProperties.Type = messageName;
         basicProperties.CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
         basicProperties.Timestamp = new AmqpTimestamp(message.Timestamp.ToUnixTimeSeconds());
@@ -141,7 +141,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
             basicProperties,
             this.options.Serializer.SerializeToBytes(message));
 
-        this.Logger.LogDebug("{LogKey} rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})", Constants.LogKey, messageName, message.Id, this.options.ExchangeName, this.QueueName);
+        this.Logger.LogDebug("{LogKey} rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})", Constants.LogKey, messageName, message.MessageId, this.options.ExchangeName, this.QueueName);
 
         return Task.CompletedTask;
     }
@@ -179,7 +179,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 
         if (message is not null)
         {
-            this.Logger.LogDebug("{LogKey} rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})", Constants.LogKey, messageName, message.Id, args.BasicProperties.MessageId);
+            this.Logger.LogDebug("{LogKey} rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})", Constants.LogKey, messageName, message.MessageId, args.BasicProperties.MessageId);
 
             await this.Process(new MessageRequest(message, CancellationToken.None));
         }

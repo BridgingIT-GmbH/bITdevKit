@@ -9,14 +9,17 @@ using System;
 using System.Linq;
 using BridgingIT.DevKit.Domain;
 
-public class CountryShouldBeKnownRule(string value) : IBusinessRule
+public class CountryShouldBeKnownRule(string value) : IDomainRule
 {
     private readonly string[] countries = ["NL", "DE", "FR", "ES", "IT", "USA"];
     private readonly string value = value;
 
     public string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
-    public Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return Task.FromResult(!string.IsNullOrEmpty(this.value)
             && this.countries.Contains(this.value));
@@ -25,5 +28,5 @@ public class CountryShouldBeKnownRule(string value) : IBusinessRule
 
 public static partial class DinnerRules
 {
-    public static IBusinessRule CountryShouldBeKnown(string value) => new CountryShouldBeKnownRule(value);
+    public static IDomainRule CountryShouldBeKnown(string value) => new CountryShouldBeKnownRule(value);
 }

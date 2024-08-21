@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-public class UserEmailMustBeUniqueRule : IBusinessRule
+public class UserEmailMustBeUniqueRule : IDomainRule
 {
     private readonly IGenericRepository<User> repository;
     private readonly User user;
@@ -26,7 +26,10 @@ public class UserEmailMustBeUniqueRule : IBusinessRule
 
     public string Message => "User should be unique (email)";
 
-    public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return !(await this.repository.FindAllAsync(
             UserSpecifications.ForEmail(this.user.Email), cancellationToken: cancellationToken)).SafeAny();
@@ -35,5 +38,5 @@ public class UserEmailMustBeUniqueRule : IBusinessRule
 
 public static partial class UserRules
 {
-    public static IBusinessRule EmailMustBeUnique(IGenericRepository<User> repository, User user) => new UserEmailMustBeUniqueRule(repository, user);
+    public static IDomainRule EmailMustBeUnique(IGenericRepository<User> repository, User user) => new UserEmailMustBeUniqueRule(repository, user);
 }

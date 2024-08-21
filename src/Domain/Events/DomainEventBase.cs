@@ -7,14 +7,17 @@ namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Common;
 using System;
+using System.Diagnostics;
 
-public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase>
+[DebuggerDisplay("EventId={EventId}")]
+public abstract class DomainEventBase
+    : IDomainEvent, IEquatable<DomainEventBase>
 {
     private int? hashCode;
 
-    public Guid EventId { get; } = GuidGenerator.CreateSequential();
+    public virtual Guid EventId { get; protected set; } = GuidGenerator.CreateSequential();
 
-    public DateTimeOffset Timestamp { get; } = DateTime.UtcNow;
+    public virtual DateTimeOffset Timestamp { get; protected set; } = DateTime.UtcNow;
 
     public bool Equals(DomainEventBase other)
     {

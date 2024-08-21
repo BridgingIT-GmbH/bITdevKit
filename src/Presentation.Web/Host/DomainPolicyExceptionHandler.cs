@@ -12,15 +12,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-public class BusinessRuleNotSatisfiedExceptionHandler(
-    ILogger<BusinessRuleNotSatisfiedExceptionHandler> logger, GlobalExceptionHandlerOptions options) : IExceptionHandler
+public class DomainPolicyExceptionHandler(
+    ILogger<DomainPolicyExceptionHandler> logger, GlobalExceptionHandlerOptions options)
+    : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-        if (exception is not BusinessRuleNotSatisfiedException ex)
+        if (exception is not DomainPolicyException ex)
         {
             return false;
         }
@@ -32,14 +33,14 @@ public class BusinessRuleNotSatisfiedExceptionHandler(
             logger.LogError(
                 ex,
                 "{ExceptionType} occurred: {ExceptionMessage}",
-                ex.GetType().Name, ex.Message);
+                ex.GetType().Name, ex.ToString());
         }
 
         var problemDetails = new ProblemDetails
         {
             Title = "Bad Request",
             Status = StatusCodes.Status400BadRequest,
-            Detail = $"[{ex.GetType().Name}] {ex.Message}",
+            Detail = $"[{ex.GetType().Name}] {ex.ToString()}",
             Type = "https://httpstatuses.com/400"
         };
 

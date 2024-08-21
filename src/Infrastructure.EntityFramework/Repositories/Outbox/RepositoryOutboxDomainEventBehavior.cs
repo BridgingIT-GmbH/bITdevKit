@@ -85,35 +85,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
         var result = await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
-        // publish all domain events after transaction ends
-        entity.DomainEvents.GetAll().ForEach((e) =>
-        {
-            TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.GetType().Name, e.EventId);
-
-            var outboxEvent = new OutboxDomainEvent
-            {
-                EventId = e.EventId.ToString(),
-                Type = e.GetType().AssemblyQualifiedNameShort(),
-                Content = this.options.Serializer.SerializeToString(e),
-                ContentHash = HashHelper.Compute(e),
-                CreatedDate = e.Timestamp
-            };
-            this.PropagateContext(outboxEvent);
-            this.Context.OutboxDomainEvents.Add(outboxEvent);
-        }, cancellationToken: cancellationToken);
-
-        if (this.options.AutoSave)
-        {
-            await this.Context.SaveChangesAsync<OutboxDomainEvent>(cancellationToken).AnyContext(); // only save changes in this scoped context
-        }
-
-        if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
-        {
-            entity.DomainEvents.GetAll().ForEach((e) =>
-            {
-                this.eventQueue?.Enqueue(e.EventId.ToString());
-            }, cancellationToken: cancellationToken);
-        }
+        await this.StoreDomainEvents(entity, cancellationToken);
 
         entity.DomainEvents.Clear();
 
@@ -205,35 +177,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
         var result = await this.Inner.InsertAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
-        // publish all domain events after transaction ends
-        entity.DomainEvents.GetAll().ForEach((e) =>
-        {
-            TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.GetType().Name, e.EventId);
-
-            var outboxEvent = new OutboxDomainEvent
-            {
-                EventId = e.EventId.ToString(),
-                Type = e.GetType().AssemblyQualifiedNameShort(),
-                Content = this.options.Serializer.SerializeToString(e),
-                ContentHash = HashHelper.Compute(e),
-                CreatedDate = e.Timestamp
-            };
-            this.PropagateContext(outboxEvent);
-            this.Context.OutboxDomainEvents.Add(outboxEvent);
-        }, cancellationToken: cancellationToken);
-
-        if (this.options.AutoSave)
-        {
-            await this.Context.SaveChangesAsync<OutboxDomainEvent>(cancellationToken).AnyContext(); // only save changes in this scoped context
-        }
-
-        if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
-        {
-            entity.DomainEvents.GetAll().ForEach((e) =>
-            {
-                this.eventQueue?.Enqueue(e.EventId.ToString());
-            }, cancellationToken: cancellationToken);
-        }
+        await this.StoreDomainEvents(entity, cancellationToken);
 
         entity.DomainEvents.Clear();
 
@@ -246,35 +190,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
         var result = await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
-        // publish all domain events after transaction ends
-        entity.DomainEvents.GetAll().ForEach((e) =>
-        {
-            TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.GetType().Name, e.EventId);
-
-            var outboxEvent = new OutboxDomainEvent
-            {
-                EventId = e.EventId.ToString(),
-                Type = e.GetType().AssemblyQualifiedNameShort(),
-                Content = this.options.Serializer.SerializeToString(e),
-                ContentHash = HashHelper.Compute(e),
-                CreatedDate = e.Timestamp
-            };
-            this.PropagateContext(outboxEvent);
-            this.Context.OutboxDomainEvents.Add(outboxEvent);
-        }, cancellationToken: cancellationToken);
-
-        if (this.options.AutoSave)
-        {
-            await this.Context.SaveChangesAsync<OutboxDomainEvent>(cancellationToken).AnyContext(); // only save changes in this scoped context
-        }
-
-        if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
-        {
-            entity.DomainEvents.GetAll().ForEach((e) =>
-            {
-                this.eventQueue?.Enqueue(e.EventId.ToString());
-            }, cancellationToken: cancellationToken);
-        }
+        await this.StoreDomainEvents(entity, cancellationToken);
 
         entity.DomainEvents.Clear();
 
@@ -287,35 +203,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
         var result = await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
-        // publish all domain events after transaction ends
-        entity.DomainEvents.GetAll().ForEach((e) =>
-        {
-            TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.GetType().Name, e.EventId);
-
-            var outboxEvent = new OutboxDomainEvent
-            {
-                EventId = e.EventId.ToString(),
-                Type = e.GetType().AssemblyQualifiedNameShort(),
-                Content = this.options.Serializer.SerializeToString(e),
-                ContentHash = HashHelper.Compute(e),
-                CreatedDate = e.Timestamp
-            };
-            this.PropagateContext(outboxEvent);
-            this.Context.OutboxDomainEvents.Add(outboxEvent);
-        }, cancellationToken: cancellationToken);
-
-        if (this.options.AutoSave)
-        {
-            await this.Context.SaveChangesAsync<OutboxDomainEvent>(cancellationToken).AnyContext(); // only save changes in this scoped context
-        }
-
-        if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
-        {
-            entity.DomainEvents.GetAll().ForEach((e) =>
-            {
-                this.eventQueue?.Enqueue(e.EventId.ToString());
-            }, cancellationToken: cancellationToken);
-        }
+        await this.StoreDomainEvents(entity, cancellationToken);
 
         entity.DomainEvents.Clear();
 
@@ -337,37 +225,72 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }
 
-    private void PropagateContext(OutboxDomainEvent @event)
+    private async Task StoreDomainEvents(TEntity entity, CancellationToken cancellationToken)
+    {
+        entity.DomainEvents.GetAll().ForEach((e) =>
+        {
+            TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.EventId, e.GetType().Name);
+
+            var outboxEvent = new OutboxDomainEvent
+            {
+                EventId = e.EventId.ToString(),
+                Type = e.GetType().AssemblyQualifiedNameShort(),
+                Content = this.options.Serializer.SerializeToString(e),
+                ContentHash = HashHelper.Compute(e),
+                CreatedDate = e.Timestamp
+            };
+            this.PropagateContext(outboxEvent);
+            this.Context.OutboxDomainEvents.Add(outboxEvent);
+#if DEBUG
+            this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", outboxEvent);
+#endif
+        }, cancellationToken: cancellationToken);
+
+        if (this.options.AutoSave)
+        {
+            await this.Context.SaveChangesAsync<OutboxDomainEvent>(this.Logger, cancellationToken).AnyContext(); // only save changes in this scoped context
+        }
+
+        if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
+        {
+            entity.DomainEvents.GetAll().ForEach((e) =>
+            {
+                this.eventQueue?.Enqueue(e.EventId.ToString());
+            }, cancellationToken: cancellationToken);
+        }
+    }
+
+    private void PropagateContext(OutboxDomainEvent outboxEvent)
     {
         // propagate some internal properties
         var correlationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
         if (!correlationId.IsNullOrEmpty())
         {
-            @event.Properties.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
+            outboxEvent.Properties.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
         }
 
         var flowId = Activity.Current?.GetBaggageItem(ActivityConstants.FlowIdTagKey);
         if (!flowId.IsNullOrEmpty())
         {
-            @event.Properties.AddOrUpdate(Constants.FlowIdKey, flowId);
+            outboxEvent.Properties.AddOrUpdate(Constants.FlowIdKey, flowId);
         }
 
         var moduleName = Activity.Current?.GetBaggageItem(ModuleConstants.ModuleNameKey);
         if (!moduleName.IsNullOrEmpty())
         {
-            @event.Properties.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
+            outboxEvent.Properties.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
         }
 
         var activityId = Activity.Current?.Id;
         if (!activityId.IsNullOrEmpty())
         {
-            @event.Properties.AddOrUpdate(ModuleConstants.ActivityParentIdKey, activityId);
+            outboxEvent.Properties.AddOrUpdate(ModuleConstants.ActivityParentIdKey, activityId);
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository outbox domain event (type={DomainEventType}, id={DomainEventId})")]
-        public static partial void LogDomainEvent(ILogger logger, string logKey, string domainEventType, Guid domainEventId);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
+        public static partial void LogDomainEvent(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
     }
 }

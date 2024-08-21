@@ -6,23 +6,24 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
 using BridgingIT.DevKit.Application;
+using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Application.Modules.Core;
+using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
+using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Routing;
-using BridgingIT.DevKit.Application.JobScheduling;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 public class CoreModule : WebModuleBase
 {
@@ -72,14 +73,21 @@ public class CoreModule : WebModuleBase
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     .CommandTimeout(30))
             .WithHealthChecks()
-            //.WithDatabaseMigratorService(o => o
-            //    .Enabled(environment.IsDevelopment())
-            //    /*.PurgeOnStartup()*/)
-            .WithDatabaseCreatorService(/*o => o.DeleteOnStartup()*/)
+            .WithDatabaseMigratorService(o => o
+                .Enabled(environment.IsDevelopment())
+                .PurgeOnStartup())
+            //.WithDatabaseCreatorService(o => o
+            //    .Enabled(environment?.IsDevelopment() == true)
+            //    .DeleteOnStartup())
             //.WithOutboxMessageService(o => o
-            //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
+            //    .ProcessingInterval("00:00:30")
+            //    .StartupDelay("00:00:30")
+            //    .PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
             .WithOutboxDomainEventService(o => o
-                .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup().ProcessingModeImmediate());
+                .ProcessingInterval("00:00:30")
+                //.ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
+                .StartupDelay("00:00:15")
+                .PurgeOnStartup());
 
         //services.AddCosmosClient(o => o // WARN: register this once/global in the Program.cs
         //    .UseConnectionString())
@@ -127,10 +135,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<Bill>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Bill>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<Bill>>()
-            .WithBehavior<RepositoryDomainEventBehavior<Bill>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<Bill>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Bill>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Bill>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Bill, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Bill>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Bill, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<Dinner, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Dinner>>()
@@ -138,10 +146,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<Dinner>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Dinner>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<Dinner>>()
-            .WithBehavior<RepositoryDomainEventBehavior<Dinner>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<Dinner>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Dinner>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Dinner>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Dinner>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Dinner, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<Guest, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Guest>>()
@@ -149,10 +157,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<Guest>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Guest>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<Guest>>()
-            .WithBehavior<RepositoryDomainEventBehavior<Guest>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<Guest>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Guest>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Guest>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Guest, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Guest>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Guest, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<Domain.Host, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Domain.Host>>()
@@ -160,10 +168,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<Domain.Host>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Domain.Host>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<Domain.Host>>()
-            .WithBehavior<RepositoryDomainEventBehavior<Domain.Host>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<Domain.Host>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Domain.Host>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Domain.Host>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.Host, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Domain.Host>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.Host, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<Menu, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Menu>>()
@@ -171,10 +179,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<Menu>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Menu>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<Menu>>()
-            .WithBehavior<RepositoryDomainEventBehavior<Menu>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<Menu>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Menu>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Menu>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Menu, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Menu>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Menu, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<MenuReview, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<MenuReview>>()
@@ -182,10 +190,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<MenuReview>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<MenuReview>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<MenuReview>>()
-            .WithBehavior<RepositoryDomainEventBehavior<MenuReview>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<MenuReview>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<MenuReview>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<MenuReview>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<MenuReview, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<MenuReview>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<MenuReview, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<User, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<User>>()
@@ -193,10 +201,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<User>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Domain.User>(e => e.AuditState, inner));
             .WithBehavior<RepositoryAuditStateBehavior<User>>()
-            .WithBehavior<RepositoryDomainEventBehavior<User>>()
+            //.WithBehavior<RepositoryDomainEventBehavior<User>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<User>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<User>>();
-        //.WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.User, CoreDbContext>>()
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<User>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.User, CoreDbContext>>();
 
         return services;
     }

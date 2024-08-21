@@ -12,7 +12,6 @@ using System.IO.Compression;
 /// <summary>
 /// Initializes a new instance of the <see cref="CompressionSerializer"/> class.
 /// </summary>
-/// <param name="settings">The settings.</param>
 public class CompressionSerializer(ISerializer inner) : ISerializer
 {
     private readonly ISerializer inner = inner;

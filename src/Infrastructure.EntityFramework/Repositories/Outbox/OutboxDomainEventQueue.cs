@@ -29,7 +29,7 @@ public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
         }
     }
 
-    //public OutboxMessageQueue(ILoggerFactory loggerFactory, IOutboxDomainEventWorker worker)
+    //public OutboxDomainEventQueue(ILoggerFactory loggerFactory, IOutboxDomainEventWorker worker)
     //{
     //    this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
 

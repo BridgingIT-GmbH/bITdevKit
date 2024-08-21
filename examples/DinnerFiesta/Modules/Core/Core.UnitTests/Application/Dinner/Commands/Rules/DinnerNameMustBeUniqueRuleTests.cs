@@ -30,7 +30,7 @@ public class DinnerNameMustBeUniqueRuleTests
         var rule = new DinnerNameMustBeUniqueRule(repository, name);
 
         // Act
-        var result = await rule.IsSatisfiedAsync();
+        var result = await rule.ApplyAsync();
 
         // Assert
         result.ShouldBeTrue();

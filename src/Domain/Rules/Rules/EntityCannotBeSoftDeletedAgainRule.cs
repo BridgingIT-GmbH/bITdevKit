@@ -7,13 +7,14 @@ namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Domain.Model;
 
-public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : IBusinessRule
+public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity)
+    : DomainRuleBase
     where TEntity : class, IEntity, ISoftDeletable
 {
     private readonly bool? deleted = entity?.Deleted;
 
-    public string Message => "An already deleted entity cannot be deleted again.";
+    public override string Message => "An already deleted entity cannot be deleted again.";
 
-    public Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default) =>
+    public override Task<bool> ApplyAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(this.deleted is null || this.deleted == false);
 }

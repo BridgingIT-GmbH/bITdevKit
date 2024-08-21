@@ -14,7 +14,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class UserCreateCommandHandler(ILoggerFactory loggerFactory, IGenericRepository<User> repository) : CommandHandlerBase<UserCreateCommand, Result<User>>(loggerFactory)
+public class UserCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<User> repository)
+    : CommandHandlerBase<UserCreateCommand, Result<User>>(loggerFactory)
 {
     public override async Task<CommandResponse<Result<User>>> Process(UserCreateCommand command, CancellationToken cancellationToken)
     {
@@ -26,10 +29,10 @@ public class UserCreateCommandHandler(ILoggerFactory loggerFactory, IGenericRepo
             command.Email,
             command.Password);
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             UserRules.EmailMustBeUnique(repository, user),
-        });
+        ]);
 
         await repository.InsertAsync(user, cancellationToken);
 

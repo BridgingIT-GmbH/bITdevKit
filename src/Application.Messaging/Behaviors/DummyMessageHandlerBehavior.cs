@@ -17,10 +17,10 @@ public class DummyMessageHandlerBehavior(ILoggerFactory loggerFactory) : Message
             return;
         }
 
-        this.Logger.LogDebug("{LogKey} >>>>> dummy message handle behavior - before (id={MessageId})", Constants.LogKey, message.Id);
+        this.Logger.LogDebug("{LogKey} >>>>> dummy message handle behavior - before (id={MessageId})", Constants.LogKey, message.MessageId);
 
         await next().AnyContext(); // continue pipeline
 
-        this.Logger.LogDebug("{LogKey} <<<<< dummy message handle behavior - after (id={MessageId})", Constants.LogKey, message.Id);
+        this.Logger.LogDebug("{LogKey} <<<<< dummy message handle behavior - after (id={MessageId})", Constants.LogKey, message.MessageId);
     }
 }

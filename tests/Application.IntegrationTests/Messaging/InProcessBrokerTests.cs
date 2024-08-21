@@ -45,10 +45,9 @@ public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output, 
     public async Task Publish_ExpiredMessage_MessageNotHandledByHandler()
     {
         // Arrange
-        var message = new StubMessage("John", DateTime.UtcNow.Ticks)
-        {
-            Timestamp = DateTime.UtcNow.AddMinutes(-5)
-        };
+        var message = new StubMessage("John", DateTime.UtcNow.Ticks);
+        ReflectionHelper.SetProperty(message, nameof(StubMessage.Timestamp), DateTime.UtcNow.AddMinutes(-5));
+
         var messageBroker = this.ServiceProvider.GetService<IMessageBroker>();
         await messageBroker.Subscribe<StubMessage, StubMessageHandler>();
         StubMessageHandler.Processed = false;

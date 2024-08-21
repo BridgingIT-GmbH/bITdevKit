@@ -22,7 +22,7 @@ public class CustomerUnsubscribeCommandHandler(
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        Check.Throw(Array.Empty<IBusinessRule>());
+        DomainRules.Apply(Array.Empty<IDomainRule>());
 
         var customer = await repository.FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken).AnyContext();
         if (customer is not null)

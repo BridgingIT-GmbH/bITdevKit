@@ -18,7 +18,7 @@ public class UserCreatedMessageHandler(
     IMediator mediator) : MessageHandlerBase<UserCreatedMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
-//IChaosExceptionMessageHandler
+    //IChaosExceptionMessageHandler
 {
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
@@ -34,7 +34,7 @@ public class UserCreatedMessageHandler(
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
@@ -42,7 +42,7 @@ public class UserCreatedMessageHandler(
             var command = new CustomerCreateCommand { FirstName = message.FirstName, LastName = message.LastName, Email = message.Email };
             await mediator.Send(command, cancellationToken).AnyContext();
 
-            this.Logger.LogInformation($"{{LogKey}} >>>>> user created {message.Email} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
+            this.Logger.LogInformation($"{{LogKey}} >>>>> user created {message.Email} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId, this.GetType().FullName);
         }
     }
 }

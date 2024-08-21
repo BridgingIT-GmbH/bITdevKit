@@ -44,10 +44,13 @@ public class MarketingModule : WebModuleBase
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     .CommandTimeout(30))
             .WithHealthChecks()
-            //.WithDatabaseMigratorService(o => o
-            //    .Enabled(environment.IsDevelopment())
-            //    /*.PurgeOnStartup()*/);
-            .WithDatabaseCreatorService(/*o => o.DeleteOnStartup()*/);
+            .WithDatabaseMigratorService(o => o
+                .StartupDelay("00:00:05")
+                .Enabled(environment.IsDevelopment())
+                .PurgeOnStartup());
+        //.WithDatabaseCreatorService(o => o
+        //    .StartupDelay("00:00:05")
+        //    .Enabled(environment?.IsDevelopment() == true));
         //.WithOutboxMessageService(o => o
         //    .ProcessingInterval("00:00:30").StartupDelay("00:00:15").PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
         //.WithOutboxDomainEventService(o => o //

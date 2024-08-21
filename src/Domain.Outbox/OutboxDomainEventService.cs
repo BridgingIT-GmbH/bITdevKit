@@ -64,9 +64,13 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
             await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
         }
 
-        if (this.options.PurgeOnStartup)
+        if (this.options.PurgeProcessedOnStartup)
         {
-            await this.worker.PurgeAsync(cancellationToken);
+            await this.worker.PurgeAsync(true, cancellationToken);
+        }
+        else if (this.options.PurgeOnStartup)
+        {
+            await this.worker.PurgeAsync(false, cancellationToken);
         }
 
         await Task.Delay(1, cancellationToken);

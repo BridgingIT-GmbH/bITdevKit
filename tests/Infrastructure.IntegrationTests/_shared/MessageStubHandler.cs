@@ -29,16 +29,16 @@ public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messa
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
-            this.messageState.HandledMessageIds.Add(message.Id);
+            this.messageState.HandledMessageIds.Add(message.MessageId);
             this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
         }
     }
 }
@@ -57,16 +57,16 @@ public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageStat
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
-            this.messageState.HandledMessageIds.Add(message.Id);
+            this.messageState.HandledMessageIds.Add(message.MessageId);
             this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
         }
     }
 }

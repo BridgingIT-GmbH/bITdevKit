@@ -7,7 +7,16 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class HostUpdatedDomainEvent(Host host) : DomainEventBase
+public class HostUpdatedDomainEvent : DomainEventBase
 {
-    public Host Host { get; } = host;
+    public HostUpdatedDomainEvent() { } // needed for outbox deserialization
+
+    public HostUpdatedDomainEvent(Host host)
+    {
+        EnsureArg.IsNotNull(host, nameof(host));
+
+        //this.HostId = HostId.Create(host.Id.Value);
+    }
+
+    public HostId HostId { get; }
 }

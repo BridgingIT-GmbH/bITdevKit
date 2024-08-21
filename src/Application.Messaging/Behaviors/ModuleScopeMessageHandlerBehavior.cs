@@ -54,7 +54,7 @@ public class ModuleScopeMessageHandlerBehavior(
                             $"MESSAGE_PROCESS {messageType}",
                             async (a, c) => await next().AnyContext(),
                             kind: ActivityKind.Consumer,
-                            tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.Id, ["messaging.message_type"] = messageType },
+                            tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.MessageId, ["messaging.message_type"] = messageType },
                             cancellationToken: c),
                         parentId: parentId,
                         baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = moduleName, [ActivityConstants.CorrelationIdTagKey] = correlationId, [ActivityConstants.FlowIdTagKey] = flowId });
@@ -66,7 +66,7 @@ public class ModuleScopeMessageHandlerBehavior(
                         async (a, c) => await next().AnyContext(),
                         kind: ActivityKind.Consumer,
                         parentId: parentId,
-                        tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.Id, ["messaging.message_type"] = messageType },
+                        tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.MessageId, ["messaging.message_type"] = messageType },
                         baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = moduleName, [ActivityConstants.CorrelationIdTagKey] = correlationId, [ActivityConstants.FlowIdTagKey] = flowId });
                 }
             }

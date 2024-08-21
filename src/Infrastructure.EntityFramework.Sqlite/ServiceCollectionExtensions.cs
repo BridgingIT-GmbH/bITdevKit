@@ -9,6 +9,7 @@ using System;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Database.Command;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -45,7 +46,18 @@ public static class ServiceCollectionExtensions
         RegisterInterceptors(services, options, lifetime);
 
         services
-            .AddDbContext<TContext>((sp, o) =>
+            .AddDbContext<TContext>(
+                ConfigureDbContext(services, options, sqliteOptionsBuilder), lifetime);
+
+        return new SqliteDbContextBuilderContext<TContext>(
+            services,
+            lifetime,
+            connectionString: options.ConnectionString,
+            provider: Provider.Sqlite);
+
+        static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(IServiceCollection services, SqliteOptions options, Action<SqliteDbContextOptionsBuilder> sqliteOptionsBuilder)
+        {
+            return (sp, o) =>
             {
                 if (options.InterceptorTypes.SafeAny())
                 {
@@ -95,13 +107,8 @@ public static class ServiceCollectionExtensions
                 {
                     o.UseMemoryCache(options.MemoryCache);
                 }
-            }, lifetime);
-
-        return new SqliteDbContextBuilderContext<TContext>(
-            services,
-            lifetime,
-            connectionString: options.ConnectionString,
-            provider: Provider.Sqlite);
+            };
+        }
     }
 
     public static SqliteDbContextBuilderContext<TContext> AddSqliteDbContext<TContext>(

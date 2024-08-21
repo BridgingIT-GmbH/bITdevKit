@@ -15,25 +15,25 @@ using Microsoft.Extensions.Primitives;
 public static partial class Extensions
 {
     [DebuggerStepThrough]
-    public static T To<T>(this object source, bool throws = false, T defaultValue = default, CultureInfo cultureInfo = null)
+    public static TValue To<TValue>(this object source, bool throws = false, TValue defaultValue = default, CultureInfo cultureInfo = null)
     {
         if (source is null)
         {
             return defaultValue;
         }
 
-        var targetType = typeof(T);
+        var targetType = typeof(TValue);
 
         try
         {
             if (source.GetType() == typeof(StringValues))
             {
-                return source.ToString().To<T>();
+                return source.ToString().To<TValue>();
             }
 
             if (targetType == typeof(Guid))
             {
-                return (T)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                return (TValue)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
             }
 
             if (targetType == typeof(DateTime))
@@ -43,7 +43,7 @@ public static partial class Extensions
                                       DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                                       out DateTime result))
                 {
-                    return (T)(object)result;
+                    return (TValue)(object)result;
                 }
 
                 if (throws)
@@ -54,16 +54,34 @@ public static partial class Extensions
                 return defaultValue;
             }
 
+            if (targetType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTimeOffset result))
+                {
+                    return (TValue)(object)result;
+                }
+
+                if (throws)
+                {
+                    throw new FormatException($"Unable to convert '{source}' to DateTimeOffset.");
+                }
+
+                return defaultValue;
+            }
+
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
-                return (T)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
+                return (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
             }
 
             if (targetType.IsEnum && (source is string || source is int || source is decimal || source is double || source is float))
             {
                 try
                 {
-                    return (T)Enum.Parse(targetType, source.ToString());
+                    return (TValue)Enum.Parse(targetType, source.ToString());
                 }
                 catch (ArgumentException)
                 {
@@ -71,7 +89,7 @@ public static partial class Extensions
                 }
             }
 
-            return (T)source;
+            return (TValue)source;
         }
         catch (FormatException) when (!throws)
         {
@@ -126,6 +144,24 @@ public static partial class Extensions
                 return defaultValue;
             }
 
+            if (targetType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTimeOffset result))
+                {
+                    return result;
+                }
+
+                if (throws)
+                {
+                    throw new FormatException($"Unable to convert '{source}' to DateTime.");
+                }
+
+                return defaultValue;
+            }
+
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 return Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
@@ -156,7 +192,7 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static bool TryTo<T>(this object source, out T result, CultureInfo cultureInfo = null)
+    public static bool TryTo<TValue>(this object source, out TValue result, CultureInfo cultureInfo = null)
     {
         if (source is null)
         {
@@ -164,13 +200,13 @@ public static partial class Extensions
             return false;
         }
 
-        var targetType = typeof(T);
+        var targetType = typeof(TValue);
 
         try
         {
             if (targetType == typeof(Guid))
             {
-                result = (T)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                result = (TValue)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
                 return true;
             }
 
@@ -181,7 +217,22 @@ public static partial class Extensions
                                       DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                                       out DateTime dateTimeResult))
                 {
-                    result = (T)(object)dateTimeResult;
+                    result = (TValue)(object)dateTimeResult;
+                    return true;
+                }
+
+                result = default;
+                return false;
+            }
+
+            if (targetType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTimeOffset dateTimeResult))
+                {
+                    result = (TValue)(object)dateTimeResult;
                     return true;
                 }
 
@@ -191,7 +242,7 @@ public static partial class Extensions
 
             if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
-                result = (T)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
+                result = (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
                 return true;
             }
 
@@ -199,7 +250,7 @@ public static partial class Extensions
             {
                 try
                 {
-                    result = (T)Enum.Parse(targetType, source.ToString());
+                    result = (TValue)Enum.Parse(targetType, source.ToString());
                     return true;
                 }
                 catch (ArgumentException)
@@ -209,7 +260,7 @@ public static partial class Extensions
                 }
             }
 
-            result = (T)source;
+            result = (TValue)source;
             return true;
         }
         catch (OverflowException)
@@ -252,6 +303,21 @@ public static partial class Extensions
                                       cultureInfo ?? CultureInfo.InvariantCulture,
                                       DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                                       out DateTime dateTimeResult))
+                {
+                    result = dateTimeResult;
+                    return true;
+                }
+
+                result = default;
+                return false;
+            }
+
+            if (targetType == typeof(DateTimeOffset))
+            {
+                if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                                      cultureInfo ?? CultureInfo.InvariantCulture,
+                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                                      out DateTimeOffset dateTimeResult))
                 {
                     result = dateTimeResult;
                     return true;

@@ -7,7 +7,31 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class DinnerCreatedDomainEvent(Dinner dinner) : DomainEventBase
+public class DinnerCreatedDomainEvent : DomainEventBase
 {
-    public Dinner Dinner { get; } = dinner;
+    public DinnerCreatedDomainEvent() { } // needed for outbox deserialization
+
+    public DinnerCreatedDomainEvent(Dinner dinner)
+    {
+        EnsureArg.IsNotNull(dinner, nameof(dinner));
+
+        this.Name = dinner.Name;
+        this.DinnerId = dinner.Id?.Value ?? Guid.Empty;
+        this.HostId = dinner.HostId?.Value ?? Guid.Empty;
+        this.MenuId = dinner.MenuId?.Value ?? Guid.Empty;
+    }
+
+    public string Name { get; set; }
+
+    //public DinnerId DinnerId { get; } // disabled due to json outbox deserialization issues (null)
+
+    //public HostId HostId { get; } // disabled due to json outbox deserialization issues (null)
+
+    //public MenuId MenuId { get; } // disabled due to json outbox deserialization issues (null)
+
+    public Guid DinnerId { get; set; }
+
+    public Guid HostId { get; set; }
+
+    public Guid MenuId { get; set; }
 }

@@ -7,13 +7,16 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : IBusinessRule
+public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : IDomainRule
 {
     private readonly bool isDeleted = isDeleted;
 
     public string Message => "Deleting can only be done once";
 
-    public Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return Task.FromResult(!this.isDeleted);
     }

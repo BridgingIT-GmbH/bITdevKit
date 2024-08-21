@@ -7,7 +7,16 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using BridgingIT.DevKit.Domain;
 
-public class MenuUpdatedDomainEvent(Menu menu) : DomainEventBase
+public class MenuUpdatedDomainEvent : DomainEventBase
 {
-    public Menu Menu { get; } = menu;
+    public MenuUpdatedDomainEvent() { } // needed for outbox deserialization
+
+    public MenuUpdatedDomainEvent(Menu menu)
+    {
+        EnsureArg.IsNotNull(menu, nameof(menu));
+
+        //this.MenuId = MenuId.Create(menu.Id.Value);
+    }
+
+    public MenuId MenuId { get; }
 }

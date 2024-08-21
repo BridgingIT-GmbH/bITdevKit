@@ -72,13 +72,24 @@ public static class Configure
             };
         });
 
-        options.Map<BusinessRuleNotSatisfiedException>(ex =>
+        options.Map<DomainRuleException>(ex =>
         {
             return new MvcProblemDetails
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
+                Type = "https://httpstatuses.com/400"
+            };
+        });
+
+        options.Map<DomainPolicyException>(ex =>
+        {
+            return new MvcProblemDetails
+            {
+                Title = "Bad Request",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = $"[{ex.GetType().Name}] {ex.ToString()}",
                 Type = "https://httpstatuses.com/400"
             };
         });

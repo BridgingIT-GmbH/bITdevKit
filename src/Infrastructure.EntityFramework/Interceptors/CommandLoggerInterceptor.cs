@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
+namespace Microsoft.EntityFrameworkCore.Database.Command;
 
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading.Tasks;
 using System.Threading;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : DbCommandInterceptor
 {

@@ -24,7 +24,7 @@ public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
@@ -33,7 +33,7 @@ public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
             Result = $"{message.FirstName} {message.Ticks}";
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
         }
     }
 }
@@ -54,7 +54,7 @@ public class AnotherStubMessageHandler(ILoggerFactory loggerFactory) : MessageHa
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
@@ -63,7 +63,7 @@ public class AnotherStubMessageHandler(ILoggerFactory loggerFactory) : MessageHa
             Result = $"{message.FirstName} {message.Ticks}";
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
         }
     }
 }

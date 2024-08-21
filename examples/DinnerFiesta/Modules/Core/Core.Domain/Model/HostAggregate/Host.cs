@@ -73,8 +73,11 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
         this.FirstName = firstName;
         this.LastName = lastName;
 
-        this.DomainEvents.Register(
-            new HostUpdatedDomainEvent(this), true);
+        if (this.Id != null && this.Id.Value != Guid.Empty)
+        {
+            this.DomainEvents.Register(
+                new HostUpdatedDomainEvent(this), true);
+        }
 
         return this;
     }
@@ -89,8 +92,11 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
 
         this.ProfileImage = uri;
 
-        this.DomainEvents.Register(
+        if (this.Id != null && this.Id.Value != Guid.Empty)
+        {
+            this.DomainEvents.Register(
             new HostUpdatedDomainEvent(this), true);
+        }
 
         return this;
     }

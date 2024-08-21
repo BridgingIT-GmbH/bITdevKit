@@ -32,14 +32,14 @@ public class EchoMessageHandler(
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
             await Task.Delay(1400, cancellationToken);
 
-            this.Logger.LogInformation($"{{LogKey}} >>>>> echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
+            this.Logger.LogInformation($"{{LogKey}} >>>>> echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId, this.GetType().FullName);
         }
     }
 }

@@ -30,10 +30,10 @@ public class DinnerSchedule : ValueObject
         DateTimeOffset startDateTime,
         DateTimeOffset endDateTime)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime),
-        });
+        ]);
 
         return new DinnerSchedule(startDateTime, endDateTime);
     }

@@ -38,10 +38,10 @@ public class User : AuditableAggregateRoot<UserId, Guid>
         EnsureArg.IsNotNull(email, nameof(email));
         EnsureArg.IsNotNull(password, nameof(password));
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             UserRules.IsValidPassword(password),
-        });
+        ]);
 
         var user = new User(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email), password);
 
@@ -59,5 +59,11 @@ public class User : AuditableAggregateRoot<UserId, Guid>
 
         this.FirstName = firstName.Trim();
         this.LastName = lastName.Trim();
+
+        if (this.Id != null && this.Id.Value != Guid.Empty)
+        {
+            this.DomainEvents.Register(
+                new UserUpdatedDomainEvent(this), true);
+        }
     }
 }

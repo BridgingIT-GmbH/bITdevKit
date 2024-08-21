@@ -58,11 +58,11 @@ public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQu
         }
         else
         {
-            Check.Throw(new IBusinessRule[]
-            {
+            DomainRules.Apply(
+            [
                 new LongitudeShouldBeInRange(query.Longitude),
                 new LatitudeShouldBeInRange(query.Latitude)
-            });
+            ]);
 
             var city = await this.cityRepository.FindOneAsync(new CityHasLocationSpecification(query.Longitude, query.Latitude), cancellationToken: cancellationToken).AnyContext()
                     ?? throw new AggregateNotFoundException(nameof(City));

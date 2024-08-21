@@ -22,7 +22,7 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var message = new StubMessage() { FirstName = "John", LastName = $"Doe{ticks}" };
         var next = Substitute.For<MessagePublisherDelegate>();
-        var sut = OutboxMessageWorkerBehaviorFascade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
+        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
         //var sut = new OutboxMessagePublisherBehavior<StubDbContext>(loggerFactory, this.fixture.Context);
 
         // Act
@@ -42,7 +42,7 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var message = new StubMessage() { FirstName = "John", LastName = $"Doe{ticks}" };
         var messageQueue = Substitute.For<IOutboxMessageQueue>();
         var next = Substitute.For<MessagePublisherDelegate>();
-        var sut = OutboxMessageWorkerBehaviorFascade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
+        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
 
         // Act
         await sut.Publish(message, CancellationToken.None, next); // OutboxMessage are autosaved and enqueued

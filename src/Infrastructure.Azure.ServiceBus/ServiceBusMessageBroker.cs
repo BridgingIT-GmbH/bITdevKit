@@ -76,7 +76,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
         var serviceBusMessage = new ServiceBusMessage(this.options.Serializer.SerializeToBytes(message))
         {
-            MessageId = message.Id,
+            MessageId = message.MessageId,
             Subject = messageName,
             CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey),
             TimeToLive = this.options.MessageExpiration ?? new TimeSpan(0, 59, 59),
@@ -91,7 +91,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             await sender.SendMessageAsync(serviceBusMessage, cancellationToken).AnyContext();
         }
 
-        this.Logger.LogDebug("{LogKey} servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})", Constants.LogKey, messageName, message.Id, topicName);
+        this.Logger.LogDebug("{LogKey} servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})", Constants.LogKey, messageName, message.MessageId, topicName);
     }
 
     protected override async Task OnProcess(IMessage message, CancellationToken cancellationToken)
@@ -152,7 +152,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
         if (message is not null)
         {
-            this.Logger.LogDebug("{LogKey} servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})", Constants.LogKey, messageName, message.Id, args.EntityPath);
+            this.Logger.LogDebug("{LogKey} servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})", Constants.LogKey, messageName, message.MessageId, args.EntityPath);
 
             await this.Process(new MessageRequest(message, CancellationToken.None));
         }

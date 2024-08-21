@@ -25,7 +25,7 @@ public class AverageRating : ValueObject
 
     public int NumRatings { get; private set; }
 
-    public static implicit operator double(AverageRating rating) => rating.Value.HasValue ? rating.Value.Value : 0;
+    public static implicit operator double(AverageRating rating) => rating.Value ?? 0;
 
     public static AverageRating Create(double value = 0, int numRatings = 0)
     {

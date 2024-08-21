@@ -12,7 +12,10 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class DinnerCreatedDomainEventHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository) : DomainEventHandlerBase<DinnerCreatedDomainEvent>(loggerFactory)
+public class DinnerCreatedDomainEventHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Menu> repository) // TODO: scoped repo cannot be injected somehow, see log
+    : DomainEventHandlerBase<DinnerCreatedDomainEvent>(loggerFactory)
 {
     public override bool CanHandle(DinnerCreatedDomainEvent notification)
     {
@@ -22,19 +25,20 @@ public class DinnerCreatedDomainEventHandler(ILoggerFactory loggerFactory, IGene
     public override async Task Process(DinnerCreatedDomainEvent @event, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(@event, nameof(@event));
-        EnsureArg.IsNotNull(@event.Dinner, nameof(@event.Dinner));
-        EnsureArg.IsNotNull(@event.Dinner.MenuId, nameof(@event.Dinner.MenuId));
 
-        this.Logger.LogInformation($"checking Dinner: {@event.Dinner.Name} with Menu: {@event.Dinner.MenuId} for Host: {@event.Dinner.HostId}");
+        var dinnerId = DinnerId.Create(@event.DinnerId);
+        var hostId = HostId.Create(@event.HostId);
+        var menuId = MenuId.Create(@event.MenuId);
 
-        Check.Throw(new IBusinessRule[]
-        {
-            new MenuForHostMustExistRule(repository, @event.Dinner.HostId, @event.Dinner.MenuId),
-        });
+        this.Logger.LogInformation($"checking Dinner: {@event.Name} with Menu: {menuId} for Host: {hostId}");
 
-        var menu = await repository.FindOneAsync(@event.Dinner.MenuId, cancellationToken: cancellationToken);
-        menu.AddDinnerId((DinnerId)@event.Dinner.Id); // TODO: akward cast here
-        //menu.AddDinnerId(@event.Dinner.Id);
+        DomainRules.Apply(
+        [
+            new MenuForHostMustExistRule(repository, hostId, menuId),
+        ]);
+
+        var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
+        menu.AddDinnerId(dinnerId);
 
         await repository.UpdateAsync(menu, cancellationToken);
     }

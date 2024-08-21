@@ -90,6 +90,7 @@
     //     return System.Text.RegularExpressions.Regex.Replace(
     //         value,
     //         @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
-    //         System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    //         System.Text.RegularExpressions.RegexOptions.IgnoreCase,
+    //         new TimeSpan(0, 0, 3));
     // }
 }

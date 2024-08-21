@@ -9,7 +9,7 @@ using Application.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public static class OutboxMessageWorkerBehaviorFascade<TContext>
+public static class OutboxMessageWorkerBehaviorFacade<TContext>
     where TContext : DbContext, IOutboxMessageContext
 {
     public static OutboxMessagePublisherBehavior<TContext> CreatePublishBehaviorForTest(ILoggerFactory loggerFactory,

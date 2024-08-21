@@ -40,6 +40,11 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
     /// <param name="type">The type.</param>
     public object Deserialize(Stream input, Type type)
     {
+        if (type is null)
+        {
+            throw new ArgumentNullException("Type cannot be null when deserializing", nameof(type));
+        }
+
         if (input is null || input.Length == 0)
         {
             return null;

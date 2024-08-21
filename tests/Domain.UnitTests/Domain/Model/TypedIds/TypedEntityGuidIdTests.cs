@@ -158,6 +158,21 @@ public class TypedEntityGuidIdTests
         Assert.Equal(guid.ToString(), id.ToString());
     }
 
+    [Fact]
+    public void Deserialize_WithValidId_ShouldCreateIdWithParsedValue()
+    {
+        var entity = new StubGuidEntity
+        {
+            Id = StubGuidEntityId.Create("12345678-1234-1234-1234-123456789012")
+        };
+
+        var serialized = new SystemTextJsonSerializer().SerializeToString(entity);
+        var deserialized = new SystemTextJsonSerializer().Deserialize<StubGuidEntity>(serialized);
+
+        deserialized.Id.Value.ShouldBe(Guid.Parse("12345678-1234-1234-1234-123456789012"));
+        deserialized.Id.IsEmpty.ShouldBeFalse();
+    }
+
     [TypedEntityId<Guid>]
     public partial class StubGuidEntity : Entity<StubGuidEntityId>
     {

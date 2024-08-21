@@ -14,7 +14,7 @@ public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : Messa
 {
     public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
     {
-        this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})", Constants.LogKey, message.Id);
+        this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})", Constants.LogKey, message.MessageId);
 
         if (cancellationToken.IsCancellationRequested)
         {
@@ -23,6 +23,6 @@ public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : Messa
 
         await next().AnyContext(); // continue pipeline
 
-        this.Logger.LogDebug("{LogKey} <<<<< dummy message publish behavior - after (id={MessageId})", Constants.LogKey, message.Id);
+        this.Logger.LogDebug("{LogKey} <<<<< dummy message publish behavior - after (id={MessageId})", Constants.LogKey, message.MessageId);
     }
 }

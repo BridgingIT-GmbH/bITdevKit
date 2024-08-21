@@ -22,9 +22,13 @@ public class OutboxDomainEventOptions : OptionsBase
 
     public bool PurgeOnStartup { get; set; }
 
+    public bool PurgeProcessedOnStartup { get; set; }
+
     public ISerializer Serializer { get; set; }
 
     public bool AutoSave { get; set; } = true;
 
-    public int ProcessingCount { get; set; } = int.MaxValue; // worker Take each interval
+    public int ProcessingCount { get; set; } = int.MaxValue; // worker domain events to process each interval
+
+    public int RetryCount { get; set; } = 3; // worker retry for each domain event processing
 }

@@ -121,10 +121,10 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime),
-        });
+        ]);
 
         this.Schedule = schedule;
 
@@ -141,10 +141,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        Check.Throw(new IBusinessRule[]
-        {
-            // TODO: check certain transitions which may not be allowed
-        });
+        DomainRules.Apply([]);
 
         this.Status = status;
 

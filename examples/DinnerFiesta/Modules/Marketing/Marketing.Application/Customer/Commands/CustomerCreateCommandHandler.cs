@@ -27,7 +27,7 @@ public class CustomerCreateCommandHandler(
             command.LastName,
             command.Email);
 
-        Check.Throw(Array.Empty<IBusinessRule>());
+        DomainRules.Apply(Array.Empty<IDomainRule>());
 
         var existingCustomer = (await repository.FindAllAsync(
             new CustomerForEmailSpecification(customer.Email), cancellationToken: cancellationToken).AnyContext()).FirstOrDefault();

@@ -57,7 +57,7 @@ Right click and choose 'Update Unchase' to regenerate the [ApiClient](.\WeatherF
 - Jobs
 - Commands/Queries
 - Repositories + Decorators
-- BusinessRules
+- DomainRules
 - ValueObject
 - AggregateRoot + TypedIds
 - DomainEvents

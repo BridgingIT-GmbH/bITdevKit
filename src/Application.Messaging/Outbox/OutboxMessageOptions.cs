@@ -27,4 +27,6 @@ public class OutboxMessageOptions : OptionsBase
     public bool AutoSave { get; set; } = true;
 
     public int ProcessingCount { get; set; } = int.MaxValue; // worker Take each interval
+
+    public int RetryCount { get; set; } = 3; // worker retry for each domain event processing
 }

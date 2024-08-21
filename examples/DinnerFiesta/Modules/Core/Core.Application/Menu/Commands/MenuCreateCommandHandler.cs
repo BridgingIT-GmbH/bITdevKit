@@ -13,7 +13,9 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
 
-public class MenuCreateCommandHandler(ILoggerFactory loggerFactory, IGenericRepository<Menu> repository) : CommandHandlerBase<MenuCreateCommand, Result<Menu>>(loggerFactory)
+public class MenuCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Menu> repository) : CommandHandlerBase<MenuCreateCommand, Result<Menu>>(loggerFactory)
 {
     public override async Task<CommandResponse<Result<Menu>>> Process(MenuCreateCommand command, CancellationToken cancellationToken)
     {

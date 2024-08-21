@@ -45,11 +45,11 @@ public class DinnerCreateCommandHandler(
             Price.Create(command.Price.Amount, command.Price.Currency),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             new DinnerNameMustBeUniqueRule(repository, dinner.Name),
             new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule),
-        });
+        ]);
 
         await repository.InsertAsync(dinner, cancellationToken);
 

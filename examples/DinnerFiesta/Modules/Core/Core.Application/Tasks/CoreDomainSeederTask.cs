@@ -32,7 +32,8 @@ public class CoreDomainSeederTask(
 
     private async Task SeedUsers(IGenericRepository<User> repository)
     {
-        foreach (var entity in CoreSeedModels.Users(0))
+        foreach (var entity in CoreSeedModels.Users(0)
+            .Where(e => e.FirstName.StartsWith("John") || e.FirstName.StartsWith("Erik") || e.FirstName.StartsWith("Sophie")))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {

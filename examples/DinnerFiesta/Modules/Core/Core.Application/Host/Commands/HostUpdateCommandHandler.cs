@@ -29,7 +29,7 @@ public class HostUpdateCommandHandler(
             return CommandResponse.For(hostResult);
         }
 
-        Check.Throw(new IBusinessRule[] { /*no rules yet*/ });
+        DomainRules.Apply([]);
 
         host.ChangeName(command.FirstName, command.LastName)
             .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);

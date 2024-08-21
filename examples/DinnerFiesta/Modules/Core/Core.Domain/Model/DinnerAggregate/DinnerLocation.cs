@@ -65,12 +65,12 @@ public class DinnerLocation : ValueObject
         double? latitude = null,
         double? longitude = null)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             DinnerRules.CountryShouldBeKnown(country),
             DinnerRules.LongitudeShouldBeInRange(longitude),
             DinnerRules.LatitudeShouldBeInRange(latitude)
-        });
+        ]);
 
         return new DinnerLocation(
             name,

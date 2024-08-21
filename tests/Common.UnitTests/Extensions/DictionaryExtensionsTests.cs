@@ -202,4 +202,103 @@ public class DictionaryExtensionsTests
         dictionary.Count.ShouldBe(1);
         dictionary["key1"].ShouldBe(42);
     }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_NullDictionary_ReturnsFalse()
+    {
+        // Arrange
+        Dictionary<string, int> sut = null;
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("any");
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_EmptyDictionary_ReturnsFalse()
+    {
+        // Arrange
+        var sut = new Dictionary<string, int>();
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("any");
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_ExactMatch_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new Dictionary<string, int> { ["Key"] = 1 };
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("Key");
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_DifferentCase_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new Dictionary<string, int> { ["Key"] = 1 };
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("kEy");
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_NonExistentKey_ReturnsFalse()
+    {
+        // Arrange
+        var sut = new Dictionary<string, int> { ["Key"] = 1 };
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("NonExistent");
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ContainsKeyIgnoreCase_MultipleKeys_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new Dictionary<string, int>
+        {
+            ["First"] = 1,
+            ["Second"] = 2,
+            ["Third"] = 3
+        };
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase("sEcOnD");
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void ContainsKeyIgnoreCase_EmptyOrNullKey_ReturnsFalse(string key)
+    {
+        // Arrange
+        var sut = new Dictionary<string, int> { ["Key"] = 1 };
+
+        // Act
+        var result = sut.ContainsKeyIgnoreCase(key);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
 }

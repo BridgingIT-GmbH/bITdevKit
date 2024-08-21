@@ -116,4 +116,10 @@ public class OutboxMessageOptionsBuilder :
         this.Target.ProcessingCount = count;
         return this;
     }
+
+    public OutboxMessageOptionsBuilder RetryCount(int retries)
+    {
+        this.Target.RetryCount = retries;
+        return this;
+    }
 }

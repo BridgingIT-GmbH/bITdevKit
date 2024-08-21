@@ -19,7 +19,7 @@ using Xunit;
 public class DinnerCreateCommandHandlerTests
 {
     [Fact]
-    public async Task Process_SatisfyingBusinessRule_ReturnsResponse()
+    public async Task Process_SatisfyingDomainRule_ReturnsResponse()
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
@@ -51,7 +51,7 @@ public class DinnerCreateCommandHandlerTests
     }
 
     //[Fact]
-    //public async Task Process_NotSatisfyingBusinessRule_ThrowsBusinessRuleNotSatisfiedException()
+    //public async Task Process_NotSatisfyingDomainRule_ThrowsDomainRuleNotSatisfiedException()
     //{
     //    // Arrange
     //    var ticks = DateTime.UtcNow.Ticks;
@@ -69,7 +69,7 @@ public class DinnerCreateCommandHandlerTests
     //    // Act & Assert
     //    var sut = new DinnerCreateCommandHandler(loggerFactory, repository);
     //    TODO: refactor to use Shouldly
-    //    await Assert.ThrowsAsync<BusinessRuleNotSatisfiedException>(async () => await sut.Process(command, CancellationToken.None)).AnyContext();
+    //    await Assert.ThrowsAsync<DomainRuleNotSatisfiedException>(async () => await sut.Process(command, CancellationToken.None)).AnyContext();
     //    await repository.DidNotReceive().InsertAsync(Arg.Any<Dinner>(), Arg.Any<CancellationToken>());
     //}
 

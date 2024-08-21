@@ -72,7 +72,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         var @event = new AggregateDeletedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, typeof(AggregateDeletedDomainEvent<TEntity>).Name, @event.EventId);
+        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId, typeof(AggregateDeletedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
@@ -162,7 +162,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         var @event = new AggregateCreatedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, typeof(AggregateInsertedDomainEvent<TEntity>).Name, @event.EventId);
+        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId, typeof(AggregateInsertedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
@@ -173,7 +173,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         var @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, typeof(AggregateUpdatedDomainEvent<TEntity>).Name, @event.EventId);
+        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId, typeof(AggregateUpdatedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
@@ -193,7 +193,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
             @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
         }
 
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.GetType().Name, @event.EventId);
+        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId, @event.GetType().Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -216,7 +216,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository register domain event (type={EventType}, id={EventId})")]
-        public static partial void LogRegister(ILogger logger, string logKey, string eventType, Guid eventId);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository register domain event (id={DomainEventId}, type={DomainEventType})")]
+        public static partial void LogRegister(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
     }
 }

@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-public class HostUserMustBeUniqueRule : IBusinessRule
+public class HostUserMustBeUniqueRule : IDomainRule
 {
     private readonly IGenericRepository<Host> repository;
     private readonly UserId userId;
@@ -26,7 +26,10 @@ public class HostUserMustBeUniqueRule : IBusinessRule
 
     public string Message => "Host UserId should be unique";
 
-    public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return !(await this.repository.FindAllAsync(
             HostSpecifications.ForUser(this.userId), cancellationToken: cancellationToken)).SafeAny();
@@ -35,5 +38,5 @@ public class HostUserMustBeUniqueRule : IBusinessRule
 
 public static partial class HostRules
 {
-    public static IBusinessRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId) => new HostUserMustBeUniqueRule(repository, userId);
+    public static IDomainRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId) => new HostUserMustBeUniqueRule(repository, userId);
 }

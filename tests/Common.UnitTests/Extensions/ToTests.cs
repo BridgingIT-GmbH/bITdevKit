@@ -26,6 +26,8 @@ public class ToTests
         "28173829281734".To(typeof(long)).ShouldBeOfType<long>().ShouldBe(28173829281734);
         DateTime.Now.ToString("o").To<DateTime>().ShouldBeOfType<DateTime>().Year.ShouldBe(DateTime.UtcNow.Year);
         DateTime.Now.ToString("o").To(typeof(DateTime)).ShouldBeOfType<DateTime>().Year.ShouldBe(DateTime.UtcNow.Year);
+        DateTime.Now.ToString("o").To<DateTimeOffset>().ShouldBeOfType<DateTimeOffset>().Year.ShouldBe(DateTime.UtcNow.Year);
+        DateTime.Now.ToString("o").To(typeof(DateTimeOffset)).ShouldBeOfType<DateTimeOffset>().Year.ShouldBe(DateTime.UtcNow.Year);
         "2.0".To<double>().ShouldBe(2.0);
         "2.0".To(typeof(double)).ShouldBe(2.0);
         "0.2".To<double>().ShouldBe(0.2);
@@ -78,9 +80,13 @@ public class ToTests
         var now = DateTime.Now;
         now.ToString("o").TryTo<DateTime>(out var dateTimeResult).ShouldBeTrue();
         dateTimeResult.ShouldBeOfType<DateTime>().Year.ShouldBe(now.Year);
+        new DateTimeOffset(now).ToString("o").TryTo<DateTime>(out var dateTimeResult2).ShouldBeTrue();
+        dateTimeResult2.ShouldBeOfType<DateTime>().Year.ShouldBe(now.Year);
 
         now.ToString("o").TryTo(typeof(DateTime), out var objDateTimeResult).ShouldBeTrue();
         objDateTimeResult.ShouldBeOfType<DateTime>().Year.ShouldBe(now.Year);
+        new DateTimeOffset(now).ToString("o").TryTo(typeof(DateTime), out var objDateTimeResult2).ShouldBeTrue();
+        objDateTimeResult2.ShouldBeOfType<DateTime>().Year.ShouldBe(now.Year);
 
         "2.0".TryTo<double>(out var doubleResult).ShouldBeTrue();
         doubleResult.ShouldBe(2.0);
@@ -193,10 +199,146 @@ public class ToTests
         localTimeResult.Kind.ShouldBe(DateTimeKind.Utc);
     }
 
-    [Flags]
+    [Fact]
+    public void To_GivenNullSource_ReturnsDefaultValue()
+    {
+        // Arrange
+        object source = null;
+        const int defaultValue = 42;
+
+        // Act
+        var result = source.To<int>(defaultValue: defaultValue);
+
+        // Assert
+        result.ShouldBe(defaultValue);
+    }
+
+    [Fact]
+    public void To_GivenStringValuesSource_ConvertToTargetType()
+    {
+        // Arrange
+        var source = new StringValues("42");
+
+        // Act
+        var result = source.To<int>();
+
+        // Assert
+        result.ShouldBe(42);
+    }
+
+    [Fact]
+    public void To_GivenGuidTarget_ConvertToGuid()
+    {
+        // Arrange
+        const string source = "12345678-1234-1234-1234-123456789012";
+
+        // Act
+        var result = source.To<Guid>();
+
+        // Assert
+        result.ShouldBe(new Guid("12345678-1234-1234-1234-123456789012"));
+    }
+
+    [Fact]
+    public void To_GivenDateTimeTarget_ConvertToDateTime()
+    {
+        // Arrange
+        const string source = "2023-01-01T00:00:00Z";
+
+        // Act
+        var result = source.To<DateTime>();
+
+        // Assert
+        result.ShouldBe(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void To_GivenDateTimeOffsetTarget_ConvertToDateTimeOffset()
+    {
+        // Arrange
+        const string source = "2023-01-01T00:00:00+00:00";
+
+        // Act
+        var result = source.To<DateTimeOffset>();
+
+        // Assert
+        result.ShouldBe(new DateTimeOffset(2023, 1, 1, 0, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void To_GivenEnumTarget_ConvertToEnum()
+    {
+        // Arrange
+        const string source = "Value1";
+
+        // Act
+        var result = source.To<TestEnum>();
+
+        // Assert
+        result.ShouldBe(TestEnum.Value1);
+    }
+
+    [Fact]
+    public void To_GivenInvalidConversion_ThrowsException()
+    {
+        // Arrange
+        const string source = "not a number";
+
+        // Act & Assert
+        Should.Throw<FormatException>(() => source.To<int>(throws: true));
+    }
+
+    [Fact]
+    public void TryTo_GivenValidConversion_ReturnsTrue()
+    {
+        // Arrange
+        const string source = "42";
+
+        // Act
+        var success = source.TryTo<int>(out var result);
+
+        // Assert
+        success.ShouldBeTrue();
+        result.ShouldBe(42);
+    }
+
+    [Fact]
+    public void TryTo_GivenInvalidConversion_ReturnsFalse()
+    {
+        // Arrange
+        const string source = "not a number";
+
+        // Act
+        var success = source.TryTo<int>(out var result);
+
+        // Assert
+        success.ShouldBeFalse();
+        result.ShouldBe(0);
+    }
+
+    [Fact]
+    public void TryTo_GivenNullSource_ReturnsFalse()
+    {
+        // Arrange
+        object source = null;
+
+        // Act
+        var success = source.TryTo<int>(out var result);
+
+        // Assert
+        success.ShouldBeFalse();
+        result.ShouldBe(0);
+    }
+
 #pragma warning disable SA1201 // Elements should appear in the correct order
+    public enum TestEnum
+    {
+        Value1,
+        Value2
+    }
+
+    [Flags]
     public enum StubEnums
-#pragma warning restore SA1201 // Elements should appear in the correct order
     {
         None = 0,
         Dog = 1,
@@ -206,4 +348,5 @@ public class ToTests
         Reptile = 16,
         Other = 32
     }
+#pragma warning restore SA1201 // Elements should appear in the correct order
 }

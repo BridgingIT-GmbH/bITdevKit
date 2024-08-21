@@ -39,6 +39,6 @@ public class PriceTests
         Func<Price> action = () => Price.Create(amount, this.currency);
 
         // Assert
-        await Should.ThrowAsync<BusinessRuleNotSatisfiedException>(async () => await Task.Run(action));
+        await Should.ThrowAsync<DomainRuleException>(async () => await Task.Run(action));
     }
 }

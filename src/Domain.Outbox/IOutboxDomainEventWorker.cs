@@ -23,6 +23,7 @@ public interface IOutboxDomainEventWorker
     /// <summary>
     /// Purges domain events from the outbox.
     /// </summary>
+    /// <param name="processedOnly">Onle purge processed domain events</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    Task PurgeAsync(CancellationToken cancellationToken = default);
+    Task PurgeAsync(bool processedOnly = false, CancellationToken cancellationToken = default);
 }

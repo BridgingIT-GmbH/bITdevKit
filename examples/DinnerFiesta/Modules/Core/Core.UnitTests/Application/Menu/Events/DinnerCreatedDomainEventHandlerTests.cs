@@ -17,6 +17,7 @@ using NSubstitute.ReceivedExtensions;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
 using Xunit;
+using static BenchmarkDotNet.Engines.EngineEventSource;
 
 public class DinnerCreatedDomainEventHandlerTests
 {
@@ -43,7 +44,7 @@ public class DinnerCreatedDomainEventHandlerTests
     }
 
     [Fact]
-    public async Task Process_MenuForDifferentHost_ThrowsBusinessRuleValidationException()
+    public async Task Process_MenuForDifferentHost_ThrowsDomainRuleValidationException()
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
@@ -57,12 +58,12 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<BusinessRuleNotSatisfiedException>(
+        await Should.ThrowAsync<DomainRuleException>(
             async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]
-    public async Task Process_MenuDoesNotExist_ThrowsBusinessRuleValidationException()
+    public async Task Process_MenuDoesNotExist_ThrowsDomainRuleValidationException()
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
@@ -74,7 +75,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<BusinessRuleNotSatisfiedException>(
+        await Should.ThrowAsync<DomainRuleException>(
             async () => await sut.Process(@event, cancellationToken));
     }
 
@@ -82,8 +83,10 @@ public class DinnerCreatedDomainEventHandlerTests
     public void CanHandle_Always_ReturnsTrue()
     {
         // Arrange
+        var ticks = DateTime.UtcNow.Ticks;
+        var dinner = Stubs.Dinners(ticks).ToArray()[0];
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), Substitute.For<IGenericRepository<Menu>>());
-        var @event = new DinnerCreatedDomainEvent(default);
+        var @event = new DinnerCreatedDomainEvent(dinner);
 
         // Act
         var result = sut.CanHandle(@event);

@@ -47,6 +47,11 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
     /// <param name="type">The type.</param>
     public object Deserialize(Stream input, Type type)
     {
+        if (type is null)
+        {
+            throw new ArgumentNullException("Type cannot be null when deserializing", nameof(type));
+        }
+
         if (input is null)
         {
             return null;

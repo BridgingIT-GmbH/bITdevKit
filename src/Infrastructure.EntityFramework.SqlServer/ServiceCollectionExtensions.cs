@@ -9,6 +9,7 @@ using System;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Database.Command;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -46,7 +47,18 @@ public static class ServiceCollectionExtensions
         RegisterInterceptors(services, options, lifetime);
 
         services
-            .AddDbContext<TContext>((sp, o) =>
+            .AddDbContext<TContext>(
+                ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
+
+        return new SqlServerDbContextBuilderContext<TContext>(
+            services,
+            lifetime,
+            connectionString: options.ConnectionString,
+            provider: Provider.SqlServer);
+
+        static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(IServiceCollection services, SqlServerOptions options, Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder)
+        {
+            return (sp, o) =>
             {
                 if (options.InterceptorTypes.SafeAny())
                 {
@@ -98,13 +110,8 @@ public static class ServiceCollectionExtensions
                 }
 
                 o.ConfigureWarnings(o => o.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
-            }, lifetime);
-
-        return new SqlServerDbContextBuilderContext<TContext>(
-            services,
-            lifetime,
-            connectionString: options.ConnectionString,
-            provider: Provider.SqlServer);
+            };
+        }
     }
 
     public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(

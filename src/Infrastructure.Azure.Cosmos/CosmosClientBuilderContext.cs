@@ -28,7 +28,7 @@ public class CosmosClientBuilderContext(
         {
             if (!string.IsNullOrEmpty(this.ConnectionString))
             {
-                var match = Regex.Match(this.ConnectionString, @"(?i)AccountEndpoint=https://(.*?)(:|/|;)");
+                var match = Regex.Match(this.ConnectionString, @"(?i)AccountEndpoint=https://(.*?)(:|/|;)", RegexOptions.None, new TimeSpan(0, 0, 3));
                 if (match.Success)
                 {
                     return match.Groups[1].Value;

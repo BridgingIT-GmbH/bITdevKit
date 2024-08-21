@@ -45,13 +45,13 @@ public class EchoMessageHandler : MessageHandlerBase<EchoMessage>,
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
             await Task.Delay(1400, cancellationToken);
-            this.Logger.LogInformation($"{{LogKey}} >>>>> echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
+            this.Logger.LogInformation($"{{LogKey}} >>>>> echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId, this.GetType().FullName);
 
             var forecast = Forecast.Create(Guid.NewGuid(), DateTime.UtcNow, "echo", 10, 15, 6);
             forecast.TypeId = Guid.Parse("102954ff-aa73-495b-a730-98f2d5ca10f3");

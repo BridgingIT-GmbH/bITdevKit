@@ -9,7 +9,7 @@ using FluentValidation.Results;
 
 public interface IMessage
 {
-    string Id { get; }
+    string MessageId { get; } // TODO: change to GUID like DomainEvent
 
     DateTimeOffset Timestamp { get; }
 

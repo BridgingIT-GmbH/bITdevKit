@@ -44,16 +44,16 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
                     return;
                 }
 
-                TypedLogger.LogProcessing(this.Logger, Constants.LogKey, @event.GetType().Name, @event.EventId);
+                TypedLogger.LogProcessing(this.Logger, Constants.LogKey, @event.EventId, @event.GetType().Name);
                 var watch = ValueStopwatch.StartNew();
 
                 await this.Process(@event, cancellationToken).AnyContext();
 
-                TypedLogger.LogProcessed(this.Logger, Constants.LogKey, @event.GetType().Name, @event.EventId, watch.GetElapsedMilliseconds());
+                TypedLogger.LogProcessed(this.Logger, Constants.LogKey, @event.EventId, @event.GetType().Name, watch.GetElapsedMilliseconds());
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{LogKey} event processing error (type={DomainEventType}, id={DomainEventId}): {ErrorMessage}", Constants.LogKey, @event.GetType().Name, @event.EventId, ex.Message);
+                this.Logger.LogError(ex, "{LogKey} event processing error (eventId={DomainEventId}, eventType={DomainEventType}): {ErrorMessage}", Constants.LogKey, @event.EventId, @event.GetType().Name.Split(',')[0], ex.Message);
                 throw;
             }
         }
@@ -65,10 +65,10 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} event processing (type={DomainEventType}, id={DomainEventId})")]
-        public static partial void LogProcessing(ILogger logger, string logKey, string domainEventType, Guid domainEventId);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} event processed (type={DomainEventType}, id={DomainEventId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string domainEventType, Guid domainEventId, long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, Guid domainEventId, string domainEventType, long timeElapsed);
     }
 }

@@ -33,7 +33,7 @@ public class RatingTests
         var expectedValue = 0;
 
         // Act/Assert
-        Should.Throw<BusinessRuleNotSatisfiedException>(() => Rating.Create(expectedValue));
+        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class RatingTests
         var expectedValue = -1;
 
         // Act/Assert
-        Should.Throw<BusinessRuleNotSatisfiedException>(() => Rating.Create(expectedValue));
+        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
     }
 
     [Fact]
@@ -53,6 +53,6 @@ public class RatingTests
         var expectedValue = 9;
 
         // Act/Assert
-        Should.Throw<BusinessRuleNotSatisfiedException>(() => Rating.Create(expectedValue));
+        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
     }
 }

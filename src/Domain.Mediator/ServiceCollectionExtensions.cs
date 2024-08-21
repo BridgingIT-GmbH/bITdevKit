@@ -68,8 +68,8 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDomainEvents(
         this IServiceCollection services,
-        IEnumerable<string> assemblyExcludePatterns = null,
-        ServiceLifetime lifetime = ServiceLifetime.Transient)
+        ServiceLifetime lifetime = ServiceLifetime.Transient,
+        IEnumerable<string> assemblyExcludePatterns = null)
     {
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 

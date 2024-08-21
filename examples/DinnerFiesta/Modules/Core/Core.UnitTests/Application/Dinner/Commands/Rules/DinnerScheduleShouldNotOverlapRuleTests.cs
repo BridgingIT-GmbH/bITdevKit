@@ -33,7 +33,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
         repository.FindAllAsync(Arg.Any<Specification<Dinner>>()).Returns(Task.FromResult(Enumerable.Empty<Dinner>()));
 
         // Act
-        var result = await rule.IsSatisfiedAsync();
+        var result = await rule.ApplyAsync();
 
         // Assert
         result.ShouldBeTrue();
@@ -77,7 +77,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
             }.AsEnumerable()));
 
         // Act
-        var result = await sut.IsSatisfiedAsync();
+        var result = await sut.ApplyAsync();
 
         // Assert
         result.ShouldBeFalse();

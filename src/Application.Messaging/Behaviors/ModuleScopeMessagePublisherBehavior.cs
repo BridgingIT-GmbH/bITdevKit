@@ -53,7 +53,7 @@ public class ModuleScopeMessagePublisherBehavior(
                         await next().AnyContext();
                     },
                     kind: ActivityKind.Producer,
-                    tags: new Dictionary<string, string> { ["messaging.module.origin"] = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(), ["messaging.message_id"] = message?.Id, ["messaging.message_type"] = messageType });
+                    tags: new Dictionary<string, string> { ["messaging.module.origin"] = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(), ["messaging.message_id"] = message?.MessageId, ["messaging.message_type"] = messageType });
             }
         }
     }

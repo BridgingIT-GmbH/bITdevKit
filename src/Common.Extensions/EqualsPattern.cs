@@ -41,7 +41,7 @@ public static partial class Extensions
 
         var regex = Regex.Escape(pattern).Replace("\\*", ".*");
 
-        return Regex.IsMatch(source, "^" + (ignoreCase ? "(?i)" : string.Empty) + regex + "$");
+        return Regex.IsMatch(source, "^" + (ignoreCase ? "(?i)" : string.Empty) + regex + "$", ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None, new TimeSpan(0, 0, 3));
     }
 
     /// <summary>

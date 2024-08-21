@@ -99,6 +99,12 @@ public class OutboxDomainEventOptionsBuilder :
         return this;
     }
 
+    public OutboxDomainEventOptionsBuilder PurgeProcessedOnStartup(bool value = true)
+    {
+        this.Target.PurgeProcessedOnStartup = value;
+        return this;
+    }
+
     public OutboxDomainEventOptionsBuilder Serializer(ISerializer serializer)
     {
         this.Target.Serializer = serializer;
@@ -114,6 +120,12 @@ public class OutboxDomainEventOptionsBuilder :
     public OutboxDomainEventOptionsBuilder ProcessingCount(int count)
     {
         this.Target.ProcessingCount = count;
+        return this;
+    }
+
+    public OutboxDomainEventOptionsBuilder RetryCount(int retries)
+    {
+        this.Target.RetryCount = retries;
         return this;
     }
 }

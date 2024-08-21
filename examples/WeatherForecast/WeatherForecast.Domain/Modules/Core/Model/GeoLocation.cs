@@ -27,11 +27,11 @@ public class GeoLocation : ValueObject
 
     public static GeoLocation Create(double longitude, double latitude)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             new LongitudeShouldBeInRange(longitude),
             new LatitudeShouldBeInRange(latitude)
-        });
+        ]);
 
         return new GeoLocation
         {

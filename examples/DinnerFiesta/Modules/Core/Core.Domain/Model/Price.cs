@@ -26,10 +26,10 @@ public class Price : ValueObject // TODO: or use Money?
 
     public static Price Create(decimal amount, string currency)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             PriceRules.ShouldBeInRange(amount),
-        });
+        ]);
 
         return new Price(amount, currency);
     }

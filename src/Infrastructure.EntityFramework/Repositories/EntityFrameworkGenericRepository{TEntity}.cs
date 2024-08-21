@@ -20,7 +20,7 @@ public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory 
 {
 }
 
-public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to EntityFrameworkRepository + Obsolete
+public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to EntityFrameworkRepository + Obsolete
     EntityFrameworkReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
@@ -84,12 +84,12 @@ public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to Enti
 
         if (isNew)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id);
             this.Options.DbContext.Set<TEntity>().Add(entity);
         }
         else
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id);
             if (!this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id)))
             {
                 // only re-attach (+update) if not tracked already
@@ -101,7 +101,7 @@ public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to Enti
         {
             foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
             {
-                this.Logger.LogTrace("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                TypedLogger.LogEntityState(this.Logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
             }
 
             await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
@@ -145,5 +145,14 @@ public class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to Enti
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    public static partial class TypedLogger
+    {
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId})")]
+        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string entityType, object entityId);
+
+        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }
 }

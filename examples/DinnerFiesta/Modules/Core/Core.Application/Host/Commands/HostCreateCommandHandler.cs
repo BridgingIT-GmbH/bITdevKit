@@ -28,10 +28,10 @@ public class HostCreateCommandHandler(
             UserId.Create(command.UserId),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             HostRules.UserMustBeUnique(repository, host.UserId),
-        });
+        ]);
 
         await repository.InsertAsync(host, cancellationToken);
 

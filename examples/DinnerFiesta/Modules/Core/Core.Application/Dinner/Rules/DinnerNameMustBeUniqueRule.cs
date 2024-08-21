@@ -11,11 +11,14 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : IBusinessRule
+public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : IDomainRule
 {
     public string Message => "Name should be unique";
 
-    public async Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return !(await repository.FindAllAsync(
             DinnerSpecifications.ForName(name), cancellationToken: cancellationToken)).SafeAny();

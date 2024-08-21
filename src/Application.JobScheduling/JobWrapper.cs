@@ -59,7 +59,7 @@ public class JobWrapper(
                 context.Trigger.JobDataMap.TryGetString(Constants.TriggeredByKey, out var triggeredBy);
                 context.Put(Constants.TriggeredByKey, triggeredBy.EmptyToNull() ?? context.Scheduler.SchedulerName);
 
-                await this.ExecutePipeline(context, behaviors);
+                await this.ExecutePipelineAsync(context, behaviors);
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ public class JobWrapper(
         (this.InnerJob as IDisposable)?.Dispose();
     }
 
-    private async Task ExecutePipeline(IJobExecutionContext context, IEnumerable<IJobSchedulingBehavior> behaviors)
+    private async Task ExecutePipelineAsync(IJobExecutionContext context, IEnumerable<IJobSchedulingBehavior> behaviors)
     {
         async Task JobExecutor() => await this.InnerJob.Execute(context).AnyContext();
         await behaviors.SafeNull().Reverse()

@@ -21,7 +21,7 @@ public class ReflectionHelperTests
             ["age"] = 99,
             ["Title"] = "Sir"
         };
-        var stub = new Stub();
+        var stub = new StubPerson();
 
         // Act
         ReflectionHelper.SetProperties(stub, items);
@@ -37,7 +37,7 @@ public class ReflectionHelperTests
     public void CanSetMultipleProperties()
     {
         // Arrange
-        var stub = new Stub();
+        var stub = new StubPerson();
 
         // Act
         ReflectionHelper.SetProperty(stub, "FirstName", "John");
@@ -55,10 +55,23 @@ public class ReflectionHelperTests
     }
 
     [Fact]
+    public void CanSetPrivateProperty()
+    {
+        // Arrange
+        var stub = new StubPerson();
+
+        // Act
+        ReflectionHelper.SetProperty(stub, "CompanyName", "Acme");
+
+        // Assert
+        stub.CompanyName.ShouldBe("Acme");
+    }
+
+    [Fact]
     public void CanGetMultipleProperties()
     {
         // Arrange
-        var stub = new Stub()
+        var stub = new StubPerson()
         {
             FirstName = "John",
             LastName = "Doe",
@@ -88,7 +101,7 @@ public class ReflectionHelperTests
             ["LastName"] = "Doe",
             ["age"] = "99"
         };
-        var stub = new Stub();
+        var stub = new StubPerson();
 
         // Act
         ReflectionHelper.SetProperties(stub, items);
@@ -111,7 +124,7 @@ public class ReflectionHelperTests
             ["age"] = 99,
             ["YearBorn"] = "1980"
         };
-        var stub = new Stub();
+        var stub = new StubPerson();
 
         // Act
         ReflectionHelper.SetProperties(stub, items);
@@ -132,7 +145,7 @@ public class ReflectionHelperTests
             ["FirstName"] = null,
             ["YearBorn"] = null
         };
-        var stub = new Stub
+        var stub = new StubPerson
         {
             FirstName = "John",
             YearBorn = 1980
@@ -154,7 +167,7 @@ public class ReflectionHelperTests
         {
             ["Country"] = "USA"
         };
-        var stub = new Stub();
+        var stub = new StubPerson();
 
         // Act
         ReflectionHelper.SetProperties(stub, items);
@@ -167,21 +180,21 @@ public class ReflectionHelperTests
     public void FindTypesTest()
     {
         // Arrange & Act
-        var result = ReflectionHelper.FindTypes(t => typeof(Stub).IsAssignableFrom(t));
+        var result = ReflectionHelper.FindTypes(t => typeof(StubPerson).IsAssignableFrom(t));
 
         // Assert
         result.ShouldNotBeNull();
         result.ShouldNotBeEmpty();
-        result.FirstOrDefault().Name.ShouldBe(nameof(Stub));
+        result.FirstOrDefault().Name.ShouldBe(nameof(StubPerson));
     }
 
-    public class Stub
+    public class StubPerson
     {
-        public Stub()
+        public StubPerson()
         {
         }
 
-        public Stub(string firstName)
+        public StubPerson(string firstName)
         {
             this.FirstName = firstName;
         }
@@ -197,5 +210,7 @@ public class ReflectionHelperTests
         public string Title { get; set; } = "Unknown";
 
         public string Country { get; init; }
+
+        public string CompanyName { get; private set; } = "Unknown";
     }
 }

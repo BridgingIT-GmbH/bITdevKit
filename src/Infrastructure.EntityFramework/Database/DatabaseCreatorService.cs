@@ -37,87 +37,92 @@ public class DatabaseCreatorService<TContext> : IHostedService
         this.options = options ?? new DatabaseCreatorOptions();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var contextName = typeof(TContext).Name;
 
-        if (this.options.StartupDelay.TotalMilliseconds > 0)
+        _ = Task.Run(async () =>
         {
-            this.logger.LogDebug("{LogKey} database creator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
-
-            await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
-        }
-
-        try
-        {
-            //this.logger.LogDebug("{LogKey} database creator initializing (context={DbContextType})", Constants.LogKey, contextName);
-            using var scope = this.serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<TContext>();
-
-            if (this.options.LogModel)
+            if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                // https://learn.microsoft.com/en-us/ef/core/modeling/#debug-view
-                this.logger.LogDebug(context.Model.ToDebugString());
+                this.logger.LogDebug("{LogKey} database creator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
+
+                await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
             }
 
-            if (!this.IsInMemoryContext(context))
+            try
             {
-                this.logger.LogDebug("{LogKey} database creator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+                //this.logger.LogDebug("{LogKey} database creator initializing (context={DbContextType})", Constants.LogKey, contextName);
+                using var scope = this.serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-                var exists = await context.Database.CanConnectAsync(cancellationToken);
-                if (exists && this.options.EnsureDeleted)
+                if (this.options.LogModel)
                 {
-                    this.logger.LogDebug("{LogKey} database creator delete tables (context={DbContextType})", Constants.LogKey, contextName);
-                    await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
-                    exists = false;
+                    // https://learn.microsoft.com/en-us/ef/core/modeling/#debug-view
+                    this.logger.LogDebug(context.Model.ToDebugString());
                 }
 
-                if (exists && this.options.EnsureTruncated)
+                if (!this.IsInMemoryContext(context))
                 {
-                    this.logger.LogDebug("{LogKey} database creator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
-                    if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
+                    this.logger.LogDebug("{LogKey} database creator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+
+                    var exists = await context.Database.CanConnectAsync(cancellationToken);
+                    if (exists && this.options.EnsureDeleted)
                     {
-                        await context.Database.ExecuteSqlRawAsync(
-                            SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                        this.logger.LogDebug("{LogKey} database creator delete tables (context={DbContextType})", Constants.LogKey, contextName);
+                        await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
+                        exists = false;
                     }
-                    else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+
+                    if (exists && this.options.EnsureTruncated)
                     {
-                        await context.Database.ExecuteSqlRawAsync(
-                            SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                        this.logger.LogDebug("{LogKey} database creator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
+                        if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
+                        {
+                            await context.Database.ExecuteSqlRawAsync(
+                                SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                        }
+                        else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                        {
+                            await context.Database.ExecuteSqlRawAsync(
+                                SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                        }
                     }
-                    else
+
+                    this.logger.LogDebug("{LogKey} database creator create tables (context={DbContextType})", Constants.LogKey, contextName);
+                    //await context.Database.EnsureCreatedAsync(cancellationToken).AnyContext();
+
+                    // alternative way for EnsureCreatedAsync
+                    // also creates tables of additional DbContexts which are housed in the same database
+                    var databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+                    if (!exists) // only create tabled if db does not exist
                     {
-                        throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                        this.logger.LogDebug("{LogKey} database creator create database (context={DbContextType})", Constants.LogKey, contextName);
+                        await databaseCreator?.CreateAsync(cancellationToken);
+                        exists = true;
+
+                        await databaseCreator?.CreateTablesAsync(cancellationToken);
                     }
+
+                    this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
                 }
-
-                this.logger.LogDebug("{LogKey} database creator create tables (context={DbContextType})", Constants.LogKey, contextName);
-                //await context.Database.EnsureCreatedAsync(cancellationToken).AnyContext();
-
-                // alternative way for EnsureCreatedAsync
-                // also creates tables of additional DbContexts which are housed in the same database
-                var databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                if (!exists) // only create tabled if db does not exist
-                {
-                    this.logger.LogDebug("{LogKey} database creator create database (context={DbContextType})", Constants.LogKey, contextName);
-                    await databaseCreator?.CreateAsync(cancellationToken);
-                    exists = true;
-
-                    await databaseCreator?.CreateTablesAsync(cancellationToken);
-                }
-
-                this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
             }
-        }
-        catch (Exception ex)
-        {
-            this.logger.LogError(ex, "{LogKey} database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
-        }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{LogKey} database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+            }
+        }, cancellationToken);
+
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

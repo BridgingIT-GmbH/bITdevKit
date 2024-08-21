@@ -133,7 +133,11 @@ builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDeve
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
-builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
+}
+
 builder.Services.AddOpenTelemetry()
     .WithMetrics(ConfigureMetrics)
     .WithTracing(ConfigureTracing);

@@ -37,8 +37,8 @@ public static class MediatorServiceCollectionExtensions
 
     public static IServiceCollection AddMediatR(
         this IServiceCollection services,
-        IEnumerable<string> assemblyExcludePatterns = null,
-        ServiceLifetime lifetime = ServiceLifetime.Transient)
+        ServiceLifetime lifetime = ServiceLifetime.Transient,
+        IEnumerable<string> assemblyExcludePatterns = null)
     {
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 

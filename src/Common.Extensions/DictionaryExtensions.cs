@@ -146,4 +146,15 @@ public static class DictionaryExtensions
 
         return source;
     }
+
+    public static bool ContainsKeyIgnoreCase<TValue>(this IDictionary<string, TValue> source, string key)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        return source.Keys.Any(k =>
+            string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
+    }
 }

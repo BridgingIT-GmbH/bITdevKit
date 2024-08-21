@@ -20,7 +20,7 @@ public static class ReflectionHelper
         }
 
         // or use https://github.com/ekonbenefits/dynamitey/wiki/UsageReallyLateBinding DLR dynamic InvokeSetAll(object target, ...) =CASESENSITIVE
-        foreach (var propertyInfo in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).SafeNull())
+        foreach (var propertyInfo in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase).SafeNull())
         {
             foreach (var propertyValue in propertyValues.SafeNull())
             {
@@ -41,7 +41,7 @@ public static class ReflectionHelper
         }
 
         // or use https://github.com/ekonbenefits/dynamitey/wiki/UsageReallyLateBinding DLR dynamic InvokeSetAll(object target, ...) =CASESENSITIVE
-        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (propertyInfo is not null)
         {
             if (propertyName.SafeEquals(propertyInfo.Name) /*&& propertyValue is not null*/ && propertyInfo.CanWrite)
@@ -52,6 +52,39 @@ public static class ReflectionHelper
         }
     }
 
+    //public static void SetProperty2(object instance, string propertyName, object propertyValue)
+    //{
+    //    if (instance is null || string.IsNullOrEmpty(propertyName))
+    //    {
+    //        return;
+    //    }
+
+    //    var type = instance.GetType();
+    //    while (type != null)
+    //    {
+    //        var propertyInfo = type.GetProperty(propertyName,
+    //            BindingFlags.Public | BindingFlags.NonPublic |
+    //            BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+    //        if (propertyInfo != null)
+    //        {
+    //            var setMethod = type.GetMethod("set_" + propertyName,
+    //                BindingFlags.Public | BindingFlags.NonPublic |
+    //                BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+    //            if (setMethod != null)
+    //            {
+    //                var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+    //                var convertedValue = Convert.ChangeType(propertyValue, propertyType);
+    //                setMethod.Invoke(instance, new[] { convertedValue });
+    //                return;
+    //            }
+    //        }
+
+    //        type = type.BaseType;
+    //    }
+    //}
+
     public static object GetProperty(object instance, string propertyName)
     {
         if (instance is null || propertyName.IsNullOrEmpty())
@@ -60,7 +93,7 @@ public static class ReflectionHelper
         }
 
         // or use https://github.com/ekonbenefits/dynamitey/wiki/UsageReallyLateBinding DLR dynamic InvokeSetAll(object target, ...) =CASESENSITIVE
-        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (propertyInfo is not null)
         {
             if (propertyName.SafeEquals(propertyInfo.Name) /*&& propertyValue is not null*/ && propertyInfo.CanRead)
@@ -80,7 +113,7 @@ public static class ReflectionHelper
         }
 
         // or use https://github.com/ekonbenefits/dynamitey/wiki/UsageReallyLateBinding DLR dynamic InvokeSetAll(object target, ...) =CASESENSITIVE
-        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+        var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
         if (propertyInfo is not null)
         {
             if (propertyName.SafeEquals(propertyInfo.Name) /*&& propertyValue is not null*/ && propertyInfo.CanRead)

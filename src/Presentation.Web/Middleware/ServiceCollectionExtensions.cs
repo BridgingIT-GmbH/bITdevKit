@@ -43,7 +43,8 @@ public static partial class ServiceCollectionExtensions
         services.AddSingleton(options);
 
         services.AddExceptionHandler<ValidationExceptionHandler>();
-        services.AddExceptionHandler<BusinessRuleNotSatisfiedExceptionHandler>();
+        services.AddExceptionHandler<DomainPolicyExceptionHandler>();
+        services.AddExceptionHandler<DomainRuleExceptionHandler>();
         services.AddExceptionHandler<SecurityExceptionHandler>();
         services.AddExceptionHandler<ModuleNotEnabledExceptionHandler>();
         services.AddExceptionHandler<AggregateNotFoundExceptionHandler>();

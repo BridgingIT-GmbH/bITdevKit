@@ -35,7 +35,7 @@ public class City : AggregateRoot<Guid>
 
     public static City Create(string name, string country, double longitude, double latitude)
     {
-        Check.Throw(new CountryShouldBeKnown(country));
+        DomainRules.Apply(new CountryShouldBeKnown(country));
 
         var entity = new City
         {
@@ -51,7 +51,7 @@ public class City : AggregateRoot<Guid>
 
     public void Update(string name, string country, double longitude, double latitude)
     {
-        Check.Throw(new CountryShouldBeKnown(country));
+        DomainRules.Apply(new CountryShouldBeKnown(country));
 
         this.Name = name;
         this.Country = country;
@@ -61,11 +61,11 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             new DeleteMustBeProvidedReasonRule(reason),
             new DeleteCannotBeDoneTwiceRule(this.IsDeleted)
-        });
+        ]);
 
         this.IsDeleted = true;
         this.DeletedDate = DateTime.UtcNow;

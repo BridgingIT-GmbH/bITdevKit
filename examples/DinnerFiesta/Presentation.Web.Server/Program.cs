@@ -23,6 +23,7 @@ using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NSwag;
 using NSwag.AspNetCore;
@@ -54,6 +55,7 @@ builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json
 // ===============================================================================================
 // Configure the services
 builder.Services.AddMediatR(); // or AddDomainEvents()?
+//builder.Services.AddDomainEvents(ServiceLifetime.Scoped);
 builder.Services.AddMapping().WithMapster();
 builder.Services.AddCaching(builder.Configuration)
     //.WithEntityFrameworkDocumentStoreProvider<CoreDbContext>()
@@ -105,9 +107,10 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<TimeoutMessageHandlerBehavior>()
     .WithOutbox<CoreDbContext>(o => o // registers the outbox publisher behavior and worker service at once
         .ProcessingInterval("00:00:30")
-        .ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
-        .StartupDelay("00:00:15")
-        .PurgeOnStartup())
+        //.ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
+        // ^^^ causes messaging to go bezerk
+        .StartupDelay("00:00:05"))
+        //.PurgeOnStartup())
     .WithInProcessBroker(); //.WithRabbitMQBroker();
 
 ConfigureHealth(builder.Services);
@@ -128,7 +131,11 @@ builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDeve
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
-builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
+}
+
 builder.Services.AddOpenTelemetry()
     .WithMetrics(ConfigureMetrics)
     .WithTracing(ConfigureTracing);

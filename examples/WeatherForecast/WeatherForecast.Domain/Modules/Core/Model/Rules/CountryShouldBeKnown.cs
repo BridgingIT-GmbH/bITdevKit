@@ -9,14 +9,17 @@ using System;
 using System.Linq;
 using BridgingIT.DevKit.Domain;
 
-public class CountryShouldBeKnown(string value) : IBusinessRule
+public class CountryShouldBeKnown(string value) : IDomainRule
 {
     private readonly string[] countries = ["NL", "DE", "FR", "ES", "IT"];
     private readonly string value = value;
 
     public string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
-    public Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default)
+    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
+
+    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return Task.FromResult(
             !string.IsNullOrEmpty(this.value)

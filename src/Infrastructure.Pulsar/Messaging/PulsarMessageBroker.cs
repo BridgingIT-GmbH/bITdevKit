@@ -77,7 +77,7 @@ public class PulsarMessageBroker : MessageBrokerBase, IAsyncDisposable
             ["message_name"] = message.GetType().PrettyName(false),
         };
         var messageId = await producer.Send(metadata, data, cancellationToken);
-        this.Logger.LogDebug("{LogKey} pulsar message produced (name={MessageName}, id={MessageId}, pulsarMessageId={PulsarMessageId})", Constants.LogKey, message.GetType().PrettyName(false), message.Id, messageId);
+        this.Logger.LogDebug("{LogKey} pulsar message produced (name={MessageName}, id={MessageId}, pulsarMessageId={PulsarMessageId})", Constants.LogKey, message.GetType().PrettyName(false), message.MessageId, messageId);
     }
 
     protected override async Task OnProcess(Application.Messaging.IMessage message, CancellationToken cancellationToken)
@@ -109,7 +109,7 @@ public class PulsarMessageBroker : MessageBrokerBase, IAsyncDisposable
             var data = this.options.Serializer.Deserialize(pulsarMessage.Data.FirstSpan.ToArray(), messageType) as Application.Messaging.IMessage;
             if (data is not null)
             {
-                this.Logger.LogDebug("{LogKey} pulsar message consumed (name={MessageName}, id={MessageId}, pulsarMessageId={PulsarMessageId})", Constants.LogKey, data.GetType().PrettyName(false), data.Id, pulsarMessage.MessageId);
+                this.Logger.LogDebug("{LogKey} pulsar message consumed (name={MessageName}, id={MessageId}, pulsarMessageId={PulsarMessageId})", Constants.LogKey, data.GetType().PrettyName(false), data.MessageId, pulsarMessage.MessageId);
 
                 await this.Process(new MessageRequest(data, CancellationToken.None));
             }

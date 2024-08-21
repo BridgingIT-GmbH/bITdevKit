@@ -7,19 +7,19 @@ namespace BridgingIT.DevKit.Domain;
 
 using System;
 
-public class BusinessRuleNotSatisfiedException : Exception
+public class DomainRuleException : Exception
 {
-    public BusinessRuleNotSatisfiedException()
+    public DomainRuleException()
         : base()
     {
     }
 
-    public BusinessRuleNotSatisfiedException(string message)
+    public DomainRuleException(string message)
         : base(message)
     {
     }
 
-    public BusinessRuleNotSatisfiedException(string message, Exception innerException)
+    public DomainRuleException(string message, Exception innerException)
         : base(message, innerException)
     {
     }

@@ -9,6 +9,7 @@ using System;
 using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Domain.Specifications;
 
-public class OutboxMessageMessageIdSpecification(Guid messageId) : Specification<OutboxMessage>(message => message.MessageId == messageId)
+public class OutboxMessageMessageIdSpecification(Guid messageId)
+    : Specification<OutboxMessage>(message => message.MessageId == messageId)
 {
 }

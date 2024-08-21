@@ -28,10 +28,10 @@ public class EmailAddress : ValueObject
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             EmailAddressRules.IsValid(value),
-        });
+        ]);
 
         return new EmailAddress(value);
     }

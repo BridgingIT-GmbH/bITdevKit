@@ -31,7 +31,7 @@ public class AzureStorageBuilderContext(
         {
             if (!string.IsNullOrEmpty(this.ConnectionString))
             {
-                var match = Regex.Match(this.ConnectionString, @"(?i)AccountName=(.*?)(:|/|;)");
+                var match = Regex.Match(this.ConnectionString, @"(?i)AccountName=(.*?)(:|/|;)", RegexOptions.None, new TimeSpan(0, 0, 3));
                 if (match.Success)
                 {
                     return match.Groups[1].Value;

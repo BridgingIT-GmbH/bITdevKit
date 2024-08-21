@@ -6,14 +6,15 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using Microsoft.Extensions.Logging;
-using BridgingIT.DevKit.Application.Messaging;
 
 public class UserCreatedDomainEventHandler(
     ILoggerFactory loggerFactory,
-    IMessageBroker messageBroker) : DomainEventHandlerBase<UserCreatedDomainEvent>(loggerFactory)
+    IMessageBroker messageBroker)
+    : DomainEventHandlerBase<UserCreatedDomainEvent>(loggerFactory)
 {
     public override bool CanHandle(UserCreatedDomainEvent notification)
     {
@@ -23,9 +24,14 @@ public class UserCreatedDomainEventHandler(
     public override async Task Process(UserCreatedDomainEvent @event, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(@event, nameof(@event));
-        EnsureArg.IsNotNull(@event.User, nameof(@event.User));
 
-        var message = new UserCreatedMessage { FirstName = @event.User.FirstName, LastName = @event.User.LastName, Email = @event.User.Email };
-        await messageBroker.Publish(message, cancellationToken);
+        // forward the domain event as a message so it can be handled by other modules
+        await messageBroker.Publish(
+            new UserCreatedMessage
+            {
+                FirstName = @event.FirstName,
+                LastName = @event.LastName,
+                Email = @event.Email
+            }, cancellationToken);
     }
 }

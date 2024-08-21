@@ -7,13 +7,13 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Generic;
 
-public class BusinessRuleResultError : ResultErrorBase
+public class DomainRuleResultError : ResultErrorBase
 {
-    public BusinessRuleResultError()
+    public DomainRuleResultError()
     {
     }
 
-    public BusinessRuleResultError(IEnumerable<string> messages = null)
+    public DomainRuleResultError(IEnumerable<string> messages = null)
     {
         this.Messages = messages;
 

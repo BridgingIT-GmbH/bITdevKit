@@ -23,10 +23,10 @@ public class Rating : ValueObject
 
     public static Rating Create(int value)
     {
-        Check.Throw(new IBusinessRule[]
-        {
+        DomainRules.Apply(
+        [
             RatingRules.ShouldBeInRange(value),
-        });
+        ]);
 
         return new Rating(value);
     }

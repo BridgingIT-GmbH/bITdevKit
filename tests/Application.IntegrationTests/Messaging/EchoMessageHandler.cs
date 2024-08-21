@@ -28,14 +28,14 @@ public class EchoMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
             await Task.Delay(2000, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} >>>>> MMMMMMMMMM1 echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
+            this.Logger.LogInformation($"{{LogKey}} >>>>> MMMMMMMMMM1 echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId, this.GetType().FullName);
         }
     }
 }
@@ -59,13 +59,13 @@ public class AnotherEchoMessageHandler : IMessageHandler<EchoMessage> // TODO: o
     {
         var loggerState = new Dictionary<string, object>
         {
-            ["MessageId"] = message.Id,
+            ["MessageId"] = message.MessageId,
         };
 
         using (this.Logger.BeginScope(loggerState))
         {
             await Task.Delay(100, cancellationToken);
-            this.Logger.LogInformation($"{{LogKey}} >>>>> MMMMMMMMMM2 another echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.Id, this.GetType().FullName);
+            this.Logger.LogInformation($"{{LogKey}} >>>>> MMMMMMMMMM2 another echo {message.Text} (name={{MessageName}}, id={{MessageId}}, handler={{}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId, this.GetType().FullName);
         }
     }
 }

@@ -77,7 +77,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.46.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.46.0" />

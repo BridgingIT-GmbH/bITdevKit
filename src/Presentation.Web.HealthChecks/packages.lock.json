@@ -4,12 +4,12 @@
     "net8.0": {
       "AspNetCore.HealthChecks.UI": {
         "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "79YPgMCyJG7Paevnt8ozgMXcoy8UioYrBNb8+Z4gPRZvDdAIfti5Yst5ktTcTlOX8fSSrPXIkBIMAU4I0GaMkw==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "AkqR7F8jropKO9FQmsjorM7eB00Y6I9P6jObNqVK0M+dNlEvBGjaJyYP2UM16azOxEuikJeUaCP9+XdrgPSyFg==",
         "dependencies": {
           "AspNetCore.HealthChecks.UI.Data": "8.0.1",
-          "KubernetesClient": "12.1.1",
+          "KubernetesClient": "14.0.2",
           "Microsoft.EntityFrameworkCore.Design": "8.0.0",
           "Microsoft.Extensions.Http": "8.0.0"
         }
@@ -32,11 +32,11 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "s6++gF9x0rQApQzOBbSyp4jUaAlwm+DroKfL8gdOHxs83k8SJfUXhuc46rDB3rNXBQ1MVRxqKUrqFhO/M0E97g==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "6CVWMfXrQPMUaqlsMfG8OjtyTIKvtgiQCFOJ2YhSZo1UDaAWweVN7jGSrz59Ez0Y8lh260WE5V2b0Oe9NlVlyw==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.0.1"
+          "Microsoft.IdentityModel.Tokens": "8.0.2"
         }
       },
       "MinVer": {
@@ -53,12 +53,12 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "GJw3bYkWpOgvN3tJo5X4lYUeIFA2HD293FPUhKmp7qxS+g5ywAb34Dnd3cDAFLkcMohy5XTpoaZ4uAHuw0uSPQ==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "jbfANr2qEmrfEtK3L7tOnkCW5/y2YiF6ISSRhRBgIZL+W2ZbEVHFNTNV8QOKeNU6gedQnhpdU2IvB0YB3nNMjw==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "8.0.1",
-          "Microsoft.IdentityModel.Tokens": "8.0.1"
+          "Microsoft.IdentityModel.JsonWebTokens": "8.0.2",
+          "Microsoft.IdentityModel.Tokens": "8.0.2"
         }
       },
       "System.Net.Http": {
@@ -133,8 +133,8 @@
       },
       "Fractions": {
         "type": "Transitive",
-        "resolved": "7.2.1",
-        "contentHash": "1gVCo18/02ZZOJ+dcpVNMsUHF6cLmltMMskUWl2G1l+0OmTTvcwJZq5/JXIVpvOzPM3gDLombsloGMlTQNcv9g=="
+        "resolved": "7.3.0",
+        "contentHash": "2bETFWLBc8b7Ut2SVi+bxhGVwiSpknHYGBh2PADyGWONLkTxT7bKyDRhF8ao+XUv90tq8Fl7GTPxSI5bacIRJw=="
       },
       "IdentityModel": {
         "type": "Transitive",
@@ -152,14 +152,14 @@
       },
       "KubernetesClient": {
         "type": "Transitive",
-        "resolved": "12.1.1",
-        "contentHash": "Xvc6Kr/W5YUxlMDzy0R80zy+Vd66brS7fSA4COGXu8KZACKPW7+KKS7kxZBLaFYGrUcktXOHpqNNuoukSGcK6A==",
+        "resolved": "14.0.2",
+        "contentHash": "Ul7SLe34fLwOahsJKFf2InqcuRTCIBr3mW1PtabXlYeCJeP7yPiYyrGxilLn2+HIq1C5AoMTydhGcdNLbc/f9w==",
         "dependencies": {
-          "Fractions": "7.2.1",
+          "Fractions": "7.3.0",
           "IdentityModel.OidcClient": "5.2.1",
-          "System.IdentityModel.Tokens.Jwt": "7.0.0",
-          "YamlDotNet": "13.3.1",
-          "prometheus-net": "8.0.1"
+          "System.Diagnostics.DiagnosticSource": "7.0.0",
+          "System.IdentityModel.Tokens.Jwt": "7.1.2",
+          "YamlDotNet": "15.1.0"
         }
       },
       "Microsoft.Bcl.AsyncInterfaces": {
@@ -271,11 +271,6 @@
           "Microsoft.Extensions.Options": "8.0.0"
         }
       },
-      "Microsoft.Extensions.ObjectPool": {
-        "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "udvKco0sAVgYGTBnHUb0tY9JQzJ/nPDiv/8PIyz69wl1AibeCDZOLVVI+6156dPfHmJH7ws5oUJRiW4ZmAvuuA=="
-      },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",
         "resolved": "8.0.0",
@@ -287,23 +282,23 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "OtlIWcyX01olfdevPKZdIPfBEvbcioDyBiE/Z2lHsopsMD7twcKtlN9kMevHmI5IIPhFpfwCIiR6qHQz1WHUIw=="
+        "resolved": "8.0.2",
+        "contentHash": "m73Bun0l0jL8rceWZ9TMD4hwQCjDIaRT1s5RMN7TBDpXu8Ea8KcRndo45btW9gG0i/USmHLCmOBIITvTA4Y6PA=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "UCPF2exZqBXe7v/6sGNiM6zCQOUXXQ9+v5VTb9gPB8ZSUPnX53BxlN78v2jsbIvK9Dq4GovQxo23x8JgWvm/Qg==",
+        "resolved": "8.0.2",
+        "contentHash": "iKUyFKCQgc8rcEqyIJGLOIqqxemG7bgraqS9n5J6RPoZZH7dwxmJd3aFYmxXuAnfznJuaE1DQX5U46Cqvb+BOg==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.0.1"
+          "Microsoft.IdentityModel.Abstractions": "8.0.2"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "kDimB6Dkd3nkW2oZPDkMkVHfQt3IDqO5gL0oa8WVy3OP4uE8Ij+8TXnqg9TOd9ufjsY3IDiGz7pCUbnfL18tjg==",
+        "resolved": "8.0.2",
+        "contentHash": "X58KyDBpGJZcCfmSgbkxJLLxd04eMFVaJlMEbRCyWL1X44n6kMxRyK6UTS1zgi5DHikeyiZj8bi7+p0kfPepLg==",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "8.0.1"
+          "Microsoft.IdentityModel.Logging": "8.0.2"
         }
       },
       "Microsoft.NETCore.Platforms": {
@@ -322,15 +317,6 @@
         "contentHash": "KZYeKBET/2Z0gY1WlTAK7+RHTl7GSbtvTLDXEZZojUdAPqpQNDL6tHv7VUpqfX5VEOh+uRGKaZXkuD253nEOBQ==",
         "dependencies": {
           "System.CodeDom": "4.4.0"
-        }
-      },
-      "prometheus-net": {
-        "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "A9sOtQB2gEhujBxPKw+KcGScBiPvBmy4lYVM5OlETMj4xjVD5r/ixIg52HHg2P0lcImJTpfeWnD0/9tpQsRQTA==",
-        "dependencies": {
-          "Microsoft.Extensions.Http": "3.1.0",
-          "Microsoft.Extensions.ObjectPool": "7.0.0"
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
@@ -929,8 +915,8 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "13.3.1",
-        "contentHash": "Q2dqDsb0xAlr092grgHk8/vTXI2snIiYM5ND3IXkgJDFIdPnqDYwYnlk+gwzSeRByDLhiSzTog8uT7xFwH68Zg=="
+        "resolved": "15.1.0",
+        "contentHash": "fXrqmKkzBtXeJiHEsZOPEWkonHweiwk/l0Hqhz4yMIZPh57kZy03Xbj2/e8HV1QIkTw7yeBe9bbphuE3YiI4vQ=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

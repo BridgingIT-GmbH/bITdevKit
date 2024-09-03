@@ -17,7 +17,6 @@ using NSubstitute.ReceivedExtensions;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
 using Xunit;
-using static BenchmarkDotNet.Engines.EngineEventSource;
 
 public class DinnerCreatedDomainEventHandlerTests
 {

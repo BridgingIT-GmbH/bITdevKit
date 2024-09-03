@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Messaging;

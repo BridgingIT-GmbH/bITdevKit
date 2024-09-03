@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain;
-
+using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -31,31 +32,15 @@ public class TypedEntityIdClassGenerator : ISourceGenerator
         {
             var semanticModel = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
             var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-
             if (classSymbol != null)
             {
                 var attribute = classSymbol.GetAttributes().FirstOrDefault(ad => ad.AttributeClass.Name.StartsWith("TypedEntityId"));
                 if (attribute != null)
                 {
-                    if (ImplementsIEntity(classSymbol))
-                    {
-                        var underlyingType = attribute.AttributeClass.TypeArguments.First();
-                        var generatedCode = GenerateIdClassCode(classSymbol, underlyingType);
-                        context.AddSource($"{classSymbol.Name}Id.g.cs", SourceText.From(generatedCode, Encoding.UTF8));
-                    }
-                    else
-                    {
-                        var diagnostic = Diagnostic.Create(
-                            new DiagnosticDescriptor(
-                                "TIG001",
-                                "Invalid use of TypedEntityIdAttribute",
-                                "TypedEntityIdAttribute can only be applied to classes implementing IEntity (directly or indirectly)",
-                                "Usage",
-                                DiagnosticSeverity.Error,
-                                isEnabledByDefault: true),
-                            classDeclaration.GetLocation());
-                        context.ReportDiagnostic(diagnostic);
-                    }
+                    var underlyingType = attribute.AttributeClass.TypeArguments.First();
+                    var generatedCode = GenerateIdClassCode(classSymbol, underlyingType);
+                    var fileName = classSymbol.Name.EndsWith("Id") ? $"{classSymbol.Name}.g.cs" : $"{classSymbol.Name}Id.g.cs";
+                    context.AddSource(fileName, SourceText.From(generatedCode, Encoding.UTF8));
                 }
             }
         }
@@ -66,14 +51,9 @@ public class TypedEntityIdClassGenerator : ISourceGenerator
         // No initialization required
     }
 
-    private static bool ImplementsIEntity(INamedTypeSymbol classSymbol)
-    {
-        return classSymbol.AllInterfaces.Any(i => i.Name == "IEntity");
-    }
-
     private static string GenerateIdClassCode(INamedTypeSymbol entityType, ITypeSymbol underlyingType)
     {
-        var className = $"{entityType.Name}Id";
+        var className = entityType.Name.EndsWith("Id") ? entityType.Name : $"{entityType.Name}Id";
         var namespaceName = entityType.ContainingNamespace.ToDisplayString();
         var typeName = underlyingType.Name;
 
@@ -94,7 +74,7 @@ namespace {namespaceName}
 
     [DebuggerDisplay(""{{Value}}"")]
     [JsonConverter(typeof({className}JsonConverter))]
-    public class {className} : EntityId<{typeName}>
+    public partial class {className} : EntityId<{typeName}>
     {{
         private {className}()
         {{

@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
 using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -41,8 +40,9 @@ public class User : IEntity
         // Assert
         var result = driver.GetRunResult().Results.Single();
         var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
+        Assert.NotEmpty(result.GeneratedSources);
 
-        Assert.Contains("public class UserId : EntityId<Guid>", generatedCode);
+        Assert.Contains("public partial class UserId : EntityId<Guid>", generatedCode);
         Assert.Contains("public static UserId Create()", generatedCode);
         Assert.Contains("public static UserId Create(Guid id)", generatedCode);
         Assert.Contains("public static UserId Create(string id)", generatedCode);
@@ -80,7 +80,8 @@ public class Order : IEntity
         var result = driver.GetRunResult().Results.Single();
         var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
 
-        Assert.Contains("public class OrderId : EntityId<Int32>", generatedCode);
+        Assert.NotEmpty(result.GeneratedSources);
+        Assert.Contains("public partial class OrderId : EntityId<Int32>", generatedCode);
         Assert.Contains("public static OrderId Create(Int32 id)", generatedCode);
         Assert.Contains("public static OrderId Create(string id)", generatedCode);
         Assert.Contains("public static implicit operator Int32(OrderId id) => id?.Value ?? default;", generatedCode);
@@ -89,20 +90,16 @@ public class Order : IEntity
     }
 
     [Fact]
-    public void GenerateIdClass_ForNonEntityClass_ShouldNotGenerateCodeAndReportDiagnostic()
+    public void GenerateIdClass_ForNonEntityClass_ShouldGenerateId()
     {
         // Arrange
         const string source = @"
 using System;
 using BridgingIT.DevKit.Domain;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public class TypedEntityIdAttribute<TId> : Attribute { }
-
 [TypedEntityId<Guid>]
-public class NonEntity
+public partial class ProductId
 {
-    public string Name { get; set; }
 }
 ";
         var (compilation, generator) = this.GetGeneratorAndCompilation(source);
@@ -113,11 +110,10 @@ public class NonEntity
 
         // Assert
         var result = driver.GetRunResult().Results.Single();
-        Assert.Empty(result.GeneratedSources);
+        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
 
-        var diagnostic = result.Diagnostics.Single();
-        Assert.Equal("TIG001", diagnostic.Id);
-        Assert.Equal("TypedEntityIdAttribute can only be applied to classes implementing IEntity (directly or indirectly)", diagnostic.GetMessage());
+        Assert.NotEmpty(result.GeneratedSources);
+        Assert.Contains("public partial class ProductId : EntityId<Guid>", generatedCode);
     }
 
     [Fact]
@@ -150,7 +146,7 @@ public class Product : BaseEntity
         var result = driver.GetRunResult().Results.Single();
         var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
 
-        Assert.Contains("public class ProductId : EntityId<Guid>", generatedCode);
+        Assert.Contains("public partial class ProductId : EntityId<Guid>", generatedCode);
         Assert.Contains("public static ProductId Create()", generatedCode);
         Assert.Contains("public static ProductId Create(Guid id)", generatedCode);
         Assert.Contains("public static ProductId Create(string id)", generatedCode);

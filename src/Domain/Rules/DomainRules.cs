@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Domain;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Specifications;

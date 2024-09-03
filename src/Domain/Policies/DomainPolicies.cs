@@ -2,7 +2,6 @@
 
 using System.Linq;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// This class represents a collection of domain policies that can be applied for a given context.

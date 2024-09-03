@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 [TypedEntityId<Guid>]
+public partial class CategoryId // generates a standalone typed id
+{
+}
+
+[TypedEntityId<Guid>]
 public class Blog : AggregateRoot<BlogId>
 {
     private readonly List<Post> posts = [];
@@ -73,6 +78,8 @@ public class Post : Entity<PostId>
 
     public BlogId BlogId { get; set; }
 
+    public CategoryId CategoryId { get; set; }
+
     public string Title { get; set; }
 
     public string Content { get; set; }
@@ -82,10 +89,11 @@ public class Post : Entity<PostId>
     public DateOnly? PublishedDate { get; set; }
 
     public static Post Create(string title, string content) =>
-        new Post
+        new()
         {
             Title = title,
             Content = content,
+            CategoryId = CategoryId.Create()
         };
 
     public Post Publish(DateOnly? date = null)
@@ -170,11 +178,17 @@ public class BlogEntityTypeConfiguration : IEntityTypeConfiguration<Blog>
                     id => id.Value,
                     value => PostId.Create(value));
 
-            b.Property("Title")
+            b.Property(e => e.Title)
                 .IsRequired().HasMaxLength(256);
 
-            b.Property("Content")
+            b.Property(e => e.Content)
                 .IsRequired(false);
+
+            b.Property(e => e.CategoryId)
+                .IsRequired()
+                .HasConversion(
+                    id => id.Value,
+                    value => CategoryId.Create(value));
 
             b.Property(e => e.PublishedDate)
                 .IsRequired(false);

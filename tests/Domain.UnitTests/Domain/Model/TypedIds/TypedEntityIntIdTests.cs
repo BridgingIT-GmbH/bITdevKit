@@ -7,8 +7,6 @@ namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
 using System;
 using BridgingIT.DevKit.Domain.Model;
-using static BridgingIT.DevKit.Domain.UnitTests.Domain.Model.TypedEntityGuidIdTests;
-using static BridgingIT.DevKit.Domain.UnitTests.Domain.Model.TypedEntityIntIdTests;
 
 [UnitTest("Domain")]
 public class TypedEntityIntIdTests

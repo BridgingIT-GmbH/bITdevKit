@@ -4,9 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain;
-
-using Polly;
-
 public interface IDomainRule
 {
     string Message { get; }

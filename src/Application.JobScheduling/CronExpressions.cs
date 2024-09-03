@@ -15,6 +15,8 @@ public struct CronExpressions
 
     public const string Every10Seconds = "0/10 * * * * ?";
 
+    public const string Every15Seconds = "0/15 * * * * ?";
+
     public const string Every30Seconds = "0/30 * * * * ?";
 
     public const string EveryMinute = "0 0/1 * * * ?";

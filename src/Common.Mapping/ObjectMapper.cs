@@ -16,7 +16,8 @@ using System;
 /// Initializes a new instance of the <see cref="ObjectMapper{TSource, TDestination}"/> class.
 /// </remarks>
 /// <param name="action">The action.</param>
-public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : IMapper<TSource, TTarget>
+public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action)
+    : IMapper<TSource, TTarget>
 {
     private readonly Action<TSource, TTarget> action = action;
 
@@ -47,13 +48,54 @@ public class ObjectMapper : IMapper
         }
 
         var key = (typeof(TSource), typeof(TTarget));
-        if (!this.mappings.TryGetValue(key, out var mappingFunc))
+        if (!this.mappings.TryGetValue(key, out var mappingDelegate))
         {
             throw new InvalidOperationException($"No mapping configuration found for {typeof(TSource)} to {typeof(TTarget)}");
         }
 
-        var mapFunc = (Func<TSource, TTarget>)mappingFunc;
-        return mapFunc(source);
+        if (mappingDelegate is Func<TSource, TTarget> mapFunc)
+        {
+            return mapFunc(source);
+        }
+        else if (mappingDelegate is Action<TSource, TTarget> mapAction)
+        {
+            var target = Activator.CreateInstance<TTarget>();
+            mapAction(source, target);
+            return target;
+        }
+        else
+        {
+            throw new InvalidOperationException($"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
+        }
+    }
+
+    public TTarget Map<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class
+    {
+        if (source is null)
+        {
+            return target;
+        }
+
+        var key = (typeof(TSource), typeof(TTarget));
+        if (!this.mappings.TryGetValue(key, out var mappingDelegate))
+        {
+            throw new InvalidOperationException($"No mapping configuration found for {typeof(TSource)} to {typeof(TTarget)}");
+        }
+
+        if (mappingDelegate is Func<TSource, TTarget> mapFunc)
+        {
+            return mapFunc(source);
+        }
+        else if (mappingDelegate is Action<TSource, TTarget> mapAction)
+        {
+            mapAction(source, target);
+            return target;
+        }
+        else
+        {
+            throw new InvalidOperationException($"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
+        }
     }
 
     public ObjectMapperConfiguration<TSource, TTarget> For<TSource, TTarget>()
@@ -64,11 +106,12 @@ public class ObjectMapper : IMapper
     internal void AddMapping<TSource, TTarget>(Func<TSource, TTarget> mapping)
     {
         var key = (typeof(TSource), typeof(TTarget));
-        if (this.mappings.ContainsKey(key))
-        {
-            this.mappings.Remove(key);
-        }
+        this.mappings[key] = mapping;
+    }
 
+    internal void AddMapping<TSource, TTarget>(Action<TSource, TTarget> mapping)
+    {
+        var key = (typeof(TSource), typeof(TTarget));
         this.mappings[key] = mapping;
     }
 }

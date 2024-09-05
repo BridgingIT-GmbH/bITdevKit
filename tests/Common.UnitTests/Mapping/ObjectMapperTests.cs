@@ -59,4 +59,25 @@ public class ObjectMapperTests
         target2.ShouldNotBeNull();
         target2.FullName.ShouldBe(" ");
     }
+
+    [Fact]
+    public void CanMapToExistingTarget_Test()
+    {
+        // Arrange
+        var source = new PersonStub { Age = 25, FirstName = "John", LastName = "Doe" };
+        var target = new PersonDtoStub { Age = 30, FullName = "Jane Smith" };
+        var mapper = new ObjectMapper();
+        mapper.For<PersonStub, PersonDtoStub>()
+            .MapCustom(s => $"{s.FirstName} {s.LastName}", d => d.FullName)
+            .Map(s => s.Age, d => d.Age)
+            .Apply();
+
+        // Act
+        var updatedTarget = mapper.Map(source, target);
+
+        // Assert
+        updatedTarget.ShouldBe(target); // Should be the same instance
+        updatedTarget.Age.ShouldBe(25);
+        updatedTarget.FullName.ShouldBe("John Doe");
+    }
 }

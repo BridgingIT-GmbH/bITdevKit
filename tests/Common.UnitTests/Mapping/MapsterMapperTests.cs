@@ -66,6 +66,89 @@ public class MapsterMapperTests
         target2.FullName.ShouldBe(null);
     }
 
+    [Fact]
+    public void Map_WithExistingTarget_ShouldUpdateTargetProperties()
+    {
+        // Arrange
+        var config = MapperConfig.Create();
+        var source = new PersonStub { Age = 30, FirstName = "Jane", LastName = "Smith" };
+        var target = new PersonDtoStub { Age = 25, FullName = "John Doe" };
+        var sut = new MapsterMapper(config);
+
+        // Act
+        var result = sut.Map(source, target);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeSameAs(target);
+        result.Age.ShouldBe(30);
+        result.FullName.ShouldBe("Jane Smith");
+    }
+
+    [Fact]
+    public void Map_WithNullSource_ShouldReturnUnchangedTarget()
+    {
+        // Arrange
+        var config = MapperConfig.Create();
+        PersonStub source = null;
+        var target = new PersonDtoStub { Age = 25, FullName = "John Doe" };
+        var sut = new MapsterMapper(config);
+
+        // Act
+        var result = sut.Map(source, target);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeSameAs(target);
+        result.Age.ShouldBe(25);
+        result.FullName.ShouldBe("John Doe");
+    }
+
+    [Fact]
+    public void Map_WithNullTarget_ShouldReturnNewTargetInstance()
+    {
+        // Arrange
+        var config = MapperConfig.Create();
+        var source = new PersonStub { Age = 30, FirstName = "Jane", LastName = "Smith" };
+        PersonDtoStub target = null;
+        var sut = new MapsterMapper(config);
+
+        // Act
+        var result = sut.Map(source, target);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void Map_WithRandomData_ShouldMapCorrectly()
+    {
+        // Arrange
+        var config = MapperConfig.Create();
+        var faker = new Faker();
+        var source = new PersonStub
+        {
+            Age = faker.Random.Number(18, 80),
+            FirstName = faker.Name.FirstName(),
+            LastName = faker.Name.LastName()
+        };
+        var target = new PersonDtoStub
+        {
+            Age = faker.Random.Number(18, 80),
+            FullName = faker.Name.FullName()
+        };
+        var sut = new MapsterMapper(config);
+
+        // Act
+        var result = sut.Map(source, target);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeSameAs(target);
+        result.Age.ShouldBe(source.Age);
+        result.FullName.ShouldBe($"{source.FirstName} {source.LastName}");
+    }
+
     //[Fact]
     //public void CanMapExpression1_Test()
     //{

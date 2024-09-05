@@ -31,4 +31,12 @@ public interface IMapper
     /// <param name="source">The source object to map from.</param>
     TTarget Map<TSource, TTarget>(TSource source)
         where TTarget : class;
+
+    /// <summary>
+    /// Maps the specified source object of type <typeparamref name="TSource"/> into the destination object of type <typeparamref name="TTarget"/>.
+    /// </summary>
+    /// <param name="source">The source object to map from.</param>
+    /// <param name="target">The target object to map to.</param>
+    TTarget Map<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class;
 }

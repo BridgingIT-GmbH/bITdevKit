@@ -12,7 +12,8 @@ using Mapster;
 /// </summary>
 /// <typeparam name="TSource">The type of the object to map from.</typeparam>
 /// <typeparam name="TDestination">The type of the object to map to.</typeparam>
-public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = null) : IMapper<TSource, TDestination>
+public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = null)
+    : IMapper<TSource, TDestination>
 {
     private readonly TypeAdapterConfig config = config ?? TypeAdapterConfig.GlobalSettings;
 
@@ -33,9 +34,8 @@ public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = nul
 /// <summary>
 /// Maps an object of type <typeparamref name="TSource"/> to <typeparamref name="TDestination"/> by using mapster.
 /// </summary>
-/// <typeparam name="TSource">The type of the object to map from.</typeparam>
-/// <typeparam name="TDestination">The type of the object to map to.</typeparam>
-public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
+public class MapsterMapper(TypeAdapterConfig config = null)
+    : IMapper
 {
     private readonly TypeAdapterConfig config = config ?? TypeAdapterConfig.GlobalSettings;
 
@@ -48,5 +48,16 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
         }
 
         return source.Adapt<TTarget>(this.config);
+    }
+
+    public TTarget Map<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class
+    {
+        if (source is null)
+        {
+            return target;
+        }
+
+        return source.Adapt(target, this.config);
     }
 }

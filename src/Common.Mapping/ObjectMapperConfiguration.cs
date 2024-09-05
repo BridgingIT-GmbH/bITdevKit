@@ -49,6 +49,7 @@ public class ObjectMapperConfiguration<TSource, TTarget>
     public ObjectMapper Apply()
     {
         this.objectMapper.AddMapping<TSource, TTarget>(this.CreateMapping);
+        this.objectMapper.AddMapping<TSource, TTarget>(this.UpdateMapping);
 
         return this.objectMapper;
     }
@@ -67,6 +68,12 @@ public class ObjectMapperConfiguration<TSource, TTarget>
     private TTarget CreateMapping(TSource source)
     {
         var target = Activator.CreateInstance<TTarget>();
+        this.UpdateMapping(source, target);
+        return target;
+    }
+
+    private void UpdateMapping(TSource source, TTarget target)
+    {
         if (target is not null)
         {
             foreach (var propertyMapping in this.propertyMappings)
@@ -83,8 +90,6 @@ public class ObjectMapperConfiguration<TSource, TTarget>
                 }
             }
         }
-
-        return target;
     }
 
     private object GetPropertyValue(object obj, MemberInfo memberInfo)

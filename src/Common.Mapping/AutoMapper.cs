@@ -31,7 +31,6 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
     /// <summary>
     /// Initializes a new instance of the <see cref="AutoMapper{TSource, TDestination}"/> class.
     /// </summary>
-    /// <param name="mapper">The mapper.</param>
     public AutoMapper(MapperConfiguration configuration)
     {
         EnsureArg.IsNotNull(configuration, nameof(configuration));
@@ -56,8 +55,6 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
 /// <summary>
 /// Maps an object of type <typeparamref name="TSource"/> to <typeparamref name="TDestination"/> by using automapper.
 /// </summary>
-/// <typeparam name="TSource">The type of the object to map from.</typeparam>
-/// <typeparam name="TDestination">The type of the object to map to.</typeparam>
 public class AutoMapper : IMapper
 {
     private readonly global::AutoMapper.IMapper mapper;
@@ -76,7 +73,6 @@ public class AutoMapper : IMapper
     /// <summary>
     /// Initializes a new instance of the <see cref="AutoMapper"/> class.
     /// </summary>
-    /// <param name="mapper">The mapper.</param>
     public AutoMapper(MapperConfiguration configuration)
     {
         EnsureArg.IsNotNull(configuration, nameof(configuration));
@@ -97,5 +93,16 @@ public class AutoMapper : IMapper
         }
 
         return this.mapper.Map<TTarget>(source);
+    }
+
+    public TTarget Map<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class
+    {
+        if (source is null)
+        {
+            return default;
+        }
+
+        return this.mapper.Map(source, target);
     }
 }

@@ -56,11 +56,11 @@
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>
 
     <!-- upgrade some packages due to transitive vulnerabilities -->
-    <PackageReference Include="System.Net.Http" />
+    <!--<PackageReference Include="System.Net.Http" />
     <PackageReference Include="System.Text.Json" />
     <PackageReference Include="System.Text.RegularExpressions" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />-->
   </ItemGroup>
 
 </Project>

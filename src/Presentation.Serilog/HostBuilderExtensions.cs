@@ -12,24 +12,30 @@ using Serilog;
 
 public static class HostBuilderExtensions
 {
-    [Obsolete("Use the new builder.Host.ConfigureLogging(), without the configuration argument")]
-    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, IConfiguration configuration)
+    //[Obsolete("Use the new builder.Host.ConfigureLogging(), without the configuration argument")]
+    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, IConfiguration configuration = null)
     {
-        return builder.ConfigureLogging();
-    }
+        //    return builder.ConfigureLogging();
+        //}
 
-    public static IHostBuilder ConfigureLogging(this IHostBuilder builder)
-    {
+        //public static IHostBuilder ConfigureLogging(this IHostBuilder builder)
+        //{
         EnsureArg.IsNotNull(builder, nameof(builder));
 
         Serilog.Debugging.SelfLog.Enable(Console.Error);
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {
-            builder.ConfigureLogging((ctx, c) =>
+            builder.ConfigureLogging((Action<HostBuilderContext, ILoggingBuilder>)((ctx, c) =>
             {
-                var logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(ctx.Configuration)
+                var loggerConfiguration = new LoggerConfiguration();
+
+                if (configuration != null)
+                {
+                    WriteToOpenTelemetry(loggerConfiguration, configuration);
+                }
+
+                var logger = loggerConfiguration.ReadFrom.Configuration(ctx.Configuration)
                     .CreateLogger();
 
                 c.ClearProviders();
@@ -37,7 +43,7 @@ public static class HostBuilderExtensions
                 builder.UseSerilog(logger);
 
                 Log.Logger = logger;
-            });
+            }));
         }
 
         return builder;
@@ -67,5 +73,38 @@ public static class HostBuilderExtensions
         }
 
         return builder;
+    }
+
+    private static void WriteToOpenTelemetry(LoggerConfiguration loggerConfiguration, IConfiguration configuration)
+    {
+        if (!string.IsNullOrEmpty(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder
+        {
+            loggerConfiguration.WriteTo.OpenTelemetry(options => // https://github.com/serilog/serilog-sinks-opentelemetry?tab=readme-ov-file#getting-started
+            {
+                options.Endpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+                foreach (var header in configuration["OTEL_EXPORTER_OTLP_HEADERS"]?.Split(',') ?? [])
+                {
+                    var (key, value) = header.Split('=') switch
+                    {
+                    [string k, string v] => (k, v),
+                        var v => throw new Exception($"Invalid header format {v}")
+                    };
+
+                    options.Headers.Add(key, value);
+                }
+
+                options.ResourceAttributes.Add("service.name", "presentation-web-server");
+
+                //To remove the duplicate issue, we can use the below code to get the key and value from the configuration
+                // https://stackoverflow.com/a/78419578/1758814
+                var (otelResourceAttribute, otelResourceAttributeValue) = configuration["OTEL_RESOURCE_ATTRIBUTES"]?.Split('=') switch
+                {
+                [string k, string v] => (k, v),
+                    _ => throw new Exception($"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
+                };
+
+                options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
+            });
+        }
     }
 }

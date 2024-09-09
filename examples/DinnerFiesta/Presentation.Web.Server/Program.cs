@@ -37,8 +37,8 @@ using Serilog;
 // ===============================================================================================
 // Create the webhost
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.ConfigureLogging();
 builder.Host.ConfigureAppConfiguration();
+builder.Host.ConfigureLogging(builder.Configuration);
 
 // ===============================================================================================
 // Configure the modules

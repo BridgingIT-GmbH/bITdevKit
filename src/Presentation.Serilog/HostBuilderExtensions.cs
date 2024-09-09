@@ -13,7 +13,7 @@ using Serilog;
 public static class HostBuilderExtensions
 {
     //[Obsolete("Use the new builder.Host.ConfigureLogging(), without the configuration argument")]
-    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, IConfiguration configuration = null)
+    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, IConfiguration configuration = null, string[] exclusionPatterns = null)
     {
         //    return builder.ConfigureLogging();
         //}
@@ -26,9 +26,20 @@ public static class HostBuilderExtensions
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {
-            builder.ConfigureLogging((Action<HostBuilderContext, ILoggingBuilder>)((ctx, c) =>
+            builder.ConfigureLogging((ctx, c) =>
             {
                 var loggerConfiguration = new LoggerConfiguration();
+                loggerConfiguration.Filter.ByExcluding("RequestPath like '/health%'"); // exclude health checks from logs
+                loggerConfiguration.Filter.ByExcluding("RequestPath like '/api/events/raw'"); // exclude otel push from logs
+                loggerConfiguration.Filter.ByExcluding("StartsWith(@Message, 'Execution attempt. Source')"); // exclude health/otel from logs
+
+                if (exclusionPatterns != null)
+                {
+                    foreach (var exclusionPattern in exclusionPatterns)
+                    {
+                        loggerConfiguration.Filter.ByExcluding(exclusionPattern);
+                    }
+                }
 
                 if (configuration != null)
                 {
@@ -43,7 +54,7 @@ public static class HostBuilderExtensions
                 builder.UseSerilog(logger);
 
                 Log.Logger = logger;
-            }));
+            });
         }
 
         return builder;

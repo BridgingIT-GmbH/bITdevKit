@@ -186,7 +186,8 @@ public static class ModuleExtensions
             return default;
         }
 
-        return services.Configure<TOptions, TValidator>(configuration, module, validateOnStart);
+        return services.Configure<TOptions, TValidator>(
+            configuration, module, validateOnStart);
     }
 
     private static IEnumerable<IModule> FindModules(params Assembly[] assemblies)

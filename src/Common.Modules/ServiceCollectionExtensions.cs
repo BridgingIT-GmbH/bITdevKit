@@ -108,7 +108,8 @@ public static class ServiceCollectionExtensions
         // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-8.0#use-di-services-to-configure-options
         if (configuration is not null)
         {
-            var builder = services.AddOptions<TOptions>().Bind(configuration.GetSection(module))
+            var section = configuration.GetSection(module);
+            var builder = services.AddOptions<TOptions>().Bind(section)
                 .Validate(validationOptions => // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#options-validation
                 {
                     Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
@@ -121,9 +122,11 @@ public static class ServiceCollectionExtensions
             {
                 builder.ValidateOnStart();
             }
+
+            return section.Get<TOptions>();
         }
 
-        return configuration.Get<TOptions>(module);
+        return default;  //configuration.Get<TOptions>(module);
     }
 
     public static ModuleBuilderContext WithRequestModuleContextAccessors(this ModuleBuilderContext context)

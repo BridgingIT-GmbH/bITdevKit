@@ -5,43 +5,50 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System.Collections.Generic;
-
 [UnitTest("Common")]
 public class FactoryTests
 {
     [Fact]
     public void CanCreateInstance()
     {
-        Factory<Stub>.Create().ShouldNotBeNull();
-        Factory<Stub>.Create("firstname").ShouldNotBeNull();
-        Factory<Stub>.Create("firstname", "NOARG").ShouldBeNull();
-        Factory.Create(typeof(Stub)).ShouldNotBeNull();
-        Factory.Create<Stub>(typeof(Stub)).ShouldNotBeNull();
-        Factory.Create<FactoryTests>(typeof(Stub)).ShouldBeNull();
-        Factory.Create(typeof(Stub), "firstname").ShouldNotBeNull();
-        Factory.Create(typeof(Stub), "firstname", "NOARG").ShouldBeNull();
+        Factory<Stub>.Create()
+            .ShouldNotBeNull();
+        Factory<Stub>.Create("firstname")
+            .ShouldNotBeNull();
+        Factory<Stub>.Create("firstname", "NOARG")
+            .ShouldBeNull();
+        Factory.Create(typeof(Stub))
+            .ShouldNotBeNull();
+        Factory.Create<Stub>(typeof(Stub))
+            .ShouldNotBeNull();
+        Factory.Create<FactoryTests>(typeof(Stub))
+            .ShouldBeNull();
+        Factory.Create(typeof(Stub), "firstname")
+            .ShouldNotBeNull();
+        Factory.Create(typeof(Stub), "firstname", "NOARG")
+            .ShouldBeNull();
     }
 
     [Fact]
     public void CanCreateGenericInstance()
     {
-        Factory.Create(typeof(Stub<>), typeof(int)).ShouldNotBeNull();
-        Factory.Create<Stub<int>>(typeof(Stub<>), typeof(int)).ShouldNotBeNull();
-        Factory.Create<Stub<string>>(typeof(Stub<>), typeof(int)).ShouldBeNull();
-        Factory.Create(typeof(Stub<>), typeof(int), "firstname").ShouldNotBeNull();
-        Factory.Create(typeof(Stub<>), typeof(int), "firstname", "NOARG").ShouldBeNull();
+        Factory.Create(typeof(Stub<>), typeof(int))
+            .ShouldNotBeNull();
+        Factory.Create<Stub<int>>(typeof(Stub<>), typeof(int))
+            .ShouldNotBeNull();
+        Factory.Create<Stub<string>>(typeof(Stub<>), typeof(int))
+            .ShouldBeNull();
+        Factory.Create(typeof(Stub<>), typeof(int), "firstname")
+            .ShouldNotBeNull();
+        Factory.Create(typeof(Stub<>), typeof(int), "firstname", "NOARG")
+            .ShouldBeNull();
     }
 
     [Fact]
     public void CanCreateWithDictionaryProperties1Instance()
     {
         // Arrange
-        var properties = new Dictionary<string, object>
-        {
-            ["Firstname"] = "John",
-            ["lastname"] = "Doe"
-        };
+        var properties = new Dictionary<string, object> { ["Firstname"] = "John", ["lastname"] = "Doe" };
 
         // Act
         var sut = Factory<Stub>.Create(properties);
@@ -55,11 +62,7 @@ public class FactoryTests
     public void CanCreateWithDictionaryProperties2Instance()
     {
         // Arrange
-        var properties = new Dictionary<string, object>
-        {
-            ["Firstname"] = "John",
-            ["lastname"] = "Doe"
-        };
+        var properties = new Dictionary<string, object> { ["Firstname"] = "John", ["lastname"] = "Doe" };
 
         // Act
         var sut = Factory.Create(typeof(Stub), properties) as Stub;
@@ -71,9 +74,7 @@ public class FactoryTests
 
     public class Stub
     {
-        public Stub()
-        {
-        }
+        public Stub() { }
 
         public Stub(string firstName)
         {
@@ -87,9 +88,7 @@ public class FactoryTests
 
     public class Stub<T>
     {
-        public Stub()
-        {
-        }
+        public Stub() { }
 
         public Stub(string firstName)
         {

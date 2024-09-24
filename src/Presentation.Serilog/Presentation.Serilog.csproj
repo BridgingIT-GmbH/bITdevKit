@@ -9,19 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.Expressions" />
-    <PackageReference Include="Serilog.Extensions.Hosting" />
-    <PackageReference Include="Serilog.Settings.Configuration" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="Serilog.Sinks.File" />
-    <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
-    <PackageReference Include="Serilog.Sinks.Trace" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+    <PackageReference Include="Serilog"/>
+    <PackageReference Include="Serilog.Expressions"/>
+    <PackageReference Include="Serilog.Extensions.Hosting"/>
+    <PackageReference Include="Serilog.Settings.Configuration"/>
+    <PackageReference Include="Serilog.Sinks.Console"/>
+    <PackageReference Include="Serilog.Sinks.File"/>
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry"/>
+    <PackageReference Include="Serilog.Sinks.Trace"/>
   </ItemGroup>
 
 </Project>

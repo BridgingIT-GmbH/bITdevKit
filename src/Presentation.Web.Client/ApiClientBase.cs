@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Client;
 
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class ApiClientBase
 {

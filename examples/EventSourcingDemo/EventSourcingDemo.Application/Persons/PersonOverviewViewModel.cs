@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using System;
-
 public class PersonOverviewViewModel
 {
     public Guid Id { get; set; }

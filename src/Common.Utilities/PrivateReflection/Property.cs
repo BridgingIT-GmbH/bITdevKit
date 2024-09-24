@@ -9,13 +9,6 @@ using System.Reflection;
 
 internal class Property : IProperty
 {
-    string IProperty.Name
-    {
-        get { return this.PropertyInfo.Name; }
-    }
-
-    internal PropertyInfo PropertyInfo { get; set; }
-
     object IProperty.GetValue(object obj, object[] index)
     {
         return this.PropertyInfo.GetValue(obj, index);
@@ -25,4 +18,10 @@ internal class Property : IProperty
     {
         this.PropertyInfo.SetValue(obj, val, index);
     }
+#pragma warning disable SA1202
+#pragma warning disable SA1201
+    internal PropertyInfo PropertyInfo { get; set; }
+    string IProperty.Name => this.PropertyInfo.Name;
+#pragma warning restore SA1201
+#pragma warning restore SA1202
 }

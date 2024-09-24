@@ -15,16 +15,15 @@ public partial class OutboxMessageQueue : IOutboxMessageQueue
 
     public OutboxMessageQueue(ILoggerFactory loggerFactory, Action<string> action = null)
     {
-        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
 
         if (action is not null)
         {
             this.messageIds = new ActionBlock<string>(action,
                 new ExecutionDataflowBlockOptions
                 {
-                    CancellationToken = CancellationToken.None,
-                    MaxDegreeOfParallelism = 1,
-                    EnsureOrdered = true
+                    CancellationToken = CancellationToken.None, MaxDegreeOfParallelism = 1, EnsureOrdered = true
                 });
         }
     }

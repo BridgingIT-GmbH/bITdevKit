@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" />
-    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="Azure.Data.Tables"/>
+    <PackageReference Include="Azure.Storage.Blobs"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
-    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj"/>
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj"/>
   </ItemGroup>
 
 

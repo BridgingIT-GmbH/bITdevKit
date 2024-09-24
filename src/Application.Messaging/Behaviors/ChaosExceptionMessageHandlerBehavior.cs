@@ -5,14 +5,19 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
-public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
+public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory)
+    : MessageHandlerBehaviorBase(loggerFactory)
 {
-    public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    public override async Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -24,11 +29,9 @@ public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory) 
         {
             // https://github.com/Polly-Contrib/Simmy#Inject-exception
             var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(options.Fault ?? new ChaosException())
-                    .InjectionRate(options.InjectionRate)
-                    .Enabled());
+                with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
 
-            await policy.Execute(async (context) => await next().AnyContext(), cancellationToken);
+            await policy.Execute(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class CountryShouldBeKnown(string value) : IDomainRule
 {
@@ -17,12 +15,12 @@ public class CountryShouldBeKnown(string value) : IDomainRule
     public string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(
-            !string.IsNullOrEmpty(this.value)
-            && this.countries.Contains(this.value));
+        return Task.FromResult(!string.IsNullOrEmpty(this.value) && this.countries.Contains(this.value));
     }
 }

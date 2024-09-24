@@ -9,7 +9,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 
+/// <summary>
+///     Represents a web module within an application framework, extending the IModule interface.
+/// </summary>
 public interface IWebModule : IModule
 {
-    IEndpointRouteBuilder Map(IEndpointRouteBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null);
+    /// <summary>
+    ///     Maps the specified application routes for the given web module.
+    /// </summary>
+    /// <param name="app">The endpoint route builder to configure.</param>
+    /// <param name="configuration">The configuration settings for the web module.</param>
+    /// <param name="environment">The hosting environment information.</param>
+    /// <returns>The configured <c>IEndpointRouteBuilder</c> instance.</returns>
+    IEndpointRouteBuilder Map(
+        IEndpointRouteBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null);
 }

@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
+using Application.Storage;
+using Common;
 using global::Azure.Data.Tables;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -28,7 +25,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
+        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
         this.serviceClient = new TableServiceClient(connectionString, clientOptions);
         this.tableNamePrefix = tableNamePrefix;
     }
@@ -46,9 +44,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(storageAccountKey, nameof(storageAccountKey));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
-        this.serviceClient = new TableServiceClient(
-            new Uri(storageUri),
+        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
+        this.serviceClient = new TableServiceClient(new Uri(storageUri),
             new TableSharedKeyCredential(accountName, storageAccountKey),
             clientOptions);
         this.tableNamePrefix = tableNamePrefix;
@@ -62,7 +60,8 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNull(serviceClient, nameof(serviceClient));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
+        this.Logger = loggerFactory?.CreateLogger<AzureTableDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureTableDocumentStoreProvider>();
         this.serviceClient = serviceClient;
         this.tableNamePrefix = tableNamePrefix;
     }
@@ -70,7 +69,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     protected ILogger<AzureTableDocumentStoreProvider> Logger { get; }
 
     /// <summary>
-    /// Retrieves entities of type T from document store asynchronously
+    ///     Retrieves entities of type T from document store asynchronously
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
@@ -80,7 +79,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         var tableClient = this.serviceClient.GetTableClient(tableName);
         var results = new HashSet<T>();
 
-        await foreach (var page in tableClient.QueryAsync<TableEntity>(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in tableClient.QueryAsync<TableEntity>(cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var tableEntity in page.Values)
             {
@@ -96,7 +97,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
+    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(
         DocumentKey documentKey,
@@ -107,12 +108,12 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Searches for entities of type T by the whole partitionKey and startswith rowKey
+    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(
-    DocumentKey documentKey,
-    DocumentKeyFilter filter,
-    CancellationToken cancellationToken = default)
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -129,7 +130,10 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
             return results;
         }
 
-        await foreach (var page in tableClient.QueryAsync<TableEntity>(queryFilter, cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in tableClient
+                           .QueryAsync<TableEntity>(queryFilter, cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var tableEntity in page.Values)
             {
@@ -144,22 +148,29 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         return results;
 
         // TODO: refactor to private method
-        static string CreateQueryFilter(DocumentKey documentKey, DocumentKeyFilter filter) // https://medienstudio.net/development-en/startswith-filter-on-azure-table-storage-columns-in-c-javascript/
+        static string
+            CreateQueryFilter(
+                DocumentKey documentKey,
+                DocumentKeyFilter
+                    filter) // https://medienstudio.net/development-en/startswith-filter-on-azure-table-storage-columns-in-c-javascript/
         {
             if (filter == DocumentKeyFilter.FullMatch)
             {
                 return $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey eq '{documentKey.RowKey}'";
             }
-            else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+            if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
             {
                 var lastChar = documentKey.RowKey[documentKey.RowKey.Length - 1];
                 var nextChar = (char)(lastChar + 1);
                 var rowKeyNext = documentKey.RowKey.Substring(0, documentKey.RowKey.Length - 1) + nextChar;
 
                 // this filter matches the whole paritionKey and startsWith on the rowKey
-                return $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey ge '{documentKey.RowKey}' and RowKey lt '{rowKeyNext}'";
+                return
+                    $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey ge '{documentKey.RowKey}' and RowKey lt '{rowKeyNext}'";
             }
-            else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+            if (filter == DocumentKeyFilter.RowKeySuffixMatch)
             {
                 // this filter matches the whole paritionKey and endsWith on the rowKey
                 throw new NotSupportedException();
@@ -177,24 +188,31 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         var tableClient = this.serviceClient.GetTableClient(tableName);
         var results = new HashSet<DocumentKey>();
 
-        await foreach (var page in tableClient.QueryAsync<TableEntity>(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in tableClient.QueryAsync<TableEntity>(cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var tableEntity in page.Values)
             {
-                results.Add(new(tableEntity.PartitionKey, tableEntity.RowKey));
+                results.Add(new DocumentKey(tableEntity.PartitionKey, tableEntity.RowKey));
             }
         }
 
         return results;
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -210,24 +228,32 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
             return results;
         }
 
-        await foreach (var page in tableClient.QueryAsync<TableEntity>(queryFilter, cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in tableClient
+                           .QueryAsync<TableEntity>(queryFilter, cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var tableEntity in page.Values)
             {
-                results.Add(new(tableEntity.PartitionKey, tableEntity.RowKey));
+                results.Add(new DocumentKey(tableEntity.PartitionKey, tableEntity.RowKey));
             }
         }
 
         return results;
 
         // TODO: refactor to private method
-        static string CreateQueryFilter(DocumentKey documentKey, DocumentKeyFilter filter) // https://medienstudio.net/development-en/startswith-filter-on-azure-table-storage-columns-in-c-javascript/
+        static string
+            CreateQueryFilter(
+                DocumentKey documentKey,
+                DocumentKeyFilter
+                    filter) // https://medienstudio.net/development-en/startswith-filter-on-azure-table-storage-columns-in-c-javascript/
         {
             if (filter == DocumentKeyFilter.FullMatch)
             {
                 return $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey eq '{documentKey.RowKey}'";
             }
-            else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+            if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
             {
                 if (documentKey.RowKey.IsNullOrEmpty())
                 {
@@ -240,9 +266,11 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
                 var rowKeyNext = documentKey.RowKey.Substring(0, documentKey.RowKey.Length - 1) + nextChar;
 
                 // this filter matches the whole paritionKey and startsWith on the rowKey
-                return $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey ge '{documentKey.RowKey}' and RowKey lt '{rowKeyNext}'";
+                return
+                    $"PartitionKey eq '{documentKey.PartitionKey}' and RowKey ge '{documentKey.RowKey}' and RowKey lt '{rowKeyNext}'";
             }
-            else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+            if (filter == DocumentKeyFilter.RowKeySuffixMatch)
             {
                 // this filter matches the whole paritionKey and endsWith on the rowKey
                 throw new NotSupportedException();
@@ -253,7 +281,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Counts the number of entities of type T in the document store
+    ///     Counts the number of entities of type T in the document store
     /// </summary>
     public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
@@ -262,7 +290,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
+    ///     Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
     /// </summary>
     public async Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
@@ -271,12 +299,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Inserts or updates an entity of type T in the document store
+    ///     Inserts or updates an entity of type T in the document store
     /// </summary>
-    public async Task UpsertAsync<T>(
-        DocumentKey documentKey,
-        T entity,
-        CancellationToken cancellationToken = default)
+    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -293,7 +318,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Inserts or updates multiple entities of type T in the document store
+    ///     Inserts or updates multiple entities of type T in the document store
     /// </summary>
     public async Task UpsertAsync<T>(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
@@ -314,11 +339,9 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
+    ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
     /// </summary>
-    public async Task DeleteAsync<T>(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
+    public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -328,9 +351,13 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider
         this.serviceClient.CreateTableIfNotExists(tableName, cancellationToken);
         var tableClient = this.serviceClient.GetTableClient(tableName);
 
-        await tableClient.DeleteEntityAsync(documentKey.PartitionKey, documentKey.RowKey, cancellationToken: cancellationToken);
+        await tableClient.DeleteEntityAsync(documentKey.PartitionKey,
+            documentKey.RowKey,
+            cancellationToken: cancellationToken);
     }
 
-    private string GetTableName<T>() =>
-        (this.tableNamePrefix + typeof(T).Name).ToLowerInvariant().TruncateLeft(63);
+    private string GetTableName<T>()
+    {
+        return (this.tableNamePrefix + typeof(T).Name).ToLowerInvariant().TruncateLeft(63);
+    }
 }

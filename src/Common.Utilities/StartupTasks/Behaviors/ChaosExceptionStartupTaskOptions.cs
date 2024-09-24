@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common;
+
 public interface IChaosExceptionStartupTask
 {
     ChaosExceptionStartupTaskOptions Options { get; }
@@ -12,7 +13,8 @@ public interface IChaosExceptionStartupTask
 public class ChaosExceptionStartupTaskOptions
 {
     /// <summary>
-    /// A decimal between 0 and 1 inclusive. The policy will inject the fault, randomly, that proportion of the time, eg: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
+    ///     A decimal between 0 and 1 inclusive. The policy will inject the fault, randomly, that proportion of the time, eg:
+    ///     if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
     /// </summary>
     public double InjectionRate { get; set; }
 

@@ -23,7 +23,8 @@ public class SliceTests
     [InlineData("abcdef.jpg.jpg", ".", ".", "jpg")]
     public void Slice_All_Positions(string source, string start, string end, string expected)
     {
-        source.Slice(start, end).ShouldBe(expected);
+        source.Slice(start, end)
+            .ShouldBe(expected);
     }
 
     [Fact]

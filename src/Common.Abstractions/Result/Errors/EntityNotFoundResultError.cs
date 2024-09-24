@@ -8,9 +8,7 @@ namespace BridgingIT.DevKit.Common;
 public class EntityNotFoundResultError : ResultErrorBase
 {
     public EntityNotFoundResultError()
-        : base("Entity not found")
-    {
-    }
+        : base("Entity not found") { }
 
     public EntityNotFoundResultError(string entityType, string entityId)
         : base($"{entityType} with id {entityId} not found")

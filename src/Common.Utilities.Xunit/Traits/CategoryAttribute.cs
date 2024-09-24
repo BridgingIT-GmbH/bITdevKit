@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using Xunit.Sdk;
 
 [TraitDiscoverer(CategoryDiscoverer.TypeName, CategoryDiscoverer.AssemblyName)]

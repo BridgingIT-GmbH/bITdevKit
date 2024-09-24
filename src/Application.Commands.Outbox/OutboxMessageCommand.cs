@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands.Outbox;
 
-using System;
-using BridgingIT.DevKit.Application.Commands;
-
 public class OutboxMessageCommand : CommandRequestBase<OutboxMessageCommandResult>
 {
     private OutboxMessageCommand()

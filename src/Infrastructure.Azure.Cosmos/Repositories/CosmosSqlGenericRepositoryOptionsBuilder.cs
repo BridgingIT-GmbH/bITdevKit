@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 
-public class CosmosSqlGenericRepositoryOptionsBuilder<TEntity> :
-    OptionsBuilderBase<CosmosSqlGenericRepositoryOptions<TEntity>, CosmosSqlGenericRepositoryOptionsBuilder<TEntity>>
+public class CosmosSqlGenericRepositoryOptionsBuilder<TEntity>
+    : OptionsBuilderBase<CosmosSqlGenericRepositoryOptions<TEntity>, CosmosSqlGenericRepositoryOptionsBuilder<TEntity>>
     where TEntity : class, IEntity
 {
     public CosmosSqlGenericRepositoryOptionsBuilder<TEntity> Provider(ICosmosSqlProvider<TEntity> provider)
@@ -32,12 +32,14 @@ public class CosmosSqlGenericRepositoryOptionsBuilder<TEntity> :
     }
 }
 
-public class CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> :
-    OptionsBuilderBase<CosmosSqlRepositoryOptions<TEntity, TDatabaseEntity>, CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity>>
+public class CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity>
+    : OptionsBuilderBase<CosmosSqlRepositoryOptions<TEntity, TDatabaseEntity>,
+        CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity>>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
-    public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> Provider(ICosmosSqlProvider<TDatabaseEntity> provider)
+    public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> Provider(
+        ICosmosSqlProvider<TDatabaseEntity> provider)
     {
         this.Target.Provider = provider;
         return this;
@@ -49,7 +51,8 @@ public class CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> :
         return this;
     }
 
-    public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> IdGenerator(IEntityIdGenerator<TEntity> idGenerator)
+    public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> IdGenerator(
+        IEntityIdGenerator<TEntity> idGenerator)
     {
         this.Target.IdGenerator = idGenerator;
         return this;

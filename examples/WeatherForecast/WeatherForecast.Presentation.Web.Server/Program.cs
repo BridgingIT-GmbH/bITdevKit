@@ -3,6 +3,8 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using System.Reflection;
+using System.Text.Json.Serialization;
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net;
 using System.Runtime.InteropServices;
@@ -34,6 +36,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 // ===============================================================================================
@@ -48,7 +51,8 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>()
     .WithModuleContextAccessors()
     .WithRequestModuleContextAccessors()
-    .WithModuleControllers(c => c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
+    .WithModuleControllers(c =>
+        c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 
 builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
 
@@ -95,8 +99,9 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithBehavior<RetryStartupTaskBehavior>()
     .WithBehavior<TimeoutStartupTaskBehavior>();
 
-builder.Services.AddMessaging(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+builder.Services.AddMessaging(builder.Configuration,
+        o => o
+            .StartupDelay("00:00:10"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -113,7 +118,8 @@ builder.Services.AddMessaging(builder.Configuration, o => o
 
 ConfigureHealth(builder.Services);
 
-builder.Services.AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
+builder.Services
+    .AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
@@ -131,11 +137,13 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
+builder.Services.AddOpenApiDocument(
+    ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
 if (!builder.Environment.IsDevelopment())
 {
-    builder.Services.AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
+    builder.Services
+        .AddApplicationInsightsTelemetry(); // https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core
 }
 
 builder.Services.AddOpenTelemetry()
@@ -152,7 +160,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     app.UseHsts();
 }
 
@@ -206,13 +214,13 @@ void ConfigureJsonOptions(JsonOptions options)
     options.JsonSerializerOptions.WriteIndented = true;
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }
 
 void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
-        .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "self" });
+        .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { "self" });
     //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()
@@ -226,8 +234,7 @@ void ConfigureHealth(IServiceCollection services)
 void ConfigureMetrics(MeterProviderBuilder provider)
 {
     provider.AddRuntimeInstrumentation()
-        .AddMeter(
-            "Microsoft.AspNetCore.Hosting",
+        .AddMeter("Microsoft.AspNetCore.Hosting",
             "Microsoft.AspNetCore.Server.Kestrel",
             "System.Net.Http",
             "BridgingIT.DevKit");
@@ -243,7 +250,7 @@ void ConfigureTracing(TracerProviderBuilder provider)
 {
     // TODO: multiple per module tracer needed? https://github.com/open-telemetry/opentelemetry-dotnet/issues/2040
     // https://opentelemetry.io/docs/instrumentation/net/getting-started/
-    var serviceName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name; //TODO: use ModuleExtensions.ServiceName
+    var serviceName = Assembly.GetExecutingAssembly().GetName().Name; //TODO: use ModuleExtensions.ServiceName
 
     if (builder.Environment.IsDevelopment())
     {
@@ -257,7 +264,7 @@ void ConfigureTracing(TracerProviderBuilder provider)
     provider
         //.AddSource(ModuleExtensions.Modules.Select(m => m.Name).Insert(serviceName).ToArray()) // TODO: provide a nice (module) extension for this -> .AddModuleSources() // NOT NEEDED, * will add all activitysources
         .AddSource("*")
-        .SetErrorStatusOnException(true)
+        .SetErrorStatusOnException()
         .SetResourceBuilder(ResourceBuilder.CreateDefault()
             .AddService(serviceName)
             .AddTelemetrySdk()
@@ -265,18 +272,21 @@ void ConfigureTracing(TracerProviderBuilder provider)
             {
                 ["host.name"] = Environment.MachineName,
                 ["os.description"] = RuntimeInformation.OSDescription,
-                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLowerInvariant(),
+                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLowerInvariant()
             }))
-        .SetErrorStatusOnException(true)
+        .SetErrorStatusOnException()
         .AddAspNetCoreInstrumentation(options =>
         {
             options.RecordException = true;
-            options.Filter = context => !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
+            options.Filter = context =>
+                !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
         })
         .AddHttpClientInstrumentation(options =>
         {
             options.RecordException = true;
-            options.FilterHttpRequestMessage = request => !request.RequestUri.PathAndQuery.EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
+            options.FilterHttpRequestMessage = request =>
+                !request.RequestUri.PathAndQuery.EqualsPatternAny(
+                    new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
         })
         .AddSqlClientInstrumentation(options =>
         {
@@ -287,7 +297,9 @@ void ConfigureTracing(TracerProviderBuilder provider)
 
     if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
     {
-        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})", "TRC", builder.Configuration["Tracing:Jaeger:AgentHost"]);
+        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
+            "TRC",
+            builder.Configuration["Tracing:Jaeger:AgentHost"]);
         provider.AddJaegerExporter(opts =>
         {
             opts.AgentHost = builder.Configuration["Tracing:Jaeger:AgentHost"];
@@ -307,7 +319,8 @@ void ConfigureTracing(TracerProviderBuilder provider)
         Log.Logger.Information("{LogKey} azuremonitor exporter enabled", "TRC");
         provider.AddAzureMonitorTraceExporter(o =>
         {
-            o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ?? Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+            o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ??
+                Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
         });
     }
 }
@@ -317,8 +330,7 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
     settings.DocumentName = "v1";
     settings.Version = "v1";
     settings.Title = "Backend API";
-    settings.AddSecurity(
-        "bearer",
+    settings.AddSecurity("bearer",
         [],
         new OpenApiSecurityScheme
         {
@@ -336,7 +348,7 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
                         //{"openid", "openid"},
                     }
                 }
-            },
+            }
         });
     settings.OperationProcessors.Add(new AuthorizeRolesSummaryOperationProcessor());
     settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));

@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Projection;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
+using EventSourcing.AggregatePublish;
 using MediatR;
-using Shouldly;
 
 public sealed class PersonCreatedProjection : INotificationHandler<PublishAggregateEvent<Person>>
 {

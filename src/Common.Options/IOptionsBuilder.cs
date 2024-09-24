@@ -8,10 +8,10 @@ namespace BridgingIT.DevKit.Common;
 public interface IOptionsBuilder
 {
     /// <summary>
-    /// Gets the target.
+    ///     Gets the target.
     /// </summary>
     /// <value>
-    /// The target.
+    ///     The target.
     /// </value>
     object Target { get; }
 }

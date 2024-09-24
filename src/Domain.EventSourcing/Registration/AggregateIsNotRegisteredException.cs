@@ -5,24 +5,16 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
-using System;
-
 /// <summary>
-/// EventStore-Aggregates müssen mit einem ImmutableName bei der AggregateRegistration registriert werden.
+///     EventStore-Aggregates müssen mit einem ImmutableName bei der AggregateRegistration registriert werden.
 /// </summary>
 public class AggregateIsNotRegisteredException : Exception
 {
-    public AggregateIsNotRegisteredException()
-    {
-    }
+    public AggregateIsNotRegisteredException() { }
 
     public AggregateIsNotRegisteredException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
     public AggregateIsNotRegisteredException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

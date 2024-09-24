@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class CountryShouldBeKnownRule(string value) : IDomainRule
 {
@@ -17,16 +15,20 @@ public class CountryShouldBeKnownRule(string value) : IDomainRule
     public string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(!string.IsNullOrEmpty(this.value)
-            && this.countries.Contains(this.value));
+        return Task.FromResult(!string.IsNullOrEmpty(this.value) && this.countries.Contains(this.value));
     }
 }
 
 public static partial class DinnerRules
 {
-    public static IDomainRule CountryShouldBeKnown(string value) => new CountryShouldBeKnownRule(value);
+    public static IDomainRule CountryShouldBeKnown(string value)
+    {
+        return new CountryShouldBeKnownRule(value);
+    }
 }

@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
-    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj"/>
+    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj"/>
   </ItemGroup>
 
 </Project>

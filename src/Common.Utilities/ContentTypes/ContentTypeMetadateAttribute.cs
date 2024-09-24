@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Field)]
 public sealed class ContentTypeMetadateAttribute : Attribute
 {
     public ContentTypeMetadateAttribute()
@@ -24,14 +22,8 @@ public sealed class ContentTypeMetadateAttribute : Attribute
 
     public bool IsBinary
     {
-        get
-        {
-            return !this.IsText;
-        }
+        get => !this.IsText;
 
-        set
-        {
-            this.IsText = !value;
-        }
+        set => this.IsText = !value;
     }
 }

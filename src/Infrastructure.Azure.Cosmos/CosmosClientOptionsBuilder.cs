@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class CosmosClientOptionsBuilder :
-    OptionsBuilderBase<CosmosClientOptions, CosmosClientOptionsBuilder>
+public class CosmosClientOptionsBuilder : OptionsBuilderBase<CosmosClientOptions, CosmosClientOptionsBuilder>
 {
     public CosmosClientOptionsBuilder UseConnectionString(string connectionString)
     {

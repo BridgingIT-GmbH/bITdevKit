@@ -5,21 +5,28 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-
+/// <summary>
+///     Represents errors that occur when an entity ID is deemed invalid.
+/// </summary>
 public class InvalidEntityIdException : Exception
 {
-    public InvalidEntityIdException()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidEntityIdException" /> class.
+    ///     The InvalidEntityIdException is thrown when an entity ID is found to be invalid.
+    /// </summary>
+    public InvalidEntityIdException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidEntityIdException" /> class.
+    ///     Represents errors that occur when an invalid entity id is encountered.
+    /// </summary>
     public InvalidEntityIdException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidEntityIdException" /> class.
+    ///     Exception thrown when an entity ID is invalid.
+    /// </summary>
     public InvalidEntityIdException(string message, Exception innerException)
-    : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

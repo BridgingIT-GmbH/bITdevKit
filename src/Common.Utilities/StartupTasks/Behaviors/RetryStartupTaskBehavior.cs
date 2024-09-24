@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using Microsoft.Extensions.Logging;
-using Polly.Retry;
-using Polly;
-using Humanizer;
 using System.Diagnostics;
+using Humanizer;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 
 public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
@@ -32,37 +32,42 @@ public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
             AsyncRetryPolicy retryPolicy;
             if (!options.BackoffExponential)
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
                             : 0),
-                    onRetry: (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", "UTL");
-                        attempts++;
-                    });
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent(
+                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                                "UTL");
+                            attempts++;
+                        });
             }
             else
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
-                            : 0
-                        * Math.Pow(2, attempt)),
-                    (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", "UTL");
-                        attempts++;
-                    });
+                            : 0 * Math.Pow(2, attempt)),
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent(
+                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                                "UTL");
+                            attempts++;
+                        });
             }
 
-            await retryPolicy.ExecuteAsync(async (context) => await next().AnyContext(), cancellationToken);
+            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

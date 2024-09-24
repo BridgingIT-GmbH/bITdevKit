@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 public static class ContextAccessorExtensions

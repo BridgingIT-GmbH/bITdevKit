@@ -6,7 +6,5 @@
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests;
 
 [CollectionDefinition(nameof(TestEnvironmentCollection))]
-public class TestEnvironmentCollection : // https://xunit.net/docs/shared-context#collection-fixture
-    ICollectionFixture<TestEnvironmentFixture>
-{
-}
+public class TestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture> { }
+// https://xunit.net/docs/shared-context#collection-fixture

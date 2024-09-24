@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -23,9 +22,10 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     {
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.Logger = loggerFactory?.CreateLogger<RetryDocumentStoreClientBehavior<T>>() ?? NullLoggerFactory.Instance.CreateLogger<RetryDocumentStoreClientBehavior<T>>();
+        this.Logger = loggerFactory?.CreateLogger<RetryDocumentStoreClientBehavior<T>>() ??
+            NullLoggerFactory.Instance.CreateLogger<RetryDocumentStoreClientBehavior<T>>();
         this.Inner = inner;
-        this.Options = options ?? new();
+        this.Options = options ?? new RetryDocumentStoreClientBehaviorOptions();
 
         if (this.Options.Attempts <= 0)
         {
@@ -42,66 +42,89 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         await this.PolicyFactory(this.Options)
-            .ExecuteAsync(async (context) => await this.Inner.DeleteAsync(documentKey, cancellationToken), cancellationToken);
+            .ExecuteAsync(async context => await this.Inner.DeleteAsync(documentKey, cancellationToken),
+                cancellationToken);
     }
 
     public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.FindAsync(cancellationToken), cancellationToken)).Result;
+                .ExecuteAndCaptureAsync(async context => await this.Inner.FindAsync(cancellationToken),
+                    cancellationToken))
+            .Result;
     }
 
     public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.FindAsync(documentKey, cancellationToken), cancellationToken)).Result;
+            .ExecuteAndCaptureAsync(async context => await this.Inner.FindAsync(documentKey, cancellationToken),
+                cancellationToken)).Result;
     }
 
-    public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindAsync(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.FindAsync(documentKey, filter, cancellationToken), cancellationToken)).Result;
+            .ExecuteAndCaptureAsync(async context => await this.Inner.FindAsync(documentKey, filter, cancellationToken),
+                cancellationToken)).Result;
     }
 
     public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.ListAsync(cancellationToken), cancellationToken)).Result;
+                .ExecuteAndCaptureAsync(async context => await this.Inner.ListAsync(cancellationToken),
+                    cancellationToken))
+            .Result;
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ListAsync(documentKey, cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.ListAsync(documentKey, filter, cancellationToken), cancellationToken)).Result;
+            .ExecuteAndCaptureAsync(async context => await this.Inner.ListAsync(documentKey, filter, cancellationToken),
+                cancellationToken)).Result;
     }
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.CountAsync(cancellationToken), cancellationToken)).Result;
+                .ExecuteAndCaptureAsync(async context => await this.Inner.CountAsync(cancellationToken),
+                    cancellationToken))
+            .Result;
     }
 
     public async Task<bool> ExistsAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
-            .ExecuteAndCaptureAsync(async (context) => await this.Inner.ExistsAsync(documentKey, cancellationToken), cancellationToken)).Result;
+            .ExecuteAndCaptureAsync(async context => await this.Inner.ExistsAsync(documentKey, cancellationToken),
+                cancellationToken)).Result;
     }
 
     public async Task UpsertAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
     {
         await this.PolicyFactory(this.Options)
-            .ExecuteAsync(async (context) => await this.Inner.UpsertAsync(documentKey, entity, cancellationToken), cancellationToken);
+            .ExecuteAsync(async context => await this.Inner.UpsertAsync(documentKey, entity, cancellationToken),
+                cancellationToken);
     }
 
-    public async Task UpsertAsync(IEnumerable<(DocumentKey DocumentKey, T Entity)> entities, CancellationToken cancellationToken = default)
+    public async Task UpsertAsync(
+        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
+        CancellationToken cancellationToken = default)
     {
         await this.PolicyFactory(this.Options)
-            .ExecuteAsync(async (context) => await this.Inner.UpsertAsync(entities, cancellationToken), cancellationToken);
+            .ExecuteAsync(async context => await this.Inner.UpsertAsync(entities, cancellationToken),
+                cancellationToken);
     }
 
     private AsyncRetryPolicy PolicyFactory(RetryDocumentStoreClientBehaviorOptions options)
@@ -109,34 +132,33 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
         var attempts = 1;
         if (!options.BackoffExponential)
         {
-            return Policy.Handle<Exception>().WaitAndRetryAsync(
-                options.Attempts,
-                sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(
-                    options.Backoff != default
-                        ? options.Backoff.Milliseconds
-                        : 0),
-                onRetry: (ex, wait) =>
-                {
-                    Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                    this.Logger.LogError(ex, $"{{LogKey}} behavior retry (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
-                    attempts++;
-                });
+            return Policy.Handle<Exception>()
+                .WaitAndRetryAsync(options.Attempts,
+                    attempt => TimeSpan.FromMilliseconds(options.Backoff != default ? options.Backoff.Milliseconds : 0),
+                    (ex, wait) =>
+                    {
+                        Activity.Current?.AddEvent(
+                            new ActivityEvent($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                        this.Logger.LogError(ex,
+                            $"{{LogKey}} behavior retry (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                            Constants.LogKey);
+                        attempts++;
+                    });
         }
-        else
-        {
-            return Policy.Handle<Exception>().WaitAndRetryAsync(
-                options.Attempts,
-                attempt => TimeSpan.FromMilliseconds(
-                    options.Backoff != default
-                        ? options.Backoff.Milliseconds
-                        : 0
-                    * Math.Pow(2, attempt)),
+
+        return Policy.Handle<Exception>()
+            .WaitAndRetryAsync(options.Attempts,
+                attempt => TimeSpan.FromMilliseconds(options.Backoff != default
+                    ? options.Backoff.Milliseconds
+                    : 0 * Math.Pow(2, attempt)),
                 (ex, wait) =>
                 {
-                    Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                    this.Logger.LogError(ex, $"{{LogKey}} behavior retry (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
+                    Activity.Current?.AddEvent(
+                        new ActivityEvent($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                    this.Logger.LogError(ex,
+                        $"{{LogKey}} behavior retry (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                        Constants.LogKey);
                     attempts++;
                 });
-        }
     }
 }

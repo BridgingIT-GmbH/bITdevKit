@@ -5,16 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions
 {
     /// <summary>
-    /// Führt die übergebene Operation in einer Transaktion aus.
+    ///     Führt die übergebene Operation in einer Transaktion aus.
     /// </summary>
     public static async Task ExecuteScopedAsync(this DbContext source, Func<Task> action)
     {

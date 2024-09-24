@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
+    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
   </ItemGroup>
 
 </Project>

@@ -5,15 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Cosmos.Repositories;
 
-using System;
-using System.Linq;
 using System.Linq.Expressions;
 
 public static partial class Extensions
 {
     public static IQueryable<T> OrderByIf<T, TKey>(
         this IQueryable<T> source,
-        Expression<Func<T, TKey>> expression, bool descending = false)
+        Expression<Func<T, TKey>> expression,
+        bool descending = false)
     {
         if (expression is not null)
         {

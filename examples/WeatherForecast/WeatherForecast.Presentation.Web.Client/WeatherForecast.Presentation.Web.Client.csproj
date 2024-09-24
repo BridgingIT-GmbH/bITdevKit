@@ -29,28 +29,28 @@
   </Target>-->
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Humanizer.Core"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client"/>
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="Microsoft.Extensions.Localization" />
-    <PackageReference Include="MudBlazor" />
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Microsoft.Extensions.Http"/>
+    <PackageReference Include="Microsoft.Extensions.Http.Polly"/>
+    <PackageReference Include="Microsoft.Extensions.Localization"/>
+    <PackageReference Include="MudBlazor"/>
+    <PackageReference Include="Newtonsoft.Json"/>
     <PackageReference Include="NSwag.ApiDescription.Client">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.ComponentModel.Annotations"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

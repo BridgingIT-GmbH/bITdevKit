@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-
 public interface IAggregateTypeSelector
 {
     Type Find(string typeName);

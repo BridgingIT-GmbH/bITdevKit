@@ -5,20 +5,18 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Application.Modules.Core;
-using EnsureThat;
+using Common;
+using DevKit.Application.JobScheduling;
+using DevKit.Application.Messaging;
+using DinnerFiesta.Application.Modules.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quartz;
 
-public class EchoMessageJob : JobBase,
-    IRetryJobScheduling,
-    IChaosExceptionJobScheduling
+public class EchoMessageJob
+    : JobBase,
+        IRetryJobScheduling,
+        IChaosExceptionJobScheduling
 {
     private readonly IMessageBroker messageBroker;
     private readonly CoreModuleConfiguration moduleConfiguration;
@@ -42,7 +40,6 @@ public class EchoMessageJob : JobBase,
     {
         await Task.Delay(2000, cancellationToken);
 
-        await this.messageBroker.Publish(
-            new EchoMessage("from job"), cancellationToken).AnyContext();
+        await this.messageBroker.Publish(new EchoMessage("from job"), cancellationToken).AnyContext();
     }
 }

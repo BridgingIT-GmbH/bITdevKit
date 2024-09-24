@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
+using Common;
+using DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -14,8 +14,10 @@ public class CustomerUnsubscribeCommand : CommandRequestBase<Result>
 {
     public string CustomerId { get; set; }
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<CustomerUnsubscribeCommand>
     {

@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
+using BenchmarkDotNet.Running;
+
 [UnitTest("Common")]
 public class SystemTextJsonSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -47,7 +49,7 @@ public class SystemTextJsonSerializerTests(ITestOutputHelper output) : Serialize
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkDotNet.Running.BenchmarkRunner.Run<SystemTextJsonSerializerBenchmark>();
+        var summary = BenchmarkRunner.Run<SystemTextJsonSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

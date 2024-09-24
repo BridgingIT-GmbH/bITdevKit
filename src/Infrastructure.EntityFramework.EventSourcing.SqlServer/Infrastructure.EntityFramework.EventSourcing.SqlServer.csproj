@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
-    <ProjectReference Include="..\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj"/>
+    <ProjectReference Include="..\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj"/>
   </ItemGroup>
 
 </Project>

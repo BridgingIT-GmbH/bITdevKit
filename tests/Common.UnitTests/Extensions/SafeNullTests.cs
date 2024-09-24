@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Xunit;
-using Shouldly;
 
 [UnitTest("Common")]
 public class SafeNullTests
@@ -31,7 +28,14 @@ public class SafeNullTests
     public void SafeNull_GivenEnumerableWithNulls_ReturnsEnumerableWithoutNulls()
     {
         // Arrange
-        var source = new List<string> { "one", null, "two", null, "three" };
+        var source = new List<string>
+        {
+            "one",
+            null,
+            "two",
+            null,
+            "three"
+        };
 
         // Act
         var safeSource = source.SafeNull();
@@ -59,7 +63,14 @@ public class SafeNullTests
     public void SafeNull_GivenCollectionWithNulls_ReturnsCollectionWithoutNulls()
     {
         // Arrange
-        var source = new Collection<string> { "one", null, "two", null, "three" };
+        var source = new Collection<string>
+        {
+            "one",
+            null,
+            "two",
+            null,
+            "three"
+        };
 
         // Act
         var safeSource = source.SafeNull();

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using System;
-
 public interface ILiteDbContext : IDisposable
 {
     LiteDatabase Database { get; }

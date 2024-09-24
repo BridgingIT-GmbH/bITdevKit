@@ -9,15 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" />
-    <PackageReference Include="Mapster" />
-    <PackageReference Include="Mapster.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="AutoMapper"/>
+    <PackageReference Include="Mapster"/>
+    <PackageReference Include="Mapster.DependencyInjection"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
 </Project>

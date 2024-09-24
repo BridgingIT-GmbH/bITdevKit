@@ -219,16 +219,16 @@ components:
               type: object
               $ref: '#/components/schemas/CustomerResponseModel'
     ResultOfCustomersResponseModel:
-     allOf:
-       - $ref: '#/components/schemas/ResultResponseModel'
-       - type: object
-         additionalProperties: false
-         properties:
-           value:
-             nullable: true
-             type: array
-             items:
-               $ref: '#/components/schemas/CustomerResponseModel'
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerResponseModel'
     CustomerResponseModel:
       type: object
       properties:

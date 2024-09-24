@@ -5,15 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Database.Command;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using EntityFrameworkCore;
+using EntityFrameworkCore.Database.Command;
+using EntityFrameworkCore.Diagnostics;
+using EntityFrameworkCore.Infrastructure;
+using Extensions;
+using Logging;
 
 public static class ServiceCollectionExtensions
 {
@@ -24,8 +23,9 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
-        return services
-            .AddSqliteDbContext<TContext>(optionsBuilder(new SqliteOptionsBuilder()).Build(), sqliteOptionsBuilder, lifetime);
+        return services.AddSqliteDbContext<TContext>(optionsBuilder(new SqliteOptionsBuilder()).Build(),
+            sqliteOptionsBuilder,
+            lifetime);
     }
 
     public static SqliteDbContextBuilderContext<TContext> AddSqliteDbContext<TContext>(
@@ -45,17 +45,17 @@ public static class ServiceCollectionExtensions
 
         RegisterInterceptors(services, options, lifetime);
 
-        services
-            .AddDbContext<TContext>(
-                ConfigureDbContext(services, options, sqliteOptionsBuilder), lifetime);
+        services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqliteOptionsBuilder), lifetime);
 
-        return new SqliteDbContextBuilderContext<TContext>(
-            services,
+        return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: options.ConnectionString,
             provider: Provider.Sqlite);
 
-        static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(IServiceCollection services, SqliteOptions options, Action<SqliteDbContextOptionsBuilder> sqliteOptionsBuilder)
+        static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(
+            IServiceCollection services,
+            SqliteOptions options,
+            Action<SqliteDbContextOptionsBuilder> sqliteOptionsBuilder)
         {
             return (sp, o) =>
             {
@@ -66,18 +66,24 @@ public static class ServiceCollectionExtensions
 
                 if (options.MigrationsEnabled)
                 {
-                    sqliteOptionsBuilder(new SqliteDbContextOptionsBuilder(o).MigrationsAssembly(options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name));
+                    sqliteOptionsBuilder(new SqliteDbContextOptionsBuilder(o).MigrationsAssembly(
+                        options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name));
                     if (options.MigrationsSchemaEnabled)
                     {
-                        var schema = options.MigrationsSchemaName ?? typeof(TContext).Name.ToLowerInvariant().Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
+                        var schema = options.MigrationsSchemaName ??
+                            typeof(TContext).Name.ToLowerInvariant()
+                                .Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
                         if (!string.IsNullOrEmpty(schema))
                         {
-                            if (schema.EndsWith("module", StringComparison.OrdinalIgnoreCase) && !schema.Equals("module", StringComparison.OrdinalIgnoreCase))
+                            if (schema.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
+                                !schema.Equals("module", StringComparison.OrdinalIgnoreCase))
                             {
                                 schema = schema.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
 
-                            sqliteOptionsBuilder(new SqliteDbContextOptionsBuilder(o).MigrationsHistoryTable("__MigrationsHistory", schema));
+                            sqliteOptionsBuilder(new SqliteDbContextOptionsBuilder(o).MigrationsHistoryTable(
+                                "__MigrationsHistory",
+                                schema));
                         }
                     }
                 }
@@ -94,8 +100,7 @@ public static class ServiceCollectionExtensions
                 if (options.SimpleLoggerEnabled)
                 {
                     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
-                    o.LogTo(
-                        Console.WriteLine,
+                    o.LogTo(Console.WriteLine,
                         new[] { DbLoggerCategory.Database.Command.Name },
                         options.SimpleLoggerLevel,
                         DbContextLoggerOptions.SingleLine | DbContextLoggerOptions.Level);
@@ -120,17 +125,18 @@ public static class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
-        services.AddDbContext<TContext>(o => o
-                .UseSqlite(connectionString, sqliteOptionsBuilder), lifetime);
+        services.AddDbContext<TContext>(o => o.UseSqlite(connectionString, sqliteOptionsBuilder), lifetime);
 
-        return new SqliteDbContextBuilderContext<TContext>(
-            services,
+        return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: connectionString,
             provider: Provider.Sqlite);
     }
 
-    private static void RegisterInterceptors(IServiceCollection services, SqliteOptions options, ServiceLifetime lifetime)
+    private static void RegisterInterceptors(
+        IServiceCollection services,
+        SqliteOptions options,
+        ServiceLifetime lifetime)
     {
         foreach (var interceptorType in options.InterceptorTypes.SafeNull())
         {

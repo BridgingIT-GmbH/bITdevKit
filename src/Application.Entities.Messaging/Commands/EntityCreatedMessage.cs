@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
+using Messaging;
 
 public class EntityCreatedMessage<TEntity>(TEntity entity) : MessageBase
     where TEntity : class, IEntity

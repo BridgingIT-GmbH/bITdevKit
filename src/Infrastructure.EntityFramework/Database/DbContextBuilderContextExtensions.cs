@@ -7,11 +7,13 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+using EntityFrameworkCore;
 
 public static partial class DbContextBuilderContextExtensions
 {
-    public static DbContextBuilderContext<TContext> WithDatabaseMigratorService<TContext>(this DbContextBuilderContext<TContext> context, Builder<DatabaseMigratorOptionsBuilder, DatabaseMigratorOptions> optionsBuilder)
+    public static DbContextBuilderContext<TContext> WithDatabaseMigratorService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        Builder<DatabaseMigratorOptionsBuilder, DatabaseMigratorOptions> optionsBuilder)
         where TContext : DbContext
     {
         context.Services.AddDatabaseMigratorService<TContext>(optionsBuilder);
@@ -19,7 +21,9 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
-    public static DbContextBuilderContext<TContext> WithDatabaseMigratorService<TContext>(this DbContextBuilderContext<TContext> context, DatabaseMigratorOptions options = null)
+    public static DbContextBuilderContext<TContext> WithDatabaseMigratorService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        DatabaseMigratorOptions options = null)
         where TContext : DbContext
     {
         context.Services.AddDatabaseMigratorService<TContext>(options);
@@ -27,7 +31,9 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
-    public static DbContextBuilderContext<TContext> WithDatabaseCreatorService<TContext>(this DbContextBuilderContext<TContext> context, Builder<DatabaseCreatorOptionsBuilder, DatabaseCreatorOptions> optionsBuilder)
+    public static DbContextBuilderContext<TContext> WithDatabaseCreatorService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        Builder<DatabaseCreatorOptionsBuilder, DatabaseCreatorOptions> optionsBuilder)
         where TContext : DbContext
     {
         context.Services.AddDatabaseCreatorService<TContext>(optionsBuilder);
@@ -35,7 +41,9 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
-    public static DbContextBuilderContext<TContext> WithDatabaseCreatorService<TContext>(this DbContextBuilderContext<TContext> context, DatabaseCreatorOptions options = null)
+    public static DbContextBuilderContext<TContext> WithDatabaseCreatorService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        DatabaseCreatorOptions options = null)
         where TContext : DbContext
     {
         context.Services.AddDatabaseCreatorService<TContext>(options);

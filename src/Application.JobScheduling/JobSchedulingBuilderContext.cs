@@ -8,7 +8,10 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-public class JobSchedulingBuilderContext(IServiceCollection services, IConfiguration configuration = null, JobSchedulingOptions options = null)
+public class JobSchedulingBuilderContext(
+    IServiceCollection services,
+    IConfiguration configuration = null,
+    JobSchedulingOptions options = null)
 {
     public IServiceCollection Services { get; } = services;
 

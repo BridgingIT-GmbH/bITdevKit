@@ -5,22 +5,18 @@
 
 namespace BridgingIT.DevKit.Domain.Specifications;
 
-using System;
 using System.Linq.Expressions;
 
 public class Specification<T> : ISpecification<T>
 {
-    //public static readonly ISpecification<T> All = new IdentitySpecification<T>(); // why is this identityspecification needed here?
     private readonly Expression<Func<T, bool>> expression;
-
-    public Specification()
-    {
-    }
 
     public Specification(Expression<Func<T, bool>> expression)
     {
         this.expression = expression;
     }
+
+    protected Specification() { }
 
     public virtual Expression<Func<T, bool>> ToExpression()
     {

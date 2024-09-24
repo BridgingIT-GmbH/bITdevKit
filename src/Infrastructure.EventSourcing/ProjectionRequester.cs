@@ -5,21 +5,20 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
+using Common;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Store;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Über diese Klasse kann eine (erneute) Projektion für alle Aggregates eines Typs ausgelöst werden
+///     Über diese Klasse kann eine (erneute) Projektion für alle Aggregates eines Typs ausgelöst werden
 /// </summary>
 /// <typeparam name="TAggregate">Aggregateklasse, für welches die Projektion ausgelöst werden soll</typeparam>
-public class ProjectionRequester<TAggregate>(IEventStore<TAggregate> eventStore,
-    IPublishAggregateEventSender sender, ILoggerFactory logger) : IProjectionRequester<TAggregate>
+public class ProjectionRequester<TAggregate>(
+    IEventStore<TAggregate> eventStore,
+    IPublishAggregateEventSender sender,
+    ILoggerFactory logger) : IProjectionRequester<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
     private readonly IEventStore<TAggregate> eventStore = eventStore;
@@ -27,7 +26,7 @@ public class ProjectionRequester<TAggregate>(IEventStore<TAggregate> eventStore,
     private readonly ILogger logger = logger.CreateLogger<ProjectionRequester<TAggregate>>();
 
     /// <summary>
-    /// Triggers a projection for all aggregates
+    ///     Triggers a projection for all aggregates
     /// </summary>
     public async Task RequestProjectionAsync(CancellationToken cancellationToken)
     {
@@ -48,7 +47,7 @@ public class ProjectionRequester<TAggregate>(IEventStore<TAggregate> eventStore,
     }
 
     /// <summary>
-    /// Triggres a projection for the aggregate with the id aggregateId.
+    ///     Triggres a projection for the aggregate with the id aggregateId.
     /// </summary>
     public async Task RequestProjectionAsync(Guid aggregateId, CancellationToken cancellationToken)
     {

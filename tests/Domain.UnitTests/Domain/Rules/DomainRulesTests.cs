@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Rules;
 
-using Shouldly;
-using Xunit;
-
 [UnitTest("Domain")]
 public class DomainRulesTests
 {
@@ -275,7 +272,9 @@ public class StubDomainRule(bool isSatisfied, bool fail = false) : IDomainRule
     public string Message => "help";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {

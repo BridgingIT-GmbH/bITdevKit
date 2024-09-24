@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Repositories;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
+using DevKit.Domain.Repositories;
 using Model;
 
 public interface IPersonOverviewRepositoryV2 : IRepository

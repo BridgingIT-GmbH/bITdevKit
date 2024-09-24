@@ -5,24 +5,24 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Projection;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Application.Commands.EventSourcing;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Application.Commands.EventSourcing;
+using DevKit.Domain.Repositories;
 using Domain.Model;
 using Domain.Repositories;
-using EnsureThat;
 using Microsoft.Extensions.Logging;
 
-public sealed class PersonCreatedProjectionCommandHandler :
-        CommandHandlerBase<AggregateEventProjectionCommand<Person>, bool> // <1>
+public sealed class PersonCreatedProjectionCommandHandler
+    : CommandHandlerBase<AggregateEventProjectionCommand<Person>, bool> // <1>
 {
     private readonly IPersonOverviewRepository personOverviewRepository;
     private readonly IEntityMapper mapper;
 
-    public PersonCreatedProjectionCommandHandler(ILoggerFactory loggerFactory, IPersonOverviewRepository personOverviewRepository, IEntityMapper mapper) // <2>
+    public PersonCreatedProjectionCommandHandler(
+        ILoggerFactory loggerFactory,
+        IPersonOverviewRepository personOverviewRepository,
+        IEntityMapper mapper) // <2>
         : base(loggerFactory)
     {
         EnsureArg.IsNotNull(personOverviewRepository, nameof(personOverviewRepository));
@@ -32,7 +32,9 @@ public sealed class PersonCreatedProjectionCommandHandler :
         this.mapper = mapper;
     }
 
-    public override async Task<CommandResponse<bool>> Process(AggregateEventProjectionCommand<Person> request, CancellationToken cancellationToken) // <3>
+    public override async Task<CommandResponse<bool>> Process(
+        AggregateEventProjectionCommand<Person> request,
+        CancellationToken cancellationToken) // <3>
     {
         EnsureArg.IsNotNull(request, nameof(request));
         EnsureArg.IsNotNull(request.Aggregate, nameof(request.Aggregate));
@@ -49,6 +51,6 @@ public sealed class PersonCreatedProjectionCommandHandler :
             await this.personOverviewRepository.DeleteAsync(aggregate.Id, cancellationToken).AnyContext();
         }
 
-        return new CommandResponse<bool>() { Result = true };
+        return new CommandResponse<bool> { Result = true };
     }
 }

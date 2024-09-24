@@ -1,39 +1,40 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Text.RegularExpressions
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<Global> Localizer
 @inject ISnackbar Snackbar
-@using Microsoft.AspNetCore.SignalR.Client
+//
 @*@implements IAsyncDisposable*@
 
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(_ => DrawerToggle())"/>
+        <MudSpacer/>
         <MudTooltip Text="Swagger API documentation">
-            <MudIconButton Icon="@Icons.Material.Filled.Api"  Color="Color.Inherit" Href="https://localhost:5001/swagger/index.html" Target="_blank" />
+            <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="https://localhost:5001/swagger/index.html" Target="_blank"/>
         </MudTooltip>
         <MudTooltip Text="SEQ Logs">
-            <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
+            <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank"/>
         </MudTooltip>
         <MudTooltip Text="Jaeger Traces">
-            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
+            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank"/>
         </MudTooltip>
         <MudTooltip Text="Health">
-            <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(this.IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
+            <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank"/>
         </MudTooltip>
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/Garderoben/MudBlazor" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank"/>
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/Garderoben/MudBlazor" Target="_blank"/>
     </MudAppBar>
     <MudDrawer @bind-Open="drawerOpen" Elevation="1">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">DinnerFiesta</MudText>
         </MudDrawerHeader>
-        <NavMenu />
+        <NavMenu/>
     </MudDrawer>
     <MudMainContent>
         @Body
@@ -51,21 +52,22 @@
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/signalrhub"))
             .Build();
-        hubConnection.On<string>("CheckHealth", (notification) =>
-        {
-            this.IsHealthy = !notification.Contains("Unhealthy");
-            this.StateHasChanged();
-    	});
-    	await hubConnection.StartAsync();
+        hubConnection.On<string>("CheckHealth",
+            notification =>
+            {
+                IsHealthy = !notification.Contains("Unhealthy");
+                StateHasChanged();
+            });
+        await hubConnection.StartAsync();
 
-        this.IsConnected = this.hubConnection.State == HubConnectionState.Connected;
-        if (this.IsConnected)
+        IsConnected = hubConnection.State == HubConnectionState.Connected;
+        if (IsConnected)
         {
-            this.snackbar.Add("signalr connected", Severity.Success);
+            snackbar.Add("signalr connected", Severity.Success);
         }
         else
         {
-            this.snackbar.Add("signalr not connected", Severity.Error);
+            snackbar.Add("signalr not connected", Severity.Error);
         }
     }
 
@@ -81,16 +83,17 @@
 
     private string Localize(string value)
     {
-        if(string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(value))
         {
             return value;
         }
 
         // localize specific parts of a string, parts marked with [TEXT] will be localized
-        return System.Text.RegularExpressions.Regex.Replace(
-            value,
-            @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase,
+        return Regex.Replace(value,
+            @"\[(.*?)\]",
+            match => Localizer[match.Value.Replace("[", string.Empty).Replace("]", string.Empty)],
+            RegexOptions.IgnoreCase,
             new TimeSpan(0, 0, 3));
     }
+
 }

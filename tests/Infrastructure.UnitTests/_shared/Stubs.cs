@@ -5,20 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using Application.Messaging;
 using AutoMapper;
+using Domain;
+using Domain.Model;
+using Domain.Repositories;
+using Infrastructure.EntityFramework;
+using Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using EnsureThat;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public class PersonStub : AggregateRoot<Guid>
 {
@@ -54,14 +48,10 @@ public class StubMessage : MessageBase
 
 public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext
 {
-    public StubDbContext()
-    {
-    }
+    public StubDbContext() { }
 
     public StubDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
@@ -98,8 +88,12 @@ public class MapperProfile : Profile
         this.CreateMap<PersonDtoStub, PersonStub>()
             .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
             .ForMember(d => d.Age, o => o.MapFrom(s => s.Age))
-            .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault()))
-            .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).LastOrDefault()))
+            .ForMember(d => d.FirstName,
+                opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                    .FirstOrDefault()))
+            .ForMember(d => d.LastName,
+                opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                    .LastOrDefault()))
             .IgnoreAllUnmapped();
     }
 }
@@ -112,19 +106,19 @@ public class PersonStubRepository : EntityFrameworkRepository<PersonStub>
         EnsureArg.IsNotNull(options.Mapper, nameof(options.Mapper));
     }
 
-    public PersonStubRepository(
-        Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : base(optionsBuilder)
-    {
-    }
+    public PersonStubRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
+        : base(optionsBuilder) { }
 
     public async Task<IEnumerable<PersonStub>> FindAllAsync(IFindOptions<PersonStub> options = null,
         CancellationToken cancellationToken = default)
     {
-        var query = this.Options.DbContext.Set<PersonDtoStub>().AsNoTrackingIf(options, this.Options.Mapper).TakeIf(options?.Take);
+        var query = this.Options.DbContext.Set<PersonDtoStub>()
+            .AsNoTrackingIf(options, this.Options.Mapper)
+            .TakeIf(options?.Take);
         if (this.Options?.Mapper is not null && query is not null)
         {
-            return await query.Select(p => this.Options.Mapper.Map<PersonStub>(p)).ToListAsyncSafe(cancellationToken)
+            return await query.Select(p => this.Options.Mapper.Map<PersonStub>(p))
+                .ToListAsyncSafe(cancellationToken)
                 .AnyContext();
         }
 
@@ -133,7 +127,9 @@ public class PersonStubRepository : EntityFrameworkRepository<PersonStub>
 
     public async Task<PersonStub> FindOneAsync(Guid id)
     {
-        var entity = await this.Options.DbContext.Set<PersonDtoStub>().FindAsync(id).AnyContext();
+        var entity = await this.Options.DbContext.Set<PersonDtoStub>()
+            .FindAsync(id)
+            .AnyContext();
         if (entity is null)
         {
             return null;
@@ -144,8 +140,9 @@ public class PersonStubRepository : EntityFrameworkRepository<PersonStub>
 
     public async Task<IEnumerable<string>> FindAllLastNames()
     {
-        return await Task.FromResult(
-            this.Options.DbContext.Set<PersonDtoStub>().Select(p => p.FullName)).AnyContext();
+        return await Task.FromResult(this.Options.DbContext.Set<PersonDtoStub>()
+                .Select(p => p.FullName))
+            .AnyContext();
 
         // dapper queries, does not work with inmemory provider
         //var dbConnection = this.GetDbConnection();

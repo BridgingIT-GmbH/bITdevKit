@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
 public class InMemoryCacheProviderConfiguration
 {
     public TimeSpan? SlidingExpiration { get; set; }

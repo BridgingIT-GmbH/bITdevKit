@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Repositories;
 
 public class LiteDbRepositoryOptions : OptionsBase, ILiteDbRepositoryOptions
 {
-    public LiteDbRepositoryOptions()
-    {
-    }
+    public LiteDbRepositoryOptions() { }
 
     public LiteDbRepositoryOptions(ILiteDbContext context, IEntityMapper mapper)
     {
@@ -21,10 +19,10 @@ public class LiteDbRepositoryOptions : OptionsBase, ILiteDbRepositoryOptions
     }
 
     /// <summary>
-    /// Gets or sets the database context.
+    ///     Gets or sets the database context.
     /// </summary>
     /// <value>
-    /// The database context.
+    ///     The database context.
     /// </value>
     public ILiteDbContext DbContext { get; set; }
 

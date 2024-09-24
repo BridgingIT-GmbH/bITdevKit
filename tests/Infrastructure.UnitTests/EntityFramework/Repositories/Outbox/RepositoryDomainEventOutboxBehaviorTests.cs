@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.UnitTests;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Domain.Outbox;
+using Domain.Repositories;
+using Domain.UnitTests;
+using Infrastructure.EntityFramework;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Infrastructure")]
@@ -24,7 +23,7 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         entity.DomainEvents.Register(new PersonDomainEventStub(ticks));
         var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository);
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
@@ -33,11 +32,18 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         await sut.InsertAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().InsertAsync(Arg.Any<PersonDtoStub>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // insert + stub
+        await repository.Received()
+            .InsertAsync(Arg.Any<PersonDtoStub>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // insert + stub
 
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -48,21 +54,33 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var eventQueue = Substitute.For<IOutboxDomainEventQueue>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         entity.DomainEvents.Register(new PersonDomainEventStub(ticks));
-        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository, eventQueue, new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
+        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory,
+            this.fixture.Context,
+            repository,
+            eventQueue,
+            new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
 
         // Act
         await sut.InsertAsync(entity); // OutboxDomainEvent are autosaved and enqueued
 
         // Assert
-        await repository.Received().InsertAsync(Arg.Any<PersonDtoStub>());
-        eventQueue.Received().Enqueue(Arg.Any<string>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // insert + stub
+        await repository.Received()
+            .InsertAsync(Arg.Any<PersonDtoStub>());
+        eventQueue.Received()
+            .Enqueue(Arg.Any<string>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // insert + stub
 
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -72,7 +90,7 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository);
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
 
@@ -84,10 +102,17 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         await sut.UpdateAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().UpdateAsync(Arg.Any<PersonDtoStub>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(3); // insert + stub + update
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        await repository.Received()
+            .UpdateAsync(Arg.Any<PersonDtoStub>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(3); // insert + stub + update
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -97,7 +122,7 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         entity.DomainEvents.Register(new PersonDomainEventStub(ticks));
         var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository);
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
@@ -106,10 +131,17 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         await sut.UpsertAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().UpsertAsync(Arg.Any<PersonDtoStub>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // upsert + stub
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        await repository.Received()
+            .UpsertAsync(Arg.Any<PersonDtoStub>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // upsert + stub
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -120,20 +152,32 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var eventQueue = Substitute.For<IOutboxDomainEventQueue>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         entity.DomainEvents.Register(new PersonDomainEventStub(ticks));
-        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository, eventQueue, new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
+        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory,
+            this.fixture.Context,
+            repository,
+            eventQueue,
+            new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
 
         // Act
         await sut.UpsertAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().UpsertAsync(Arg.Any<PersonDtoStub>());
-        eventQueue.Received().Enqueue(Arg.Any<string>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // upsert + stub
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        await repository.Received()
+            .UpsertAsync(Arg.Any<PersonDtoStub>());
+        eventQueue.Received()
+            .Enqueue(Arg.Any<string>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // upsert + stub
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -143,7 +187,7 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
         var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository);
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
 
@@ -153,10 +197,17 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         await sut.DeleteAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().DeleteAsync(Arg.Any<PersonDtoStub>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Any(e => e.Content.Contains(entity.FullName)).ShouldBeTrue();
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // insert + delete
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        await repository.Received()
+            .DeleteAsync(Arg.Any<PersonDtoStub>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Any(e => e.Content.Contains(entity.FullName))
+            .ShouldBeTrue();
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // insert + delete
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 
     [Fact]
@@ -167,8 +218,12 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var repository = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var eventQueue = Substitute.For<IOutboxDomainEventQueue>();
-        var entity = new PersonDtoStub() { FullName = $"John Doe{ticks}" };
-        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory, this.fixture.Context, repository, eventQueue, new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
+        var entity = new PersonDtoStub { FullName = $"John Doe{ticks}" };
+        var inner = new RepositoryOutboxDomainEventBehavior<PersonDtoStub, StubDbContext>(loggerFactory,
+            this.fixture.Context,
+            repository,
+            eventQueue,
+            new OutboxDomainEventOptions { ProcessingMode = OutboxDomainEventProcessMode.Immediate });
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(loggerFactory, inner);
 
         // Act
@@ -177,9 +232,15 @@ public class RepositoryDomainEventOutboxBehaviorTests(StubDbContextFixture fixtu
         await sut.DeleteAsync(entity); // OutboxDomainEvent are autosaved
 
         // Assert
-        await repository.Received().DeleteAsync(Arg.Any<PersonDtoStub>());
-        eventQueue.Received().Enqueue(Arg.Any<string>());
-        this.fixture.Context.OutboxDomainEvents.ToList().Count(e => e.Content.Contains(ticks.ToString())).ShouldBe(2); // insert + delete
-        entity.DomainEvents.GetAll().Count().ShouldBe(0);
+        await repository.Received()
+            .DeleteAsync(Arg.Any<PersonDtoStub>());
+        eventQueue.Received()
+            .Enqueue(Arg.Any<string>());
+        this.fixture.Context.OutboxDomainEvents.ToList()
+            .Count(e => e.Content.Contains(ticks.ToString()))
+            .ShouldBe(2); // insert + delete
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(0);
     }
 }

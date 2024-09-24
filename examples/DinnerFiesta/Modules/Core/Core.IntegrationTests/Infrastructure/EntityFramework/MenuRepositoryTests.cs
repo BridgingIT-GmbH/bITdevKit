@@ -5,15 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests.Infrastructure;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using Core.Infrastructure;
+using DevKit.Domain.Repositories;
+using DevKit.Infrastructure.EntityFramework.Repositories;
+using Domain;
 using Microsoft.EntityFrameworkCore;
+using UnitTests;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -54,8 +51,7 @@ public class MenuRepositoryTests
         var sut = new EntityFrameworkGenericRepository<Menu>(r => r.DbContext(this.context));
 
         // Act
-        var result = await sut.FindAllAsync(
-            new MenuForHostSpecification(entity.HostId));
+        var result = await sut.FindAllAsync(new MenuForHostSpecification(entity.HostId));
 
         // Assert
         this.context.Menus.AsNoTracking().Count().ShouldBeGreaterThanOrEqualTo(1);

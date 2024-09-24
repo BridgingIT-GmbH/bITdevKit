@@ -6,85 +6,145 @@
 namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Globalization;
-using BridgingIT.DevKit.Common;
+using Common;
 
-// the following class has some methods. write some xunit test for the methods only.
-// use xunit and shouldly, also use the UnitOfWork_StateUnderTest_ExpectedBehavior test naming pattern.
-// the test methods should contain comments like Arrange, Act and Assert to specify the sections.
+/// <summary>
+///     Represents an audit state which captures the creation, update, deactivation, and deletion details
+///     of an entity. This includes timestamps, user information, descriptions, and reasons for changes.
+/// </summary>
 public class AuditState
 {
+    /// <summary>
+    ///     Gets the identity of the user who created this entity.
+    /// </summary>
     public string CreatedBy { get; private set; }
 
+    /// <summary>
+    ///     Gets the date and time when this entity was created.
+    /// </summary>
     public DateTimeOffset CreatedDate { get; private set; } = DateTimeOffset.UtcNow;
 
+    /// <summary>
+    ///     Gets the description of when and why this entity was created.
+    /// </summary>
     public string CreatedDescription { get; private set; }
 
+    /// <summary>
+    ///     Gets the identifier of the user or system that last updated this entity.
+    /// </summary>
     public string UpdatedBy { get; private set; }
 
+    /// <summary>
+    ///     Gets the date this entity was last updated.
+    /// </summary>
     public DateTimeOffset? UpdatedDate { get; private set; }
 
+    /// <summary>
+    ///     Gets or sets the description associated with the last update.
+    /// </summary>
     public string UpdatedDescription { get; set; }
 
+    /// <summary>
+    ///     Gets the reasons associated with the updates to this entity.
+    /// </summary>
     public string[] UpdatedReasons { get; private set; }
 
+    /// <summary>
+    ///     Gets the value indicating whether this entity is deactivated.
+    /// </summary>
     public bool? Deactivated { get; private set; }
 
+    /// <summary>
+    ///     Gets the reasons why this entity was deactivated.
+    /// </summary>
     public string[] DeactivatedReasons { get; private set; }
 
+    /// <summary>
+    ///     Gets the identifier of the user or entity who deactivated the instance
+    /// </summary>
     public string DeactivatedBy { get; private set; }
 
+    /// <summary>
+    ///     Gets the date on which the instance was deactivated.
+    /// </summary>
     public DateTimeOffset? DeactivatedDate { get; private set; }
 
+    /// <summary>
+    ///     Gets or sets the description for why the entity was deactivated.
+    /// </summary>
     public string DeactivatedDescription { get; set; }
 
+    /// <summary>
+    ///     Gets a value indicating whether this entity has been marked as deleted.
+    /// </summary>
     public bool? Deleted { get; private set; }
 
+    /// <summary>
+    ///     Gets the identifier of the user who deleted this entity
+    /// </summary>
     public string DeletedBy { get; private set; }
 
+    /// <summary>
+    ///     Gets the date this entity was marked as deleted.
+    /// </summary>
     public DateTimeOffset? DeletedDate { get; private set; }
 
+    /// <summary>
+    ///     Gets the reason why the instance was deleted
+    /// </summary>
     public string DeletedReason { get; private set; }
 
+    /// <summary>
+    ///     Gets or sets the description for the deletion action
+    /// </summary>
     public string DeletedDescription { get; set; }
 
     /// <summary>
-    /// Gets the last date this instance was changed
+    ///     Provides the date and time of the most recent action performed on this entity.
     /// </summary>
     public DateTimeOffset? LastActionDate =>
         new List<DateTimeOffset?> { this.CreatedDate, this.UpdatedDate, this.DeletedDate, this.DeactivatedDate }
-        .Where(d => d is not null).SafeNull().Max();
+            .Where(d => d is not null)
+            .SafeNull()
+            .Max();
 
     /// <summary>
-    /// Gets a value indicating whether determines whether this instance is active.
-    /// </summary>
-    /// <value>
-    ///   <c>true</c> if this instance is deactivated; otherwise, <c>false</c>.
-    /// </value>
-    public virtual bool IsDeactivated() =>
-        (this.Deactivated is not null && (bool)this.Deactivated) || !this.DeactivatedReasons.IsNullOrEmpty();
-
-    /// <summary>
-    /// Gets a value indicating whether this instance is deleted.
+    ///     Gets a value indicating whether this entity is deactivated.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance is deleted; otherwise, <c>false</c>.
+    ///     <c>true</c> if this entity is deactivated; otherwise, <c>false</c>.
     /// </returns>
-    public virtual bool IsDeleted() =>
-        (this.Deleted is not null && (bool)this.Deleted) || !this.DeletedReason.IsNullOrEmpty();
+    public virtual bool IsDeactivated()
+    {
+        return this.Deactivated is not null && (bool)this.Deactivated || !this.DeactivatedReasons.IsNullOrEmpty();
+    }
 
     /// <summary>
-    /// Gets a value indicating whether this instance has been updated.
+    ///     Gets a value indicating whether this entity is deleted.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance is updated; otherwise, <c>false</c>.
+    ///     <c>true</c> if this entity is deleted; otherwise, <c>false</c>.
     /// </returns>
-    public virtual bool IsUpdated() =>
-        this.UpdatedDate is not null && this.UpdatedDate.HasValue;
+    public virtual bool IsDeleted()
+    {
+        return this.Deleted is not null && (bool)this.Deleted || !this.DeletedReason.IsNullOrEmpty();
+    }
 
     /// <summary>
-    /// Sets the created information, also sets the initial status
+    ///     Gets a value indicating whether this entity has been updated.
     /// </summary>
-    /// <param name="by">Name of the account of the creater.</param>
+    /// <returns>
+    ///     <c>true</c> if this entity is updated; otherwise, <c>false</c>.
+    /// </returns>
+    public virtual bool IsUpdated()
+    {
+        return this.UpdatedDate is not null && this.UpdatedDate.HasValue;
+    }
+
+    /// <summary>
+    ///     Sets the created information, also sets the initial status.
+    /// </summary>
+    /// <param name="by">Name of the account of the creator.</param>
     /// <param name="description">The description for the creation.</param>
     public virtual void SetCreated(string by = null, string description = null)
     {
@@ -103,10 +163,10 @@ public class AuditState
     }
 
     /// <summary>
-    /// Sets the updated information.
+    ///     Sets the updated information.
     /// </summary>
     /// <param name="by">Name of the account of the updater.</param>
-    /// <param name="reason">The reason of the update.</param>
+    /// <param name="reason">The reason for the update.</param>
     public virtual void SetUpdated(string by = null, string reason = null)
     {
         this.UpdatedDate = DateTimeOffset.UtcNow;
@@ -129,7 +189,7 @@ public class AuditState
                 .. new[]
                 {
                     $"{by}: ({this.UpdatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-                },
+                }
             ];
         }
     }
@@ -138,7 +198,7 @@ public class AuditState
     ///     Sets the deactivated information.
     /// </summary>
     /// <param name="by">Name of the deactivator.</param>
-    /// <param name="reason">The reason.</param>
+    /// <param name="reason">The reason for deactivation.</param>
     public virtual void SetDeactivated(string by = null, string reason = null)
     {
         this.DeactivatedDate = DateTimeOffset.UtcNow;
@@ -162,17 +222,18 @@ public class AuditState
                 .. this.DeactivatedReasons,
                 .. new[]
                 {
-                    $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-                },
+                    $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}"
+                        .Trim()
+                }
             ];
         }
     }
 
     /// <summary>
-    /// Sets the deleted information.
+    ///     Sets the deleted information.
     /// </summary>
     /// <param name="by">Name of the deleter.</param>
-    /// <param name="reason">The reason.</param>
+    /// <param name="reason">The reason for deletion.</param>
     public virtual void SetDeleted(string by = null, string reason = null)
     {
         this.Deleted = true;
@@ -186,7 +247,8 @@ public class AuditState
 
         if (!reason.IsNullOrEmpty())
         {
-            this.DeletedReason = $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
+            this.DeletedReason =
+                $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
         }
     }
 }

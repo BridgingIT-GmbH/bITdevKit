@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
-    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj"/>
+    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj"/>
   </ItemGroup>
 
 </Project>

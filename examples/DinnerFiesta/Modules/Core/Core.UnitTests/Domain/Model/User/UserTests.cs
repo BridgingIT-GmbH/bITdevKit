@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Domain;
 
 public class UserTests
 {

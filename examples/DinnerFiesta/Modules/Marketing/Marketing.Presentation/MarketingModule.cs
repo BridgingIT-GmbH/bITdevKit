@@ -5,25 +5,30 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Application.Modules.Marketing;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Infrastructure;
+using Application;
+using Common;
+using DevKit.Domain.Repositories;
+using DinnerFiesta.Application.Modules.Marketing;
+using Domain;
+using Infrastructure;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 public class MarketingModule : WebModuleBase
 {
-    public override IServiceCollection Register(IServiceCollection services, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IServiceCollection Register(
+        IServiceCollection services,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
-        var moduleConfiguration = this.Configure<MarketingModuleConfiguration, MarketingModuleConfiguration.Validator>(services, configuration);
+        var moduleConfiguration =
+            this.Configure<MarketingModuleConfiguration, MarketingModuleConfiguration.Validator>(services,
+                configuration);
 
         services.AddStartupTasks()
             .WithTask<MarketingDomainSeederTask>(o => o
@@ -35,9 +40,9 @@ public class MarketingModule : WebModuleBase
             .WithSubscription<UserCreatedMessage, UserCreatedMessageHandler>();
 
         services.AddSqlServerDbContext<MarketingDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                //.UseLogger().UseSimpleLogger()
-                .UseCommandLogger(),
+                    .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+                    //.UseLogger().UseSimpleLogger()
+                    .UseCommandLogger(),
                 //.UseIntercepter<ModuleScopeInterceptor>()
                 //.UseIntercepter<CommandLoggerInterceptor>(),
                 c => c
@@ -71,12 +76,18 @@ public class MarketingModule : WebModuleBase
         return services;
     }
 
-    public override IApplicationBuilder Use(IApplicationBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IApplicationBuilder Use(
+        IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         return app;
     }
 
-    public override IEndpointRouteBuilder Map(IEndpointRouteBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IEndpointRouteBuilder Map(
+        IEndpointRouteBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         //app.MapGet("/hw", () => "Hello World!"); // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-8.0
 

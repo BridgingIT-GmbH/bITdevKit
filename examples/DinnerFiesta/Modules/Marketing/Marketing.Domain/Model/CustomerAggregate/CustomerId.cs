@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class CustomerId : AggregateRootId<Guid>
 {
-    private CustomerId()
-    {
-    }
+    private CustomerId() { }
 
     private CustomerId(Guid guid)
     {

@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Application.Storage;
-using Microsoft.Extensions.DependencyInjection;
+using Application.Storage;
 using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -29,14 +27,20 @@ public class DocumentStoreClientBuilderContextTests
             .WithHealthChecks()
             .WithDatabaseCreatorService(o => o.DeleteOnStartup())
             .WithOutboxMessageService(o => o
-                .ProcessingInterval("00:00:10").StartupDelay("00:00:30").PurgeOnStartup())
+                .ProcessingInterval("00:00:10")
+                .StartupDelay("00:00:30")
+                .PurgeOnStartup())
             .WithOutboxDomainEventService(o => o
-                .ProcessingInterval("00:00:10").StartupDelay("00:00:05").PurgeOnStartup());
+                .ProcessingInterval("00:00:10")
+                .StartupDelay("00:00:05")
+                .PurgeOnStartup());
 
         this.fixture.Services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>()
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()
             .WithBehavior((inner, sp) =>
-                new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+                new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(),
+                    inner,
+                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
     }
 
     //[Fact]

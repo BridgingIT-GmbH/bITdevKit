@@ -5,38 +5,37 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
-using System.Net.Http;
-using BridgingIT.DevKit.Infrastructure.Azure;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
+using Infrastructure.Azure;
+using Infrastructure.Azure.Storage;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using CosmosClientOptions = Microsoft.Azure.Cosmos.CosmosClientOptions;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
-    private ITestOutputHelper output = null;
     private IServiceProvider serviceProvider;
     private CosmosSqlProvider<PersonStub> cosmosSqlProviderPersonStub;
     private CosmosDocumentStoreProvider cosmosDocumentStoreProvider;
 
     public TestEnvironmentFixture()
     {
-        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.output)));
+        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.Output)));
 
         this.Network = new NetworkBuilder()
             .WithName(this.NetworkName)
             .Build();
 
         this.SqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
@@ -65,7 +64,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithEnvironment("AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE", "127.0.0.1")
             .WithEnvironment("AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE", "false")
             .WithWaitStrategy(Wait.ForUnixContainer()
-            .UntilPortIsAvailable(8081))
+                .UntilPortIsAvailable(8081))
             .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
@@ -79,7 +78,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public string NetworkName => HashHelper.Compute(DateTime.UtcNow.Ticks);
 
@@ -125,22 +124,25 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public TestEnvironmentFixture WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
     public async Task InitializeAsync()
     {
-        await this.Network.CreateAsync().AnyContext();
+        await this.Network.CreateAsync()
+            .AnyContext();
 
-        await this.SqlContainer.StartAsync().AnyContext();
+        await this.SqlContainer.StartAsync()
+            .AnyContext();
 
         if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
             //await this.CosmosContainer.StartAsync().AnyContext(); // not started due to issues with the tests
         }
 
-        await this.AzuriteContainer.StartAsync().AnyContext();
+        await this.AzuriteContainer.StartAsync()
+            .AnyContext();
 
         //await this.RabbitMQContainer.StartAsync().AnyContext();
     }
@@ -149,15 +151,19 @@ public class TestEnvironmentFixture : IAsyncLifetime
     {
         //this.Context?.Dispose();
 
-        await this.SqlContainer.DisposeAsync().AnyContext();
+        await this.SqlContainer.DisposeAsync()
+            .AnyContext();
 
-        await this.CosmosContainer.DisposeAsync().AnyContext();
+        await this.CosmosContainer.DisposeAsync()
+            .AnyContext();
 
-        await this.AzuriteContainer.DisposeAsync().AnyContext();
+        await this.AzuriteContainer.DisposeAsync()
+            .AnyContext();
 
         //await this.RabbitMQContainer.DisposeAsync().AnyContext();
 
-        await this.Network.DeleteAsync().AnyContext();
+        await this.Network.DeleteAsync()
+            .AnyContext();
     }
 
     public StubDbContext EnsureSqlServerDbContext(ITestOutputHelper output = null, bool forceNew = false)
@@ -181,10 +187,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.SqlServerDbContext = context;
-            }
+
+            this.SqlServerDbContext = context;
         }
 
         return this.SqlServerDbContext;
@@ -203,7 +207,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //}
 
             // TODO: remove file if exists?
-            optionsBuilder.UseSqlite($"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
+            optionsBuilder.UseSqlite(
+                $"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 
@@ -211,16 +216,17 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.SqliteDbContext = context;
-            }
+
+            this.SqliteDbContext = context;
         }
 
         return this.SqliteDbContext;
     }
 
-    public StubDbContext EnsureCosmosDbContext(ITestOutputHelper output = null, string connectionString = null, bool forceNew = false)
+    public StubDbContext EnsureCosmosDbContext(
+        ITestOutputHelper output = null,
+        string connectionString = null,
+        bool forceNew = false)
     {
         if (this.CosmosDbContext is null || forceNew)
         {
@@ -234,25 +240,29 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
             if (connectionString.IsNullOrEmpty())
             {
-                optionsBuilder.UseCosmos(this.CosmosConnectionString, "test_ef", o =>
-                {
-                    o.ConnectionMode(ConnectionMode.Gateway);
-                    o.HttpClientFactory(() => this.CosmosContainer.HttpClient);
-                });
+                optionsBuilder.UseCosmos(this.CosmosConnectionString,
+                    "test_ef",
+                    o =>
+                    {
+                        o.ConnectionMode(ConnectionMode.Gateway);
+                        o.HttpClientFactory(() => this.CosmosContainer.HttpClient);
+                    });
             }
             else
             {
-                optionsBuilder.UseCosmos(connectionString, "test_ef", o =>
-                {
-                    o.ConnectionMode(ConnectionMode.Direct);
-                    o.HttpClientFactory(() =>
+                optionsBuilder.UseCosmos(connectionString,
+                    "test_ef",
+                    o =>
                     {
-                        return new HttpClient(new HttpClientHandler
+                        o.ConnectionMode(ConnectionMode.Direct);
+                        o.HttpClientFactory(() =>
                         {
-                            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                            return new HttpClient(new HttpClientHandler
+                            {
+                                ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+                            });
                         });
                     });
-                });
             }
 
             var context = new StubDbContext(optionsBuilder.Options);
@@ -262,10 +272,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.CosmosDbContext = context;
-            }
+
+            this.CosmosDbContext = context;
         }
 
         return this.CosmosDbContext;
@@ -291,10 +299,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.InMemoryDbContext = context;
-            }
+
+            this.InMemoryDbContext = context;
         }
 
         return this.InMemoryDbContext;
@@ -308,35 +314,35 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 // local mode (testcontainers)
                 this.CosmosClient = new CosmosClient( // TODO: singleton here
-                   this.CosmosConnectionString,
-                   new Microsoft.Azure.Cosmos.CosmosClientOptions
-                   {
-                       ConnectionMode = ConnectionMode.Gateway,
-                       HttpClientFactory = () => this.CosmosContainer.HttpClient,
-                       // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
-                       //Serializer = new CosmosSystemTextJsonSerializer(
-                       //    new()
-                       //    {
-                       //        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-                       //        WriteIndented = true,
-                       //        PropertyNameCaseInsensitive = true,
-                       //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                       //    }),
-                       Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create()),
-                       //SerializerOptions = new CosmosSerializationOptions
-                       //{
-                       //    Indented = true,
-                       //    IgnoreNullValues = false,
-                       //    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase,
-                       //}
-                   });
+                    this.CosmosConnectionString,
+                    new CosmosClientOptions
+                    {
+                        ConnectionMode = ConnectionMode.Gateway,
+                        HttpClientFactory = () => this.CosmosContainer.HttpClient,
+                        // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
+                        //Serializer = new CosmosSystemTextJsonSerializer(
+                        //    new()
+                        //    {
+                        //        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+                        //        WriteIndented = true,
+                        //        PropertyNameCaseInsensitive = true,
+                        //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        //    }),
+                        Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
+                        //SerializerOptions = new CosmosSerializationOptions
+                        //{
+                        //    Indented = true,
+                        //    IgnoreNullValues = false,
+                        //    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase,
+                        //}
+                    });
             }
             else
             {
                 // online mode (azure)
                 this.CosmosClient = new CosmosClient( // TODO: singleton here
                     connectionString,
-                    new Microsoft.Azure.Cosmos.CosmosClientOptions
+                    new CosmosClientOptions
                     {
                         ConnectionMode = ConnectionMode.Direct,
                         // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
@@ -349,7 +355,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                         //        PropertyNameCaseInsensitive = true,
                         //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         //    }),
-                        Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create()),
+                        Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
                         //SerializerOptions = new CosmosSerializationOptions
                         //{
                         //    Indented = true,
@@ -363,16 +369,20 @@ public class TestEnvironmentFixture : IAsyncLifetime
         return this.CosmosClient;
     }
 
-    public ICosmosSqlProvider<PersonStub> EnsureCosmosSqlProviderPersonStub(string connectionString = null, bool foreceNew = false)
+    public ICosmosSqlProvider<PersonStub> EnsureCosmosSqlProviderPersonStub(
+        string connectionString = null,
+        bool foreceNew = false)
     {
         if (this.cosmosSqlProviderPersonStub is null || foreceNew)
         {
             this.cosmosSqlProviderPersonStub = new CosmosSqlProvider<PersonStub>(o => o
                 //.LoggerFactory(XunitLoggerFactory.Create(this.Output))
                 .Client(this.EnsureCosmosClient(connectionString, foreceNew))
-                .Database("test").Container("provider_persons")
+                .Database("test")
+                .Container("provider_persons")
                 .PartitionKey(e => e.Id)
-                .DatabaseThroughPut(1000).Autoscale());
+                .DatabaseThroughPut(1000)
+                .Autoscale());
             //.PartitionKey(e => e.Nationality)
             //.PartitionKey("/nationality"))
         }
@@ -380,25 +390,29 @@ public class TestEnvironmentFixture : IAsyncLifetime
         return this.cosmosSqlProviderPersonStub;
     }
 
-    public CosmosDocumentStoreProvider EnsureCosmosDocumentStoreProvider(string connectionString = null, bool foreceNew = false)
+    public CosmosDocumentStoreProvider EnsureCosmosDocumentStoreProvider(
+        string connectionString = null,
+        bool foreceNew = false)
     {
         if (this.cosmosDocumentStoreProvider is null || foreceNew)
         {
             this.cosmosDocumentStoreProvider =
-                new CosmosDocumentStoreProvider(
-                new CosmosSqlProvider<CosmosStorageDocument>(o => o
+                new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(o => o
                     //.LoggerFactory(XunitLoggerFactory.Create(this.Output))
                     .Client(this.EnsureCosmosClient(connectionString, foreceNew))
                     .Database("test")
                     .Container("storage_documents")
                     .PartitionKey(e => e.Type)
-                    .DatabaseThroughPut(1000).Autoscale()));
+                    .DatabaseThroughPut(1000)
+                    .Autoscale()));
         }
 
         return this.cosmosDocumentStoreProvider;
     }
 
-    private sealed class WaitUntil : IWaitUntil // TODO: obsolete in next testcontainers (>3.7.0) release  https://github.com/testcontainers/testcontainers-dotnet/pull/1109
+    private sealed class
+        WaitUntil
+        : IWaitUntil // TODO: obsolete in next testcontainers (>3.7.0) release  https://github.com/testcontainers/testcontainers-dotnet/pull/1109
     {
         public async Task<bool> UntilAsync(IContainer container)
         {
@@ -409,8 +423,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
             try
             {
-                using var httpResponse = await httpClient.GetAsync(requestUri)
-                    .ConfigureAwait(false);
+                using var httpResponse = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
 
                 return httpResponse.IsSuccessStatusCode;
             }

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using Domain.Model;
 
 public class ForecastQueryResponse // this could also be an application viewmodel
 {

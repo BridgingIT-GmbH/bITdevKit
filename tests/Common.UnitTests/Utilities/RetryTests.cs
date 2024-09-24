@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 [UnitTest("Common")]
 public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 {
-    private static readonly Func<int, TimeSpan> Progressive = x => TimeSpan.FromMilliseconds(
-        Convert.ToInt32(Math.Round((1 / (1 + Math.Exp(-x + 5))) * 100)) * 100);
+    private static readonly Func<int, TimeSpan> Progressive = x => TimeSpan.FromMilliseconds(Convert.ToInt32(Math.Round(1 / (1 + Math.Exp(-x + 5)) * 100)) * 100);
 
     [Fact]
     public void WhenRetryTaskThat_does_not_fail()
@@ -22,11 +17,12 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                    },
+                    this.CreateLogger())
+                .AnyContext();
             counter.ShouldBe(1);
         });
 
@@ -34,14 +30,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
             counter.ShouldBe(1);
         });
     }
@@ -53,14 +50,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ == 0)
-                {
-                    throw new NullReferenceException();
-                }
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        await Task.Yield();
+                        if (counter++ == 0)
+                        {
+                            throw new NullReferenceException();
+                        }
+                    },
+                    this.CreateLogger())
+                .AnyContext();
             counter.ShouldBe(2);
         });
 
@@ -68,15 +66,16 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ == 0)
-                {
-                    throw new NullReferenceException();
-                }
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        await Task.Yield();
+                        if (counter++ == 0)
+                        {
+                            throw new NullReferenceException();
+                        }
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds())
+                .AnyContext();
             counter.ShouldBe(2);
         });
     }
@@ -89,19 +88,20 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             var result = 0;
             var counter = 0;
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ < 2)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ < 2)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                result = 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                        result = 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(3);
             result.ShouldBe(42);
@@ -116,12 +116,13 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On<NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(1);
         retryEx.Message.ShouldBe("retry failed after #1 attempts");
@@ -133,14 +134,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On<NullReferenceException>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(3);
         retryEx.Message.ShouldBe("retry failed after #3 attempts");
@@ -155,11 +157,12 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                    },
+                    this.CreateLogger())
+                .AnyContext();
             counter.ShouldBe(1);
         });
 
@@ -167,14 +170,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
             counter.ShouldBe(1);
         });
     }
@@ -187,19 +191,20 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             var result = 0;
             var counter = 0;
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ < 2)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ < 2)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                result = 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                        result = 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(3);
             result.ShouldBe(42);
@@ -214,11 +219,12 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(1);
         retryEx.Message.ShouldBe("retry failed after #1 attempts");
@@ -230,14 +236,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(3);
         retryEx.Message.ShouldBe("retry failed after #3 attempts");
@@ -253,15 +260,16 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On<ArgumentNullException>(() =>
-            {
-                counter++;
-                var inner = new ArgumentNullException("someArg");
-                throw new AggregateException(inner);
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        var inner = new ArgumentNullException("someArg");
+                        throw new AggregateException(inner);
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);
@@ -279,16 +287,17 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On<IndexOutOfRangeException>(() =>
-            {
-                counter++;
-                var inner1 = new ArgumentNullException("someArg1");
-                var inner2 = new IndexOutOfRangeException("someArg2");
-                throw new AggregateException(inner1, inner2);
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        var inner1 = new ArgumentNullException("someArg1");
+                        var inner2 = new IndexOutOfRangeException("someArg2");
+                        throw new AggregateException(inner1, inner2);
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);
@@ -306,15 +315,16 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         Should.Throw<IndexOutOfRangeException>(async () =>
         {
             await Retry.On<ArgumentNullException>(() =>
-            {
-                counter++;
-                var inner = new IndexOutOfRangeException();
-                throw new AggregateException(inner);
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        var inner = new IndexOutOfRangeException();
+                        throw new AggregateException(inner);
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         counter.ShouldBe(1);
@@ -337,12 +347,13 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On(() =>
-            {
-                executionCounter++;
-                throw new ArgumentException();
-            },
-            exceptionPredicate,
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        executionCounter++;
+                        throw new ArgumentException();
+                    },
+                    exceptionPredicate,
+                    this.CreateLogger())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(1);
@@ -370,12 +381,13 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         Should.Throw<ArgumentException>(async () =>
         {
             await Retry.On(() =>
-            {
-                executionCounter++;
-                throw new ArgumentException();
-            },
-            exceptionPredicate,
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        executionCounter++;
+                        throw new ArgumentException();
+                    },
+                    exceptionPredicate,
+                    this.CreateLogger())
+                .AnyContext();
         });
 
         executionCounter.ShouldBe(1);
@@ -411,11 +423,17 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On(async () =>
-            {
-                await Task.Delay(1).AnyContext();
-                executionCounter++;
-                throw new ArgumentException();
-            }, exceptionPredicate, delayFactory, logger: this.CreateLogger(), cts.Token).AnyContext();
+                    {
+                        await Task.Delay(1)
+                            .AnyContext();
+                        executionCounter++;
+                        throw new ArgumentException();
+                    },
+                    exceptionPredicate,
+                    delayFactory,
+                    this.CreateLogger(),
+                    cts.Token)
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);
@@ -433,12 +451,13 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.On<NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-                return 42;
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                        return 42;
+                    },
+                    this.CreateLogger())
+                .AnyContext();
 
             counter.ShouldBe(1);
             result.ShouldBe(42);
@@ -448,15 +467,16 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.On<NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-                return 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                        return 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(1);
             result.ShouldBe(42);
@@ -470,16 +490,17 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.On<NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ == 0)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ == 0)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                return 42;
-            },
-            logger: this.CreateLogger()).AnyContext();
+                        return 42;
+                    },
+                    this.CreateLogger())
+                .AnyContext();
 
             counter.ShouldBe(2);
             result.ShouldBe(42);
@@ -489,17 +510,18 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.On<NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ == 0)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ == 0)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                return 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds()).AnyContext();
+                        return 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(2);
             result.ShouldBe(42);
@@ -513,19 +535,20 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.On<NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ < 2)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ < 2)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                return 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                        return 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(3);
             result.ShouldBe(42);
@@ -540,14 +563,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             result = await Retry.On<NullReferenceException, int>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(3);
         retryEx.Message.ShouldBe("retry failed after #3 attempts");
@@ -560,11 +584,12 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         retryEx = Should.Throw<RetryException>(async () =>
         {
             result = await Retry.On<NullReferenceException, int>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(1);
         retryEx.Message.ShouldBe("retry failed after #1 attempts");
@@ -580,15 +605,16 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.OnAny<ArgumentNullException, NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                counter++;
-                return 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        await Task.Yield();
+                        counter++;
+                        return 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(1);
             result.ShouldBe(42);
@@ -602,19 +628,20 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             var counter = 0;
             var result = await Retry.OnAny<ArgumentNullException, NullReferenceException, int>(async () =>
-            {
-                await Task.Yield();
-                if (counter++ < 2)
-                {
-                    throw new NullReferenceException();
-                }
+                    {
+                        await Task.Yield();
+                        if (counter++ < 2)
+                        {
+                            throw new NullReferenceException();
+                        }
 
-                return 42;
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                        return 42;
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
 
             counter.ShouldBe(3);
             result.ShouldBe(42);
@@ -629,14 +656,15 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             result = await Retry.OnAny<ArgumentNullException, NullReferenceException, int>(() =>
-            {
-                counter++;
-                throw new NullReferenceException();
-            },
-            logger: this.CreateLogger(),
-            100.Milliseconds(),
-            100.Milliseconds(),
-            100.Milliseconds()).AnyContext();
+                    {
+                        counter++;
+                        throw new NullReferenceException();
+                    },
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
         retryEx.RetryCount.ShouldBe(3);
         retryEx.Message.ShouldBe("retry failed after #3 attempts");
@@ -652,18 +680,18 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         var retryEx = Should.Throw<RetryException>(async () =>
         {
-            await Retry.On<ArgumentNullException>(
-                () => Task.Factory.StartNew(() =>
-                {
-                    counter++;
-                    var inner = new ArgumentNullException("someArg");
-                    throw new AggregateException(inner);
-                    //return 1;
-                }),
-                logger: this.CreateLogger(),
-                100.Milliseconds(),
-                100.Milliseconds(),
-                100.Milliseconds()).AnyContext();
+            await Retry.On<ArgumentNullException>(() => Task.Factory.StartNew(() =>
+                    {
+                        counter++;
+                        var inner = new ArgumentNullException("someArg");
+                        throw new AggregateException(inner);
+                        //return 1;
+                    }),
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);
@@ -680,19 +708,19 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         var retryEx = Should.Throw<RetryException>(async () =>
         {
-            await Retry.On<IndexOutOfRangeException>(
-                () => Task.Factory.StartNew(() =>
-                {
-                    counter++;
-                    var inner1 = new ArgumentNullException("someArg1");
-                    var inner2 = new IndexOutOfRangeException("someArg2");
-                    throw new AggregateException(inner1, inner2);
-                    //return 1;
-                }),
-                logger: this.CreateLogger(),
-                100.Milliseconds(),
-                100.Milliseconds(),
-                100.Milliseconds()).AnyContext();
+            await Retry.On<IndexOutOfRangeException>(() => Task.Factory.StartNew(() =>
+                    {
+                        counter++;
+                        var inner1 = new ArgumentNullException("someArg1");
+                        var inner2 = new IndexOutOfRangeException("someArg2");
+                        throw new AggregateException(inner1, inner2);
+                        //return 1;
+                    }),
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);
@@ -709,18 +737,18 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         Should.Throw<IndexOutOfRangeException>(async () =>
         {
-            await Retry.On<ArgumentNullException>(
-                () => Task.Factory.StartNew(() =>
-                {
-                    counter++;
-                    var inner = new IndexOutOfRangeException();
-                    throw new AggregateException(inner);
-                    //return 1;
-                }),
-                logger: this.CreateLogger(),
-                100.Milliseconds(),
-                100.Milliseconds(),
-                100.Milliseconds()).AnyContext();
+            await Retry.On<ArgumentNullException>(() => Task.Factory.StartNew(() =>
+                    {
+                        counter++;
+                        var inner = new IndexOutOfRangeException();
+                        throw new AggregateException(inner);
+                        //return 1;
+                    }),
+                    this.CreateLogger(),
+                    100.Milliseconds(),
+                    100.Milliseconds(),
+                    100.Milliseconds())
+                .AnyContext();
         });
 
         counter.ShouldBe(1);
@@ -740,7 +768,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         var executionCounter = 0;
 
-        Func<Task<int>> task = () => Task.Run(() =>
+        var task = () => Task.Run(() =>
         {
             executionCounter++;
             throw new ArgumentException();
@@ -751,7 +779,8 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         var retryEx = Should.Throw<RetryException>(async () =>
         {
-            await Retry.On(task, exceptionPredicate, logger: this.CreateLogger()).AnyContext();
+            await Retry.On(task, exceptionPredicate, this.CreateLogger())
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(1);
@@ -775,7 +804,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         };
 
         var executionCounter = 0;
-        Func<Task<int>> task = () => Task.Run(() =>
+        var task = () => Task.Run(() =>
         {
             executionCounter++;
             throw new ArgumentException();
@@ -786,7 +815,8 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
 
         Should.Throw<ArgumentException>(async () =>
         {
-            await Retry.On(task, exceptionPredicate, logger: this.CreateLogger()).AnyContext();
+            await Retry.On(task, exceptionPredicate, this.CreateLogger())
+                .AnyContext();
         });
 
         executionCounter.ShouldBe(1);
@@ -822,14 +852,20 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var retryEx = Should.Throw<RetryException>(async () =>
         {
             await Retry.On(async () =>
-            {
-                await Task.Delay(1).AnyContext();
-                executionCounter++;
-                throw new ArgumentException();
+                    {
+                        await Task.Delay(1)
+                            .AnyContext();
+                        executionCounter++;
+                        throw new ArgumentException();
 #pragma warning disable CS0162 // Unreachable code detected
-                return 1;
+                        return 1;
 #pragma warning restore CS0162 // Unreachable code detected
-            }, exceptionPredicate, delayFactory, logger: this.CreateLogger(), cts.Token).AnyContext();
+                    },
+                    exceptionPredicate,
+                    delayFactory,
+                    this.CreateLogger(),
+                    cts.Token)
+                .AnyContext();
         });
 
         retryEx.RetryCount.ShouldBe(3);

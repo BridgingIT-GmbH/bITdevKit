@@ -11,13 +11,7 @@ using BenchmarkDotNet.Attributes;
 [ShortRunJob]
 public abstract class SerializerBenchmarkBase(ITestOutputHelper output) : TestsBase(output)
 {
-    private readonly StubModel data = new()
-    {
-        IntProperty = 1,
-        StringProperty = "test",
-        ListProperty = [1],
-        ObjectProperty = new StubModel { IntProperty = 1 }
-    };
+    private readonly StubModel data = new() { IntProperty = 1, StringProperty = "test", ListProperty = [1], ObjectProperty = new StubModel { IntProperty = 1 } };
 
     private ISerializer serializer;
 

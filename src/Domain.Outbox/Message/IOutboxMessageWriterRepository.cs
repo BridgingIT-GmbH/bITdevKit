@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
+using Repositories;
 
 public interface IOutboxMessageWriterRepository : IRepository
 {
     Task<OutboxMessage> InsertAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken = default);
 
-    Task<OutboxMessage> FindOneAsync(object id, IFindOptions<OutboxMessage> options = null, CancellationToken cancellationToken = default);
+    Task<OutboxMessage> FindOneAsync(
+        object id,
+        IFindOptions<OutboxMessage> options = null,
+        CancellationToken cancellationToken = default);
 }

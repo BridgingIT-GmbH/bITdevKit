@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using NSubstitute;
-using Shouldly;
-using Xunit;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
 
 public class DinnerNameMustBeUniqueRuleTests
 {
@@ -23,10 +18,10 @@ public class DinnerNameMustBeUniqueRuleTests
         // Arrange
         const string name = "Garden Delights";
         var repository = Substitute.For<IGenericRepository<Dinner>>();
-        repository.FindAllAsync(
-            Arg.Any<ISpecification<Dinner>>(),
-            Arg.Any<IFindOptions<Dinner>>(),
-            Arg.Any<CancellationToken>()).Returns([]);
+        repository.FindAllAsync(Arg.Any<ISpecification<Dinner>>(),
+                Arg.Any<IFindOptions<Dinner>>(),
+                Arg.Any<CancellationToken>())
+            .Returns([]);
         var rule = new DinnerNameMustBeUniqueRule(repository, name);
 
         // Act

@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
 public class EntityCommandResult<TEntity>(TEntity entity)
     where TEntity : class, IEntity
 {
     /// <summary>
-    /// The entity id
+    ///     The entity id
     /// </summary>
     public TEntity Entity { get; } = entity;
 }

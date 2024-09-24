@@ -5,16 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-public class StringsArraySemicolonConverter
-    : ValueConverter<string[], string>
+public class StringsArraySemicolonConverter : ValueConverter<string[], string>
 {
     public StringsArraySemicolonConverter()
-        : base(
-            v => string.Join(";", v),
-            v => v.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-    {
-    }
+        : base(v => string.Join(";", v), v => v.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)) { }
 }

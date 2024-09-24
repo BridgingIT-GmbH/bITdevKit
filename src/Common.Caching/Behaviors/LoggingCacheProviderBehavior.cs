@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.Behaviors;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -16,13 +12,12 @@ public partial class LoggingCacheProviderBehavior : ICacheProvider
 {
     private readonly ICacheProvider inner;
 
-    public LoggingCacheProviderBehavior(
-        ILoggerFactory loggerFactory,
-        ICacheProvider inner)
+    public LoggingCacheProviderBehavior(ILoggerFactory loggerFactory, ICacheProvider inner)
     {
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.Logger = loggerFactory?.CreateLogger<LoggingCacheProviderBehavior>() ?? NullLoggerFactory.Instance.CreateLogger<LoggingCacheProviderBehavior>();
+        this.Logger = loggerFactory?.CreateLogger<LoggingCacheProviderBehavior>() ??
+            NullLoggerFactory.Instance.CreateLogger<LoggingCacheProviderBehavior>();
         this.inner = inner;
     }
 
@@ -68,12 +63,21 @@ public partial class LoggingCacheProviderBehavior : ICacheProvider
         throw new NotImplementedException();
     }
 
-    public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null)
+    public void Set<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null)
     {
         throw new NotImplementedException();
     }
 
-    public Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null, CancellationToken cancellationToken = default)
+    public Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

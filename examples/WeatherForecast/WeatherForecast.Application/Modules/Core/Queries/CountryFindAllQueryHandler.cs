@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class CountryFindAllQueryHandler : QueryHandlerBase<CountryFindAllQuery, IEnumerable<string>>
@@ -33,18 +29,14 @@ public class CountryFindAllQueryHandler : QueryHandlerBase<CountryFindAllQuery, 
         CountryFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var countries = await this.cityRepository.ProjectAllAsync(
-            e => e.Country,
-            options: new FindOptions<City>
-            {
-                Order = new OrderOption<City>(e => e.Country),
-                Distinct = new DistinctOption<City>()
-            },
-            cancellationToken: cancellationToken).AnyContext();
+        var countries = await this.cityRepository.ProjectAllAsync(e => e.Country,
+                new FindOptions<City>
+                {
+                    Order = new OrderOption<City>(e => e.Country), Distinct = new DistinctOption<City>()
+                },
+                cancellationToken)
+            .AnyContext();
 
-        return new QueryResponse<IEnumerable<string>>()
-        {
-            Result = countries
-        };
+        return new QueryResponse<IEnumerable<string>> { Result = countries };
     }
 }

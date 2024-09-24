@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Diagnostics.HealthChecks;
+using EntityFrameworkCore;
 
 public static class DbContextBuilderContextExtensions
 {
@@ -20,7 +20,13 @@ public static class DbContextBuilderContextExtensions
         where TContext : DbContext
     {
         context.Services.AddHealthChecks()
-            .AddSqlServer(context.ConnectionString, healthQuery ?? "SELECT 1;", null, name ?? $"{context.Provider.ToString().ToLower()} ({typeof(TContext).Name})", failureStatus, tags ?? new[] { "ready" }, timeout);
+            .AddSqlServer(context.ConnectionString,
+                healthQuery ?? "SELECT 1;",
+                null,
+                name ?? $"{context.Provider.ToString().ToLower()} ({typeof(TContext).Name})",
+                failureStatus,
+                tags ?? new[] { "ready" },
+                timeout);
 
         return context;
     }

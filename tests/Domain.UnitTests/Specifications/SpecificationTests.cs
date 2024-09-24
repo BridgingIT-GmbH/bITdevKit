@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Specifications;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Specifications;
-using System;
-using System.Collections.Generic;
-using Xunit;
-using Shouldly;
+using DevKit.Domain.Specifications;
 
 [UnitTest("Domain")]
 public class SpecificationTests
@@ -55,7 +50,8 @@ public class SpecificationTests
         var sut = spec1.And(spec2);
 
         // Assert
-        sut.IsSatisfiedBy(person).ShouldBeTrue();
+        sut.IsSatisfiedBy(person)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -70,7 +66,8 @@ public class SpecificationTests
         var sut = spec1.Or(spec2);
 
         // Assert
-        sut.IsSatisfiedBy(person).ShouldBeTrue();
+        sut.IsSatisfiedBy(person)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -84,7 +81,8 @@ public class SpecificationTests
         var sut = spec.Not();
 
         // Assert
-        sut.IsSatisfiedBy(person).ShouldBeTrue();
+        sut.IsSatisfiedBy(person)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -100,7 +98,8 @@ public class SpecificationTests
         var sut = spec1.And(spec2.Or(spec3));
 
         // Assert
-        sut.IsSatisfiedBy(person).ShouldBeTrue();
+        sut.IsSatisfiedBy(person)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -121,10 +120,7 @@ public class SpecificationTests
     public void IsSatisfiedBy_SingleSatisfiedSpecification_ShouldReturnTrue()
     {
         // Arrange
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Age > 18)
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Age > 18) };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act
@@ -138,10 +134,7 @@ public class SpecificationTests
     public void IsSatisfiedBy_SingleUnsatisfiedSpecification_ShouldReturnFalse()
     {
         // Arrange
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Age > 30)
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Age > 30) };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act
@@ -155,11 +148,7 @@ public class SpecificationTests
     public void IsSatisfiedBy_MultipleAllSatisfiedSpecifications_ShouldReturnTrue()
     {
         // Arrange
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Age > 18),
-            new Specification<PersonStub>(p => p.FirstName == "John")
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Age > 18), new Specification<PersonStub>(p => p.FirstName == "John") };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act
@@ -173,11 +162,7 @@ public class SpecificationTests
     public void IsSatisfiedBy_MultipleSomeUnsatisfiedSpecifications_ShouldReturnFalse()
     {
         // Arrange
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Age > 18),
-            new Specification<PersonStub>(p => p.FirstName == "Jane")
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Age > 18), new Specification<PersonStub>(p => p.FirstName == "Jane") };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act
@@ -216,9 +201,12 @@ public class SpecificationTests
         var person3 = new PersonStub { Id = Guid.NewGuid(), Age = 65, FirstName = "John", LastName = "Doe" };
 
         // Act & Assert
-        SpecificationExtensions.IsSatisfiedBy(sut, person1).ShouldBeTrue();
-        SpecificationExtensions.IsSatisfiedBy(sut, person2).ShouldBeTrue();
-        SpecificationExtensions.IsSatisfiedBy(sut, person3).ShouldBeFalse();
+        SpecificationExtensions.IsSatisfiedBy(sut, person1)
+            .ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person2)
+            .ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person3)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -226,17 +214,15 @@ public class SpecificationTests
     {
         // Arrange
         var specificId = Guid.NewGuid();
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Id == specificId),
-            new Specification<PersonStub>(p => p.Age > 18)
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Id == specificId), new Specification<PersonStub>(p => p.Age > 18) };
         var person1 = new PersonStub { Id = specificId, Age = 25, FirstName = "John" };
         var person2 = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act & Assert
-        SpecificationExtensions.IsSatisfiedBy(sut, person1).ShouldBeTrue();
-        SpecificationExtensions.IsSatisfiedBy(sut, person2).ShouldBeFalse();
+        SpecificationExtensions.IsSatisfiedBy(sut, person1)
+            .ShouldBeTrue();
+        SpecificationExtensions.IsSatisfiedBy(sut, person2)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -245,9 +231,7 @@ public class SpecificationTests
         // Arrange
         var sut = new List<ISpecification<PersonStub>>
         {
-            new Specification<PersonStub>(p => p.Age > 30),
-            new Specification<PersonStub>(p => p.FirstName == "Jane"),
-            new Specification<PersonStub>(p => p.LastName == "Doe")
+            new Specification<PersonStub>(p => p.Age > 30), new Specification<PersonStub>(p => p.FirstName == "Jane"), new Specification<PersonStub>(p => p.LastName == "Doe")
         };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John", LastName = "Smith" };
 
@@ -281,10 +265,7 @@ public class SpecificationTests
     public void IsSatisfiedBy_NotSpecificationUnsatisfied_ShouldReturnFalse()
     {
         // Arrange
-        var sut = new List<ISpecification<PersonStub>>
-        {
-            new Specification<PersonStub>(p => p.Age > 18).Not()
-        };
+        var sut = new List<ISpecification<PersonStub>> { new Specification<PersonStub>(p => p.Age > 18).Not() };
         var person = new PersonStub { Id = Guid.NewGuid(), Age = 25, FirstName = "John" };
 
         // Act

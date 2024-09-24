@@ -5,31 +5,25 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Events;
+using EventSourcing.Model;
+using EventSourcing.Registration;
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 [ImmutableName("PersonWithoutApplyChangeSurname_ImmutableNameTest2020.05.02")]
 public class PersonWithoutApplyChangeSurname : EventSourcingAggregateRoot
 {
     [JsonConstructor]
     public PersonWithoutApplyChangeSurname(IAggregateEvent @event) // <3>
-        : base(@event)
-    {
-    }
+        : base(@event) { }
 
     public PersonWithoutApplyChangeSurname(string surname, string firstname)
-        : base(new PersonCreatedEvent(surname, firstname))
-    {
-    }
+        : base(new PersonCreatedEvent(surname, firstname)) { }
 
     public PersonWithoutApplyChangeSurname(Guid id, IEnumerable<IAggregateEvent> events)
-        : base(id, events)
-    {
-    }
+        : base(id, events) { }
 
     public string Surname { get; private set; }
 

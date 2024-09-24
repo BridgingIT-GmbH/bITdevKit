@@ -5,29 +5,29 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 /// <summary>
-/// Registratur für EventStore-Aggregates.
-/// Bei der Registratur wird eine Name übergeben der während des kompletten
-/// Application Life Cylcles der Applikation nicht mehr verändert werden dürfen,
-/// um so jederzeit ein Replay zu erlauben.
+///     Registratur für EventStore-Aggregates.
+///     Bei der Registratur wird eine Name übergeben der während des kompletten
+///     Application Life Cylcles der Applikation nicht mehr verändert werden dürfen,
+///     um so jederzeit ein Replay zu erlauben.
 /// </summary>
 public interface IEventStoreAggregateRegistration
 {
     /// <summary>
-    /// Ordnet einem Aggregate einen Namen zu, der während des kompletten
-    /// Application Lifce Cycle nicht mehr verändert werden darf,
-    /// so dass jederzeit ein Replay der Ereignisse möglich ist.
-    /// Auch bei Umbenennungen der Klasse
-    /// darf dieser Name nicht verändert werden.
+    ///     Ordnet einem Aggregate einen Namen zu, der während des kompletten
+    ///     Application Lifce Cycle nicht mehr verändert werden darf,
+    ///     so dass jederzeit ein Replay der Ereignisse möglich ist.
+    ///     Auch bei Umbenennungen der Klasse
+    ///     darf dieser Name nicht verändert werden.
     /// </summary>
     void Register<TAggregate>(string immutableName)
         where TAggregate : EventSourcingAggregateRoot;
 
     /// <summary>
-    /// Gibt den immutable Name eines Aggregates zurück. Auch bei Umbenennungen der Klasse
-    /// darf dieser Name nicht verändert werden.
+    ///     Gibt den immutable Name eines Aggregates zurück. Auch bei Umbenennungen der Klasse
+    ///     darf dieser Name nicht verändert werden.
     /// </summary>
     string GetImmutableName<TAggregate>()
         where TAggregate : EventSourcingAggregateRoot;

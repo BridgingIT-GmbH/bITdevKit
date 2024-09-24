@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
-using System.Threading;
 
 public static class TimeSpanExtensions
 {
@@ -59,128 +57,191 @@ public static class TimeSpanExtensions
     }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Ticks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Ticks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Ticks(this long value) => TimeSpan.FromTicks(value);
+    public static TimeSpan Ticks(this long value)
+    {
+        return TimeSpan.FromTicks(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Milliseconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Milliseconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Milliseconds(this long value) => TimeSpan.FromMilliseconds(value);
+    public static TimeSpan Milliseconds(this long value)
+    {
+        return TimeSpan.FromMilliseconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Seconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Seconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Seconds(this long value) => TimeSpan.FromSeconds(value);
+    public static TimeSpan Seconds(this long value)
+    {
+        return TimeSpan.FromSeconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Minutes</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Minutes</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Minutes(this long value) => TimeSpan.FromMinutes(value);
+    public static TimeSpan Minutes(this long value)
+    {
+        return TimeSpan.FromMinutes(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Hours</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Hours</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Hours(this long value) => TimeSpan.FromHours(value);
+    public static TimeSpan Hours(this long value)
+    {
+        return TimeSpan.FromHours(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Days</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Days</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Days(this long value) => TimeSpan.FromDays(value);
+    public static TimeSpan Days(this long value)
+    {
+        return TimeSpan.FromDays(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Weeks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Weeks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Weeks(this long value) => TimeSpan.FromDays(value * 7);
+    public static TimeSpan Weeks(this long value)
+    {
+        return TimeSpan.FromDays(value * 7);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Ticks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Ticks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Ticks(this int value) => TimeSpan.FromTicks(value);
+    public static TimeSpan Ticks(this int value)
+    {
+        return TimeSpan.FromTicks(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Milliseconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Milliseconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Milliseconds(this int value) => TimeSpan.FromMilliseconds(value);
+    public static TimeSpan Milliseconds(this int value)
+    {
+        return TimeSpan.FromMilliseconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Seconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Seconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Seconds(this int value) => TimeSpan.FromSeconds(value);
+    public static TimeSpan Seconds(this int value)
+    {
+        return TimeSpan.FromSeconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Minutes</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Minutes</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Minutes(this int value) => TimeSpan.FromMinutes(value);
+    public static TimeSpan Minutes(this int value)
+    {
+        return TimeSpan.FromMinutes(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Hours</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Hours</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Hours(this int value) => TimeSpan.FromHours(value);
+    public static TimeSpan Hours(this int value)
+    {
+        return TimeSpan.FromHours(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Days</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Days</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Days(this int value) => TimeSpan.FromDays(value);
+    public static TimeSpan Days(this int value)
+    {
+        return TimeSpan.FromDays(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Weeks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Weeks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Weeks(this int value) => TimeSpan.FromDays(value * 7);
+    public static TimeSpan Weeks(this int value)
+    {
+        return TimeSpan.FromDays(value * 7);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Ticks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Ticks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Ticks(this short value) => TimeSpan.FromTicks(value);
+    public static TimeSpan Ticks(this short value)
+    {
+        return TimeSpan.FromTicks(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Milliseconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Milliseconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Milliseconds(this short value) => TimeSpan.FromMilliseconds(value);
+    public static TimeSpan Milliseconds(this short value)
+    {
+        return TimeSpan.FromMilliseconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Seconds</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Seconds</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Seconds(this short value) => TimeSpan.FromSeconds(value);
+    public static TimeSpan Seconds(this short value)
+    {
+        return TimeSpan.FromSeconds(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Minutes</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Minutes</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Minutes(this short value) => TimeSpan.FromMinutes(value);
+    public static TimeSpan Minutes(this short value)
+    {
+        return TimeSpan.FromMinutes(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Hours</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Hours</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Hours(this short value) => TimeSpan.FromHours(value);
+    public static TimeSpan Hours(this short value)
+    {
+        return TimeSpan.FromHours(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Days</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Days</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Days(this short value) => TimeSpan.FromDays(value);
+    public static TimeSpan Days(this short value)
+    {
+        return TimeSpan.FromDays(value);
+    }
 
     /// <summary>
-    /// Returns a <see cref="TimeSpan"/> represented by <paramref name="value"/> as <c>Weeks</c>.
+    ///     Returns a <see cref="TimeSpan" /> represented by <paramref name="value" /> as <c>Weeks</c>.
     /// </summary>
     [DebuggerStepThrough]
-    public static TimeSpan Weeks(this short value) => TimeSpan.FromDays(value * 7);
+    public static TimeSpan Weeks(this short value)
+    {
+        return TimeSpan.FromDays(value * 7);
+    }
 }

@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-using System.Collections.Generic;
-
 public class EventStoreMemoryData(Guid aggregateId, string aggregateType)
 {
     public Guid AggregateId { get; private set; } = aggregateId;

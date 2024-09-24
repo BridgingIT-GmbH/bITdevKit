@@ -8,61 +8,38 @@ namespace BridgingIT.DevKit.Common;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 
+/// <summary>
+///     Provides a set of extension methods for the <see cref="IConfiguration" /> interface
+///     to facilitate configuration retrieval and section handling.
+/// </summary>
 public static class ConfigurationExtensions
 {
+    /// <summary>
+    ///     Retrieves an instance of type <typeparamref name="T" /> from the configuration section defined
+    ///     by the specified module. If the configuration section is not found, a new instance is created using the factory.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to retrieve or create.</typeparam>
+    /// <param name="source">The configuration source to retrieve the section from.</param>
+    /// <param name="module">The module defining the section in the configuration.</param>
+    /// <returns>An instance of type <typeparamref name="T" />.</returns>
     public static T Get<T>(this IConfiguration source, IModule module)
         where T : class
     {
-        return source.GetSection(module)?.Get<T>() ?? Factory<T>.Create();
-    }
-
-    public static IConfiguration GetSection(this IConfiguration source, IModule module, bool skipPlaceholders = false)
-    {
-        return source.GetSection($"Modules:{module?.Name}", skipPlaceholders);
-    }
-
-    public static IConfiguration GetSection(this IConfiguration source, string key, bool skipPlaceholders)
-    {
-        var section = source?.GetSection(key);
-        if(skipPlaceholders)
-        {
-            return section;
-        }
-
-        // Replace optional placeholders in the child section
-        foreach (var childSectionKey in section.AsEnumerable()
-            .Select(kvp => kvp.Key.Replace(key + ":", string.Empty)))
-        {
-            var childSection = section.GetSection(childSectionKey);
-            childSection.Value = ReplacePlaceholders(childSection.Value, source);
-        }
-
-        return section;
+        return source.GetModuleSection(module)?.Get<T>() ?? Factory<T>.Create();
     }
 
     /// <summary>
-    /// Replaces placeholders in the given value with values from the configuration.
+    ///     Retrieves a configuration section based on the module's name.
     /// </summary>
-    private static string ReplacePlaceholders(string value, IConfiguration configuration)
+    /// <param name="source">The configuration source.</param>
+    /// <param name="module">The module from which the section name is derived.</param>
+    /// <param name="skipPlaceholders">Indicates whether to skip placeholder substitution.</param>
+    /// <returns>The configuration section corresponding to the specified module.</returns>
+    public static IConfiguration GetModuleSection(
+        this IConfiguration source,
+        IModule module,
+        bool skipPlaceholders = false)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return value;
-        }
-
-        const string placeholderStart = "{{";
-        const string placeholderEnd = "}}";
-
-        if (!value.Contains(placeholderStart) || !value.Contains(placeholderEnd))
-        {
-            return value;
-        }
-
-        var regex = new Regex($@"{Regex.Escape(placeholderStart)}(.*?){Regex.Escape(placeholderEnd)}");
-        return regex.Replace(value, match =>
-        {
-            var placeholder = match.Groups[1].Value;
-            return configuration[placeholder] ?? match.Value;
-        });
+        return source.GetSection($"Modules:{module?.Name}", skipPlaceholders);
     }
 }

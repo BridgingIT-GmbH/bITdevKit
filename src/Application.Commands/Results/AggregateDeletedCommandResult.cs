@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 public class AggregateDeletedCommandResult(string entityId)
 {
     /// <summary>
-    /// The aggregate id
+    ///     The aggregate id
     /// </summary>
     public string EntityId { get; } = entityId;
 }
@@ -16,7 +16,7 @@ public class AggregateDeletedCommandResult(string entityId)
 public class AggregateDeletedCommandResult<TId>(TId entityId)
 {
     /// <summary>
-    /// The aggregate id
+    ///     The aggregate id
     /// </summary>
     public TId EntityId { get; } = entityId;
 }

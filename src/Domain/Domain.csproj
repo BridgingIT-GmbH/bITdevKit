@@ -9,16 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
-    <PackageReference Include="MediatR.Contracts" />
-    <PackageReference Include="Scrutor" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions"/>
+    <PackageReference Include="MediatR.Contracts"/>
+    <PackageReference Include="Scrutor"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
-    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj"/>
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\Common.Options\Common.Options.csproj"/>
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
 </Project>

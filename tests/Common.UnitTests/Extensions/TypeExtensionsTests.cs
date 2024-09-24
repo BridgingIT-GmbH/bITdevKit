@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System;
-using System.Collections.Generic;
-using Shouldly;
-using Xunit;
-
+[UnitTest("Common")]
 public class TypeExtensionsTests
 {
     [Fact]
@@ -142,7 +138,7 @@ public class TypeExtensionsTests
         var source = typeof(Dictionary<int, string>);
 
         // Act
-        var result = source.PrettyName(useAngleBrackets: false);
+        var result = source.PrettyName(false);
 
         // Assert
         result.ShouldBe("Dictionary[Int32,String]");
@@ -194,7 +190,7 @@ public class TypeExtensionsTests
         var source = typeof(Dictionary<int, string>);
 
         // Act
-        var result = source.FullPrettyName(useAngleBrackets: false);
+        var result = source.FullPrettyName(false);
 
         // Assert
         result.ShouldBe("System.Collections.Generic.Dictionary[System.Int32,System.String]");
@@ -230,19 +226,9 @@ public class TypeExtensionsTests
     public void IsNumeric_NumericType_ReturnsTrue()
     {
         // Arrange
-        var numericTypes = new Type[]
+        var numericTypes = new[]
         {
-            typeof(byte),
-            typeof(decimal),
-            typeof(double),
-            typeof(short),
-            typeof(int),
-            typeof(long),
-            typeof(sbyte),
-            typeof(float),
-            typeof(ushort),
-            typeof(uint),
-            typeof(ulong)
+            typeof(byte), typeof(decimal), typeof(double), typeof(short), typeof(int), typeof(long), typeof(sbyte), typeof(float), typeof(ushort), typeof(uint), typeof(ulong)
         };
 
         foreach (var type in numericTypes)
@@ -259,13 +245,7 @@ public class TypeExtensionsTests
     public void IsNumeric_NonNumericType_ReturnsFalse()
     {
         // Arrange
-        var nonNumericTypes = new Type[]
-        {
-            typeof(object),
-            typeof(string),
-            typeof(DateTime),
-            typeof(Guid)
-        };
+        var nonNumericTypes = new[] { typeof(object), typeof(string), typeof(DateTime), typeof(Guid) };
 
         foreach (var type in nonNumericTypes)
         {
@@ -422,7 +402,5 @@ public class TypeExtensionsTests
         public string Property1 { get; set; }
     }
 
-    private class MyDerivedClass : MyClass
-    {
-    }
+    private class MyDerivedClass : MyClass { }
 }

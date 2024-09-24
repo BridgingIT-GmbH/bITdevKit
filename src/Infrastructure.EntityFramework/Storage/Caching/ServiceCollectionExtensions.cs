@@ -9,10 +9,10 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Configuration;
+using EntityFrameworkCore;
+using Extensions;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -25,18 +25,17 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ?? new DocumentStoreCacheProviderConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ??
+            new DocumentStoreCacheProviderConfiguration();
 
         // store client > store provider
         context.Services.TryAddScoped<IDocumentStoreClient<CacheDocument>>(sp =>
             new DocumentStoreClient<CacheDocument>(
-                new EntityFrameworkDocumentStoreProvider<TContext>(
-                    sp.GetRequiredService<TContext>())));
+                new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
 
         // cache provider > distrbuted cache + store client
         context.Services.TryAddTransient<ICacheProvider>(sp =>
-            new DocumentStoreCacheProvider(
-                sp.GetRequiredService<ILoggerFactory>(),
+            new DocumentStoreCacheProvider(sp.GetRequiredService<ILoggerFactory>(),
                 new DocumentStoreCache(sp.GetRequiredService<IDocumentStoreClient<CacheDocument>>()),
                 sp.GetRequiredService<IDocumentStoreClient<CacheDocument>>(),
                 configuration: configuration));

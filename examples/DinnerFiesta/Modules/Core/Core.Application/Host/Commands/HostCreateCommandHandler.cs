@@ -5,33 +5,29 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
 public class HostCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Host> repository) : CommandHandlerBase<HostCreateCommand, Result<Host>>(loggerFactory)
 {
-    public override async Task<CommandResponse<Result<Host>>> Process(HostCreateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<Result<Host>>> Process(
+        HostCreateCommand command,
+        CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var host = Host.Create(
-            command.FirstName,
+        var host = Host.Create(command.FirstName,
             command.LastName,
             UserId.Create(command.UserId),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        DomainRules.Apply(
-        [
-            HostRules.UserMustBeUnique(repository, host.UserId),
-        ]);
+        DomainRules.Apply([HostRules.UserMustBeUnique(repository, host.UserId)]);
 
         await repository.InsertAsync(host, cancellationToken);
 

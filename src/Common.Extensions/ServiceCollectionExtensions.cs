@@ -11,22 +11,12 @@ public static class ServiceCollectionExtensions
 {
     public static bool IsAdded<TServiceType>(this IServiceCollection services)
     {
-        if (services.IsNullOrEmpty())
-        {
-            return false;
-        }
-
-        return services.Any(s => s.ServiceType == typeof(TServiceType));
+        return !services.IsNullOrEmpty() && services.Any(s => s.ServiceType == typeof(TServiceType));
     }
 
     public static ServiceDescriptor Find<TServiceType>(this IServiceCollection services)
     {
-        if (services.IsNullOrEmpty())
-        {
-            return default;
-        }
-
-        return services.FirstOrDefault(s => s.ServiceType == typeof(TServiceType));
+        return services.IsNullOrEmpty() ? default : services.FirstOrDefault(s => s.ServiceType == typeof(TServiceType));
     }
 
     public static int IndexOf<TServiceType>(this IServiceCollection services)
@@ -41,9 +31,7 @@ public static class ServiceCollectionExtensions
         {
             return services.IndexOf(descriptor);
         }
-        else
-        {
-            return -1;
-        }
+
+        return -1;
     }
 }

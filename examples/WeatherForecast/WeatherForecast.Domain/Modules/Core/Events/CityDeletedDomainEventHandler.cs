@@ -5,14 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain;
-using EnsureThat;
+using DevKit.Domain;
 using Microsoft.Extensions.Logging;
 
-public class CityDeletedDomainEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<CityDeletedDomainEvent>(loggerFactory)
+public class CityDeletedDomainEventHandler(ILoggerFactory loggerFactory)
+    : DomainEventHandlerBase<CityDeletedDomainEvent>(loggerFactory)
 {
     public override bool CanHandle(CityDeletedDomainEvent notification)
     {

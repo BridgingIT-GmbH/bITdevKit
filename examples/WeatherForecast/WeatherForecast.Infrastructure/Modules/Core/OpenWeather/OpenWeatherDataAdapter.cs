@@ -5,14 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Application.Modules.Core;
+using Common;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
+using HttpContentExtensions = System.Net.Http.HttpContentExtensions;
 
 public class OpenWeatherDataAdapter : IWeatherDataAdapter
 {
@@ -37,18 +34,18 @@ public class OpenWeatherDataAdapter : IWeatherDataAdapter
         EnsureArg.IsNotNull(city.Location, nameof(city.Location));
 
         // doc: https://openweathermap.org/api/one-call-api
-        var url = $"data/2.5/onecall?lat={city.Location.Latitude}&lon={city.Location.Longitude}&units=metric&APPID={this.apiKey}";
+        var url =
+            $"data/2.5/onecall?lat={city.Location.Latitude}&lon={city.Location.Longitude}&units=metric&APPID={this.apiKey}";
         this.logger.LogInformation("openweather adapter: processing (city={cityName})", city.Name);
         this.logger.LogDebug("openweather adapter: request (url={url})", url);
         var response = await this.client.GetAsync(url).AnyContext();
         if (response.IsSuccessStatusCode)
         {
             this.logger.LogInformation("openweather adapter: processed (city={cityName})", city.Name);
-            var content = await response.Content.ReadAsAsync<Temperatures>().AnyContext();
+            var content = await HttpContentExtensions.ReadAsAsync<Temperatures>(response.Content).AnyContext();
             foreach (var daily in content.Daily.SafeNull())
             {
-                yield return Forecast.Create(
-                    city.Id,
+                yield return Forecast.Create(city.Id,
                     DateTimeOffset.FromUnixTimeSeconds(daily.Dt),
                     daily.Weather[0].Description,
                     daily.Temp.Min,

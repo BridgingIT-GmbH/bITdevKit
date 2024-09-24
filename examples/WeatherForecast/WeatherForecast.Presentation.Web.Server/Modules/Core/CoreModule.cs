@@ -5,25 +5,18 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core;
 
-using System;
-using System.Net.Http;
-using BridgingIT.DevKit.Application;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
-using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using BridgingIT.DevKit.Infrastructure.Mapping;
+using Application.Modules.Core;
+using Common;
+using DevKit.Application;
+using DevKit.Application.JobScheduling;
+using DevKit.Domain.Repositories;
+using DevKit.Infrastructure.EntityFramework.Repositories;
+using DevKit.Infrastructure.Mapping;
+using Domain.Model;
 using FluentValidation;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Infrastructure;
+using Infrastructure.EntityFramework;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
 
 public class CoreModule : WebModuleBase
 {
@@ -33,27 +26,36 @@ public class CoreModule : WebModuleBase
     //}
 
     //tag::Part1[]
-    public override IServiceCollection Register(IServiceCollection services, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IServiceCollection Register(
+        IServiceCollection services,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         //var moduleConfiguration = services.Configure<CoreModuleConfiguration>(configuration, this); // = configuration.Get<CoreModuleConfiguration>(this);
-        var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
-        var moduleConfiguration2 = this.Configure<CoreModuleConfiguration>(services, configuration, options =>
-        {
-            var validator = new InlineValidator<CoreModuleConfiguration>();
-            validator
-                .RuleFor(applicationOptions => applicationOptions.OpenWeatherUrl)
-                .NotNull().NotEmpty()
-                .WithMessage("OpenWeatherUrl cannot be null or empty");
-            validator
-                .RuleFor(applicationOptions => applicationOptions.OpenWeatherApiKey)
-                .NotNull().NotEmpty()
-                .WithMessage("OpenWeatherApiKey cannot be null or empty");
+        var moduleConfiguration =
+            this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
+        var moduleConfiguration2 = this.Configure<CoreModuleConfiguration>(services,
+            configuration,
+            options =>
+            {
+                var validator = new InlineValidator<CoreModuleConfiguration>();
+                validator
+                    .RuleFor(applicationOptions => applicationOptions.OpenWeatherUrl)
+                    .NotNull()
+                    .NotEmpty()
+                    .WithMessage("OpenWeatherUrl cannot be null or empty");
+                validator
+                    .RuleFor(applicationOptions => applicationOptions.OpenWeatherApiKey)
+                    .NotNull()
+                    .NotEmpty()
+                    .WithMessage("OpenWeatherApiKey cannot be null or empty");
 
-            return validator
-                .Validate(options, strategy => strategy.ThrowOnFailures())
-                .IsValid;
-        });
-        var moduleConfiguration3 = services.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(configuration, this);
+                return validator
+                    .Validate(options, strategy => strategy.ThrowOnFailures())
+                    .IsValid;
+            });
+        var moduleConfiguration3 =
+            services.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(configuration, this);
 
         services.AddCaching(configuration)
             //.UseEntityFrameworkDocumentStoreProvider<CoreDbContext>()
@@ -65,7 +67,8 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling()
             .WithScopedJob<ForecastImportJob>(CronExpressions.Every30Minutes)
-            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithScopedJob<
+                EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
         // messaging
         services.AddMessaging(configuration)
@@ -74,20 +77,19 @@ public class CoreModule : WebModuleBase
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                .UseLogger().UseSimpleLogger())
+                .UseLogger()
+                .UseSimpleLogger())
             .WithHealthChecks()
             .WithDatabaseMigratorService();
 
         // City repository
         services.AddInMemoryRepository(new InMemoryContext<City>(new[]
-                {
-                    // does not trigger repo insert > domain event dispatching
-                    City.Create("Berlin", "DE", 10.45, 54.033329),
-                    City.Create("Amsterdam", "NL", 4.88969, 52.374031),
-                    City.Create("Paris", "FR", 2.3486, 48.853401),
-                    City.Create("Madrid", "ES", -3.70256, 40.4165),
-                    City.Create("Rome", "IT", 12.4839, 41.894741)
-                }.ForEach(c => c.DomainEvents.Clear())))
+            {
+                // does not trigger repo insert > domain event dispatching
+                City.Create("Berlin", "DE", 10.45, 54.033329), City.Create("Amsterdam", "NL", 4.88969, 52.374031),
+                City.Create("Paris", "FR", 2.3486, 48.853401), City.Create("Madrid", "ES", -3.70256, 40.4165),
+                City.Create("Rome", "IT", 12.4839, 41.894741)
+            }.ForEach(c => c.DomainEvents.Clear())))
             .WithBehavior<RepositoryTracingBehavior<City>>()
             .WithBehavior<RepositoryLoggingBehavior<City>>()
             .WithBehavior<RepositoryNoTrackingBehavior<City>>()
@@ -101,7 +103,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Forecast>>()
             .WithBehavior<RepositoryLoggingBehavior<Forecast>>()
             .WithBehavior<RepositoryNoTrackingBehavior<Forecast>>()
-            .WithBehavior((inner) => new RepositoryIncludeBehavior<Forecast>(e => e.Type, inner))
+            .WithBehavior(inner => new RepositoryIncludeBehavior<Forecast>(e => e.Type, inner))
             .WithBehavior<RepositoryDomainEventBehavior<Forecast>>()
             .WithBehavior<RepositoryDomainEventPublisherBehavior<Forecast>>();
         //end::Part2[]
@@ -113,16 +115,16 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryNoTrackingBehavior<ForecastType>>();
 
         services.AddScoped<IGenericRepository<ForecastType>>(sp =>
-            new EntityFrameworkGenericRepository<ForecastType>(o => o
-                .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
-                .DbContext(sp.GetRequiredService<CoreDbContext>())))
+                new EntityFrameworkGenericRepository<ForecastType>(o => o
+                    .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
+                    .DbContext(sp.GetRequiredService<CoreDbContext>())))
             .Decorate<IGenericRepository<ForecastType>, RepositoryTracingBehavior<ForecastType>>() // first
             .Decorate<IGenericRepository<ForecastType>, RepositoryLoggingBehavior<ForecastType>>()
             .Decorate<IGenericRepository<ForecastType>, RepositoryNoTrackingBehavior<ForecastType>>();
 
         // UserAccount repository
         services.AddEntityFrameworkRepository<UserAccount, DbUserAccount, CoreDbContext>(
-            new AutoMapperEntityMapper(MapperFactory.Create()))
+                new AutoMapperEntityMapper(MapperFactory.Create()))
             .WithBehavior<RepositoryTracingBehavior<UserAccount>>()
             .WithBehavior<RepositoryLoggingBehavior<UserAccount>>()
             .WithBehavior<RepositoryNoTrackingBehavior<UserAccount>>()
@@ -159,15 +161,15 @@ public class CoreModule : WebModuleBase
 
         // Weather data adapter (= anti corruption)
         services.AddScoped<IWeatherDataAdapter>(sp =>
-            new OpenWeatherDataAdapter(
-                sp.GetRequiredService<ILoggerFactory>(),
-                sp.GetRequiredService<IHttpClientFactory>(),
-                moduleConfiguration.OpenWeatherApiKey))
-            .AddHttpClient("OpenWeatherClient", c =>
-            {
-                c.BaseAddress = new Uri(moduleConfiguration.OpenWeatherUrl);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
+                new OpenWeatherDataAdapter(sp.GetRequiredService<ILoggerFactory>(),
+                    sp.GetRequiredService<IHttpClientFactory>(),
+                    moduleConfiguration.OpenWeatherApiKey))
+            .AddHttpClient("OpenWeatherClient",
+                c =>
+                {
+                    c.BaseAddress = new Uri(moduleConfiguration.OpenWeatherUrl);
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                });
 
         // Application/Presentation Mapping
         services.AddSingleton<IMapper<CityQueryResponse, CityModel>, CityModelMapper>();
@@ -186,17 +188,23 @@ public class CoreModule : WebModuleBase
 
         //tag::Partend[]
         services.AddHealthChecks()
-            .AddCheck("self-core", () => HealthCheckResult.Healthy(), tags: new[] { "ready" });
+            .AddCheck("self-core", () => HealthCheckResult.Healthy(), new[] { "ready" });
 
         return services;
     } //end::Part1[]
 
-    public override IApplicationBuilder Use(IApplicationBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IApplicationBuilder Use(
+        IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         return app;
     }
 
-    public override IEndpointRouteBuilder Map(IEndpointRouteBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IEndpointRouteBuilder Map(
+        IEndpointRouteBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         //TODO: currently nswag does not generate swagger for minimal endpoints when versioning is also used https://github.com/RicoSuter/NSwag/pull/3814
         //      solution https://github.com/RicoSuter/NSwag/issues/3945 >> + https://github.com/JKamsker/Versioned-Minimal-and-Controller-AspNetCore

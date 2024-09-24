@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 public interface IEventStore<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
     Task SaveEventsAsync(TAggregate aggregate, CancellationToken cancellationToken);
 
-    Task SaveEventsAsync(TAggregate aggregate, bool sendProjectionRequestForEveryEvent,
+    Task SaveEventsAsync(
+        TAggregate aggregate,
+        bool sendProjectionRequestForEveryEvent,
         CancellationToken cancellationToken);
 
     Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId, CancellationToken cancellationToken);

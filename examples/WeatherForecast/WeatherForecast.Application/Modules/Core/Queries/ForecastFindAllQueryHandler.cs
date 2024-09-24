@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class ForecastFindAllQueryHandler : QueryHandlerBase<ForecastFindAllQuery, IEnumerable<ForecastQueryResponse>>
@@ -35,13 +30,11 @@ public class ForecastFindAllQueryHandler : QueryHandlerBase<ForecastFindAllQuery
         CancellationToken cancellationToken)
     {
         var forecasts = await this.forecastRepository.FindAllAsync(
-            options: new FindOptions<Forecast>
-            {
-                Order = new OrderOption<Forecast>(e => e.Timestamp),
-            },
-            cancellationToken: cancellationToken).AnyContext();
+                new FindOptions<Forecast> { Order = new OrderOption<Forecast>(e => e.Timestamp) },
+                cancellationToken)
+            .AnyContext();
 
-        return new QueryResponse<IEnumerable<ForecastQueryResponse>>()
+        return new QueryResponse<IEnumerable<ForecastQueryResponse>>
         {
             Result = forecasts.Select(c => ForecastQueryResponse.Create(c))
         };

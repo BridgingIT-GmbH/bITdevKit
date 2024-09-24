@@ -5,22 +5,29 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-
+/// <summary>
+///     The <c>AggregateNotFoundException</c> is thrown when an expected aggregate is not found.
+/// </summary>
 public class AggregateNotFoundException : Exception
 {
-    public AggregateNotFoundException()
-        : base()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
+    ///     Represents an exception that is thrown when an attempt to retrieve an aggregate fails because the aggregate cannot
+    ///     be found.
+    /// </summary>
+    public AggregateNotFoundException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
+    ///     Represents an exception that is thrown when an aggregate is not found.
+    /// </summary>
     public AggregateNotFoundException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AggregateNotFoundException" /> class.
+    ///     Represents an exception that is thrown when an aggregate is not found.
+    /// </summary>
     public AggregateNotFoundException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

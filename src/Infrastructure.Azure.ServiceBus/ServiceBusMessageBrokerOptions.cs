@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 
 public class ServiceBusMessageBrokerOptions : OptionsBase
 {
@@ -27,7 +27,7 @@ public class ServiceBusMessageBrokerOptions : OptionsBase
     public int ProcessDelay { get; set; } = 100;
 
     /// <summary>
-    /// The default message time to live.
+    ///     The default message time to live.
     /// </summary>
     public TimeSpan? MessageExpiration { get; set; }
 }

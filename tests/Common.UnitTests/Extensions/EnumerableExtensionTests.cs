@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Collections.Generic;
-using Xunit;
-
 [UnitTest("Common")]
 public class EnumerableExtensionTests
 {
@@ -50,7 +47,7 @@ public class EnumerableExtensionTests
         var expected = new List<int> { item, 1, 2, 3 };
 
         // Act
-        var result = source.Insert(item, 0);
+        var result = source.Insert(item);
 
         // Assert
         Assert.Equal(expected, result);

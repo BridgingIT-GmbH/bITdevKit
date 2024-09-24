@@ -5,17 +5,18 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using Domain;
 
 public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : IDomainRule
 {
     public string Message => "Menu for host must exist";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {

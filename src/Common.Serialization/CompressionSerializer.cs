@@ -5,19 +5,17 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.IO;
 using System.IO.Compression;
 
 /// <summary>
-/// Initializes a new instance of the <see cref="CompressionSerializer"/> class.
+///     Initializes a new instance of the <see cref="CompressionSerializer" /> class.
 /// </summary>
 public class CompressionSerializer(ISerializer inner) : ISerializer
 {
     private readonly ISerializer inner = inner;
 
     /// <summary>
-    /// Serializes the specified value.
+    ///     Serializes the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="output">The output.</param>
@@ -38,7 +36,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="type">The type.</param>
@@ -59,7 +57,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     public T Deserialize<T>(Stream input)

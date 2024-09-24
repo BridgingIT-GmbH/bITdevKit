@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Options;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
+[UnitTest("Common")]
 public class OptionsBuilderTests
 {
     [Fact]

@@ -5,10 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure.Profiles;
 
+using AutoMapper;
 using Domain.Model;
 using Models;
 
-public class PersonDatabaseProfile : AutoMapper.Profile
+public class PersonDatabaseProfile : Profile
 {
     public PersonDatabaseProfile()
     {

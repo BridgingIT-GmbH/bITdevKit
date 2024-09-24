@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-public class SqlServerOptionsBuilder :
-    OptionsBuilderBase<SqlServerOptions, SqlServerOptionsBuilder>
+public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlServerOptionsBuilder>
 {
     public SqlServerOptionsBuilder UseConnectionString(string connectionString)
     {
@@ -19,7 +18,11 @@ public class SqlServerOptionsBuilder :
         return this;
     }
 
-    public SqlServerOptionsBuilder UseMigrations(bool value = true, bool schemaEnabled = true, string schemaName = null, string schemaAssemblyName = null)
+    public SqlServerOptionsBuilder UseMigrations(
+        bool value = true,
+        bool schemaEnabled = true,
+        string schemaName = null,
+        string schemaAssemblyName = null)
     {
         this.Target.MigrationsEnabled = value;
         this.Target.MigrationsSchemaEnabled = schemaEnabled;

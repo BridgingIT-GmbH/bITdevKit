@@ -5,10 +5,16 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System.Threading;
-using System.Threading.Tasks;
-
+/// <summary>
+///     Represents a domain event publisher capable of sending domain events.
+/// </summary>
 public interface IDomainEventPublisher
 {
+    /// <summary>
+    ///     Sends a domain event using the domain event publisher.
+    /// </summary>
+    /// <param name="event">The domain event to be sent.</param>
+    /// <param name="cancellationToken">Optional. A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task Send(IDomainEvent @event, CancellationToken cancellationToken = default);
 }

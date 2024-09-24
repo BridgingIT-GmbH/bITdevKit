@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.Mapping;
 
-using System;
-using System.Linq;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Infrastructure.Mapping;
 using AutoMapper;
+using Domain.Specifications;
+using Infrastructure.Mapping;
 
 [UnitTest("Infrastructure")]
 public class AutoMapperEntityMapperTests
@@ -22,7 +19,7 @@ public class AutoMapperEntityMapperTests
         // Arrange
         var sourceDto1 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" };
         var sourceDto2 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 5, FullName = "Mary Jane" };
-        var sourcesDto = new PersonDtoStub[] { sourceDto1, sourceDto2 }.AsQueryable();
+        var sourcesDto = new[] { sourceDto1, sourceDto2 }.AsQueryable();
         var config = new MapperConfiguration(cfg => cfg
             //.AddExpressionMapping()
             .AddProfile<MapperProfile>());
@@ -34,19 +31,25 @@ public class AutoMapperEntityMapperTests
         // Act
         var expressionDto = entityMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(expression);
         var expressionIdDto = entityMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(expressionId);
-        var sources = sourcesDto.Where(expressionDto).ToList();
-        var sources2 = sourcesDto.Where(expressionIdDto).ToList();
+        var sources = sourcesDto.Where(expressionDto)
+            .ToList();
+        var sources2 = sourcesDto.Where(expressionIdDto)
+            .ToList();
 
         // Assert
         sources.ShouldNotBeNull();
         sources.Count.ShouldBe(1);
-        sources[0].Age.ShouldBe(25);
-        sources[0].FullName.ShouldBe("John Doe");
+        sources[0]
+            .Age.ShouldBe(25);
+        sources[0]
+            .FullName.ShouldBe("John Doe");
 
         sources2.ShouldNotBeNull();
         sources2.Count.ShouldBe(1);
-        sources2[0].Age.ShouldBe(25);
-        sources2[0].FullName.ShouldBe("John Doe");
+        sources2[0]
+            .Age.ShouldBe(25);
+        sources2[0]
+            .FullName.ShouldBe("John Doe");
     }
 
     [Fact]
@@ -55,7 +58,7 @@ public class AutoMapperEntityMapperTests
         // Arrange
         var sourceDto1 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" };
         var sourceDto2 = new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 5, FullName = "Mary Jane" };
-        var sourcesDto = new PersonDtoStub[] { sourceDto1, sourceDto2 }.AsQueryable();
+        var sourcesDto = new[] { sourceDto1, sourceDto2 }.AsQueryable();
         var config = new MapperConfiguration(cfg => cfg
             //.AddExpressionMapping()
             .AddProfile<MapperProfile>());
@@ -67,19 +70,25 @@ public class AutoMapperEntityMapperTests
         // Act
         var expressionDto = entityMapper.MapSpecification<PersonStub, PersonDtoStub>(specification);
         var expressionIdDto = entityMapper.MapSpecification<PersonStub, PersonDtoStub>(specificationId);
-        var sources = sourcesDto.Where(expressionDto).ToList();
-        var sources2 = sourcesDto.Where(expressionIdDto).ToList();
+        var sources = sourcesDto.Where(expressionDto)
+            .ToList();
+        var sources2 = sourcesDto.Where(expressionIdDto)
+            .ToList();
 
         // Assert
         sources.ShouldNotBeNull();
         sources.Count.ShouldBe(1);
-        sources[0].Age.ShouldBe(25);
-        sources[0].FullName.ShouldBe("John Doe");
+        sources[0]
+            .Age.ShouldBe(25);
+        sources[0]
+            .FullName.ShouldBe("John Doe");
 
         sources2.ShouldNotBeNull();
         sources2.Count.ShouldBe(1);
-        sources2[0].Age.ShouldBe(25);
-        sources2[0].FullName.ShouldBe("John Doe");
+        sources2[0]
+            .Age.ShouldBe(25);
+        sources2[0]
+            .FullName.ShouldBe("John Doe");
     }
 
     //private class MapperProfile : Profile

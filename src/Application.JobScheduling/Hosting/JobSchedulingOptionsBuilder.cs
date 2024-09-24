@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class JobSchedulingOptionsBuilder :
-    OptionsBuilderBase<JobSchedulingOptions, JobSchedulingOptionsBuilder>
+public class JobSchedulingOptionsBuilder : OptionsBuilderBase<JobSchedulingOptions, JobSchedulingOptionsBuilder>
 {
     public JobSchedulingOptionsBuilder Enabled(bool value = true)
     {

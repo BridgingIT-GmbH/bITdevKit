@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Net;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.AspNetCore.Mvc;
 
 public class DefaultActionResultMapper : IActionResultMapper
@@ -19,18 +19,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 return new OkObjectResult(result);
             }
-            else
-            {
-                return new ObjectResult(result)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(result) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, TModel model)
@@ -41,18 +34,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 return new OkObjectResult(model);
             }
-            else
-            {
-                return new ObjectResult(model)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, Action<TModel> action)
@@ -67,18 +53,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 return new OkObjectResult(model);
             }
-            else
-            {
-                return new ObjectResult(model)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models)
@@ -89,18 +68,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 return new OkObjectResult(models);
             }
-            else
-            {
-                return new ObjectResult(models)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(models) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<PagedResult<TModel>> Ok<TModel>(PagedResult<TModel> result)
@@ -111,21 +83,18 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 return new OkObjectResult(result);
             }
-            else
-            {
-                return new ObjectResult(result)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(result) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Created<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Created<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -135,27 +104,21 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new CreatedAtRouteResult(routeName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 201
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 201 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Created<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Created<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -169,27 +132,22 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new CreatedAtRouteResult(routeName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 201
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 201 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Created<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Created<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -199,27 +157,22 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 201
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 201 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Created<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Created<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -233,27 +186,21 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new CreatedAtActionResult(actionName, controllerName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 201
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 201 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Updated<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -261,32 +208,23 @@ public class DefaultActionResultMapper : IActionResultMapper
             {
                 if (!string.IsNullOrWhiteSpace(routeName))
                 {
-                    return new UpdatedAtRouteResult(routeName, routeValues, model)
-                    {
-                        StatusCode = 200
-                    };
+                    return new UpdatedAtRouteResult(routeName, routeValues, model) { StatusCode = 200 };
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 200
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 200 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Updated<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -299,32 +237,24 @@ public class DefaultActionResultMapper : IActionResultMapper
 
                 if (!string.IsNullOrWhiteSpace(routeName))
                 {
-                    return new UpdatedAtRouteResult(routeName, routeValues, model)
-                    {
-                        StatusCode = 200
-                    };
+                    return new UpdatedAtRouteResult(routeName, routeValues, model) { StatusCode = 200 };
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 200
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 200 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Updated<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -337,27 +267,22 @@ public class DefaultActionResultMapper : IActionResultMapper
                         StatusCode = 200
                     };
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 200
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 200 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Updated<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -375,27 +300,21 @@ public class DefaultActionResultMapper : IActionResultMapper
                         StatusCode = 200
                     };
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 200
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 200 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Accepted<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -405,29 +324,21 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new AcceptedAtRouteResult(routeName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 202
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 202 };
             }
-            else
-            {
-                return new ObjectResult(model)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Accepted<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    public virtual ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -441,27 +352,22 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new AcceptedAtRouteResult(routeName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 202
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 202 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Accepted<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
     {
         if (!result.HasError())
         {
@@ -471,29 +377,22 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 202
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 202 };
             }
-            else
-            {
-                return new ObjectResult(model)
-                {
-                    StatusCode = 200
-                };
-            }
+
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<TModel> Accepted<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    public virtual ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new()
     {
         if (!result.HasError())
@@ -507,24 +406,14 @@ public class DefaultActionResultMapper : IActionResultMapper
                 {
                     return new AcceptedAtActionResult(actionName, controllerName, routeValues, model);
                 }
-                else
-                {
-                    return new OkObjectResult(model)
-                    {
-                        StatusCode = 202
-                    };
-                }
+
+                return new OkObjectResult(model) { StatusCode = 202 };
             }
 
-            return new ObjectResult(model)
-            {
-                StatusCode = 200
-            };
+            return new ObjectResult(model) { StatusCode = 200 };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult Deleted(IResult result)
@@ -543,10 +432,8 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             return new NoContentResult();
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<TModel> NoContent<TModel>(IResult result)
@@ -555,10 +442,8 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             return new NoContentResult();
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<TModel> Object<TModel>(IResult result, TModel model, int statusCode)
@@ -567,22 +452,21 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             return new ObjectResult(model) { StatusCode = statusCode };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
-    public virtual ActionResult<ICollection<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode)
+    public virtual ActionResult<ICollection<TModel>> Object<TModel>(
+        IResult result,
+        IEnumerable<TModel> models,
+        int statusCode)
     {
         if (!result.HasError())
         {
             return new ObjectResult(models) { StatusCode = statusCode };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     public virtual ActionResult<PagedResult<TModel>> Object<TModel>(PagedResult<TModel> result, int statusCode)
@@ -591,10 +475,8 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             return new ObjectResult(result) { StatusCode = statusCode };
         }
-        else
-        {
-            return MapError(result);
-        }
+
+        return MapError(result);
     }
 
     private static ActionResult MapError(IResult result)
@@ -603,11 +485,13 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             return new NotFoundResult();
         }
-        else if (result.HasError<EntityNotFoundResultError>(out errors))
+
+        if (result.HasError<EntityNotFoundResultError>(out errors))
         {
             return new NotFoundResult();
         }
-        else if (result.HasError<ValidationResultError>(out errors))
+
+        if (result.HasError<ValidationResultError>(out errors))
         {
             // TODO: not yet handled
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
@@ -628,14 +512,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             Title = "Unhandled Result Error",
             Status = (int)HttpStatusCode.InternalServerError,
-            Detail = string.Join(Environment.NewLine, result.Errors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
+            Detail =
+                string.Join(Environment.NewLine, result.Errors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
             Extensions =
             {
                 ["IsSuccess"] = result.IsSuccess,
                 ["Messages"] = string.Join(Environment.NewLine, result.Messages)
             },
             Type = "https://httpstatuses.com/500"
-        })
-        { StatusCode = 500 }; // unhandled
+        }) { StatusCode = 500 }; // unhandled
     }
 }

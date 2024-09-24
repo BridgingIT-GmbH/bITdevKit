@@ -5,15 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
 [Obsolete("To be removed. Please use IRepositoryTransaction")]
 public interface IGenericRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
-    where TEntity : class, IEntity
-{
-}
+    where TEntity : class, IEntity { }
 
 public interface IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity

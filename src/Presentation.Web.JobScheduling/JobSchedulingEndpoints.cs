@@ -6,29 +6,26 @@
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 using System.Net;
-using System.Threading;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation.Web;
+using Application.JobScheduling;
+using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Quartz;
 using Quartz.Impl.Matchers;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public class JobSchedulingEndpoints(
     ISchedulerFactory schedulerFactory,
-    JobSchedulingEndpointsOptions options = null)
-    : EndpointsBase
+    JobSchedulingEndpointsOptions options = null) : EndpointsBase
 {
     private readonly ISchedulerFactory schedulerFactory = schedulerFactory;
     private readonly JobSchedulingEndpointsOptions options = options ?? new JobSchedulingEndpointsOptions();
 
-    public override void Map(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)
+    public override void Map(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup(this.options.GroupPrefix)
-            .WithTags(this.options.GroupTag);
+        var group = app.MapGroup(this.options.GroupPrefix).WithTags(this.options.GroupTag);
 
         if (this.options.RequireAuthorization)
         {
@@ -37,7 +34,7 @@ public class JobSchedulingEndpoints(
 
         group.MapGet(string.Empty, this.GetJobs)
             //.AllowAnonymous()
-            .Produces<IEnumerable<JobModel>>(200)
+            .Produces<IEnumerable<JobModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapPost("{name}", this.PostJob)
@@ -49,9 +46,8 @@ public class JobSchedulingEndpoints(
 
     private async Task<IResult> GetJobs(CancellationToken cancellationToken)
     {
-        return Results.Ok(
-            await this.GetAllJobs(
-                await this.schedulerFactory.GetScheduler(cancellationToken), cancellationToken));
+        return Results.Ok(await this.GetAllJobs(await this.schedulerFactory.GetScheduler(cancellationToken),
+            cancellationToken));
     }
 
     private async Task<IResult> PostJob(string name, HttpContext httpContext, CancellationToken cancellationToken)
@@ -106,7 +102,8 @@ public class JobSchedulingEndpoints(
                         TriggerState = (await scheduler.GetTriggerState(trigger.Key, cancellationToken)).ToString(),
                         NextFireTime = trigger.GetNextFireTimeUtc(),
                         PreviousFireTime = trigger.GetPreviousFireTimeUtc(),
-                        CurrentlyExecuting = executingJobs.SafeWhere(j => j.JobDetail.Key.Name == job.Key.Name).SafeAny(),
+                        CurrentlyExecuting = executingJobs.SafeWhere(j => j.JobDetail.Key.Name == job.Key.Name)
+                            .SafeAny(),
 #pragma warning disable SA1010 // Opening square brackets should be spaced correctly
                         Properties = job.JobDataMap?.ToDictionary() ?? []
 #pragma warning restore SA1010 // Opening square brackets should be spaced correctly

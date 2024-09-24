@@ -1,4 +1,3 @@
-
 ### Layers & Dependencies
 
 ``` 
@@ -26,13 +25,18 @@
 # Presentation Layer
 
 #### Api Client
-The Api Client is generated with the [Unchase extension](https://marketplace.visualstudio.com/items?itemName=Unchase.unchaseopenapiconnectedservice). 
-This is a Visual Studio extension to generate C# (TypeScript) HttpClient (or C# Controllers) code for OpenAPI (formerly Swagger API) web service with NSwag.
+
+The Api Client is generated with
+the [Unchase extension](https://marketplace.visualstudio.com/items?itemName=Unchase.unchaseopenapiconnectedservice).
+This is a Visual Studio extension to generate C# (TypeScript) HttpClient (or C# Controllers) code
+for OpenAPI (formerly Swagger API) web service with NSwag.
 The underlaying generator used is NSwag.
 
-WeatherForecast.Presentation.Web.Client > Connected Services > [WeatherForecast](.\WeatherForecast.Presentation.Web.Client\Connected%20Services\WeatherForecast)
+WeatherForecast.Presentation.Web.Client > Connected
+Services > [WeatherForecast](.\WeatherForecast.Presentation.Web.Client\Connected%20Services\WeatherForecast)
 
-Right click and choose 'Update Unchase' to regenerate the [ApiClient](.\WeatherForecast.Presentation.Web.Client\Connected%20Services\WeatherForecast\ApiClient.cs)
+Right click and choose 'Update Unchase' to regenerate
+the [ApiClient](.\WeatherForecast.Presentation.Web.Client\Connected%20Services\WeatherForecast\ApiClient.cs)
 
 # Application Layer
 
@@ -44,12 +48,13 @@ Right click and choose 'Update Unchase' to regenerate the [ApiClient](.\WeatherF
 
 # Domain
 
-#### CITY 
+#### CITY
+
 - InMemoryRepository
 
 #### FORECAST
-- EntityFrameworkRepository
 
+- EntityFrameworkRepository
 
 ------------------------------
 
@@ -64,13 +69,15 @@ Right click and choose 'Update Unchase' to regenerate the [ApiClient](.\WeatherF
 
 # Application
 
-
 # Presentation
+
 biespiel requests [hier](WeatherForecast.REST.http)
 
 # Development
 
 ### Entity Framework
+
 - Setup: `dotnet tool install --global dotnet-ef` or `dotnet tool update dotnet-ef -g`
-- Migrations: `dotnet ef migrations add [NAME] --context WeatherForecastDbContext --output-dir .\EntityFramework\Migrations --project .\examples\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj --startup-project .\examples\WeatherForecast.Presentation.Web.Server\WeatherForecast.Presentation.Web.Server.csproj`
+- Migrations:
+  `dotnet ef migrations add [NAME] --context WeatherForecastDbContext --output-dir .\EntityFramework\Migrations --project .\examples\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj --startup-project .\examples\WeatherForecast.Presentation.Web.Server\WeatherForecast.Presentation.Web.Server.csproj`
 - Database Update: done when starting the service (MigrationsHostedService) 

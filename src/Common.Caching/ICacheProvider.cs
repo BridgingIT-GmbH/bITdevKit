@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Threading.Tasks;
-
 public interface ICacheProvider
 {
     T Get<T>(string key);
@@ -32,5 +29,10 @@ public interface ICacheProvider
 
     void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null);
 
-    Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null, CancellationToken cancellationToken = default);
+    Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null,
+        CancellationToken cancellationToken = default);
 }

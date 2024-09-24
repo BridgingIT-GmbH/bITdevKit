@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 
 public static class EnumExtensions
@@ -34,14 +32,15 @@ public static class EnumExtensions
         var attributes = memberInfo[0].GetCustomAttributes(typeof(T), false);
         if (attributes is null || attributes.Length != 1)
         {
-            throw new ArgumentException($"Can't find an attribute matching '{typeof(T).Name}' for the argument '{@enum}'");
+            throw new ArgumentException(
+                $"Can't find an attribute matching '{typeof(T).Name}' for the argument '{@enum}'");
         }
 
         return attributes.Single() as T;
     }
 
     /// <summary>
-    /// Tries and parses an enum and it's default type.
+    ///     Tries and parses an enum and it's default type.
     /// </summary>
     /// <returns>True if the enum value is defined.</returns>
     public static bool TryEnumIsDefined(Type type, object value)
@@ -126,9 +125,7 @@ public static class EnumExtensions
     public static TE GetAttributeValue<T, TE>(this Enum enumeration, Func<T, TE> expression)
         where T : Attribute
     {
-        var attribute =
-          enumeration
-            .GetType()
+        var attribute = enumeration.GetType()
             .GetMember(enumeration.ToString())
             .Where(member => member.MemberType == MemberTypes.Field)
             .FirstOrDefault()
@@ -144,10 +141,8 @@ public static class EnumExtensions
         return expression(attribute);
     }
 
-    public static TValue GetAttributeValue<TAttribute, TValue>(
-            this Type type,
-            Func<TAttribute, TValue> valueSelector)
-            where TAttribute : Attribute
+    public static TValue GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> valueSelector)
+        where TAttribute : Attribute
     {
         var att = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
         if (att is not null)

@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Linq;
-using System.Threading.Tasks;
-using Shouldly;
-
 [UnitTest("Common")]
 public class StreamExtensionsTests
 {
@@ -16,7 +12,8 @@ public class StreamExtensionsTests
     public void ReadToEndTests()
     {
         using var stream = new MemoryStream();
-        Enumerable.Range(0, 5).ForEach(i => stream.WriteByte((byte)i));
+        Enumerable.Range(0, 5)
+            .ForEach(i => stream.WriteByte((byte)i));
         stream.Seek(0, SeekOrigin.Begin);
 
         var result = stream.ReadToEnd();
@@ -28,7 +25,8 @@ public class StreamExtensionsTests
     public async Task ReadToEndAsyncTests()
     {
         using var stream = new MemoryStream();
-        Enumerable.Range(0, 5).ForEach(i => stream.WriteByte((byte)i));
+        Enumerable.Range(0, 5)
+            .ForEach(i => stream.WriteByte((byte)i));
         stream.Seek(0, SeekOrigin.Begin);
 
         var result = await stream.ReadToEndAsync();
@@ -40,7 +38,8 @@ public class StreamExtensionsTests
     public void TryReadAllTests()
     {
         using var stream = new MemoryStream();
-        Enumerable.Range(0, 5).ForEach(i => stream.WriteByte((byte)i));
+        Enumerable.Range(0, 5)
+            .ForEach(i => stream.WriteByte((byte)i));
         stream.Seek(0, SeekOrigin.Begin);
 
         var buffer = new byte[5];
@@ -53,7 +52,8 @@ public class StreamExtensionsTests
     public async Task TryReadAllAsyncTests()
     {
         using var stream = new MemoryStream();
-        Enumerable.Range(0, 5).ForEach(i => stream.WriteByte((byte)i));
+        Enumerable.Range(0, 5)
+            .ForEach(i => stream.WriteByte((byte)i));
         stream.Seek(0, SeekOrigin.Begin);
 
         var buffer = new byte[5];
@@ -66,11 +66,13 @@ public class StreamExtensionsTests
     public async Task ToMemoryStreamAsyncTest()
     {
         using var stream = new MemoryStream();
-        Enumerable.Range(0, 5).ForEach(i => stream.WriteByte((byte)i));
+        Enumerable.Range(0, 5)
+            .ForEach(i => stream.WriteByte((byte)i));
         stream.Seek(1, SeekOrigin.Begin);
 
         using var copy = await stream.ToMemoryStreamAsync();
 
-        copy.ToArray().ShouldBe([1, 2, 3, 4]);
+        copy.ToArray()
+            .ShouldBe([1, 2, 3, 4]);
     }
 }

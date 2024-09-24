@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using Domain.Repositories;
+using Domain.Specifications;
+using Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
@@ -67,7 +64,10 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var result = await sut.ExistsAsync(entity.Id);
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(1);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(1);
         result.ShouldBeTrue();
     }
 
@@ -95,12 +95,14 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllAsync(
-            new Specification<Blog>(_ => false),
-            new FindOptions<Blog>(skip: 10, take: 2, new OrderOption<Blog>(e => e.Name)));
+        var results = await sut.FindAllAsync(new Specification<Blog>(_ => false),
+            new FindOptions<Blog>(10, 2, new OrderOption<Blog>(e => e.Name)));
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldBeEmpty();
     }
@@ -119,20 +121,26 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         // Act
         var results = await sut.FindAllAsync(
             new Specification<Blog>(e => e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name),
-            new FindOptions<Blog>(skip: 2, take: 2, new OrderOption<Blog>(e => e.Name)));
+            new FindOptions<Blog>(2, 2, new OrderOption<Blog>(e => e.Name)));
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.Count().ShouldBe(2);
+        results.Count()
+            .ShouldBe(2);
         results.ShouldNotContain(entity1);
         results.ShouldNotContain(entity2);
         results.ShouldContain(entity3);
         results.ShouldContain(entity4);
         results.ShouldNotContain(entity5);
-        results.First().ShouldBe(entity4); // C
-        results.Last().ShouldBe(entity3); // D
+        results.First()
+            .ShouldBe(entity4); // C
+        results.Last()
+            .ShouldBe(entity3); // D
     }
 
     public virtual async Task FindAllAsync_AnyEntity_EntitiesFound()
@@ -150,7 +158,10 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var results = await sut.FindAllAsync();
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity1);
@@ -168,8 +179,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllAsync(
-            new BlogEmailSpecification("UNKNOWN"));
+        var results = await sut.FindAllAsync(new BlogEmailSpecification("UNKNOWN"));
 
         // Assert
         results.ShouldNotBeNull();
@@ -185,16 +195,18 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllAsync(
-            new BlogEmailSpecification(entity.Email));
+        var results = await sut.FindAllAsync(new BlogEmailSpecification(entity.Email));
 
         // Assert
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity);
-        results.Count().ShouldBe(1);
-        results.First().ShouldNotBeNull();
-        results.First().Id.ShouldBe(entity.Id);
+        results.Count()
+            .ShouldBe(1);
+        results.First()
+            .ShouldNotBeNull();
+        results.First()
+            .Id.ShouldBe(entity.Id);
     }
 
     public virtual async Task FindAllAsync_ChildEntitySpecification_EntitiesFound()
@@ -205,8 +217,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllAsync(
-            new Specification<Blog>(e => e.Posts.Any(p => p.Status == PostStatus.Published)));
+        var results = await sut.FindAllAsync(new Specification<Blog>(e => e.Posts.Any(p => p.Status == PostStatus.Published)));
 
         // Assert
         results.ShouldNotBeNull();
@@ -227,14 +238,17 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllPagedResultAsync(
-            new Specification<Blog>(e => e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name || e.Name == entity6.Name),
-            ordering: nameof(Blog.Name),
+        var results = await sut.FindAllPagedResultAsync(new Specification<Blog>(e =>
+                e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name || e.Name == entity6.Name),
+            nameof(Blog.Name),
             1,
             2);
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(6);
         results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
@@ -244,15 +258,18 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         results.CurrentPage.ShouldBe(1);
         results.HasNextPage.ShouldBeTrue();
         results.HasPreviousPage.ShouldBeFalse();
-        results.Value.Count().ShouldBe(2);
+        results.Value.Count()
+            .ShouldBe(2);
         results.Value.ShouldNotContain(entity1);
         results.Value.ShouldNotContain(entity2);
         results.Value.ShouldContain(entity3);
         results.Value.ShouldContain(entity4);
         results.Value.ShouldNotContain(entity5);
         results.Value.ShouldNotContain(entity6);
-        results.Value.First().ShouldBe(entity4); // A
-        results.Value.Last().ShouldBe(entity3); // B
+        results.Value.First()
+            .ShouldBe(entity4); // A
+        results.Value.Last()
+            .ShouldBe(entity3); // B
     }
 
     public virtual async Task FindAllIdsAsync_AnyEntity_ManyFound()
@@ -268,16 +285,20 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllIdsResultAsync<Blog, BlogId>(
-            new Specification<Blog>(e => e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name || e.Name == entity6.Name));
+        var results = await sut.FindAllIdsResultAsync<Blog, BlogId>(new Specification<Blog>(e =>
+            e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name || e.Name == entity6.Name));
 
         // Assert
-        this.GetContext().Blogs.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
+        this.GetContext()
+            .Blogs.AsNoTracking()
+            .ToList()
+            .Count.ShouldBeGreaterThanOrEqualTo(6);
         results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();
-        results.Value.Count().ShouldBe(6);
+        results.Value.Count()
+            .ShouldBe(6);
     }
 
     public virtual async Task FindOneAsync_ExistingEntityByIdSpecification_EntityFound()
@@ -287,8 +308,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var result = await sut.FindOneAsync(
-            new Specification<Blog>(e => e.Id == entity.Id));
+        var result = await sut.FindOneAsync(new Specification<Blog>(e => e.Id == entity.Id));
 
         // Assert
         result.ShouldNotBeNull();
@@ -303,10 +323,10 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut2 = this.CreatePostRepository(this.GetContext());
 
         // Act
-        var result1 = await sut.FindOneAsync(
-            new Specification<Blog>(e => e.Name == entity.Name));
-        var result2 = await sut.FindOneAsync(
-            new Specification<Blog>(e => e.Id == entity.Posts.First().BlogId));
+        var result1 = await sut.FindOneAsync(new Specification<Blog>(e => e.Name == entity.Name));
+        var result2 = await sut.FindOneAsync(new Specification<Blog>(e => e.Id ==
+            entity.Posts.First()
+                .BlogId));
         //var result3 = await sut2.FindAllAsync(
         //    new Specification<Post>(e => e.BlogId == entity.Id));
 
@@ -363,7 +383,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
     public virtual async Task InsertAsync_NewEntity_EntityInserted()
     {
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = Blog.Create(faker.Company.CompanyName(), faker.Internet.Url(), EmailAddressStub.Create(faker.Person.Email))
             .AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())
                 .Publish(faker.Date.PastDateOnly()))
@@ -385,15 +405,18 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[0]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[1]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[2]);
-        existingEntity.Posts.ToArray()[0].Id.IsEmpty.ShouldBeFalse();
-        existingEntity.Posts.ToArray()[1].Id.IsEmpty.ShouldBeFalse();
-        existingEntity.Posts.ToArray()[2].Id.IsEmpty.ShouldBeFalse();
+        existingEntity.Posts.ToArray()[0]
+            .Id.IsEmpty.ShouldBeFalse();
+        existingEntity.Posts.ToArray()[1]
+            .Id.IsEmpty.ShouldBeFalse();
+        existingEntity.Posts.ToArray()[2]
+            .Id.IsEmpty.ShouldBeFalse();
     }
 
     public virtual async Task UpsertAsync_ExistingEntityChildRemoval_EntityUpdated()
     {
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
         var entity = Blog.Create(faker.Company.CompanyName(), faker.Internet.Url(), EmailAddressStub.Create(faker.Person.Email))
             .AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())
@@ -423,9 +446,12 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         existingEntity.Name.ShouldBe(entity.Name);
         existingEntity.Posts.ShouldNotBeNull();
         existingEntity.Posts.ShouldNotBeEmpty();
-        existingEntity.Posts.Count().ShouldBe(2);
-        existingEntity.Posts.ToArray()[0].Id.IsEmpty.ShouldBeFalse();
-        existingEntity.Posts.ToArray()[1].Id.IsEmpty.ShouldBeFalse();
+        existingEntity.Posts.Count()
+            .ShouldBe(2);
+        existingEntity.Posts.ToArray()[0]
+            .Id.IsEmpty.ShouldBeFalse();
+        existingEntity.Posts.ToArray()[1]
+            .Id.IsEmpty.ShouldBeFalse();
 
         existingEntity.Posts.ShouldNotContain(deletedPost1);
         existingEntity.Posts.ShouldNotContain(deletedPost2);
@@ -435,7 +461,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
     public virtual async Task UpsertAsync_ExistingEntityDisconnected_EntityUpdated()
     {
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         using var context = this.GetContext(null, true);
         var sut = this.CreateBlogRepository(context);
@@ -455,31 +481,35 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog>() { NoTracking = true });
+        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(disconnectedEntity.Id);
         existingEntity.Name.ShouldBe(disconnectedEntity.Name);
         existingEntity.Email.ShouldBe(disconnectedEntity.Email);
         existingEntity.Posts.ShouldNotBeNull();
         existingEntity.Posts.ShouldNotBeEmpty();
-        existingEntity.Posts.Count().ShouldBe(6); // 3 + 3
+        existingEntity.Posts.Count()
+            .ShouldBe(6); // 3 + 3
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[0]);
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[1]);
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[2]);
-        existingEntity.Posts.ToArray()[3].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[4].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[5].Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[3]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[4]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[5]
+            .Id.IsEmpty.ShouldBeFalse(); // added
     }
 
     public virtual async Task UpsertAsync_ExistingEntityNoTracking_EntityUpdated()
     {
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         using var context = this.GetContext(null, true);
         var sut = this.CreateBlogRepository(context);
         var ticks = DateTime.UtcNow.Ticks;
-        entity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog>() { NoTracking = true });
+        entity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog> { NoTracking = true });
 
         // Act
         entity.Name = $"{entity.Name} {ticks}";
@@ -491,26 +521,30 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog>() { NoTracking = true });
+        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(entity.Id);
         existingEntity.Name.ShouldBe(entity.Name);
         existingEntity.Email.ShouldBe(entity.Email);
         existingEntity.Posts.ShouldNotBeNull();
         existingEntity.Posts.ShouldNotBeEmpty();
-        existingEntity.Posts.Count().ShouldBe(6); // 3 + 3
+        existingEntity.Posts.Count()
+            .ShouldBe(6); // 3 + 3
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[3]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[4]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[5]);
-        existingEntity.Posts.ToArray()[3].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[4].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[5].Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[3]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[4]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[5]
+            .Id.IsEmpty.ShouldBeFalse(); // added
     }
 
     public virtual async Task UpsertAsync_ExistingEntity_EntityUpdated()
     {
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         var sut = this.CreateBlogRepository(this.GetContext());
         var ticks = DateTime.UtcNow.Ticks;
@@ -518,7 +552,12 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         // Act
         entity.Name = $"{entity.Name} {ticks}";
         entity.Email = EmailAddressStub.Create(faker.Person.Email);
-        var location1 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location1 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 1 - idx 3
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 2 - idx 4
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 3 - idx 5
@@ -534,13 +573,17 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         existingEntity.Email.ShouldBe(entity.Email);
         existingEntity.Posts.ShouldNotBeNull();
         existingEntity.Posts.ShouldNotBeEmpty();
-        existingEntity.Posts.Count().ShouldBe(6); // 3 + 3
+        existingEntity.Posts.Count()
+            .ShouldBe(6); // 3 + 3
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[3]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[4]);
         existingEntity.Posts.ShouldContain(entity.Posts.ToArray()[5]);
-        existingEntity.Posts.ToArray()[3].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[4].Id.IsEmpty.ShouldBeFalse(); // added
-        existingEntity.Posts.ToArray()[5].Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[3]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[4]
+            .Id.IsEmpty.ShouldBeFalse(); // added
+        existingEntity.Posts.ToArray()[5]
+            .Id.IsEmpty.ShouldBeFalse(); // added
     }
 
     protected virtual StubDbContext GetContext(string connectionString = null, bool forceNew = false)
@@ -570,7 +613,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
 
     protected async Task<Blog> InsertEntityAsync(string namePrefix = null)
     {
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = Blog.Create(namePrefix + faker.Company.CompanyName(), faker.Internet.Url(), EmailAddressStub.Create(faker.Person.Email))
             .AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())
                 .Publish(faker.Date.PastDateOnly()))

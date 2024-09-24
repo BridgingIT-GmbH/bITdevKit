@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,8 +20,7 @@ public class MenuReviewEntityTypeConfiguration : IEntityTypeConfiguration<MenuRe
 
         builder.Property(mr => mr.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => MenuReviewId.Create(value));
 
         builder.OwnsOne(mr => mr.Rating);
@@ -30,23 +29,19 @@ public class MenuReviewEntityTypeConfiguration : IEntityTypeConfiguration<MenuRe
             .HasMaxLength(512);
 
         builder.Property(mr => mr.HostId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => HostId.Create(value));
 
         builder.Property(mr => mr.MenuId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => MenuId.Create(value));
 
         builder.Property(mr => mr.GuestId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => GuestId.Create(value));
 
         builder.Property(mr => mr.DinnerId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => DinnerId.Create(value));
 
         builder.OwnsOneAuditState();

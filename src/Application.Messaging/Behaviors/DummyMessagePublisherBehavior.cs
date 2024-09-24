@@ -5,16 +5,21 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 
 // generate a xunit test for this class and its methods, use nsubstitute and shoulpublic class DummyMessagePublisherBehaviorTests
 
 public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : MessagePublisherBehaviorBase(loggerFactory)
 {
-    public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
+    public override async Task Publish<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        MessagePublisherDelegate next)
     {
-        this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})", Constants.LogKey, message.MessageId);
+        this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})",
+            Constants.LogKey,
+            message.MessageId);
 
         if (cancellationToken.IsCancellationRequested)
         {
@@ -23,6 +28,8 @@ public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : Messa
 
         await next().AnyContext(); // continue pipeline
 
-        this.Logger.LogDebug("{LogKey} <<<<< dummy message publish behavior - after (id={MessageId})", Constants.LogKey, message.MessageId);
+        this.Logger.LogDebug("{LogKey} <<<<< dummy message publish behavior - after (id={MessageId})",
+            Constants.LogKey,
+            message.MessageId);
     }
 }

@@ -475,7 +475,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MenuModel'
               examples:
-                 objectExample:
+                objectExample:
                   $ref: '#/components/examples/MenuResponseExample'
         400:
           description: Resource request was invalid.

@@ -5,15 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.IntegrationTests.Infrastructure;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Infrastructure;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.UnitTests;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using DevKit.Domain.Repositories;
+using DevKit.Infrastructure.EntityFramework.Repositories;
+using Domain;
+using Marketing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using UnitTests;
 
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("Infrastructure")]

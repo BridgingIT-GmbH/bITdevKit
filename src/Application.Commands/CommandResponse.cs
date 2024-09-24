@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
+
+using Common;
 
 public class CommandResponse
 {
@@ -23,115 +24,82 @@ public class CommandResponse
 
     public static CommandResponse<Result> For(Result result = null)
     {
-        if (result.IsFailure)
+        if (result?.IsFailure == true)
         {
-            return new CommandResponse<Result>()
+            return new CommandResponse<Result>
             {
-                Result = Result.Failure()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors)
+                Result = Result.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
             };
         }
 
-        return new CommandResponse<Result>()
+        return new CommandResponse<Result>
         {
-            Result = Result.Success()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors)
+            Result = Result.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
         };
     }
 
     public static CommandResponse<Result> Success()
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Success()
-        };
+        return new CommandResponse<Result> { Result = Result.Success() };
     }
 
     public static CommandResponse<Result> Success(string message)
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Success(message)
-        };
+        return new CommandResponse<Result> { Result = Result.Success(message) };
     }
 
     public static CommandResponse<Result> Success(IEnumerable<string> messages)
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Success(messages)
-        };
+        return new CommandResponse<Result> { Result = Result.Success(messages) };
     }
 
     public static CommandResponse<Result> Failure()
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Failure()
-        };
+        return new CommandResponse<Result> { Result = Result.Failure() };
     }
 
     public static CommandResponse<Result> Failure(string message, IResultError error = default)
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Failure(message, error)
-        };
+        return new CommandResponse<Result> { Result = Result.Failure(message, error) };
     }
 
-    public static CommandResponse<Result> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
+    public static CommandResponse<Result> Failure(
+        IEnumerable<string> messages,
+        IEnumerable<IResultError> errors = default)
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Failure(messages, errors)
-        };
+        return new CommandResponse<Result> { Result = Result.Failure(messages, errors) };
     }
 
     public static CommandResponse<Result> Failure<TError>(string message = null)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Failure<TError>(message)
-        };
+        return new CommandResponse<Result> { Result = Result.Failure<TError>(message) };
     }
 
     public static CommandResponse<Result> Failure<TError>(IEnumerable<string> messages)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result>()
-        {
-            Result = Result.Failure<TError>(messages)
-        };
+        return new CommandResponse<Result> { Result = Result.Failure<TError>(messages) };
     }
 
     public static CommandResponse<Result<TValue>> For<TValue>(Result<TValue> result)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = result,
-        };
+        return new CommandResponse<Result<TValue>> { Result = result };
     }
 
     public static CommandResponse<Result<TResult>> For<TValue, TResult>(Result<TValue> result)
     {
         if (result?.IsFailure == true)
         {
-            return new CommandResponse<Result<TResult>>()
+            return new CommandResponse<Result<TResult>>
             {
-                Result = Result<TResult>.Failure()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                Result = Result<TResult>.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
             };
         }
 
-        return new CommandResponse<Result<TResult>>()
+        return new CommandResponse<Result<TResult>>
         {
-            Result = Result<TResult>.Success()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+            Result = Result<TResult>.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
         };
     }
 
@@ -139,76 +107,57 @@ public class CommandResponse
     {
         if (result?.IsFailure == true)
         {
-            return new CommandResponse<Result<TValue>>()
+            return new CommandResponse<Result<TValue>>
             {
-                Result = Result<TValue>.Failure()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                Result = Result<TValue>.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
             };
         }
 
-        return new CommandResponse<Result<TValue>>()
+        return new CommandResponse<Result<TValue>>
         {
-            Result = Result<TValue>.Success()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+            Result = Result<TValue>.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
         };
     }
 
     public static CommandResponse<Result<TValue>> Success<TValue>(TValue value)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Success(value)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Success(value) };
     }
 
     public static CommandResponse<Result<TValue>> Success<TValue>(TValue value, string message)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Success(value, message)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Success(value, message) };
     }
 
     public static CommandResponse<Result<TValue>> Success<TValue>(TValue value, IEnumerable<string> messages)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Success(value, messages)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Success(value, messages) };
     }
 
     public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure(value)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value) };
     }
 
-    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = default)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(
+        TValue value,
+        string message,
+        IResultError error = default)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure(value, message, error)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value, message, error) };
     }
 
-    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(
+        TValue value,
+        IEnumerable<string> messages,
+        IEnumerable<IResultError> errors = default)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure(value, messages, errors)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value, messages, errors) };
     }
 
     public static CommandResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = default)
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure(message, error)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(message, error) };
     }
 
     //public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value = default, string message = null, IResultError error = default)
@@ -222,10 +171,7 @@ public class CommandResponse
     public static CommandResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result<TValue>>()
-        {
-            Result = Result<TValue>.Failure<TError>(value, message)
-        };
+        return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure<TError>(value, message) };
     }
 
     public void SetCancelled(string cancelledReason)
@@ -238,8 +184,7 @@ public class CommandResponse
     }
 }
 
-public class CommandResponse<TResult>(string cancelledReason = null)
-    : CommandResponse(cancelledReason)
+public class CommandResponse<TResult>(string cancelledReason = null) : CommandResponse(cancelledReason)
 {
     public TResult Result { get; set; }
 
@@ -247,19 +192,15 @@ public class CommandResponse<TResult>(string cancelledReason = null)
     {
         if (result?.IsFailure == true)
         {
-            return new CommandResponse<Result<TResult>>()
+            return new CommandResponse<Result<TResult>>
             {
-                Result = Result<TResult>.Failure()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                Result = Result<TResult>.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
             };
         }
 
-        return new CommandResponse<Result<TResult>>()
+        return new CommandResponse<Result<TResult>>
         {
-            Result = Result<TResult>.Success()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+            Result = Result<TResult>.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
         };
     }
 }

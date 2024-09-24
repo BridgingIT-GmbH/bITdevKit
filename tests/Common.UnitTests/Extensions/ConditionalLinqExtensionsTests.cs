@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Collections.Generic;
-using Shouldly;
-
 [UnitTest("Common")]
 public class ConditionalLinqExtensionsTests
 {
@@ -20,7 +17,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = true;
 
         // Act
-        var result = this.numbers.WhereIf(x => x % 2 == 0, condition).ToList();
+        var result = this.numbers.WhereIf(x => x % 2 == 0, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([2, 4]);
@@ -33,7 +31,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = false;
 
         // Act
-        var result = this.numbers.WhereIf(x => x % 2 == 0, condition).ToList();
+        var result = this.numbers.WhereIf(x => x % 2 == 0, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe(this.numbers);
@@ -46,7 +45,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = true;
 
         // Act
-        var result = this.numbers.WhereIfElse(x => x % 2 == 0, x => x % 2 != 0, condition).ToList();
+        var result = this.numbers.WhereIfElse(x => x % 2 == 0, x => x % 2 != 0, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([2, 4]);
@@ -59,7 +59,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = false;
 
         // Act
-        var result = this.numbers.WhereIfElse(x => x % 2 == 0, x => x % 2 != 0, condition).ToList();
+        var result = this.numbers.WhereIfElse(x => x % 2 == 0, x => x % 2 != 0, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([1, 3, 5]);
@@ -72,7 +73,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = true;
 
         // Act
-        var result = this.numbers.SelectIf(x => x * 2, condition).ToList();
+        var result = this.numbers.SelectIf(x => x * 2, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([2, 4, 6, 8, 10]);
@@ -85,7 +87,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = false;
 
         // Act
-        var result = this.numbers.SelectIf(x => x * 2, condition).ToList();
+        var result = this.numbers.SelectIf(x => x * 2, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe(this.numbers);
@@ -98,7 +101,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = true;
 
         // Act
-        var result = this.numbers.SelectIfElse(x => x * 2, x => x * 3, condition).ToList();
+        var result = this.numbers.SelectIfElse(x => x * 2, x => x * 3, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([2, 4, 6, 8, 10]);
@@ -111,7 +115,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = false;
 
         // Act
-        var result = this.numbers.SelectIfElse(x => x * 2, x => x * 3, condition).ToList();
+        var result = this.numbers.SelectIfElse(x => x * 2, x => x * 3, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([3, 6, 9, 12, 15]);
@@ -124,7 +129,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = true;
 
         // Act
-        var result = this.numbers.OrderByIf(x => -x, condition).ToList();
+        var result = this.numbers.OrderByIf(x => -x, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([5, 4, 3, 2, 1]);
@@ -137,7 +143,8 @@ public class ConditionalLinqExtensionsTests
         const bool condition = false;
 
         // Act
-        var result = this.numbers.OrderByIf(x => -x, condition).ToList();
+        var result = this.numbers.OrderByIf(x => -x, condition)
+            .ToList();
 
         // Assert
         result.ShouldBe(this.numbers);
@@ -225,11 +232,21 @@ public class ConditionalLinqExtensionsTests
     public void DistinctIf_WhenConditionIsTrue_ShouldApplyDistinct()
     {
         // Arrange
-        var numbers = new List<int> { 1, 2, 2, 3, 3, 4, 5 };
+        var numbers = new List<int>
+        {
+            1,
+            2,
+            2,
+            3,
+            3,
+            4,
+            5
+        };
         const bool condition = true;
 
         // Act
-        var result = numbers.DistinctIf(condition).ToList();
+        var result = numbers.DistinctIf(condition)
+            .ToList();
 
         // Assert
         result.ShouldBe([1, 2, 3, 4, 5]);
@@ -239,11 +256,21 @@ public class ConditionalLinqExtensionsTests
     public void DistinctIf_WhenConditionIsFalse_ShouldReturnOriginalSequence()
     {
         // Arrange
-        var numbers = new List<int> { 1, 2, 2, 3, 3, 4, 5 };
+        var numbers = new List<int>
+        {
+            1,
+            2,
+            2,
+            3,
+            3,
+            4,
+            5
+        };
         const bool condition = false;
 
         // Act
-        var result = numbers.DistinctIf(condition).ToList();
+        var result = numbers.DistinctIf(condition)
+            .ToList();
 
         // Assert
         result.ShouldBe(numbers);

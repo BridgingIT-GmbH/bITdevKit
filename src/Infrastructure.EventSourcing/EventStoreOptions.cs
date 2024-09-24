@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Domain.EventSourcing.Model;
 
 public class EventStoreOptions<TAggregate> : IEventStoreOptions<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
-    public EventStoreOptions()
-    {
-    }
-
     public bool IsSnapshotEnabled { get; init; }
 }

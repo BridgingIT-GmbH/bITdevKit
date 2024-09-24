@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 
 public static partial class Extensions
 {
@@ -24,17 +21,18 @@ public static partial class Extensions
             return source;
         }
 
-        ILiteQueryable<TEntity> result = source;
-        foreach (var order in
-            (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)?.Where(o => o.Expression is not null))
+        var result = source;
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+                 ?.Where(o => o.Expression is not null))
         {
             result = order.Direction == OrderDirection.Ascending
-                ? result.OrderBy(order.Expression) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                ? result.OrderBy(order
+                    .Expression) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
                 : result.OrderByDescending(order.Expression);
         }
 
-        foreach (var order in
-            (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)?.Where(o => !o.Ordering.IsNullOrEmpty()))
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+                 ?.Where(o => !o.Ordering.IsNullOrEmpty()))
         {
             result = result is null
                 ? result = source.OrderBy(order.Ordering) // of the form >   fieldname [ascending|descending], ...

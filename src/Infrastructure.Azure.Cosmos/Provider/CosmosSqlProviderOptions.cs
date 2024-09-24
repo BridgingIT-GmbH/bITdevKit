@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Azure.Cosmos;
 
 public class CosmosSqlProviderOptions<T> : OptionsBase
 {
-    public static string DefaultPartitionKey { get; } = "/id"; // /id path not recommeded for large amounts of documents as partition is not optimal (10k RUs or 20GB collections)
+    public static string DefaultPartitionKey { get; } =
+        "/id"; // /id path not recommeded for large amounts of documents as partition is not optimal (10k RUs or 20GB collections)
 
     public CosmosClient Client { get; set; }
 
@@ -33,7 +33,8 @@ public class CosmosSqlProviderOptions<T> : OptionsBase
 
     public string Container { get; set; }
 
-    public string PartitionKey { get; set; } = DefaultPartitionKey; // /id path not recommeded for large amounts of documents as partition is not optimal (10k RUs or 20GB collections)
+    public string PartitionKey { get; set; } =
+        DefaultPartitionKey; // /id path not recommeded for large amounts of documents as partition is not optimal (10k RUs or 20GB collections)
 
     public bool Autoscale { get; set; }
 

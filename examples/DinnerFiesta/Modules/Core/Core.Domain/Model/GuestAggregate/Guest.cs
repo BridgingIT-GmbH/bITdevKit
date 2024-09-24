@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class Guest : AuditableAggregateRoot<GuestId, Guid>
 {
@@ -16,9 +16,7 @@ public class Guest : AuditableAggregateRoot<GuestId, Guid>
     private readonly List<MenuReviewId> menuReviewIds = [];
     private readonly List<GuestRating> ratings = [];
 
-    private Guest()
-    {
-    }
+    private Guest() { }
 
     private Guest(
         string firstName,
@@ -58,8 +56,7 @@ public class Guest : AuditableAggregateRoot<GuestId, Guid>
         UserId userId,
         Uri profileImage = null)
     {
-        return new Guest(
-            firstName,
+        return new Guest(firstName,
             lastName,
             userId,
             profileImage);

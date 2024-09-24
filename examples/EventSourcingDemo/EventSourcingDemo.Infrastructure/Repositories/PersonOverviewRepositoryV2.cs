@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure.Repositories;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using Common;
+using DevKit.Infrastructure.EntityFramework.Repositories;
 using Domain.Model;
 using Domain.Repositories;
 using Models;
 
-public class PersonOverviewRepositoryV2(EntityFrameworkRepositoryOptions options = null) : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(options),
-    IPersonOverviewRepositoryV2
+public class PersonOverviewRepositoryV2(EntityFrameworkRepositoryOptions options = null)
+    : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(options),
+        IPersonOverviewRepositoryV2
 {
     public async Task AddPersonAsync(PersonOverview person)
     {

@@ -5,24 +5,33 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Security.Cryptography;
+using MassTransit;
 
+/// <summary>
+///     Provides methods to generate GUIDs based on specific values or using sequential creation logic.
+/// </summary>
 public static class GuidGenerator
 {
+    /// <summary>
+    ///     Generates a GUID based on the provided string value.
+    /// </summary>
+    /// <param name="value">The input string used to generate the GUID. If the value is null, an empty GUID is returned.</param>
+    /// <returns>A GUID generated from the input string. If the value is null, returns Guid.Empty.</returns>
     public static Guid Create(string value)
     {
-        if (value is null)
-        {
-            return Guid.Empty;
-        }
-
-        return new Guid(MD5.HashData(
-            Encoding.Default.GetBytes(value)));
+        return value is null ? Guid.Empty : new Guid(MD5.HashData(Encoding.Default.GetBytes(value)));
     }
 
+    /// <summary>
+    ///     Creates a new GUID in a sequential order.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="Guid" /> representing the sequentially generated GUID.
+    /// </returns>
     public static Guid CreateSequential()
     {
-        return MassTransit.NewId.Next().ToGuid();
+        //TODO: use new dotnet 9 Guid version 7 which are sequential
+        return NewId.Next().ToGuid();
     }
 }

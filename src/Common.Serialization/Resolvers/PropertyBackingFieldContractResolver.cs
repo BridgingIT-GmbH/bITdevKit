@@ -5,29 +5,32 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+
+// TODO: get rid of Newtonsoft dependency
 
 public class PropertyBackingFieldContractResolver : DefaultContractResolver
 {
     /// <summary>
-    /// Properly deserialize readonly private backing fields used for immutable Collections.
-    /// Otherwise the deserializer will ignore the collection and it will be empty.
-    ///
-    /// <code>
+    ///     Properly deserialize readonly private backing fields used for immutable Collections.
+    ///     Otherwise the deserializer will ignore the collection and it will be empty.
+    ///     <code>
     /// public class System
     /// {
-    ///     private readonly IList<User> users = new List<User>();
-    ///
-    ///     public IEnumerable<User> Users => this.users.ToList().AsReadOnly();
-    ///
-    ///     public void AddUser(User user)
-    ///     {
-    ///         this.users.Add(user);
-    ///     }
-    /// }
+    ///     private readonly IList<User>
+    ///             users = new List
+    ///             <User>
+    ///                 ();
+    ///                 public IEnumerable
+    ///                 <User>
+    ///                     Users => this.users.ToList().AsReadOnly();
+    ///                     public void AddUser(User user)
+    ///                     {
+    ///                     this.users.Add(user);
+    ///                     }
+    ///                     }
     /// </code>
     /// </summary>
     /// <param name="member"></param>
@@ -44,7 +47,9 @@ public class PropertyBackingFieldContractResolver : DefaultContractResolver
                 if (!property.Writable)
                 {
                     var privateField = member.DeclaringType.GetRuntimeFields()
-                        .FirstOrDefault(x => x.Name.Equals(char.ToLowerInvariant(property.PropertyName[0]) + property.PropertyName[1..]));
+                        .FirstOrDefault(x =>
+                            x.Name.Equals(char.ToLowerInvariant(property.PropertyName[0]) +
+                                property.PropertyName[1..]));
                     if (privateField != null)
                     {
                         var originalPropertyName = property.PropertyName;

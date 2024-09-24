@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System;
-
 public interface ITimeoutCommand
 {
     TimeoutCommandOptions Options { get; }
@@ -14,5 +12,5 @@ public interface ITimeoutCommand
 
 public class TimeoutCommandOptions
 {
-    public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 0, 30);
+    public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

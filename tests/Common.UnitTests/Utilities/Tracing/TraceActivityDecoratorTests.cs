@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -20,9 +17,8 @@ public class TraceActivityDecoratorTests
     {
         Sdk.CreateTracerProviderBuilder()
             .AddSource("*")
-            .SetResourceBuilder(
-                ResourceBuilder.CreateDefault()
-                    .AddService(serviceName: "test", serviceVersion: "1.0"))
+            .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService("test", serviceVersion: "1.0"))
             .Build();
     }
 
@@ -35,8 +31,7 @@ public class TraceActivityDecoratorTests
         serviceDecorated.MethodExplicitlyMarkedForTracing(() =>
         {
             Activity.Current.ShouldNotBeNull();
-            this.ShouldHaveTags(
-                Activity.Current,
+            this.ShouldHaveTags(Activity.Current,
                 typeof(IStubService).FullName,
                 "MethodExplicitlyMarkedForTracing",
                 "Action");
@@ -52,8 +47,7 @@ public class TraceActivityDecoratorTests
         await serviceDecorated.AsyncMethodExplicitlyMarkedForTracing(() =>
         {
             Activity.Current.ShouldNotBeNull();
-            this.ShouldHaveTags(
-                Activity.Current,
+            this.ShouldHaveTags(Activity.Current,
                 typeof(IStubService).FullName,
                 "AsyncMethodExplicitlyMarkedForTracing",
                 "Action");
@@ -68,15 +62,17 @@ public class TraceActivityDecoratorTests
         var intVal = 5;
 
         serviceDecorated.MethodWithStrangeParams1(() =>
-        {
-            Activity.Current.ShouldNotBeNull();
-            this.ShouldHaveTags(
-                Activity.Current,
-                typeof(IStubService).FullName,
-                "MethodWithStrangeParams1",
-                "Action|IList`1[]|ISet`1|IDictionary`2|Int32&");
-        },
-        Array.Empty<List<string>>(), new HashSet<int[]>(), new Dictionary<int, ICollection<string>>(), ref intVal);
+            {
+                Activity.Current.ShouldNotBeNull();
+                this.ShouldHaveTags(Activity.Current,
+                    typeof(IStubService).FullName,
+                    "MethodWithStrangeParams1",
+                    "Action|IList`1[]|ISet`1|IDictionary`2|Int32&");
+            },
+            Array.Empty<List<string>>(),
+            new HashSet<int[]>(),
+            new Dictionary<int, ICollection<string>>(),
+            ref intVal);
     }
 
     [Fact]
@@ -86,15 +82,17 @@ public class TraceActivityDecoratorTests
         var serviceDecorated = TraceActivityDecorator<IStubService>.Create(service);
 
         serviceDecorated.MethodJaggedAndMultiDimArraysParams(() =>
-        {
-            Activity.Current.ShouldNotBeNull();
-            this.ShouldHaveTags(
-                Activity.Current,
-                typeof(IStubService).FullName,
-                "MethodJaggedAndMultiDimArraysParams",
-                "Action|String&|Boolean[][][]|Int16[,,][,][,,,]|Int64[][,][][,,]");
-        },
-            out var strVal, Array.Empty<bool[][]>(), new short[,,,][,][,,] { }, new long[,,][][,][] { });
+            {
+                Activity.Current.ShouldNotBeNull();
+                this.ShouldHaveTags(Activity.Current,
+                    typeof(IStubService).FullName,
+                    "MethodJaggedAndMultiDimArraysParams",
+                    "Action|String&|Boolean[][][]|Int16[,,][,][,,,]|Int64[][,][][,,]");
+            },
+            out var strVal,
+            Array.Empty<bool[][]>(),
+            new short[,,,][,][,,] { },
+            new long[,,][][,][] { });
     }
 
     [Fact]
@@ -106,16 +104,17 @@ public class TraceActivityDecoratorTests
         serviceDecorated.MethodNotExplicitlyMarkedForTracing(() => Activity.Current.ShouldBeNull());
     }
 
-    private void ShouldHaveTags(
-        Activity activity,
+    private void ShouldHaveTags(Activity activity,
         string expectedClassName,
         string expectedMethodName,
         string expectedParameterTypes)
     {
         var tags = activity.Tags.ToArray();
 
-        Array.Find(tags, t => t.Key == "code.namespace").Value.ShouldBe(expectedClassName);
-        Array.Find(tags, t => t.Key == "code.function").Value.ShouldBe(expectedMethodName);
+        Array.Find(tags, t => t.Key == "code.namespace")
+            .Value.ShouldBe(expectedClassName);
+        Array.Find(tags, t => t.Key == "code.function")
+            .Value.ShouldBe(expectedMethodName);
 
         if (!string.IsNullOrWhiteSpace(expectedParameterTypes))
         {

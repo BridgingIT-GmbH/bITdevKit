@@ -5,14 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
+using Queries;
 
-public abstract class EntityFindOneQueryBase<TEntity> :
-    QueryRequestBase<Result<TEntity>>, IEntityFindOneQuery<TEntity>
+public abstract class EntityFindOneQueryBase<TEntity> : QueryRequestBase<Result<TEntity>>, IEntityFindOneQuery<TEntity>
     where TEntity : class, IEntity
 {
     private List<AbstractValidator<EntityFindOneQueryBase<TEntity>>> validators;
@@ -26,8 +25,7 @@ public abstract class EntityFindOneQueryBase<TEntity> :
 
     public string EntityId { get; }
 
-    public EntityFindOneQueryBase<TEntity> AddValidator(
-        AbstractValidator<EntityFindOneQueryBase<TEntity>> validator)
+    public EntityFindOneQueryBase<TEntity> AddValidator(AbstractValidator<EntityFindOneQueryBase<TEntity>> validator)
     {
         (this.validators ??= []).AddOrUpdate(validator);
 
@@ -35,11 +33,15 @@ public abstract class EntityFindOneQueryBase<TEntity> :
     }
 
     public EntityFindOneQueryBase<TEntity> AddValidator<TValidator>()
-        where TValidator : class => this.AddValidator(
-            Factory<TValidator>.Create() as AbstractValidator<EntityFindOneQueryBase<TEntity>>);
+        where TValidator : class
+    {
+        return this.AddValidator(Factory<TValidator>.Create() as AbstractValidator<EntityFindOneQueryBase<TEntity>>);
+    }
 
-    public override ValidationResult Validate() =>
-        new Validator(this.validators).Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator(this.validators).Validate(this);
+    }
 
     public class Validator : AbstractValidator<EntityFindOneQueryBase<TEntity>>
     {

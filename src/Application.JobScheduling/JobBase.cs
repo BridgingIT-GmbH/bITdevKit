@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
@@ -21,7 +17,10 @@ public abstract partial class JobBase : IJob
     private const string JobIdKey = "JobId";
 
     protected JobBase(ILoggerFactory loggerFactory)
-        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    {
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    }
 
     public ILogger Logger { get; }
 
@@ -44,7 +43,10 @@ public abstract partial class JobBase : IJob
 
         if (context.CancellationToken.IsCancellationRequested)
         {
-            this.Logger.LogWarning("{LogKey} processing cancelled (type={JobType}, id={JobId})", Constants.LogKey, jobTypeName, jobId);
+            this.Logger.LogWarning("{LogKey} processing cancelled (type={JobType}, id={JobId})",
+                Constants.LogKey,
+                jobTypeName,
+                jobId);
             context.CancellationToken.ThrowIfCancellationRequested();
         }
         else
@@ -59,7 +61,10 @@ public abstract partial class JobBase : IJob
             }
             catch (Exception ex)
             {
-                PutJobProperties(context, JobStatus.Fail, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
+                PutJobProperties(context,
+                    JobStatus.Fail,
+                    $"[{ex.GetType().Name}] {ex.Message}",
+                    watch.GetElapsedMilliseconds());
 
                 throw;
             }
@@ -97,7 +102,11 @@ public abstract partial class JobBase : IJob
             }
         }
 
-        void PutJobProperties(IJobExecutionContext context, JobStatus status, string errorMessage, long elapsedMilliseconds)
+        void PutJobProperties(
+            IJobExecutionContext context,
+            JobStatus status,
+            string errorMessage,
+            long elapsedMilliseconds)
         {
             this.Status = status;
             this.ErrorMessage = errorMessage;
@@ -121,7 +130,14 @@ public abstract partial class JobBase : IJob
         [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={JobType}, id={JobId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobId, long timeElapsed);
+        [LoggerMessage(1,
+            LogLevel.Information,
+            "{LogKey} processed (type={JobType}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(
+            ILogger logger,
+            string logKey,
+            string jobType,
+            string jobId,
+            long timeElapsed);
     }
 }

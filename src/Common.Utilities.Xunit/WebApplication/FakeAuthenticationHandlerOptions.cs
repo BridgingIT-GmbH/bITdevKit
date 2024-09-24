@@ -5,14 +5,17 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Security.Claims;
 
 public class FakeAuthenticationHandlerOptions
 {
     private List<Claim> claims = [];
 
-    public IEnumerable<Claim> Claims { get => this.claims; set => this.claims = value.ToList(); }
+    public IEnumerable<Claim> Claims
+    {
+        get => this.claims;
+        set => this.claims = value.ToList();
+    }
 
     public FakeAuthenticationHandlerOptions AddClaim(string type, string value)
     {

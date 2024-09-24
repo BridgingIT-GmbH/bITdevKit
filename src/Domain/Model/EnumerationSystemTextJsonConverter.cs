@@ -5,29 +5,47 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Converts enumeration values to and from their JSON representation using System.Text.Json.
+/// </summary>
+/// <typeparam name="TEnumeration">The enumeration type to be converted.</typeparam>
 public class EnumerationSystemTextJsonConverter<TEnumeration>
     : EnumerationSystemTextJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration
-{
-}
+    where TEnumeration : IEnumeration { }
 
+/// <summary>
+///     Custom JSON converter for enumerations that implements the System.Text.Json.Serialization.JsonConverter
+///     to handle the serialization and deserialization of enumeration types.
+/// </summary>
+/// <typeparam name="TEnumeration">The enumeration type to be converted.</typeparam>
+/// <typeparam name="TValue">The type of the enumeration value.</typeparam>
 public class EnumerationSystemTextJsonConverter<TEnumeration, TValue>
     : EnumerationSystemTextJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable
-{
-}
+    where TValue : IComparable { }
 
-public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue>
-    : JsonConverter<TEnumeration>
+/// <summary>
+///     Converts enumeration types to and from JSON using System.Text.Json. This converter can handle cases
+///     where the enumeration type is represented by a generic identifier and value type.
+/// </summary>
+/// <typeparam name="TEnumeration">The enumeration type to convert.</typeparam>
+/// <typeparam name="TId">The type of the identifier.</typeparam>
+/// <typeparam name="TValue">The type of the value.</typeparam>
+public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : JsonConverter<TEnumeration>
     where TEnumeration : IEnumeration<TId, TValue>
     where TId : IComparable
     where TValue : IComparable
 {
+    /// <summary>
+    ///     Reads and converts the JSON to the specified enumeration type.
+    /// </summary>
+    /// <param name="reader">The reader used to read the JSON.</param>
+    /// <param name="typeToConvert">The type being converted.</param>
+    /// <param name="options">Options to control the serialization process.</param>
+    /// <returns>The enumeration type instance that corresponds to the JSON.</returns>
     public override TEnumeration Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -35,10 +53,19 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue>
             return default;
         }
 
-        var id = (TId)this.ReadValue(ref reader, typeof(TId));
+        var id = (TId)ReadValue(ref reader, typeof(TId));
         return Enumeration<TId, TValue>.FromId<TEnumeration>(id);
     }
 
+    /// <summary>
+    ///     Writes the JSON representation of the specified Enumeration object.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The type of the Enumeration.</typeparam>
+    /// <typeparam name="TId">The type of the Enumeration ID.</typeparam>
+    /// <typeparam name="TValue">The type of the Enumeration Value.</typeparam>
+    /// <param name="writer">The writer to which the JSON will be written.</param>
+    /// <param name="value">The Enumeration object to write as JSON.</param>
+    /// <param name="options">Options to control the serialization behavior.</param>
     public override void Write(Utf8JsonWriter writer, TEnumeration value, JsonSerializerOptions options)
     {
         if (value == null)
@@ -50,82 +77,113 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue>
         this.WriteValue(writer, value.Id);
     }
 
-    private object ReadValue(ref Utf8JsonReader reader, Type type)
+    /// <summary>
+    ///     Reads a value from the JSON reader based on the specified type.
+    /// </summary>
+    /// <param name="reader">The Utf8JsonReader to read from.</param>
+    /// <param name="type">The type of the value to read.</param>
+    /// <returns>The object value read from the reader.</returns>
+    /// <exception cref="JsonException">Thrown if the type is not supported.</exception>
+    private static object ReadValue(ref Utf8JsonReader reader, Type type)
     {
         if (type == typeof(bool))
         {
             return reader.GetBoolean();
         }
-        else if (type == typeof(byte))
+
+        if (type == typeof(byte))
         {
             return reader.GetByte();
         }
-        else if (type == typeof(sbyte))
+
+        if (type == typeof(sbyte))
         {
-            return (sbyte)reader.GetSByte();
+            return reader.GetSByte();
         }
-        else if (type == typeof(char))
+
+        if (type == typeof(char))
         {
             return (char)reader.GetUInt16();
         }
-        else if (type == typeof(decimal))
+
+        if (type == typeof(decimal))
         {
             return reader.GetDecimal();
         }
-        else if (type == typeof(double))
+
+        if (type == typeof(double))
         {
             return reader.GetDouble();
         }
-        else if (type == typeof(float))
+
+        if (type == typeof(float))
         {
             return reader.GetSingle();
         }
-        else if (type == typeof(int))
+
+        if (type == typeof(int))
         {
             return reader.GetInt32();
         }
-        else if (type == typeof(uint))
+
+        if (type == typeof(uint))
         {
             return reader.GetUInt32();
         }
-        else if (type == typeof(long))
+
+        if (type == typeof(long))
         {
             return reader.GetInt64();
         }
-        else if (type == typeof(ulong))
+
+        if (type == typeof(ulong))
         {
             return reader.GetUInt64();
         }
-        else if (type == typeof(short))
+
+        if (type == typeof(short))
         {
             return reader.GetInt16();
         }
-        else if (type == typeof(ushort))
+
+        if (type == typeof(ushort))
         {
             return reader.GetUInt16();
         }
-        else if (type == typeof(string))
+
+        if (type == typeof(string))
         {
             return reader.GetString();
         }
-        else if (type == typeof(Guid))
+
+        if (type == typeof(Guid))
         {
             return reader.GetGuid();
         }
-        else if (type == typeof(DateTime))
+
+        if (type == typeof(DateTime))
         {
             return reader.GetDateTime();
         }
-        else if (type == typeof(DateTimeOffset))
+
+        if (type == typeof(DateTimeOffset))
         {
             return reader.GetDateTimeOffset();
         }
-        else
-        {
-            throw new JsonException($"Unsupported ID type: {type}");
-        }
+
+        throw new JsonException($"Unsupported ID type: {type}");
     }
 
+    /// <summary>
+    ///     Writes a value to a Utf8JsonWriter based on the provided type.
+    /// </summary>
+    /// <param name="writer">The Utf8JsonWriter to which the value will be written.</param>
+    /// <param name="value">
+    ///     The value to write, where the type of value can be bool, byte, sbyte, char,
+    ///     decimal, double, float, int, uint, long, ulong, short, ushort, string, Guid, DateTime,
+    ///     or DateTimeOffset.
+    /// </param>
+    /// <exception cref="JsonException">Thrown when the type of the provided value is unsupported.</exception>
     private void WriteValue(Utf8JsonWriter writer, TId value)
     {
         if (value is bool boolValue)

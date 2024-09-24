@@ -5,17 +5,16 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Mapping;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Domain.Repositories;
+using Domain.Specifications;
+using MapsterMapper;
 
 public class MapsterEntityMapper : IEntityMapper
 {
-    private readonly MapsterMapper.IMapper mapper;
+    private readonly IMapper mapper;
 
-    public MapsterEntityMapper(MapsterMapper.IMapper mapper)
+    public MapsterEntityMapper(IMapper mapper)
     {
         EnsureArg.IsNotNull(mapper, nameof(mapper));
 
@@ -63,7 +62,8 @@ public class MapsterEntityMapper : IEntityMapper
         throw new NotSupportedException();
     }
 
-    public Expression<Func<TDestination, bool>> MapSpecification<TSource, TDestination>(ISpecification<TSource> specification)
+    public Expression<Func<TDestination, bool>> MapSpecification<TSource, TDestination>(
+        ISpecification<TSource> specification)
     {
         if (specification is null)
         {

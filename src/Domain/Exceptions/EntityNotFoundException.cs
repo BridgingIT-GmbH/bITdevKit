@@ -5,22 +5,28 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-
+/// <summary>
+///     EntityNotFoundException is thrown when a requested entity cannot be found.
+/// </summary>
 public class EntityNotFoundException : Exception
 {
-    public EntityNotFoundException()
-        : base()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EntityNotFoundException" /> class.
+    ///     Exception thrown when a requested entity is not found in the repository.
+    /// </summary>
+    public EntityNotFoundException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EntityNotFoundException" /> class.
+    ///     Represents an exception that is thrown when an entity is not found.
+    /// </summary>
     public EntityNotFoundException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EntityNotFoundException" /> class.
+    ///     Represents an exception that is thrown when an entity is not found.
+    /// </summary>
     public EntityNotFoundException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

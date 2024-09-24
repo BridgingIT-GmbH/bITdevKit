@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
 
-using System;
-
 public class DbUserAccount
 {
     public Guid Identifier { get; set; }

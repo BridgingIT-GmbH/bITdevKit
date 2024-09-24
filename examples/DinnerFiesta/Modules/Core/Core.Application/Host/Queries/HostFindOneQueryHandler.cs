@@ -5,20 +5,21 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
-public class HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Host> repository) : QueryHandlerBase<HostFindOneQuery, Result<Host>>(loggerFactory)
+public class HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Host> repository)
+    : QueryHandlerBase<HostFindOneQuery, Result<Host>>(loggerFactory)
 {
-    public override async Task<QueryResponse<Result<Host>>> Process(HostFindOneQuery query, CancellationToken cancellationToken)
+    public override async Task<QueryResponse<Result<Host>>> Process(
+        HostFindOneQuery query,
+        CancellationToken cancellationToken)
     {
-        return QueryResponse.For(
-            await repository.FindOneResultAsync(
-                HostId.Create(query.HostId),
-                cancellationToken: cancellationToken).AnyContext());
+        return QueryResponse.For(await repository.FindOneResultAsync(HostId.Create(query.HostId),
+                cancellationToken: cancellationToken)
+            .AnyContext());
     }
 }

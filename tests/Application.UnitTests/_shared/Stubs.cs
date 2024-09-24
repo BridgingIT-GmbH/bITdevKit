@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests;
 
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 
 public class MessageStub : MessageBase
 {

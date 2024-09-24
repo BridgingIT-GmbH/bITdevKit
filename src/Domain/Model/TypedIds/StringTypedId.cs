@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
-
 public abstract class StringTypedId(string value) : IEquatable<StringTypedId>, IComparable<StringTypedId>
 {
     public string Value { get; } = value;
 
-    public static implicit operator string(StringTypedId typedId) => typedId.Value;
+    public static implicit operator string(StringTypedId typedId)
+    {
+        return typedId.Value;
+    }
 
     public static bool operator ==(StringTypedId left, StringTypedId right)
     {

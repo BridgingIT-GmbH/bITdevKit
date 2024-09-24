@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -14,24 +12,29 @@ using Microsoft.Extensions.Logging.Abstractions;
 public static partial class DbContextExtensions
 {
     /// <summary>
-    /// Only persists the entities of the specified type <see cref="TEntity"/>
+    ///     Only persists the entities of the specified type <see cref="TEntity" />
     /// </summary>
-    public static async Task<int> SaveChangesAsync<TEntity>(this DbContext context, CancellationToken cancellationToken = default)
+    public static async Task<int> SaveChangesAsync<TEntity>(
+        this DbContext context,
+        CancellationToken cancellationToken = default)
         where TEntity : class
     {
         return await context.SaveChangesAsync<TEntity>(NullLogger.Instance, cancellationToken);
     }
 
     /// <summary>
-    /// Only persists the entities of the specified type <see cref="TEntity"/>
+    ///     Only persists the entities of the specified type <see cref="TEntity" />
     /// </summary>
-    public static async Task<int> SaveChangesAsync<TEntity>(this DbContext context, ILogger logger, CancellationToken cancellationToken = default)
+    public static async Task<int> SaveChangesAsync<TEntity>(
+        this DbContext context,
+        ILogger logger,
+        CancellationToken cancellationToken = default)
         where TEntity : class
     {
         var states = context.ChangeTracker.Entries()
-                    .Where(e => e.Entity is not TEntity && e.State is not EntityState.Unchanged)
-                    .GroupBy(x => x.State)
-                    .ToList();
+            .Where(e => e.Entity is not TEntity && e.State is not EntityState.Unchanged)
+            .GroupBy(x => x.State)
+            .ToList();
 
         foreach (var entry in context.ChangeTracker.Entries().Where(e => e.Entity is not TEntity))
         {
@@ -42,7 +45,11 @@ public static partial class DbContextExtensions
         {
             foreach (var entry in context.ChangeTracker.Entries().Where(e => e.Entity is TEntity))
             {
-                TypedLogger.LogEntityState(logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                TypedLogger.LogEntityState(logger,
+                    Constants.LogKey,
+                    entry.Entity.GetType().Name,
+                    entry.IsKeySet,
+                    entry.State);
             }
         }
 
@@ -61,7 +68,14 @@ public static partial class DbContextExtensions
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
-        public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
+        [LoggerMessage(2,
+            LogLevel.Trace,
+            "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        public static partial void LogEntityState(
+            ILogger logger,
+            string logKey,
+            string entityType,
+            bool entityKeySet,
+            EntityState entityEntryState);
     }
 }

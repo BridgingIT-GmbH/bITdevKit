@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-using System;
 using MediatR;
 
 public class AggregateEvent : DomainEventWithGuid, IAggregateEvent, INotification
@@ -16,9 +15,7 @@ public class AggregateEvent : DomainEventWithGuid, IAggregateEvent, INotificatio
         this.AggregateVersion = version;
     }
 
-    private AggregateEvent()
-    {
-    }
+    private AggregateEvent() { }
 
     public int AggregateVersion { get; set; }
 }

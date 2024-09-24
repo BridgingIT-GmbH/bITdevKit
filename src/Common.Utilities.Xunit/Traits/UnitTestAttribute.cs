@@ -5,16 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using Xunit.Sdk;
 
 [TraitDiscoverer(UnitTestDiscoverer.TypeName, UnitTestDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 public class UnitTestAttribute : Attribute, ITraitAttribute
 {
-    public UnitTestAttribute()
-    {
-    }
+    public UnitTestAttribute() { }
 
     public UnitTestAttribute(string name)
     {

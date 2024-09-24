@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class HostUpdatedDomainEvent : DomainEventBase
 {

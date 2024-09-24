@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests;
 
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
 public class PersonStub : Entity<Guid>
 {

@@ -5,22 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using System;
-
 public class EntityCommandRuleNotSatisfied : Exception
 {
-    public EntityCommandRuleNotSatisfied()
-        : base()
-    {
-    }
+    public EntityCommandRuleNotSatisfied() { }
 
     public EntityCommandRuleNotSatisfied(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
     public EntityCommandRuleNotSatisfied(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

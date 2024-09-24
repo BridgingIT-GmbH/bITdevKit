@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore;
 
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
+using Model;
+using Model.Events;
 
 [UnitTest("Domain")]
 public class AggregateRootEventSourcingTests

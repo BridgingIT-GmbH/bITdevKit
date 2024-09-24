@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class DinnerSchedule : ValueObject
 {
-    private DinnerSchedule()
-    {
-    }
+    private DinnerSchedule() { }
 
     private DinnerSchedule(
         DateTimeOffset startDateTime,
@@ -22,18 +20,15 @@ public class DinnerSchedule : ValueObject
         this.EndDateTime = endDateTime;
     }
 
-    public DateTimeOffset StartDateTime { get; private set; }
+    public DateTimeOffset StartDateTime { get; }
 
-    public DateTimeOffset EndDateTime { get; private set; }
+    public DateTimeOffset EndDateTime { get; }
 
     public static DinnerSchedule Create(
         DateTimeOffset startDateTime,
         DateTimeOffset endDateTime)
     {
-        DomainRules.Apply(
-        [
-            DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime),
-        ]);
+        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime)]);
 
         return new DinnerSchedule(startDateTime, endDateTime);
     }

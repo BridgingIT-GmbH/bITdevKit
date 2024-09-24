@@ -4,13 +4,11 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common;
-using System;
-using System.Threading.Tasks;
 
 public static class StreamExtensions
 {
     /// <summary>
-    /// Read the contents of a stream into a byte array.
+    ///     Read the contents of a stream into a byte array.
     /// </summary>
     public static int TryReadAll(this Stream source, byte[] buffer, int offset, int count)
     {
@@ -36,17 +34,25 @@ public static class StreamExtensions
     }
 
     /// <summary>
-    /// Read the contents of a stream into a byte array.
+    ///     Read the contents of a stream into a byte array.
     /// </summary>
-    public static Task<int> TryReadAllAsync(this Stream source, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
+    public static Task<int> TryReadAllAsync(
+        this Stream source,
+        byte[] buffer,
+        int offset,
+        int count,
+        CancellationToken cancellationToken = default)
     {
         return TryReadAllAsync(source, buffer.AsMemory(offset, count), cancellationToken);
     }
 
     /// <summary>
-    /// Read the contents of a stream into a byte array.
+    ///     Read the contents of a stream into a byte array.
     /// </summary>
-    public static async Task<int> TryReadAllAsync(this Stream source, Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public static async Task<int> TryReadAllAsync(
+        this Stream source,
+        Memory<byte> buffer,
+        CancellationToken cancellationToken = default)
     {
         var total = 0;
         while (!buffer.IsEmpty)
@@ -65,7 +71,7 @@ public static class StreamExtensions
     }
 
     /// <summary>
-    /// Read the contents of a stream as a byte array.
+    ///     Read the contents of a stream as a byte array.
     /// </summary>
     public static byte[] ReadToEnd(this Stream source)
     {
@@ -91,7 +97,7 @@ public static class StreamExtensions
     }
 
     /// <summary>
-    /// Read the contents of a stream as a byte array.
+    ///     Read the contents of a stream as a byte array.
     /// </summary>
     public static async Task<byte[]> ReadToEndAsync(this Stream source, CancellationToken cancellationToken = default)
     {
@@ -116,7 +122,9 @@ public static class StreamExtensions
         return memoryStream.ToArray();
     }
 
-    public static async Task<MemoryStream> ToMemoryStreamAsync(this Stream source, CancellationToken cancellationToken = default)
+    public static async Task<MemoryStream> ToMemoryStreamAsync(
+        this Stream source,
+        CancellationToken cancellationToken = default)
     {
         var result = new MemoryStream();
         try

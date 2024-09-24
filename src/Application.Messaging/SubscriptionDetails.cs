@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 public class SubscriptionDetails
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscriptionDetails"/> class.
+    ///     Initializes a new instance of the <see cref="SubscriptionDetails" /> class.
     /// </summary>
     /// <param name="handlerType">Type of the handler.</param>
     private SubscriptionDetails(Type messageType, Type handlerType)
@@ -18,23 +18,23 @@ public class SubscriptionDetails
     }
 
     /// <summary>
-    /// Gets the type of the message.
+    ///     Gets the type of the message.
     /// </summary>
     /// <value>
-    /// The type of the handler.
+    ///     The type of the handler.
     /// </value>
     public Type MessageType { get; }
 
     /// <summary>
-    /// Gets the type of the handler.
+    ///     Gets the type of the handler.
     /// </summary>
     /// <value>
-    /// The type of the handler.
+    ///     The type of the handler.
     /// </value>
     public Type HandlerType { get; }
 
     /// <summary>
-    /// Creates a <see cref="SubscriptionDetails"/> for specified message/handler types.
+    ///     Creates a <see cref="SubscriptionDetails" /> for specified message/handler types.
     /// </summary>
     /// <param name="messageType">Type of the message.</param>
     /// <param name="handlerType">Type of the handler.</param>

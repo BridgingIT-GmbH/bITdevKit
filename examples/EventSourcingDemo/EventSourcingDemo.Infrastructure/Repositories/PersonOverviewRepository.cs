@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using Common;
+using DevKit.Infrastructure.EntityFramework.Repositories;
 using Domain.Model;
 using Domain.Repositories;
 using Models;
 
-public class PersonOverviewRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder) : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(optionsBuilder),
-    IPersonOverviewRepository
-{
-}
+public class PersonOverviewRepository(
+    Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
+    : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(optionsBuilder),
+        IPersonOverviewRepository { }

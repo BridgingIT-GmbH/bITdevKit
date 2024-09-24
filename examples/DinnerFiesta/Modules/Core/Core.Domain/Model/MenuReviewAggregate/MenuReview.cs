@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class MenuReview : AuditableAggregateRoot<MenuReviewId, Guid>
 {
-    private MenuReview()
-    {
-    }
+    private MenuReview() { }
 
     private MenuReview(
         Rating rating,
@@ -49,8 +47,7 @@ public class MenuReview : AuditableAggregateRoot<MenuReviewId, Guid>
         GuestId guestId,
         DinnerId dinnerId)
     {
-        return new MenuReview(
-            Rating.Create(rating),
+        return new MenuReview(Rating.Create(rating),
             comment,
             hostId,
             menuId,

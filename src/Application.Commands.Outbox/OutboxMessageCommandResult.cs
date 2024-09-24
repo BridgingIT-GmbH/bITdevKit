@@ -17,10 +17,7 @@ public class OutboxMessageCommandResult
         this.ErrorCode = errorCode;
     }
 
-    public bool HasError
-    {
-        get { return this.ErrorCode != OutboxMessageCommandResultErrorCodes.NoError; }
-    }
+    public bool HasError => this.ErrorCode != OutboxMessageCommandResultErrorCodes.NoError;
 
     // ReSharper disable once MemberCanBePrivate.Global
     public OutboxMessageCommandResultErrorCodes ErrorCode { get; set; }

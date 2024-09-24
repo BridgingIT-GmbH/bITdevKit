@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
+
+using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -63,7 +64,6 @@ public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelpe
 
     protected override EntityFrameworkDocumentStoreProvider<StubDbContext> GetProvider()
     {
-        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureSqlServerDbContext(this.output));
+        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsureSqlServerDbContext(this.output));
     }
 }

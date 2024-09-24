@@ -10,27 +10,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Dinner\Events\**" />
-    <Compile Remove="Host\Events\**" />
-    <EmbeddedResource Remove="Dinner\Events\**" />
-    <EmbeddedResource Remove="Host\Events\**" />
-    <None Remove="Dinner\Events\**" />
-    <None Remove="Host\Events\**" />
+    <Compile Remove="Dinner\Events\**"/>
+    <Compile Remove="Host\Events\**"/>
+    <EmbeddedResource Remove="Dinner\Events\**"/>
+    <EmbeddedResource Remove="Host\Events\**"/>
+    <None Remove="Dinner\Events\**"/>
+    <None Remove="Host\Events\**"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Application.Storage\Application.Storage.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Application.Commands\Application.Commands.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Application.Queries\Application.Queries.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Application.Messaging\Application.Messaging.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Application.Storage\Application.Storage.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Common.Mapping\Common.Mapping.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Application.Commands\Application.Commands.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Application.Queries\Application.Queries.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities\Common.Utilities.csproj"/>
+    <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks"/>
   </ItemGroup>
 
 </Project>

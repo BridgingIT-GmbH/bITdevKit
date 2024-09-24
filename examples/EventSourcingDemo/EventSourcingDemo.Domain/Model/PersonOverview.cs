@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class PersonOverview : Entity<Guid>
 {

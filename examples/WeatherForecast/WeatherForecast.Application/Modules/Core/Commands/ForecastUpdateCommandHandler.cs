@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 //tag::DatabaseTransaction[]
@@ -40,21 +37,27 @@ public class ForecastUpdateCommandHandler : CommandHandlerBase<ForecastUpdateCom
         this.transaction = transaction;
     }
 
-    public override async Task<CommandResponse> Process(ForecastUpdateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse> Process(
+        ForecastUpdateCommand command,
+        CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"import forecasts for city {command.City.Name}");
 
         await this.transaction.ExecuteScopedAsync(async () =>
-        {
-            var type = await this.forecastTypeRepository.FindOneAsync("102954ff-aa73-495b-a730-98f2d5ca10f3", cancellationToken: cancellationToken).AnyContext(); // find a specific type (AAA)
-
-            // retrieve forecasts from external system, anti corruption is implemented by using an adapter
-            await foreach (var forecast in this.dataAdapter.ToForecastAsync(command.City).WithCancellation(cancellationToken))
             {
-                forecast.TypeId = type.Id;
-                await this.forecastRepository.UpsertAsync(forecast, cancellationToken).AnyContext();
-            }
-        }).AnyContext();
+                var type = await this.forecastTypeRepository
+                    .FindOneAsync("102954ff-aa73-495b-a730-98f2d5ca10f3", cancellationToken: cancellationToken)
+                    .AnyContext(); // find a specific type (AAA)
+
+                // retrieve forecasts from external system, anti corruption is implemented by using an adapter
+                await foreach (var forecast in this.dataAdapter.ToForecastAsync(command.City)
+                                   .WithCancellation(cancellationToken))
+                {
+                    forecast.TypeId = type.Id;
+                    await this.forecastRepository.UpsertAsync(forecast, cancellationToken).AnyContext();
+                }
+            })
+            .AnyContext();
 
         return new CommandResponse();
     }

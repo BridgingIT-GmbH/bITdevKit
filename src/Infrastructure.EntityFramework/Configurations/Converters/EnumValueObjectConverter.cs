@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class EnumValueObjectConverter<TEnumeration, TKey>
@@ -14,21 +14,12 @@ public class EnumValueObjectConverter<TEnumeration, TKey>
     where TKey : struct
 {
     public EnumValueObjectConverter()
-        : base(
-            v => v.Key,
-            v => EnumerationValueObject<TEnumeration, TKey>.Create(v))
-    {
-    }
+        : base(v => v.Key, v => EnumerationValueObject<TEnumeration, TKey>.Create(v)) { }
 }
 
-public class EnumValueObjectConverter<TEnumeration>
-    : ValueConverter<EnumValueObject<TEnumeration>, string>
-    where TEnumeration : EnumValueObject<TEnumeration>
+public class EnumValueObjectConverter<TEnumeration> : ValueConverter<EnumerationValueObject<TEnumeration>, string>
+    where TEnumeration : EnumerationValueObject<TEnumeration>
 {
     public EnumValueObjectConverter()
-        : base(
-            v => v.Key,
-            v => EnumValueObject<TEnumeration>.FromKey(v))
-    {
-    }
+        : base(v => v.Key, v => EnumerationValueObject<TEnumeration>.FromKey(v)) { }
 }

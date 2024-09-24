@@ -7,28 +7,31 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System.ComponentModel;
 
+/// <summary>
+///     Defines the result of a repository action.
+/// </summary>
 public enum RepositoryActionResult
 {
     /// <summary>
-    /// Nonde
+    ///     No entity action performed.
     /// </summary>
     [Description("no entity action")]
     None,
 
     /// <summary>
-    /// Inserted
+    ///     The entity was successfully inserted.
     /// </summary>
     [Description("entity inserted")]
     Inserted,
 
     /// <summary>
-    /// Updated
+    ///     Entity updated
     /// </summary>
     [Description("entity updated")]
     Updated,
 
     /// <summary>
-    /// Deleted
+    ///     Entity was deleted.
     /// </summary>
     [Description("entity deleted")]
     Deleted

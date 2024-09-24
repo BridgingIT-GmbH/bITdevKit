@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
 
 using AutoMapper;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using Domain.Model;
 
 public static class MapperFactory
 {
@@ -38,7 +38,11 @@ public static class MapperFactory
 
     private class AdAccountResolver : IValueResolver<DbUserAccount, UserAccount, AdAccount>
     {
-        public AdAccount Resolve(DbUserAccount source, UserAccount destination, AdAccount destMember, ResolutionContext context)
+        public AdAccount Resolve(
+            DbUserAccount source,
+            UserAccount destination,
+            AdAccount destMember,
+            ResolutionContext context)
         {
             return AdAccount.Create($"{source.AdDomain}\\{source.AdName}");
         }

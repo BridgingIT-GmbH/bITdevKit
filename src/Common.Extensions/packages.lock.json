@@ -8,6 +8,15 @@
         "resolved": "10.1.0",
         "contentHash": "rzTMSs0lQnu0WsesvTjs/zDzqiZXb9r5dv+wFQcPg/iIZqXb5BzwpIWEwi8Q3HA0TS4ytRcY129aSek6IzuOmA=="
       },
+      "Microsoft.Extensions.Configuration.Abstractions": {
+        "type": "Direct",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "3lE/iLSutpgX1CC0NOW70FJoGARRHbyKmG7dc0klnUZ9Dd9hS6N/POPWhKhMLCEuNN5nXEY5agmlFtH562vqhQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "8.0.0"
+        }
+      },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Direct",
         "requested": "[8.0.1, )",
@@ -25,12 +34,6 @@
         "requested": "[6.0.0, )",
         "resolved": "6.0.0",
         "contentHash": "+/SsmiySsXJlvQLCGBqaZKNVt3s/Y/HbAdwtop7Km2CnuZbaScoqkWJEBQ5Cy9ebkn6kCYKrHsXgwrFdTgcb3g=="
-      },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
       },
       "System.Threading.Tasks.Extensions": {
         "type": "Direct",

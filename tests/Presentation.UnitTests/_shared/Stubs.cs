@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
 public class PersonStub : Entity<Guid>
 {
@@ -17,11 +17,6 @@ public class PersonStub : Entity<Guid>
 
     public static PersonStub Create(long ticks)
     {
-        return new PersonStub
-        {
-            FirstName = $"John{ticks}",
-            LastName = $"Doe{ticks}",
-            Age = 42
-        };
+        return new PersonStub { FirstName = $"John{ticks}", LastName = $"Doe{ticks}", Age = 42 };
     }
 }

@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class CityCreateCommandHandler : CommandHandlerBase<CityCreateCommand, AggregateCreatedCommandResult>
@@ -28,12 +25,17 @@ public class CityCreateCommandHandler : CommandHandlerBase<CityCreateCommand, Ag
         this.repository = repository;
     }
 
-    public override async Task<CommandResponse<AggregateCreatedCommandResult>> Process(CityCreateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<AggregateCreatedCommandResult>> Process(
+        CityCreateCommand command,
+        CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"+++ create city with name: {command.Model.Name} ({command.Model.Country})");
 
         // TODO: check in db if city with name already exists > throw exception
-        var entity = City.Create(command.Model.Name, command.Model.Country, command.Model.Longitude, command.Model.Latitude);
+        var entity = City.Create(command.Model.Name,
+            command.Model.Country,
+            command.Model.Longitude,
+            command.Model.Latitude);
         await this.repository.InsertAsync(entity, cancellationToken).AnyContext();
 
         return new CommandResponse<AggregateCreatedCommandResult>

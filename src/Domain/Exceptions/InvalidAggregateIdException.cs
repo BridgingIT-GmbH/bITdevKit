@@ -5,21 +5,31 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-
+/// <summary>
+///     The InvalidAggregateIdException is thrown when an invalid aggregate ID is encountered in the domain layer.
+/// </summary>
+/// <remarks>
+///     This exception indicates that the provided aggregate ID does not adhere to the required format or constraints.
+/// </remarks>
 public class InvalidAggregateIdException : Exception
 {
-    public InvalidAggregateIdException()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidAggregateIdException" /> class.
+    ///     Represents errors that occur when an invalid aggregate ID is encountered.
+    /// </summary>
+    public InvalidAggregateIdException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidAggregateIdException" /> class.
+    ///     Exception thrown when an invalid aggregate identifier is encountered.
+    /// </summary>
     public InvalidAggregateIdException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidAggregateIdException" /> class.
+    ///     Represents errors that occur when an aggregate ID is invalid.
+    /// </summary>
     public InvalidAggregateIdException(string message, Exception innerException)
-    : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

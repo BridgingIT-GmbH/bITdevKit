@@ -9,16 +9,6 @@ using System.Reflection;
 
 internal class Field : IProperty
 {
-    string IProperty.Name
-    {
-        get
-        {
-            return this.FieldInfo.Name;
-        }
-    }
-
-    internal FieldInfo FieldInfo { get; set; }
-
     object IProperty.GetValue(object obj, object[] index)
     {
         return this.FieldInfo.GetValue(obj);
@@ -28,4 +18,10 @@ internal class Field : IProperty
     {
         this.FieldInfo.SetValue(obj, val);
     }
+#pragma warning disable SA1202
+#pragma warning disable SA1201
+    internal FieldInfo FieldInfo { get; set; }
+    string IProperty.Name => this.FieldInfo.Name;
+#pragma warning restore SA1201
+#pragma warning restore SA1202
 }

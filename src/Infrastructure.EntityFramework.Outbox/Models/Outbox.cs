@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.Models;
 
-using System;
-
 public class Outbox
 {
     public Guid Id { get; set; }

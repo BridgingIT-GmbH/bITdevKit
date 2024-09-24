@@ -5,43 +5,40 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Model;
+using Specifications;
 
 [Obsolete("Use GenericRepositoryDomainEventPublisherBehavior instead")]
 public class GenericRepositoryDomainEventPublisherDecorator<TEntity> : RepositoryDomainEventPublisherBehavior<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
 {
-    public GenericRepositoryDomainEventPublisherDecorator(ILoggerFactory loggerFactory, IMediator mediator, IGenericRepository<TEntity> inner)
-        : base(loggerFactory, mediator, inner)
-    {
-    }
+    public GenericRepositoryDomainEventPublisherDecorator(
+        ILoggerFactory loggerFactory,
+        IMediator mediator,
+        IGenericRepository<TEntity> inner)
+        : base(loggerFactory, mediator, inner) { }
 
-    public GenericRepositoryDomainEventPublisherDecorator(ILoggerFactory loggerFactory, IDomainEventPublisher publisher, IGenericRepository<TEntity> inner)
-        : base(loggerFactory, publisher, inner)
-    {
-    }
+    public GenericRepositoryDomainEventPublisherDecorator(
+        ILoggerFactory loggerFactory,
+        IDomainEventPublisher publisher,
+        IGenericRepository<TEntity> inner)
+        : base(loggerFactory, publisher, inner) { }
 }
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
@@ -52,9 +49,7 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         ILoggerFactory loggerFactory,
         IMediator mediator,
         IGenericRepository<TEntity> inner)
-        : this(loggerFactory, new MediatorDomainEventPublisher(loggerFactory, mediator), inner)
-    {
-    }
+        : this(loggerFactory, new MediatorDomainEventPublisher(loggerFactory, mediator), inner) { }
 
     public RepositoryDomainEventPublisherBehavior(
         ILoggerFactory loggerFactory,
@@ -64,7 +59,8 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         EnsureArg.IsNotNull(publisher, nameof(publisher));
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.Logger = loggerFactory?.CreateLogger<RepositoryDomainEventPublisherBehavior<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<RepositoryDomainEventPublisherBehavior<TEntity>>();
+        this.Logger = loggerFactory?.CreateLogger<RepositoryDomainEventPublisherBehavior<TEntity>>() ??
+            NullLoggerFactory.Instance.CreateLogger<RepositoryDomainEventPublisherBehavior<TEntity>>();
         this.Publisher = publisher;
         this.Inner = inner;
     }
@@ -75,11 +71,11 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
 
     protected IGenericRepository<TEntity> Inner { get; }
 
-    public async Task<RepositoryActionResult> DeleteAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        var entity = await this.Inner.FindOneAsync(id, new FindOptions<TEntity>() { NoTracking = false }, cancellationToken).AnyContext();
+        var entity = await this.Inner
+            .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
+            .AnyContext();
         if (entity is null || entity.Id == default)
         {
             return RepositoryActionResult.None;
@@ -88,19 +84,16 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         return await this.DeleteAsync(entity, cancellationToken);
     }
 
-    public async Task<RepositoryActionResult> DeleteAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         var result = await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
 
         // publish all domain events after transaction ends
-        await entity.DomainEvents.GetAll().ForEachAsync(async (e) =>
-        {
-            await this.Publisher.Send(e, cancellationToken).AnyContext();
-        }, cancellationToken: cancellationToken);
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); },
+                cancellationToken);
         entity.DomainEvents.Clear();
 
         return result;
@@ -130,9 +123,7 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
@@ -171,16 +162,17 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
-        IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
@@ -192,10 +184,9 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         var result = await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
 
         // publish all domain events after transaction ends
-        await entity.DomainEvents.GetAll().ForEachAsync(async (e) =>
-        {
-            await this.Publisher.Send(e, cancellationToken).AnyContext();
-        }, cancellationToken: cancellationToken);
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); },
+                cancellationToken);
         entity.DomainEvents.Clear();
 
         return result;
@@ -208,32 +199,34 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         var result = await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
 
         // publish all domain events after transaction ends
-        await entity.DomainEvents.GetAll().ForEachAsync(async (e) =>
-        {
-            await this.Publisher.Send(e, cancellationToken).AnyContext();
-        }, cancellationToken: cancellationToken);
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); },
+                cancellationToken);
         entity.DomainEvents.Clear();
 
         return result;
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         var result = await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
 
         // publish all domain events after transaction ends
-        await entity.DomainEvents.GetAll().ForEachAsync(async (e) =>
-        {
-            await this.Publisher.Send(e, cancellationToken).AnyContext();
-        }, cancellationToken: cancellationToken);
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); },
+                cancellationToken);
         entity.DomainEvents.Clear();
 
         return result;
     }
 
-    public async Task<long> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(
+        ISpecification<TEntity> specification,
+        CancellationToken cancellationToken = default)
     {
         return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
     }
@@ -243,7 +236,9 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
-    public async Task<long> CountAsync(IEnumerable<ISpecification<TEntity>> specifications, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }

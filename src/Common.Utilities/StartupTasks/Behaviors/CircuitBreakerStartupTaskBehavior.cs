@@ -31,49 +31,65 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
             AsyncRetryPolicy retryPolicy;
             if (!options.BackoffExponential)
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryForeverAsync(
-                    sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
                             : 0),
-                    onRetry: (ex, wait) =>
-                    {
-                        this.Logger.LogError(ex, "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", "UTL", attempts, wait.Humanize(), this.GetType().Name, ex.Message);
-                        attempts++;
-                    });
+                        (ex, wait) =>
+                        {
+                            this.Logger.LogError(ex,
+                                "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                                "UTL",
+                                attempts,
+                                wait.Humanize(),
+                                this.GetType().Name,
+                                ex.Message);
+                            attempts++;
+                        });
             }
             else
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryForeverAsync(
-                    attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
-                            : 0
-                        * Math.Pow(2, attempt)),
-                    (ex, wait) =>
-                    {
-                        this.Logger.LogError(ex, "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", "UTL", attempts, wait.Humanize(), this.GetType().Name, ex.Message);
-                        attempts++;
-                    });
+                            : 0 * Math.Pow(2, attempt)),
+                        (ex, wait) =>
+                        {
+                            this.Logger.LogError(ex,
+                                "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                                "UTL",
+                                attempts,
+                                wait.Humanize(),
+                                this.GetType().Name,
+                                ex.Message);
+                            attempts++;
+                        });
             }
 
-            var circuitBreakerPolicy = Policy
-                .Handle<Exception>()
-                .CircuitBreakerAsync(
-                    exceptionsAllowedBeforeBreaking: options.Attempts,
-                    durationOfBreak: options.BreakDuration.TotalMilliseconds >= 0
-                        ? options.BreakDuration
-                        : new TimeSpan(0, 0, 30),
-                    onBreak: (ex, wait) =>
+            var circuitBreakerPolicy = Policy.Handle<Exception>()
+                .CircuitBreakerAsync(options.Attempts,
+                    options.BreakDuration.TotalMilliseconds >= 0 ? options.BreakDuration : new TimeSpan(0, 0, 30),
+                    (ex, wait) =>
                     {
-                        this.Logger.LogError(ex, "{LogKey} startup task circuitbreaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}", "UTL", wait.Humanize(), this.GetType().Name, ex.Message);
+                        this.Logger.LogError(ex,
+                            "{LogKey} startup task circuitbreaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                            "UTL",
+                            wait.Humanize(),
+                            this.GetType().Name,
+                            ex.Message);
                     },
-                    onReset: () => this.Logger.LogDebug("{LogKey} startup task circuitbreaker behavior (circuit=closed, type={BehaviorType})", "UTL", this.GetType().Name),
-                    onHalfOpen: () => this.Logger.LogDebug("{LogKey} startup task circuitbreaker behavior (circuit=halfopen, type={BehaviorType})", "UTL", this.GetType().Name));
+                    () => this.Logger.LogDebug(
+                        "{LogKey} startup task circuitbreaker behavior (circuit=closed, type={BehaviorType})",
+                        "UTL",
+                        this.GetType().Name),
+                    () => this.Logger.LogDebug(
+                        "{LogKey} startup task circuitbreaker behavior (circuit=halfopen, type={BehaviorType})",
+                        "UTL",
+                        this.GetType().Name));
 
             var policyWrap = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
 
-            await policyWrap.ExecuteAsync(async (context) => await next().AnyContext(), cancellationToken);
+            await policyWrap.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

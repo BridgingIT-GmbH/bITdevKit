@@ -8,6 +8,13 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Reflection;
 
+/// <summary>
+///     A helper class to manage and add diagnostic trace activity tags related to methods in a .NET application.
+/// </summary>
+/// <remarks>
+///     This class provides methods to add tags that describe method characteristics to an Activity object,
+///     enhancing the traceability and debuggability of methods executions.
+/// </remarks>
 public static class TraceActivityHelper
 {
     public static void AddMethodTags(Activity activity, MethodInfo method)
@@ -19,12 +26,12 @@ public static class TraceActivityHelper
 
     public static void AddAttributeTags(Activity activity, MethodInfo method, Type innerType)
     {
-        var methodActivityAttributes = method.GetCustomAttribute<ActivityAttributesAttribute>(inherit: false);
-        var classActivityAttributes = innerType.GetCustomAttribute<ActivityAttributesAttribute>(inherit: false);
+        var methodActivityAttributes = method.GetCustomAttribute<ActivityAttributesAttribute>(false);
+        var classActivityAttributes = innerType.GetCustomAttribute<ActivityAttributesAttribute>(false);
 
         if (methodActivityAttributes != null)
         {
-            foreach (var key in classActivityAttributes.Attributes.Keys)
+            foreach (var key in methodActivityAttributes.Attributes.Keys)
             {
                 activity.AddTag(key, methodActivityAttributes.Attributes[key]);
             }
@@ -34,7 +41,7 @@ public static class TraceActivityHelper
         {
             foreach (var key in classActivityAttributes.Attributes.Keys)
             {
-                activity.AddTag(key, methodActivityAttributes.Attributes[key]);
+                activity.AddTag(key, classActivityAttributes.Attributes[key]);
             }
         }
     }

@@ -1,10 +1,7 @@
 ﻿namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
 using System.Text.Json;
-using Xunit;
-using Shouldly;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
@@ -14,36 +11,27 @@ public class EnumerationSystemTextJsonConverter2Tests
 
     public EnumerationSystemTextJsonConverter2Tests()
     {
-        this.options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-        this.options.Converters.Add(
-            new EnumerationSystemTextJsonConverter<StubUserRoles2, StubRoleDetails>());
+        this.options = new JsonSerializerOptions { WriteIndented = true };
+        this.options.Converters.Add(new EnumerationSystemTextJsonConverter<StubUserRoles2, StubRoleDetails>());
     }
 
     [Fact]
     public void Serialization_ShouldProduceCorrectJson()
     {
         // Arrange
-        var person = new StubPerson2
-        {
-            Name = "John Doe",
-            Age = 30,
-            Roles = StubUserRoles2.Moderator
-        };
+        var person = new StubPerson2 { Name = "John Doe", Age = 30, Roles = StubUserRoles2.Moderator };
 
         // Act
         var json = JsonSerializer.Serialize(person, this.options);
 
         // Assert
         json.ShouldBe("""
-{
-  "Name": "John Doe",
-  "Age": 30,
-  "Roles": 2
-}
-""");
+                      {
+                        "Name": "John Doe",
+                        "Age": 30,
+                        "Roles": 2
+                      }
+                      """);
     }
 
     [Fact]
@@ -51,12 +39,12 @@ public class EnumerationSystemTextJsonConverter2Tests
     {
         // Arrange
         const string json = """
-{
-  "Name": "Jane Smith",
-  "Age": 25,
-  "Roles": 3
-}
-""";
+                            {
+                              "Name": "Jane Smith",
+                              "Age": 25,
+                              "Roles": 3
+                            }
+                            """;
 
         // Act
         var person = JsonSerializer.Deserialize<StubPerson2>(json, this.options);
@@ -73,12 +61,7 @@ public class EnumerationSystemTextJsonConverter2Tests
     public void SerializationAndDeserialization_ShouldPreserveAllValues()
     {
         // Arrange
-        var originalPerson = new StubPerson2
-        {
-            Name = "Alice Johnson",
-            Age = 35,
-            Roles = StubUserRoles2.Moderator
-        };
+        var originalPerson = new StubPerson2 { Name = "Alice Johnson", Age = 35, Roles = StubUserRoles2.Moderator };
 
         // Act
         var json = JsonSerializer.Serialize(originalPerson, this.options);
@@ -98,41 +81,36 @@ public class EnumerationSystemTextJsonConverter2Tests
     {
         // Arrange
         const string json = """
-{
-  "Name": "Invalid Person",
-  "Age": 40,
-  "Roles": 4
-}
-""";
+                            {
+                              "Name": "Invalid Person",
+                              "Age": 40,
+                              "Roles": 4
+                            }
+                            """;
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() =>
-            JsonSerializer.Deserialize<StubPerson2>(json, this.options)
-        ).Message.ShouldContain("is not a valid id for");
+                JsonSerializer.Deserialize<StubPerson2>(json, this.options))
+            .Message.ShouldContain("is not a valid id for");
     }
 
     [Fact]
     public void Serialization_WithNullEnumerationValue_ShouldProduceNullForStatus()
     {
         // Arrange
-        var person = new StubPerson2
-        {
-            Name = "Null Status Person",
-            Age = 45,
-            Roles = null
-        };
+        var person = new StubPerson2 { Name = "Null Status Person", Age = 45, Roles = null };
 
         // Act
         var json = JsonSerializer.Serialize(person, this.options);
 
         // Assert
         json.ShouldBe("""
-{
-  "Name": "Null Status Person",
-  "Age": 45,
-  "Roles": null
-}
-""");
+                      {
+                        "Name": "Null Status Person",
+                        "Age": 45,
+                        "Roles": null
+                      }
+                      """);
     }
 
     [Fact]
@@ -140,12 +118,12 @@ public class EnumerationSystemTextJsonConverter2Tests
     {
         // Arrange
         const string json = """
-{
-  "Name": "Null Status Person",
-  "Age": 45,
-  "Roles": null
-}
-""";
+                            {
+                              "Name": "Null Status Person",
+                              "Age": 45,
+                              "Roles": null
+                            }
+                            """;
 
         // Act
         var person = JsonSerializer.Deserialize<StubPerson2>(json, this.options);

@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class DinnerReservationId : EntityId<Guid>
 {
-    private DinnerReservationId()
-    {
-    }
+    private DinnerReservationId() { }
 
     private DinnerReservationId(Guid guid)
     {

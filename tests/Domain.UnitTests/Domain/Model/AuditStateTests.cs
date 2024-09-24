@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class AuditStateTests
@@ -24,7 +24,7 @@ public class AuditStateTests
         // Assert
         auditState.CreatedBy.ShouldBe(createdBy);
         auditState.CreatedDescription.ShouldBe(description);
-        auditState.CreatedDate.ShouldNotBe(default(DateTimeOffset));
+        auditState.CreatedDate.ShouldNotBe(default);
         auditState.UpdatedDate.ShouldBe(auditState.CreatedDate);
     }
 
@@ -132,9 +132,9 @@ public class AuditStateTests
         // Arrange
         var auditState = new AuditState();
         auditState.SetCreated("Creator", "Initial creation");
-        System.Threading.Thread.Sleep(10); // Ensure time difference
+        Thread.Sleep(10); // Ensure time difference
         auditState.SetUpdated("Updater", "Update action");
-        System.Threading.Thread.Sleep(10); // Ensure time difference
+        Thread.Sleep(10); // Ensure time difference
         auditState.SetDeactivated("Deactivator", "Deactivation action");
 
         // Act

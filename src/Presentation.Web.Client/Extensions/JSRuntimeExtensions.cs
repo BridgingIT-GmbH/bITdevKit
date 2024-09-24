@@ -13,13 +13,13 @@ using Microsoft.JSInterop;
 public static class JsRuntimeExtensions
 {
     /// <summary>
-    /// Calls "console.log" on the client passing the args along with it.
+    ///     Calls "console.log" on the client passing the args along with it.
     /// </summary>
     /// <example>
-    /// LogAsync("data") //same as console.log('data')
+    ///     LogAsync("data") //same as console.log('data')
     /// </example>
     /// <example>
-    /// LogAsync("data", myData) //same as console.log('data', myData)
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
     /// </example>
     public static async Task LogAsync(this IJSRuntime source, params object[] args)
     {
@@ -27,13 +27,13 @@ public static class JsRuntimeExtensions
     }
 
     /// <summary>
-    /// Calls "console.table" on the client passing the args along with it.
+    ///     Calls "console.table" on the client passing the args along with it.
     /// </summary>
     /// <example>
-    /// TableAsync(myData) //same as console.table(data)
+    ///     TableAsync(myData) //same as console.table(data)
     /// </example>
     /// <example>
-    /// TableAsync(myData, new []{"firstName", "lastName"}) //same as console.table(myData, ["firstName", "lastName"])
+    ///     TableAsync(myData, new []{"firstName", "lastName"}) //same as console.table(myData, ["firstName", "lastName"])
     /// </example>
     public static async Task TableAsync(this IJSRuntime source, object data, string[] fields = null)
     {
@@ -41,10 +41,10 @@ public static class JsRuntimeExtensions
     }
 
     /// <summary>
-    /// Set the provided object to a global variable.
+    ///     Set the provided object to a global variable.
     /// </summary>
     /// <example>
-    /// SetGlobalAsync("foo", myData) //same as window.foo = myData
+    ///     SetGlobalAsync("foo", myData) //same as window.foo = myData
     /// </example>
     public static async Task SetGlobalAsync(this IJSRuntime source, string name, object data)
     {
@@ -52,10 +52,10 @@ public static class JsRuntimeExtensions
     }
 
     /// <summary>
-    /// Calls "navigator.clipboard.writeText" on the client passing the string along with it.
+    ///     Calls "navigator.clipboard.writeText" on the client passing the string along with it.
     /// </summary>
     /// <example>
-    /// CopyToClipboardAsync("data") //same as navigator.clipboard.writeText('data')
+    ///     CopyToClipboardAsync("data") //same as navigator.clipboard.writeText('data')
     /// </example>
     public static async Task CopyToClipboardAsync(this IJSRuntime source, string text)
     {

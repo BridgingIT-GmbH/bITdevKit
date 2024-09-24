@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,8 +20,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
 
         builder.Property(u => u.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => CustomerId.Create(value));
 
         builder.Property(u => u.FirstName)
@@ -32,14 +31,15 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
             .IsRequired()
             .HasMaxLength(128);
 
-        builder.OwnsOne(b => b.Email, pb =>
-        {
-            pb.HasIndex(nameof(Customer.Email.Value))
-              .IsUnique(true);
-            pb.Property(e => e.Value)
-              .IsRequired()
-              .HasMaxLength(256);
-        });
+        builder.OwnsOne(b => b.Email,
+            pb =>
+            {
+                pb.HasIndex(nameof(Customer.Email.Value))
+                    .IsUnique();
+                pb.Property(e => e.Value)
+                    .IsRequired()
+                    .HasMaxLength(256);
+            });
 
         builder.OwnsOneAuditState();
     }

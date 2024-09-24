@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 
 public class DocumentStoreCache : IDistributedCache
@@ -30,7 +28,7 @@ public class DocumentStoreCache : IDistributedCache
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
         token.ThrowIfCancellationRequested();
 
-        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), cancellationToken: token))?.FirstOrDefault();
+        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), token))?.FirstOrDefault();
 
         if (document != null)
         {
@@ -39,14 +37,18 @@ public class DocumentStoreCache : IDistributedCache
                 return document.Value;
             }
 
-            if (document.AbsoluteExpiration.HasValue && !document.SlidingExpiration.HasValue &&
+            if (document.AbsoluteExpiration.HasValue &&
+                !document.SlidingExpiration.HasValue &&
                 DateTimeOffset.UtcNow <= document.AbsoluteExpiration.Value)
             {
                 return document.Value;
             }
 
-            if (document.AbsoluteExpiration.HasValue && document.SlidingExpiration.HasValue && document.SlidingExpiration.HasValue &&
-                DateTimeOffset.UtcNow <= document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
+            if (document.AbsoluteExpiration.HasValue &&
+                document.SlidingExpiration.HasValue &&
+                document.SlidingExpiration.HasValue &&
+                DateTimeOffset.UtcNow <=
+                document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
             {
                 await this.RefreshDocumentAsync(key, document, token);
 
@@ -69,7 +71,7 @@ public class DocumentStoreCache : IDistributedCache
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
         token.ThrowIfCancellationRequested();
 
-        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), cancellationToken: token))?.FirstOrDefault();
+        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), token))?.FirstOrDefault();
 
         await this.RefreshDocumentAsync(key, document, token);
     }
@@ -81,7 +83,7 @@ public class DocumentStoreCache : IDistributedCache
 
     public async Task RemoveAsync(string key, CancellationToken token = default)
     {
-        await this.client.DeleteAsync(new DocumentKey("storage-cache", key), cancellationToken: token);
+        await this.client.DeleteAsync(new DocumentKey("storage-cache", key), token);
     }
 
     public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
@@ -89,7 +91,11 @@ public class DocumentStoreCache : IDistributedCache
         this.SetAsync(key, value, options).Wait();
     }
 
-    public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = default)
+    public async Task SetAsync(
+        string key,
+        byte[] value,
+        DistributedCacheEntryOptions options,
+        CancellationToken token = default)
     {
         var document = new CacheDocument
         {
@@ -108,15 +114,21 @@ public class DocumentStoreCache : IDistributedCache
             return;
         }
 
-        if (document.AbsoluteExpiration.HasValue && document.SlidingExpiration.HasValue && document.SlidingExpiration.HasValue &&
-            DateTimeOffset.UtcNow <= document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
+        if (document.AbsoluteExpiration.HasValue &&
+            document.SlidingExpiration.HasValue &&
+            document.SlidingExpiration.HasValue &&
+            DateTimeOffset.UtcNow <=
+            document.AbsoluteExpiration.Value.AddMilliseconds(document.SlidingExpiration.Value.TotalMilliseconds))
         {
             // refresh sliding expiration
-            await this.SetAsync(key, document.Value, new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.UtcNow.Add(document.SlidingExpiration.Value),
-                SlidingExpiration = document.SlidingExpiration.Value
-            }, token);
+            await this.SetAsync(key,
+                document.Value,
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.UtcNow.Add(document.SlidingExpiration.Value),
+                    SlidingExpiration = document.SlidingExpiration.Value
+                },
+                token);
         }
     }
 }

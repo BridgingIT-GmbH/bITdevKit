@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
+public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
+    : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
@@ -40,11 +38,16 @@ public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory 
 
         var result = await next().AnyContext(); // continue pipeline
 
-        if (!string.IsNullOrEmpty(instance.Options.Key))
+        if (string.IsNullOrEmpty(instance.Options.Key))
         {
-            this.Logger.LogDebug("{LogKey} command cache invalidate behavior (key={CacheKey}*, type={BehaviorType})", Constants.LogKey, instance.Options.Key, this.GetType().Name);
-            this.provider.RemoveStartsWith(instance.Options.Key);
+            return result;
         }
+
+        this.Logger.LogDebug("{LogKey} command cache invalidate behavior (key={CacheKey}*, type={BehaviorType})",
+            Constants.LogKey,
+            instance.Options.Key,
+            this.GetType().Name);
+        await this.provider.RemoveStartsWithAsync(instance.Options.Key, cancellationToken);
 
         return result;
     }

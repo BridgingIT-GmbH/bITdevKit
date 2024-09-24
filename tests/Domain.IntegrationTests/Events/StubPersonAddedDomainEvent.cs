@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Events;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 public class StubPersonAddedDomainEvent(Guid personId) : DomainEventBase
@@ -29,9 +26,10 @@ public class StubPersonAddedDomainEventHandler(ILoggerFactory loggerFactory) : D
     public override async Task Process(StubPersonAddedDomainEvent notification, CancellationToken cancellationToken)
     {
         await Task.Run(() =>
-        {
-            Handled = true;
-            PersonId = notification.PersonId;
-        }, cancellationToken);
+            {
+                Handled = true;
+                PersonId = notification.PersonId;
+            },
+            cancellationToken);
     }
 }

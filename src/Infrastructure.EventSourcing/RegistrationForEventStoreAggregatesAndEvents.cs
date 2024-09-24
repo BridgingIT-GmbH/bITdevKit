@@ -5,19 +5,18 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Reflection;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using EnsureThat;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Registration;
 
 public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEventStoreAggregatesAndEvents
 {
     private readonly IEventStoreAggregateRegistration aggregateRegistration;
     private readonly IEventStoreAggregateEventRegistration aggregateEventRegistration;
 
-    public RegistrationForEventStoreAggregatesAndEvents(IEventStoreAggregateRegistration aggregateRegistration,
+    public RegistrationForEventStoreAggregatesAndEvents(
+        IEventStoreAggregateRegistration aggregateRegistration,
         IEventStoreAggregateEventRegistration aggregateEventRegistration)
     {
         this.aggregateRegistration = aggregateRegistration;
@@ -42,9 +41,12 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
     {
         EnsureArg.IsNotNull(assemblies, nameof(assemblies));
         var list = assemblies.SelectMany(x => x.GetTypes())
-            .Where(x => typeof(EventSourcingAggregateRoot).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract
-                        && x.GetCustomAttributes(typeof(ImmutableNameAttribute), true).Length > 0)
-            .Select(x => x).ToList();
+            .Where(x => typeof(EventSourcingAggregateRoot).IsAssignableFrom(x) &&
+                !x.IsInterface &&
+                !x.IsAbstract &&
+                x.GetCustomAttributes(typeof(ImmutableNameAttribute), true).Length > 0)
+            .Select(x => x)
+            .ToList();
         foreach (var entry in list)
         {
             try
@@ -60,7 +62,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 var method = this.aggregateRegistration.GetType().GetMethod("Register");
                 if (method is null)
                 {
-                    System.Diagnostics.Trace.WriteLine($"Method Register not found at {entry.Name}");
+                    Trace.WriteLine($"Method Register not found at {entry.Name}");
                     continue;
                 }
 
@@ -69,7 +71,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"Error during automatic registration for aggregate {entry.Name}: {ex.Message}");
+                Trace.WriteLine($"Error during automatic registration for aggregate {entry.Name}: {ex.Message}");
             }
         }
     }
@@ -78,9 +80,12 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
     {
         EnsureArg.IsNotNull(assemblies, nameof(assemblies));
         var list = assemblies.SelectMany(x => x.GetTypes())
-            .Where(x => typeof(AggregateEvent).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract
-                        && x.GetCustomAttributes(typeof(ImmutableNameAttribute), true).Length > 0)
-            .Select(x => x).ToList();
+            .Where(x => typeof(AggregateEvent).IsAssignableFrom(x) &&
+                !x.IsInterface &&
+                !x.IsAbstract &&
+                x.GetCustomAttributes(typeof(ImmutableNameAttribute), true).Length > 0)
+            .Select(x => x)
+            .ToList();
         foreach (var entry in list)
         {
             try
@@ -96,7 +101,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 var method = this.aggregateEventRegistration.GetType().GetMethod("Register");
                 if (method is null)
                 {
-                    System.Diagnostics.Trace.WriteLine($"Method Register not found at {entry.Name}");
+                    Trace.WriteLine($"Method Register not found at {entry.Name}");
                     continue;
                 }
 
@@ -105,7 +110,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"Error during automatic registration for aggregate event {entry.Name}: {ex.Message}");
+                Trace.WriteLine($"Error during automatic registration for aggregate event {entry.Name}: {ex.Message}");
             }
         }
     }

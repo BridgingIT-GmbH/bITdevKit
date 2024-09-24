@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
+using DevKit.Domain.Specifications;
 
 public class MenuForNameSpecification(string name) : Specification<Menu>
 {
@@ -21,5 +20,8 @@ public class MenuForNameSpecification(string name) : Specification<Menu>
 
 public static partial class MenuSpecifications
 {
-    public static ISpecification<Menu> ForName(string name) => new MenuForNameSpecification(name);
+    public static ISpecification<Menu> ForName(string name)
+    {
+        return new MenuForNameSpecification(name);
+    }
 }

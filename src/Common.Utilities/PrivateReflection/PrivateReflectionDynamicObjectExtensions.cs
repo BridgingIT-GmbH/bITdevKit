@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using BridgingIT.DevKit.Common.PrivateReflection;
+using PrivateReflection;
 
 public static partial class UtilitiesExtensions
 {

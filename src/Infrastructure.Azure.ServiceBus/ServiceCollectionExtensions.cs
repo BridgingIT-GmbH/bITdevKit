@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -22,7 +22,8 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<ServiceBusMessageBrokerConfiguration>() ?? new ServiceBusMessageBrokerConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<ServiceBusMessageBrokerConfiguration>() ??
+            new ServiceBusMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton<IMessageBroker>(sp =>
         {

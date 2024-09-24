@@ -4,10 +4,9 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.RabbitMQ;
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+
+using Application.Messaging;
+using Common;
 
 public class RabbitMQMessageBrokerOptions : OptionsBase
 {
@@ -34,22 +33,22 @@ public class RabbitMQMessageBrokerOptions : OptionsBase
     public int ProcessDelay { get; set; } = 100;
 
     /// <summary>
-    /// The default message time to live.
+    ///     The default message time to live.
     /// </summary>
     public TimeSpan? MessageExpiration { get; set; }
 
     /// <summary>
-    /// Durable queue, survives a broker restart
+    ///     Durable queue, survives a broker restart
     /// </summary>
     public bool IsDurable { get; set; } = false;
 
     /// <summary>
-    /// Queue is exclusive to the message broker
+    ///     Queue is exclusive to the message broker
     /// </summary>
     public bool ExclusiveQueue { get; set; } = true;
 
     /// <summary>
-    /// Queue should be deleted automatically
+    ///     Queue should be deleted automatically
     /// </summary>
     public bool AutoDeleteQueue { get; set; } = true;
 }

@@ -5,23 +5,20 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// This interface represents a worker that processes domain events from the outbox.
+///     This interface represents a worker that processes domain events from the outbox.
 /// </summary>
 public interface IOutboxDomainEventWorker
 {
     /// <summary>
-    /// Processes domain events from the outbox.
+    ///     Processes domain events from the outbox.
     /// </summary>
     /// <param name="eventId">The id of the event to process</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     Task ProcessAsync(string eventId = null, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Purges domain events from the outbox.
+    ///     Purges domain events from the outbox.
     /// </summary>
     /// <param name="processedOnly">Onle purge processed domain events</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>

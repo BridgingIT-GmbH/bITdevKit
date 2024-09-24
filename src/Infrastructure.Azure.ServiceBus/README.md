@@ -1,27 +1,38 @@
 ![bITDevKit](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/bITDevKit_Logo.png)
 =====================================
-Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
+Empowering developers with modular components for modern application development, centered around
+Domain-Driven Design principles.
 
-Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
+Our goal is to empower developers by offering modular components that can be easily integrated into
+your projects. Whether you're working with repositories, commands, queries, or other components, the
+bITDevKit provides flexible solutions that can adapt to your specific needs.
 
-This repository includes the complete source code for the bITDevKit, along with a variety of sample applications located in the ./examples folder within the solution. These samples serve as practical demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All components are available as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
+This repository includes the complete source code for the bITDevKit, along with a variety of sample
+applications located in the ./examples folder within the solution. These samples serve as practical
+demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All
+components are available
+as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
-For the latest updates and release notes, please refer to the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
+For the latest updates and release notes, please refer to
+the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
 
 Join us in advancing the world of software development with the bITDevKit!
 
 ### Azure Service Bus Messaging (Broker implementation)
 
-Getting Stared: https://azuresdkdocs.blob.core.windows.net/$web/dotnet/Azure.Messaging.ServiceBus/7.14.0/index.html
+Getting
+Stared: https://azuresdkdocs.blob.core.windows.net/$web/dotnet/Azure.Messaging.ServiceBus/7.14.0/index.html
 Research: https://chat.openai.com/share/90316478-d295-4c7b-9e8f-4861ca39097e
 
 [Topics](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview#topics)
 are useful in publish/subscribe scenarios.
 ![](https://learn.microsoft.com/en-us/azure/service-bus-messaging/media/service-bus-messaging-overview/about-service-bus-topic.png)
 
-*** [standard tier](https://azure.microsoft.com/en-us/pricing/details/service-bus/#pricing) is necessary to use topics
+*** [standard tier](https://azure.microsoft.com/en-us/pricing/details/service-bus/#pricing) is
+necessary to use topics
 
 Sending (Sender per topic):
+
 - use ServiceBusClient to communicate with Azure Service Bus
 - create a sender to send messages to a topic (messagename)
 
@@ -40,12 +51,12 @@ Sending (Sender per topic):
 
 Receiving (Processor per topic):
 
-
 ```csharp
     var processor = client.CreateProcessor(topicName, subscriptionName);
 ```
 
-when the number of topics is undefined (onsubscribe), you can dynamically create and register multiple processors for each topic
+when the number of topics is undefined (onsubscribe), you can dynamically create and register
+multiple processors for each topic
 
 ```csharp
 using Azure.Messaging.ServiceBus;

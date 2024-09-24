@@ -9,11 +9,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Debugging;
 
 public static class HostBuilderExtensions
 {
     //[Obsolete("Use the new builder.Host.ConfigureLogging(), without the configuration argument")]
-    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, IConfiguration configuration = null, string[] exclusionPatterns = null)
+    public static IHostBuilder ConfigureLogging(
+        this IHostBuilder builder,
+        IConfiguration configuration = null,
+        string[] exclusionPatterns = null)
     {
         //    return builder.ConfigureLogging();
         //}
@@ -22,16 +26,19 @@ public static class HostBuilderExtensions
         //{
         EnsureArg.IsNotNull(builder, nameof(builder));
 
-        Serilog.Debugging.SelfLog.Enable(Console.Error);
+        SelfLog.Enable(Console.Error);
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {
             builder.ConfigureLogging((ctx, c) =>
             {
                 var loggerConfiguration = new LoggerConfiguration();
-                loggerConfiguration.Filter.ByExcluding("RequestPath like '/health%'"); // exclude health checks from logs
-                loggerConfiguration.Filter.ByExcluding("RequestPath like '/api/events/raw'"); // exclude otel push from logs
-                loggerConfiguration.Filter.ByExcluding("StartsWith(@Message, 'Execution attempt. Source')"); // exclude health/otel from logs
+                loggerConfiguration.Filter.ByExcluding(
+                    "RequestPath like '/health%'"); // exclude health checks from logs
+                loggerConfiguration.Filter.ByExcluding(
+                    "RequestPath like '/api/events/raw'"); // exclude otel push from logs
+                loggerConfiguration.Filter.ByExcluding(
+                    "StartsWith(@Message, 'Execution attempt. Source')"); // exclude health/otel from logs
 
                 if (exclusionPatterns != null)
                 {
@@ -46,8 +53,7 @@ public static class HostBuilderExtensions
                     WriteToOpenTelemetry(loggerConfiguration, configuration);
                 }
 
-                var logger = loggerConfiguration.ReadFrom.Configuration(ctx.Configuration)
-                    .CreateLogger();
+                var logger = loggerConfiguration.ReadFrom.Configuration(ctx.Configuration).CreateLogger();
 
                 c.ClearProviders();
                 c.AddSerilog(logger);
@@ -65,7 +71,7 @@ public static class HostBuilderExtensions
         EnsureArg.IsNotNull(builder, nameof(builder));
         EnsureArg.IsNotNull(configure, nameof(configure));
 
-        Serilog.Debugging.SelfLog.Enable(Console.Error);
+        SelfLog.Enable(Console.Error);
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {
@@ -88,34 +94,38 @@ public static class HostBuilderExtensions
 
     private static void WriteToOpenTelemetry(LoggerConfiguration loggerConfiguration, IConfiguration configuration)
     {
-        if (!string.IsNullOrEmpty(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder
+        if (!string.IsNullOrEmpty(
+                configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder
         {
-            loggerConfiguration.WriteTo.OpenTelemetry(options => // https://github.com/serilog/serilog-sinks-opentelemetry?tab=readme-ov-file#getting-started
-            {
-                options.Endpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-                foreach (var header in configuration["OTEL_EXPORTER_OTLP_HEADERS"]?.Split(',') ?? [])
+            loggerConfiguration.WriteTo.OpenTelemetry(
+                options => // https://github.com/serilog/serilog-sinks-opentelemetry?tab=readme-ov-file#getting-started
                 {
-                    var (key, value) = header.Split('=') switch
+                    options.Endpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+                    foreach (var header in configuration["OTEL_EXPORTER_OTLP_HEADERS"]?.Split(',') ?? [])
                     {
-                    [string k, string v] => (k, v),
-                        var v => throw new Exception($"Invalid header format {v}")
-                    };
+                        var (key, value) = header.Split('=') switch
+                        {
+                            [string k, string v] => (k, v),
+                            var v => throw new Exception($"Invalid header format {v}")
+                        };
 
-                    options.Headers.Add(key, value);
-                }
+                        options.Headers.Add(key, value);
+                    }
 
-                options.ResourceAttributes.Add("service.name", "presentation-web-server");
+                    options.ResourceAttributes.Add("service.name", "presentation-web-server");
 
-                //To remove the duplicate issue, we can use the below code to get the key and value from the configuration
-                // https://stackoverflow.com/a/78419578/1758814
-                var (otelResourceAttribute, otelResourceAttributeValue) = configuration["OTEL_RESOURCE_ATTRIBUTES"]?.Split('=') switch
-                {
-                [string k, string v] => (k, v),
-                    _ => throw new Exception($"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
-                };
+                    //To remove the duplicate issue, we can use the below code to get the key and value from the configuration
+                    // https://stackoverflow.com/a/78419578/1758814
+                    var (otelResourceAttribute, otelResourceAttributeValue) = configuration["OTEL_RESOURCE_ATTRIBUTES"]
+                            ?.Split('=') switch
+                        {
+                            [string k, string v] => (k, v),
+                            _ => throw new Exception(
+                                $"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
+                        };
 
-                options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
-            });
+                    options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
+                });
         }
     }
 }

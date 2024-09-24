@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 
 public class MarketingDbContext(DbContextOptions<MarketingDbContext> options) : ModuleDbContextBase(options)

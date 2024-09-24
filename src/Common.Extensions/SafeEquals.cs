@@ -10,7 +10,7 @@ using System.Diagnostics;
 public static partial class Extensions
 {
     /// <summary>
-    /// Safeky compares the source to the value string.
+    ///     Safeky compares the source to the value string.
     /// </summary>
     /// <param name="source">the source string.</param>
     /// <param name="value">the value string to compare to.</param>
@@ -22,16 +22,11 @@ public static partial class Extensions
         string value,
         StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
-        if (source is null && value is null)
+        return source switch
         {
-            return true;
-        }
-
-        if (source is null && value is not null)
-        {
-            return false;
-        }
-
-        return source.Equals(value, comparisonType);
+            null when value is null => true,
+            null => false,
+            _ => source.Equals(value, comparisonType)
+        };
     }
 }

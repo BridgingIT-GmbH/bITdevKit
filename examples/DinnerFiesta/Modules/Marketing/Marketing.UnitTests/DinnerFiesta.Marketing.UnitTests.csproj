@@ -10,24 +10,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="Bogus" />
-    <Using Include="Bogus.DataSets" />
-    <Using Include="BridgingIT.DevKit.Common" />
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <Using Include="Bogus"/>
+    <Using Include="Bogus.DataSets"/>
+    <Using Include="BridgingIT.DevKit.Common"/>
+    <Using Include="NSubstitute"/>
+    <Using Include="Shouldly"/>
+    <Using Include="Xunit"/>
+    <Using Include="Xunit.Abstractions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="FluentAssertions.Web" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="Bogus"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="FluentAssertions.Web"/>
+    <PackageReference Include="NSubstitute"/>
+    <PackageReference Include="BenchmarkDotNet"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="xunit"/>
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -39,11 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj" />
-    <ProjectReference Include="..\Marketing.Domain\DinnerFiesta.Marketing.Domain.csproj" />
-    <ProjectReference Include="..\Marketing.Presentation\DinnerFiesta.Marketing.Presentation.csproj" />
-    <ProjectReference Include="..\Marketing.Infrastructure\DinnerFiesta.Marketing.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
+    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj"/>
+    <ProjectReference Include="..\Marketing.Domain\DinnerFiesta.Marketing.Domain.csproj"/>
+    <ProjectReference Include="..\Marketing.Presentation\DinnerFiesta.Marketing.Presentation.csproj"/>
+    <ProjectReference Include="..\Marketing.Infrastructure\DinnerFiesta.Marketing.Infrastructure.csproj"/>
   </ItemGroup>
 
 </Project>

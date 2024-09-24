@@ -5,23 +5,17 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System.IO;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using EnsureThat;
+using Common;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Store;
 
 public static class EventStoreExtensions
 {
-    public static EventBlob ConvertToBlob(
-        this IAggregateEvent @event,
-        ISerializer serializer)
+    public static EventBlob ConvertToBlob(this IAggregateEvent @event, ISerializer serializer)
     {
         EnsureArg.IsNotNull(serializer, nameof(serializer));
 
-        return new EventBlob(
-            @event.GetType(),
-            serializer.SerializeToBytes(@event));
+        return new EventBlob(@event.GetType(), serializer.SerializeToBytes(@event));
     }
 
     public static IAggregateEvent ConvertFromBlob(
@@ -54,14 +48,10 @@ public static class EventStoreExtensions
         return @event as EventSourcingAggregateRoot;
     }
 
-    public static EventBlob ConvertToBlob(
-        this EventSourcingAggregateRoot aggregate,
-        ISerializer serializer)
+    public static EventBlob ConvertToBlob(this EventSourcingAggregateRoot aggregate, ISerializer serializer)
     {
         EnsureArg.IsNotNull(serializer, nameof(serializer));
 
-        return new EventBlob(
-            aggregate.GetType(),
-            serializer.SerializeToBytes(aggregate));
+        return new EventBlob(aggregate.GetType(), serializer.SerializeToBytes(aggregate));
     }
 }

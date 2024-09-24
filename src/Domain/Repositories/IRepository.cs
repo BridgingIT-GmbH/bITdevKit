@@ -5,6 +5,4 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-public interface IRepository
-{
-}
+public interface IRepository { }

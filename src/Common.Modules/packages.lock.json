@@ -10,9 +10,9 @@
       },
       "FluentValidation": {
         "type": "Direct",
-        "requested": "[11.9.2, )",
-        "resolved": "11.9.2",
-        "contentHash": "XeHp9LvFvu1fsQ/NvDCymV02GOCB1nz7ZUhfpI3uMhCcHTkV1K5bMkv+Nc/kuNYyAsX5+5bcmUanIEMd5QN+Eg=="
+        "requested": "[11.10.0, )",
+        "resolved": "11.10.0",
+        "contentHash": "qsJGSJDdZ8qiG+lVJ70PZfJHcEdq8UQZ/tZDXoj78/iHKG6lVKtMJsD11zyyv/IPc7rwqGqnFoFLTNzpo3IPYg=="
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Direct",
@@ -106,12 +106,6 @@
         "requested": "[4.0.1, )",
         "resolved": "4.0.1",
         "contentHash": "pzeDRXdpSLSsgBHpZcmpIDxqMy845Ab4s+dfnBg0sN9h8q/4Wo3vAoe0QCGPze1Q06EVtEPupS+UvLm8iXQmTQ=="
-      },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
       },
       "MessagePack.Annotations": {
         "type": "Transitive",
@@ -362,6 +356,7 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Primitives": "[8.0.0, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"
@@ -392,7 +387,7 @@
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.2, )",
+          "FluentValidation": "[11.10.0, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",

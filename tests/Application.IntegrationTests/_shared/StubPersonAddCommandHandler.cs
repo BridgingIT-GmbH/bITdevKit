@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Commands;
 
-using BridgingIT.DevKit.Application.Commands;
+using Application.Commands;
 using Microsoft.Extensions.Logging;
 
 public class StubPersonAddCommandHandler(ILoggerFactory loggerFactory) : CommandHandlerBase<StubPersonAddCommand, bool>(loggerFactory)
@@ -17,9 +17,9 @@ public class StubPersonAddCommandHandler(ILoggerFactory loggerFactory) : Command
         {
             // TODO entscheidung: cancel oder exception?
             // throw new FluentValidation.ValidationException(validationResult.Errors);
-            return await Task.FromResult(
-                new CommandResponse<bool>(string.Join(", ",
-                    validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}")))).AnyContext();
+            return await Task.FromResult(new CommandResponse<bool>(string.Join(", ",
+                    validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))))
+                .AnyContext();
         }
 
         // TODO : repo verwenden
@@ -27,6 +27,7 @@ public class StubPersonAddCommandHandler(ILoggerFactory loggerFactory) : Command
         this.Logger.LogInformation("command: person inserted");
         request.Person.Id = Guid.NewGuid();
 
-        return await Task.FromResult(new CommandResponse<bool> { Result = true }).AnyContext();
+        return await Task.FromResult(new CommandResponse<bool> { Result = true })
+            .AnyContext();
     }
 }

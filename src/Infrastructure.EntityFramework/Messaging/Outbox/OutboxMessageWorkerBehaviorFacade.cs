@@ -12,8 +12,11 @@ using Microsoft.Extensions.Logging;
 public static class OutboxMessageWorkerBehaviorFacade<TContext>
     where TContext : DbContext, IOutboxMessageContext
 {
-    public static OutboxMessagePublisherBehavior<TContext> CreatePublishBehaviorForTest(ILoggerFactory loggerFactory,
-        TContext context, IOutboxMessageQueue messageQueue = null, OutboxMessageOptions options = null)
+    public static OutboxMessagePublisherBehavior<TContext> CreatePublishBehaviorForTest(
+        ILoggerFactory loggerFactory,
+        TContext context,
+        IOutboxMessageQueue messageQueue = null,
+        OutboxMessageOptions options = null)
     {
         return new OutboxMessagePublisherBehavior<TContext>(loggerFactory, context, messageQueue, options);
     }

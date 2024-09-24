@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class MenuId : AggregateRootId<Guid>
 {
-    private MenuId()
-    {
-    }
+    private MenuId() { }
 
     private MenuId(Guid guid)
     {
@@ -20,7 +18,10 @@ public class MenuId : AggregateRootId<Guid>
 
     public override Guid Value { get; protected set; }
 
-    public static implicit operator string(MenuId id) => id.Value.ToString();
+    public static implicit operator string(MenuId id)
+    {
+        return id.Value.ToString();
+    }
 
     public static MenuId Create()
     {

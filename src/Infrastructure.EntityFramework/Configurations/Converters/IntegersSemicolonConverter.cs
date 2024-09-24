@@ -5,19 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-public class IntegersSemicolonConverter
-    : ValueConverter<IEnumerable<int>, string>
+public class IntegersSemicolonConverter : ValueConverter<IEnumerable<int>, string>
 {
     public IntegersSemicolonConverter()
-        : base(
-            v => string.Join(";", v),
-            v => v.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s)))
-    {
-    }
+        : base(v => string.Join(";", v),
+            v => v.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s))) { }
 }
 
 // TODO: as from C# 11 the generic math interface INumber<T> can be used to convert all number types (int/double/...) with a single converter

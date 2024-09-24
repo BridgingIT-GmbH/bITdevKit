@@ -8,10 +8,10 @@ namespace BridgingIT.DevKit.Common;
 public static class DefaultSerializer
 {
     /// <summary>
-    /// Gets the default serializer.
+    ///     Gets the default serializer.
     /// </summary>
     /// <value>
-    /// Create a new serializer
+    ///     Create a new serializer
     /// </value>
     public static ISerializer Create { get; } = new MessagePackSerializer();
 }

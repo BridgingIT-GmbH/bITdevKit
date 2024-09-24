@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
+using EventSourcing.Registration;
+using Model;
 
 [UnitTest("Domain")]
 public class EventStoreRegistrationTests
@@ -27,7 +27,8 @@ public class EventStoreRegistrationTests
     {
         var registration = new EventStoreAggregateRegistration();
         registration.Register<Person>(PersonImmutableConst);
-        registration.GetImmutableName<Person>().ShouldBe(PersonImmutableConst);
+        registration.GetImmutableName<Person>()
+            .ShouldBe(PersonImmutableConst);
     }
 
     [Fact]
@@ -36,8 +37,10 @@ public class EventStoreRegistrationTests
         var registration = new EventStoreAggregateRegistration();
         registration.Register<Person>(PersonImmutableConst);
         registration.Register<Order>(OrderImmutableConst);
-        registration.GetImmutableName<Person>().ShouldBe(PersonImmutableConst);
-        registration.GetImmutableName<Order>().ShouldBe(OrderImmutableConst);
+        registration.GetImmutableName<Person>()
+            .ShouldBe(PersonImmutableConst);
+        registration.GetImmutableName<Order>()
+            .ShouldBe(OrderImmutableConst);
     }
 
     [Fact]

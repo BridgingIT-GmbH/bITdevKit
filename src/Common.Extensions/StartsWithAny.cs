@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
-
 public static partial class Extensions
 {
     public static bool StartsWithAny(

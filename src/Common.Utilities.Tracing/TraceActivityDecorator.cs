@@ -13,12 +13,13 @@ public class TraceActivityDecorator<TDecorated> : DispatchProxy
     where TDecorated : class
 {
     private ActivitySource activitySources;
+    private bool decorateAllMethods = true;
     private TDecorated ínner;
     private IActivityNamingSchema namingSchema = new MethodFullNameSchema();
-    private bool decorateAllMethods = true;
 
     /// <summary>
-    /// Creates a new ActivityDecorator instance wrapping the specific instance (inner) and implementing the TDecorated interface
+    ///     Creates a new ActivityDecorator instance wrapping the specific instance (inner) and implementing the TDecorated
+    ///     interface
     /// </summary>
     /// <returns></returns>
     public static TDecorated Create(
@@ -76,13 +77,10 @@ public class TraceActivityDecorator<TDecorated> : DispatchProxy
         }
     }
 
-    private void SetParameters(
-        TDecorated decorated,
-        IActivityNamingSchema spanNamingSchema,
-        bool decorateAllMethods)
+    private void SetParameters(TDecorated decorated, IActivityNamingSchema spanNamingSchema, bool decorateAllMethods)
     {
         this.ínner = decorated;
-        this.activitySources = new(this.ínner!.GetType().FullName!);
+        this.activitySources = new ActivitySource(this.ínner!.GetType().FullName!);
         this.decorateAllMethods = decorateAllMethods;
 
         if (spanNamingSchema != null)

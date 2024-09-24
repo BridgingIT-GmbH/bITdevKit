@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System;
-
 public class DocumentEntity
 {
     public string PartitionKey { get; set; }

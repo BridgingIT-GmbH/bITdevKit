@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
 
-public class EntityCommandMessagingBehaviorOptionsBuilder :
-    OptionsBuilderBase<EntityCommandMessagingBehaviorOptions, EntityCommandMessagingBehaviorOptionsBuilder>
+public class EntityCommandMessagingBehaviorOptionsBuilder
+    : OptionsBuilderBase<EntityCommandMessagingBehaviorOptions, EntityCommandMessagingBehaviorOptionsBuilder>
 {
     private static readonly List<Type> ExcludedEntityTypes = [];
 

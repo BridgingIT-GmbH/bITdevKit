@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests.Infrastructure;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
+using Core.Infrastructure;
+using Domain;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -29,7 +26,7 @@ public class GuestRepositoryTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = Guest.Create($"John {ticks}", $"Doe {ticks}", UserId.Create(), null);
+        var entity = Guest.Create($"John {ticks}", $"Doe {ticks}", UserId.Create());
 
         // Act
         this.context.Guests.Add(entity);

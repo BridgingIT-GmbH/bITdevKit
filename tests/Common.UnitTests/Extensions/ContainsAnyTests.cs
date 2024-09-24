@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class ContainsAnyTests
 {

@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
+using Common;
+using Domain;
 using Mapster;
+using Web.Controllers;
 
 public class CoreMapperRegister : IRegister
 {

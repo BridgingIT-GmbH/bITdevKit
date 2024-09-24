@@ -13,13 +13,9 @@ using Xunit.Abstractions;
 public abstract class TestsBase : IDisposable
 {
     protected TestsBase(ITestOutputHelper output)
-        : this(output, null)
-    {
-    }
+        : this(output, null) { }
 
-    protected TestsBase(
-        ITestOutputHelper output,
-        Action<IServiceCollection> services)
+    protected TestsBase(ITestOutputHelper output, Action<IServiceCollection> services)
     {
         this.Output = output;
         this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(output)));
@@ -33,6 +29,11 @@ public abstract class TestsBase : IDisposable
 
     protected ServiceProvider ServiceProvider { get; }
 
+    public void Dispose()
+    {
+        this.ServiceProvider.Dispose();
+    }
+
     public ILogger CreateLogger()
     {
         return this.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Tests");
@@ -41,11 +42,6 @@ public abstract class TestsBase : IDisposable
     public ILogger<T> CreateLogger<T>()
     {
         return this.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<T>();
-    }
-
-    public void Dispose()
-    {
-        this.ServiceProvider.Dispose();
     }
 
     protected long Benchmark(Action action, int iterations = 1)
@@ -61,7 +57,9 @@ public abstract class TestsBase : IDisposable
         }
 
         sw.Stop();
-        this.Output?.WriteLine($"Benchmark: Execution with #{iterations} iterations took: {sw.Elapsed.TotalMilliseconds}ms\r\n  - Gen-0: {GC.CollectionCount(0)}, Gen-1: {GC.CollectionCount(1)}, Gen-2: {GC.CollectionCount(2)}", sw.ElapsedMilliseconds);
+        this.Output?.WriteLine(
+            $"Benchmark: Execution with #{iterations} iterations took: {sw.Elapsed.TotalMilliseconds}ms\r\n  - Gen-0: {GC.CollectionCount(0)}, Gen-1: {GC.CollectionCount(1)}, Gen-2: {GC.CollectionCount(2)}",
+            sw.ElapsedMilliseconds);
 
         return sw.ElapsedMilliseconds;
     }

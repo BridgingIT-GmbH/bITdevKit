@@ -5,18 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-public class ScopedJobWrapper(
-    IServiceScope scope,
-    IJob innerJob,
-    IEnumerable<IModuleContextAccessor> moduleAccessors) : JobWrapper(null, innerJob, moduleAccessors)
+public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IModuleContextAccessor> moduleAccessors)
+    : JobWrapper(null, innerJob, moduleAccessors)
 {
     private readonly IServiceScope scope = scope;
 
@@ -32,17 +27,19 @@ public class ScopedJobWrapper(
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
-        {
-            [Constants.CorrelationIdKey] = correlationId,
-            [Constants.FlowIdKey] = flowId,
-            [Constants.JobIdKey] = jobId,
-            [Constants.JobTypeKey] = jobTypeName,
-        }))
+               {
+                   [Constants.CorrelationIdKey] = correlationId,
+                   [Constants.FlowIdKey] = flowId,
+                   [Constants.JobIdKey] = jobId,
+                   [Constants.JobTypeKey] = jobTypeName
+               }))
         {
             try
             {
                 var behaviors = this.scope.ServiceProvider.GetServices<IJobSchedulingBehavior>();
-                logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
+                logger?.LogDebug(
+                    $"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute",
+                    Constants.LogKey);
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
                 context.Put(Constants.CorrelationIdKey, correlationId);
@@ -54,7 +51,12 @@ public class ScopedJobWrapper(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}", Constants.LogKey, jobTypeName, jobId, ex.Message);
+                logger.LogError(ex,
+                    "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}",
+                    Constants.LogKey,
+                    jobTypeName,
+                    jobId,
+                    ex.Message);
             }
         }
     }
@@ -68,10 +70,14 @@ public class ScopedJobWrapper(
     private async Task ExecutePipeline(IJobExecutionContext context, IEnumerable<IJobSchedulingBehavior> behaviors)
     {
         // create a behavior pipeline and run it (execute > next)
-        async Task JobExecutor() => await this.InnerJob.Execute(context).AnyContext();
+        async Task JobExecutor()
+        {
+            await this.InnerJob.Execute(context).AnyContext();
+        }
 
-        await behaviors.SafeNull().Reverse()
-          .Aggregate((JobDelegate)JobExecutor, (next, pipeline) => async () =>
-              await pipeline.Execute(context, next))();
+        await behaviors.SafeNull()
+            .Reverse()
+            .Aggregate((JobDelegate)JobExecutor,
+                (next, pipeline) => async () => await pipeline.Execute(context, next))();
     }
 }

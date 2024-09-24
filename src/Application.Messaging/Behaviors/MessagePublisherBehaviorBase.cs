@@ -11,10 +11,16 @@ using Microsoft.Extensions.Logging.Abstractions;
 public abstract class MessagePublisherBehaviorBase : IMessagePublisherBehavior
 {
     protected MessagePublisherBehaviorBase(ILoggerFactory loggerFactory)
-        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    {
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    }
 
     protected ILogger Logger { get; }
 
-    public abstract Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
+    public abstract Task Publish<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        MessagePublisherDelegate next)
         where TMessage : IMessage;
 }

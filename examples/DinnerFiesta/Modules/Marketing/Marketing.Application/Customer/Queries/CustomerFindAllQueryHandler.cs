@@ -5,19 +5,20 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
-public class CustomerFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository) : QueryHandlerBase<CustomerFindAllQuery, Result<IEnumerable<Customer>>>(loggerFactory)
+public class CustomerFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository)
+    : QueryHandlerBase<CustomerFindAllQuery, Result<IEnumerable<Customer>>>(loggerFactory)
 {
-    public override async Task<QueryResponse<Result<IEnumerable<Customer>>>> Process(CustomerFindAllQuery query, CancellationToken cancellationToken)
+    public override async Task<QueryResponse<Result<IEnumerable<Customer>>>> Process(
+        CustomerFindAllQuery query,
+        CancellationToken cancellationToken)
     {
-        return QueryResponse.For(
-            await repository.FindAllResultAsync(cancellationToken: cancellationToken).AnyContext());
+        return QueryResponse.For(await repository.FindAllResultAsync(cancellationToken: cancellationToken)
+            .AnyContext());
     }
 }

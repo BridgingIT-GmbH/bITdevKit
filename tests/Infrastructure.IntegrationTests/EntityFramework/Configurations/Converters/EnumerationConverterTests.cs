@@ -1,8 +1,5 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using System;
-using System.Linq;
-
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EnumerationConverterTests(ITestOutputHelper output, TestEnvironmentFixture fixture)

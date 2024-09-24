@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 using Polly;
-using Quartz;
-using Humanizer;
 using Polly.Timeout;
+using Quartz;
 
 public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
@@ -21,13 +20,18 @@ public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSch
         if (options is not null)
         {
             var jobTypeName = context.JobDetail.JobType.FullName;
-            var timeoutPolicy = Policy
-            .TimeoutAsync(options.Timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync: async (context, timeout, task) =>
-            {
-                await Task.Run(() => this.Logger.LogError("{LogKey} job timeout behavior (timeout={Timeout}, type={JobType})", Constants.LogKey, timeout.Humanize(), jobTypeName));
-            });
+            var timeoutPolicy = Policy.TimeoutAsync(options.Timeout,
+                TimeoutStrategy.Pessimistic,
+                async (context, timeout, task) =>
+                {
+                    await Task.Run(() =>
+                        this.Logger.LogError("{LogKey} job timeout behavior (timeout={Timeout}, type={JobType})",
+                            Constants.LogKey,
+                            timeout.Humanize(),
+                            jobTypeName));
+                });
 
-            await timeoutPolicy.ExecuteAsync(async (context) => await next().AnyContext(), context.CancellationToken);
+            await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), context.CancellationToken);
         }
         else
         {

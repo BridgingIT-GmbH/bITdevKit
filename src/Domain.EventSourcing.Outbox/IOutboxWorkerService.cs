@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Outbox;
 
-using System.Threading.Tasks;
-
 public interface IOutboxWorkerService
 {
     Task DoWorkAsync();

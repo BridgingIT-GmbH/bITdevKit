@@ -8,9 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.Entities;
 using BridgingIT.DevKit.Common;
+using Extensions;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
 
 public static class ServiceCollectionExtensions
 {
@@ -22,7 +21,8 @@ public static class ServiceCollectionExtensions
 
         if (!behavior.ImplementsInterface(typeof(ICommandBehavior<,>)))
         {
-            throw new ArgumentException($"Command behavior {behavior.Name} does not implement {nameof(ICommandBehavior)}.");
+            throw new ArgumentException(
+                $"Command behavior {behavior.Name} does not implement {nameof(ICommandBehavior)}.");
         }
 
         context.Services.AddTransient(typeof(IPipelineBehavior<,>), behavior);
@@ -38,8 +38,8 @@ public static class ServiceCollectionExtensions
         this CommandBuilderContext context,
         Builder<EntityCommandMessagingBehaviorOptionsBuilder, EntityCommandMessagingBehaviorOptions> optionsBuilder)
     {
-        context.WithEntityCommandMessagingBehavior(
-            optionsBuilder(new EntityCommandMessagingBehaviorOptionsBuilder()).Build());
+        context.WithEntityCommandMessagingBehavior(optionsBuilder(new EntityCommandMessagingBehaviorOptionsBuilder())
+            .Build());
 
         return context;
     }

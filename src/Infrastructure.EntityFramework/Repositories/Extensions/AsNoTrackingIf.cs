@@ -5,17 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions
 {
-    public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(
-        this DbSet<TEntity> source,
-        IFindOptions<TEntity> options)
-    where TEntity : class, IEntity
+    public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(this DbSet<TEntity> source, IFindOptions<TEntity> options)
+        where TEntity : class, IEntity
     {
         if (options?.NoTracking == true)
         {
@@ -29,8 +26,8 @@ public static partial class Extensions
         this DbSet<TDatabaseEntity> source,
         IFindOptions<TEntity> options,
         IEntityMapper mapper)
-    where TEntity : class, IEntity
-    where TDatabaseEntity : class
+        where TEntity : class, IEntity
+        where TDatabaseEntity : class
     {
         if (options?.NoTracking == true)
         {

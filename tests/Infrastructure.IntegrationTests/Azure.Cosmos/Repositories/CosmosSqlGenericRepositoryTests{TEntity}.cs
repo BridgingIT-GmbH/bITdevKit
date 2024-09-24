@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Infrastructure.Azure;
+using Domain.Repositories;
+using Domain.Specifications;
 using DotNet.Testcontainers.Containers;
+using Infrastructure.Azure;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -121,11 +118,10 @@ public class CosmosSqlGenericRepositoryTests
         var entity2 = await this.InsertEntityAsync(18);
         var entity3 = await this.InsertEntityAsync(20);
         var entity4 = await this.InsertEntityAsync(18);
-        var entity5 = await this.InsertEntityAsync(24);
+        var entity5 = await this.InsertEntityAsync();
         // Act
-        var results = await this.sut.FindAllAsync(
-            new Specification<PersonStub>(_ => false),
-            new FindOptions<PersonStub>(skip: 10, take: 2, new OrderOption<PersonStub>(e => e.Age)));
+        var results = await this.sut.FindAllAsync(new Specification<PersonStub>(_ => false),
+            new FindOptions<PersonStub>(10, 2, new OrderOption<PersonStub>(e => e.Age)));
 
         // Assert
         //this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
@@ -143,25 +139,32 @@ public class CosmosSqlGenericRepositoryTests
         var entity2 = await this.InsertEntityAsync(16);
         var entity3 = await this.InsertEntityAsync(20);
         var entity4 = await this.InsertEntityAsync(18);
-        var entity5 = await this.InsertEntityAsync(24);
+        var entity5 = await this.InsertEntityAsync();
 
         // Act
-        var results = await this.sut.FindAllAsync(
-            new Specification<PersonStub>(e => e.FirstName == entity1.FirstName || e.FirstName == entity2.FirstName || e.FirstName == entity3.FirstName || e.FirstName == entity4.FirstName || e.FirstName == entity5.FirstName),
-            new FindOptions<PersonStub>(skip: 2, take: 2, new OrderOption<PersonStub>(e => e.Age)));
+        var results = await this.sut.FindAllAsync(new Specification<PersonStub>(e =>
+                e.FirstName == entity1.FirstName ||
+                e.FirstName == entity2.FirstName ||
+                e.FirstName == entity3.FirstName ||
+                e.FirstName == entity4.FirstName ||
+                e.FirstName == entity5.FirstName),
+            new FindOptions<PersonStub>(2, 2, new OrderOption<PersonStub>(e => e.Age)));
 
         // Assert
         //this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.Count().ShouldBe(2);
+        results.Count()
+            .ShouldBe(2);
         results.ShouldNotContain(entity1);
         results.ShouldNotContain(entity2);
         results.ShouldContain(entity3);
         results.ShouldContain(entity4);
         results.ShouldNotContain(entity5);
-        results.First().ShouldBe(entity4); // age 18
-        results.Last().ShouldBe(entity3); // age 20
+        results.First()
+            .ShouldBe(entity4); // age 18
+        results.Last()
+            .ShouldBe(entity3); // age 20
     }
 
     [SkippableFact]
@@ -216,22 +219,22 @@ public class CosmosSqlGenericRepositoryTests
         var entity = await this.InsertEntityAsync();
 
         // Act
-        var results = await this.sut.FindAllAsync(
-            new List<ISpecification<PersonStub>>
-            {
-                new PersonByEmailSpecification(entity.Email.Value),
-                new PersonIsAdultSpecification()
-            });
+        var results = await this.sut.FindAllAsync(new List<ISpecification<PersonStub>> { new PersonByEmailSpecification(entity.Email.Value), new PersonIsAdultSpecification() });
 
         // Assert
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity);
-        results.Count().ShouldBe(1);
-        results.First().ShouldNotBeNull();
-        results.First().Id.ShouldBe(entity.Id);
-        results.First().Locations.ShouldNotBeNull();
-        results.First().Locations.ShouldNotBeEmpty();
+        results.Count()
+            .ShouldBe(1);
+        results.First()
+            .ShouldNotBeNull();
+        results.First()
+            .Id.ShouldBe(entity.Id);
+        results.First()
+            .Locations.ShouldNotBeNull();
+        results.First()
+            .Locations.ShouldNotBeEmpty();
     }
 
     [SkippableFact]
@@ -249,11 +252,16 @@ public class CosmosSqlGenericRepositoryTests
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity);
-        results.Count().ShouldBe(1);
-        results.First().ShouldNotBeNull();
-        results.First().Id.ShouldBe(entity.Id);
-        results.First().Locations.ShouldNotBeNull();
-        results.First().Locations.ShouldNotBeEmpty();
+        results.Count()
+            .ShouldBe(1);
+        results.First()
+            .ShouldNotBeNull();
+        results.First()
+            .Id.ShouldBe(entity.Id);
+        results.First()
+            .Locations.ShouldNotBeNull();
+        results.First()
+            .Locations.ShouldNotBeEmpty();
     }
 
     [SkippableFact]
@@ -266,15 +274,21 @@ public class CosmosSqlGenericRepositoryTests
         var entity2 = await this.InsertEntityAsync(18);
         var entity3 = await this.InsertEntityAsync(21);
         var entity4 = await this.InsertEntityAsync(20); // second page
-        var entity5 = await this.InsertEntityAsync(24);
+        var entity5 = await this.InsertEntityAsync();
         var entity6 = await this.InsertEntityAsync(19); // second page
 
         // Act
-        var results = await this.sut.FindAllPagedResultAsync(
-            new Specification<PersonStub>(e => e.FirstName == entity1.FirstName || e.FirstName == entity2.FirstName || e.FirstName == entity3.FirstName || e.FirstName == entity4.FirstName || e.FirstName == entity5.FirstName || e.FirstName == entity6.FirstName),
-            orderingExpression: eh => eh.Age,
+        var results = await this.sut.FindAllPagedResultAsync(new Specification<PersonStub>(e =>
+                e.FirstName == entity1.FirstName ||
+                e.FirstName == entity2.FirstName ||
+                e.FirstName == entity3.FirstName ||
+                e.FirstName == entity4.FirstName ||
+                e.FirstName == entity5.FirstName ||
+                e.FirstName == entity6.FirstName),
+            eh => eh.Age,
             //ordering: nameof(PersonStub.Age) // this is flawed
-            page: 2, pageSize: 2);
+            2,
+            2);
 
         // Assert
         //this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
@@ -286,15 +300,18 @@ public class CosmosSqlGenericRepositoryTests
         results.CurrentPage.ShouldBe(2);
         results.HasNextPage.ShouldBeTrue();
         results.HasPreviousPage.ShouldBeTrue();
-        results.Value.Count().ShouldBe(2);
+        results.Value.Count()
+            .ShouldBe(2);
         results.Value.ShouldNotContain(entity1);
         results.Value.ShouldNotContain(entity2);
         results.Value.ShouldNotContain(entity3);
         results.Value.ShouldNotContain(entity5);
         results.Value.ShouldContain(entity4);
         results.Value.ShouldContain(entity6);
-        results.Value.First().ShouldBe(entity6); // age 19
-        results.Value.Last().ShouldBe(entity4); // age 20
+        results.Value.First()
+            .ShouldBe(entity6); // age 19
+        results.Value.Last()
+            .ShouldBe(entity4); // age 20
     }
 
     [SkippableFact]
@@ -306,8 +323,7 @@ public class CosmosSqlGenericRepositoryTests
         var entity = await this.InsertEntityAsync();
 
         // Act
-        var result = await this.sut.FindOneAsync(
-            new Specification<PersonStub>(e => e.Id == entity.Id));
+        var result = await this.sut.FindOneAsync(new Specification<PersonStub>(e => e.Id == entity.Id));
 
         // Assert
         result.ShouldNotBeNull();
@@ -327,8 +343,7 @@ public class CosmosSqlGenericRepositoryTests
         var entity = await this.InsertEntityAsync();
 
         // Act
-        var result = await this.sut.FindOneAsync(
-            new Specification<PersonStub>(e => e.FirstName == entity.FirstName));
+        var result = await this.sut.FindOneAsync(new Specification<PersonStub>(e => e.FirstName == entity.FirstName));
 
         // Assert
         result.ShouldNotBeNull();
@@ -398,13 +413,33 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
         var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24);
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
 
         // Act
         var result = await this.sut.UpsertAsync(entity);
@@ -420,8 +455,14 @@ public class CosmosSqlGenericRepositoryTests
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(4);
-        existingEntity.Locations.Any(l => l.Name == entity.Locations.First().Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == entity.Locations.Last().Name).ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                entity.Locations.First()
+                    .Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                entity.Locations.Last()
+                    .Name)
+            .ShouldBeTrue();
     }
 
     [SkippableFact]
@@ -430,23 +471,48 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
         var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24);
-        var location1 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location1 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location1);
-        var location2 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location2 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location2);
-        var location3 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location3 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location3);
-        var location4 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location4 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location4);
 
         // Act
         await this.sut.UpsertAsync(entity);
         entity.RemoveLocation(location1);
         entity.RemoveLocation(location2);
-        var location5 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location5 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location5);
         var result = await this.sut.UpsertAsync(entity);
 
@@ -461,11 +527,16 @@ public class CosmosSqlGenericRepositoryTests
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(3);
-        existingEntity.Locations.Any(l => l.Name == location1.Name).ShouldBeFalse(); // removed
-        existingEntity.Locations.Any(l => l.Name == location2.Name).ShouldBeFalse(); // removed
-        existingEntity.Locations.Any(l => l.Name == location3.Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == location4.Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == location5.Name).ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location1.Name)
+            .ShouldBeFalse(); // removed
+        existingEntity.Locations.Any(l => l.Name == location2.Name)
+            .ShouldBeFalse(); // removed
+        existingEntity.Locations.Any(l => l.Name == location3.Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location4.Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location5.Name)
+            .ShouldBeTrue();
     }
 
     [SkippableFact]
@@ -474,7 +545,7 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         var ticks = DateTime.UtcNow.Ticks;
 
@@ -486,14 +557,29 @@ public class CosmosSqlGenericRepositoryTests
             LastName = $"Jane {ticks}",
             Age = entity.Age
         };
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
         var result = await this.sut.UpsertAsync(disconnectedEntity);
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub>() { NoTracking = true });
+        var existingEntity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(disconnectedEntity.Id);
         existingEntity.FirstName.ShouldBe(disconnectedEntity.FirstName);
@@ -502,8 +588,14 @@ public class CosmosSqlGenericRepositoryTests
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(3); // locations get overwritten with a new collection
-        existingEntity.Locations.Any(l => l.Name == disconnectedEntity.Locations.First().Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == disconnectedEntity.Locations.Last().Name).ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                disconnectedEntity.Locations.First()
+                    .Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                disconnectedEntity.Locations.Last()
+                    .Name)
+            .ShouldBeTrue();
     }
 
     [SkippableFact]
@@ -512,22 +604,37 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         var ticks = DateTime.UtcNow.Ticks;
-        entity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub>() { NoTracking = true });
+        entity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub> { NoTracking = true });
 
         // Act
         entity.FirstName = $"John {ticks}";
         entity.LastName = $"Doe {ticks}";
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
         var result = await this.sut.UpsertAsync(entity);
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub>() { NoTracking = true });
+        var existingEntity = await this.sut.FindOneAsync(entity.Id, new FindOptions<PersonStub> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(entity.Id);
         existingEntity.FirstName.ShouldBe(entity.FirstName);
@@ -535,8 +642,14 @@ public class CosmosSqlGenericRepositoryTests
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(4);
-        existingEntity.Locations.Any(l => l.Name == entity.Locations.First().Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == entity.Locations.Last().Name).ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                entity.Locations.First()
+                    .Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name ==
+                entity.Locations.Last()
+                    .Name)
+            .ShouldBeTrue();
     }
 
     [SkippableFact]
@@ -545,18 +658,33 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         var ticks = DateTime.UtcNow.Ticks;
 
         // Act
         entity.FirstName = $"John {ticks}";
         entity.LastName = $"Doe {ticks}";
-        var location1 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location1 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location1);
-        var location2 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location2 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location2);
-        var location3 = LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country());
+        var location3 = LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country());
         entity.AddLocation(location3);
         var result = await this.sut.UpsertAsync(entity);
 
@@ -571,17 +699,25 @@ public class CosmosSqlGenericRepositoryTests
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(4);
-        existingEntity.Locations.Any(l => l.Name == location1.Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == location2.Name).ShouldBeTrue();
-        existingEntity.Locations.Any(l => l.Name == location3.Name).ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location1.Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location2.Name)
+            .ShouldBeTrue();
+        existingEntity.Locations.Any(l => l.Name == location3.Name)
+            .ShouldBeTrue();
     }
 
     private async Task<PersonStub> InsertEntityAsync(int age = 24)
     {
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
         var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age);
-        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
 
         return await this.sut.InsertAsync(entity);
     }

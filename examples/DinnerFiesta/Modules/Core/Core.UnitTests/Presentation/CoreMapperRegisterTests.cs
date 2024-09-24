@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Presentation;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
+using Core.Application;
+using Core.Domain;
+using Core.Presentation;
+using Core.Presentation.Web.Controllers;
 using Mapster;
-using Shouldly;
+using MapsterMapper = Common.MapsterMapper;
 
+[UnitTest("Presentation")]
 public class CoreMapperRegisterTests
 {
     private readonly IMapper sut;
@@ -41,12 +41,14 @@ public class CoreMapperRegisterTests
     public void MapsterMap_DinnerResult_ToModel()
     {
         // Arrange
-        var entity = Stubs.Dinners(DateTime.UtcNow.Ticks).First()
+        var entity = Stubs.Dinners(DateTime.UtcNow.Ticks)
+            .First()
             .SetStatus(DinnerStatus.InProgress);
         var source = new Faker<Result<Dinner>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity).Generate();
+            .RuleFor(u => u.Value, entity)
+            .Generate();
 
         // Act
         var target = this.sut.Map<Dinner, DinnerModel>(source.Value);
@@ -73,12 +75,14 @@ public class CoreMapperRegisterTests
     public void MapsterMap_DinnersResult_ToModel()
     {
         // Arrange
-        var entities = Stubs.Dinners(DateTime.UtcNow.Ticks).ForEach(e =>
-            e.SetStatus(DinnerStatus.InProgress));
+        var entities = Stubs.Dinners(DateTime.UtcNow.Ticks)
+            .ForEach(e =>
+                e.SetStatus(DinnerStatus.InProgress));
         var source = new Faker<Result<IEnumerable<Dinner>>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() }).Generate();
+            .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() })
+            .Generate();
 
         // Act
         var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerModel>>(source.Value);
@@ -115,8 +119,22 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.MenuId, entity.MenuId)
             .RuleFor(u => u.MaxGuests, entity.MaxGuests)
             .RuleFor(u => u.Price, new PriceModel { Amount = entity.Price.Amount, Currency = entity.Price.Currency })
-            .RuleFor(u => u.Location, new DinnerLocationModel { Name = entity.Location.Name, AddressLine1 = entity.Location.AddressLine1, AddressLine2 = entity.Location.AddressLine2, PostalCode = entity.Location.PostalCode, City = entity.Location.City, Country = entity.Location.Country })
-            .RuleFor(u => u.Schedule, new DinnerScheduleModel { StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime }).Generate();
+            .RuleFor(u => u.Location,
+                new DinnerLocationModel
+                {
+                    Name = entity.Location.Name,
+                    AddressLine1 = entity.Location.AddressLine1,
+                    AddressLine2 = entity.Location.AddressLine2,
+                    PostalCode = entity.Location.PostalCode,
+                    City = entity.Location.City,
+                    Country = entity.Location.Country
+                })
+            .RuleFor(u => u.Schedule,
+                new DinnerScheduleModel
+                {
+                    StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime
+                })
+            .Generate();
 
         // Act
         var target = this.sut.Map<DinnerModel, DinnerCreateCommand>(source);
@@ -145,12 +163,14 @@ public class CoreMapperRegisterTests
     public void MapsterMap_MenuResult_ToModel()
     {
         // Arrange
-        var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First()
+        var entity = Stubs.Menus(DateTime.UtcNow.Ticks)
+            .First()
             .AddRating(Rating.Create(3));
         var source = new Faker<Result<Menu>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity).Generate();
+            .RuleFor(u => u.Value, entity)
+            .Generate();
 
         // Act
         var target = this.sut.Map<Menu, MenuModel>(source.Value);

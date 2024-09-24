@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 public class EntityCreatedCommandResult(string entityId)
 {
     /// <summary>
-    /// The entity id
+    ///     The entity id
     /// </summary>
     public string EntityId { get; } = entityId;
 }
@@ -16,7 +16,7 @@ public class EntityCreatedCommandResult(string entityId)
 public class EntityCreatedCommandResult<TId>(TId entityId)
 {
     /// <summary>
-    /// The entity id
+    ///     The entity id
     /// </summary>
     public TId EntityId { get; } = entityId;
 }

@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
+using DevKit.Domain.Specifications;
 
 public class DinnerForScheduleSpecification(HostId hostId, DinnerSchedule schedule) : Specification<Dinner>
 {
@@ -17,12 +16,17 @@ public class DinnerForScheduleSpecification(HostId hostId, DinnerSchedule schedu
     public override Expression<Func<Dinner, bool>> ToExpression()
     {
         return d => d.HostId == this.hostId &&
-            ((d.Schedule.StartDateTime >= this.schedule.StartDateTime && d.Schedule.StartDateTime < this.schedule.EndDateTime) ||
-            (d.Schedule.EndDateTime > this.schedule.StartDateTime && d.Schedule.EndDateTime <= this.schedule.EndDateTime));
+            ((d.Schedule.StartDateTime >= this.schedule.StartDateTime &&
+            d.Schedule.StartDateTime < this.schedule.EndDateTime) ||
+            (d.Schedule.EndDateTime > this.schedule.StartDateTime &&
+            d.Schedule.EndDateTime <= this.schedule.EndDateTime));
     }
 }
 
 public static partial class DinnerSpecifications
 {
-    public static ISpecification<Dinner> ForSchedule(HostId hostId, DinnerSchedule schedule) => new DinnerForScheduleSpecification(hostId, schedule);
+    public static ISpecification<Dinner> ForSchedule(HostId hostId, DinnerSchedule schedule)
+    {
+        return new DinnerForScheduleSpecification(hostId, schedule);
+    }
 }

@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.AutoMapper.Profiles;
 
-using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.Models;
+using Domain.Outbox;
 using global::AutoMapper;
+using Models;
 
 public class OutboxMessageProfile : Profile
 {

@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Linq;
-
 public static partial class Extensions
 {
-    public static IQueryable<TSource> TakeIf<TSource>(
-        this IQueryable<TSource> source, int? take)
-        => take > 0 ? source.Take(take.Value) : source;
+    public static IQueryable<TSource> TakeIf<TSource>(this IQueryable<TSource> source, int? take)
+    {
+        return take > 0 ? source.Take(take.Value) : source;
+    }
 
     //public static IEnumerable<T> TakeIf<T>(
     //    this IEnumerable<T> source, int? take)

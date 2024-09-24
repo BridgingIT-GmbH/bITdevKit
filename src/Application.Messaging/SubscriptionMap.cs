@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class SubscriptionMap : ISubscriptionMap
 {
@@ -13,7 +13,7 @@ public class SubscriptionMap : ISubscriptionMap
     private readonly IList<Type> messageTypes;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscriptionMap"/> class.
+    ///     Initializes a new instance of the <see cref="SubscriptionMap" /> class.
     /// </summary>
     public SubscriptionMap()
     {
@@ -22,25 +22,28 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Occurs when [on removed].
+    ///     Occurs when [on removed].
     /// </summary>
     public event EventHandler<string> OnRemoved;
 
     /// <summary>
-    /// Gets a value indicating whether this instance is empty.
+    ///     Gets a value indicating whether this instance is empty.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if this instance is empty; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance is empty; otherwise, <c>false</c>.
     /// </value>
     public bool IsEmpty => this.map.Keys.Count == 0;
 
     /// <summary>
-    /// Clears this instance.
+    ///     Clears this instance.
     /// </summary>
-    public void Clear() => this.map.Clear();
+    public void Clear()
+    {
+        this.map.Clear();
+    }
 
     /// <summary>
-    /// Adds this instance.
+    ///     Adds this instance.
     /// </summary>
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <typeparam name="THandler">The type of the message handler.</typeparam>
@@ -64,7 +67,7 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Adds this instance.
+    ///     Adds this instance.
     /// </summary>
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <typeparam name="THandler">The type of the message handler.</typeparam>
@@ -90,16 +93,19 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Removes this message and the handlers.
+    ///     Removes this message and the handlers.
     /// </summary>
+    /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <typeparam name="THandler">The type of the handler.</typeparam>
     public void Remove<TMessage, THandler>()
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
-        => this.Remove(this.GetKey<TMessage>(), this.Find<TMessage, THandler>());
+    {
+        this.Remove(this.GetKey<TMessage>(), this.Find<TMessage, THandler>());
+    }
 
     /// <summary>
-    /// Removes this instance.
+    ///     Removes this instance.
     /// </summary>
     /// <typeparam name="THandler">The type of the handler.</typeparam>
     public void Remove(Type message, Type handler)
@@ -113,7 +119,7 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Removes this instance.
+    ///     Removes this instance.
     /// </summary>
     /// <typeparam name="THandler">The type of the handler.</typeparam>
     public void Remove(string messageName, Type handler)
@@ -126,13 +132,15 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Removes all messages and handlers.
+    ///     Removes all messages and handlers.
     /// </summary>
     public void RemoveAll()
-        => this.map.Clear();
+    {
+        this.map.Clear();
+    }
 
     /// <summary>
-    /// Gets all subscription details.
+    ///     Gets all subscription details.
     /// </summary>
     public IReadOnlyDictionary<string, IEnumerable<SubscriptionDetails>> GetAll()
     {
@@ -146,13 +154,16 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Gets all subscription details.
+    ///     Gets all subscription details.
     /// </summary>
     public IEnumerable<SubscriptionDetails> GetAll<TMessage>()
-        where TMessage : IMessage => this.GetAll(this.GetKey<TMessage>());
+        where TMessage : IMessage
+    {
+        return this.GetAll(this.GetKey<TMessage>());
+    }
 
     /// <summary>
-    /// Gets a specific subscription detail.
+    ///     Gets a specific subscription detail.
     /// </summary>
     /// <param name="messageName">Name of the message.</param>
     public IEnumerable<SubscriptionDetails> GetAll(string messageName)
@@ -163,13 +174,16 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Does this instance exist in the map.
+    ///     Does this instance exist in the map.
     /// </summary>
     public bool Exists<TMessage>()
-        where TMessage : IMessage => this.Exists(this.GetKey<TMessage>());
+        where TMessage : IMessage
+    {
+        return this.Exists(this.GetKey<TMessage>());
+    }
 
     /// <summary>
-    /// Does the specified message name exist in the map.
+    ///     Does the specified message name exist in the map.
     /// </summary>
     /// <param name="messageName">Name of the message.</param>
     public bool Exists(string messageName)
@@ -180,24 +194,31 @@ public class SubscriptionMap : ISubscriptionMap
     }
 
     /// <summary>
-    /// Gets the message type by name.
+    ///     Gets the message type by name.
     /// </summary>
     /// <param name="messageName">Name of the message.</param>
     public Type GetByName(string messageName)
     {
         EnsureArg.IsNotNullOrEmpty(messageName, nameof(messageName));
 
-        return this.messageTypes.FirstOrDefault(t => this.GetKey(t).Equals(messageName, StringComparison.OrdinalIgnoreCase)
-            || t.PrettyName(false).Equals(messageName, StringComparison.OrdinalIgnoreCase));
+        return this.messageTypes.FirstOrDefault(t =>
+            this.GetKey(t).Equals(messageName, StringComparison.OrdinalIgnoreCase) ||
+            t.PrettyName(false).Equals(messageName, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
-    /// Gets the key.
+    ///     Gets the key.
     /// </summary>
     //public string GetKey<TMessage>() => typeof(TMessage).Name;
-    public string GetKey<TMessage>() => typeof(TMessage).PrettyName();
+    public string GetKey<TMessage>()
+    {
+        return typeof(TMessage).PrettyName();
+    }
 
-    private string GetKey(Type type) => type?.PrettyName();
+    private string GetKey(Type type)
+    {
+        return type?.PrettyName();
+    }
 
     private void RaiseOnRemoved(string messageName)
     {
@@ -239,16 +260,19 @@ public class SubscriptionMap : ISubscriptionMap
 
         if (this.map[messageName].Any(s => s.HandlerType == handler))
         {
-            throw new ArgumentException(
-                $"Message handler {handler.Name} already registered for '{messageName}'", nameof(handler));
+            throw new ArgumentException($"Message handler {handler.Name} already registered for '{messageName}'",
+                nameof(handler));
         }
 
         this.map[messageName].Add(SubscriptionDetails.Create(message, handler));
     }
 
     private SubscriptionDetails Find<TMessage, THandler>()
-         where TMessage : IMessage
-         where THandler : IMessageHandler<TMessage> => this.FindSubscription(this.GetKey<TMessage>(), typeof(THandler));
+        where TMessage : IMessage
+        where THandler : IMessageHandler<TMessage>
+    {
+        return this.FindSubscription(this.GetKey<TMessage>(), typeof(THandler));
+    }
 
     private SubscriptionDetails Find(Type message, Type handler)
     {

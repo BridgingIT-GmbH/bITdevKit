@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Serilog;
@@ -24,7 +21,7 @@ public class RequestLoggingMiddleware
     private const string RequestPathKey = "RequestPath";
     private const string StatusCodeKey = "StatusCode";
     private const string ElapsedKey = "TimeElapsed";
-    private const string ClientIPKey = "ClientIP";
+    private const string ClientIpKey = "ClientIP";
     private const string UserAgentKey = "UserAgent";
     private static readonly LogEventProperty[] NoProperties = [];
     private readonly RequestDelegate next;
@@ -36,7 +33,10 @@ public class RequestLoggingMiddleware
     private readonly RequestLoggingOptions options;
     private readonly ILogger logger;
 
-    public RequestLoggingMiddleware(RequestDelegate next, DiagnosticContext diagnosticContext = null, RequestLoggingOptions options = null)
+    public RequestLoggingMiddleware(
+        RequestDelegate next,
+        DiagnosticContext diagnosticContext = null,
+        RequestLoggingOptions options = null)
     {
         this.options ??= new RequestLoggingOptions();
 
@@ -53,8 +53,7 @@ public class RequestLoggingMiddleware
     {
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));
 
-        if (GetPath(httpContext)
-            .EqualsPatternAny(this.options.PathBlackListPatterns))
+        if (GetPath(httpContext).EqualsPatternAny(this.options.PathBlackListPatterns))
         {
             await this.next(httpContext); // continue pipeline
         }
@@ -71,7 +70,11 @@ public class RequestLoggingMiddleware
 
                     await this.next(httpContext); // continue pipeline
 
-                    this.LogFinished(httpContext, collector, httpContext.Response.StatusCode, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), null);
+                    this.LogFinished(httpContext,
+                        collector,
+                        httpContext.Response.StatusCode,
+                        GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()),
+                        null);
                 }
                 else
                 {
@@ -81,9 +84,13 @@ public class RequestLoggingMiddleware
             catch (Exception ex)
                 // Never caught, because `LogFinished()` returns false. This ensures e.g. the developer exception page is still
                 // shown, does also mean we see a duplicate "unhandled exception" event from ASP.NET Core.
-                when (this.LogFinished(httpContext, collector, 500, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex))
-            {
-            }
+#pragma warning disable SA1501
+                when (this.LogFinished(httpContext,
+                          collector,
+                          500,
+                          GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()),
+                          ex)) { }
+#pragma warning restore SA1501
             finally
             {
                 collector?.Dispose();
@@ -92,7 +99,9 @@ public class RequestLoggingMiddleware
     }
 
     private static double GetElapsedMilliseconds(long start, long stop)
-        => (stop - start) * 1000 / (double)Stopwatch.Frequency;
+    {
+        return (stop - start) * 1000 / (double)Stopwatch.Frequency;
+    }
 
     private static string GetPath(HttpContext httpContext, bool includeQuery = false)
     {
@@ -132,9 +141,11 @@ public class RequestLoggingMiddleware
         {
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
-            new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
-            new LogEventProperty(ClientIPKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
-            new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
+            new LogEventProperty(RequestPathKey,
+                new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
+            new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
+            new LogEventProperty(UserAgentKey,
+                new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
         });
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateStarted, properties);
@@ -147,7 +158,12 @@ public class RequestLoggingMiddleware
         //}
     }
 
-    private bool LogFinished(HttpContext httpContext, DiagnosticContextCollector collector, int statusCode, double elapsedMs, Exception ex)
+    private bool LogFinished(
+        HttpContext httpContext,
+        DiagnosticContextCollector collector,
+        int statusCode,
+        double elapsedMs,
+        Exception ex)
     {
         var logger = this.logger ?? Log.ForContext<RequestLoggingMiddleware>();
         var level = this.getLevel(httpContext, elapsedMs, ex);
@@ -171,11 +187,13 @@ public class RequestLoggingMiddleware
         {
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
-            new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
+            new LogEventProperty(RequestPathKey,
+                new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
             new LogEventProperty(StatusCodeKey, new ScalarValue(statusCode)),
             new LogEventProperty(ElapsedKey, new ScalarValue(elapsedMs)),
-            new LogEventProperty(ClientIPKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
-            new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
+            new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
+            new LogEventProperty(UserAgentKey,
+                new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
         });
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateFinished, properties);

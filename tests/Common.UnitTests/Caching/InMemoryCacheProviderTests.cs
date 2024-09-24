@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Caching;
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
-using Shouldly;
-using Xunit;
 
+[UnitTest("Common")]
 public class InMemoryCacheProviderTests
 {
     private readonly string key = $"testKey{DateTime.UtcNow.Ticks}";
@@ -149,7 +146,8 @@ public class InMemoryCacheProviderTests
         this.sut.Remove(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -160,7 +158,8 @@ public class InMemoryCacheProviderTests
         await this.sut.RemoveAsync(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -173,7 +172,8 @@ public class InMemoryCacheProviderTests
         this.sut.RemoveStartsWith(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -186,7 +186,8 @@ public class InMemoryCacheProviderTests
         await this.sut.RemoveStartsWithAsync(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -197,7 +198,8 @@ public class InMemoryCacheProviderTests
         this.sut.Set(this.key, this.value);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -211,7 +213,8 @@ public class InMemoryCacheProviderTests
         this.sut.Set(this.key, this.value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -225,7 +228,8 @@ public class InMemoryCacheProviderTests
         await this.sut.SetAsync(this.key, this.value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -239,6 +243,7 @@ public class InMemoryCacheProviderTests
         this.sut.Set(this.key, this.value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 }

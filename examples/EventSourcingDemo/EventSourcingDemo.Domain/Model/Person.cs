@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Model;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
+using DevKit.Domain.EventSourcing.Model;
+using DevKit.Domain.EventSourcing.Registration;
 using Events;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 // tag::PersonAggregate[]
 [ImmutableName("PersonAggregate_v1_13.05.2019")] // <1>
@@ -18,14 +18,10 @@ public class Person : EventSourcingAggregateRoot // <2>
 {
     [JsonConstructor]
     public Person(IAggregateEvent @event) // <3>
-        : base(@event)
-    {
-    }
+        : base(@event) { }
 
     public Person(Guid id, IEnumerable<IAggregateEvent> events) // <4>
-        : base(id, events)
-    {
-    }
+        : base(id, events) { }
 
     [JsonProperty]
     public string Firstname { get; private set; } // <5>

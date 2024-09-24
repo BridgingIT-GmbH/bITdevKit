@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using Shouldly;
-using Xunit;
+using Core.Application;
 
 public class DinnerCreateCommandTests
 {
@@ -19,18 +17,14 @@ public class DinnerCreateCommandTests
         {
             Name = "TestDinner",
             Description = "TestDescription",
-            Schedule = new DinnerCreateCommand.DinnerSchedule
-            {
-                StartDateTime = DateTimeOffset.Now.AddDays(1),
-                EndDateTime = DateTimeOffset.Now.AddDays(2)
-            },
+            Schedule =
+                new DinnerCreateCommand.DinnerSchedule
+                {
+                    StartDateTime = DateTimeOffset.Now.AddDays(1), EndDateTime = DateTimeOffset.Now.AddDays(2)
+                },
             IsPublic = true,
             MaxGuests = 10,
-            Price = new DinnerCreateCommand.DinnerPrice
-            {
-                Amount = 50,
-                Currency = "USD"
-            },
+            Price = new DinnerCreateCommand.DinnerPrice { Amount = 50, Currency = "USD" },
             HostId = "testhost01",
             MenuId = "testmenu01",
             ImageUrl = "https://www.example.com",
@@ -63,18 +57,14 @@ public class DinnerCreateCommandTests
         {
             //Name = "TestName",
             Description = "TestDescription",
-            Schedule = new DinnerCreateCommand.DinnerSchedule
-            {
-                StartDateTime = DateTimeOffset.Now.AddDays(1),
-                EndDateTime = DateTimeOffset.Now.AddDays(2)
-            },
+            Schedule =
+                new DinnerCreateCommand.DinnerSchedule
+                {
+                    StartDateTime = DateTimeOffset.Now.AddDays(1), EndDateTime = DateTimeOffset.Now.AddDays(2)
+                },
             IsPublic = true,
             MaxGuests = 10,
-            Price = new DinnerCreateCommand.DinnerPrice
-            {
-                Amount = 50,
-                Currency = "USD"
-            },
+            Price = new DinnerCreateCommand.DinnerPrice { Amount = 50, Currency = "USD" },
             HostId = "testhost01",
             MenuId = "testmenu01",
             ImageUrl = "https://www.example.com",
@@ -97,7 +87,6 @@ public class DinnerCreateCommandTests
 
         // Assert
         result.IsValid.ShouldBeFalse();
-        result.Errors.ShouldContain(e => e.PropertyName == "Name"
-            && e.ErrorMessage == "Must not be empty.");
+        result.Errors.ShouldContain(e => e.PropertyName == "Name" && e.ErrorMessage == "Must not be empty.");
     }
 }

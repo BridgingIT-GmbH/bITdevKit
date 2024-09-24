@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using DevKit.Application.Commands;
+using Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -14,8 +14,10 @@ public class ForecastUpdateCommand(City city) : CommandRequestBase
 {
     public City City { get; } = city;
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<ForecastUpdateCommand>
     {

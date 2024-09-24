@@ -5,17 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System;
 using System.Diagnostics;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, CityId={CityId}, Description={Description}")]
 public class Forecast : AggregateRoot<Guid>
 {
-    private Forecast()
-    {
-    }
+    private Forecast() { }
 
     public Guid CityId { get; private set; }
 
@@ -43,7 +40,9 @@ public class Forecast : AggregateRoot<Guid>
     {
         return new Forecast
         {
-            Id = GuidGenerator.Create($"{cityId}-{timestamp.ToUnixTimeSeconds()}"), // create repeatable id auf basis cityid-timestamp>guid (=upsert friendly)
+            Id =
+                GuidGenerator.Create(
+                    $"{cityId}-{timestamp.ToUnixTimeSeconds()}"), // create repeatable id auf basis cityid-timestamp>guid (=upsert friendly)
             CityId = cityId,
             Timestamp = timestamp,
             Description = description,

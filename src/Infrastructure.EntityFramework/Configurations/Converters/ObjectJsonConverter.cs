@@ -9,14 +9,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-public class ObjectJsonConverter<TObject>
-    : ValueConverter<TObject, string>
+public class ObjectJsonConverter<TObject> : ValueConverter<TObject, string>
     where TObject : class
 {
     public ObjectJsonConverter()
-        : base(
-            v => JsonSerializer.Serialize(v, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }),
-            v => JsonSerializer.Deserialize<TObject>(v, (JsonSerializerOptions)null))
-    {
-    }
+        : base(v => JsonSerializer.Serialize(v,
+                new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }),
+            v => JsonSerializer.Deserialize<TObject>(v, (JsonSerializerOptions)null)) { }
 }

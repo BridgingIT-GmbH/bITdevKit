@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
-public class StartupTaskOptionsBuilder :
-    OptionsBuilderBase<StartupTaskOptions, StartupTaskOptionsBuilder>
+public class StartupTaskOptionsBuilder : OptionsBuilderBase<StartupTaskOptions, StartupTaskOptionsBuilder>
 {
     public StartupTaskOptionsBuilder Enabled(bool value = true)
     {

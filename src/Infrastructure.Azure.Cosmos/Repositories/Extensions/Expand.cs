@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Cosmos.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,7 +12,7 @@ using System.Reflection;
 public static partial class Extensions
 {
     /// <summary>
-    /// Expands the specified expression.
+    ///     Expands the specified expression.
     /// </summary>
     /// <typeparam name="T">The type of the delegate.</typeparam>
     /// <param name="expression">The expression to expand.</param>
@@ -28,9 +26,7 @@ public static partial class Extensions
     {
         private readonly Dictionary<ParameterExpression, Expression> replacementParams;
 
-        internal ExpressionExpander()
-        {
-        }
+        internal ExpressionExpander() { }
 
         private ExpressionExpander(Dictionary<ParameterExpression, Expression> replaceVars)
         {
@@ -43,15 +39,13 @@ public static partial class Extensions
             {
                 return this.replacementParams[expression];
             }
-            else
-            {
-                return base.VisitParameter(expression);
-            }
+
+            return base.VisitParameter(expression);
         }
 
         /// <summary>
-        /// Flatten calls to Invoke so that Entity Framework can understand it. Calls to Invoke are generated
-        /// by PredicateBuilder.
+        ///     Flatten calls to Invoke so that Entity Framework can understand it. Calls to Invoke are generated
+        ///     by PredicateBuilder.
         /// </summary>
         protected override Expression VisitInvocation(InvocationExpression invocationExpression)
         {
@@ -88,7 +82,8 @@ public static partial class Extensions
             catch (ArgumentException ex)
             {
                 throw new InvalidOperationException(
-                    "Invoke cannot be called recursively - try using a temporary variable.", ex);
+                    "Invoke cannot be called recursively - try using a temporary variable.",
+                    ex);
             }
 
             return new ExpressionExpander(replacementParams).Visit(lambda.Body);
@@ -131,7 +126,8 @@ public static partial class Extensions
                 catch (ArgumentException ex)
                 {
                     throw new InvalidOperationException(
-                        "Invoke cannot be called recursively - try using a temporary variable.", ex);
+                        "Invoke cannot be called recursively - try using a temporary variable.",
+                        ex);
                 }
 
                 return new ExpressionExpander(replacementParams).Visit(lambda.Body);
@@ -171,11 +167,11 @@ public static partial class Extensions
         protected Expression TransformExpression(MemberExpression input)
         {
             // Collapse captured outer variables
-            if (input is null
-                || !(input.Member is FieldInfo)
-                || !input.Member.ReflectedType.IsNestedPrivate
-                || !input.Member.ReflectedType.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase)
-            ) // captured outer variable
+            if (input is null ||
+                !(input.Member is FieldInfo) ||
+                !input.Member.ReflectedType.IsNestedPrivate ||
+                !input.Member.ReflectedType.Name.StartsWith("<>",
+                    StringComparison.OrdinalIgnoreCase)) // captured outer variable
             {
                 return input;
             }
@@ -328,11 +324,12 @@ public static partial class Extensions
                 {
                     return Expression.Coalesce(left, right, conversion as LambdaExpression);
                 }
-                else
-                {
-                    return Expression.MakeBinary(expression.NodeType, left, right, expression.IsLiftedToNull,
-                        expression.Method);
-                }
+
+                return Expression.MakeBinary(expression.NodeType,
+                    left,
+                    right,
+                    expression.IsLiftedToNull,
+                    expression.Method);
             }
 
             return expression;
@@ -395,8 +392,7 @@ public static partial class Extensions
             return expression;
         }
 
-        protected virtual ReadOnlyCollection<Expression> VisitExpressionList(
-            ReadOnlyCollection<Expression> expressions)
+        protected virtual ReadOnlyCollection<Expression> VisitExpressionList(ReadOnlyCollection<Expression> expressions)
         {
             List<Expression> list = null;
             for (int i = 0, n = expressions.Count; i < n; i++)
@@ -479,8 +475,7 @@ public static partial class Extensions
             return list ?? (IEnumerable<MemberBinding>)original;
         }
 
-        protected virtual IEnumerable<ElementInit> VisitElementInitializerList(
-            ReadOnlyCollection<ElementInit> original)
+        protected virtual IEnumerable<ElementInit> VisitElementInitializerList(ReadOnlyCollection<ElementInit> original)
         {
             List<ElementInit> list = null;
             for (int i = 0, n = original.Count; i < n; i++)
@@ -525,10 +520,8 @@ public static partial class Extensions
                 {
                     return Expression.New(newExpression.Constructor, args, newExpression.Members);
                 }
-                else
-                {
-                    return Expression.New(newExpression.Constructor, args);
-                }
+
+                return Expression.New(newExpression.Constructor, args);
             }
 
             return newExpression;
@@ -567,10 +560,8 @@ public static partial class Extensions
                 {
                     return Expression.NewArrayInit(arrayExpression.Type.GetElementType(), expressions);
                 }
-                else
-                {
-                    return Expression.NewArrayBounds(arrayExpression.Type.GetElementType(), expressions);
-                }
+
+                return Expression.NewArrayBounds(arrayExpression.Type.GetElementType(), expressions);
             }
 
             return arrayExpression;

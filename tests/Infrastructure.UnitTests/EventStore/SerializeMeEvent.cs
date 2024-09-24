@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using BridgingIT.DevKit.Domain.EventSourcing;
+using Domain.EventSourcing;
 
 public class SerializeMeEvent : DomainEventWithGuid
 {
-    public SerializeMeEvent()
-    {
-    }
-
     public string Value { get; set; }
 
     public static SerializeMeEvent Create(string value)

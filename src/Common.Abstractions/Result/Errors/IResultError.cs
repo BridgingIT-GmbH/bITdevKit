@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Represents an error result in an operation or computation.
+/// </summary>
 public interface IResultError
 {
+    /// <summary>
+    ///     Gets the error message associated with the result error.
+    /// </summary>
     string Message { get; }
 }

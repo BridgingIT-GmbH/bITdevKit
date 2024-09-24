@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using EnsureThat;
+using Common;
+using Model;
 
 public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context) : IEntityIdGenerator<TEntity>
     where TEntity : class, IEntity
@@ -27,7 +25,7 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
             int e => e == 0,
             string e => e.IsNullOrEmpty(),
             Guid e => e == Guid.Empty,
-            _ => throw new NotSupportedException($"entity id type {id.GetType().Name} not supported"),
+            _ => throw new NotSupportedException($"entity id type {id.GetType().Name} not supported")
         };
     }
 
@@ -40,7 +38,7 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
             IEntity<int> e => this.context.Entities.Count + 1,
             IEntity<string> e => GuidGenerator.CreateSequential().ToString(),
             IEntity<Guid> e => GuidGenerator.CreateSequential(),
-            _ => throw new NotSupportedException($"entity id type {entity.Id.GetType().Name} not supported"),
+            _ => throw new NotSupportedException($"entity id type {entity.Id.GetType().Name} not supported")
         };
     }
 }

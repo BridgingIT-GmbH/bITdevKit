@@ -109,12 +109,6 @@
           "Microsoft.Extensions.Localization": "8.0.8"
         }
       },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
-      },
       "System.ComponentModel.Annotations": {
         "type": "Direct",
         "requested": "[5.0.0, )",
@@ -359,6 +353,7 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Primitives": "[8.0.0, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"

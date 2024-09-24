@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Shouldly;
-using Xunit;
-
 [UnitTest("Common")]
 public class PagedResultTests
 {

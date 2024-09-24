@@ -5,24 +5,22 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 public static partial class Extensions
 {
     /// <summary>
-    /// Performs an action on each value of the enumerable.
+    ///     Performs an action on each value of the enumerable.
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
     /// <param name="source">The items.</param>
     /// <param name="action">Action to perform on every item.</param>
     /// <returns>the source with the actions applied.</returns>
     [DebuggerStepThrough]
-    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action, CancellationToken cancellationToken = default)
+    public static IEnumerable<T> ForEach<T>(
+        this IEnumerable<T> source,
+        Action<T> action,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {
@@ -38,7 +36,10 @@ public static partial class Extensions
         return source;
     }
 
-    public static async Task<IEnumerable<T>> ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action, CancellationToken cancellationToken = default)
+    public static async Task<IEnumerable<T>> ForEachAsync<T>(
+        this IEnumerable<T> source,
+        Func<T, Task> action,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {
@@ -55,7 +56,10 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static ICollection<T> ForEach<T>(this ICollection<T> source, Action<T> action, CancellationToken cancellationToken = default)
+    public static ICollection<T> ForEach<T>(
+        this ICollection<T> source,
+        Action<T> action,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {
@@ -65,7 +69,10 @@ public static partial class Extensions
         return source.AsEnumerable().ForEach(action, cancellationToken).ToList();
     }
 
-    public static async Task<ICollection<T>> ForEachAsync<T>(this ICollection<T> source, Func<T, Task> action, CancellationToken cancellationToken = default)
+    public static async Task<ICollection<T>> ForEachAsync<T>(
+        this ICollection<T> source,
+        Func<T, Task> action,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {
@@ -82,7 +89,11 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> childSelector, Action<T> action, CancellationToken cancellationToken = default)
+    public static IEnumerable<T> ForEach<T>(
+        this IEnumerable<T> source,
+        Func<T, IEnumerable<T>> childSelector,
+        Action<T> action,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {

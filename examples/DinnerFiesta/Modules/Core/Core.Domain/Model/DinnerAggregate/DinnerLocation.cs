@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class DinnerLocation : ValueObject
 {
-    private DinnerLocation()
-    {
-    }
+    private DinnerLocation() { }
 
     private DinnerLocation(
         string name,
@@ -36,17 +34,17 @@ public class DinnerLocation : ValueObject
         this.Longitude = longitude;
     }
 
-    public string Name { get; private set; }
+    public string Name { get; }
 
-    public string AddressLine1 { get; private set; }
+    public string AddressLine1 { get; }
 
-    public string AddressLine2 { get; private set; }
+    public string AddressLine2 { get; }
 
     public string PostalCode { get; private set; }
 
-    public string City { get; private set; }
+    public string City { get; }
 
-    public string Country { get; private set; }
+    public string Country { get; }
 
     public string WebsiteUrl { get; private set; }
 
@@ -65,15 +63,12 @@ public class DinnerLocation : ValueObject
         double? latitude = null,
         double? longitude = null)
     {
-        DomainRules.Apply(
-        [
-            DinnerRules.CountryShouldBeKnown(country),
-            DinnerRules.LongitudeShouldBeInRange(longitude),
+        DomainRules.Apply([
+            DinnerRules.CountryShouldBeKnown(country), DinnerRules.LongitudeShouldBeInRange(longitude),
             DinnerRules.LatitudeShouldBeInRange(latitude)
         ]);
 
-        return new DinnerLocation(
-            name,
+        return new DinnerLocation(name,
             addressLine1,
             addressLine2,
             postalCode,

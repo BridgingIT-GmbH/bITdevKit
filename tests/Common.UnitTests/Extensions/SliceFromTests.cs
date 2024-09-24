@@ -22,7 +22,8 @@ public class SliceFromTests
     [InlineData("abcdef.jpg.jpg", ".", "jpg.jpg")]
     public void From_All_Positions(string input, string delimiter, string expected)
     {
-        input.SliceFrom(delimiter).ShouldBe(expected);
+        input.SliceFrom(delimiter)
+            .ShouldBe(expected);
     }
 
     [Theory]
@@ -33,6 +34,7 @@ public class SliceFromTests
     [InlineData("abcdef.jpg.jpg", ".", "jpg")]
     public void FromLast_All_Positions(string input, string delimiter, string expected)
     {
-        input.SliceFromLast(delimiter).ShouldBe(expected);
+        input.SliceFromLast(delimiter)
+            .ShouldBe(expected);
     }
 }

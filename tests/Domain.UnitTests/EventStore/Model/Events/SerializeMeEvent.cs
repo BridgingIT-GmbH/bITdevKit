@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
 
-using BridgingIT.DevKit.Domain.EventSourcing;
+using EventSourcing;
 
 public class SerializeMeEvent : DomainEventWithGuid
 {

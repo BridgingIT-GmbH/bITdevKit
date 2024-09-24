@@ -10,14 +10,18 @@ using System.Text.Json.Serialization;
 
 public static class DefaultSystemTextJsonSerializerOptions
 {
-    public static JsonSerializerOptions Create() => new()
+    public static JsonSerializerOptions Create()
     {
-        WriteIndented = true,
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter() },
-        TypeInfoResolver = new PrivateConstructorContractResolver(), // allow deserialization of types with only private constructors
-        //IncludeFields = true,
-        //PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate // TODO: .NET8 https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
-    };
+        return new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter() },
+            TypeInfoResolver =
+                new PrivateConstructorContractResolver() // allow deserialization of types with only private constructors
+            //IncludeFields = true,
+            //PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate // TODO: .NET8 https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
+        };
+    }
 }

@@ -5,8 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.Mapping;
+using AutoMapper;
+using DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.Mapping;
 using Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,9 @@ using Repositories;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEventSourcingDemoDbContextSqlServer(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddEventSourcingDemoDbContextSqlServer(
+        this IServiceCollection services,
+        string connectionString)
     {
         var options = new SqlServerOptions
         {
@@ -30,7 +33,7 @@ public static class ServiceCollectionExtensions
             new PersonOverviewRepository(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .DbContext(sp.GetRequiredService<EventSourcingDemoDbContext>())
-                .Mapper(new AutoMapperEntityMapper(sp.GetService<AutoMapper.IMapper>()))));
+                .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))));
         return services;
     }
 }

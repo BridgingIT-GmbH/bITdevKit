@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj" />
-    <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
+    <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj"/>
+    <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj"/>
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj"/>
   </ItemGroup>
 
 </Project>

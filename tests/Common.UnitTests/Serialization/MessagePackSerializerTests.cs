@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
+using BenchmarkDotNet.Running;
+
 [UnitTest("Common")]
 public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -47,7 +49,7 @@ public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTe
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkDotNet.Running.BenchmarkRunner.Run<MessagePackSerializerBenchmark>();
+        var summary = BenchmarkRunner.Run<MessagePackSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class MoneyValueObjectTests
@@ -15,14 +15,14 @@ public class MoneyValueObjectTests
     {
         // Arrange
         // Act
-        var sut00usd = Money.Create(00, Currency.USDollar);
-        var sut10usd = Money.Create(10, Currency.USDollar);
+        var sut00usd = Money.Create(00, Currency.UsDollar);
+        var sut10usd = Money.Create(10, Currency.UsDollar);
         var sut10eur = Money.Create(10, Currency.Euro);
-        var sut99usd = Money.Create(99, Currency.USDollar);
+        var sut99usd = Money.Create(99, Currency.UsDollar);
 
         // Assert
         sut10usd.Amount.ShouldBe(10);
-        sut10usd.Currency.ShouldBe(Currency.USDollar);
+        sut10usd.Currency.ShouldBe(Currency.UsDollar);
         sut10eur.Amount.ShouldBe(10);
         sut10eur.Currency.ShouldBe(Currency.Euro);
         (sut10usd < sut99usd).ShouldBe(true);
@@ -31,7 +31,7 @@ public class MoneyValueObjectTests
         (sut10usd == sut99usd).ShouldBe(false);
         (sut10usd == sut10eur).ShouldBe(false);
         (sut10usd != sut10eur).ShouldBe(true);
-        (sut10usd == Money.Create(10, Currency.USDollar)).ShouldBe(true);
+        (sut10usd == Money.Create(10, Currency.UsDollar)).ShouldBe(true);
         (sut10usd == 10).ShouldBe(true);
         (sut00usd == 0).ShouldBe(true);
         (sut10usd + sut99usd).Amount.ShouldBe(109);
@@ -48,13 +48,17 @@ public class MoneyValueObjectTests
         // Act
         var sut01usd = Money.Create(1.99m);
         var sut02usd = Money.Create(1000.99m);
-        var sut10usd = Money.Create(10, Currency.USDollar);
+        var sut10usd = Money.Create(10, Currency.UsDollar);
         var sut10eur = Money.Create(10, Currency.Euro);
 
         // Assert
-        sut01usd.ToString().ShouldBe("$1.99");
-        sut02usd.ToString().ShouldBe("$1,000.99");
-        sut10usd.ToString().ShouldBe("$10.00");
-        sut10eur.ToString().ShouldBe("10,00 €");
+        sut01usd.ToString()
+            .ShouldBe("$1.99");
+        sut02usd.ToString()
+            .ShouldBe("$1,000.99");
+        sut10usd.ToString()
+            .ShouldBe("$10.00");
+        sut10eur.ToString()
+            .ShouldBe("10,00 €");
     }
 }

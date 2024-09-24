@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
 public interface ITimeoutStartupTask
 {
     TimeoutStartupTaskOptions Options { get; }
@@ -14,5 +12,5 @@ public interface ITimeoutStartupTask
 
 public class TimeoutStartupTaskOptions
 {
-    public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 0, 30);
+    public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

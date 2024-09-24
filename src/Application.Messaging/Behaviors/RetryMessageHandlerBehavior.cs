@@ -5,16 +5,20 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using System.Diagnostics;
+using Common;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using System.Diagnostics;
 
 public class RetryMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    public override async Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -33,37 +37,42 @@ public class RetryMessageHandlerBehavior(ILoggerFactory loggerFactory) : Message
             AsyncRetryPolicy retryPolicy;
             if (!options.BackoffExponential)
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
                             : 0),
-                    onRetry: (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
-                        attempts++;
-                    });
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent(
+                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                                Constants.LogKey);
+                            attempts++;
+                        });
             }
             else
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
-                            : 0
-                        * Math.Pow(2, attempt)),
-                    (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}", Constants.LogKey);
-                        attempts++;
-                    });
+                            : 0 * Math.Pow(2, attempt)),
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent(
+                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
+                                Constants.LogKey);
+                            attempts++;
+                        });
             }
 
-            await retryPolicy.ExecuteAsync(async (context) => await next().AnyContext(), cancellationToken);
+            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

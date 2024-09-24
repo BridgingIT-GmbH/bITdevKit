@@ -5,25 +5,20 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
+using Model;
+using Specifications;
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
@@ -43,8 +38,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         this.currentUserAccessor = currentUserAccessor ?? new NullCurrentUserAccessor();
     }
 
-    public RepositoryAuditStateBehavior(
-        IGenericRepository<TEntity> ínner)
+    public RepositoryAuditStateBehavior(IGenericRepository<TEntity> ínner)
     {
         EnsureArg.IsNotNull(ínner, nameof(ínner));
 
@@ -60,7 +54,8 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
             return RepositoryActionResult.None;
         }
 
-        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken: cancellationToken).AnyContext();
+        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
+            .AnyContext();
         if (entity is not null)
         {
             return await this.DeleteAsync(entity, cancellationToken).AnyContext();
@@ -82,13 +77,11 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
 
-    public async Task<IEnumerable<TEntity>> FindAllAsync(IFindOptions<TEntity> options = null,
+    public async Task<IEnumerable<TEntity>> FindAllAsync(
+        IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(
-            [],
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindAllAsync([], options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -96,10 +89,10 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(
-            new List<ISpecification<TEntity>>(new[] { specification }),
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -107,10 +100,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindAllAsync(
-            specifications,
-            options,
-            cancellationToken).AnyContext();
+        return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -118,11 +108,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(
-            [],
-            projection,
-            options,
-            cancellationToken).AnyContext();
+        return await this.ProjectAllAsync([], projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -131,24 +117,20 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(
-            new List<ISpecification<TEntity>>(new[] { specification }),
-            projection,
-            options,
-            cancellationToken).AnyContext();
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+                projection,
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
-        return await this.Inner.ProjectAllAsync(
-            specifications,
-            projection,
-            options,
-            cancellationToken).AnyContext();
+        return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -191,7 +173,9 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         entity.AuditState ??= new AuditState();
         entity.AuditState.SetUpdated(this.GetByValue());

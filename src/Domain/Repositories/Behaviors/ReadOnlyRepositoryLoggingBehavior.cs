@@ -5,42 +5,35 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Model;
+using Specifications;
 
 [Obsolete("Use ReadOnlyGenericRepositoryLoggingBehavior instead")]
 public class ReadOnlyGenericRepositoryLoggingDecorator<TEntity> : ReadOnlyRepositoryLoggingBehavior<TEntity>
     where TEntity : class, IEntity
 {
-    public ReadOnlyGenericRepositoryLoggingDecorator(ILogger<IGenericRepository<TEntity>> logger, IGenericRepository<TEntity> inner)
-        : base(logger, inner)
-    {
-    }
+    public ReadOnlyGenericRepositoryLoggingDecorator(
+        ILogger<IGenericRepository<TEntity>> logger,
+        IGenericRepository<TEntity> inner)
+        : base(logger, inner) { }
 
     public ReadOnlyGenericRepositoryLoggingDecorator(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
-        : base(loggerFactory, inner)
-    {
-    }
+        : base(loggerFactory, inner) { }
 }
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
@@ -58,13 +51,12 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
         this.type = typeof(TEntity).Name;
     }
 
-    public ReadOnlyRepositoryLoggingBehavior(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<TEntity> inner)
+    public ReadOnlyRepositoryLoggingBehavior(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.Logger = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
+        this.Logger = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ??
+            NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
         this.Inner = inner;
         this.type = typeof(TEntity).Name;
     }
@@ -79,8 +71,8 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     }
 
     public async Task<long> CountAsync(
-    ISpecification<TEntity> specification,
-    CancellationToken cancellationToken = default)
+        ISpecification<TEntity> specification,
+        CancellationToken cancellationToken = default)
     {
         return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
     }
@@ -93,15 +85,15 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.Logger, Constants.LogKey, this.type, id);
 
@@ -181,10 +173,10 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
@@ -240,19 +232,25 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     {
         if (options?.Distinct?.Expression is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: distinct {distinctExpression}", Constants.LogKey, options.Distinct.Expression);
+            this.Logger.LogDebug("{LogKey} repository: distinct {distinctExpression}",
+                Constants.LogKey,
+                options.Distinct.Expression);
         }
 
-        foreach (var order in (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
+        foreach (var order in
+                 (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
             this.Logger.LogDebug("{LogKey} repository: order {orderExpression}", Constants.LogKey, order.Expression);
         }
 
-        foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(options?.Include))
+        foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(
+                     options?.Include))
         {
             if (include.Expression is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository: include {includeExpression}", Constants.LogKey, include.Expression);
+                this.Logger.LogDebug("{LogKey} repository: include {includeExpression}",
+                    Constants.LogKey,
+                    include.Expression);
             }
 
             if (include.Path is not null)

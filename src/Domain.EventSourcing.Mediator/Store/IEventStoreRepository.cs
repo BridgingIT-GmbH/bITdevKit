@@ -6,10 +6,7 @@
 #nullable enable
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 public interface IEventStoreRepository
 {

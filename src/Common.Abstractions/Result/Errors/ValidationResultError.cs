@@ -5,13 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public class ValidationResultError : ResultErrorBase
 {
-    public ValidationResultError()
-    {
-    }
+    public ValidationResultError() { }
 
     public ValidationResultError(IEnumerable<string> messages = null)
     {

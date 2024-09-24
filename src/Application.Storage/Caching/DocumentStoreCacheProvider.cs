@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
@@ -42,14 +39,14 @@ public class DocumentStoreCacheProvider : ICacheProvider
     {
         var value = this.cache.Get(key);
 
-        return (value is not null) ? this.serializer.Deserialize<T>(value) : default;
+        return value is not null ? this.serializer.Deserialize<T>(value) : default;
     }
 
     public async Task<T> GetAsync<T>(string key, CancellationToken token = default)
     {
         var value = await this.cache.GetAsync(key, token);
 
-        return (value is not null) ? this.serializer.Deserialize<T>(value) : default;
+        return value is not null ? this.serializer.Deserialize<T>(value) : default;
     }
 
     public bool TryGet<T>(string key, out T value)
@@ -71,7 +68,9 @@ public class DocumentStoreCacheProvider : ICacheProvider
 
     public async Task<IEnumerable<string>> GetKeysAsync(CancellationToken token = default)
     {
-        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", string.Empty), DocumentKeyFilter.RowKeyPrefixMatch, token);
+        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", string.Empty),
+            DocumentKeyFilter.RowKeyPrefixMatch,
+            token);
 
         return documents.SafeNull().Select(d => d.RowKey);
     }
@@ -93,7 +92,9 @@ public class DocumentStoreCacheProvider : ICacheProvider
 
     public async Task RemoveStartsWithAsync(string key, CancellationToken token = default)
     {
-        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", key), DocumentKeyFilter.RowKeyPrefixMatch, token);
+        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", key),
+            DocumentKeyFilter.RowKeyPrefixMatch,
+            token);
 
         foreach (var document in documents.SafeNull())
         {
@@ -101,10 +102,13 @@ public class DocumentStoreCacheProvider : ICacheProvider
         }
     }
 
-    public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null)
+    public void Set<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null)
     {
-        this.cache.Set(
-            key,
+        this.cache.Set(key,
             this.serializer.SerializeToBytes(value),
             new DistributedCacheEntryOptions
             {
@@ -113,10 +117,14 @@ public class DocumentStoreCacheProvider : ICacheProvider
             });
     }
 
-    public async Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null, CancellationToken cancellationToken = default)
+    public async Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null,
+        CancellationToken cancellationToken = default)
     {
-        await this.cache.SetAsync(
-            key,
+        await this.cache.SetAsync(key,
             this.serializer.SerializeToBytes(value),
             new DistributedCacheEntryOptions
             {

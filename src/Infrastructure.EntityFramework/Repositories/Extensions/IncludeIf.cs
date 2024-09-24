@@ -5,21 +5,15 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
-using EnsureThat;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions
 {
-    public static IQueryable<TEntity> IncludeIf<TEntity>(
-        this IQueryable<TEntity> source,
-        IFindOptions<TEntity> options)
+    public static IQueryable<TEntity> IncludeIf<TEntity>(this IQueryable<TEntity> source, IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
         if (options is null || options?.HasIncludes() == false)
@@ -27,7 +21,8 @@ public static partial class Extensions
             return source;
         }
 
-        foreach (var include in (options.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(options.Include))
+        foreach (var include in (options.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(
+                     options.Include))
         {
             if (include.Expression is not null)
             {
@@ -57,7 +52,8 @@ public static partial class Extensions
             return source;
         }
 
-        foreach (var include in (options.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(options.Include))
+        foreach (var include in (options.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(
+                     options.Include))
         {
             if (include.Expression is not null)
             {

@@ -5,16 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 
-public interface ICommandBehavior
-{
-}
+public interface ICommandBehavior { }
 
 public interface ICommandBehavior<TRequest, TResponse> : ICommandBehavior
     where TRequest : class, IRequest<TResponse>
 {
-    Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken);
+    Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken);
 }

@@ -5,34 +5,58 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+///     A base class for handling domain events. Implementations of specific domain event handlers
+///     should derive from this class and provide logic for handling events of type <typeparamref name="TEvent" />.
+/// </summary>
+/// <typeparam name="TEvent">The type of the domain event.</typeparam>
 public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandler<TEvent>
     where TEvent : class, IDomainEvent
 {
-    protected DomainEventHandlerBase(ILoggerFactory loggerFactory) =>
-        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DomainEventHandlerBase{TEvent}" /> class.
+    ///     Abstract base class representing a handler for domain events.
+    ///     Includes common logic for handling domain events, such as logging.
+    /// </summary>
+    /// <typeparam name="TEvent">The type of the domain event that the handler processes.</typeparam>
+    protected DomainEventHandlerBase(ILoggerFactory loggerFactory)
+    {
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    }
 
+    /// <summary>
+    ///     Provides a logging mechanism for the derived class.
+    /// </summary>
+    /// <remarks>
+    ///     The logger is created using the <see cref="ILoggerFactory" /> provided during the instantiation
+    ///     of the derived class. If a <see cref="ILoggerFactory" /> is not provided, a null logger will be used.
+    /// </remarks>
     protected ILogger Logger { get; }
 
+    /// <summary>
+    ///     Determines if the given domain event can be handled by this handler.
+    /// </summary>
+    /// <param name="notification">The domain event notification to check.</param>
+    /// <returns>True if the event can be handled, otherwise false.</returns>
     public abstract bool CanHandle(TEvent notification);
 
-    public virtual async Task Handle(
-        TEvent @event,
-        CancellationToken cancellationToken)
+    /// <summary>
+    ///     Handles the given domain event.
+    /// </summary>
+    /// <param name="event">The domain event to handle.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public virtual async Task Handle(TEvent @event, CancellationToken cancellationToken)
     {
         using (this.Logger.BeginScope(new Dictionary<string, object>
-        {
-            ["DomainEventId"] = @event.EventId,
-            ["DomainEventType"] = @event.GetType().Name
-        }))
+               {
+                   ["DomainEventId"] = @event.EventId, ["DomainEventType"] = @event.GetType().Name
+               }))
         {
             try
             {
@@ -49,26 +73,52 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
 
                 await this.Process(@event, cancellationToken).AnyContext();
 
-                TypedLogger.LogProcessed(this.Logger, Constants.LogKey, @event.EventId, @event.GetType().Name, watch.GetElapsedMilliseconds());
+                TypedLogger.LogProcessed(this.Logger,
+                    Constants.LogKey,
+                    @event.EventId,
+                    @event.GetType().Name,
+                    watch.GetElapsedMilliseconds());
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, "{LogKey} event processing error (eventId={DomainEventId}, eventType={DomainEventType}): {ErrorMessage}", Constants.LogKey, @event.EventId, @event.GetType().Name.Split(',')[0], ex.Message);
+                this.Logger.LogError(ex,
+                    "{LogKey} event processing error (eventId={DomainEventId}, eventType={DomainEventType}): {ErrorMessage}",
+                    Constants.LogKey,
+                    @event.EventId,
+                    @event.GetType().Name.Split(',')[0],
+                    ex.Message);
                 throw;
             }
         }
     }
 
-    public abstract Task Process(
-        TEvent notification,
-        CancellationToken cancellationToken);
+    /// <summary>
+    ///     Processes the specified domain event notification with the possibility of cancellation.
+    /// </summary>
+    /// <param name="notification">The domain event notification to process.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public abstract Task Process(TEvent notification, CancellationToken cancellationToken);
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
-        public static partial void LogProcessing(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
+        [LoggerMessage(0,
+            LogLevel.Information,
+            "{LogKey} event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
+        public static partial void LogProcessing(
+            ILogger logger,
+            string logKey,
+            Guid domainEventId,
+            string domainEventType);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, Guid domainEventId, string domainEventType, long timeElapsed);
+        [LoggerMessage(1,
+            LogLevel.Information,
+            "{LogKey} event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(
+            ILogger logger,
+            string logKey,
+            Guid domainEventId,
+            string domainEventType,
+            long timeElapsed);
     }
 }

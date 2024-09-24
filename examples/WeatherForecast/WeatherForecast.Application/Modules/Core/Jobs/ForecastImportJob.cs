@@ -5,19 +5,16 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
+using DevKit.Application.JobScheduling;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public class ForecastImportJob : JobBase,
-    IRetryJobScheduling,
-    IChaosExceptionJobScheduling
+public class ForecastImportJob
+    : JobBase,
+        IRetryJobScheduling,
+        IChaosExceptionJobScheduling
 {
     private readonly IMediator mediator;
 
@@ -41,11 +38,12 @@ public class ForecastImportJob : JobBase,
 
         foreach (var result in response?.Result.SafeNull())
         {
-            await this.mediator.Send(
-                new ForecastUpdateCommand(result.City), cancellationToken).AnyContext();
+            await this.mediator.Send(new ForecastUpdateCommand(result.City), cancellationToken).AnyContext();
         }
 
         await this.mediator.Publish( // TODO: umstellen auf Message (broker.Publish())
-            new ForecastsImportedEvent(response?.Result?.Select(r => r.City.Name)), cancellationToken).AnyContext();
+                new ForecastsImportedEvent(response?.Result?.Select(r => r.City.Name)),
+                cancellationToken)
+            .AnyContext();
     }
 }

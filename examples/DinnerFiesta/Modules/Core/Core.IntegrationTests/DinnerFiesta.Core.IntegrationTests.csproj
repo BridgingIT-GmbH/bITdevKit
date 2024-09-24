@@ -10,37 +10,37 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="Bogus" />
-    <Using Include="BridgingIT.DevKit.Common" />
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <Using Include="Bogus"/>
+    <Using Include="BridgingIT.DevKit.Common"/>
+    <Using Include="NSubstitute"/>
+    <Using Include="Shouldly"/>
+    <Using Include="Xunit"/>
+    <Using Include="Xunit.Abstractions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" />
-    <PackageReference Include="Bogus" />
-    <PackageReference Include="Dumpify" />
-    <PackageReference Include="FluentAssertions.Web" />
-    <PackageReference Include="Microsoft.Playwright" />
-    <PackageReference Include="Microsoft.Playwright.NUnit" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Azure.Storage.Blobs"/>
+    <PackageReference Include="Bogus"/>
+    <PackageReference Include="Dumpify"/>
+    <PackageReference Include="FluentAssertions.Web"/>
+    <PackageReference Include="Microsoft.Playwright"/>
+    <PackageReference Include="Microsoft.Playwright.NUnit"/>
+    <PackageReference Include="NSubstitute"/>
+    <PackageReference Include="BenchmarkDotNet"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="Microsoft.Azure.Cosmos"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Testcontainers.Azurite" />
-    <PackageReference Include="Testcontainers.CosmosDb" />
-    <PackageReference Include="Testcontainers.MsSql" />
-    <PackageReference Include="Testcontainers.RabbitMq" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="Testcontainers.Azurite"/>
+    <PackageReference Include="Testcontainers.CosmosDb"/>
+    <PackageReference Include="Testcontainers.MsSql"/>
+    <PackageReference Include="Testcontainers.RabbitMq"/>
+    <PackageReference Include="xunit"/>
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -52,13 +52,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Presentation.Web.Server\DinnerFiesta.Presentation.Web.Server.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\Core.Application\DinnerFiesta.Core.Application.csproj" />
-    <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj" />
-    <ProjectReference Include="..\Core.Presentation\DinnerFiesta.Core.Presentation.csproj" />
-    <ProjectReference Include="..\Core.Infrastructure\DinnerFiesta.Core.Infrastructure.csproj" />
-    <ProjectReference Include="..\Core.UnitTests\DinnerFiesta.Core.UnitTests.csproj" />
+    <ProjectReference Include="..\..\..\Presentation.Web.Server\DinnerFiesta.Presentation.Web.Server.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
+    <ProjectReference Include="..\Core.Application\DinnerFiesta.Core.Application.csproj"/>
+    <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj"/>
+    <ProjectReference Include="..\Core.Presentation\DinnerFiesta.Core.Presentation.csproj"/>
+    <ProjectReference Include="..\Core.Infrastructure\DinnerFiesta.Core.Infrastructure.csproj"/>
+    <ProjectReference Include="..\Core.UnitTests\DinnerFiesta.Core.UnitTests.csproj"/>
   </ItemGroup>
 
 </Project>

@@ -23,11 +23,9 @@ public class ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory) : S
         {
             // https://github.com/Polly-Contrib/Simmy#Inject-exception
             var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(options.Fault ?? new ChaosException())
-                    .InjectionRate(options.InjectionRate)
-                    .Enabled());
+                with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
 
-            await policy.Execute(async (context) => await next().AnyContext(), cancellationToken);
+            await policy.Execute(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

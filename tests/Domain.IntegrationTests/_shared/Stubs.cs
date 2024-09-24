@@ -5,12 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests;
 
-using System;
-using System.Linq;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using AutoMapper;
+using Model;
+using Specifications;
 
 public class StubPerson : Entity<int>
 {
@@ -81,9 +79,9 @@ public class StubHasIdSpecification : Specification<StubEntity> // TODO: this sh
 
 public static class StubEntityMapperConfiguration
 {
-    public static AutoMapper.IMapper Create()
+    public static IMapper Create()
     {
-        var mapper = new AutoMapper.MapperConfiguration(c =>
+        var mapper = new MapperConfiguration(c =>
         {
             c.CreateMap<StubEntity, StubDbEntity>()
                 .ForMember(d => d.Identifier, o => o.MapFrom(s => s.Id))
@@ -97,10 +95,12 @@ public static class StubEntityMapperConfiguration
                 .ForMember(d => d.Country, o => o.MapFrom(s => s.Nation))
                 //.ForMember(d => d.FirstName, o => o.ResolveUsing(new FirstNameResolver()))
                 .ForMember(d => d.FirstName,
-                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault()))
+                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                        .FirstOrDefault()))
                 //.ForMember(d => d.LastName, o => o.ResolveUsing(new LastNameResolver()))
                 .ForMember(d => d.LastName,
-                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).LastOrDefault()))
+                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                        .LastOrDefault()))
                 .ForMember(d => d.Age, o => o.MapFrom(new AgeResolver()));
         });
 
@@ -116,10 +116,10 @@ public static class StubEntityMapperConfiguration
     //    }
     //}
 
-    private class YearOfBirthResolver : AutoMapper.IValueResolver<StubEntity, StubDbEntity, int>
+    private class YearOfBirthResolver : IValueResolver<StubEntity, StubDbEntity, int>
     {
         public int Resolve(StubEntity source, StubDbEntity destination, int destMember,
-            AutoMapper.ResolutionContext context)
+            ResolutionContext context)
         {
             return DateTime.UtcNow.Year - source.Age;
         }
@@ -141,10 +141,10 @@ public static class StubEntityMapperConfiguration
     //    }
     //}
 
-    private class AgeResolver : AutoMapper.IValueResolver<StubDbEntity, StubEntity, int>
+    private class AgeResolver : IValueResolver<StubDbEntity, StubEntity, int>
     {
         public int Resolve(StubDbEntity source, StubEntity destination, int destMember,
-            AutoMapper.ResolutionContext context)
+            ResolutionContext context)
         {
             return DateTime.UtcNow.Year - source.YearOfBirth;
         }

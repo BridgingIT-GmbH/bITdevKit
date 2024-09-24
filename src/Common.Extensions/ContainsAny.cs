@@ -5,25 +5,24 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
 
 public static partial class Extensions
 {
     /// <summary>
-    /// Determines whether the specified string contains any of the items.
+    ///     Determines whether the specified string contains any of the items.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="items">The items.</param>
     /// <param name="comp">The comp.</param>
     /// <returns>
-    ///   <c>true</c> if the specified items contains any; otherwise, <c>false</c>.
+    ///     <c>true</c> if the specified items contains any; otherwise, <c>false</c>.
     /// </returns>
     [DebuggerStepThrough]
     public static bool ContainsAny(
-            this string source,
-            string[] items,
-            StringComparison comp = StringComparison.OrdinalIgnoreCase)
+        this string source,
+        string[] items,
+        StringComparison comp = StringComparison.OrdinalIgnoreCase)
     {
         if (string.IsNullOrEmpty(source))
         {

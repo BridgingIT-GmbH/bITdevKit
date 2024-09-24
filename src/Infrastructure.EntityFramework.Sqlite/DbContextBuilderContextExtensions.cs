@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Diagnostics.HealthChecks;
+using EntityFrameworkCore;
 
 public static class DbContextBuilderContextExtensions
 {
@@ -20,7 +20,13 @@ public static class DbContextBuilderContextExtensions
         where TContext : DbContext
     {
         context.Services.AddHealthChecks()
-            .AddSqlite(context.ConnectionString, healthQuery ?? "select name from sqlite_master", null, name ?? $"{context.Provider.ToString().ToLower()} ({typeof(TContext).Name})", failureStatus, tags ?? new[] { "ready" }, timeout);
+            .AddSqlite(context.ConnectionString,
+                healthQuery ?? "select name from sqlite_master",
+                null,
+                name ?? $"{context.Provider.ToString().ToLower()} ({typeof(TContext).Name})",
+                failureStatus,
+                tags ?? new[] { "ready" },
+                timeout);
 
         return context;
     }

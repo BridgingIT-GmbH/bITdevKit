@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using BridgingIT.DevKit.Application.Commands;
+using DevKit.Application.Commands;
 
 public class CreatePersonCommand : CommandRequestBase<PersonOverviewViewModel>
 {

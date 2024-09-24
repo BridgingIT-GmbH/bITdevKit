@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Infrastructure.EventSourcing;
+using Domain.Specifications;
+using Infrastructure.EventSourcing;
 
 public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateType) : Specification<EventStoreSnapshot>
 {
@@ -17,6 +16,6 @@ public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateTy
 
     public override Expression<Func<EventStoreSnapshot, bool>> ToExpression()
     {
-        return (s) => s.Id == this.aggregateId && s.AggregateType == this.aggregateType;
+        return s => s.Id == this.aggregateId && s.AggregateType == this.aggregateType;
     }
 }

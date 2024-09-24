@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 public class DomainEventPropagationRegistration : IDomainEventPropagationRegistration
 {

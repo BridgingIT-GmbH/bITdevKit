@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using System.Collections.Generic;
-
 public class SystemInfo
 {
     public IDictionary<string, object> Request { get; set; }

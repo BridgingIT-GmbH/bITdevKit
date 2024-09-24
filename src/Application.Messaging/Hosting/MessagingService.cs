@@ -17,23 +17,25 @@ public class MessagingService : BackgroundService
     private readonly IServiceScope scope;
     private IMessageBroker broker;
 
-    public MessagingService(
-        ILoggerFactory loggerFactory,
-        IServiceProvider serviceProvider,
-        MessagingOptions options)
+    public MessagingService(ILoggerFactory loggerFactory, IServiceProvider serviceProvider, MessagingOptions options)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
 
-        this.logger = loggerFactory?.CreateLogger<MessagingService>() ?? NullLoggerFactory.Instance.CreateLogger<MessagingService>();
+        this.logger = loggerFactory?.CreateLogger<MessagingService>() ??
+            NullLoggerFactory.Instance.CreateLogger<MessagingService>();
         this.options = options ?? new MessagingOptions();
         this.scope = serviceProvider.CreateScope();
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} broker stopping (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("{LogKey} broker stopping (broker={MessageBroker})",
+            Constants.LogKey,
+            this.broker?.GetType()?.Name);
         this.broker?.Unsubscribe();
-        this.logger.LogInformation("{LogKey} broker stopped (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("{LogKey} broker stopped (broker={MessageBroker})",
+            Constants.LogKey,
+            this.broker?.GetType()?.Name);
 
         await base.StopAsync(cancellationToken);
     }
@@ -63,20 +65,27 @@ public class MessagingService : BackgroundService
         try
         {
             this.broker = this.scope.ServiceProvider.GetService(typeof(IMessageBroker)) as IMessageBroker;
-            this.logger.LogInformation("{LogKey} broker service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+            this.logger.LogInformation("{LogKey} broker service starting (broker={MessageBroker})",
+                Constants.LogKey,
+                this.broker?.GetType()?.Name);
         }
-        catch (InvalidOperationException ex) // sometimes caused by many concurrent integration tests and the in process broker (messaging)
+        catch (InvalidOperationException
+               ex) // sometimes caused by many concurrent integration tests and the in process broker (messaging)
         {
             this.logger.LogError(ex, "{LogKey} broker service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
 
         if (this.broker is not null)
         {
-            this.logger.LogInformation("{LogKey} broker service started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+            this.logger.LogInformation("{LogKey} broker service started (broker={MessageBroker})",
+                Constants.LogKey,
+                this.broker?.GetType()?.Name);
         }
         else
         {
-            this.logger.LogWarning("{LogKey} broker service not started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+            this.logger.LogWarning("{LogKey} broker service not started (broker={MessageBroker})",
+                Constants.LogKey,
+                this.broker?.GetType()?.Name);
         }
     }
 }

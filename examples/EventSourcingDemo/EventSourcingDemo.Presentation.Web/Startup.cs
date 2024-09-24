@@ -5,14 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Presentation.Web;
 
-using BridgingIT.DevKit.Common.Options;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Common.Options;
+using DevKit.Domain.EventSourcing.Registration;
 using NSwag.Generation.AspNetCore;
 
 public class Startup(IConfiguration configuration)
@@ -26,13 +20,17 @@ public class Startup(IConfiguration configuration)
 
         void Action(ILoggingBuilder builder)
         {
-            builder.AddFilter("Microsoft", LogLevel.Warning).AddFilter("System", LogLevel.Warning).AddFilter("LoggingConsoleApp.Program", LogLevel.Debug).AddConsole();
+            builder.AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
+                .AddConsole();
         }
 
         // ReSharper disable once CA2000
         services.AddTransient<ILoggerOptions>(sp =>
             new LoggerOptionsBuilder()
-                .LoggerFactory(LoggerFactory.Create(Action)).Build());
+                .LoggerFactory(LoggerFactory.Create(Action))
+                .Build());
 
         // framework (aspnet)
         services.AddMvc(option => option.EnableEndpointRouting = false);
@@ -40,7 +38,9 @@ public class Startup(IConfiguration configuration)
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+    public void Configure(
+        IApplicationBuilder app,
+        IWebHostEnvironment env,
         IRegistrationForEventStoreAggregatesAndEvents registrationForEventStoreAggregatesAndEvents)
     {
         if (env.IsDevelopment())

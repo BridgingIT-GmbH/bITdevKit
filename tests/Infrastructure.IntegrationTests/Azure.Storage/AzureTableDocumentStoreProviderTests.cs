@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
+using Application.Storage;
+using Infrastructure.Azure.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-
 public class AzureTableDocumentStoreProviderTests
 {
     private readonly TestEnvironmentFixture fixture;
@@ -19,8 +18,7 @@ public class AzureTableDocumentStoreProviderTests
     public AzureTableDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
-        this.sut = new AzureTableDocumentStoreProvider(
-            XunitLoggerFactory.Create(this.fixture.Output),
+        this.sut = new AzureTableDocumentStoreProvider(XunitLoggerFactory.Create(this.fixture.Output),
             this.fixture.AzuriteConnectionString);
     }
 
@@ -29,19 +27,61 @@ public class AzureTableDocumentStoreProviderTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "Mary" + ticks, LastName = "Jane", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "Mary" + ticks,
+            LastName = "Jane",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>();
 
         // Assert
         result.ShouldNotBeNull();
-        result.Count().ShouldBeGreaterThanOrEqualTo(5); // due to other tests
-        result.Any(e => e.FirstName.Equals("Mary" + ticks)).ShouldBeTrue();
+        result.Count()
+            .ShouldBeGreaterThanOrEqualTo(5); // due to other tests
+        result.Any(e => e.FirstName.Equals("Mary" + ticks))
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -49,19 +89,61 @@ public class AzureTableDocumentStoreProviderTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "Mary" + ticks, LastName = "Jane", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "Mary" + ticks,
+            LastName = "Jane",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.FullMatch);
 
         // Assert
         result.ShouldNotBeNull();
-        result.Count().ShouldBe(1);
-        result.First().FirstName.ShouldBe("Mary" + ticks);
+        result.Count()
+            .ShouldBe(1);
+        result.First()
+            .FirstName.ShouldBe("Mary" + ticks);
     }
 
     [Fact]
@@ -69,19 +151,61 @@ public class AzureTableDocumentStoreProviderTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "Mary" + ticks, LastName = "Jane", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "Mary" + ticks,
+            LastName = "Jane",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeyPrefixMatch);
 
         // Assert
         result.ShouldNotBeNull();
-        result.Count().ShouldBe(5);
-        result.First().FirstName.ShouldBe("Mary" + ticks);
+        result.Count()
+            .ShouldBe(5);
+        result.First()
+            .FirstName.ShouldBe("Mary" + ticks);
     }
 
     //[Fact]
@@ -106,20 +230,63 @@ public class AzureTableDocumentStoreProviderTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "Mary" + ticks, LastName = "Jane", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "Mary" + ticks,
+            LastName = "Jane",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
 
         // Act
         var result = await this.sut.ListAsync<PersonStub>();
 
         // Assert
         result.ShouldNotBeNull();
-        result.Count().ShouldBeGreaterThanOrEqualTo(5); // due to other tests
-        result.All(d => d.PartitionKey.Equals("partition")).ShouldBeTrue();
-        result.Any(d => d.RowKey.StartsWith("row" + ticks)).ShouldBeTrue();
+        result.Count()
+            .ShouldBeGreaterThanOrEqualTo(5); // due to other tests
+        result.All(d => d.PartitionKey.Equals("partition"))
+            .ShouldBeTrue();
+        result.Any(d => d.RowKey.StartsWith("row" + ticks))
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -127,20 +294,63 @@ public class AzureTableDocumentStoreProviderTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "Mary" + ticks, LastName = "Jane", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "Mary" + ticks,
+            LastName = "Jane",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
+        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
+        new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        });
 
         // Act
         var result = await this.sut.ListAsync<PersonStub>(new DocumentKey("partition", "row" + ticks));
 
         // Assert
         result.ShouldNotBeNull();
-        result.Count().ShouldBe(1);
-        result.All(d => d.PartitionKey.Equals("partition")).ShouldBeTrue();
-        result.All(d => d.RowKey.StartsWith("row" + ticks)).ShouldBeTrue();
+        result.Count()
+            .ShouldBe(1);
+        result.All(d => d.PartitionKey.Equals("partition"))
+            .ShouldBeTrue();
+        result.All(d => d.RowKey.StartsWith("row" + ticks))
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -149,7 +359,14 @@ public class AzureTableDocumentStoreProviderTests
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         var documentKey = new DocumentKey("partition", "row" + ticks);
-        var entity = new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 };
+        var entity = new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        };
 
         // Act
         await this.sut.UpsertAsync(documentKey, entity);
@@ -157,8 +374,10 @@ public class AzureTableDocumentStoreProviderTests
         // Assert
         var result = await this.sut.FindAsync<PersonStub>(documentKey);
         result.ShouldNotBeNull();
-        result.Count().ShouldBe(1);
-        result.First().ShouldBe(entity);
+        result.Count()
+            .ShouldBe(1);
+        result.First()
+            .ShouldBe(entity);
     }
 
     [Fact]
@@ -167,7 +386,14 @@ public class AzureTableDocumentStoreProviderTests
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         var documentKey = new DocumentKey("partition", "row" + ticks);
-        var entity = new PersonStub { Id = Guid.NewGuid(), Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 };
+        var entity = new PersonStub
+        {
+            Id = Guid.NewGuid(),
+            Nationality = "USA",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 18
+        };
 
         // Act
         await this.sut.UpsertAsync(documentKey, entity);
@@ -176,6 +402,7 @@ public class AzureTableDocumentStoreProviderTests
         // Assert
         var result = await this.sut.FindAsync<PersonStub>(documentKey);
         result.ShouldNotBeNull();
-        result.Count().ShouldBe(0);
+        result.Count()
+            .ShouldBe(0);
     }
 }

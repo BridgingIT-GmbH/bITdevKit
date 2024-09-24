@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
-
 public abstract class LongTypedId(long value) : IEquatable<LongTypedId>, IComparable<LongTypedId>
 {
     public long Value { get; } = value;
 
-    public static implicit operator long(LongTypedId typedId) => typedId.Value;
+    public static implicit operator long(LongTypedId typedId)
+    {
+        return typedId.Value;
+    }
 
     public static bool operator ==(LongTypedId left, LongTypedId right)
     {

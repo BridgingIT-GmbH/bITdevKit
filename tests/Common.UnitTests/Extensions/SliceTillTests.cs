@@ -21,7 +21,8 @@ public class SliceTillTests
     [InlineData("abcdef.jpg.jpg", ".", "abcdef")]
     public void Till_All_Positions(string source, string till, string expected)
     {
-        source.SliceTill(till).ShouldBe(expected);
+        source.SliceTill(till)
+            .ShouldBe(expected);
     }
 
     [Theory]
@@ -31,6 +32,7 @@ public class SliceTillTests
     [InlineData("abcdef.jpg.jpg", ".", "abcdef.jpg")]
     public void TillLast_All_Positions(string source, string till, string expected)
     {
-        source.SliceTillLast(till).ShouldBe(expected);
+        source.SliceTillLast(till)
+            .ShouldBe(expected);
     }
 }

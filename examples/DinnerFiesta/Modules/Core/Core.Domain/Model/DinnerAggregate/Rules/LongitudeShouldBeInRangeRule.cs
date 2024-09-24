@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class LongitudeShouldBeInRangeRule : IDomainRule
 {
@@ -24,7 +24,9 @@ public class LongitudeShouldBeInRangeRule : IDomainRule
     public string Message => "Longitude should be between -180 and 180";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
@@ -34,5 +36,8 @@ public class LongitudeShouldBeInRangeRule : IDomainRule
 
 public static partial class DinnerRules
 {
-    public static IDomainRule LongitudeShouldBeInRange(double? value) => new LongitudeShouldBeInRangeRule(value);
+    public static IDomainRule LongitudeShouldBeInRange(double? value)
+    {
+        return new LongitudeShouldBeInRangeRule(value);
+    }
 }

@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 public interface IAggregateEventMediatorRequestSender
 {

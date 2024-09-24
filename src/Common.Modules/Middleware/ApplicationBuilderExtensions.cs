@@ -6,12 +6,14 @@
 namespace Microsoft.AspNetCore.Builder;
 
 using BridgingIT.DevKit.Common;
-using EnsureThat;
 
+/// <summary>
+///     Provides extension methods for the IApplicationBuilder to add module context middleware.
+/// </summary>
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
-    /// Adds middleware for providing a module context for each HTTP request.
+    ///     Adds middleware for providing a module context for each HTTP request.
     /// </summary>
     /// <param name="app">The application builder.</param>
     public static IApplicationBuilder UseRequestModuleContext(this IApplicationBuilder app)

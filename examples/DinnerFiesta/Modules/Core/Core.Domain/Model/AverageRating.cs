@@ -5,15 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class AverageRating : ValueObject
 {
     private double value;
 
-    private AverageRating()
-    {
-    }
+    private AverageRating() { }
 
     private AverageRating(double value, int numRatings)
     {
@@ -21,11 +19,18 @@ public class AverageRating : ValueObject
         this.NumRatings = numRatings;
     }
 
-    public double? Value { get => this.NumRatings > 0 ? this.value : null; private set => this.value = value!.Value; }
+    public double? Value
+    {
+        get => this.NumRatings > 0 ? this.value : null;
+        private set => this.value = value!.Value;
+    }
 
     public int NumRatings { get; private set; }
 
-    public static implicit operator double(AverageRating rating) => rating.Value ?? 0;
+    public static implicit operator double(AverageRating rating)
+    {
+        return rating.Value ?? 0;
+    }
 
     public static AverageRating Create(double value = 0, int numRatings = 0)
     {

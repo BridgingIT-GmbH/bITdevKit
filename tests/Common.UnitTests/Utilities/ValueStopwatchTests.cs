@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 [UnitTest("Common")]
 public class ValueStopwatchTests(ITestOutputHelper output) : TestsBase(output)
@@ -22,7 +21,8 @@ public class ValueStopwatchTests(ITestOutputHelper output) : TestsBase(output)
     public void StartNew_IsActive_ReturnsTrue()
     {
         // Arrange & Act/Assert
-        ValueStopwatch.StartNew().IsActive.ShouldBeTrue();
+        ValueStopwatch.StartNew()
+            .IsActive.ShouldBeTrue();
     }
 
     [Fact]

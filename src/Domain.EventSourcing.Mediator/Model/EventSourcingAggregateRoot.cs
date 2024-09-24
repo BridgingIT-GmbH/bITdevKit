@@ -2,17 +2,15 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
 using MediatR;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggregateRootWithGuid, IAggregateRootCommitting
 {
@@ -73,7 +71,10 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
         this.unsavedEvents.Add(@event);
     }
 
-    protected int GetNextVersion() => this.Version + 1;
+    protected int GetNextVersion()
+    {
+        return this.Version + 1;
+    }
 
     private void IntegrateEvent(IAggregateEvent @event)
     {

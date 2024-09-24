@@ -5,15 +5,21 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Security.Cryptography;
-using System.Text;
 
+/// <summary>
+///     Provides methods for generating random keys.
+/// </summary>
 public static class KeyGenerator
 {
-    internal static readonly char[] Chars =
+    private static readonly char[] Chars =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
 
+    /// <summary>
+    ///     Generates a random string key of the specified size.
+    /// </summary>
+    /// <param name="size">The length of the generated key.</param>
+    /// <return>A randomly generated string key of the specified size.</return>
     public static string Create(int size)
     {
         var data = new byte[4 * size];

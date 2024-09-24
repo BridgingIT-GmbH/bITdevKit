@@ -16,8 +16,13 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeValidGuid();
-        var model = new TestModel { GuidString = Guid.NewGuid().ToString() };
+        validator.RuleFor(x => x.GuidString)
+            .MustBeValidGuid();
+        var model = new TestModel
+        {
+            GuidString = Guid.NewGuid()
+                .ToString()
+        };
 
         // Act
         var result = validator.TestValidate(model);
@@ -31,7 +36,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeValidGuid();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeValidGuid();
         var model = new TestModel { GuidString = "not-a-guid" };
 
         // Act
@@ -46,8 +52,13 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustNotBeEmptyGuid();
-        var model = new TestModel { GuidString = Guid.NewGuid().ToString() };
+        validator.RuleFor(x => x.GuidString)
+            .MustNotBeEmptyGuid();
+        var model = new TestModel
+        {
+            GuidString = Guid.NewGuid()
+                .ToString()
+        };
 
         // Act
         var result = validator.TestValidate(model);
@@ -61,7 +72,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustNotBeEmptyGuid();
+        validator.RuleFor(x => x.GuidString)
+            .MustNotBeEmptyGuid();
         var model = new TestModel { GuidString = Guid.Empty.ToString() };
 
         // Act
@@ -76,7 +88,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeEmptyGuid();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeEmptyGuid();
         var model = new TestModel { GuidString = Guid.Empty.ToString() };
 
         // Act
@@ -91,8 +104,13 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeEmptyGuid();
-        var model = new TestModel { GuidString = Guid.NewGuid().ToString() };
+        validator.RuleFor(x => x.GuidString)
+            .MustBeEmptyGuid();
+        var model = new TestModel
+        {
+            GuidString = Guid.NewGuid()
+                .ToString()
+        };
 
         // Act
         var result = validator.TestValidate(model);
@@ -106,7 +124,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeDefaultOrEmptyGuid();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeDefaultOrEmptyGuid();
         var model = new TestModel { GuidString = default(Guid).ToString() };
 
         // Act
@@ -121,7 +140,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeDefaultOrEmptyGuid();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeDefaultOrEmptyGuid();
         var model = new TestModel { GuidString = string.Empty };
 
         // Act
@@ -136,8 +156,13 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeDefaultOrEmptyGuid();
-        var model = new TestModel { GuidString = Guid.NewGuid().ToString() };
+        validator.RuleFor(x => x.GuidString)
+            .MustBeDefaultOrEmptyGuid();
+        var model = new TestModel
+        {
+            GuidString = Guid.NewGuid()
+                .ToString()
+        };
 
         // Act
         var result = validator.TestValidate(model);
@@ -155,7 +180,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeInGuidFormat();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeInGuidFormat();
         var model = new TestModel { GuidString = value };
 
         // Act
@@ -175,7 +201,8 @@ public class GuidValidationTests
     {
         // Arrange
         var validator = new TestValidator();
-        validator.RuleFor(x => x.GuidString).MustBeInGuidFormat();
+        validator.RuleFor(x => x.GuidString)
+            .MustBeInGuidFormat();
         var model = new TestModel { GuidString = value };
 
         // Act
@@ -190,11 +217,5 @@ public class GuidValidationTests
         public string GuidString { get; set; }
     }
 
-    private class TestValidator : AbstractValidator<TestModel>
-    {
-        public TestValidator()
-        {
-            // rules are set in test methods
-        }
-    }
+    private class TestValidator : AbstractValidator<TestModel> { }
 }

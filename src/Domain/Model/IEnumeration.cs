@@ -5,20 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
+public interface IEnumeration : IEnumeration<int, string> { }
 
-public interface IEnumeration : IEnumeration<int, string>
-{
-}
+public interface IEnumeration<out TValue> : IEnumeration<int, TValue> { }
 
-public interface IEnumeration<TValue> : IEnumeration<int, TValue>
-    where TValue : IComparable
-{
-}
-
-public interface IEnumeration<TId, TValue> : IComparable
+public interface IEnumeration<out TId, out TValue> : IComparable, IEquatable<Enumeration>
     where TId : IComparable
-    where TValue : IComparable
 {
     TId Id { get; }
 

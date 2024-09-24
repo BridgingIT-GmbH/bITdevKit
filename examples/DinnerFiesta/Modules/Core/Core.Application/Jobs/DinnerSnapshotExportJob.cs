@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.JobScheduling;
+using DevKit.Application.Storage;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
@@ -18,7 +17,8 @@ public class DinnerSnapshotExportJob(
     ILoggerFactory loggerFactory,
     IGenericRepository<Dinner> dinnerRepository,
     IGenericRepository<Menu> menuRepository,
-    IDocumentStoreClient<DinnerSnapshotDocument> documentStoreClient) : JobBase(loggerFactory) //IRetryJob, IChaosExceptionJobScheduling
+    IDocumentStoreClient<DinnerSnapshotDocument>
+        documentStoreClient) : JobBase(loggerFactory) //IRetryJob, IChaosExceptionJobScheduling
 {
     //RetryJobOptions IRetryJob.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
@@ -39,16 +39,14 @@ public class DinnerSnapshotExportJob(
                 Description = dinner.Description,
                 Menu = new MenuSnapshotDocument
                 {
-                    Id = menu?.Id?.ToString(),
-                    Name = menu?.Name,
-                    Description = menu?.Description,
+                    Id = menu?.Id?.ToString(), Name = menu?.Name, Description = menu?.Description
                 }
             };
             // TODO: map everything incl. the menus to the snapshot
 
-            await documentStoreClient.UpsertAsync(
-                new DocumentKey("Dinner", document.Id),
-                document, cancellationToken);
+            await documentStoreClient.UpsertAsync(new DocumentKey("Dinner", document.Id),
+                document,
+                cancellationToken);
         }
     }
 }

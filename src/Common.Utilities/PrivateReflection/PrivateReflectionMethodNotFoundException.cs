@@ -5,16 +5,10 @@
 
 namespace BridgingIT.DevKit.Common.PrivateReflection;
 
-using System;
-
 public class PrivateReflectionMethodNotFoundException : Exception
 {
-    public PrivateReflectionMethodNotFoundException()
-    {
-    }
+    public PrivateReflectionMethodNotFoundException() { }
 
     public PrivateReflectionMethodNotFoundException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 }

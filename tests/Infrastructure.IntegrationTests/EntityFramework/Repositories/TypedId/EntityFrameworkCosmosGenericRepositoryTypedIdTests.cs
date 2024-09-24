@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.Repositories;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
@@ -192,7 +192,7 @@ public class EntityFrameworkCosmosGenericRepositoryTypedIdTests : EntityFramewor
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         using var context = this.GetContext(null, true);
         var sut = this.CreateBlogRepository(context);
@@ -212,14 +212,15 @@ public class EntityFrameworkCosmosGenericRepositoryTypedIdTests : EntityFramewor
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog>() { NoTracking = true });
+        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<Blog> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(disconnectedEntity.Id);
         existingEntity.Name.ShouldBe(disconnectedEntity.Name);
         existingEntity.Email.ShouldBe(disconnectedEntity.Email);
         existingEntity.Posts.ShouldNotBeNull();
         existingEntity.Posts.ShouldNotBeEmpty();
-        existingEntity.Posts.Count().ShouldBe(3); // 3
+        existingEntity.Posts.Count()
+            .ShouldBe(3); // 3
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[0]);
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[1]);
         existingEntity.Posts.ShouldContain(disconnectedEntity.Posts.ToArray()[2]);

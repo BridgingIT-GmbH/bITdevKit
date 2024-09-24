@@ -5,14 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using Azure.Cosmos;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Azure;
 using BridgingIT.DevKit.Infrastructure.Azure.Storage;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Configuration;
+using Extensions;
+using Logging;
 using Scrutor;
 
 public static partial class ServiceCollectionExtensions
@@ -36,13 +36,13 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(cosmosClient, nameof(cosmosClient));
 
-        return services.AddCosmosDocumentStoreClient<T>(o => o
-            .Client(cosmosClient), lifetime);
+        return services.AddCosmosDocumentStoreClient<T>(o => o.Client(cosmosClient), lifetime);
     }
 
     public static CosmosDocumentStoreClientBuilderContext<T> AddCosmosDocumentStoreClient<T>(
         this IServiceCollection services,
-        Builder<CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>, CosmosSqlProviderOptions<CosmosStorageDocument>> providerOptionsBuilder,
+        Builder<CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>, CosmosSqlProviderOptions<CosmosStorageDocument>>
+            providerOptionsBuilder,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where T : class, new()
     {
@@ -52,7 +52,8 @@ public static partial class ServiceCollectionExtensions
         // ensure some default options values
         var providerOptions = providerOptionsBuilder(new CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>())
             .Container("storage_documents")
-            .PartitionKey(e => e.Type).Build();
+            .PartitionKey(e => e.Type)
+            .Build();
 
         switch (lifetime)
         {
@@ -62,8 +63,7 @@ public static partial class ServiceCollectionExtensions
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
                     return new DocumentStoreClient<T>(
-                        new CosmosDocumentStoreProvider(
-                            new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
+                        new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
                 break;
             case ServiceLifetime.Transient:
@@ -72,8 +72,7 @@ public static partial class ServiceCollectionExtensions
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
                     return new DocumentStoreClient<T>(
-                        new CosmosDocumentStoreProvider(
-                            new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
+                        new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
                 break;
             default:
@@ -82,8 +81,7 @@ public static partial class ServiceCollectionExtensions
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
                     return new DocumentStoreClient<T>(
-                        new CosmosDocumentStoreProvider(
-                            new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
+                        new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
                 break;
         }
@@ -103,16 +101,13 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.TryAddSingleton<IDocumentStoreClient<T>>(sp =>
-                    new DocumentStoreClient<T>(provider));
+                services.TryAddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
                 break;
             case ServiceLifetime.Transient:
-                services.TryAddTransient<IDocumentStoreClient<T>>(sp =>
-                    new DocumentStoreClient<T>(provider));
+                services.TryAddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
                 break;
             default:
-                services.TryAddScoped<IDocumentStoreClient<T>>(sp =>
-                    new DocumentStoreClient<T>(provider));
+                services.TryAddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
                 break;
         }
 
@@ -144,7 +139,8 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
         return this;
     }
 
-    public CosmosDocumentStoreClientBuilderContext<T> WithBehavior<TBehavior>(Func<IDocumentStoreClient<T>, TBehavior> behavior)
+    public CosmosDocumentStoreClientBuilderContext<T> WithBehavior<TBehavior>(
+        Func<IDocumentStoreClient<T>, TBehavior> behavior)
         where TBehavior : notnull, IDocumentStoreClient<T>
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
@@ -155,7 +151,8 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
         return this;
     }
 
-    public CosmosDocumentStoreClientBuilderContext<T> WithBehavior<TBehavior>(Func<IDocumentStoreClient<T>, IServiceProvider, TBehavior> behavior)
+    public CosmosDocumentStoreClientBuilderContext<T> WithBehavior<TBehavior>(
+        Func<IDocumentStoreClient<T>, IServiceProvider, TBehavior> behavior)
         where TBehavior : notnull, IDocumentStoreClient<T>
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
@@ -167,8 +164,8 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
     }
 
     /// <summary>
-    /// Registers all recorded behaviors (decorators). Before registering all existing behavior registrations are removed.
-    /// This needs to be done to apply the registrations in reverse order.
+    ///     Registers all recorded behaviors (decorators). Before registering all existing behavior registrations are removed.
+    ///     This needs to be done to apply the registrations in reverse order.
     /// </summary>
     private IServiceCollection RegisterBehaviors()
     {
@@ -176,7 +173,8 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
         this.repositoryDescriptor ??= this.Services.Find<IDocumentStoreClient<T>>();
         if (this.repositoryDescriptor is null)
         {
-            throw new Exception($"Cannot register behaviors for {typeof(IDocumentStoreClient<T>).PrettyName()} as it has not been registerd.");
+            throw new Exception(
+                $"Cannot register behaviors for {typeof(IDocumentStoreClient<T>).PrettyName()} as it has not been registerd.");
         }
 
         var descriptorIndex = this.Services.IndexOf<IDocumentStoreClient<T>>();
@@ -189,7 +187,10 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
             return this.Services;
         }
 
-        foreach (var descriptor in this.Services.Where(s => s.ServiceType is DecoratedType && s.ServiceType.ImplementsInterface(typeof(IDocumentStoreClient<T>)))?.ToList())
+        foreach (var descriptor in this.Services.Where(s =>
+                         s.ServiceType is DecoratedType &&
+                         s.ServiceType.ImplementsInterface(typeof(IDocumentStoreClient<T>)))
+                     ?.ToList())
         {
             this.Services.Remove(descriptor); // remove the registered behavior
         }

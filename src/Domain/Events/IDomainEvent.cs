@@ -5,12 +5,24 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
 using MediatR;
 
+/// <summary>
+///     Represents a domain event which is used to signal changes within the domain.
+///     Domain events are used to encapsulate changes to the state of an aggregate.
+/// </summary>
 public interface IDomainEvent : INotification
 {
+    /// <summary>
+    ///     Gets the unique identifier for the domain event.
+    /// </summary>
     Guid EventId { get; }
 
+    /// <summary>
+    ///     Gets the timestamp indicating when the domain event occurred.
+    /// </summary>
+    /// <value>
+    ///     A <see cref="System.DateTimeOffset" /> representing the exact date and time the event was generated.
+    /// </value>
     DateTimeOffset Timestamp { get; }
 }

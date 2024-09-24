@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
+using Application.Storage;
+using Infrastructure.Azure.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -21,13 +21,10 @@ public class AzureBlobDocumentStoreCacheProviderTests
     public AzureBlobDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
-        this.client = new LoggingDocumentStoreClientBehavior<CacheDocument>(
-            XunitLoggerFactory.Create(this.fixture.Output),
-            new DocumentStoreClient<CacheDocument>(
-                new AzureBlobDocumentStoreProvider(XunitLoggerFactory.Create(this.fixture.Output),
+        this.client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.fixture.Output),
+            new DocumentStoreClient<CacheDocument>(new AzureBlobDocumentStoreProvider(XunitLoggerFactory.Create(this.fixture.Output),
                 this.fixture.AzuriteConnectionString)));
-        this.sut = new DocumentStoreCacheProvider(
-            XunitLoggerFactory.Create(this.fixture.Output),
+        this.sut = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.fixture.Output),
             new DocumentStoreCache(this.client),
             this.client);
 
@@ -160,7 +157,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         this.sut.Remove(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -171,7 +169,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         await this.sut.RemoveAsync(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -184,7 +183,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         this.sut.RemoveStartsWith(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -197,7 +197,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         await this.sut.RemoveStartsWithAsync(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -212,7 +213,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         this.sut.Set(key, value);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -229,7 +231,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         this.sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -246,7 +249,8 @@ public class AzureBlobDocumentStoreCacheProviderTests
         await this.sut.SetAsync(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -263,6 +267,7 @@ public class AzureBlobDocumentStoreCacheProviderTests
         this.sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeFalse();
     }
 }

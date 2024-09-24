@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System;
-using EnsureThat;
-
 public class JobSchedule
 {
     public JobSchedule(Type jobType, string cronExpression)

@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class EnumerationConverter<TEnumeration> : ValueConverter<TEnumeration, int>
     where TEnumeration : IEnumeration
 {
     public EnumerationConverter()
-        : base(
-            enumeration => enumeration.Id, // Converts Enumeration to int
+        : base(enumeration => enumeration.Id, // Converts Enumeration to int
             value => Enumeration.FromId<TEnumeration>(value)) // Converts int back to Enumeration
-    {
-    }
+    { }
 }
 
 public class EnumerationConverter<TValue, TEnumeration> : ValueConverter<TEnumeration, int>
@@ -24,11 +22,9 @@ public class EnumerationConverter<TValue, TEnumeration> : ValueConverter<TEnumer
     where TValue : IComparable
 {
     public EnumerationConverter()
-        : base(
-            enumeration => enumeration.Id, // Converts Enumeration to TId
+        : base(enumeration => enumeration.Id, // Converts Enumeration to TId
             id => Enumeration<int, TValue>.FromId<TEnumeration>(id)) // Converts TId back to Enumeration
-    {
-    }
+    { }
 }
 
 public class EnumerationConverter<TId, TValue, TEnumeration> : ValueConverter<TEnumeration, TId>
@@ -37,9 +33,7 @@ public class EnumerationConverter<TId, TValue, TEnumeration> : ValueConverter<TE
     where TValue : IComparable
 {
     public EnumerationConverter()
-        : base(
-            enumeration => enumeration.Id, // Converts Enumeration to TId
+        : base(enumeration => enumeration.Id, // Converts Enumeration to TId
             id => Enumeration<TId, TValue>.FromId<TEnumeration>(id)) // Converts TId back to Enumeration
-    {
-    }
+    { }
 }

@@ -5,35 +5,35 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 /// <summary>
-/// Registratur für EventStore-AggregateEvents.
-/// Bei der Registratur wird eine Name übergeben der während des kompletten
-/// Application Life Cylcles der Applikation nicht mehr verändert werden dürfen,
-/// um so jederzeit ein Replay zu erlauben.
+///     Registratur für EventStore-AggregateEvents.
+///     Bei der Registratur wird eine Name übergeben der während des kompletten
+///     Application Life Cylcles der Applikation nicht mehr verändert werden dürfen,
+///     um so jederzeit ein Replay zu erlauben.
 /// </summary>
 public interface IEventStoreAggregateEventRegistration
 {
     /// <summary>
-    /// Ordnet einem AggregateEvent einen Namen zu, der während des kompletten
-    /// Application Lifce Cycle nicht mehr verändert werden darf,
-    /// so dass jederzeit ein Replay der Ereignisse möglich ist.
-    /// Auch bei Umbenennungen der Klasse
-    /// darf dieser Name nicht verändert werden.
+    ///     Ordnet einem AggregateEvent einen Namen zu, der während des kompletten
+    ///     Application Lifce Cycle nicht mehr verändert werden darf,
+    ///     so dass jederzeit ein Replay der Ereignisse möglich ist.
+    ///     Auch bei Umbenennungen der Klasse
+    ///     darf dieser Name nicht verändert werden.
     /// </summary>
     void Register<TAggregateEvent>(string immutableName)
         where TAggregateEvent : AggregateEvent;
 
     /// <summary>
-    /// Gibt den immutable Name eines AggregateEvents zurück. Auch bei Umbenennungen der Klasse
-    /// darf dieser Name nicht verändert werden.
+    ///     Gibt den immutable Name eines AggregateEvents zurück. Auch bei Umbenennungen der Klasse
+    ///     darf dieser Name nicht verändert werden.
     /// </summary>
     string GetImmutableName(IAggregateEvent aggregateEventType);
 
     /// <summary>
-    /// Gibt den Type als String anhand des übergebenen 'immutableNames" zurück. Der immutable Name
-    /// muss mit Register für den Type definiert worden sein.
+    ///     Gibt den Type als String anhand des übergebenen 'immutableNames" zurück. Der immutable Name
+    ///     muss mit Register für den Type definiert worden sein.
     /// </summary>
     string GetTypeOnImmutableName(string immutableName);
 }

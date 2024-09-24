@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 public interface IMessageHandlerFactory
 {
     /// <summary>
-    /// Creates the specified message handler type.
+    ///     Creates the specified message handler type.
     /// </summary>
     /// <param name="messageHandlerType">Type of the message handler.</param>
     object Create(Type messageHandlerType);

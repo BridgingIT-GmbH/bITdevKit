@@ -5,33 +5,31 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
+using Model;
 
 public class EmailAddress : ValueObject
 {
-    private EmailAddress()
-    {
-    }
+    private EmailAddress() { }
 
     private EmailAddress(string value)
     {
         this.Value = value;
     }
 
-    public string Value { get; private set; }
+    public string Value { get; }
 
-    public static implicit operator string(EmailAddress email) => email.Value;
+    public static implicit operator string(EmailAddress email)
+    {
+        return email.Value;
+    }
 
     public static EmailAddress Create(string value)
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        DomainRules.Apply(
-        [
-            EmailAddressRules.IsValid(value),
-        ]);
+        DomainRules.Apply([EmailAddressRules.IsValid(value)]);
 
         return new EmailAddress(value);
     }

@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <SupportedPlatform Include="browser" />
+    <SupportedPlatform Include="browser"/>
   </ItemGroup>
 
   <!-- API Client generation (openapi2csclient) -->
@@ -35,7 +35,7 @@
   </PropertyGroup>
   <Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientOutputDirectory)\$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:$(ApiClientClassName) /namespace:$(ApiClientNamespace) /output:$(ApiClientOutputDirectory)\$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
-      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec"/>
     </Exec>
   </Target>
   <Target Name="CleanApiClient" AfterTargets="CoreClean" Condition="'$(ApiSpecGenerate)' == 'true'">

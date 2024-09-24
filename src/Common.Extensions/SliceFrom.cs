@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
 
 public static partial class Extensions
 {
     [DebuggerStepThrough]
-    public static string SliceFrom(this string source, string from,
+    public static string SliceFrom(
+        this string source,
+        string from,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
         if (source.IsNullOrEmpty() || from.IsNullOrEmpty())
@@ -23,7 +24,9 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static string SliceFromLast(this string source, string from,
+    public static string SliceFromLast(
+        this string source,
+        string from,
         StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
         if (source.IsNullOrEmpty() || from.IsNullOrEmpty())

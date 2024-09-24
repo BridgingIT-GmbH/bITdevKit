@@ -5,12 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public static class EnumerableExtensions
 {
     /// <summary>
-    /// Adds the item to the collection.
+    ///     Adds the item to the collection.
     /// </summary>
     /// <typeparam name="T">the source.</typeparam>
     /// <param name="source">the source collection.</param>
@@ -21,7 +19,7 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Adds the items to the collection.
+    ///     Adds the items to the collection.
     /// </summary>
     /// <typeparam name="T">the source.</typeparam>
     /// <param name="source">the source collection.</param>
@@ -32,16 +30,13 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Inserts the item in the collection.
+    ///     Inserts the item in the collection.
     /// </summary>
     /// <typeparam name="T">the source.</typeparam>
     /// <param name="source">the source collection.</param>
     /// <param name="item">The item to insert.</param>
     /// <param name="index">the index at which the item should inserted.</param>
-    public static IEnumerable<T> Insert<T>(
-        this IEnumerable<T> source,
-        T item,
-        int index = 0)
+    public static IEnumerable<T> Insert<T>(this IEnumerable<T> source, T item, int index = 0)
     {
         if (item is null)
         {
@@ -67,16 +62,13 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Inserts the items in the collection.
+    ///     Inserts the items in the collection.
     /// </summary>
     /// <typeparam name="T">the source.</typeparam>
     /// <param name="source">the source collection.</param>
     /// <param name="items">The items to insert.</param>
     /// <param name="index">the index at which the item should inserted.</param>
-    public static IEnumerable<T> InsertRange<T>(
-        this IEnumerable<T> source,
-        IEnumerable<T> items,
-        int index = 0)
+    public static IEnumerable<T> InsertRange<T>(this IEnumerable<T> source, IEnumerable<T> items, int index = 0)
     {
         if (items is null)
         {

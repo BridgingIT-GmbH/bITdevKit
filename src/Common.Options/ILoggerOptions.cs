@@ -10,13 +10,13 @@ using Microsoft.Extensions.Logging;
 public interface ILoggerOptions
 {
     /// <summary>
-    /// Creates the logger.
+    ///     Creates the logger.
     /// </summary>
     /// <param name="categoryName">Name of the category.</param>
     ILogger CreateLogger(string categoryName);
 
     /// <summary>
-    /// Creates the typed logger.
+    ///     Creates the typed logger.
     /// </summary>
     ILogger<T> CreateLogger<T>();
 }

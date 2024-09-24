@@ -5,17 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 public static partial class Extensions
 {
     [DebuggerStepThrough]
-    public static bool SafeAny<T>(
-        this IEnumerable<T> source,
-        Func<T, bool> predicate = null)
+    public static bool SafeAny<T>(this IEnumerable<T> source, Func<T, bool> predicate = null)
     {
         if (source.IsNullOrEmpty())
         {
@@ -26,9 +21,7 @@ public static partial class Extensions
         {
             return source.Any(predicate);
         }
-        else
-        {
-            return source.Any(i => i is not null);
-        }
+
+        return source.Any(i => i is not null);
     }
 }

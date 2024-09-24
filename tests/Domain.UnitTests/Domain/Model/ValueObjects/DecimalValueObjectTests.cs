@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class DecimalValueObjectTests
@@ -44,8 +43,10 @@ public class DecimalValueObjectTests
         var result = new[] { sut99, sut00, sut10 }.OrderBy(s => s);
 
         // Assert
-        result.First().ShouldBe(sut00);
-        result.Last().ShouldBe(sut99);
+        result.First()
+            .ShouldBe(sut00);
+        result.Last()
+            .ShouldBe(sut99);
     }
 
     [Fact]
@@ -59,27 +60,41 @@ public class DecimalValueObjectTests
         var sut99 = StubValueObject.Create(99.99m);
 
         // Assert
-        sut00.HasDecimals().ShouldBeTrue();
-        sut10.HasDecimals().ShouldBeFalse();
-        sut11.HasDecimals().ShouldBeFalse();
-        sut99.HasDecimals().ShouldBeTrue();
+        sut00.HasDecimals()
+            .ShouldBeTrue();
+        sut10.HasDecimals()
+            .ShouldBeFalse();
+        sut11.HasDecimals()
+            .ShouldBeFalse();
+        sut99.HasDecimals()
+            .ShouldBeTrue();
     }
 }
 
 public class StubValueObject : DecimalValueObject
 {
     private StubValueObject(decimal value)
-        : base(value)
+        : base(value) { }
+
+    public static implicit operator StubValueObject(decimal value)
     {
+        return new StubValueObject(value);
     }
 
-    public static implicit operator StubValueObject(decimal value) => new(value);
+    public static implicit operator decimal(StubValueObject value)
+    {
+        return value.Amount;
+    }
 
-    public static implicit operator decimal(StubValueObject value) => value.Amount;
+    public static StubValueObject operator +(StubValueObject a, StubValueObject b)
+    {
+        return a.Amount + b.Amount;
+    }
 
-    public static StubValueObject operator +(StubValueObject a, StubValueObject b) => a.Amount + b.Amount;
-
-    public static StubValueObject operator -(StubValueObject a, StubValueObject b) => a.Amount - b.Amount;
+    public static StubValueObject operator -(StubValueObject a, StubValueObject b)
+    {
+        return a.Amount - b.Amount;
+    }
 
     public static StubValueObject Create(decimal value)
     {

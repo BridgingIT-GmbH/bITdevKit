@@ -5,6 +5,4 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public interface ITextSerializer : ISerializer
-{
-}
+public interface ITextSerializer : ISerializer { }

@@ -5,14 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +30,9 @@ public class CityUpdateCommandHandler : CommandHandlerBase<CityUpdateCommand, Ag
         this.repository = repository;
     }
 
-    public override async Task<CommandResponse<AggregateUpdatedCommandResult>> Process(CityUpdateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<AggregateUpdatedCommandResult>> Process(
+        CityUpdateCommand command,
+        CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"+++ update city with name: {command.Model.Name} ({command.Model.Country})");
 
@@ -42,8 +41,9 @@ public class CityUpdateCommandHandler : CommandHandlerBase<CityUpdateCommand, Ag
             throw new EntityNotFoundException();
         }
 
-        var entity = await this.repository.FindOneAsync(command.Model.Id, cancellationToken: cancellationToken).AnyContext()
-            ?? throw new AggregateNotFoundException(nameof(City));
+        var entity =
+            await this.repository.FindOneAsync(command.Model.Id, cancellationToken: cancellationToken).AnyContext() ??
+            throw new AggregateNotFoundException(nameof(City));
         entity.Update(command.Model.Name, command.Model.Country, command.Model.Longitude, command.Model.Latitude);
         await this.repository.UpsertAsync(entity, cancellationToken).AnyContext();
 

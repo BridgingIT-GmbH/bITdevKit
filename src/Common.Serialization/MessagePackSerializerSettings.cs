@@ -6,9 +6,12 @@
 namespace BridgingIT.DevKit.Common;
 
 using MessagePack;
+using MessagePack.Resolvers;
 
 public static class MessagePackSerializerSettings
 {
-    public static MessagePackSerializerOptions Create() =>
-        MessagePack.Resolvers.ContractlessStandardResolverAllowPrivate.Options;
+    public static MessagePackSerializerOptions Create()
+    {
+        return ContractlessStandardResolverAllowPrivate.Options;
+    }
 }

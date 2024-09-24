@@ -5,6 +5,4 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-internal interface IQueryHandler
-{
-}
+internal interface IQueryHandler { }

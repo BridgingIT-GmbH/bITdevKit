@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.AspNetCore.Mvc;
 
 public interface IActionResultMapper
@@ -21,34 +21,88 @@ public interface IActionResultMapper
 
     ActionResult<PagedResult<TModel>> Ok<TModel>(PagedResult<TModel> result);
 
-    ActionResult<TModel> Created<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null);
+    ActionResult<TModel> Created<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null);
 
-    ActionResult<TModel> Created<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    ActionResult<TModel> Created<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new();
 
-    ActionResult<TModel> Created<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null);
+    ActionResult<TModel> Created<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null);
 
-    ActionResult<TModel> Created<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    ActionResult<TModel> Created<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new();
 
-    ActionResult<TModel> Updated<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null);
+    ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null);
 
-    ActionResult<TModel> Updated<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new();
 
-    ActionResult<TModel> Updated<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null);
+    ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null);
 
-    ActionResult<TModel> Updated<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    ActionResult<TModel> Updated<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new();
 
-    ActionResult<TModel> Accepted<TModel>(IResult result, TModel model, string routeName = null, object routeValues = null);
+    ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        TModel model,
+        string routeName = null,
+        object routeValues = null);
 
-    ActionResult<TModel> Accepted<TModel>(IResult result, Action<TModel> action, string routeName = null, object routeValues = null)
+    ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string routeName = null,
+        object routeValues = null)
         where TModel : new();
 
-    ActionResult<TModel> Accepted<TModel>(IResult result, TModel model, string actionName, string controllerName, object routeValues = null);
+    ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        TModel model,
+        string actionName,
+        string controllerName,
+        object routeValues = null);
 
-    ActionResult<TModel> Accepted<TModel>(IResult result, Action<TModel> action, string actionName, string controllerName, object routeValues = null)
+    ActionResult<TModel> Accepted<TModel>(
+        IResult result,
+        Action<TModel> action,
+        string actionName,
+        string controllerName,
+        object routeValues = null)
         where TModel : new();
 
     ActionResult Deleted(IResult result);

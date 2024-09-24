@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using BridgingIT.DevKit.Domain.Outbox;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Common;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Registration;
+using Domain.EventSourcing.Store;
+using Domain.Outbox;
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class AggregateEventOutboxReceiver(
@@ -24,14 +24,22 @@ public class AggregateEventOutboxReceiver(
     IEventTypeSelector eventTypeSelector,
     IAggregateTypeSelector aggregateTypeSelector) : IAggregateEventOutboxReceiver
 {
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
+    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration =
+        eventStoreAggregateEventRegistration;
+
     private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
-    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender = aggregateEventMediatorRequestSender;
-    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender = aggregateEventMediatorNotificationSender;
+
+    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender =
+        aggregateEventMediatorRequestSender;
+
+    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender =
+        aggregateEventMediatorNotificationSender;
+
     private readonly IEventTypeSelector eventTypeSelector = eventTypeSelector;
     private readonly IAggregateTypeSelector aggregateTypeSelector = aggregateTypeSelector;
 
-    public async Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)> ReceiveAndPublishAsync(OutboxMessage message)
+    public async Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)>
+        ReceiveAndPublishAsync(OutboxMessage message)
     {
         var settings = new JsonSerializerSettings // TODO: use ISerializer
         {
@@ -41,14 +49,18 @@ public class AggregateEventOutboxReceiver(
         var (aggregate, aggregateEvent) = this.Deserialize(message, settings);
 
         var resultProjectionSend = await this.aggregateEventMediatorRequestSender
-            .SendProjectionEventAsync(aggregateEvent, aggregate).AnyContext();
+            .SendProjectionEventAsync(aggregateEvent, aggregate)
+            .AnyContext();
 
-        var resultEventOccured = await this.aggregateEventMediatorRequestSender.SendEventOccuredAsync(aggregateEvent, aggregate)
-                .AnyContext();
+        var resultEventOccured = await this.aggregateEventMediatorRequestSender
+            .SendEventOccuredAsync(aggregateEvent, aggregate)
+            .AnyContext();
 
         var resultEventOccuredNotified = await this.aggregateEventMediatorNotificationSender
-                .PublishEventOccuredAsync(aggregateEvent, aggregate).AnyContext();
-        return (projectionSended: resultProjectionSend, eventOccuredSended: resultEventOccured, eventOccuredNotified: resultEventOccuredNotified);
+            .PublishEventOccuredAsync(aggregateEvent, aggregate)
+            .AnyContext();
+        return (projectionSended: resultProjectionSend, eventOccuredSended: resultEventOccured,
+            eventOccuredNotified: resultEventOccuredNotified);
     }
 
     private static bool CheckParameters(MethodInfo method)
@@ -66,12 +78,14 @@ public class AggregateEventOutboxReceiver(
         return false;
     }
 
-    private (object aggregate, object aggregateEvent) Deserialize(OutboxMessage message,
+    private (object aggregate, object aggregateEvent) Deserialize(
+        OutboxMessage message,
         JsonSerializerSettings settings)
     {
         // TODO: use ISerializer?
         var methods = typeof(JsonConvert).GetMethods()
-            .Where(p => p.IsGenericMethod && p.Name == "DeserializeObject" && CheckParameters(p)).ToArray();
+            .Where(p => p.IsGenericMethod && p.Name == "DeserializeObject" && CheckParameters(p))
+            .ToArray();
         var aggregateTypeName = this.eventStoreAggregateRegistration.GetTypeOnImmutableName(message.AggregateType);
         var aggregateEventTypeName =
             this.eventStoreAggregateEventRegistration.GetTypeOnImmutableName(message.EventType);

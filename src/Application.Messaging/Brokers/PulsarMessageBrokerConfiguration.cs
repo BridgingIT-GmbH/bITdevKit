@@ -21,13 +21,9 @@ public class PulsarMessageBrokerConfiguration
     {
         public Validator()
         {
-            this.RuleFor(c => c.ServiceUrl)
-                .NotNull().NotEmpty()
-                .WithMessage("ServiceUrl cannot be null or empty");
+            this.RuleFor(c => c.ServiceUrl).NotNull().NotEmpty().WithMessage("ServiceUrl cannot be null or empty");
 
-            this.RuleFor(c => c.Subscription)
-                .NotNull().NotEmpty()
-                .WithMessage("Subscription cannot be null or empty");
+            this.RuleFor(c => c.Subscription).NotNull().NotEmpty().WithMessage("Subscription cannot be null or empty");
         }
     }
 }

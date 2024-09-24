@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public interface IChaosExceptionQuery
 {
@@ -15,7 +15,8 @@ public interface IChaosExceptionQuery
 public class ChaosExceptionQueryOptions
 {
     /// <summary>
-    /// A decimal between 0 and 1 inclusive. The policy will inject the fault, randomly, that proportion of the time, eg: if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
+    ///     A decimal between 0 and 1 inclusive. The policy will inject the fault, randomly, that proportion of the time, eg:
+    ///     if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
     /// </summary>
     public double InjectionRate { get; set; }
 

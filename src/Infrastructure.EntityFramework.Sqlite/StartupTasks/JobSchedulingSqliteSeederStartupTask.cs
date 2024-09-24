@@ -5,32 +5,33 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
+using System.Data.SQLite;
+using Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Data.SQLite;
 
-public class JobSchedulingSqliteSeederStartupTask :
-    IStartupTask,
-    IRetryStartupTask,
-    ITimeoutStartupTask
+public class JobSchedulingSqliteSeederStartupTask : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
     private readonly ILogger<JobSchedulingSqliteSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
 
     public JobSchedulingSqliteSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
-        : this(loggerFactory, configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"], configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"])
-    {
-    }
+        : this(loggerFactory,
+            configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+            configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"]) { }
 
-    public JobSchedulingSqliteSeederStartupTask(ILoggerFactory loggerFactory, string connectionString, string tablePrefix = "[dbo].[QRTZ_")
+    public JobSchedulingSqliteSeederStartupTask(
+        ILoggerFactory loggerFactory,
+        string connectionString,
+        string tablePrefix = "[dbo].[QRTZ_")
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
-        this.logger = loggerFactory?.CreateLogger<JobSchedulingSqliteSeederStartupTask>() ?? NullLoggerFactory.Instance.CreateLogger<JobSchedulingSqliteSeederStartupTask>();
+        this.logger = loggerFactory?.CreateLogger<JobSchedulingSqliteSeederStartupTask>() ??
+            NullLoggerFactory.Instance.CreateLogger<JobSchedulingSqliteSeederStartupTask>();
         this.connectionString = connectionString;
         this.tablePrefix = tablePrefix.EmptyToNull() ?? "QRTZ_";
     }

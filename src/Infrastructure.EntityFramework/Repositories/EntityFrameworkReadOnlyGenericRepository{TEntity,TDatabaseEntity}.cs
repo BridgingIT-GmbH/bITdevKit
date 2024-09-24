@@ -5,30 +5,26 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
+using Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context) : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context)
+public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
+    ILoggerFactory loggerFactory,
+    TContext context) : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext
-    where TDatabaseEntity : class
-{
-}
+    where TDatabaseEntity : class { }
 
-public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> : // TODO: rename to EntityFrameworkReadOnlykRepository + Obsolete
-    IGenericReadOnlyRepository<TEntity>
+public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
+    : // TODO: rename to EntityFrameworkReadOnlykRepository + Obsolete
+        IGenericReadOnlyRepository<TEntity>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
@@ -42,15 +38,15 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
         this.Logger = options.CreateLogger<IGenericRepository<TEntity>>();
     }
 
-    public EntityFrameworkReadOnlyGenericRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build())
-    {
-    }
+    public EntityFrameworkReadOnlyGenericRepository(
+        Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
+        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
-    public EntityFrameworkReadOnlyGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper = null)
-        : this(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper))
-    {
-    }
+    public EntityFrameworkReadOnlyGenericRepository(
+        ILoggerFactory loggerFactory,
+        DbContext context,
+        IEntityMapper mapper = null)
+        : this(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
 
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
 
@@ -77,7 +73,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
         if (options?.HasOrders() == true)
         {
@@ -88,20 +85,23 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
                 .OrderByIf(options, this.Options.Mapper)
                 .DistinctByIf(options, this.Options.Mapper)
                 .SkipIf(options?.Skip)
-                .TakeIf(options?.Take).ToListAsyncSafe(cancellationToken).AnyContext())
-                    .Select(d => this.Options.Mapper.Map<TEntity>(d));
+                .TakeIf(options?.Take)
+                .ToListAsyncSafe(cancellationToken)
+                .AnyContext()).Select(d => this.Options.Mapper.Map<TEntity>(d));
         }
-        else
-        {
-            return (await this.Options.DbContext.Set<TDatabaseEntity>()
+
+        return (await this.Options.DbContext.Set<TDatabaseEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options, this.Options.Mapper)
                 .WhereExpressions(expressions)
                 .DistinctByIf(options, this.Options.Mapper)
                 .SkipIf(options?.Skip)
-                .TakeIf(options?.Take).ToListAsyncSafe(cancellationToken).AnyContext())
-                    .Select(d => this.Options.Mapper.Map<TEntity>(d)); // mapping needs to be done client-side, otherwise ef core sql translation error
-        }
+                .TakeIf(options?.Take)
+                .ToListAsyncSafe(cancellationToken)
+                .AnyContext())
+            .Select(d =>
+                this.Options.Mapper
+                    .Map<TEntity>(d)); // mapping needs to be done client-side, otherwise ef core sql translation error
     }
 
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -122,40 +122,47 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
     }
 
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.SafeNull().ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
         if (options?.HasOrders() == true)
         {
             return (await this.Options.DbContext.Set<TDatabaseEntity>()
-                .AsNoTrackingIf(options, this.Options.Mapper)
-                .IncludeIf(options, this.Options.Mapper)
-                .WhereExpressions(expressions)
-                .OrderByIf(options, this.Options.Mapper)
-                .DistinctByIf(options, this.Options.Mapper)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take).ToListAsyncSafe(cancellationToken).AnyContext())
-                    .Select(d => this.Options.Mapper.Map<TEntity>(d)) // mapping needs to be done client-side, otherwise ef core sql translation error
-                    .Select(e => projection.Compile().Invoke(e));     // thus the projection can also be only done client-side
+                    .AsNoTrackingIf(options, this.Options.Mapper)
+                    .IncludeIf(options, this.Options.Mapper)
+                    .WhereExpressions(expressions)
+                    .OrderByIf(options, this.Options.Mapper)
+                    .DistinctByIf(options, this.Options.Mapper)
+                    .SkipIf(options?.Skip)
+                    .TakeIf(options?.Take)
+                    .ToListAsyncSafe(cancellationToken)
+                    .AnyContext())
+                .Select(d =>
+                    this.Options.Mapper
+                        .Map<TEntity>(
+                            d)) // mapping needs to be done client-side, otherwise ef core sql translation error
+                .Select(e => projection.Compile().Invoke(e)); // thus the projection can also be only done client-side
         }
-        else
-        {
-            return (await this.Options.DbContext.Set<TDatabaseEntity>()
+
+        return (await this.Options.DbContext.Set<TDatabaseEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options, this.Options.Mapper)
                 .WhereExpressions(expressions)
                 .DistinctByIf(options, this.Options.Mapper)
                 .SkipIf(options?.Skip)
                 .TakeIf(options?.Take)
-                .ToListAsyncSafe(cancellationToken).AnyContext())
-                    .Select(d => this.Options.Mapper.Map<TEntity>(d)) // mapping needs to be done client-side, otherwise ef core sql translation error
-                    .Select(e => projection.Compile().Invoke(e));     // thus the projection can also be only done client-side
-        }
+                .ToListAsyncSafe(cancellationToken)
+                .AnyContext())
+            .Select(d =>
+                this.Options.Mapper
+                    .Map<TEntity>(d)) // mapping needs to be done client-side, otherwise ef core sql translation error
+            .Select(e => projection.Compile().Invoke(e)); // thus the projection can also be only done client-side
     }
 
     public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)
@@ -175,12 +182,14 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
         return await this.Options.DbContext.Set<TDatabaseEntity>()
             .AsNoTracking()
             .WhereExpressions(expressions)
-            .LongCountAsync(cancellationToken).AnyContext();
+            .LongCountAsync(cancellationToken)
+            .AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -193,8 +202,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
             return null;
         }
 
-        return this.Options.Mapper.Map<TEntity>(
-            await this.Options.DbContext.FindAsync<TEntity, TDatabaseEntity>(
+        return this.Options.Mapper.Map<TEntity>(await this.Options.DbContext.FindAsync<TEntity, TDatabaseEntity>(
                 this.ConvertEntityId(id),
                 options,
                 this.Options.Mapper,
@@ -207,10 +215,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync(
-            new[] { specification },
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindOneAsync(new[] { specification }, options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -219,51 +224,62 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity> 
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s =>
-            this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s)).ToList();
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s))
+            .ToList();
 
-        return this.Options.Mapper.Map<TEntity>(
-            await this.Options.DbContext.Set<TDatabaseEntity>()
-                .AsNoTrackingIf(options, this.Options.Mapper)
-                .IncludeIf(options, this.Options.Mapper)
-                .WhereExpressions(expressions)
-                .FirstOrDefaultAsync(cancellationToken).AnyContext());
+        return this.Options.Mapper.Map<TEntity>(await this.Options.DbContext.Set<TDatabaseEntity>()
+            .AsNoTrackingIf(options, this.Options.Mapper)
+            .IncludeIf(options, this.Options.Mapper)
+            .WhereExpressions(expressions)
+            .FirstOrDefaultAsync(cancellationToken)
+            .AnyContext());
     }
 
-    public virtual async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
             return false;
         }
 
-        return await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken: cancellationToken).AnyContext() is not null;
+        return await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken)
+            .AnyContext() is not null;
     }
 
-    protected DbSet<TDatabaseEntity> GetDbSet() =>
-        this.Options.DbContext.Set<TDatabaseEntity>();
+    protected DbSet<TDatabaseEntity> GetDbSet()
+    {
+        return this.Options.DbContext.Set<TDatabaseEntity>();
+    }
 
-    protected IDbConnection GetDbConnection() =>
-        this.Options.DbContext.Database.GetDbConnection();
+    protected IDbConnection GetDbConnection()
+    {
+        return this.Options.DbContext.Database.GetDbConnection();
+    }
 
-    protected IDbTransaction GetDbTransaction() =>
-        this.Options.DbContext.Database.CurrentTransaction?.GetDbTransaction();
+    protected IDbTransaction GetDbTransaction()
+    {
+        return this.Options.DbContext.Database.CurrentTransaction?.GetDbTransaction();
+    }
 
     protected object ConvertEntityId(object value)
     {
-        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(Guid) && value?.GetType() == typeof(string))
+        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(Guid) &&
+            value?.GetType() == typeof(string))
         {
             // string to guid conversion
             return Guid.Parse(value.ToString());
         }
-        else if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(int) && value?.GetType() == typeof(string))
+
+        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(int) &&
+            value?.GetType() == typeof(string))
         {
             // int to guid conversion
             return int.Parse(value.ToString());
         }
-        else if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(long) && value?.GetType() == typeof(string))
+
+        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(long) &&
+            value?.GetType() == typeof(string))
         {
             // long to guid conversion
             return long.Parse(value.ToString());

@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Pulsar;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 
-public class PulsarMessageBrokerOptionsBuilder :
-    OptionsBuilderBase<PulsarMessageBrokerOptions, PulsarMessageBrokerOptionsBuilder>
+public class PulsarMessageBrokerOptionsBuilder
+    : OptionsBuilderBase<PulsarMessageBrokerOptions, PulsarMessageBrokerOptionsBuilder>
 {
     public PulsarMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {

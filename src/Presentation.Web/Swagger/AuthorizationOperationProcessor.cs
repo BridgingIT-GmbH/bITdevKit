@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using NSwag;
 using NSwag.Generation.Processors;
@@ -18,17 +16,17 @@ public class AuthorizationOperationProcessor(string name) : IOperationProcessor
 
     public bool Process(OperationProcessorContext context)
     {
-        if (this.name is not null
-            && context.MethodInfo.DeclaringType is not null
-            && (context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
-                || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()))
+        if (this.name is not null &&
+            context.MethodInfo.DeclaringType is not null &&
+            (context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() ||
+            context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()))
         {
-            context.OperationDescription.Operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
-            context.OperationDescription.Operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
-            context.OperationDescription.Operation.Security = new List<OpenApiSecurityRequirement>
-            {
-                new() { [this.name] = new List<string>() }
-            };
+            context.OperationDescription.Operation.Responses.Add("401",
+                new OpenApiResponse { Description = "Unauthorized" });
+            context.OperationDescription.Operation.Responses.Add("403",
+                new OpenApiResponse { Description = "Forbidden" });
+            context.OperationDescription.Operation.Security =
+                new List<OpenApiSecurityRequirement> { new() { [this.name] = new List<string>() } };
         }
 
         return true;

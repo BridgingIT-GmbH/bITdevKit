@@ -4,24 +4,35 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain;
-using System.Linq;
-using System.Text;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+/// <summary>
+///     A source generator that generates strongly-typed entity ID classes based on a specified attribute.
+///     This generator scans the syntax trees of the compilation for classes that have attributes
+///     starting with "TypedEntityId", generates ID classes for those entities, and adds them as sources.
+/// </summary>
 [Generator]
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
 public class TypedEntityIdClassGenerator : ISourceGenerator
 #pragma warning restore RS1036 // Specify analyzer banned API enforcement setting
 {
+    /// <summary>
+    ///     Executes the source generation process for generating strongly-typed entity ID classes
+    ///     based on specified attributes.
+    /// </summary>
+    /// <param name="context">
+    ///     The context provided by the Roslyn compilation process, which contains
+    ///     information about the source code being compiled.
+    /// </param>
     public void Execute(GeneratorExecutionContext context)
     {
         var compilation = context.Compilation;
 
-        var classesWithAttribute = compilation.SyntaxTrees
-            .SelectMany(st => st.GetRoot().DescendantNodes())
+        var classesWithAttribute = compilation.SyntaxTrees.SelectMany(st => st.GetRoot().DescendantNodes())
             .OfType<ClassDeclarationSyntax>()
             .Where(cds => cds.AttributeLists
                 .SelectMany(al => al.Attributes)
@@ -34,12 +45,15 @@ public class TypedEntityIdClassGenerator : ISourceGenerator
             var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
             if (classSymbol != null)
             {
-                var attribute = classSymbol.GetAttributes().FirstOrDefault(ad => ad.AttributeClass.Name.StartsWith("TypedEntityId"));
+                var attribute = classSymbol.GetAttributes()
+                    .FirstOrDefault(ad => ad.AttributeClass.Name.StartsWith("TypedEntityId"));
                 if (attribute != null)
                 {
                     var underlyingType = attribute.AttributeClass.TypeArguments.First();
                     var generatedCode = GenerateIdClassCode(classSymbol, underlyingType);
-                    var fileName = classSymbol.Name.EndsWith("Id") ? $"{classSymbol.Name}.g.cs" : $"{classSymbol.Name}Id.g.cs";
+                    var fileName = classSymbol.Name.EndsWith("Id")
+                        ? $"{classSymbol.Name}.g.cs"
+                        : $"{classSymbol.Name}Id.g.cs";
                     context.AddSource(fileName, SourceText.From(generatedCode, Encoding.UTF8));
                 }
             }
@@ -74,6 +88,7 @@ namespace {namespaceName}
 
     [DebuggerDisplay(""{{Value}}"")]
     [JsonConverter(typeof({className}JsonConverter))]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class {className} : EntityId<{typeName}>
     {{
         private {className}()
@@ -122,7 +137,9 @@ namespace {namespaceName}
             return new {className}(Guid.NewGuid());
         }}";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int32 || underlyingType.SpecialType == SpecialType.System_Int64)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int32 ||
+            underlyingType.SpecialType == SpecialType.System_Int64)
         {
             return $@"// Note: Implement a strategy for generating new IDs for integer/long
         public static {className} Create()
@@ -131,15 +148,13 @@ namespace {namespaceName}
             throw new NotImplementedException();
         }}";
         }
-        else
-        {
-            return $@"// Note: Implement a strategy for generating new IDs for this type
+
+        return $@"// Note: Implement a strategy for generating new IDs for this type
         public static {className} Create()
         {{
             //Implement a strategy for generating new IDs
             throw new NotImplementedException();
         }}";
-        }
     }
 
     private static string GetParseMethod(ITypeSymbol underlyingType, string className)
@@ -156,7 +171,8 @@ namespace {namespaceName}
             return new {className}(Guid.Parse(id));
         }}";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int32)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int32)
         {
             return $@"public static {className} Create(string id)
         {{
@@ -168,7 +184,8 @@ namespace {namespaceName}
             return new {className}(int.Parse(id));
         }}";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int64)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int64)
         {
             return $@"public static {className} Create(string id)
         {{
@@ -180,7 +197,8 @@ namespace {namespaceName}
             return new {className}(long.Parse(id));
         }}";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_String)
+
+        if (underlyingType.SpecialType == SpecialType.System_String)
         {
             return $@"public static {className} Create(string id)
         {{
@@ -192,14 +210,12 @@ namespace {namespaceName}
             return new {className}(id);
         }}";
         }
-        else
-        {
-            return $@"// Note: Implement a custom parsing strategy for this type
+
+        return $@"// Note: Implement a custom parsing strategy for this type
         public static {className} Create(string id)
         {{
             throw new NotImplementedException(""Implement a custom parsing strategy for this type"");
         }}";
-        }
     }
 
     private static string GetIsEmptyCheck(ITypeSymbol underlyingType)
@@ -208,18 +224,19 @@ namespace {namespaceName}
         {
             return " == Guid.Empty";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int32 || underlyingType.SpecialType == SpecialType.System_Int64)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int32 ||
+            underlyingType.SpecialType == SpecialType.System_Int64)
         {
             return " == 0";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_String)
+
+        if (underlyingType.SpecialType == SpecialType.System_String)
         {
             return " == null || this.Value == string.Empty";
         }
-        else
-        {
-            return "; // Implement custom empty check for this type";
-        }
+
+        return "; // Implement custom empty check for this type";
     }
 
     private static string GenerateJsonConverterClass(string className, ITypeSymbol underlyingType)
@@ -229,6 +246,7 @@ namespace {namespaceName}
         var writeMethod = GetJsonConverterWriteMethod(underlyingType);
 
         return $@"
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class {className}JsonConverter : JsonConverter<{className}>
     {{
         public override {className} Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -256,7 +274,8 @@ namespace {namespaceName}
             var guidString = reader.GetString();
             return {className}.Create(guidString);";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int32)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int32)
         {
             return $@"if (reader.TokenType == JsonTokenType.Null)
                 return null;
@@ -267,7 +286,8 @@ namespace {namespaceName}
             var intValue = reader.GetInt32();
             return {className}.Create(intValue);";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int64)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int64)
         {
             return $@"if (reader.TokenType == JsonTokenType.Null)
                 return null;
@@ -278,7 +298,8 @@ namespace {namespaceName}
             var longValue = reader.GetInt64();
             return {className}.Create(longValue);";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_String)
+
+        if (underlyingType.SpecialType == SpecialType.System_String)
         {
             return $@"if (reader.TokenType == JsonTokenType.Null)
                 return null;
@@ -289,45 +310,48 @@ namespace {namespaceName}
             var stringValue = reader.GetString();
             return {className}.Create(stringValue);";
         }
-        else
-        {
-            return $@"throw new JsonException(""Unsupported type for {className}"");";
-        }
+
+        return $@"throw new JsonException(""Unsupported type for {className}"");";
     }
 
     private static string GetJsonConverterWriteMethod(ITypeSymbol underlyingType)
     {
         if (underlyingType.ToString() == "System.Guid")
         {
-            return @"if (value == null)
+            return @"
+            if (value == null)
                 writer.WriteNullValue();
             else
                 writer.WriteStringValue(value.Value.ToString());";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int32)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int32)
         {
-            return @"if (value == null)
+            return @"
+            if (value == null)
                 writer.WriteNullValue();
             else
                 writer.WriteNumberValue(value.Value);";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_Int64)
+
+        if (underlyingType.SpecialType == SpecialType.System_Int64)
         {
-            return @"if (value == null)
+            return @"
+            if (value == null)
                 writer.WriteNullValue();
             else
                 writer.WriteNumberValue(value.Value);";
         }
-        else if (underlyingType.SpecialType == SpecialType.System_String)
+
+        if (underlyingType.SpecialType == SpecialType.System_String)
         {
-            return @"if (value == null)
+            return @"
+            if (value == null)
                 writer.WriteNullValue();
             else
                 writer.WriteStringValue(value.Value);";
         }
-        else
-        {
-            return @"throw new JsonException(""Unsupported type for writing"");";
-        }
+
+        return @"throw new JsonException(""Unsupported type for writing"");";
     }
 }

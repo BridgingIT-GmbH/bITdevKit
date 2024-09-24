@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
+using DevKit.Application.JobScheduling;
+using DevKit.Application.Messaging;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public class EchoMessageJob : JobBase,
-    IRetryJobScheduling,
-    IChaosExceptionJobScheduling
+public class EchoMessageJob
+    : JobBase,
+        IRetryJobScheduling,
+        IChaosExceptionJobScheduling
 {
     private readonly IMessageBroker messageBroker;
 
@@ -35,7 +33,6 @@ public class EchoMessageJob : JobBase,
     {
         await Task.Delay(2000, cancellationToken);
 
-        await this.messageBroker.Publish(
-            new EchoMessage("from job"), cancellationToken).AnyContext();
+        await this.messageBroker.Publish(new EchoMessage("from job"), cancellationToken).AnyContext();
     }
 }

@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class TypedEntityIntIdTests
@@ -162,10 +161,7 @@ public class TypedEntityIntIdTests
     [Fact]
     public void Deserialize_WithValidId_ShouldCreateIdWithParsedValue()
     {
-        var entity = new StubIntEntity
-        {
-            Id = StubIntEntityId.Create(42)
-        };
+        var entity = new StubIntEntity { Id = StubIntEntityId.Create(42) };
 
         var serialized = new SystemTextJsonSerializer().SerializeToString(entity);
         var deserialized = new SystemTextJsonSerializer().Deserialize<StubIntEntity>(serialized);
@@ -175,7 +171,5 @@ public class TypedEntityIntIdTests
     }
 
     [TypedEntityId<int>]
-    public partial class StubIntEntity : Entity<StubIntEntityId>
-    {
-    }
+    public class StubIntEntity : Entity<StubIntEntityId> { }
 }

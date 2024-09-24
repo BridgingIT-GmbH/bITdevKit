@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-public class SqliteOptionsBuilder :
-    OptionsBuilderBase<SqliteOptions, SqliteOptionsBuilder>
+public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOptionsBuilder>
 {
     public SqliteOptionsBuilder UseConnectionString(string connectionString)
     {
@@ -19,7 +18,11 @@ public class SqliteOptionsBuilder :
         return this;
     }
 
-    public SqliteOptionsBuilder UseMigrations(bool value = true, bool schemaEnabled = true, string schemaName = null, string schemaAssemblyName = null)
+    public SqliteOptionsBuilder UseMigrations(
+        bool value = true,
+        bool schemaEnabled = true,
+        string schemaName = null,
+        string schemaAssemblyName = null)
     {
         this.Target.MigrationsEnabled = value;
         this.Target.MigrationsSchemaEnabled = schemaEnabled;
@@ -49,7 +52,7 @@ public class SqliteOptionsBuilder :
     }
 
     public SqliteOptionsBuilder UseIntercepter<TInterceptor>()
-    where TInterceptor : class, IInterceptor
+        where TInterceptor : class, IInterceptor
     {
         this.Target.InterceptorTypes.Add(typeof(TInterceptor));
         return this;

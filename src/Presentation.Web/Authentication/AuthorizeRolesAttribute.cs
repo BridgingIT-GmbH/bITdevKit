@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 
 public class AuthorizeRolesAttribute : AuthorizeAttribute
 {
-    public AuthorizeRolesAttribute(params string[] roles) =>
+    public AuthorizeRolesAttribute(params string[] roles)
+    {
         this.Roles = string.Join(",", roles);
+    }
 }

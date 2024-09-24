@@ -20,12 +20,16 @@ public class InMemoryRepositoryTests
     public InMemoryRepositoryTests()
     {
         this.entities = Builder<StubEntityString>
-            .CreateListOfSize(20).All()
-            .With(x => x.Country, "USA").Build();
+            .CreateListOfSize(20)
+            .All()
+            .With(x => x.Country, "USA")
+            .Build();
 
         this.entitiesGuid = Builder<StubEntityGuid>
-            .CreateListOfSize(20).All()
-            .With(x => x.Country, "USA").Build();
+            .CreateListOfSize(20)
+            .All()
+            .With(x => x.Country, "USA")
+            .Build();
     }
 
     [Fact]
@@ -36,9 +40,13 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var entity = this.entities.FirstOrDefault(e => e.FirstName == this.entities.First().FirstName);
-        await sut.DeleteAsync(entity).AnyContext();
-        entity = await sut.FindOneAsync(entity.Id).AnyContext();
+        var entity = this.entities.FirstOrDefault(e => e.FirstName ==
+            this.entities.First()
+                .FirstName);
+        await sut.DeleteAsync(entity)
+            .AnyContext();
+        entity = await sut.FindOneAsync(entity.Id)
+            .AnyContext();
 
         // Assert
         Assert.Null(entity);
@@ -52,9 +60,12 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var id = this.entities.First().Id;
-        await sut.DeleteAsync(id).AnyContext();
-        var entity = await sut.FindOneAsync(id).AnyContext();
+        var id = this.entities.First()
+            .Id;
+        await sut.DeleteAsync(id)
+            .AnyContext();
+        var entity = await sut.FindOneAsync(id)
+            .AnyContext();
 
         // Assert
         Assert.Null(entity);
@@ -68,11 +79,15 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var result = await sut.FindAllAsync().AnyContext();
+        var result = await sut.FindAllAsync()
+            .AnyContext();
 
         // Assert
         Assert.False(result.IsNullOrEmpty());
-        Assert.Equal(this.entities.First().FirstName, result.FirstOrDefault()?.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstOrDefault()
+                ?.FirstName);
     }
 
     [Fact]
@@ -83,12 +98,13 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act & Assert
-        var result = await sut.CountAsync(
-            new List<ISpecification<StubEntityString>>
+        var result = await sut.CountAsync(new List<ISpecification<StubEntityString>>
             {
-                new StubHasNameSpecification(this.entities.First().FirstName), // And
+                new StubHasNameSpecification(this.entities.First()
+                    .FirstName), // And
                 new StubHasMinimumAgeSpecification(0)
-            }).AnyContext();
+            })
+            .AnyContext();
 
         Assert.True(result > 0);
     }
@@ -101,22 +117,26 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act & Assert
-        var result = await sut.FindAllAsync(
-            new List<ISpecification<StubEntityString>>
+        var result = await sut.FindAllAsync(new List<ISpecification<StubEntityString>>
             {
-                new StubHasNameSpecification(this.entities.First().FirstName), // And
+                new StubHasNameSpecification(this.entities.First()
+                    .FirstName), // And
                 new StubHasMinimumAgeSpecification(0)
-            }).AnyContext();
+            })
+            .AnyContext();
 
         Assert.False(result.IsNullOrEmpty());
-        Assert.Equal("FirstName1", result.FirstOrDefault()?.FirstName);
+        Assert.Equal("FirstName1",
+            result.FirstOrDefault()
+                ?.FirstName);
 
-        result = await sut.FindAllAsync(
-            new List<ISpecification<StubEntityString>>
+        result = await sut.FindAllAsync(new List<ISpecification<StubEntityString>>
             {
-                new StubHasNameSpecification(this.entities.First().FirstName), // And
+                new StubHasNameSpecification(this.entities.First()
+                    .FirstName), // And
                 new StubHasNameSpecification("Unknown")
-            }).AnyContext();
+            })
+            .AnyContext();
 
         Assert.True(result.IsNullOrEmpty());
     }
@@ -129,20 +149,25 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act & Assert
-        var result = await sut.FindAllAsync(new StubHasNameSpecification(this.entities.First().FirstName))
+        var result = await sut.FindAllAsync(new StubHasNameSpecification(this.entities.First()
+                .FirstName))
             .AnyContext();
 
         Assert.False(result.IsNullOrEmpty());
-        Assert.Equal(this.entities.First().FirstName, result.FirstOrDefault()?.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstOrDefault()
+                ?.FirstName);
 
-        result = await sut.FindAllAsync(new StubHasMinimumAgeSpecification(0)).AnyContext();
+        result = await sut.FindAllAsync(new StubHasMinimumAgeSpecification(0))
+            .AnyContext();
 
         Assert.False(result.IsNullOrEmpty());
         Assert.Equal(20, result.Count());
 
-        result = await sut.FindAllAsync(
-            new StubHasMinimumAgeSpecification(0),
-            new FindOptions<StubEntityString>(take: 5, orderExpression: e => e.Country)).AnyContext();
+        result = await sut.FindAllAsync(new StubHasMinimumAgeSpecification(0),
+                new FindOptions<StubEntityString>(take: 5, orderExpression: e => e.Country))
+            .AnyContext();
 
         Assert.False(result.IsNullOrEmpty());
         Assert.Equal(5, result.Count());
@@ -156,13 +181,17 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var findResults = await sut.FindAllAsync(
-            new StubHasNameSpecification(this.entities.First().FirstName)
-                .And(new StubHasMinimumAgeSpecification(0))).AnyContext();
+        var findResults = await sut.FindAllAsync(new StubHasNameSpecification(this.entities.First()
+                    .FirstName)
+                .And(new StubHasMinimumAgeSpecification(0)))
+            .AnyContext();
 
         // Assert
         Assert.False(findResults.IsNullOrEmpty());
-        Assert.Equal(this.entities.First().FirstName, findResults.FirstOrDefault()?.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            findResults.FirstOrDefault()
+                ?.FirstName);
     }
 
     [Fact]
@@ -173,12 +202,16 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var findResults = await sut.FindAllAsync(
-            new StubHasNameSpecification(this.entities.First().FirstName).Not()).AnyContext();
+        var findResults = await sut.FindAllAsync(new StubHasNameSpecification(this.entities.First()
+                .FirstName).Not())
+            .AnyContext();
 
         // Assert
         Assert.False(findResults.IsNullOrEmpty());
-        Assert.DoesNotContain(findResults, f => f.FirstName == this.entities.First().FirstName);
+        Assert.DoesNotContain(findResults,
+            f => f.FirstName ==
+                this.entities.First()
+                    .FirstName);
     }
 
     [Fact]
@@ -189,15 +222,23 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var findResults = await sut.FindAllAsync(
-            new StubHasNameSpecification(this.entities.First().FirstName)
-                .Or(new StubHasNameSpecification(this.entities.Last().FirstName))).AnyContext();
+        var findResults = await sut.FindAllAsync(new StubHasNameSpecification(this.entities.First()
+                    .FirstName)
+                .Or(new StubHasNameSpecification(this.entities.Last()
+                    .FirstName)))
+            .AnyContext();
 
         // Assert
         Assert.False(findResults.IsNullOrEmpty());
         Assert.Equal(2, findResults.Count());
-        Assert.Contains(findResults, f => f.FirstName == this.entities.First().FirstName);
-        Assert.Contains(findResults, f => f.FirstName == this.entities.Last().FirstName);
+        Assert.Contains(findResults,
+            f => f.FirstName ==
+                this.entities.First()
+                    .FirstName);
+        Assert.Contains(findResults,
+            f => f.FirstName ==
+                this.entities.Last()
+                    .FirstName);
     }
 
     [Fact]
@@ -208,15 +249,23 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityGuid>(this.entitiesGuid)));
 
         // Act & Assert
-        var result = await sut.FindOneAsync(this.entitiesGuid.First().Id).AnyContext();
+        var result = await sut.FindOneAsync(this.entitiesGuid.First()
+                .Id)
+            .AnyContext();
 
         Assert.NotNull(result);
-        Assert.Equal(this.entities.First().FirstName, result.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstName);
 
-        result = await sut.FindOneAsync(this.entitiesGuid.First().Id).AnyContext();
+        result = await sut.FindOneAsync(this.entitiesGuid.First()
+                .Id)
+            .AnyContext();
 
         Assert.NotNull(result);
-        Assert.Equal(this.entities.First().FirstName, result.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstName);
     }
 
     [Fact]
@@ -227,16 +276,23 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act & Assert
-        var id = this.entities.First().Id;
-        var result = await sut.FindOneAsync(id).AnyContext();
+        var id = this.entities.First()
+            .Id;
+        var result = await sut.FindOneAsync(id)
+            .AnyContext();
 
         Assert.NotNull(result);
-        Assert.Equal(this.entities.First().FirstName, result.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstName);
 
-        result = await sut.FindOneAsync(id).AnyContext();
+        result = await sut.FindOneAsync(id)
+            .AnyContext();
 
         Assert.NotNull(result);
-        Assert.Equal(this.entities.First().FirstName, result.FirstName);
+        Assert.Equal(this.entities.First()
+                .FirstName,
+            result.FirstName);
     }
 
     [Fact]
@@ -247,9 +303,11 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var result = await sut.UpsertAsync(new StubEntityString { FirstName = "FirstName99", Id = "Id99" }).AnyContext();
+        var result = await sut.UpsertAsync(new StubEntityString { FirstName = "FirstName99", Id = "Id99" })
+            .AnyContext();
 
-        var findResult = await sut.FindOneAsync("Id99").AnyContext();
+        var findResult = await sut.FindOneAsync("Id99")
+            .AnyContext();
 
         // Assert
         Assert.Equal(RepositoryActionResult.Inserted, result.action);
@@ -268,9 +326,11 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var result = await sut.UpsertAsync(new StubEntityString { FirstName = "FirstName88" }).AnyContext();
+        var result = await sut.UpsertAsync(new StubEntityString { FirstName = "FirstName88" })
+            .AnyContext();
 
-        var findResult = await sut.FindOneAsync(result.entity.Id).AnyContext();
+        var findResult = await sut.FindOneAsync(result.entity.Id)
+            .AnyContext();
 
         // Assert
         Assert.Equal(RepositoryActionResult.Inserted, result.action);
@@ -290,14 +350,11 @@ public class InMemoryRepositoryTests
             .Context(new InMemoryContext<StubEntityString>(this.entities)));
 
         // Act
-        var result = await sut.UpsertAsync(new StubEntityString
-        {
-            Id = "Id1",
-            FirstName = "FirstName77",
-            LastName = "LastName77"
-        }).AnyContext();
+        var result = await sut.UpsertAsync(new StubEntityString { Id = "Id1", FirstName = "FirstName77", LastName = "LastName77" })
+            .AnyContext();
 
-        var findResult = await sut.FindOneAsync("Id1").AnyContext();
+        var findResult = await sut.FindOneAsync("Id1")
+            .AnyContext();
 
         // Assert
         Assert.Equal(RepositoryActionResult.Updated, result.action);

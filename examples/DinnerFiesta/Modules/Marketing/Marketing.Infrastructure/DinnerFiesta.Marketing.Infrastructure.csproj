@@ -10,13 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Modules\**" />
-    <EmbeddedResource Remove="Modules\**" />
-    <None Remove="Modules\**" />
+    <Compile Remove="Modules\**"/>
+    <EmbeddedResource Remove="Modules\**"/>
+    <None Remove="Modules\**"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,15 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
-    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj" />
-    <ProjectReference Include="..\Marketing.Domain\DinnerFiesta.Marketing.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj"/>
+    <ProjectReference Include="..\Marketing.Domain\DinnerFiesta.Marketing.Domain.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EntityFramework\Migrations\" />
+    <Folder Include="EntityFramework\Migrations\"/>
   </ItemGroup>
 
 </Project>

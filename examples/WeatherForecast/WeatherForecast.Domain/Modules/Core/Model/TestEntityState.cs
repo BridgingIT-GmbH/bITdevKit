@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class TestEntityState
 {
@@ -48,32 +45,36 @@ public class TestEntityState
     public string DeletedDescription { get; set; }
 
     /// <summary>
-    /// Gets the last date this instance was changed
+    ///     Gets the last date this instance was changed
     /// </summary>
     public DateTime? LastActionDate =>
         new List<DateTime?> { this.CreatedDate, this.UpdatedDate, this.DeletedDate }
-        .Where(d => d is not null).SafeNull().Max();
+            .Where(d => d is not null)
+            .SafeNull()
+            .Max();
 
     /// <summary>
-    /// Gets a value indicating whether determines whether this instance is active.
+    ///     Gets a value indicating whether determines whether this instance is active.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if this instance is deactivated; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance is deactivated; otherwise, <c>false</c>.
     /// </value>
     public virtual bool IsDeactivated =>
         (this.Deactivated is not null && (bool)this.Deactivated) || !this.DeactivatedReasons.IsNullOrEmpty();
 
     /// <summary>
-    /// Gets a value indicating whether this instance is deleted.
+    ///     Gets a value indicating whether this instance is deleted.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance is deleted; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance is deleted; otherwise, <c>false</c>.
     /// </returns>
-    public virtual bool IsDeleted() =>
-        (this.Deleted is not null && (bool)this.Deleted) || !this.DeletedReason.IsNullOrEmpty();
+    public virtual bool IsDeleted()
+    {
+        return (this.Deleted is not null && (bool)this.Deleted) || !this.DeletedReason.IsNullOrEmpty();
+    }
 
     /// <summary>
-    /// Sets the created information, also sets the initial status
+    ///     Sets the created information, also sets the initial status
     /// </summary>
     /// <param name="by">Name of the account of the creater.</param>
     /// <param name="description">The description for the creation.</param>
@@ -92,7 +93,7 @@ public class TestEntityState
     }
 
     /// <summary>
-    /// Sets the updated information.
+    ///     Sets the updated information.
     /// </summary>
     /// <param name="by">Name of the account of the updater.</param>
     /// <param name="reason">The reason of the update.</param>
@@ -150,7 +151,7 @@ public class TestEntityState
     }
 
     /// <summary>
-    /// Sets the deleted information.
+    ///     Sets the deleted information.
     /// </summary>
     /// <param name="by">Name of the deleter.</param>
     /// <param name="reason">The reason.</param>
@@ -167,7 +168,8 @@ public class TestEntityState
 
         if (!reason.IsNullOrEmpty())
         {
-            this.DeletedReason = $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
+            this.DeletedReason =
+                $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
         }
     }
 }

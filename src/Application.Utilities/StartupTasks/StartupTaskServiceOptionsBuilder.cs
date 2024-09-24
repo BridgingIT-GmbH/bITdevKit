@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Utilities;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class StartupTaskServiceOptionsBuilder :
-    OptionsBuilderBase<StartupTaskServiceOptions, StartupTaskServiceOptionsBuilder>
+public class StartupTaskServiceOptionsBuilder
+    : OptionsBuilderBase<StartupTaskServiceOptions, StartupTaskServiceOptionsBuilder>
 {
     public StartupTaskServiceOptionsBuilder Enabled(bool value = true)
     {

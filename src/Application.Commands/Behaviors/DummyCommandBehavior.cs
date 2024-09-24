@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class DummyCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
+public class DummyCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
+    : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)

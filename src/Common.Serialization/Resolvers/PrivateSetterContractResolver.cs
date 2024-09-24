@@ -6,14 +6,14 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Reflection;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+// TODO: get rid of Newtonsoft dependency
 
 public class PrivateSetterContractResolver : DefaultContractResolver
 {
-    protected override JsonProperty CreateProperty(
-        MemberInfo member,
-        MemberSerialization memberSerialization)
+    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
     {
         var property = base.CreateProperty(member, memberSerialization);
         if (!property.Writable)

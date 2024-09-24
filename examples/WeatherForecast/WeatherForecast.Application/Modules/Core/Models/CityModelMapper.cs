@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Linq;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class CityModelMapper : IMapper<CityQueryResponse, CityModel>
 {
@@ -19,15 +18,16 @@ public class CityModelMapper : IMapper<CityQueryResponse, CityModel>
             target.Country = source.City.Country;
             target.Longitude = source.City.Location is not null ? source.City.Location.Longitude : 0;
             target.Latitude = source.City.Location is not null ? source.City.Location.Latitude : 0;
-            target.Forecasts = source.Forecasts.SafeNull().Select(f =>
-                new ForecastModel
-                {
-                    Description = f.Description,
-                    TemperatureMin = f.TemperatureMin,
-                    TemperatureMax = f.TemperatureMax,
-                    WindSpeed = f.WindSpeed,
-                    Timestamp = f.Timestamp
-                });
+            target.Forecasts = source.Forecasts.SafeNull()
+                .Select(f =>
+                    new ForecastModel
+                    {
+                        Description = f.Description,
+                        TemperatureMin = f.TemperatureMin,
+                        TemperatureMax = f.TemperatureMax,
+                        WindSpeed = f.WindSpeed,
+                        Timestamp = f.Timestamp
+                    });
         }
     }
 }

@@ -21,8 +21,16 @@
 </p>
 
 <ul>
-    <li><label><b>Date:</b> <input @bind="dt" /></label></li>
-    <li><label><b>Number:</b> <input @bind="number" /></label></li>
+    <li>
+        <label>
+            <b>Date:</b> <input @bind="dt"/>
+        </label>
+    </li>
+    <li>
+        <label>
+            <b>Number:</b> <input @bind="number"/>
+        </label>
+    </li>
 </ul>
 
 <MudText Typo="Typo.h5" GutterBottom="true">
@@ -34,13 +42,23 @@
 </p>
 
 <ul>
-    <li><label><b>Date:</b> <input type="date" @bind="dt" /></label></li>
-    <li><label><b>Number:</b> <input type="number" @bind="number" /></label></li>
+    <li>
+        <label>
+            <b>Date:</b> <input type="date" @bind="dt"/>
+        </label>
+    </li>
+    <li>
+        <label>
+            <b>Number:</b> <input type="number" @bind="number"/>
+        </label>
+    </li>
 </ul>
 
 <MudText Typo="Typo.h5" GutterBottom="true">Localization</MudText>
 <ul>
-    <li><b>Text:</b> @localizer["Localization_Title"]</li>
+    <li>
+        <b>Text:</b> @localizer["Localization_Title"]
+    </li>
 </ul>
 
 @code {

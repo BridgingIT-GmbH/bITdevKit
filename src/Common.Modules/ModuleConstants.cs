@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Contains constant values utilized across the module system.
+/// </summary>
 public struct ModuleConstants
 {
     public const string LogKey = "MOD";

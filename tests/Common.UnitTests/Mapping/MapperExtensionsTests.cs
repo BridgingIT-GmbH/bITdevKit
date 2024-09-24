@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Mapping;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 [UnitTest("Common")]
 public class MapperExtensionsTests
 {
@@ -36,7 +32,7 @@ public class MapperExtensionsTests
     public void Map_ToNewObject_Mapped()
     {
         var mapper = new StubMapper();
-        var target = mapper.Map(new PersonStub() { Age = 1 });
+        var target = mapper.Map(new PersonStub { Age = 1 });
 
         Assert.Equal(1, target.Age);
     }
@@ -45,16 +41,15 @@ public class MapperExtensionsTests
     public void MapMany_ToMany_Mapped()
     {
         var mapper = new StubMapper();
-        var targets = mapper.Map(
-            new List<PersonStub>
-            {
-                new() { Age = 1 },
-                new() { Age = 2 }
-            });
+        var targets = mapper.Map(new List<PersonStub> { new() { Age = 1 }, new() { Age = 2 } });
 
         Assert.Equal(2, targets.Count());
-        Assert.Equal(1, targets.FirstOrDefault()?.Age);
-        Assert.Equal(2, targets.LastOrDefault()?.Age);
+        Assert.Equal(1,
+            targets.FirstOrDefault()
+                ?.Age);
+        Assert.Equal(2,
+            targets.LastOrDefault()
+                ?.Age);
     }
 
     [Fact]
@@ -62,8 +57,7 @@ public class MapperExtensionsTests
     {
         var mapper = new StubMapper();
 
-        var targets = mapper.Map(
-            []);
+        var targets = mapper.Map([]);
 
         Assert.Empty(targets);
     }
@@ -72,14 +66,14 @@ public class MapperExtensionsTests
     public void MapArray_Mapped()
     {
         var mapper = new StubMapper();
-        var targets = mapper.Map(
-            [
-                new() { Age = 1 },
-                new() { Age = 2 }
-            ]);
+        var targets = mapper.Map([new PersonStub { Age = 1 }, new PersonStub { Age = 2 }]);
 
         Assert.Equal(2, targets.Count());
-        Assert.Equal(1, targets.FirstOrDefault()?.Age);
-        Assert.Equal(2, targets.LastOrDefault()?.Age);
+        Assert.Equal(1,
+            targets.FirstOrDefault()
+                ?.Age);
+        Assert.Equal(2,
+            targets.LastOrDefault()
+                ?.Age);
     }
 }

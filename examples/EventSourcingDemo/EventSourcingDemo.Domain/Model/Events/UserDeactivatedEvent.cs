@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Model.Events;
 
-using System;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
+using DevKit.Domain.EventSourcing.Model;
+using DevKit.Domain.EventSourcing.Registration;
 
 [ImmutableName("PersonAggregate_DeactivateUserEvent_v1_13.05.2019")]
 public class UserDeactivatedEvent(Guid aggregateId, int version) : AggregateEvent(aggregateId, version)

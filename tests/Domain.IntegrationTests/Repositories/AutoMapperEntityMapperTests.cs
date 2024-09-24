@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
-using BridgingIT.DevKit.Infrastructure.Mapping;
+using Infrastructure.Mapping;
 
 [IntegrationTest("Domain")]
 public class AutoMapperEntityMapperTests
@@ -20,11 +20,14 @@ public class AutoMapperEntityMapperTests
         var sut = new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create());
 
         // Act
-        var result = sut.MapSpecification<StubEntity, StubDbEntity>(specification).Compile();
+        var result = sut.MapSpecification<StubEntity, StubDbEntity>(specification)
+            .Compile();
 
         // Assert
-        result(dto1).ShouldBeTrue();
-        result(dto2).ShouldBeFalse();
+        result(dto1)
+            .ShouldBeTrue();
+        result(dto2)
+            .ShouldBeFalse();
     }
 
     [Fact]
@@ -37,11 +40,14 @@ public class AutoMapperEntityMapperTests
         var sut = new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create());
 
         // Act
-        var result = sut.MapSpecification<StubEntity, StubDbEntity>(specification).Compile();
+        var result = sut.MapSpecification<StubEntity, StubDbEntity>(specification)
+            .Compile();
 
         // Assert
-        result(dto1).ShouldBeTrue();
-        result(dto2).ShouldBeFalse();
+        result(dto1)
+            .ShouldBeTrue();
+        result(dto2)
+            .ShouldBeFalse();
     }
 
     [Fact]

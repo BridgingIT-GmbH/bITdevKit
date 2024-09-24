@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
+using DevKit.Domain.Specifications;
 
 public class DinnerForHostSpecification(HostId hostId) : Specification<Dinner>
 {
@@ -21,5 +20,8 @@ public class DinnerForHostSpecification(HostId hostId) : Specification<Dinner>
 
 public static partial class DinnerSpecifications
 {
-    public static ISpecification<Dinner> ForHost(HostId hostId) => new DinnerForHostSpecification(hostId);
+    public static ISpecification<Dinner> ForHost(HostId hostId)
+    {
+        return new DinnerForHostSpecification(hostId);
+    }
 }

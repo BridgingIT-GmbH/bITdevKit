@@ -5,8 +5,4 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
-using System;
-
-public interface IDomainEventWithGuid : IDomainEvent<Guid>
-{
-}
+public interface IDomainEventWithGuid : IDomainEvent<Guid> { }

@@ -5,25 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
+using Domain.Specifications;
 using Microsoft.Extensions.Logging;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Application.Queries;
+using Queries;
 
-public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
+public abstract class
+    EntityFindAllQueryHandlerBase<TQuery, TEntity>
     : QueryHandlerBase<TQuery, PagedResult<TEntity>> // TODO: move to FRAMEWORK Application.Queries
     where TQuery : EntityFindAllQueryBase<TEntity>
     where TEntity : class, IEntity
 {
     private readonly IGenericRepository<TEntity> repository;
-    private List<ISpecification<TEntity>> specifications = null;
-    private List<Func<TQuery, ISpecification<TEntity>>> specificationFuncs = null;
+    private List<ISpecification<TEntity>> specifications;
+    private List<Func<TQuery, ISpecification<TEntity>>> specificationFuncs;
 
-    protected EntityFindAllQueryHandlerBase(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<TEntity> repository)
+    protected EntityFindAllQueryHandlerBase(ILoggerFactory loggerFactory, IGenericRepository<TEntity> repository)
         : base(loggerFactory)
     {
         EnsureArg.IsNotNull(repository, nameof(repository));
@@ -40,8 +39,10 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
     }
 
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification<TSpecification>()
-        where TSpecification : class, ISpecification<TEntity> =>
-        this.AddSpecification(Factory<TSpecification>.Create());
+        where TSpecification : class, ISpecification<TEntity>
+    {
+        return this.AddSpecification(Factory<TSpecification>.Create());
+    }
 
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification(
         Func<TQuery, ISpecification<TEntity>> specification)
@@ -67,20 +68,18 @@ public abstract class EntityFindAllQueryHandlerBase<TQuery, TEntity>
 
         if (specifications.SafeAny())
         {
-            this.Logger.LogDebug($"{{LogKey}} entity specifications: {specifications.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Constants.LogKey);
+            this.Logger.LogDebug(
+                $"{{LogKey}} entity specifications: {specifications.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}",
+                Constants.LogKey);
         }
 
-        var result = await this.repository.FindAllPagedResultAsync(
-            specifications,
+        var result = await this.repository.FindAllPagedResultAsync(specifications,
             query.OrderBy,
             query.PageNumber,
             query.PageSize,
             includePath: query.Include,
             cancellationToken: cancellationToken);
 
-        return new QueryResponse<PagedResult<TEntity>>()
-        {
-            Result = result
-        };
+        return new QueryResponse<PagedResult<TEntity>> { Result = result };
     }
 }

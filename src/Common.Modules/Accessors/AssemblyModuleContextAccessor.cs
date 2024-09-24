@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public class AssemblyModuleContextAccessor(IEnumerable<IModule> modules = null) : IModuleContextAccessor
 {
     private readonly IEnumerable<IModule> modules = modules.SafeNull();

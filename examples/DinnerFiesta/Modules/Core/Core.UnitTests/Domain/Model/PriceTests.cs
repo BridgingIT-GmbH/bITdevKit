@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain.Model;
 
-using Xunit;
-using Shouldly;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Domain;
+using Core.Domain;
+using DevKit.Domain;
 
+[UnitTest("Domain")]
 public class PriceTests
 {
     private readonly string currency = "EUR";
@@ -36,7 +35,7 @@ public class PriceTests
     public async Task Create_AmountOutOfRange_ShouldThrowException(decimal amount)
     {
         // Arrange & Act
-        Func<Price> action = () => Price.Create(amount, this.currency);
+        var action = () => Price.Create(amount, this.currency);
 
         // Assert
         await Should.ThrowAsync<DomainRuleException>(async () => await Task.Run(action));

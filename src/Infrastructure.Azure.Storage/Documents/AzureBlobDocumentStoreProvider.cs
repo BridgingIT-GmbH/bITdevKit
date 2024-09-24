@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
+using Application.Storage;
+using Common;
 using global::Azure.Storage;
 using global::Azure.Storage.Blobs;
 using global::Azure.Storage.Blobs.Models;
@@ -34,8 +31,10 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
-        this.serviceClient = new BlobServiceClient(connectionString, clientOptions ?? new BlobClientOptions(BlobClientOptions.ServiceVersion.V2023_01_03));
+        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
+        this.serviceClient = new BlobServiceClient(connectionString,
+            clientOptions ?? new BlobClientOptions(BlobClientOptions.ServiceVersion.V2023_01_03));
         //this.isLocal = this.serviceClient.Uri.ToString().Contains("127.0.0.1");
         this.containerNamePrefix = containerNamePrefix;
         this.serializer = serializer ?? new SystemTextJsonSerializer();
@@ -55,9 +54,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(storageAccountKey, nameof(storageAccountKey));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
-        this.serviceClient = new BlobServiceClient(
-            new Uri(storageUri),
+        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
+        this.serviceClient = new BlobServiceClient(new Uri(storageUri),
             new StorageSharedKeyCredential(accountName, storageAccountKey),
             clientOptions);
         //this.isLocal = this.serviceClient.Uri.ToString().Contains("127.0.0.0");
@@ -74,7 +73,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNull(serviceClient, nameof(serviceClient));
 
         // TODO: use options+builder
-        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ?? NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
+        this.Logger = loggerFactory?.CreateLogger<AzureBlobDocumentStoreProvider>() ??
+            NullLoggerFactory.Instance.CreateLogger<AzureBlobDocumentStoreProvider>();
         this.serviceClient = serviceClient;
         //this.isLocal = this.serviceClient.Uri.ToString().Contains("127.0.0.0");
         this.containerNamePrefix = tableNamePrefix;
@@ -84,7 +84,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     protected ILogger<AzureBlobDocumentStoreProvider> Logger { get; }
 
     /// <summary>
-    /// Retrieves entities of type T from document store asynchronously
+    ///     Retrieves entities of type T from document store asynchronously
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
@@ -92,7 +92,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         var containerClient = await this.GetBlobContainerClientAsync<T>(cancellationToken);
         var results = new HashSet<T>();
 
-        await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var blobItem in page.Values)
             {
@@ -113,7 +115,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
+    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(
         DocumentKey documentKey,
@@ -124,12 +126,12 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Searches for entities of type T by the whole partitionKey and startswith rowKey
+    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(
-    DocumentKey documentKey,
-    DocumentKeyFilter filter,
-    CancellationToken cancellationToken = default)
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -173,7 +175,12 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         }
         else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            await foreach (var page in containerClient.GetBlobsAsync(prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}", cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+            await foreach (var page in containerClient
+                               .GetBlobsAsync(
+                                   prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}",
+                                   cancellationToken: cancellationToken)
+                               .AsPages()
+                               .WithCancellation(cancellationToken))
             {
                 foreach (var blobItem in page.Values)
                 {
@@ -193,7 +200,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         }
         else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken)
+                               .AsPages()
+                               .WithCancellation(cancellationToken))
             {
                 foreach (var blobItem in page.Values)
                 {
@@ -227,14 +236,16 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         var containerClient = await this.GetBlobContainerClientAsync<T>(cancellationToken);
         var results = new HashSet<DocumentKey>();
 
-        await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+        await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken)
+                           .AsPages()
+                           .WithCancellation(cancellationToken))
         {
             foreach (var blobItem in page.Values)
             {
                 var keys = blobItem.Name.Split(this.blobNameSeperator);
                 if (keys.Length > 1)
                 {
-                    results.Add(new(keys[0], keys[1]));
+                    results.Add(new DocumentKey(keys[0], keys[1]));
                 }
             }
         }
@@ -242,14 +253,19 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         return results;
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
-    where T : class, new()
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
+        where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
         //EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
@@ -278,42 +294,51 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         //{
         if (filter == DocumentKeyFilter.FullMatch)
         {
-            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken)
+                               .AsPages()
+                               .WithCancellation(cancellationToken))
             {
                 foreach (var blobItem in page.Values)
                 {
                     var keys = blobItem.Name.Split(this.blobNameSeperator);
                     if (keys.Length > 1 && keys[0] == documentKey.PartitionKey && keys[1] == documentKey.RowKey)
                     {
-                        results.Add(new(keys[0], keys[1]));
+                        results.Add(new DocumentKey(keys[0], keys[1]));
                     }
                 }
             }
         }
         else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            await foreach (var page in containerClient.GetBlobsAsync(prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}", cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+            await foreach (var page in containerClient
+                               .GetBlobsAsync(
+                                   prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}",
+                                   cancellationToken: cancellationToken)
+                               .AsPages()
+                               .WithCancellation(cancellationToken))
             {
                 foreach (var blobItem in page.Values)
                 {
                     var keys = blobItem.Name.Split(this.blobNameSeperator);
                     if (keys.Length > 1)
                     {
-                        results.Add(new(keys[0], keys[1]));
+                        results.Add(new DocumentKey(keys[0], keys[1]));
                     }
                 }
             }
         }
         else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken).AsPages().WithCancellation(cancellationToken))
+            await foreach (var page in containerClient.GetBlobsAsync(cancellationToken: cancellationToken)
+                               .AsPages()
+                               .WithCancellation(cancellationToken))
             {
                 foreach (var blobItem in page.Values)
                 {
                     var keys = blobItem.Name.Split(this.blobNameSeperator);
                     if (keys.Length > 1 && keys[0] == documentKey.PartitionKey && keys[1].EndsWith(documentKey.RowKey))
                     {
-                        results.Add(new(keys[0], keys[1]));
+                        results.Add(new DocumentKey(keys[0], keys[1]));
                     }
                 }
             }
@@ -325,10 +350,10 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Counts the number of entities of type T in the document store
+    ///     Counts the number of entities of type T in the document store
     /// </summary>
     public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
-    where T : class, new()
+        where T : class, new()
     {
         return (await this.FindAsync<T>(cancellationToken)).LongCount();
     }
@@ -340,12 +365,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Inserts or updates an entity of type T in the document store
+    ///     Inserts or updates an entity of type T in the document store
     /// </summary>
-    public async Task UpsertAsync<T>(
-        DocumentKey documentKey,
-        T entity,
-        CancellationToken cancellationToken = default)
+    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -361,14 +383,12 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         stream.Position = 0;
         //TODO: where to place the ContentHash? >> HashHelper.Compute(entity);
 
-        await blobClient.UploadAsync(
-            stream,
+        await blobClient.UploadAsync(stream,
             new BlobUploadOptions
             {
                 HttpHeaders = new BlobHttpHeaders
                 {
-                    ContentType = ContentType.JSON.MimeType(),
-                    ContentEncoding = Encoding.UTF8.ToString()
+                    ContentType = ContentType.JSON.MimeType(), ContentEncoding = Encoding.UTF8.ToString()
                 }
             },
             cancellationToken);
@@ -387,7 +407,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Inserts or updates multiple entities of type T in the document store
+    ///     Inserts or updates multiple entities of type T in the document store
     /// </summary>
     public async Task UpsertAsync<T>(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
@@ -408,11 +428,9 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
+    ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
     /// </summary>
-    public async Task DeleteAsync<T>(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
+    public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -433,6 +451,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         return containerClient;
     }
 
-    private string GetContainerName<T>() =>
-        $"{this.containerNamePrefix}-{typeof(T).Name}".ToLowerInvariant().Trim('-').TruncateLeft(63);
+    private string GetContainerName<T>()
+    {
+        return $"{this.containerNamePrefix}-{typeof(T).Name}".ToLowerInvariant().Trim('-').TruncateLeft(63);
+    }
 }

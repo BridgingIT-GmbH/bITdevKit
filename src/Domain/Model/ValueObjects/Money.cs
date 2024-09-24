@@ -5,17 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
 using System.Globalization;
-using System.Linq;
 
 public class Money : DecimalValueObject
 {
     private int? cachedHashCode;
 
-    private Money()
-    {
-    }
+    private Money() { }
 
     private Money(decimal amount, Currency currency)
         : base(amount)
@@ -25,15 +21,26 @@ public class Money : DecimalValueObject
 
     public Currency Currency { get; protected set; }
 
-    public static Money Zero() => Create(0);
+    public static Money Zero()
+    {
+        return Create(0);
+    }
 
-    public static Money Zero(Currency currency) => Create(0, currency);
+    public static Money Zero(Currency currency)
+    {
+        return Create(0, currency);
+    }
 
-    public bool IsZero() => this.Amount == 0;
+    public bool IsZero()
+    {
+        return this.Amount == 0;
+    }
 
 #pragma warning disable SA1201 // Elements should appear in the correct order
-    public static implicit operator decimal(Money value) => value.Amount;
-    //public static implicit operator Money(decimal amount) => new(amount, currency);
+    public static implicit operator decimal(Money value)
+    {
+        return value.Amount;
+    }
 #pragma warning restore SA1201 // Elements should appear in the correct order
 
     public static bool operator ==(Money a, Money b)
@@ -51,7 +58,10 @@ public class Money : DecimalValueObject
         return false;
     }
 
-    public static bool operator !=(Money a, Money b) => !(a == b);
+    public static bool operator !=(Money a, Money b)
+    {
+        return !(a == b);
+    }
 
     public static Money operator +(Money a, Money b)
     {
@@ -60,7 +70,7 @@ public class Money : DecimalValueObject
             throw new InvalidOperationException("Cannot calculate money with different currencies");
         }
 
-        return new(a.Amount + b.Amount, a.Currency);
+        return new Money(a.Amount + b.Amount, a.Currency);
     }
 
     public static Money operator -(Money a, Money b)
@@ -70,12 +80,12 @@ public class Money : DecimalValueObject
             throw new InvalidOperationException("Cannot calculate money with different currencies");
         }
 
-        return new(a.Amount - b.Amount, a.Currency);
+        return new Money(a.Amount - b.Amount, a.Currency);
     }
 
     public static Money Create(decimal amount)
     {
-        return new Money(amount, Currency.USDollar);
+        return new Money(amount, Currency.UsDollar);
     }
 
     public static Money Create(decimal amount, Currency currency)
@@ -96,10 +106,10 @@ public class Money : DecimalValueObject
     }
 
     /// <summary>
-    /// Returns a hash code for this instance.
+    ///     Returns a hash code for this instance.
     /// </summary>
     /// <returns>
-    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+    ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     public override int GetHashCode()
     {
@@ -108,8 +118,10 @@ public class Money : DecimalValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
-    public override string ToString() =>
-        this.Format(this.Amount, this.Currency.Code);
+    public override string ToString()
+    {
+        return this.Format(this.Amount, this.Currency.Code);
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
@@ -128,9 +140,9 @@ public class Money : DecimalValueObject
         EnsureArg.IsNotNullOrEmpty(currencyCode, nameof(currencyCode));
 
         var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-                       let r = this.CreateRegionInfo(c.Name)
-                       where r is not null && string.Equals(r.ISOCurrencySymbol, currencyCode, StringComparison.OrdinalIgnoreCase)
-                       select c).FirstOrDefault();
+            let r = this.CreateRegionInfo(c.Name)
+            where r is not null && string.Equals(r.ISOCurrencySymbol, currencyCode, StringComparison.OrdinalIgnoreCase)
+            select c).FirstOrDefault();
 
         if (culture is null)
         {

@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
-using BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
+using Domain.EventSourcing.Registration;
+using Domain.Outbox;
+using Domain.UnitTests.EventStore.Model;
+using Domain.UnitTests.EventStore.Model.Events;
+using EventSourcing.Publishing;
 
 [UnitTest("Infrastructure")]
 public class AggregateEventOutboxSenderTests
@@ -41,9 +40,12 @@ public class AggregateEventOutboxSenderTests
 
         // Act
         var sut = new AggregateEventOutboxSender(rep, regAggregateEvent, regAggregate);
-        await sut.WriteToOutboxAsync(personEvent, new Person("Doe", "John")).AnyContext();
+        await sut.WriteToOutboxAsync(personEvent, new Person("Doe", "John"))
+            .AnyContext();
 
         // Assert
-        await rep.Received(1).InsertAsync(Arg.Any<OutboxMessage>()).AnyContext();
+        await rep.Received(1)
+            .InsertAsync(Arg.Any<OutboxMessage>())
+            .AnyContext();
     }
 }

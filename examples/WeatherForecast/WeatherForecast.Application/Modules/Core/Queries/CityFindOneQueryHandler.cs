@@ -5,16 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
+using Domain;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQueryResponse>
@@ -42,39 +39,44 @@ public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQu
         if (!query.Name.IsNullOrEmpty())
         {
             // find by name
-            var city = await this.cityRepository.FindOneAsync(new CityHasNameSpecification(query.Name).And(new CityIsNotDeletedSpecification()), cancellationToken: cancellationToken).AnyContext()
-                ?? throw new AggregateNotFoundException(nameof(City));
+            var city = await this.cityRepository
+                    .FindOneAsync(new CityHasNameSpecification(query.Name).And(new CityIsNotDeletedSpecification()),
+                        cancellationToken: cancellationToken)
+                    .AnyContext() ??
+                throw new AggregateNotFoundException(nameof(City));
             var forecasts = city is not null
                 ? await this.forecastRepository.FindAllAsync(
-                    new Specification<Forecast>(c => c.CityId == city.Id).And(new ForecastIsInFutureSpecification()),
-                    new FindOptions<Forecast>(
-                        order: new OrderOption<Forecast>(f => f.Timestamp)), cancellationToken).AnyContext()
+                        new Specification<Forecast>(c => c.CityId == city.Id).And(
+                            new ForecastIsInFutureSpecification()),
+                        new FindOptions<Forecast>(order: new OrderOption<Forecast>(f => f.Timestamp)),
+                        cancellationToken)
+                    .AnyContext()
                 : null;
 
-            return new QueryResponse<CityQueryResponse>()
-            {
-                Result = CityQueryResponse.Create(city, forecasts)
-            };
+            return new QueryResponse<CityQueryResponse> { Result = CityQueryResponse.Create(city, forecasts) };
         }
         else
         {
-            DomainRules.Apply(
-            [
-                new LongitudeShouldBeInRange(query.Longitude),
-                new LatitudeShouldBeInRange(query.Latitude)
+            DomainRules.Apply([
+                new LongitudeShouldBeInRange(query.Longitude), new LatitudeShouldBeInRange(query.Latitude)
             ]);
 
-            var city = await this.cityRepository.FindOneAsync(new CityHasLocationSpecification(query.Longitude, query.Latitude), cancellationToken: cancellationToken).AnyContext()
-                    ?? throw new AggregateNotFoundException(nameof(City));
+            var city = await this.cityRepository
+                    .FindOneAsync(new CityHasLocationSpecification(query.Longitude, query.Latitude),
+                        cancellationToken: cancellationToken)
+                    .AnyContext() ??
+                throw new AggregateNotFoundException(nameof(City));
             var forecasts = city is not null
-                ? await this.forecastRepository.FindAllAsync(new Specification<Forecast>(c => c.CityId == city.Id).And(new ForecastIsInFutureSpecification()), new FindOptions<Forecast>(
-                        order: new OrderOption<Forecast>(f => f.Timestamp)), cancellationToken).AnyContext()
+                ? await this.forecastRepository
+                    .FindAllAsync(
+                        new Specification<Forecast>(c => c.CityId == city.Id).And(
+                            new ForecastIsInFutureSpecification()),
+                        new FindOptions<Forecast>(order: new OrderOption<Forecast>(f => f.Timestamp)),
+                        cancellationToken)
+                    .AnyContext()
                 : null;
 
-            return new QueryResponse<CityQueryResponse>()
-            {
-                Result = CityQueryResponse.Create(city, forecasts)
-            };
+            return new QueryResponse<CityQueryResponse> { Result = CityQueryResponse.Create(city, forecasts) };
         }
     }
 }

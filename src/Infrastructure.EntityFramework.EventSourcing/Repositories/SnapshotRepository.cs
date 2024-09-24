@@ -5,41 +5,47 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using BridgingIT.DevKit.Infrastructure.EventSourcing;
+using Common;
+using Domain.EventSourcing.Registration;
+using Infrastructure.EventSourcing;
+using Models;
+using Repositories;
 
-public class SnapshotRepository(IEventStoreAggregateRegistration aggregateRegistration,
-    EntityFrameworkRepositoryOptions options) :
-    EntityFrameworkGenericRepository<EventStoreSnapshot/*, EventStoreSnapshotForDatabase*/>(options),
-    ISnapshotRepository
+public class SnapshotRepository(
+    IEventStoreAggregateRegistration aggregateRegistration,
+    EntityFrameworkRepositoryOptions options)
+    : EntityFrameworkGenericRepository<EventStoreSnapshot /*, EventStoreSnapshotForDatabase*/>(options),
+        ISnapshotRepository
 {
     private IEventStoreAggregateRegistration aggregateRegistration = aggregateRegistration;
     private EventStoreDbContext context = options.DbContext as EventStoreDbContext;
 
-    public SnapshotRepository(IEventStoreAggregateRegistration aggregateRegistration,
+    public SnapshotRepository(
+        IEventStoreAggregateRegistration aggregateRegistration,
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : this(aggregateRegistration, optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build())
-    {
-    }
+        : this(aggregateRegistration, optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
-    public async Task<byte[]> GetSnapshotAsync(Guid aggregateId, string immutableName, CancellationToken cancellationToken)
+    public async Task<byte[]> GetSnapshotAsync(
+        Guid aggregateId,
+        string immutableName,
+        CancellationToken cancellationToken)
     {
-        var snapshots = await this
-            .ProjectAllAsync(new AggregateSnapshotSpecification(aggregateId, immutableName),
-                p => p.Data, null, cancellationToken: cancellationToken).AnyContext();
+        var snapshots = await this.ProjectAllAsync(new AggregateSnapshotSpecification(aggregateId, immutableName),
+                p => p.Data,
+                null,
+                cancellationToken)
+            .AnyContext();
         return snapshots.ToArray().FirstOrDefault();
     }
 
-    public async Task SaveSnapshotAsync(Guid aggregateId, byte[] blob, string immutableName, CancellationToken cancellationToken)
+    public async Task SaveSnapshotAsync(
+        Guid aggregateId,
+        byte[] blob,
+        string immutableName,
+        CancellationToken cancellationToken)
     {
-        var snapshot = await this.FindOneAsync(new AggregateSnapshotSpecification(aggregateId, immutableName), cancellationToken: cancellationToken)
+        var snapshot = await this.FindOneAsync(new AggregateSnapshotSpecification(aggregateId, immutableName),
+                cancellationToken: cancellationToken)
             .AnyContext();
         if (snapshot is null)
         {

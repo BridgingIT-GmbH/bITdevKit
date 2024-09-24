@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
-using Polly.Retry;
-using Polly;
-using Quartz;
-using Humanizer;
 using System.Diagnostics;
+using Common;
+using Humanizer;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
+using Quartz;
 
 public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
@@ -30,37 +30,46 @@ public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
             AsyncRetryPolicy retryPolicy;
             if (!options.BackoffExponential)
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    sleepDurationProvider: attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
                             : 0),
-                    onRetry: (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}", Constants.LogKey, attempts, wait.Humanize(), jobTypeName);
-                        attempts++;
-                    });
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}",
+                                Constants.LogKey,
+                                attempts,
+                                wait.Humanize(),
+                                jobTypeName);
+                            attempts++;
+                        });
             }
             else
             {
-                retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                    options.Attempts,
-                    attempt => TimeSpan.FromMilliseconds(
-                        options.Backoff != default
+                retryPolicy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(options.Attempts,
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
                             ? options.Backoff.Milliseconds
-                            : 0
-                        * Math.Pow(2, attempt)),
-                    (ex, wait) =>
-                    {
-                        Activity.Current?.AddEvent(new($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
-                        this.Logger.LogError(ex, $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}", Constants.LogKey, attempts, wait.Humanize(), jobTypeName);
-                        attempts++;
-                    });
+                            : 0 * Math.Pow(2, attempt)),
+                        (ex, wait) =>
+                        {
+                            Activity.Current?.AddEvent(
+                                new ActivityEvent($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
+                            this.Logger.LogError(ex,
+                                $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}",
+                                Constants.LogKey,
+                                attempts,
+                                wait.Humanize(),
+                                jobTypeName);
+                            attempts++;
+                        });
             }
 
-            await retryPolicy.ExecuteAsync(async (context) => await next().AnyContext(), context.CancellationToken);
+            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), context.CancellationToken);
         }
         else
         {

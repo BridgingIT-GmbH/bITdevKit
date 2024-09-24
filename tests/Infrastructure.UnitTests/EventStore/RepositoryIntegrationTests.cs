@@ -5,23 +5,18 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
-using BridgingIT.DevKit.Infrastructure.EventSourcing;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Registration;
+using Domain.EventSourcing.Store;
+using Domain.UnitTests.EventStore.Model;
+using Domain.UnitTests.EventStore.Model.Events;
+using EventSourcing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 [UnitTest("Infrastructure")]
-public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(output, s => s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies([typeof(TestsBase).Assembly])))
+public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(output, s => s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(TestsBase).Assembly)))
 {
     [Fact]
     public async Task Get()
@@ -30,15 +25,13 @@ public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(ou
         var aggregateId = Guid.NewGuid();
         var store = Substitute.For<IEventStoreRepository>();
         var aggregateEventSender = Substitute.For<IPublishAggregateEventSender>();
-        var list = new List<IAggregateEvent>()
-        {
-            new PersonCreatedEvent(aggregateId, "Mustermann", "Max"),
-            new ChangeSurnameEvent(aggregateId, 2, "Musterfrau")
-        };
+        var list = new List<IAggregateEvent> { new PersonCreatedEvent(aggregateId, "Mustermann", "Max"), new ChangeSurnameEvent(aggregateId, 2, "Musterfrau") };
         var listTask = Task.FromResult(list.ToArray());
-        store.GetEventsAsync<Person>(aggregateId, CancellationToken.None).Returns(listTask);
+        store.GetEventsAsync<Person>(aggregateId, CancellationToken.None)
+            .Returns(listTask);
         var rep = new EventStore<Person>(mediator, store, aggregateEventSender, new EventStoreOptions<Person>());
-        var aggregate = await rep.GetAsync(aggregateId, CancellationToken.None).AnyContext();
+        var aggregate = await rep.GetAsync(aggregateId, CancellationToken.None)
+            .AnyContext();
         aggregate.ShouldNotBeNull();
         aggregate.ShouldBeOfType<Person>();
         aggregate.Firstname.ShouldBe("Max");
@@ -55,14 +48,23 @@ public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(ou
         var rep = new EventStore<Person>(mediator, store, aggregateEventSender, new EventStoreOptions<Person>());
         var aggregate = new Person("A", "B");
         aggregate.ChangeSurname("C");
-        await rep.SaveEventsAsync(aggregate, CancellationToken.None).AnyContext();
-        await mediator.Received().Publish(Arg.Any<PersonCreatedEvent>(), CancellationToken.None).AnyContext();
-        await mediator.Received().Publish(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None).AnyContext();
-        await store.Received().AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None).AnyContext();
+        await rep.SaveEventsAsync(aggregate, CancellationToken.None)
+            .AnyContext();
+        await mediator.Received()
+            .Publish(Arg.Any<PersonCreatedEvent>(), CancellationToken.None)
+            .AnyContext();
+        await mediator.Received()
+            .Publish(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None)
+            .AnyContext();
+        await store.Received()
+            .AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None)
+            .AnyContext();
         await aggregateEventSender.Received()
-            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate)
+            .AnyContext();
         await aggregateEventSender.Received()
-            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate)
+            .AnyContext();
     }
 
     [Fact]
@@ -75,12 +77,17 @@ public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(ou
         var rep = new EventStore<Person>(mediator, store, aggregateEventSender, new EventStoreOptions<Person>());
         var aggregate = new Person("A", "B");
         aggregate.ChangeSurname("C");
-        await rep.SaveEventsAsync(aggregate, CancellationToken.None).AnyContext();
-        await store.Received().AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None).AnyContext();
+        await rep.SaveEventsAsync(aggregate, CancellationToken.None)
+            .AnyContext();
+        await store.Received()
+            .AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None)
+            .AnyContext();
         await aggregateEventSender.Received()
-            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate)
+            .AnyContext();
         await aggregateEventSender.Received()
-            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate)
+            .AnyContext();
     }
 
     [Fact]
@@ -92,16 +99,26 @@ public class RepositoryIntegrationTests(ITestOutputHelper output) : TestsBase(ou
         var aggregateEventSender = Substitute.For<IPublishAggregateEventSender>();
         var rep = new EventStore<Person>(mediator, store, aggregateEventSender, new EventStoreOptions<Person>());
         var aggregate = new Person("A", "B");
-        await rep.SaveEventsAsync(aggregate, CancellationToken.None).AnyContext();
-        await mediator.Received().Publish(Arg.Any<PersonCreatedEvent>(), CancellationToken.None).AnyContext();
-        await mediator.DidNotReceive().Publish(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None).AnyContext();
-        await store.Received().AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None).AnyContext();
-        await store.DidNotReceive().AddAsync<Person>(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None)
+        await rep.SaveEventsAsync(aggregate, CancellationToken.None)
+            .AnyContext();
+        await mediator.Received()
+            .Publish(Arg.Any<PersonCreatedEvent>(), CancellationToken.None)
+            .AnyContext();
+        await mediator.DidNotReceive()
+            .Publish(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None)
+            .AnyContext();
+        await store.Received()
+            .AddAsync<Person>(Arg.Any<PersonCreatedEvent>(), CancellationToken.None)
+            .AnyContext();
+        await store.DidNotReceive()
+            .AddAsync<Person>(Arg.Any<ChangeSurnameEvent>(), CancellationToken.None)
             .AnyContext();
         await aggregateEventSender.Received()
-            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<PersonCreatedEvent>(), aggregate)
+            .AnyContext();
         await aggregateEventSender.DidNotReceive()
-            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate).AnyContext();
+            .PublishProjectionEventAsync(Arg.Any<ChangeSurnameEvent>(), aggregate)
+            .AnyContext();
     }
 
     private static Task SpannedEventStoreOperation()

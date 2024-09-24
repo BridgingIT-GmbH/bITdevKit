@@ -5,12 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions
@@ -55,12 +53,8 @@ public static partial class Extensions
                 .IncludeIf(options)
                 .FirstOrDefaultAsync(filter, cancellationToken);
         }
-        else
-        {
-            return await source.Set<TEntity>()
-                .IncludeIf(options)
-                .FirstOrDefaultAsync(filter, cancellationToken);
-        }
+
+        return await source.Set<TEntity>().IncludeIf(options).FirstOrDefaultAsync(filter, cancellationToken);
     }
 
     public static async Task<TDatabaseEntity> FindAsync<TEntity, TDatabaseEntity>(
@@ -105,12 +99,10 @@ public static partial class Extensions
                 .IncludeIf(options, mapper)
                 .FirstOrDefaultAsync(filter, cancellationToken);
         }
-        else
-        {
-            return await source.Set<TDatabaseEntity>()
-                .IncludeIf(options, mapper)
-                .FirstOrDefaultAsync(filter, cancellationToken);
-        }
+
+        return await source.Set<TDatabaseEntity>()
+            .IncludeIf(options, mapper)
+            .FirstOrDefaultAsync(filter, cancellationToken);
     }
 
     public static PropertyInfo[] GetKeyProperties<T>(this DbContext source)

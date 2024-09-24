@@ -5,20 +5,16 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests;
 
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Domain.Model;
+using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext
 {
-    public StubDbContext()
-    {
-    }
+    public StubDbContext() { }
 
     public StubDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<PersonStub> Persons { get; set; }
 

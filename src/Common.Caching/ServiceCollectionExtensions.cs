@@ -6,10 +6,10 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Caching.Memory;
+using Configuration;
+using Extensions;
+using Logging;
 
 public static class ServiceCollectionExtensions
 {
@@ -22,8 +22,7 @@ public static class ServiceCollectionExtensions
 
         optionsAction?.Invoke(new CachingBuilderContext(services));
 
-        services.TryAddSingleton<IMemoryCache>(sp =>
-            new MemoryCache(new MemoryCacheOptions()));
+        services.TryAddSingleton<IMemoryCache>(sp => new MemoryCache(new MemoryCacheOptions()));
 
         return new CachingBuilderContext(services, configuration);
     }
@@ -36,12 +35,13 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<InMemoryCacheProviderConfiguration>() ?? new InMemoryCacheProviderConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<InMemoryCacheProviderConfiguration>() ??
+            new InMemoryCacheProviderConfiguration();
 
         context.Services.TryAddTransient<ICacheProvider>(sp =>
-            new InMemoryCacheProvider(
-                sp.GetRequiredService<ILoggerFactory>(),
-                sp.GetRequiredService<IMemoryCache>(), configuration));
+            new InMemoryCacheProvider(sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<IMemoryCache>(),
+                configuration));
 
         return context;
     }

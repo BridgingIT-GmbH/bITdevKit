@@ -4,7 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
-using System;
 
 public interface ITimeoutJobScheduling
 {
@@ -13,5 +12,5 @@ public interface ITimeoutJobScheduling
 
 public class TimeoutJobSchedulingOptions
 {
-    public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 0, 30);
+    public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

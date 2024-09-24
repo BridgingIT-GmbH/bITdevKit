@@ -5,15 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.Repositories;
 
 public interface ISnapshotRepository : IRepository
 {
     Task<byte[]> GetSnapshotAsync(Guid aggregateId, string immutableName, CancellationToken cancellationToken);
 
-    Task SaveSnapshotAsync(Guid aggregateId, byte[] blob, string immutableName,
-        CancellationToken cancellationToken);
+    Task SaveSnapshotAsync(Guid aggregateId, byte[] blob, string immutableName, CancellationToken cancellationToken);
 }

@@ -8,6 +8,7 @@
 GET {{baseUrl}}/api/core/echo HTTP/1.1
 
 Content-Type: application/json
+
 ###################################################################################
 ### API [GET] Menus FindOne                                                       #
 GET {{baseUrl}}/api/core/hosts/{{hostId}}/menus/{{menuId}} HTTP/1.1

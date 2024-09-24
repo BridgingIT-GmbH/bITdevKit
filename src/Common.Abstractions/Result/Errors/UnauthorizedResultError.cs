@@ -8,7 +8,5 @@ namespace BridgingIT.DevKit.Common;
 public class UnauthorizedResultError : ResultErrorBase
 {
     public UnauthorizedResultError()
-        : base("Unauthorized")
-    {
-    }
+        : base("Unauthorized") { }
 }

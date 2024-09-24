@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,7 +12,7 @@ using System.Reflection;
 public static class ExpressionExtensions
 {
     /// <summary>
-    /// Expands the specified expression.
+    ///     Expands the specified expression.
     /// </summary>
     /// <typeparam name="T">The type of the delegate.</typeparam>
     /// <param name="expression">The expression to expand.</param>
@@ -108,9 +106,7 @@ public static class ExpressionExtensions
     {
         private readonly Dictionary<ParameterExpression, Expression> replacementParams;
 
-        internal ExpressionExpander()
-        {
-        }
+        internal ExpressionExpander() { }
 
         private ExpressionExpander(Dictionary<ParameterExpression, Expression> replaceVars)
         {
@@ -123,15 +119,13 @@ public static class ExpressionExtensions
             {
                 return this.replacementParams[expression];
             }
-            else
-            {
-                return base.VisitParameter(expression);
-            }
+
+            return base.VisitParameter(expression);
         }
 
         /// <summary>
-        /// Flatten calls to Invoke so that Entity Framework can understand it. Calls to Invoke are generated
-        /// by PredicateBuilder.
+        ///     Flatten calls to Invoke so that Entity Framework can understand it. Calls to Invoke are generated
+        ///     by PredicateBuilder.
         /// </summary>
         protected override Expression VisitInvocation(InvocationExpression invocationExpression)
         {
@@ -167,7 +161,9 @@ public static class ExpressionExtensions
             }
             catch (ArgumentException ex)
             {
-                throw new InvalidOperationException("Invoke cannot be called recursively - try using a temporary variable.", ex);
+                throw new InvalidOperationException(
+                    "Invoke cannot be called recursively - try using a temporary variable.",
+                    ex);
             }
 
             return new ExpressionExpander(replacementParams).Visit(lambda.Body);
@@ -209,7 +205,9 @@ public static class ExpressionExtensions
                 }
                 catch (ArgumentException ex)
                 {
-                    throw new InvalidOperationException("Invoke cannot be called recursively - try using a temporary variable.", ex);
+                    throw new InvalidOperationException(
+                        "Invoke cannot be called recursively - try using a temporary variable.",
+                        ex);
                 }
 
                 return new ExpressionExpander(replacementParams).Visit(lambda.Body);
@@ -249,10 +247,11 @@ public static class ExpressionExtensions
         private Expression TransformExpression(MemberExpression input)
         {
             // Collapse captured outer variables
-            if (input is null
-                || !(input.Member is FieldInfo)
-                || !input.Member.ReflectedType.IsNestedPrivate
-                || !input.Member.ReflectedType.Name.StartsWith("<>", StringComparison.OrdinalIgnoreCase)) // captured outer variable
+            if (input is null ||
+                !(input.Member is FieldInfo) ||
+                !input.Member.ReflectedType.IsNestedPrivate ||
+                !input.Member.ReflectedType.Name.StartsWith("<>",
+                    StringComparison.OrdinalIgnoreCase)) // captured outer variable
             {
                 return input;
             }
@@ -405,10 +404,12 @@ public static class ExpressionExtensions
                 {
                     return Expression.Coalesce(left, right, conversion as LambdaExpression);
                 }
-                else
-                {
-                    return Expression.MakeBinary(expression.NodeType, left, right, expression.IsLiftedToNull, expression.Method);
-                }
+
+                return Expression.MakeBinary(expression.NodeType,
+                    left,
+                    right,
+                    expression.IsLiftedToNull,
+                    expression.Method);
             }
 
             return expression;
@@ -599,10 +600,8 @@ public static class ExpressionExtensions
                 {
                     return Expression.New(newExpression.Constructor, args, newExpression.Members);
                 }
-                else
-                {
-                    return Expression.New(newExpression.Constructor, args);
-                }
+
+                return Expression.New(newExpression.Constructor, args);
             }
 
             return newExpression;
@@ -641,10 +640,8 @@ public static class ExpressionExtensions
                 {
                     return Expression.NewArrayInit(arrayExpression.Type.GetElementType(), expressions);
                 }
-                else
-                {
-                    return Expression.NewArrayBounds(arrayExpression.Type.GetElementType(), expressions);
-                }
+
+                return Expression.NewArrayBounds(arrayExpression.Type.GetElementType(), expressions);
             }
 
             return arrayExpression;

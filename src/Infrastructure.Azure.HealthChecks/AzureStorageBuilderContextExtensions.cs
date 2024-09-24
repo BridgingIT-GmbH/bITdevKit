@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+using Diagnostics.HealthChecks;
 
 public static class AzureStorageBuilderContextExtensions
 {
@@ -19,17 +20,26 @@ public static class AzureStorageBuilderContextExtensions
         if (context.Service == Service.Blob)
         {
             context.Services.AddHealthChecks()
-                .AddAzureBlobStorage(context.ConnectionString, name: name ?? $"blobstorage ({context.AccountName})", failureStatus: failureStatus, tags: tags ?? new[] { "ready" });
+                .AddAzureBlobStorage(context.ConnectionString,
+                    name: name ?? $"blobstorage ({context.AccountName})",
+                    failureStatus: failureStatus,
+                    tags: tags ?? new[] { "ready" });
         }
         else if (context.Service == Service.Table)
         {
             context.Services.AddHealthChecks()
-                .AddAzureBlobStorage(context.ConnectionString, name: name ?? $"tablestorage ({context.AccountName})", failureStatus: failureStatus, tags: tags ?? new[] { "ready" });
+                .AddAzureBlobStorage(context.ConnectionString,
+                    name: name ?? $"tablestorage ({context.AccountName})",
+                    failureStatus: failureStatus,
+                    tags: tags ?? new[] { "ready" });
         }
         else if (context.Service == Service.Queue)
         {
             context.Services.AddHealthChecks()
-                .AddAzureQueueStorage(context.ConnectionString, name: name ?? $"queuestorage ({context.AccountName})", failureStatus: failureStatus, tags: tags ?? new[] { "ready" });
+                .AddAzureQueueStorage(context.ConnectionString,
+                    name: name ?? $"queuestorage ({context.AccountName})",
+                    failureStatus: failureStatus,
+                    tags: tags ?? new[] { "ready" });
         }
 
         return context;

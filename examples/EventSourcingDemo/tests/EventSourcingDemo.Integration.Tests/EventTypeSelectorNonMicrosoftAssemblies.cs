@@ -17,14 +17,16 @@ public class EventTypeSelectorNonMicrosoftAssemblies : IEventTypeSelector
         if (this.typeCache is null)
         {
             var baseType = typeof(IAggregateEvent);
-            var amblies = AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-            {
-                var name = a.GetName().Name;
-                return name != null &&
-                       !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
-            });
+            var amblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a =>
+                {
+                    var name = a.GetName().Name;
+                    return name != null &&
+                        !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
+                });
             this.typeCache = amblies.SelectMany(a => a.GetTypes()
-                .Where(t => baseType.IsAssignableFrom(t) && !t.IsInterface)).ToArray();
+                    .Where(t => baseType.IsAssignableFrom(t) && !t.IsInterface))
+                .ToArray();
         }
 
         return this.typeCache.First(t => t.FullName == typename);

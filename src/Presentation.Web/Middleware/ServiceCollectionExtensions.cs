@@ -10,8 +10,7 @@ using BridgingIT.DevKit.Presentation.Web.Host;
 
 public static partial class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddExceptionHandler(
-        this IServiceCollection services)
+    public static IServiceCollection AddExceptionHandler(this IServiceCollection services)
     {
         EnsureArg.IsNotNull(services, nameof(services));
 

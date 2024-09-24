@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Common;
+using Microsoft.Extensions.Logging;
 
 public class ModuleScopeMessageHandlerBehavior(
     ILoggerFactory loggerFactory,
@@ -17,14 +17,21 @@ public class ModuleScopeMessageHandlerBehavior(
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
-    public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    public override async Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)
         {
             return;
         }
 
-        var moduleNameOrigin = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString().EmptyToNull() ?? ModuleConstants.UnknownModuleName;
+        var moduleNameOrigin = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)
+                ?.ToString()
+                .EmptyToNull() ??
+            ModuleConstants.UnknownModuleName;
         var correlationId = message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
         var flowId = message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var parentId = message?.Properties?.GetValue(ModuleConstants.ActivityParentIdKey)?.ToString();
@@ -33,42 +40,61 @@ public class ModuleScopeMessageHandlerBehavior(
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-        {
-            [ModuleConstants.ModuleNameOriginKey] = moduleNameOrigin,
-            [ModuleConstants.ModuleNameKey] = moduleName
-        }))
+               {
+                   [ModuleConstants.ModuleNameOriginKey] = moduleNameOrigin,
+                   [ModuleConstants.ModuleNameKey] = moduleName
+               }))
         {
             if (module is not null && !module.Enabled)
             {
                 throw new ModuleNotEnabledException(module.Name);
             }
+
+            var messageType = message.GetType().PrettyName(false);
+
+            if (!string.IsNullOrEmpty(moduleNameOrigin) &&
+                !moduleNameOrigin.Equals(module?.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                await this.activitySources.Find(module.Name)
+                    .StartActvity($"MODULE {module.Name}",
+                        async (a, c) => await this.activitySources.Find(module?.Name)
+                            .StartActvity($"MESSAGE_PROCESS {messageType}",
+                                async (a, c) => await next().AnyContext(),
+                                ActivityKind.Consumer,
+                                tags: new Dictionary<string, string>
+                                {
+                                    ["messaging.module.origin"] = moduleNameOrigin,
+                                    ["messaging.message_id"] = message.MessageId,
+                                    ["messaging.message_type"] = messageType
+                                },
+                                cancellationToken: c),
+                        parentId: parentId,
+                        baggages: new Dictionary<string, string>
+                        {
+                            [ActivityConstants.ModuleNameTagKey] = moduleName,
+                            [ActivityConstants.CorrelationIdTagKey] = correlationId,
+                            [ActivityConstants.FlowIdTagKey] = flowId
+                        });
+            }
             else
             {
-                var messageType = message.GetType().PrettyName(false);
-
-                if (!string.IsNullOrEmpty(moduleNameOrigin) && !moduleNameOrigin.Equals(module?.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    await this.activitySources.Find(module.Name).StartActvity(
-                        $"MODULE {module.Name}",
-                        async (a, c) => await this.activitySources.Find(module?.Name).StartActvity(
-                            $"MESSAGE_PROCESS {messageType}",
-                            async (a, c) => await next().AnyContext(),
-                            kind: ActivityKind.Consumer,
-                            tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.MessageId, ["messaging.message_type"] = messageType },
-                            cancellationToken: c),
-                        parentId: parentId,
-                        baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = moduleName, [ActivityConstants.CorrelationIdTagKey] = correlationId, [ActivityConstants.FlowIdTagKey] = flowId });
-                }
-                else
-                {
-                    await this.activitySources.Find(module?.Name).StartActvity(
-                        $"MESSAGE_PROCESS {messageType}",
+                await this.activitySources.Find(module?.Name)
+                    .StartActvity($"MESSAGE_PROCESS {messageType}",
                         async (a, c) => await next().AnyContext(),
-                        kind: ActivityKind.Consumer,
-                        parentId: parentId,
-                        tags: new Dictionary<string, string> { ["messaging.module.origin"] = moduleNameOrigin, ["messaging.message_id"] = message.MessageId, ["messaging.message_type"] = messageType },
-                        baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = moduleName, [ActivityConstants.CorrelationIdTagKey] = correlationId, [ActivityConstants.FlowIdTagKey] = flowId });
-                }
+                        ActivityKind.Consumer,
+                        parentId,
+                        new Dictionary<string, string>
+                        {
+                            ["messaging.module.origin"] = moduleNameOrigin,
+                            ["messaging.message_id"] = message.MessageId,
+                            ["messaging.message_type"] = messageType
+                        },
+                        new Dictionary<string, string>
+                        {
+                            [ActivityConstants.ModuleNameTagKey] = moduleName,
+                            [ActivityConstants.CorrelationIdTagKey] = correlationId,
+                            [ActivityConstants.FlowIdTagKey] = flowId
+                        });
             }
         }
     }

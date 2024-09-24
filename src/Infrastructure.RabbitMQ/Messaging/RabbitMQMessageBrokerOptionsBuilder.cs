@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.RabbitMQ;
 
-using System;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 
-public class RabbitMQMessageBrokerOptionsBuilder :
-        OptionsBuilderBase<RabbitMQMessageBrokerOptions, RabbitMQMessageBrokerOptionsBuilder>
+public class RabbitMQMessageBrokerOptionsBuilder
+    : OptionsBuilderBase<RabbitMQMessageBrokerOptions, RabbitMQMessageBrokerOptionsBuilder>
 {
     public RabbitMQMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {

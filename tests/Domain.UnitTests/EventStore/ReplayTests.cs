@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
+using EventSourcing.Model;
+using Model;
+using Model.Events;
 
 [UnitTest("Domain")]
 public class ReplayTests
@@ -18,7 +18,7 @@ public class ReplayTests
         // Arrange
         var id = Guid.NewGuid();
         var ev = new PersonCreatedEvent(id, "A", "B");
-        var events = new List<IAggregateEvent>() { ev };
+        var events = new List<IAggregateEvent> { ev };
 
         // Act
         var person = new Person(id, events);
@@ -36,7 +36,7 @@ public class ReplayTests
         var id = Guid.NewGuid();
         var ev = new PersonCreatedEvent(id, "A", "B");
         var ev2 = new ChangeSurnameEvent(id, 2, "C");
-        var events = new List<IAggregateEvent>() { ev, ev2 };
+        var events = new List<IAggregateEvent> { ev, ev2 };
 
         // Act
         var person = new Person(id, events);

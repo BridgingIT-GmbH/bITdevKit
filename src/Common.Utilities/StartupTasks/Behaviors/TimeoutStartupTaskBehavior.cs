@@ -5,12 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Polly.Timeout;
-using Polly;
 using Humanizer;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Timeout;
 
 public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
@@ -24,13 +22,17 @@ public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupT
         var options = (task as ITimeoutStartupTask)?.Options;
         if (options is not null)
         {
-            var timeoutPolicy = Policy
-            .TimeoutAsync(options.Timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync: async (context, timeout, task) =>
-            {
-                await Task.Run(() => this.Logger.LogError($"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, type={this.GetType().Name})", "UTL"));
-            });
+            var timeoutPolicy = Policy.TimeoutAsync(options.Timeout,
+                TimeoutStrategy.Pessimistic,
+                async (context, timeout, task) =>
+                {
+                    await Task.Run(() =>
+                        this.Logger.LogError(
+                            $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, type={this.GetType().Name})",
+                            "UTL"));
+                });
 
-            await timeoutPolicy.ExecuteAsync(async (context) => await next().AnyContext(), cancellationToken);
+            await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
         }
         else
         {

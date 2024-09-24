@@ -5,20 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
+using Domain.Specifications;
 using Microsoft.Extensions.Logging;
 
-public class LiteDbReadOnlyGenericRepository<TEntity> :
-    IGenericReadOnlyRepository<TEntity>
+public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntity>
     where TEntity : class, IEntity
 {
     public LiteDbReadOnlyGenericRepository(ILiteDbRepositoryOptions options)
@@ -30,10 +24,9 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
         this.Logger = options.CreateLogger<IGenericRepository<TEntity>>();
     }
 
-    public LiteDbReadOnlyGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build())
-    {
-    }
+    public LiteDbReadOnlyGenericRepository(
+        Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
+        : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
 
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
 
@@ -73,16 +66,14 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
                 .TakeIf(options?.Take)
                 .ToList());
         }
-        else
-        {
-            return await Task.FromResult(this.Options.DbContext.Database.GetCollection<TEntity>()
-                //.IncludeIf(options)
-                .WhereExpressions(expressions)
-                //.DistinctIf(options)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
-                .ToList());
-        }
+
+        return await Task.FromResult(this.Options.DbContext.Database.GetCollection<TEntity>()
+            //.IncludeIf(options)
+            .WhereExpressions(expressions)
+            //.DistinctIf(options)
+            .SkipIf(options?.Skip)
+            .TakeIf(options?.Take)
+            .ToList());
     }
 
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -103,10 +94,10 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
     }
 
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.SafeNull().ToArray();
         var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression());
@@ -123,17 +114,15 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
                 .TakeIf(options?.Take)
                 .ToList());
         }
-        else
-        {
-            return await Task.FromResult(this.Options.DbContext.Database.GetCollection<TEntity>()
-                //.IncludeIf(options)
-                .WhereExpressions(expressions)
-                .Select(projection)
-                //.DistinctIf(options, this.Options.Mapper)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
-                .ToList());
-        }
+
+        return await Task.FromResult(this.Options.DbContext.Database.GetCollection<TEntity>()
+            //.IncludeIf(options)
+            .WhereExpressions(expressions)
+            .Select(projection)
+            //.DistinctIf(options, this.Options.Mapper)
+            .SkipIf(options?.Skip)
+            .TakeIf(options?.Take)
+            .ToList());
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -146,10 +135,10 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
             return null;
         }
 
-        return await this.FindOneAsync(
-            new Specification<TEntity>(e => e.Id == this.ConvertEntityId(id)),
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindOneAsync(new Specification<TEntity>(e => e.Id == this.ConvertEntityId(id)),
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -157,10 +146,7 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync(
-            new[] { specification },
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindOneAsync(new[] { specification }, options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -213,7 +199,8 @@ public class LiteDbReadOnlyGenericRepository<TEntity> :
 
     private object ConvertEntityId(object value)
     {
-        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(Guid) && value?.GetType() == typeof(string))
+        if (typeof(TEntity).GetPropertyUnambiguous("Id")?.PropertyType == typeof(Guid) &&
+            value?.GetType() == typeof(string))
         {
             // string to guid conversion
             return Guid.Parse(value.ToString());

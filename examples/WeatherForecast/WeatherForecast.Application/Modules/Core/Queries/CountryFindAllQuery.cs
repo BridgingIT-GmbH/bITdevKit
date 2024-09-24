@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Queries;
+using DevKit.Application.Queries;
 
-public class CountryFindAllQuery : QueryRequestBase<IEnumerable<string>>
-{
-}
+public class CountryFindAllQuery : QueryRequestBase<IEnumerable<string>> { }

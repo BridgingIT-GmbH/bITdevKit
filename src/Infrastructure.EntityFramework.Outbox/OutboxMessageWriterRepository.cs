@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox;
 
-using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.Models;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+using Domain.Outbox;
+using Models;
+using Repositories;
 
-public class OutboxMessageWriterRepository : EntityFrameworkGenericRepository<OutboxMessage, Outbox>,
-    IOutboxMessageWriterRepository
+public class OutboxMessageWriterRepository
+    : EntityFrameworkGenericRepository<OutboxMessage, Outbox>, IOutboxMessageWriterRepository
 {
     public OutboxMessageWriterRepository(EntityFrameworkRepositoryOptions options)
         : base(options)

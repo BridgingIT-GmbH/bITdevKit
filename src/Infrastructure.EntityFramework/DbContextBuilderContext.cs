@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Configuration;
+using EntityFrameworkCore;
 
 public class DbContextBuilderContext<TContext>(
     IServiceCollection services,

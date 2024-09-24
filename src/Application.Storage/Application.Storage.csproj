@@ -9,17 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="Polly.Contrib.Simmy" />
-    <PackageReference Include="Scrutor" />
+    <PackageReference Include="Humanizer.Core"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="Polly"/>
+    <PackageReference Include="Polly.Contrib.Simmy"/>
+    <PackageReference Include="Scrutor"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
-    <ProjectReference Include="..\Common.Caching\Common.Caching.csproj" />
-    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj"/>
+    <ProjectReference Include="..\Common.Caching\Common.Caching.csproj"/>
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
 </Project>

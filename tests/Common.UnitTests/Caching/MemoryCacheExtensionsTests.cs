@@ -45,7 +45,8 @@ public class MemoryCacheExtensionsTests
 
         // Assert
         keys.ShouldNotBeNull();
-        keys.Count().ShouldBe(2);
+        keys.Count()
+            .ShouldBe(2);
     }
 
     [Fact]
@@ -64,7 +65,8 @@ public class MemoryCacheExtensionsTests
 
         // Assert
         keys.ShouldNotBeNull();
-        keys.Count().ShouldBe(3);
+        keys.Count()
+            .ShouldBe(3);
     }
 
     [Fact]

@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Collections.Generic;
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class SafeWhereTests
 {
@@ -89,24 +85,14 @@ public class SafeWhereTests
     public void SafeWhereIDictionary_ValidSource_ReturnsFiltered()
     {
         // Arrange
-        var source = new Dictionary<int, string>
-            {
-                { 1, "one" },
-                { 2, "two" },
-                { 3, "three" },
-                { 4, "four" }
-            };
+        var source = new Dictionary<int, string> { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" } };
         Func<KeyValuePair<int, string>, bool> predicate = kvp => kvp.Key > 2;
 
         // Act
         var result = source.SafeWhere(predicate);
 
         // Assert
-        result.ShouldBe(new Dictionary<int, string>
-            {
-                { 3, "three" },
-                { 4, "four" }
-            });
+        result.ShouldBe(new Dictionary<int, string> { { 3, "three" }, { 4, "four" } });
     }
 
     // Non-happy flow test: Predicate throwing exception
@@ -118,7 +104,8 @@ public class SafeWhereTests
         Func<int, bool> predicate = i => throw new InvalidOperationException();
 
         // Act
-        Action act = () => source.SafeWhere(predicate).ToList();
+        Action act = () => source.SafeWhere(predicate)
+            .ToList();
 
         // Assert
         act.ShouldThrow<InvalidOperationException>();
@@ -132,7 +119,8 @@ public class SafeWhereTests
         Func<int, bool> predicate = i => throw new InvalidOperationException();
 
         // Act
-        Action act = () => source.SafeWhere(predicate).ToList();
+        Action act = () => source.SafeWhere(predicate)
+            .ToList();
 
         // Assert
         act.ShouldThrow<InvalidOperationException>();
@@ -142,17 +130,12 @@ public class SafeWhereTests
     public void SafeWhereIDictionary_PredicateThrowsException_ThrowsException()
     {
         // Arrange
-        var source = new Dictionary<int, string>
-            {
-                { 1, "one" },
-                { 2, "two" },
-                { 3, "three" },
-                { 4, "four" }
-            };
+        var source = new Dictionary<int, string> { { 1, "one" }, { 2, "two" }, { 3, "three" }, { 4, "four" } };
         Func<KeyValuePair<int, string>, bool> predicate = kvp => throw new InvalidOperationException();
 
         // Act
-        Action act = () => source.SafeWhere(predicate).ToList();
+        Action act = () => source.SafeWhere(predicate)
+            .ToList();
 
         // Assert
         act.ShouldThrow<InvalidOperationException>();

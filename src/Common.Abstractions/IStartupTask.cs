@@ -5,7 +5,15 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Defines a task that runs during the startup sequence of an application.
+///     Implementations should provide the logic of the task within the ExecuteAsync method.
+/// </summary>
 public interface IStartupTask
 {
+    /// <summary>
+    ///     Executes the startup task asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     Task ExecuteAsync(CancellationToken cancellationToken);
 }

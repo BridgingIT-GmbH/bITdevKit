@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Mediator.Repositories;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.UnitTests;
+using DevKit.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -21,17 +19,18 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var mediator = Substitute.For<IMediator>();
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
-        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(
-            logger,
+        var entity = new PersonDtoStub { FullName = "John Doe" };
+        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
             new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.InsertAsync(entity);
 
         // Assert
-        await inner.Received().InsertAsync(Arg.Any<PersonDtoStub>());
-        await mediator.Received().Publish(Arg.Any<AggregateCreatedDomainEvent<PersonDtoStub>>());
+        await inner.Received()
+            .InsertAsync(Arg.Any<PersonDtoStub>());
+        await mediator.Received()
+            .Publish(Arg.Any<AggregateCreatedDomainEvent<PersonDtoStub>>());
     }
 
     [Fact]
@@ -41,17 +40,18 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var mediator = Substitute.For<IMediator>();
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
-        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(
-            logger,
+        var entity = new PersonDtoStub { FullName = "John Doe" };
+        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
             new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.UpdateAsync(entity);
 
         // Assert
-        await inner.Received().UpdateAsync(Arg.Any<PersonDtoStub>());
-        await mediator.Received().Publish(Arg.Any<AggregateUpdatedDomainEvent<PersonDtoStub>>());
+        await inner.Received()
+            .UpdateAsync(Arg.Any<PersonDtoStub>());
+        await mediator.Received()
+            .Publish(Arg.Any<AggregateUpdatedDomainEvent<PersonDtoStub>>());
     }
 
     [Fact]
@@ -61,16 +61,17 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var mediator = Substitute.For<IMediator>();
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
-        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(
-            logger,
+        var entity = new PersonDtoStub { FullName = "John Doe" };
+        var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
             new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.DeleteAsync(entity);
 
         // Assert
-        await inner.Received().DeleteAsync(Arg.Any<PersonDtoStub>());
-        await mediator.Received().Publish(Arg.Any<AggregateDeletedDomainEvent<PersonDtoStub>>());
+        await inner.Received()
+            .DeleteAsync(Arg.Any<PersonDtoStub>());
+        await mediator.Received()
+            .Publish(Arg.Any<AggregateDeletedDomainEvent<PersonDtoStub>>());
     }
 }

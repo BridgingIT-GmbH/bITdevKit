@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
 public static class ContentTypeExtensions
 {
     public static ContentType FromMimeType(string mimeType, ContentType @default = ContentType.TXT)
@@ -49,7 +47,9 @@ public static class ContentTypeExtensions
         foreach (var enumValue in Enum.GetValues(typeof(ContentType)))
         {
             Enum.TryParse(enumValue.ToString(), true, out ContentType contentType);
-            var metaDataValue = contentType.GetAttributeValue<ContentTypeMetadateAttribute, string>(x => x.FileExtension ?? enumValue.ToString());
+            var metaDataValue =
+                contentType.GetAttributeValue<ContentTypeMetadateAttribute, string>(x =>
+                    x.FileExtension ?? enumValue.ToString());
             if (metaDataValue is not null)
             {
                 if (metaDataValue.SafeEquals(extension)) // compare the attribute value with the extension or enum value
@@ -73,14 +73,14 @@ public static class ContentTypeExtensions
     {
         var metadata = GetMetadata(contentType);
 
-        return (metadata is not null) ? ((ContentTypeMetadateAttribute)metadata).MimeType : string.Empty;
+        return metadata is not null ? ((ContentTypeMetadateAttribute)metadata).MimeType : string.Empty;
     }
 
     public static string FileExtension(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);
 
-        return (metadata is not null && !string.IsNullOrEmpty(((ContentTypeMetadateAttribute)metadata).FileExtension))
+        return metadata is not null && !string.IsNullOrEmpty(((ContentTypeMetadateAttribute)metadata).FileExtension)
             ? ((ContentTypeMetadateAttribute)metadata).FileExtension
             : contentType.ToString().ToLowerInvariant();
     }
@@ -89,14 +89,14 @@ public static class ContentTypeExtensions
     {
         var metadata = GetMetadata(contentType);
 
-        return (metadata is not null) ? ((ContentTypeMetadateAttribute)metadata).IsText : true;
+        return metadata is not null ? ((ContentTypeMetadateAttribute)metadata).IsText : true;
     }
 
     public static bool IsBinary(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);
 
-        return (metadata is not null) ? ((ContentTypeMetadateAttribute)metadata).IsBinary : false;
+        return metadata is not null ? ((ContentTypeMetadateAttribute)metadata).IsBinary : false;
     }
 
     private static object GetMetadata(ContentType contentType)
@@ -104,10 +104,10 @@ public static class ContentTypeExtensions
         var type = contentType.GetType();
         var info = type.GetMember(contentType.ToString());
 
-        if ((info is not null) && (info.Length > 0))
+        if (info is not null && info.Length > 0)
         {
             var attrs = info[0].GetCustomAttributes(typeof(ContentTypeMetadateAttribute), false);
-            if ((attrs is not null) && (attrs.Length > 0))
+            if (attrs is not null && attrs.Length > 0)
             {
                 return attrs[0];
             }

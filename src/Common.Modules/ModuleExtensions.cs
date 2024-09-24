@@ -5,27 +5,28 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
+using AspNetCore.Builder;
+using AspNetCore.Hosting;
 using BridgingIT.DevKit.Common;
+using Configuration;
 using FluentValidation;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 
 public static class ModuleExtensions
 {
     private static List<IModule> modules;
 
-    public static IEnumerable<IModule> Modules { get => modules; }
+    public static IEnumerable<IModule> Modules => modules;
 
     public static string ServiceName { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
-    public static ModuleBuilderContext AddModules(this IServiceCollection services, IConfiguration configuration = null, IWebHostEnvironment environment = null, params Assembly[] assemblies)
+    public static ModuleBuilderContext AddModules(
+        this IServiceCollection services,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null,
+        params Assembly[] assemblies)
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
@@ -44,7 +45,12 @@ public static class ModuleExtensions
 
             if (module?.IsRegistered == false)
             {
-                Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+                Log.Logger.Information(
+                    "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
+                    ModuleConstants.LogKey,
+                    module.Name,
+                    module.Enabled,
+                    module.Priority);
                 services.AddSingleton(module);
                 services.AddSingleton(new ActivitySource(module.Name));
 
@@ -97,7 +103,12 @@ public static class ModuleExtensions
 
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information(
+                "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
+                ModuleConstants.LogKey,
+                module.Name,
+                module.Enabled,
+                module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -115,7 +126,12 @@ public static class ModuleExtensions
         var module = modules.SafeNull().FirstOrDefault(m => m.IsOfType(type));
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information(
+                "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
+                ModuleConstants.LogKey,
+                module.Name,
+                module.Enabled,
+                module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -126,7 +142,10 @@ public static class ModuleExtensions
         return context;
     }
 
-    public static IApplicationBuilder UseModules(this IApplicationBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public static IApplicationBuilder UseModules(
+        this IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         if (modules is null)
         {
@@ -135,7 +154,12 @@ public static class ModuleExtensions
 
         foreach (var module in modules.SafeNull()) // TODO: only load enabled modules
         {
-            Log.Logger.Information("{LogKey} use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information(
+                "{LogKey} use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
+                ModuleConstants.LogKey,
+                module.Name,
+                module.Enabled,
+                module.Priority);
             module.Use(app, configuration, environment);
         }
 
@@ -186,8 +210,7 @@ public static class ModuleExtensions
             return default;
         }
 
-        return services.Configure<TOptions, TValidator>(
-            configuration, module, validateOnStart);
+        return services.Configure<TOptions, TValidator>(configuration, module, validateOnStart);
     }
 
     private static IEnumerable<IModule> FindModules(params Assembly[] assemblies)
@@ -196,7 +219,9 @@ public static class ModuleExtensions
 
         if (modules is null)
         {
-            Log.Logger.Information("{LogKey} module discovery (type={ModuleType}) ", ModuleConstants.LogKey, typeof(IModule).Name);
+            Log.Logger.Information("{LogKey} module discovery (type={ModuleType}) ",
+                ModuleConstants.LogKey,
+                typeof(IModule).Name);
             logResult = true;
         }
 
@@ -205,15 +230,22 @@ public static class ModuleExtensions
             assemblies = AppDomain.CurrentDomain.GetAssemblies();
         }
 
-        modules ??= ReflectionHelper.FindTypes(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract, assemblies?.Distinct()?.ToArray())?
-            .Select(t => Factory.Create(t))?.Cast<IModule>()?
-            .OrderBy(m => m.Priority).ThenBy(m => m.Name)?.ToList();
+        modules ??= ReflectionHelper
+            .FindTypes(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract,
+                assemblies?.Distinct()?.ToArray())
+            ?.Select(t => Factory.Create(t))
+            ?.Cast<IModule>()
+            ?.OrderBy(m => m.Priority)
+            .ThenBy(m => m.Name)
+            ?.ToList();
 
         if (logResult)
         {
             foreach (var module in modules.SafeNull())
             {
-                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ", ModuleConstants.LogKey, module.Name);
+                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ",
+                    ModuleConstants.LogKey,
+                    module.Name);
             }
         }
 
@@ -237,26 +269,39 @@ public static class ModuleExtensions
 
         ActivitySource.AddActivityListener(new ActivityListener
         {
-            ActivityStarted = (a) =>
+            ActivityStarted = a =>
             {
                 if (string.IsNullOrWhiteSpace(a?.DisplayName))
                 {
                     return;
                 }
 
-                Log.Logger.Verbose("{LogKey} started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status);
+                Log.Logger.Verbose(
+                    "{LogKey} started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})",
+                    "TRC",
+                    a.OperationName,
+                    a.DisplayName,
+                    a.Source.Name,
+                    a.Status);
             },
-            ActivityStopped = (a) =>
+            ActivityStopped = a =>
             {
                 if (string.IsNullOrWhiteSpace(a?.DisplayName))
                 {
                     return;
                 }
 
-                Log.Logger.Verbose("{LogKey} finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status, a.Duration.TotalMilliseconds);
+                Log.Logger.Verbose(
+                    "{LogKey} finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms",
+                    "TRC",
+                    a.OperationName,
+                    a.DisplayName,
+                    a.Source.Name,
+                    a.Status,
+                    a.Duration.TotalMilliseconds);
             },
             ShouldListenTo = s => true,
-            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData
         });
     }
 }

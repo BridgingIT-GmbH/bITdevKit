@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class AdAccountShouldBePartOfDomain(string value) : IDomainRule
 {
@@ -14,7 +14,9 @@ public class AdAccountShouldBePartOfDomain(string value) : IDomainRule
     public string Message => "AD Account should be part of a domain";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {

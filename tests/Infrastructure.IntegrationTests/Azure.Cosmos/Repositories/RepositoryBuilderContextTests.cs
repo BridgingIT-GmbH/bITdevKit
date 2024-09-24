@@ -5,27 +5,26 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure;
 
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Infrastructure.Azure;
+using Domain.Repositories;
+using Infrastructure.Azure;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR();
-            s.AddCosmosClient(o => o
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR();
+        s.AddCosmosClient(o => o
                 .UseConnectionString("AccountEndpoint=https://dummy.documents.azure.com:443/;AccountKey=accountkey==;"))
-                .WithHealthChecks();
+            .WithHealthChecks();
 
-            s.AddCosmosSqlRepository<PersonStub>(o => o.PartitionKey(e => e.LastName))
+        s.AddCosmosSqlRepository<PersonStub>(o => o.PartitionKey(e => e.LastName))
             //s.AddCosmosSqlRepository<PersonStub>(sp => new CosmosSqlProvider<PersonStub>(o => o.Client(sp.GetRequiredService<CosmosClient>()).PartitionKey(e => e.Nationality)));
-                .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
-                .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()
-                .WithBehavior<RepositoryDomainEventBehavior<PersonStub>>()
-                .WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
-        })
+            .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
+            .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()
+            .WithBehavior<RepositoryDomainEventBehavior<PersonStub>>()
+            .WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
+    })
 {
     [Fact]
     public void GetCosmosClient_WhenRequested_ShouldNotBeNull()

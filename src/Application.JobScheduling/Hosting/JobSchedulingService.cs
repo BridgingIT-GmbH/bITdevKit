@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -34,7 +30,8 @@ public class JobSchedulingService : BackgroundService
         EnsureArg.IsNotNull(schedulerFactory, nameof(schedulerFactory));
         EnsureArg.IsNotNull(jobFactory, nameof(jobFactory));
 
-        this.logger = loggerFactory?.CreateLogger<JobSchedulingService>() ?? NullLoggerFactory.Instance.CreateLogger<JobSchedulingService>();
+        this.logger = loggerFactory?.CreateLogger<JobSchedulingService>() ??
+            NullLoggerFactory.Instance.CreateLogger<JobSchedulingService>();
         this.schedulerFactory = schedulerFactory;
         this.jobFactory = jobFactory;
         this.jobSchedules = jobSchedules;
@@ -81,13 +78,17 @@ public class JobSchedulingService : BackgroundService
                 var trigger = CreateTrigger(jobSchedule);
                 var jobTypeName = jobDetail.JobType.FullName;
 
-                if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext()) // trigger could have been changed (cron)
+                if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken)
+                        .AnyContext()) // trigger could have been changed (cron)
                 {
                     var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
                     if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
                     {
                         await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                        this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                        this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})",
+                            Constants.LogKey,
+                            jobTypeName,
+                            trigger.Description);
                     }
                 }
 
@@ -95,17 +96,27 @@ public class JobSchedulingService : BackgroundService
                 {
                     try
                     {
-                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})",
+                            Constants.LogKey,
+                            jobTypeName,
+                            trigger.Description);
                         await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
                     }
                     catch (ObjectAlreadyExistsException ex)
                     {
-                        this.logger.LogError(ex, "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})", Constants.LogKey, ex.Message, jobTypeName);
+                        this.logger.LogError(ex,
+                            "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})",
+                            Constants.LogKey,
+                            ex.Message,
+                            jobTypeName);
                     }
                 }
                 else
                 {
-                    this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                    this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})",
+                        Constants.LogKey,
+                        jobTypeName,
+                        trigger.Description);
                 }
             }
 
@@ -114,7 +125,10 @@ public class JobSchedulingService : BackgroundService
         }
         catch (SchedulerException ex)
         {
-            this.logger.LogError(ex, "{LogKey} scheduling service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex,
+                "{LogKey} scheduling service failed: {ErrorMessage}",
+                Constants.LogKey,
+                ex.Message);
         }
     }
 
@@ -133,7 +147,7 @@ public class JobSchedulingService : BackgroundService
             .WithIdentity(schedule.JobType.FullName)
             .UsingJobData("JobId", GuidGenerator.CreateSequential().ToString("N"))
             .WithDescription(schedule.JobType.Name)
-            .StoreDurably(true)
+            .StoreDurably()
             .Build();
     }
 }

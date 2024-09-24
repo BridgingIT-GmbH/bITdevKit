@@ -5,18 +5,19 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.IO;
 using System.Reflection;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+// TODO: get rid of Newtonsoft dependency
 
 public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerializer, ITextSerializer
 {
-    private readonly JsonSerializer serializer = JsonSerializer.Create(settings ?? DefaultJsonNetSerializerSettings.Create());
+    private readonly JsonSerializer serializer =
+        JsonSerializer.Create(settings ?? DefaultJsonNetSerializerSettings.Create());
 
     /// <summary>
-    /// Serializes the specified value.
+    ///     Serializes the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="output">The output.</param>
@@ -32,8 +33,7 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
             return;
         }
 
-        using var writer = new JsonTextWriter(
-            new StreamWriter(output, Encoding.UTF8, 1024, true));
+        using var writer = new JsonTextWriter(new StreamWriter(output, Encoding.UTF8, 1024, true));
         writer.AutoCompleteOnClose = false;
         writer.CloseOutput = false;
         this.serializer.Serialize(writer, value, value.GetType());
@@ -41,7 +41,7 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="type">The type.</param>
@@ -68,7 +68,7 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     public T Deserialize<T>(Stream input)

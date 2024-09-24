@@ -4,9 +4,10 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Entities;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Domain.Model;
+
 using System.Linq.Expressions;
+using Domain.Model;
+using Domain.Specifications;
 
 public class EntityNotDeletedSpecification<TEntity> : Specification<TEntity>
     where TEntity : class, IEntity, IAuditable

@@ -5,38 +5,26 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
+using Model;
+using Specifications;
 
 [Obsolete("Use GenericRepositoryIncludePathBehavior instead")]
 public class GenericRepositoryIncludePathDecorator<TEntity> : RepositoryIncludePathBehavior<TEntity>
     where TEntity : class, IEntity
 {
     public GenericRepositoryIncludePathDecorator(string path, IGenericRepository<TEntity> inner)
-        : base(path, inner)
-    {
-    }
+        : base(path, inner) { }
 
     public GenericRepositoryIncludePathDecorator(IEnumerable<string> paths, IGenericRepository<TEntity> inner)
-        : base(paths, inner)
-    {
-    }
+        : base(paths, inner) { }
 }
 
 public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    public RepositoryIncludePathBehavior(
-        string path,
-        IGenericRepository<TEntity> inner)
+    public RepositoryIncludePathBehavior(string path, IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNullOrEmpty(path, nameof(path));
 
@@ -44,9 +32,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         this.Inner = inner;
     }
 
-    public RepositoryIncludePathBehavior(
-        IEnumerable<string> paths,
-        IGenericRepository<TEntity> inner)
+    public RepositoryIncludePathBehavior(IEnumerable<string> paths, IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(paths, nameof(paths));
         EnsureArg.IsNotNull(inner, nameof(inner));
@@ -96,9 +82,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
@@ -113,7 +97,8 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
-        IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
@@ -121,7 +106,8 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
-        IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
@@ -147,10 +133,10 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
@@ -166,7 +152,9 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
@@ -202,8 +190,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
             options.Includes = new List<IncludeOption<TEntity>>();
         }
 
-        options.Includes = options.Includes.InsertRange(
-            this.Paths.Select(e => new IncludeOption<TEntity>(e)));
+        options.Includes = options.Includes.InsertRange(this.Paths.Select(e => new IncludeOption<TEntity>(e)));
 
         return options;
     }

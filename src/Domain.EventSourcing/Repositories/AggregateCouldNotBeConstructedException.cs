@@ -5,24 +5,17 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Repositories;
 
-using System;
-
 /// <summary>
-/// Ein Aggregate benötigt zwingend einen Konstruktor mit dem Parameter Guid, an zweiter Stelle vom Typ IEnumerable&lt;IAggregateEvent&gt; savedEvents.
+///     Ein Aggregate benötigt zwingend einen Konstruktor mit dem Parameter Guid, an zweiter Stelle vom Typ IEnumerable&lt;
+///     IAggregateEvent&gt; savedEvents.
 /// </summary>
 public class AggregateCouldNotBeConstructedException : Exception
 {
-    public AggregateCouldNotBeConstructedException()
-    {
-    }
+    public AggregateCouldNotBeConstructedException() { }
 
     public AggregateCouldNotBeConstructedException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
     public AggregateCouldNotBeConstructedException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Azure.Cosmos;
 
-public class CosmosSqlProviderOptionsBuilder<T> :
-    OptionsBuilderBase<CosmosSqlProviderOptions<T>, CosmosSqlProviderOptionsBuilder<T>>
+public class CosmosSqlProviderOptionsBuilder<T>
+    : OptionsBuilderBase<CosmosSqlProviderOptions<T>, CosmosSqlProviderOptionsBuilder<T>>
 {
     public CosmosSqlProviderOptionsBuilder<T> Client(CosmosClient client)
     {
@@ -93,7 +92,9 @@ public class CosmosSqlProviderOptionsBuilder<T> :
         return this;
     }
 
-    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(Expression<Func<T, string>> partitionKeyExpression, bool partitionKeyCamelCase = true)
+    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
+        Expression<Func<T, string>> partitionKeyExpression,
+        bool partitionKeyCamelCase = true)
     {
         this.Target.PartitionKeyStringExpression = partitionKeyExpression.Compile();
         var partitionKey = partitionKeyExpression.ToExpressionString().Replace(".", "/");
@@ -107,7 +108,9 @@ public class CosmosSqlProviderOptionsBuilder<T> :
         return this;
     }
 
-    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(Expression<Func<T, bool>> partitionKeyExpression, bool partitionKeyCamelCase = true)
+    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
+        Expression<Func<T, bool>> partitionKeyExpression,
+        bool partitionKeyCamelCase = true)
     {
         this.Target.PartitionKeyBoolExpression = partitionKeyExpression.Compile();
         var partitionKey = partitionKeyExpression.ToExpressionString().Replace(".", "/");
@@ -121,7 +124,9 @@ public class CosmosSqlProviderOptionsBuilder<T> :
         return this;
     }
 
-    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(Expression<Func<T, double>> partitionKeyExpression, bool partitionKeyCamelCase = true)
+    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
+        Expression<Func<T, double>> partitionKeyExpression,
+        bool partitionKeyCamelCase = true)
     {
         this.Target.PartitionKeyDoubleExpression = partitionKeyExpression.Compile();
         var partitionKey = partitionKeyExpression.ToExpressionString().Replace(".", "/");
@@ -135,7 +140,9 @@ public class CosmosSqlProviderOptionsBuilder<T> :
         return this;
     }
 
-    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(Expression<Func<T, Guid>> partitionKeyExpression, bool partitionKeyCamelCase = true)
+    public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
+        Expression<Func<T, Guid>> partitionKeyExpression,
+        bool partitionKeyCamelCase = true)
     {
         this.Target.PartitionKeyGuidExpression = partitionKeyExpression.Compile();
         var partitionKey = partitionKeyExpression.ToExpressionString().Replace(".", "/");

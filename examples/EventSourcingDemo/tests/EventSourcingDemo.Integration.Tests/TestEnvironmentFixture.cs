@@ -5,31 +5,28 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests;
 
-using BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure.Repositories;
-using Common;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Networks;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.Azurite;
 using Testcontainers.MsSql;
-using Xunit.Abstractions;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
-    private ITestOutputHelper output = null;
     private IServiceProvider serviceProvider;
 
     public TestEnvironmentFixture()
     {
-        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.output)));
+        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.Output)));
 
         this.Network = new NetworkBuilder()
             .WithName(this.NetworkName)
             .Build();
 
         this.SqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
@@ -38,7 +35,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public string NetworkName => "bit_devkit_eventsourcing_demo";
 
@@ -63,7 +60,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public TestEnvironmentFixture WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
@@ -90,10 +87,10 @@ public class TestEnvironmentFixture : IAsyncLifetime
     {
         var optionsBuilder = new DbContextOptionsBuilder<EventSourcingDemoDbContext>();
 
-        if (this.output is not null)
+        if (this.Output is not null)
         {
             optionsBuilder = new DbContextOptionsBuilder<EventSourcingDemoDbContext>()
-                .LogTo(this.output.WriteLine);
+                .LogTo(this.Output.WriteLine);
         }
 
         optionsBuilder.UseSqlServer(this.SqlConnectionString);

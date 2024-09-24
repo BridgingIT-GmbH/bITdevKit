@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 using Quartz;
 
-public class ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
+public class ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory)
+    : JobSchedulingBehaviorBase(loggerFactory)
 {
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
@@ -20,11 +21,9 @@ public class ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory) :
         {
             // https://github.com/Polly-Contrib/Simmy#Inject-exception
             var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(options.Fault ?? new ChaosException())
-                    .InjectionRate(options.InjectionRate)
-                    .Enabled());
+                with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
 
-            await policy.Execute(async (context) => await next().AnyContext(), context.CancellationToken);
+            await policy.Execute(async context => await next().AnyContext(), context.CancellationToken);
         }
         else
         {

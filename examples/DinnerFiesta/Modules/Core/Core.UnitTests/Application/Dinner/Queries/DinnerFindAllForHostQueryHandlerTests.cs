@@ -5,17 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Shouldly;
-using Xunit;
 
 public class DinnerFindAllForHostQueryHandlerTests
 {
@@ -28,10 +22,10 @@ public class DinnerFindAllForHostQueryHandlerTests
         var hostId = HostId.Create();
         var dinners = Stubs.Dinners(ticks).Take(2);
         var repository = Substitute.For<IGenericRepository<Dinner>>();
-        repository.FindAllAsync(
-            Arg.Any<ISpecification<Dinner>>(),
-            Arg.Any<IFindOptions<Dinner>>(),
-            Arg.Any<CancellationToken>()).Returns(dinners.AsEnumerable());
+        repository.FindAllAsync(Arg.Any<ISpecification<Dinner>>(),
+                Arg.Any<IFindOptions<Dinner>>(),
+                Arg.Any<CancellationToken>())
+            .Returns(dinners.AsEnumerable());
         var query = new DinnerFindAllForHostQuery(hostId.ToString());
 
         // Act

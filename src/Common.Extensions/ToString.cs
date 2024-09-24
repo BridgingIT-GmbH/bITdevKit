@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Diagnostics;
 
 public static partial class Extensions
@@ -13,15 +12,12 @@ public static partial class Extensions
     [DebuggerStepThrough]
     public static string ToString<T>(this IEnumerable<T> source, string separator)
     {
-        if (source.IsNullOrEmpty())
-        {
-            return string.Empty;
-        }
-
-        return string.Join(separator, source);
+        return source.IsNullOrEmpty() ? string.Empty : string.Join(separator, source);
     }
 
     [DebuggerStepThrough]
     public static string ToString<T>(this IEnumerable<T> source, char seperator)
-        => ToString(source, seperator.ToString());
+    {
+        return ToString(source, seperator.ToString());
+    }
 }

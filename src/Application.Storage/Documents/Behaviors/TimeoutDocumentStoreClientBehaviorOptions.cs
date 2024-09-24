@@ -7,5 +7,5 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 public class TimeoutDocumentStoreClientBehaviorOptions
 {
-    public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 0, 30);
+    public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

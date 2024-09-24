@@ -7,10 +7,10 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Caching.Distributed;
+using Configuration;
+using Extensions;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -22,11 +22,11 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ?? new DocumentStoreCacheProviderConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ??
+            new DocumentStoreCacheProviderConfiguration();
 
         context.Services.TryAddScoped<ICacheProvider>(sp =>
-            new DocumentStoreCacheProvider(
-                sp.GetRequiredService<ILoggerFactory>(),
+            new DocumentStoreCacheProvider(sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<IDistributedCache>(),
                 sp.GetRequiredService<IDocumentStoreClient<CacheDocument>>(),
                 configuration: configuration));

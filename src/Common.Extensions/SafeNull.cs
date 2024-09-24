@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 
 public static partial class Extensions
 {
     /// <summary>
-    /// Converts a null list to an empty list. Also clears out possible 'null' items
-    /// Avoids null ref exceptions.
+    ///     Converts a null list to an empty list. Also clears out possible 'null' items
+    ///     Avoids null ref exceptions.
     /// </summary>
     /// <typeparam name="TSource">the source.</typeparam>
     /// <param name="source">the source collection.</param>
@@ -32,8 +30,8 @@ public static partial class Extensions
     }
 
     /// <summary>
-    /// Converts an null list to an empty list. Also clears out possible 'null' items
-    /// Avoids null ref exceptions.
+    ///     Converts an null list to an empty list. Also clears out possible 'null' items
+    ///     Avoids null ref exceptions.
     /// </summary>
     /// <typeparam name="TSource">the source.</typeparam>
     /// <param name="source">the source collection.</param>
@@ -58,7 +56,7 @@ public static partial class Extensions
     //}
 
     /// <summary>
-    /// Converts an null dictionary to an empty dictionary. avoids null ref exceptions.
+    ///     Converts an null dictionary to an empty dictionary. avoids null ref exceptions.
     /// </summary>
     /// <typeparam name="TKey">the source key type.</typeparam>
     /// <typeparam name="TValue">the source value type.</typeparam>

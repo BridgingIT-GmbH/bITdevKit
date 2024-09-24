@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 
 public class ResilientTransaction
@@ -22,10 +20,16 @@ public class ResilientTransaction
         this.context = context;
     }
 
-    public static ResilientTransaction Create(DbContext dbContext) => new(dbContext);
+    public static ResilientTransaction Create(DbContext dbContext)
+    {
+        return new ResilientTransaction(dbContext);
+    }
 
     [Obsolete("Please use ResilientTransaction.For() from now on")]
-    public static ResilientTransaction New(DbContext dbContext) => new(dbContext);
+    public static ResilientTransaction New(DbContext dbContext)
+    {
+        return new ResilientTransaction(dbContext);
+    }
 
     public async Task ExecuteAsync(Func<Task> action)
     {
@@ -38,19 +42,20 @@ public class ResilientTransaction
             // https://docs.microsoft.com/ef/core/miscellaneous/connection-resiliency
             var strategy = this.context.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
-            {
-                using var transaction = this.context.Database.BeginTransaction();
-                try
                 {
-                    await action().AnyContext();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync().AnyContext();
-                    throw;
-                }
-            }).AnyContext();
+                    using var transaction = this.context.Database.BeginTransaction();
+                    try
+                    {
+                        await action().AnyContext();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync().AnyContext();
+                        throw;
+                    }
+                })
+                .AnyContext();
         }
         else
         {
@@ -70,24 +75,23 @@ public class ResilientTransaction
             // https://docs.microsoft.com/ef/core/miscellaneous/connection-resiliency
             var strategy = this.context.Database.CreateExecutionStrategy();
             return await strategy.ExecuteAsync(async () =>
-            {
-                using var transaction = this.context.Database.BeginTransaction();
-                try
                 {
-                    var result = await action().AnyContext();
-                    transaction.Commit();
-                    return result;
-                }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync().AnyContext();
-                    throw;
-                }
-            }).AnyContext();
+                    using var transaction = this.context.Database.BeginTransaction();
+                    try
+                    {
+                        var result = await action().AnyContext();
+                        transaction.Commit();
+                        return result;
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync().AnyContext();
+                        throw;
+                    }
+                })
+                .AnyContext();
         }
-        else
-        {
-            return await action().AnyContext();
-        }
+
+        return await action().AnyContext();
     }
 }

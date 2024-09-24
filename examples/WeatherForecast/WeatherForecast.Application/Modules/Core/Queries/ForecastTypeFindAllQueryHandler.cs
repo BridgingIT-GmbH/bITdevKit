@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class ForecastTypeFindAllQueryHandler : QueryHandlerBase<ForecastTypeFindAllQuery, IEnumerable<ForecastType>>
@@ -33,12 +29,9 @@ public class ForecastTypeFindAllQueryHandler : QueryHandlerBase<ForecastTypeFind
         ForecastTypeFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var forecastTypes = await this.forecastTypeRepository.FindAllAsync(
-            cancellationToken: cancellationToken).AnyContext();
+        var forecastTypes = await this.forecastTypeRepository.FindAllAsync(cancellationToken: cancellationToken)
+            .AnyContext();
 
-        return new QueryResponse<IEnumerable<ForecastType>>()
-        {
-            Result = forecastTypes
-        };
+        return new QueryResponse<IEnumerable<ForecastType>> { Result = forecastTypes };
     }
 }

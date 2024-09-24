@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Linq;
-
 public static partial class Extensions
 {
-    public static IQueryable<TSource> SkipIf<TSource>(
-        this IQueryable<TSource> source, int? skip)
-        => skip > 0 ? source.Skip(skip.Value) : source;
+    public static IQueryable<TSource> SkipIf<TSource>(this IQueryable<TSource> source, int? skip)
+    {
+        return skip > 0 ? source.Skip(skip.Value) : source;
+    }
 
     //public static IEnumerable<T> SkipIf<T>(
     //    this IEnumerable<T> source, int? skip)

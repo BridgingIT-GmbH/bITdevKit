@@ -10,28 +10,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="BridgingIT.DevKit.Common" />
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <Using Include="BridgingIT.DevKit.Common"/>
+    <Using Include="NSubstitute"/>
+    <Using Include="Shouldly"/>
+    <Using Include="Xunit"/>
+    <Using Include="Xunit.Abstractions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions.Web" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="FluentAssertions.Web"/>
+    <PackageReference Include="NSubstitute"/>
+    <PackageReference Include="BenchmarkDotNet"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Testcontainers.Azurite" />
-    <PackageReference Include="Testcontainers.MsSql" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="Testcontainers.Azurite"/>
+    <PackageReference Include="Testcontainers.MsSql"/>
+    <PackageReference Include="xunit"/>
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -43,11 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\..\EventSourcingDemo.Application\EventSourcingDemo.Application.csproj" />
-    <ProjectReference Include="..\..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj" />
-    <ProjectReference Include="..\..\EventSourcingDemo.Infrastructure\EventSourcingDemo.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\EventSourcingDemo.Presentation.Web\EventSourcingDemo.Presentation.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
+    <ProjectReference Include="..\..\EventSourcingDemo.Application\EventSourcingDemo.Application.csproj"/>
+    <ProjectReference Include="..\..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj"/>
+    <ProjectReference Include="..\..\EventSourcingDemo.Infrastructure\EventSourcingDemo.Infrastructure.csproj"/>
+    <ProjectReference Include="..\..\EventSourcingDemo.Presentation.Web\EventSourcingDemo.Presentation.Web.csproj"/>
   </ItemGroup>
 
 </Project>

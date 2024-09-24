@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
-using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+//using Microsoft.AspNetCore.Authorization;
 
 //[Authorize]
 public class SignalRHub : Hub

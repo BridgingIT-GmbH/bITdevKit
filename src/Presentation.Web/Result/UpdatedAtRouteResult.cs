@@ -5,17 +5,13 @@
 
 namespace Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Infrastructure;
 
 public class UpdatedAtRouteResult : CreatedAtRouteResult
 {
     public UpdatedAtRouteResult(object routeValues, [ActionResultObjectValue] object value)
-        : base(routeValues, value)
-    {
-    }
+        : base(routeValues, value) { }
 
     public UpdatedAtRouteResult(string routeName, object routeValues, [ActionResultObjectValue] object value)
-        : base(routeName, routeValues, value)
-    {
-    }
+        : base(routeName, routeValues, value) { }
 }

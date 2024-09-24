@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Domain;
 
 public class MenuTests
 {
@@ -41,8 +40,7 @@ public class MenuTests
         var description = "A test menu";
         var sections = new List<MenuSection>
         {
-            MenuSection.Create("Appetizers", null),
-            MenuSection.Create("Entrees", null)
+            MenuSection.Create("Appetizers", null), MenuSection.Create("Entrees", null)
         };
 
         // Act

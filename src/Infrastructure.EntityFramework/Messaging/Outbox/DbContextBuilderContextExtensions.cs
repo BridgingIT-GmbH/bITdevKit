@@ -8,11 +8,13 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+using EntityFrameworkCore;
 
 public static partial class DbContextBuilderContextExtensions
 {
-    public static DbContextBuilderContext<TContext> WithOutboxMessageService<TContext>(this DbContextBuilderContext<TContext> context, Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
+    public static DbContextBuilderContext<TContext> WithOutboxMessageService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
         where TContext : DbContext, IOutboxMessageContext
     {
         context.Services.AddOutboxMessageService<TContext>(optionsBuilder);
@@ -20,7 +22,9 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
-    public static DbContextBuilderContext<TContext> WithOutboxMessageService<TContext>(this DbContextBuilderContext<TContext> context, OutboxMessageOptions options = null)
+    public static DbContextBuilderContext<TContext> WithOutboxMessageService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        OutboxMessageOptions options = null)
         where TContext : DbContext, IOutboxMessageContext
     {
         context.Services.AddOutboxMessageService<TContext>(options);

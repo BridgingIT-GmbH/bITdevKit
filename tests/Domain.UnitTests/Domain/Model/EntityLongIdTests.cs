@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class EntityLongIdTests
@@ -136,11 +136,7 @@ public class EntityLongIdTests
         Assert.False(entity1.Equals(entity2)); // because types are different
     }
 
-    private class StubEntity : Entity<long>
-    {
-    }
+    private class StubEntity : Entity<long> { }
 
-    private class StubEntityProxy : StubEntity
-    {
-    }
+    private class StubEntityProxy : StubEntity { }
 }

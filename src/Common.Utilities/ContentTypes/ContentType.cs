@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common;
+
 public enum ContentType // https://mimetype.io/all-types
 {
     [ContentTypeMetadate(MimeType = "application/x-authorware-bin", IsBinary = true)]
@@ -507,7 +508,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-word.document.macroenabled.12", IsBinary = true)]
     DOCM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        IsBinary = true)]
     DOCX,
 
     [ContentTypeMetadate(MimeType = "application/msword", IsBinary = true)]
@@ -516,7 +518,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-word.template.macroenabled.12", IsBinary = true)]
     DOTM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.template", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+        IsBinary = true)]
     DOTX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.osgi.dp", IsBinary = true)]
@@ -1580,6 +1583,7 @@ public enum ContentType // https://mimetype.io/all-types
 
     [ContentTypeMetadate(MimeType = "application/x-tgif", IsBinary = true)]
     OBJ,
+
     [ContentTypeMetadate(MimeType = "application/oda", IsBinary = true)]
     ODA,
 
@@ -1829,7 +1833,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint.template.macroenabled.12", IsBinary = true)]
     POTM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.template", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.template",
+        IsBinary = true)]
     POTX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint.addin.macroenabled.12", IsBinary = true)]
@@ -1847,7 +1852,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint.slideshow.macroenabled.12", IsBinary = true)]
     PPSM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.slideshow", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+        IsBinary = true)]
     PPSX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint", IsBinary = true)]
@@ -1856,7 +1862,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint.presentation.macroenabled.12", IsBinary = true)]
     PPTM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        IsBinary = true)]
     PPTX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.palm", IsBinary = true)]
@@ -2183,7 +2190,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-powerpoint.slide.macroenabled.12", IsBinary = true)]
     SLDM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.slide", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.presentationml.slide",
+        IsBinary = true)]
     SLDX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.epson.salt", IsBinary = true)]
@@ -2858,7 +2866,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-excel.sheet.macroenabled.12", IsBinary = true)]
     XLSM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        IsBinary = true)]
     XLSX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.ms-excel", IsBinary = true)]
@@ -2867,7 +2876,8 @@ public enum ContentType // https://mimetype.io/all-types
     [ContentTypeMetadate(MimeType = "application/vnd.ms-excel.template.macroenabled.12", IsBinary = true)]
     XLTM,
 
-    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.template", IsBinary = true)]
+    [ContentTypeMetadate(MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+        IsBinary = true)]
     XLTX,
 
     [ContentTypeMetadate(MimeType = "application/vnd.ms-excel", IsBinary = true)]

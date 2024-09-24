@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using BridgingIT.DevKit.Common.Options;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common.Options;
+using Domain.Repositories;
 
 public interface ILiteDbRepositoryOptions : IRepositoryOptions, ILoggerOptions
 {

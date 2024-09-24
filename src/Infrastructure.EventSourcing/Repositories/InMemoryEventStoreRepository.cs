@@ -5,17 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using EnsureThat;
+using Common;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Registration;
+using Domain.EventSourcing.Store;
 
 public class InMemoryEventStoreRepository : IEventStoreRepository
 {
@@ -24,9 +17,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
     private readonly ISerializer serializer;
     private readonly IEventStoreAggregateRegistration aggregateRegistration;
 
-    public InMemoryEventStoreRepository(
-        ISerializer serializer,
-        IEventStoreAggregateRegistration aggregateRegistration)
+    public InMemoryEventStoreRepository(ISerializer serializer, IEventStoreAggregateRegistration aggregateRegistration)
     {
         EnsureArg.IsNotNull(serializer, nameof(serializer));
         EnsureArg.IsNotNull(aggregateRegistration, nameof(aggregateRegistration));
@@ -36,9 +27,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
     }
 
     public InMemoryEventStoreRepository()
-        : this(new JsonNetSerializer(), new EventStoreAggregateRegistration())
-    {
-    }
+        : this(new JsonNetSerializer(), new EventStoreAggregateRegistration()) { }
 
     public virtual Task AddAsync<TAggregate>(IAggregateEvent @event, CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
@@ -58,7 +47,9 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
         return Task.CompletedTask;
     }
 
-    public async Task<IAggregateEvent[]> GetEventsAsync<TAggregate>(Guid aggregateId, CancellationToken cancellationToken)
+    public async Task<IAggregateEvent[]> GetEventsAsync<TAggregate>(
+        Guid aggregateId,
+        CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
     {
         var list = this.events[aggregateId].EventBlobs;
@@ -90,8 +81,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
         var name = this.aggregateRegistration.GetImmutableName<TAggregate>();
 
         return Task.Run(() =>
-            this.events.Values.Where(v => v.AggregateType == name)
-                .Select(ev => ev.AggregateId).Distinct().ToArray());
+            this.events.Values.Where(v => v.AggregateType == name).Select(ev => ev.AggregateId).Distinct().ToArray());
     }
 
     public Task SaveAsync()

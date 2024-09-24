@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using global::Azure.Data.Tables;
 
-public class AzureTableServiceOptionsBuilder :
-    OptionsBuilderBase<AzureTableServiceOptions, AzureTableServiceOptionsBuilder>
+public class AzureTableServiceOptionsBuilder
+    : OptionsBuilderBase<AzureTableServiceOptions, AzureTableServiceOptionsBuilder>
 {
     public AzureTableServiceOptionsBuilder UseConnectionString(string connectionString)
     {

@@ -5,18 +5,19 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 using Microsoft.Extensions.Localization;
 
 public static class Check
 {
     /// <summary>
-    /// Checks several entity command rules, throws when not satisfied
+    ///     Checks several entity command rules, throws when not satisfied
     /// </summary>
-    public static async Task ThrowAsync<TEntity>(IEnumerable<IEntityCommandRule<TEntity>> rules, TEntity entity, IStringLocalizer localizer = null, Action satisfied = null)
+    public static async Task ThrowAsync<TEntity>(
+        IEnumerable<IEntityCommandRule<TEntity>> rules,
+        TEntity entity,
+        IStringLocalizer localizer = null,
+        Action satisfied = null)
         where TEntity : class, IEntity
     {
         if (rules?.Any() == true)
@@ -30,7 +31,11 @@ public static class Check
         satisfied?.Invoke();
     }
 
-    public static async Task<TResult> ThrowAsync<TEntity, TResult>(IEnumerable<IEntityCommandRule<TEntity>> rules, TEntity entity, IStringLocalizer localizer = null, Func<TResult> satisfied = null)
+    public static async Task<TResult> ThrowAsync<TEntity, TResult>(
+        IEnumerable<IEntityCommandRule<TEntity>> rules,
+        TEntity entity,
+        IStringLocalizer localizer = null,
+        Func<TResult> satisfied = null)
         where TEntity : class, IEntity
     {
         if (rules?.Any() == true)
@@ -45,9 +50,13 @@ public static class Check
     }
 
     /// <summary>
-    /// Checks a entity command rule, throws when not satisfied
+    ///     Checks a entity command rule, throws when not satisfied
     /// </summary>
-    public static async Task ThrowAsync<TEntity>(IEntityCommandRule<TEntity> rule, TEntity entity, IStringLocalizer localizer = null, Action satisfied = null)
+    public static async Task ThrowAsync<TEntity>(
+        IEntityCommandRule<TEntity> rule,
+        TEntity entity,
+        IStringLocalizer localizer = null,
+        Action satisfied = null)
         where TEntity : class, IEntity
     {
         if (rule is null)
@@ -57,16 +66,21 @@ public static class Check
 
         if (!await rule.IsSatisfiedAsync(entity))
         {
-            throw new EntityCommandRuleNotSatisfied($"{rule.GetType().Name}: {(localizer != null ? localizer[rule.Message] : rule.Message)}");
+            throw new EntityCommandRuleNotSatisfied(
+                $"{rule.GetType().Name}: {(localizer != null ? localizer[rule.Message] : rule.Message)}");
         }
 
         satisfied?.Invoke();
     }
 
     /// <summary>
-    /// Checks a entity command rule, throws when not satisfied
+    ///     Checks a entity command rule, throws when not satisfied
     /// </summary>
-    public static async Task<TResult> ThrowAsync<TEntity, TResult>(IEntityCommandRule<TEntity> rule, TEntity entity, IStringLocalizer localizer = null, Func<TResult> satisfied = null)
+    public static async Task<TResult> ThrowAsync<TEntity, TResult>(
+        IEntityCommandRule<TEntity> rule,
+        TEntity entity,
+        IStringLocalizer localizer = null,
+        Func<TResult> satisfied = null)
         where TEntity : class, IEntity
     {
         if (rule is null)
@@ -76,14 +90,15 @@ public static class Check
 
         if (!await rule.IsSatisfiedAsync(entity))
         {
-            throw new EntityCommandRuleNotSatisfied($"{rule.GetType().Name}: {(localizer != null ? localizer[rule.Message] : rule.Message)}");
+            throw new EntityCommandRuleNotSatisfied(
+                $"{rule.GetType().Name}: {(localizer != null ? localizer[rule.Message] : rule.Message)}");
         }
 
         return satisfied != null ? satisfied.Invoke() : default;
     }
 
     /// <summary>
-    /// Checks several entity command rules, returns satisfied or not
+    ///     Checks several entity command rules, returns satisfied or not
     /// </summary>
     public static async Task<bool> ReturnAsync<TEntity>(IEnumerable<IEntityCommandRule<TEntity>> rules, TEntity entity)
         where TEntity : class, IEntity
@@ -103,7 +118,7 @@ public static class Check
     }
 
     /// <summary>
-    /// Checks a entity command rule, returns satisfied or not
+    ///     Checks a entity command rule, returns satisfied or not
     /// </summary>
     public static async Task<bool> ReturnAsync<TEntity>(IEntityCommandRule<TEntity> rule, TEntity entity)
         where TEntity : class, IEntity

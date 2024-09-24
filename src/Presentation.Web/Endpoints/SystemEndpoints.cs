@@ -9,8 +9,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
+using Application.Queries;
+using Common;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +29,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
             return;
         }
 
-        var group = app.MapGroup(this.options.GroupPrefix)
-            .WithTags(this.options.GroupTag);
+        var group = app.MapGroup(this.options.GroupPrefix).WithTags(this.options.GroupTag);
 
         if (this.options.RequireAuthorization)
         {
@@ -38,15 +37,15 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         }
 
         group.MapGet(string.Empty, this.GetSystem)
-                //.AllowAnonymous()
-                .Produces<Dictionary<string, string>>((int)HttpStatusCode.OK)
-                .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
+            //.AllowAnonymous()
+            .Produces<Dictionary<string, string>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
                 //.AllowAnonymous()
-                .Produces<string>((int)HttpStatusCode.OK)
+                .Produces<string>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
 
@@ -54,7 +53,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         {
             group.MapGet("info", this.GetInfo)
                 //.AllowAnonymous()
-                .Produces<SystemInfo>((int)HttpStatusCode.OK)
+                .Produces<SystemInfo>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
 
@@ -62,7 +61,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         {
             group.MapGet("modules", this.GetModules)
                 //.AllowAnonymous()
-                .Produces<IEnumerable<IModule>>((int)HttpStatusCode.OK)
+                .Produces<IEnumerable<IModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -99,20 +98,31 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
     {
         var result = new SystemInfo
         {
-            Request = new Dictionary<string, object>
-            {
-                ["isLocal"] = IsLocal(httpContext?.Request),
-                ["host"] = Dns.GetHostName(),
-                ["ip"] = (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)).Select(i => i.ToString()).Where(i => i.Contains('.')),
-            },
+            Request =
+                new Dictionary<string, object>
+                {
+                    ["isLocal"] = IsLocal(httpContext?.Request),
+                    ["host"] = Dns.GetHostName(),
+                    ["ip"] =
+                        (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken))
+                        .Select(i => i.ToString())
+                        .Where(i => i.Contains('.'))
+                },
             Runtime = new Dictionary<string, string>
             {
                 ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                 ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 ["version"] = Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                ["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
+                ["versionInformation"] =
+                    Assembly.GetEntryAssembly()
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                        .InformationalVersion,
                 ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
-                ["processName"] = Process.GetCurrentProcess().ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)" : Process.GetCurrentProcess().ProcessName,
+                ["processName"] =
+                    Process.GetCurrentProcess()
+                        .ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase)
+                        ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)"
+                        : Process.GetCurrentProcess().ProcessName,
                 ["process64Bits"] = Environment.Is64BitProcess.ToString(),
                 ["framework"] = RuntimeInformation.FrameworkDescription,
                 ["runtime"] = RuntimeInformation.RuntimeIdentifier,
@@ -138,8 +148,10 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         if (IsIpAddressSet(connection?.RemoteIpAddress))
         {
             return IsIpAddressSet(connection.LocalIpAddress)
-                ? connection.RemoteIpAddress.Equals(connection.LocalIpAddress) //if local is same as remote, then we are local
-                : IPAddress.IsLoopback(connection.RemoteIpAddress); //else we are remote if the remote IP address is not a loopback address
+                ? connection.RemoteIpAddress.Equals(connection
+                    .LocalIpAddress) //if local is same as remote, then we are local
+                : IPAddress.IsLoopback(connection
+                    .RemoteIpAddress); //else we are remote if the remote IP address is not a loopback address
         }
 
         return true;

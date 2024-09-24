@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System;
-
 [UnitTest("Common")]
 public class GuidGeneratorTests(ITestOutputHelper output) : TestsBase(output)
 {

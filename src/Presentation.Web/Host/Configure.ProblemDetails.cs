@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System.Net.Http;
 using System.Security;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
+using Common;
+using Domain;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,17 +55,18 @@ public static class Configure
             options.AllowedHeaderNames.Add(allowHeaderName);
         }
 
-        options.Map<FluentValidation.ValidationException>(ex =>
+        options.Map<ValidationException>(ex =>
         {
             return new ValidationProblemDetails
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
-                Detail = $"[{nameof(FluentValidation.ValidationException)}] A model validation error has occurred while executing the request",
+                Detail =
+                    $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request",
                 Type = "https://httpstatuses.com/400",
-                Errors = ex.Errors?
-                    .OrderBy(v => v.PropertyName)
-                    .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase), v => v.ErrorMessage)
+                Errors = ex.Errors?.OrderBy(v => v.PropertyName)
+                    .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),
+                        v => v.ErrorMessage)
 #pragma warning disable SA1010 // Opening square brackets should be spaced correctly
                     .ToDictionary(g => g.Key, g => g.ToArray()) ?? []
 #pragma warning restore SA1010 // Opening square brackets should be spaced correctly
@@ -89,7 +90,7 @@ public static class Configure
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
-                Detail = $"[{ex.GetType().Name}] {ex.ToString()}",
+                Detail = $"[{ex.GetType().Name}] {ex}",
                 Type = "https://httpstatuses.com/400"
             };
         });

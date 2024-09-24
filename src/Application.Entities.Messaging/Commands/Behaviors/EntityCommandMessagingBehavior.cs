@@ -5,14 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Commands;
+using Common;
+using Domain.Model;
 using MediatR;
+using Messaging;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+using Constants = Commands.Constants;
 
 public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
@@ -21,7 +20,9 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     where TRequest : class, IRequest<TResponse>
 {
     private readonly IMessageBroker messageBroker = messageBroker;
-    private readonly EntityCommandMessagingBehaviorOptions options = options ?? new EntityCommandMessagingBehaviorOptions();
+
+    private readonly EntityCommandMessagingBehaviorOptions options =
+        options ?? new EntityCommandMessagingBehaviorOptions();
 
     protected override bool CanProcess(TRequest request)
     {
@@ -34,11 +35,13 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         {
             return this.options?.ExcludedEntityTypes?.Contains(instanceCreate.Entity?.GetType()) == false;
         }
-        else if (request is IEntityUpdateCommand instanceUpdate && instanceUpdate.Entity != null)
+
+        if (request is IEntityUpdateCommand instanceUpdate && instanceUpdate.Entity != null)
         {
             return this.options?.ExcludedEntityTypes?.Contains(instanceUpdate.Entity?.GetType()) == false;
         }
-        else if (request is IEntityDeleteCommand instanceDelete && instanceDelete.Entity != null)
+
+        if (request is IEntityDeleteCommand instanceDelete && instanceDelete.Entity != null)
         {
             return this.options?.ExcludedEntityTypes?.Contains(instanceDelete.Entity?.GetType()) == false;
         }
@@ -55,7 +58,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
 
         if (this.messageBroker is null)
         {
-            this.Logger.LogWarning("{LogKey} cannot send entity message, no messagebroker specified", Commands.Constants.LogKey);
+            this.Logger.LogWarning("{LogKey} cannot send entity message, no messagebroker specified", Constants.LogKey);
             return result;
         }
 
@@ -75,46 +78,67 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         return result;
     }
 
-    private async Task ProcessCreated(TResponse result, IEntityCreateCommand instance, CancellationToken cancellationToken)
+    private async Task ProcessCreated(
+        TResponse result,
+        IEntityCreateCommand instance,
+        CancellationToken cancellationToken)
     {
-        if (result is CommandResponse<Result<EntityCreatedCommandResult>> commandResult
-            && commandResult.Result?.IsSuccess == true)
+        if (result is CommandResponse<Result<EntityCreatedCommandResult>> commandResult &&
+            commandResult.Result?.IsSuccess == true)
         {
-            var message = Factory.Create<IMessage>(typeof(EntityCreatedMessage<>), instance.Entity.GetType(), instance.Entity as IEntity);
+            var message = Factory.Create<IMessage>(typeof(EntityCreatedMessage<>),
+                instance.Entity.GetType(),
+                instance.Entity as IEntity);
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity created message (type={EntityType})", Commands.Constants.LogKey, instance.Entity.GetType().PrettyName());
+                this.Logger.LogInformation("{LogKey} send entity created message (type={EntityType})",
+                    Constants.LogKey,
+                    instance.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);
             }
         }
     }
 
-    private async Task ProcessUpdated(TResponse result, IEntityUpdateCommand instance, CancellationToken cancellationToken)
+    private async Task ProcessUpdated(
+        TResponse result,
+        IEntityUpdateCommand instance,
+        CancellationToken cancellationToken)
     {
         if (result is CommandResponse<Result<EntityUpdatedCommandResult>> commandResult &&
             commandResult.Result?.IsSuccess == true)
         {
-            var message = Factory.Create<IMessage>(typeof(EntityUpdatedMessage<>), instance.Entity.GetType(), instance.Entity as IEntity);
+            var message = Factory.Create<IMessage>(typeof(EntityUpdatedMessage<>),
+                instance.Entity.GetType(),
+                instance.Entity as IEntity);
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity updated message (type={EntityType})", Commands.Constants.LogKey, instance?.Entity.GetType().PrettyName());
+                this.Logger.LogInformation("{LogKey} send entity updated message (type={EntityType})",
+                    Constants.LogKey,
+                    instance?.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);
             }
         }
     }
 
-    private async Task ProcessDeleted(TResponse result, IEntityDeleteCommand instance, CancellationToken cancellationToken)
+    private async Task ProcessDeleted(
+        TResponse result,
+        IEntityDeleteCommand instance,
+        CancellationToken cancellationToken)
     {
         if (result is CommandResponse<Result<EntityDeletedCommandResult>> commandResult &&
             commandResult.Result?.IsSuccess == true)
         {
-            var message = Factory.Create<IMessage>(typeof(EntityDeletedMessage<>), instance.Entity.GetType(), instance.Entity as IEntity);
+            var message = Factory.Create<IMessage>(typeof(EntityDeletedMessage<>),
+                instance.Entity.GetType(),
+                instance.Entity as IEntity);
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity deleted message (type={EntityType})", Commands.Constants.LogKey, instance.Entity.GetType().PrettyName());
+                this.Logger.LogInformation("{LogKey} send entity deleted message (type={EntityType})",
+                    Constants.LogKey,
+                    instance.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);
             }
         }

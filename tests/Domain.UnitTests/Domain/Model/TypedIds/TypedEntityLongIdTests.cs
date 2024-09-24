@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class TypedEntityLongIdTests
@@ -156,10 +155,7 @@ public class TypedEntityLongIdTests
     [Fact]
     public void Deserialize_WithValidId_ShouldCreateIdWithParsedValue()
     {
-        var entity = new StubLongEntity
-        {
-            Id = StubLongEntityId.Create(9223372036854775807)
-        };
+        var entity = new StubLongEntity { Id = StubLongEntityId.Create(9223372036854775807) };
 
         var serialized = new SystemTextJsonSerializer().SerializeToString(entity);
         var deserialized = new SystemTextJsonSerializer().Deserialize<StubLongEntity>(serialized);
@@ -169,7 +165,5 @@ public class TypedEntityLongIdTests
     }
 
     [TypedEntityId<long>]
-    public partial class StubLongEntity : Entity<StubLongEntityId>
-    {
-    }
+    public class StubLongEntity : Entity<StubLongEntityId> { }
 }

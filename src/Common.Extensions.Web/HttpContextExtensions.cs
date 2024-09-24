@@ -12,5 +12,7 @@ public static class HttpContextExtensions
     private const string CorrelationKey = "CorrelationId";
 
     public static string TryGetCorrelationId(this HttpContext context)
-        => context.Items.TryGetValue(CorrelationKey, out var id) ? id.ToString() : null;
+    {
+        return context.Items.TryGetValue(CorrelationKey, out var id) ? id.ToString() : null;
+    }
 }

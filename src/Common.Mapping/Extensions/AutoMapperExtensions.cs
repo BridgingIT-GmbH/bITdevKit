@@ -5,29 +5,30 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using global::AutoMapper;
 using global::AutoMapper.Internal;
 
 public static class AutoMapperExtensions
 {
     /// <summary>
-    /// Ignores all properties that are not explicitly mapped.
+    ///     Ignores all properties that are not explicitly mapped.
     /// </summary>
-    /// <typeparam name="TDest"></typeparam>
-    public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(
-        this IMappingExpression<TSource, TDest> expression)
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TDestination"></typeparam>
+    public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(
+        this IMappingExpression<TSource, TDestination> expression)
     {
         expression.ForAllMembers(opt => opt.Ignore());
         return expression;
     }
 
     /// <summary>
-    /// Ignores null values in source.
+    ///     Ignores null values in source.
     /// </summary>
-    /// <typeparam name="TDest"></typeparam>
-    public static IMappingExpression<TSource, TDest> IgnoreNullValues<TSource, TDest>(
-        this IMappingExpression<TSource, TDest> expression)
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TDestination"></typeparam>
+    public static IMappingExpression<TSource, TDestination> IgnoreNullValues<TSource, TDestination>(
+        this IMappingExpression<TSource, TDestination> expression)
     {
         expression.ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember is not null));
         return expression;
@@ -40,18 +41,19 @@ public static class AutoMapperExtensions
 
     public static void IgnoreUnmapped(this IProfileExpression profile, Func<TypeMap, bool> filter)
     {
-        profile.Internal().ForAllMaps((map, expr) =>
-        {
-            if (filter(map))
+        profile.Internal()
+            .ForAllMaps((map, expr) =>
             {
-                IgnoreUnmappedProperties(map, expr);
-            }
-        });
+                if (filter(map))
+                {
+                    IgnoreUnmappedProperties(map, expr);
+                }
+            });
     }
 
     public static void IgnoreUnmapped(this IProfileExpression profile, Type source, Type destination)
     {
-        profile.IgnoreUnmapped((TypeMap map) => map.SourceType == source && map.DestinationType == destination);
+        profile.IgnoreUnmapped(map => map.SourceType == source && map.DestinationType == destination);
     }
 
     public static void IgnoreUnmapped<TSrc, TDest>(this IProfileExpression profile)

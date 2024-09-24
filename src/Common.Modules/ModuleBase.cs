@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,15 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 public abstract class ModuleBase : IModule
 {
     protected ModuleBase()
-        : this(null)
-    {
-    }
+        : this(null) { }
 
     protected ModuleBase(string name, int priority = 99)
     {
-        this.Name = name ?? this.GetType().Name
-            .Replace("Module", string.Empty, StringComparison.OrdinalIgnoreCase)
-            .ToLowerInvariant();
+        this.Name = name ??
+            this.GetType().Name.Replace("Module", string.Empty, StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
         this.Priority = priority;
     }
 
@@ -34,12 +30,18 @@ public abstract class ModuleBase : IModule
 
     public bool IsRegistered { get; set; }
 
-    public virtual IServiceCollection Register(IServiceCollection services, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public virtual IServiceCollection Register(
+        IServiceCollection services,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         return services;
     }
 
-    public virtual IApplicationBuilder Use(IApplicationBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public virtual IApplicationBuilder Use(
+        IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         return app;
     }

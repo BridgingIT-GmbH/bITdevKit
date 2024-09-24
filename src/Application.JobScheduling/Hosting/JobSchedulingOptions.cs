@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class JobSchedulingOptions : OptionsBase
 {

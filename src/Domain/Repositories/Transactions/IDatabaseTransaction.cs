@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
 public interface IDatabaseTransaction
 {
@@ -18,5 +16,5 @@ public interface IDatabaseTransaction
         where TEntity : class, IEntity;
 
     Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action)
-    where TEntity : class, IEntity;
+        where TEntity : class, IEntity;
 }

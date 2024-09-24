@@ -5,16 +5,18 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
-public class CustomerFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository) : QueryHandlerBase<CustomerFindOneQuery, Result<Customer>>(loggerFactory)
+public class CustomerFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Customer> repository)
+    : QueryHandlerBase<CustomerFindOneQuery, Result<Customer>>(loggerFactory)
 {
-    public override async Task<QueryResponse<Result<Customer>>> Process(CustomerFindOneQuery query, CancellationToken cancellationToken)
+    public override async Task<QueryResponse<Result<Customer>>> Process(
+        CustomerFindOneQuery query,
+        CancellationToken cancellationToken)
     {
         var customerId = CustomerId.Create(query.CustomerId);
         var customer = await repository.FindOneAsync(customerId, cancellationToken: cancellationToken).AnyContext();

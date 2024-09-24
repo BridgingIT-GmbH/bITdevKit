@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions

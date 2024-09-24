@@ -5,16 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core.Controllers;
 
-using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
-using BridgingIT.DevKit.Presentation.Web;
-using EnsureThat;
+using Application.Modules.Core;
+using Common;
+using DevKit.Presentation.Web;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 [Route("api/core/cities")]
 [ApiController]
@@ -69,7 +65,9 @@ public class CityController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<CityModel>> GetByLocation([FromQuery] double? longitude, [FromQuery] double? latitude)
+    public async Task<ActionResult<CityModel>> GetByLocation(
+        [FromQuery] double? longitude,
+        [FromQuery] double? latitude)
     {
         var response = await this.mediator.Send(new CityFindOneQuery(longitude, latitude)).AnyContext();
 
@@ -92,7 +90,9 @@ public class CityController : ControllerBase
 
         var response = await this.mediator.Send(new CityCreateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
-        return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Created($"/api/cities/{response.Result.EntityId}", null);
+        return response.Cancelled
+            ? this.BadRequest(response.CancelledReason)
+            : this.Created($"/api/cities/{response.Result.EntityId}", null);
     }
 
     [HttpPut]
@@ -121,8 +121,7 @@ public class CityController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> DeleteByName(string name)
     {
-        var response = await this.mediator.Send(
-            new CityDeleteCommand(name)).AnyContext();
+        var response = await this.mediator.Send(new CityDeleteCommand(name)).AnyContext();
 
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
         return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Ok();

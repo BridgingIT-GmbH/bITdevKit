@@ -5,17 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
-using System;
-
 public class DomainEventWithGuid : DomainEvent<Guid>, IDomainEventWithGuid
 {
     public DomainEventWithGuid()
         : base(Guid.NewGuid()) // TODO: use GuidGenerator.CreateSequential() here
-    {
-    }
+    { }
 
     public DomainEventWithGuid(Guid aggregateId)
-        : base(aggregateId)
-    {
-    }
+        : base(aggregateId) { }
 }

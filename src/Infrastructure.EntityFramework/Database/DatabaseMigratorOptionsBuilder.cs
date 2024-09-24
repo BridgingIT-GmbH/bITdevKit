@@ -5,14 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class DatabaseMigratorOptionsBuilder :
-    OptionsBuilderBase<DatabaseMigratorOptions, DatabaseMigratorOptionsBuilder>
+public class DatabaseMigratorOptionsBuilder
+    : OptionsBuilderBase<DatabaseMigratorOptions, DatabaseMigratorOptionsBuilder>
 {
     /// <summary>
-    /// Enable or Disable the database migrator.
+    ///     Enable or Disable the database migrator.
     /// </summary>
     public DatabaseMigratorOptionsBuilder Enabled(bool value = true)
     {
@@ -21,7 +20,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Disable the database migrator.
+    ///     Disable the database migrator.
     /// </summary>
     public DatabaseMigratorOptionsBuilder Disabled()
     {
@@ -30,7 +29,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseMigratorOptionsBuilder StartupDelay(TimeSpan timespan)
     {
@@ -39,7 +38,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseMigratorOptionsBuilder StartupDelay(int milliseconds)
     {
@@ -48,7 +47,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseMigratorOptionsBuilder StartupDelay(string value)
     {
@@ -57,7 +56,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Log the model.
+    ///     Log the model.
     /// </summary>
     public DatabaseMigratorOptionsBuilder LogModel(bool value = true)
     {
@@ -66,7 +65,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delete database on startup.
+    ///     Delete database on startup.
     /// </summary>
     public DatabaseMigratorOptionsBuilder DeleteOnStartup(bool value = true)
     {
@@ -75,7 +74,7 @@ public class DatabaseMigratorOptionsBuilder :
     }
 
     /// <summary>
-    /// Truncate the database on startup.
+    ///     Truncate the database on startup.
     /// </summary>
     public DatabaseMigratorOptionsBuilder PurgeOnStartup(bool value = true, IEnumerable<string> ignoreTables = null)
     {

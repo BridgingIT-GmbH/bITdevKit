@@ -9,18 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="LiteDB" />
-    <Using Include="EnsureThat" />
+    <Using Include="LiteDB"/>
+    <Using Include="EnsureThat"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" />
-    <PackageReference Include="System.Linq.Dynamic.Core" />
+    <PackageReference Include="LiteDB"/>
+    <PackageReference Include="System.Linq.Dynamic.Core"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\Domain\Domain.csproj"/>
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 using Humanizer;
 
 public class EntityDeactivatedCannotBeDeletedRule<TEntity> : EntityDeleteCommandRuleBase<TEntity>

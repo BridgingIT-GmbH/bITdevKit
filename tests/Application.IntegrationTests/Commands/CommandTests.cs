@@ -5,17 +5,21 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Commands;
 
+using Application.Commands;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class CommandTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-                !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)).ToArray()));
-            s.AddTransient(typeof(IPipelineBehavior<,>), typeof(Application.Commands.DummyCommandBehavior<,>));
-        })
+public class CommandTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a =>
+                !a.GetName()
+                    .Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
+            .ToArray()));
+        s.AddTransient(typeof(IPipelineBehavior<,>), typeof(DummyCommandBehavior<,>));
+    })
 {
     [Fact]
     public void CreatePersonCommand()
@@ -31,11 +35,12 @@ public class CommandTests(ITestOutputHelper output) : TestsBase(output, s =>
     {
         // Arrange
         var mediator = this.ServiceProvider.GetRequiredService<IMediator>();
-        var entity = new PersonStub() { FirstName = "John", LastName = "Doe" };
+        var entity = new PersonStub { FirstName = "John", LastName = "Doe" };
         var command = new StubPersonAddCommand(entity);
 
         // Act
-        var response = await mediator.Send(command).AnyContext();
+        var response = await mediator.Send(command)
+            .AnyContext();
 
         // Assert
         command.ShouldNotBeNull();
@@ -46,10 +51,11 @@ public class CommandTests(ITestOutputHelper output) : TestsBase(output, s =>
     [Fact]
     public void ValidatePersonCommand() // fails often? (Could not load type 'Castle.Proxies.ObjectProxy' from assembly 'DynamicProxyGenAssembly2....)
     {
-        var entity = new PersonStub() { FirstName = "John", LastName = "Doe" };
+        var entity = new PersonStub { FirstName = "John", LastName = "Doe" };
         var command = new StubPersonAddCommand(entity);
 
-        command.Validate().IsValid.ShouldBeTrue();
+        command.Validate()
+            .IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -58,19 +64,18 @@ public class CommandTests(ITestOutputHelper output) : TestsBase(output, s =>
         var entity = new PersonStub();
         var command = new StubPersonAddCommand(entity);
 
-        command.Validate().IsValid.ShouldBeFalse();
+        command.Validate()
+            .IsValid.ShouldBeFalse();
     }
 
     [Fact]
     public void ValidatePersonCommandNoFirstnameFails()
     {
-        var entity = new PersonStub
-        {
-            LastName = "Doe"
-        };
+        var entity = new PersonStub { LastName = "Doe" };
 
         var command = new StubPersonAddCommand(entity);
 
-        command.Validate().IsValid.ShouldBeFalse();
+        command.Validate()
+            .IsValid.ShouldBeFalse();
     }
 }

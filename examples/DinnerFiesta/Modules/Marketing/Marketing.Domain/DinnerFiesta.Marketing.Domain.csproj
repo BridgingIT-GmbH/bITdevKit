@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Domain.Mediator\Domain.Mediator.csproj"/>
   </ItemGroup>
 
 </Project>

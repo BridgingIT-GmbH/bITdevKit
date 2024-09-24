@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class DummyQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
+public class DummyQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
+    : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)
@@ -20,7 +19,8 @@ public class DummyQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactor
     }
 
     protected override async Task<TResponse> Process(
-        TRequest request, RequestHandlerDelegate<TResponse> next,
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
         this.Logger.LogInformation("{LogKey} dummy query", Constants.LogKey);

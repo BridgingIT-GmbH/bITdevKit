@@ -20,21 +20,21 @@ public static class ServiceCollectionExtensions
     {
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
-        services.Scan(scan => scan
-            .FromAssemblies(types.Select(t => t.Assembly).Distinct())
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<,>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(types.Select(t => t.Assembly).Distinct())
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
-        services.Scan(scan => scan
-            .FromAssemblies(types.Select(t => t.Assembly).Distinct())
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(types.Select(t => t.Assembly).Distinct())
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
-        .WithLifetime(lifetime));
+            .WithLifetime(lifetime));
 
         return new QueryBuilderContext(services);
     }
@@ -46,21 +46,21 @@ public static class ServiceCollectionExtensions
     {
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
-        services.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<,>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(assemblies)
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
-        services.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(assemblies)
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
-        .WithLifetime(lifetime));
+            .WithLifetime(lifetime));
 
         return new QueryBuilderContext(services);
     }
@@ -71,21 +71,21 @@ public static class ServiceCollectionExtensions
     {
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
-        services.Scan(scan => scan
-            .FromAssemblies(typeof(T).Assembly)
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<,>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(typeof(T).Assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
-        services.Scan(scan => scan
-            .FromAssemblies(typeof(T).Assembly)
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+        services.Scan(scan => scan.FromAssemblies(typeof(T).Assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
-        .WithLifetime(lifetime));
+            .WithLifetime(lifetime));
 
         return new QueryBuilderContext(services);
     }
@@ -98,20 +98,26 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan
-            .FromApplicationDependencies(a => !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<,>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+            .FromApplicationDependencies(a =>
+                !a.FullName.EqualsPatternAny(
+                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
         services.Scan(scan => scan
-            .FromApplicationDependencies(a => !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
-            .AddClasses(classes =>
-                classes.AssignableTo(typeof(IRequestHandler<>))
-                    .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition && c.ImplementsInterface(typeof(IQueryHandler))))
+            .FromApplicationDependencies(a =>
+                !a.FullName.EqualsPatternAny(
+                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IQueryHandler))))
             .AsSelfWithInterfaces()
-        .WithLifetime(lifetime));
+            .WithLifetime(lifetime));
 
         return new QueryBuilderContext(services);
     }
@@ -128,7 +134,8 @@ public static class ServiceCollectionExtensions
         {
             if (!behavior.ImplementsInterface(typeof(IQueryBehavior)))
             {
-                throw new ArgumentException($"Query behavior {behavior.Name} does not implement {nameof(IQueryBehavior)}.");
+                throw new ArgumentException(
+                    $"Query behavior {behavior.Name} does not implement {nameof(IQueryBehavior)}.");
             }
 
             context.Services.AddTransient(typeof(IPipelineBehavior<,>), behavior);

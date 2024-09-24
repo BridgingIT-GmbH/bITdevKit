@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain.EventSourcing\Domain.EventSourcing.csproj" />
-    <ProjectReference Include="..\Infrastructure.AutoMapper\Infrastructure.AutoMapper.csproj" />
-    <ProjectReference Include="..\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
-    <ProjectReference Include="..\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
+    <ProjectReference Include="..\Domain.EventSourcing\Domain.EventSourcing.csproj"/>
+    <ProjectReference Include="..\Infrastructure.AutoMapper\Infrastructure.AutoMapper.csproj"/>
+    <ProjectReference Include="..\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj"/>
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

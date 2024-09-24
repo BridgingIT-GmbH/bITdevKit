@@ -5,49 +5,41 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options) :
-    LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>
+public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
+    : LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
     public LiteDbGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build())
-    {
-    }
+        : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
 
     /// <summary>
-    /// Inserts the provided entity.
+    ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    public virtual async Task<TEntity> InsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Updates the provided entity.
+    ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    public virtual async Task<TEntity> UpdateAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Insert or updates the provided entity.
+    ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
@@ -62,17 +54,24 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options) 
         var isNew = entity.Id == default;
         var existingEntity = isNew
             ? null
-            : await this.FindOneAsync(entity.Id, null, cancellationToken).AnyContext(); // prevent the entity from being tracked (which find() does
+            : await this.FindOneAsync(entity.Id, null, cancellationToken)
+                .AnyContext(); // prevent the entity from being tracked (which find() does
         isNew = isNew || existingEntity is null;
 
         if (isNew)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})",
+                Constants.LogKey,
+                typeof(TEntity).Name,
+                entity.Id);
             this.Options.DbContext.Database.GetCollection<TEntity>().Insert(entity);
         }
         else
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})",
+                Constants.LogKey,
+                typeof(TEntity).Name,
+                entity.Id);
             this.Options.DbContext.Database.GetCollection<TEntity>().Update(entity);
         }
 

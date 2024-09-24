@@ -5,8 +5,10 @@
 
 namespace Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Infrastructure;
 
-public class UpdatedAtActionResult(string actionName, string controllerName, object routeValues, [ActionResultObjectValue] object value) : CreatedAtActionResult(actionName, controllerName, routeValues, value)
-{
-}
+public class UpdatedAtActionResult(
+    string actionName,
+    string controllerName,
+    object routeValues,
+    [ActionResultObjectValue] object value) : CreatedAtActionResult(actionName, controllerName, routeValues, value) { }

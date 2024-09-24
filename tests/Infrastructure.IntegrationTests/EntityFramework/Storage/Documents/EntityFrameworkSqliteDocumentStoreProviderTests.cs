@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
+using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -64,7 +64,6 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
 
     protected override EntityFrameworkDocumentStoreProvider<StubDbContext> GetProvider()
     {
-        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureSqliteDbContext(this.output));
+        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsureSqliteDbContext(this.output));
     }
 }

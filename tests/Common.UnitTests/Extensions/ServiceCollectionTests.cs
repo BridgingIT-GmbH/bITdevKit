@@ -1,8 +1,8 @@
 ﻿namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
-using System;
 using Microsoft.Extensions.DependencyInjection;
 
+[UnitTest("Common")]
 public class ServiceCollectionExtensionsTests
 {
     private interface ITestService { }
@@ -173,10 +173,10 @@ public class ServiceCollectionExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddTransient<string>(_ => "test0");
-        services.AddTransient<string>(_ => "test1");
+        services.AddTransient(_ => "test0");
+        services.AddTransient(_ => "test1");
         services.AddTransient<ITestService, StubService>();
-        services.AddTransient<string>(_ => "test3");
+        services.AddTransient(_ => "test3");
 
         // Act
         var result = services.IndexOf<ITestService>();

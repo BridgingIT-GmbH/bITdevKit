@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories;
 
-using System;
 using Microsoft.EntityFrameworkCore;
 
 public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
@@ -17,7 +16,9 @@ public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.HasDefaultSchema("Test");
-        modelBuilder.Entity<PersonDtoStub>().ToTable("Persons").HasKey(nameof(PersonDtoStub.Identifier));
+        modelBuilder.Entity<PersonDtoStub>()
+            .ToTable("Persons")
+            .HasKey(nameof(PersonDtoStub.Identifier));
     }
 }
 
@@ -29,8 +30,8 @@ public sealed class TestDbContextFixture : IDisposable
             .UseInMemoryDatabase($"Test_{KeyGenerator.Create(10)}");
 
         this.Context = new TestDbContext(builder.Options);
-        this.Context.Persons.Add(new PersonDtoStub() { Identifier = Guid.NewGuid(), FullName = "John Doe" });
-        this.Context.Persons.Add(new PersonDtoStub() { Identifier = Guid.NewGuid(), FullName = "Jane Doe" });
+        this.Context.Persons.Add(new PersonDtoStub { Identifier = Guid.NewGuid(), FullName = "John Doe" });
+        this.Context.Persons.Add(new PersonDtoStub { Identifier = Guid.NewGuid(), FullName = "Jane Doe" });
         this.Context.SaveChanges();
     }
 

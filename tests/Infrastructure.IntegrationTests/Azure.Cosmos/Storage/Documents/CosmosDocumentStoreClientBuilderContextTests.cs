@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
-using BridgingIT.DevKit.Application.Storage;
+using Application.Storage;
 using DotNet.Testcontainers.Containers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -29,13 +27,15 @@ public class CosmosDocumentStoreClientBuilderContextTests
             this.fixture.Services.AddMediatR();
 
             this.fixture.Services.AddCosmosClient(o => o
-                .UseConnectionString(this.fixture.CosmosConnectionString))
+                    .UseConnectionString(this.fixture.CosmosConnectionString))
                 .WithHealthChecks();
 
             this.fixture.Services.AddCosmosDocumentStoreClient<PersonStubDocument>(o => o.Database("test")) // no need to setup the client+provider (sql)
                 .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()
                 .WithBehavior((inner, sp) =>
-                    new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+                    new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(),
+                        inner,
+                        new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
         }
         else
         {

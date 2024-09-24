@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
-using BridgingIT.DevKit.Presentation.Web;
-
 public class JobSchedulingEndpointsOptions : EndpointsOptionsBase
 {
     public JobSchedulingEndpointsOptions()

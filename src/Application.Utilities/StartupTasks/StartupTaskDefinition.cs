@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.Utilities;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class StartupTaskDefinition
 {
     public Type TaskType { get; set; }
 
-    public StartupTaskOptions Options { get; set; } = new StartupTaskOptions();
+    public StartupTaskOptions Options { get; set; } = new();
 }

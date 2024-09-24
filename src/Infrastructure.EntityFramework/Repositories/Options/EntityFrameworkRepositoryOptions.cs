@@ -5,15 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public class EntityFrameworkRepositoryOptions : OptionsBase
 {
-    public EntityFrameworkRepositoryOptions()
-    {
-    }
+    public EntityFrameworkRepositoryOptions() { }
 
     public EntityFrameworkRepositoryOptions(DbContext context, IEntityMapper mapper = null)
     {
@@ -24,10 +22,10 @@ public class EntityFrameworkRepositoryOptions : OptionsBase
     }
 
     /// <summary>
-    /// Gets or sets the database context.
+    ///     Gets or sets the database context.
     /// </summary>
     /// <value>
-    /// The database context.
+    ///     The database context.
     /// </value>
     public virtual DbContext DbContext { get; set; }
 

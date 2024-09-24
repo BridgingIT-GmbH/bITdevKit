@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Commands;
+using Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -21,8 +21,10 @@ public class MenuCreateCommand : CommandRequestBase<Result<Menu>>
 
     public IReadOnlyList<MenuSection> Sections { get; set; }
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<MenuCreateCommand>
     {
@@ -30,7 +32,9 @@ public class MenuCreateCommand : CommandRequestBase<Result<Menu>>
         {
             this.RuleFor(c => c.Name).NotNull().NotEmpty().WithMessage("Must not be empty.");
             this.RuleFor(c => c.HostId).NotNull().NotEmpty().WithMessage("Must not be empty.");
-            this.RuleForEach(c => c.Sections).SetValidator(new MenuSection.Validator()).When(c => c.Sections is not null);
+            this.RuleForEach(c => c.Sections)
+                .SetValidator(new MenuSection.Validator())
+                .When(c => c.Sections is not null);
         }
     }
 
@@ -47,7 +51,9 @@ public class MenuCreateCommand : CommandRequestBase<Result<Menu>>
             public Validator()
             {
                 this.RuleFor(c => c.Name).NotNull().NotEmpty().WithMessage("Must not be empty.");
-                this.RuleForEach(c => c.Items).SetValidator(new MenuSectionItem.Validator()).When(c => c.Items is not null);
+                this.RuleForEach(c => c.Items)
+                    .SetValidator(new MenuSectionItem.Validator())
+                    .When(c => c.Items is not null);
             }
         }
     }

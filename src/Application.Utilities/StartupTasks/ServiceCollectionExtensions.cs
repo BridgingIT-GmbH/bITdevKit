@@ -5,18 +5,16 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Extensions;
 
 public static class ServiceCollectionExtensions
 {
     private static StartupTaskServiceOptions contextOptions;
 
-    public static StartupTasksBuilderContext AddStartupTasks(
-        this IServiceCollection services)
+    public static StartupTasksBuilderContext AddStartupTasks(this IServiceCollection services)
     {
         return services.AddStartupTasks(options: null);
     }
@@ -25,9 +23,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         Builder<StartupTaskServiceOptionsBuilder, StartupTaskServiceOptions> optionsBuilder)
     {
-        return services
-            .AddStartupTasks(
-                optionsBuilder(new StartupTaskServiceOptionsBuilder()).Build());
+        return services.AddStartupTasks(optionsBuilder(new StartupTaskServiceOptionsBuilder()).Build());
     }
 
     public static StartupTasksBuilderContext AddStartupTasks(
@@ -46,8 +42,7 @@ public static class ServiceCollectionExtensions
         return new StartupTasksBuilderContext(services);
     }
 
-    public static StartupTasksBuilderContext WithTask<TTask>(
-        this StartupTasksBuilderContext context)
+    public static StartupTasksBuilderContext WithTask<TTask>(this StartupTasksBuilderContext context)
         where TTask : class, IStartupTask
     {
         return context.WithTask<TTask>(new StartupTaskOptions());
@@ -67,11 +62,7 @@ public static class ServiceCollectionExtensions
         where TTask : class, IStartupTask
     {
         context.Services.AddSingleton(sp =>
-            new StartupTaskDefinition
-            {
-                TaskType = typeof(TTask),
-                Options = options ?? new StartupTaskOptions()
-            });
+            new StartupTaskDefinition { TaskType = typeof(TTask), Options = options ?? new StartupTaskOptions() });
         context.Services.AddScoped<TTask>();
 
         return context;
@@ -107,8 +98,7 @@ public static class ServiceCollectionExtensions
             context.Services.AddSingleton(sp =>
                 new StartupTaskDefinition
                 {
-                    TaskType = implementationType,
-                    Options = options ?? new StartupTaskOptions()
+                    TaskType = implementationType, Options = options ?? new StartupTaskOptions()
                 });
             context.Services.AddScoped(implementationType, implementationFactory);
         }
@@ -174,19 +164,19 @@ public static class ServiceCollectionExtensions
             // Analyze the method call to get the return type
             return methodCall.Method.ReturnType;
         }
-        else if (expression.Body is NewExpression newExpression)
+
+        if (expression.Body is NewExpression newExpression)
         {
             // Handle the case where the body is a new expression
             return newExpression.Type;
         }
-        else if (expression.Body is MemberInitExpression memberInitExpression)
+
+        if (expression.Body is MemberInitExpression memberInitExpression)
         {
             // Handle the case where the body is a member initialization expression
             return memberInitExpression.NewExpression.Type;
         }
-        else
-        {
-            throw new InvalidOperationException("Unable to determine the implementation type.");
-        }
+
+        throw new InvalidOperationException("Unable to determine the implementation type.");
     }
 }

@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
+using DevKit.Domain.Specifications;
 
 public class UserForEmailSpecification(EmailAddress email) : Specification<User>
 {
@@ -19,10 +18,15 @@ public class UserForEmailSpecification(EmailAddress email) : Specification<User>
     }
 }
 
-public static partial class UserSpecifications
+public static class UserSpecifications
 {
-    public static ISpecification<User> ForEmail(EmailAddress email) => new UserForEmailSpecification(email);
+    public static ISpecification<User> ForEmail(EmailAddress email)
+    {
+        return new UserForEmailSpecification(email);
+    }
 
     public static Specification<User> ForEmail2(EmailAddress email) // INFO: short version to define a specification
-        => new(e => e.Email.Value == email.Value);
+    {
+    return new Specification<User>(e => e.Email.Value == email.Value);
+    }
 }

@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class Bill : AuditableAggregateRoot<BillId, Guid>
 {
-    private Bill()
-    {
-    }
+    private Bill() { }
 
     private Bill(
         HostId hostId,
@@ -39,8 +37,7 @@ public class Bill : AuditableAggregateRoot<BillId, Guid>
         GuestId guestId,
         Price amount)
     {
-        return new Bill(
-            hostId,
+        return new Bill(hostId,
             dinnerId,
             guestId,
             amount);

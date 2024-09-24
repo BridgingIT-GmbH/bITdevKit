@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using System;
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class CityDeletedDomainEvent(Guid cityId, string reason) : DomainEventBase
 {

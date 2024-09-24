@@ -8,23 +8,22 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Extensions;
 using Serilog;
 
 public static partial class ServiceCollectionExtensions
 {
     private const string LogKey = "REQ";
 
-    public static IServiceCollection AddEndpoints(
-        this IServiceCollection services,
-        bool enabled = true)
+    public static IServiceCollection AddEndpoints(this IServiceCollection services, bool enabled = true)
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
-        return services.AddEndpoints(
-            BridgingIT.DevKit.Common.AssemblyExtensions
-                .SafeGetTypes<IEndpoints>(AppDomain.CurrentDomain.GetAssemblies())
-                    .Select(t => t.Assembly).Distinct(), enabled);
+        return services.AddEndpoints(AppDomain.CurrentDomain.GetAssemblies()
+                .SafeGetTypes<IEndpoints>()
+                .Select(t => t.Assembly)
+                .Distinct(),
+            enabled);
     }
 
     public static IServiceCollection AddEndpoints(
@@ -38,9 +37,7 @@ public static partial class ServiceCollectionExtensions
         return services.AddEndpoints(new[] { endpoints }, enabled);
     }
 
-    public static IServiceCollection AddEndpoints<T>(
-        this IServiceCollection services,
-        bool enabled = true)
+    public static IServiceCollection AddEndpoints<T>(this IServiceCollection services, bool enabled = true)
         where T : IEndpoints
     {
         EnsureArg.IsNotNull(services, nameof(services));
@@ -57,9 +54,7 @@ public static partial class ServiceCollectionExtensions
 
         if (endpoints.SafeAny() && enabled)
         {
-            var serviceDescriptors = endpoints
-                .Select(e => new ServiceDescriptor(typeof(IEndpoints), e))
-                .ToArray();
+            var serviceDescriptors = endpoints.Select(e => new ServiceDescriptor(typeof(IEndpoints), e)).ToArray();
 
             if (serviceDescriptors.SafeAny())
             {
@@ -67,7 +62,9 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationInstance.GetType().Name);
+                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})",
+                        LogKey,
+                        serviceDescriptor.ImplementationInstance.GetType().Name);
                 }
             }
         }
@@ -84,8 +81,7 @@ public static partial class ServiceCollectionExtensions
 
         if (types.SafeAny() && enabled)
         {
-            var serviceDescriptors = types
-                .Where(t => t.IsClass && !t.IsAbstract)
+            var serviceDescriptors = types.Where(t => t.IsClass && !t.IsAbstract)
                 .Select(t => ServiceDescriptor.Singleton(typeof(IEndpoints), t))
                 .ToArray();
 
@@ -95,7 +91,9 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationType.Name);
+                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})",
+                        LogKey,
+                        serviceDescriptor.ImplementationType.Name);
                 }
             }
         }
@@ -138,7 +136,9 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} endpoints added (type={EndpointsType})", LogKey, serviceDescriptor.ImplementationType.Name);
+                    Log.Logger.Information("{LogKey} endpoints added (type={EndpointsType})",
+                        LogKey,
+                        serviceDescriptor.ImplementationType.Name);
                 }
             }
         }

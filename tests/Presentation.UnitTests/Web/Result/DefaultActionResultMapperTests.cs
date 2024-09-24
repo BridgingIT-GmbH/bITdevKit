@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Mvc;
-using NSubstitute;
-using Shouldly;
-using Xunit;
+using Presentation.Web;
 
+[UnitTest("Presentation")]
 public class DefaultActionResultMapperTests
 {
     private readonly IResult successResult;

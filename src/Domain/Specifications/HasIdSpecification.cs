@@ -5,25 +5,22 @@
 
 namespace BridgingIT.DevKit.Domain.Specifications;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
+/// <summary>
+///     Specification to check if an entity has the specified identifier.
+/// </summary>
+/// <typeparam name="T">The type of entity that this specification applies to.</typeparam>
 public class HasIdSpecification<T>(object id) : Specification<T>
     where T : IEntity
 {
-    protected object Id { get; } = id;
-
+    /// <summary>
+    ///     Creates an expression that determines if an entity of type T has a specified Id.
+    /// </summary>
+    /// <returns>An expression that evaluates to true if the entity's Id matches the specified Id, otherwise false.</returns>
     public override Expression<Func<T, bool>> ToExpression()
     {
-        return t => t.Id == this.Id;
+        return t => t.Id == id;
     }
-
-    //public static class Factory
-    //{
-    //    public static HasIdSpecification<T> Create(object id)
-    //    {
-    //        return new HasIdSpecification<T>(id);
-    //    }
-    //}
 }

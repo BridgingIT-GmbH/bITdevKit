@@ -5,16 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.Azure.Cosmos.Repositories;
-using EnsureThat;
+using Common;
+using Cosmos.Repositories;
 using Humanizer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
@@ -23,7 +18,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     where TItem : class
-    //where T : IHaveDiscriminator // needed? each type T is persisted in own collection
+//where T : IHaveDiscriminator // needed? each type T is persisted in own collection
 {
     private readonly ILogger<CosmosSqlProvider<TItem>> logger;
     private readonly CosmosSqlProviderOptions<TItem> options;
@@ -43,15 +38,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             o => o.WithMessage($"Item type {typeof(TItem).Name} has to have a mandatory 'Id' property"));
 
         this.options = options;
-        this.logger = this.options.LoggerFactory?.CreateLogger<CosmosSqlProvider<TItem>>() ?? NullLoggerFactory.Instance.CreateLogger<CosmosSqlProvider<TItem>>();
+        this.logger = this.options.LoggerFactory?.CreateLogger<CosmosSqlProvider<TItem>>() ??
+            NullLoggerFactory.Instance.CreateLogger<CosmosSqlProvider<TItem>>();
         this.idProperty = typeof(TItem).GetProperty("Id") ?? typeof(TItem).GetProperty("id");
     }
 
     public CosmosSqlProvider(
         Builder<CosmosSqlProviderOptionsBuilder<TItem>, CosmosSqlProviderOptions<TItem>> optionsBuilder)
-        : this(optionsBuilder(new CosmosSqlProviderOptionsBuilder<TItem>()).Build())
-    {
-    }
+        : this(optionsBuilder(new CosmosSqlProviderOptionsBuilder<TItem>()).Build()) { }
 
     public async Task<TItem> ReadItemAsync(
         string id,
@@ -80,7 +74,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
                 foreach (var result in response.Resource)
                 {
-                    this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+                    this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                        "IFR",
+                        watch.GetElapsedMilliseconds());
                     return result;
                 }
             }
@@ -89,12 +85,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         {
             try
             {
-                var response = await this.container.ReadItemAsync<TItem>(
-                    id,
-                    requestOptions.PartitionKey.Value,
-                    cancellationToken: cancellationToken).AnyContext();
+                var response = await this.container.ReadItemAsync<TItem>(id,
+                        requestOptions.PartitionKey.Value,
+                        cancellationToken: cancellationToken)
+                    .AnyContext();
                 this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-                this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+                this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                    "IFR",
+                    watch.GetElapsedMilliseconds());
 
                 return response.Resource;
             }
@@ -113,12 +111,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     }
 
     public async Task<TItem> CreateItemAsync(
-            TItem item,
-            object partitionKeyValue = null,
-            CancellationToken cancellationToken = default)
+        TItem item,
+        object partitionKeyValue = null,
+        CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(item, nameof(item));
-        EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Item property '{this.idProperty.Name}' has to have a mandatory value."));
+        EnsureArg.IsTrue(this.ValidateItemId(item),
+            this.idProperty.Name,
+            o => o.WithMessage($"Item property '{this.idProperty.Name}' has to have a mandatory value."));
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
@@ -127,22 +127,25 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
         {
             // Partition key value will be populated by extracting from {T}
-            var response = await this.container.CreateItemAsync(
-                item,
-                cancellationToken: cancellationToken).AnyContext();
+            var response = await this.container.CreateItemAsync(item, cancellationToken: cancellationToken)
+                .AnyContext();
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
         else
         {
-            var response = await this.container.CreateItemAsync(
-            item,
-            requestOptions.PartitionKey.Value,
-            cancellationToken: cancellationToken).AnyContext();
+            var response = await this.container.CreateItemAsync(item,
+                    requestOptions.PartitionKey.Value,
+                    cancellationToken: cancellationToken)
+                .AnyContext();
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -154,7 +157,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(item, nameof(item));
-        EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
+        EnsureArg.IsTrue(this.ValidateItemId(item),
+            this.idProperty.Name,
+            o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
@@ -162,22 +167,25 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
         {
-            var response = await this.container.UpsertItemAsync(
-                item,
-                cancellationToken: cancellationToken).AnyContext();
+            var response = await this.container.UpsertItemAsync(item, cancellationToken: cancellationToken)
+                .AnyContext();
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
         else
         {
-            var response = await this.container.UpsertItemAsync(
-                item,
-                requestOptions.PartitionKey.Value,
-                cancellationToken: cancellationToken).AnyContext();
+            var response = await this.container.UpsertItemAsync(item,
+                    requestOptions.PartitionKey.Value,
+                    cancellationToken: cancellationToken)
+                .AnyContext();
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -198,12 +206,11 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         double requestCharge = 0;
         var result = new List<TItem>();
-        var iterator = this.container.GetItemLinqQueryable<TItem>(
-            requestOptions: requestOptions,
-            linqSerializerOptions: new CosmosLinqSerializerOptions
-            {
-                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-            })
+        var iterator = this.container.GetItemLinqQueryable<TItem>(requestOptions: requestOptions,
+                linqSerializerOptions: new CosmosLinqSerializerOptions
+                {
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
             .WhereIf(expression)
             .OrderByIf(orderExpression, orderDescending)
             .SkipIf(skip)
@@ -218,7 +225,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
 
         this.LogRequestCharge(requestCharge);
-        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms",
+            "IFR",
+            watch.GetElapsedMilliseconds());
 
         return result; // TODO: replace with IAsyncEnumerable (netstandard 2.1)
     }
@@ -238,12 +247,11 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         double requestCharge = 0;
         var result = new List<TItem>();
-        var iterator = this.container.GetItemLinqQueryable<TItem>(
-            requestOptions: requestOptions,
-            linqSerializerOptions: new CosmosLinqSerializerOptions
-            {
-                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-            })
+        var iterator = this.container.GetItemLinqQueryable<TItem>(requestOptions: requestOptions,
+                linqSerializerOptions: new CosmosLinqSerializerOptions
+                {
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
             .WhereIf(expressions)
             .OrderByIf(orderExpression, orderDescending)
             .SkipIf(skip)
@@ -258,7 +266,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
 
         this.LogRequestCharge(requestCharge);
-        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms",
+            "IFR",
+            watch.GetElapsedMilliseconds());
 
         return result; // TODO: replace with IAsyncEnumerable (netstandard 2.1)
     }
@@ -284,12 +294,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         try
         {
             var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue, item);
-            var response = await this.container.DeleteItemAsync<TItem>(
-                id,
-                requestOptions.PartitionKey.Value,
-                cancellationToken: cancellationToken).AnyContext();
+            var response = await this.container.DeleteItemAsync<TItem>(id,
+                    requestOptions.PartitionKey.Value,
+                    cancellationToken: cancellationToken)
+                .AnyContext();
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
 
             return response.StatusCode == HttpStatusCode.NoContent;
         }
@@ -320,15 +332,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 bool b => new PartitionKey(b),
                 double d => new PartitionKey(d),
                 Guid g => new PartitionKey(g.ToString()),
-                _ => throw new ArgumentException(
-                    "Unsupported partition key value type (string, bool, double, guid)",
-                    nameof(partitionKeyValue)),
+                _ => throw new ArgumentException("Unsupported partition key value type (string, bool, double, guid)",
+                    nameof(partitionKeyValue))
             };
         }
 
-        if (requestOptions.PartitionKey is null
-            && this.options.PartitionKey.SafeEquals(CosmosSqlProviderOptions<TItem>.DefaultPartitionKey)
-            && !id.IsNullOrEmpty())
+        if (requestOptions.PartitionKey is null &&
+            this.options.PartitionKey.SafeEquals(CosmosSqlProviderOptions<TItem>.DefaultPartitionKey) &&
+            !id.IsNullOrEmpty())
         {
             return this.EnsureQueryRequestOptions(id);
         }
@@ -348,9 +359,8 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 bool b => new PartitionKey(b),
                 double d => new PartitionKey(d),
                 Guid g => new PartitionKey(g.ToString()),
-                _ => throw new ArgumentException(
-                    "Unsupported partition key value type (string, bool, double, guid)",
-                    nameof(partitionKeyValue)),
+                _ => throw new ArgumentException("Unsupported partition key value type (string, bool, double, guid)",
+                    nameof(partitionKeyValue))
             };
         }
 
@@ -360,15 +370,18 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             {
                 return this.EnsureQueryRequestOptions(this.options.PartitionKeyStringExpression.Invoke(item));
             }
-            else if (this.options.PartitionKeyBoolExpression is not null)
+
+            if (this.options.PartitionKeyBoolExpression is not null)
             {
                 return this.EnsureQueryRequestOptions(this.options.PartitionKeyBoolExpression.Invoke(item));
             }
-            else if (this.options.PartitionKeyDoubleExpression is not null)
+
+            if (this.options.PartitionKeyDoubleExpression is not null)
             {
                 return this.EnsureQueryRequestOptions(this.options.PartitionKeyDoubleExpression.Invoke(item));
             }
-            else if (this.options.PartitionKeyGuidExpression is not null)
+
+            if (this.options.PartitionKeyGuidExpression is not null)
             {
                 return this.EnsureQueryRequestOptions(this.options.PartitionKeyGuidExpression.Invoke(item));
             }
@@ -394,20 +407,23 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 throughputProperties = ThroughputProperties.CreateManualThroughput(options.DatabaseThroughPut);
             }
 
-            var databaseResponse = await options.Client
-                .CreateDatabaseIfNotExistsAsync(options.Database.EmptyToNull() ?? "master", throughputProperties);
+            var databaseResponse =
+                await options.Client.CreateDatabaseIfNotExistsAsync(options.Database.EmptyToNull() ?? "master",
+                    throughputProperties);
             this.database = databaseResponse.Database;
 
             // replace the throughput on an already existing database, if the value has been configured differently
-            if (databaseResponse.StatusCode == HttpStatusCode.OK
-                && options.DatabaseThroughPut > 0
-                && (await this.database.ReadThroughputAsync()) != options.DatabaseThroughPut)
+            if (databaseResponse.StatusCode == HttpStatusCode.OK &&
+                options.DatabaseThroughPut > 0 &&
+                await this.database.ReadThroughputAsync() != options.DatabaseThroughPut)
             {
                 await this.database.ReplaceThroughputAsync(throughputProperties);
             }
 
             await this.InitializeContainerAsync(options);
-            this.logger.LogDebug("{LogKey} InitializeAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} InitializeAsync finished -> took {TimeElapsed:0.0000} ms",
+                "IFR",
+                watch.GetElapsedMilliseconds());
         }
     }
 
@@ -416,7 +432,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         this.containerName = options.Container.EmptyToNull() ?? typeof(TItem).Name.Pluralize();
         if (!options.ContainerPrefix.IsNullOrEmpty())
         {
-            this.containerName = $"{this.options.ContainerPrefix}{this.options.ContainerPrefixSeperator}{this.containerName}".ToLowerInvariant();
+            this.containerName =
+                $"{this.options.ContainerPrefix}{this.options.ContainerPrefixSeperator}{this.containerName}"
+                    .ToLowerInvariant();
         }
         else
         {
@@ -433,22 +451,20 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             throughputProperties = ThroughputProperties.CreateManualThroughput(options.ThroughPut);
         }
 
-        var containerResponse = await this.database
-            .CreateContainerIfNotExistsAsync(
-                new ContainerProperties(
-                        this.containerName,
-                        this.options.PartitionKey)
+        var containerResponse = await this.database.CreateContainerIfNotExistsAsync(
+                new ContainerProperties(this.containerName, this.options.PartitionKey)
                 {
-                    DefaultTimeToLive = this.options.TimeToLive,
+                    DefaultTimeToLive = this.options.TimeToLive
                     //IndexingPolicy = new Microsoft.Azure.Cosmos.IndexingPolicy(new RangeIndex(Microsoft.Azure.Cosmos.DataType.String) { Precision = -1 })
                 },
-                throughputProperties).AnyContext();
+                throughputProperties)
+            .AnyContext();
         this.container = containerResponse.Container;
 
         // replace the throughput on an already existing container, if the value has been configured differently
-        if (containerResponse.StatusCode == HttpStatusCode.OK
-            && options.ThroughPut > 0
-            && (await this.container.ReadThroughputAsync()) != options.ThroughPut)
+        if (containerResponse.StatusCode == HttpStatusCode.OK &&
+            options.ThroughPut > 0 &&
+            await this.container.ReadThroughputAsync() != options.ThroughPut)
         {
             await this.container.ReplaceThroughputAsync(throughputProperties);
         }
@@ -456,11 +472,14 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
     private bool ValidateItemId(TItem item) // cosmos v3 needs an id for inserts/updates
     {
-        if (this.idProperty?.PropertyType == typeof(string) && this.idProperty.GetValue(item).To<string>().IsNullOrEmpty())
+        if (this.idProperty?.PropertyType == typeof(string) &&
+            this.idProperty.GetValue(item).To<string>().IsNullOrEmpty())
         {
             return false;
         }
-        else if (this.idProperty?.PropertyType == typeof(Guid) && this.idProperty.GetValue(item).To<Guid>().Equals(Guid.Empty))
+
+        if (this.idProperty?.PropertyType == typeof(Guid) &&
+            this.idProperty.GetValue(item).To<Guid>().Equals(Guid.Empty))
         {
             return false;
         }

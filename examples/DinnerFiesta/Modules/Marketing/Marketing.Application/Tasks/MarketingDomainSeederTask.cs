@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -15,7 +13,9 @@ public class MarketingDomainSeederTask(
     ILoggerFactory loggerFactory
     /*IGenericRepository<Customer> userRepository*/) : IStartupTask
 {
-    private readonly ILogger<MarketingDomainSeederTask> logger = loggerFactory?.CreateLogger<MarketingDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<MarketingDomainSeederTask>();
+    private readonly ILogger<MarketingDomainSeederTask> logger =
+        loggerFactory?.CreateLogger<MarketingDomainSeederTask>() ??
+        NullLoggerFactory.Instance.CreateLogger<MarketingDomainSeederTask>();
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {

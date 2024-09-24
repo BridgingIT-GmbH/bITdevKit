@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using BridgingIT.DevKit.Application.Messaging;
+using DevKit.Application.Messaging;
 
 public class UserCreatedMessage : MessageBase
 {

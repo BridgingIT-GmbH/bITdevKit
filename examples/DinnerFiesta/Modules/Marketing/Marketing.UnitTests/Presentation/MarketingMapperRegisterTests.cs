@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.UnitTests.Presentation;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation.Web.Controllers;
+using Domain;
 using Mapster;
-using Shouldly;
+using Marketing.Presentation;
+using Marketing.Presentation.Web.Controllers;
+using MapsterMapper = Common.MapsterMapper;
 
 public class MarketingMapperRegisterTests
 {
@@ -44,7 +43,8 @@ public class MarketingMapperRegisterTests
         var source = new Faker<Result<Customer>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity).Generate();
+            .RuleFor(u => u.Value, entity)
+            .Generate();
 
         // Act
         var target = this.sut.Map<Result<Customer>, ResultOfCustomerResponseModel>(source);
@@ -84,7 +84,8 @@ public class MarketingMapperRegisterTests
         var source = new Faker<Result<IEnumerable<Customer>>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() }).Generate();
+            .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() })
+            .Generate();
 
         // Act
         var target = this.sut.Map<Result<IEnumerable<Customer>>, ResultOfCustomersResponseModel>(source);

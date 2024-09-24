@@ -5,16 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using NSubstitute;
-using Shouldly;
-using Xunit;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
 
 public class DinnerScheduleShouldNotOverlapRuleTests
 {
@@ -49,11 +43,10 @@ public class DinnerScheduleShouldNotOverlapRuleTests
         var schedule = DinnerSchedule.Create(startDateTime, endDateTime);
         var repository = Substitute.For<IGenericRepository<Dinner>>();
         var sut = new DinnerScheduleMustNotOverlapRule(repository, hostId, schedule);
-        repository.FindAllAsync(Arg.Any<Specification<Dinner>>()).Returns(Task.FromResult(
-            new[]
+        repository.FindAllAsync(Arg.Any<Specification<Dinner>>())
+            .Returns(Task.FromResult(new[]
             {
-                Dinner.Create(
-                    "My Dinner 1",
+                Dinner.Create("My Dinner 1",
                     "A delicious dinner event",
                     DinnerSchedule.Create(startDateTime, endDateTime),
                     DinnerLocation.Create("Restaurant", "123 Main St", null, "postal", "city", "NL"),
@@ -63,8 +56,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
                     hostId,
                     Price.Create(9.99m, "EUR"),
                     new Uri("https://example.com/image.jpg")),
-                Dinner.Create(
-                    "My Dinner 2",
+                Dinner.Create("My Dinner 2",
                     "A delicious dinner event",
                     DinnerSchedule.Create(startDateTime.AddHours(-1), endDateTime.AddHours(1)),
                     DinnerLocation.Create("Restaurant", "123 Main St", null, "postal", "city", "NL"),

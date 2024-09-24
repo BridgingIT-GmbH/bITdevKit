@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Store;
 
 public class AggregateTypeSelector : IAggregateTypeSelector
 {
@@ -22,7 +20,8 @@ public class AggregateTypeSelector : IAggregateTypeSelector
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             this.typeCache = assemblies.SelectMany(a => a.GetTypes()
-                .Where(t => type.IsAssignableFrom(t) && !t.IsInterface)).ToArray();
+                    .Where(t => type.IsAssignableFrom(t) && !t.IsInterface))
+                .ToArray();
         }
 
         return this.typeCache.First(t => t.FullName.Equals(typeName, StringComparison.OrdinalIgnoreCase));

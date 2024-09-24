@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Queries;
+using DevKit.Application.Queries;
 
-public class ForecastFindAllDescriptionsQuery : QueryRequestBase<IEnumerable<string>>
-{
-}
+public class ForecastFindAllDescriptionsQuery : QueryRequestBase<IEnumerable<string>> { }

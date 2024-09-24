@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 using BridgingIT.DevKit.Domain.EventSourcing.Model;
@@ -13,23 +12,27 @@ using BridgingIT.DevKit.Domain.EventSourcing.Registration;
 using BridgingIT.DevKit.Domain.EventSourcing.Store;
 using BridgingIT.DevKit.Infrastructure.EventSourcing;
 using BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
+using Logging;
 using MediatR;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEventStore(this IServiceCollection services, EventStorePublishingModes eventStorePublishingModes)
+    public static IServiceCollection AddEventStore(
+        this IServiceCollection services,
+        EventStorePublishingModes eventStorePublishingModes)
     {
         return services.AddTransient<ISerializer, JsonNetSerializer>()
             .AddSingleton<IEventTypeSelector, EventTypeSelector>()
             .AddTransient<IAggregateTypeSelector, AggregateTypeSelector>()
             .AddTransient<IPublishAggregateEventSender>(sp =>
-                {
-                    // ReSharper disable once ConvertToLambdaExpression
-                    return new PublishAggregateEventSender(sp.GetRequiredService<IMediator>(),
-                        eventStorePublishingModes, sp.GetRequiredService<IAggregateEventMediatorRequestSender>(),
-                        sp.GetRequiredService<IAggregateEventMediatorNotificationSender>(),
-                        sp.GetRequiredService<IAggregateEventOutboxSender>());
-                })
+            {
+                // ReSharper disable once ConvertToLambdaExpression
+                return new PublishAggregateEventSender(sp.GetRequiredService<IMediator>(),
+                    eventStorePublishingModes,
+                    sp.GetRequiredService<IAggregateEventMediatorRequestSender>(),
+                    sp.GetRequiredService<IAggregateEventMediatorNotificationSender>(),
+                    sp.GetRequiredService<IAggregateEventOutboxSender>());
+            })
             .AddTransient<IAggregateEventMediatorRequestSender, AggregateEventMediatorRequestSender>()
             .AddTransient<IAggregateEventMediatorNotificationSender, AggregateEventMediatorNotificationSender>()
             .AddTransient<IAggregateEventOutboxSender, AggregateEventOutboxSender>()
@@ -41,33 +44,39 @@ public static class ServiceCollectionExtensions
 
     [Obsolete("Please use overload")]
     public static IServiceCollection RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(
-        this IServiceCollection services, EventStorePublishingModes projectionRequestPublishingModes)
+        this IServiceCollection services,
+        EventStorePublishingModes projectionRequestPublishingModes)
         where TAggregate : EventSourcingAggregateRoot
     {
-        return RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(services, projectionRequestPublishingModes,
+        return RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(services,
+            projectionRequestPublishingModes,
             false);
     }
 
-    public static IServiceCollection RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(this IServiceCollection services,
-        EventStorePublishingModes projectionRequestPublishingModes, bool isSnapshotEnabled)
+    public static IServiceCollection RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(
+        this IServiceCollection services,
+        EventStorePublishingModes projectionRequestPublishingModes,
+        bool isSnapshotEnabled)
         where TAggregate : EventSourcingAggregateRoot
     {
         if ((projectionRequestPublishingModes & EventStorePublishingModes.AddToOutbox) !=
             EventStorePublishingModes.None)
         {
-            throw new InvalidOperationException($"The Flag {EventStorePublishingModes.AddToOutbox} is not allowed for {nameof(projectionRequestPublishingModes)}");
+            throw new InvalidOperationException(
+                $"The Flag {EventStorePublishingModes.AddToOutbox} is not allowed for {nameof(projectionRequestPublishingModes)}");
         }
 
-        return services
-            .AddTransient<IEventStore<TAggregate>, EventStore<TAggregate>>()
-            .AddTransient<IEventStoreOptions<TAggregate>>((_) => new EventStoreOptions<TAggregate>() { IsSnapshotEnabled = isSnapshotEnabled })
-            .AddTransient<IProjectionRequester<TAggregate>, ProjectionRequester<TAggregate>>(
-                sp => new ProjectionRequester<TAggregate>(
-                    sp.GetRequiredService<IEventStore<TAggregate>>(),
-                    new PublishAggregateEventSender(
-                        sp.GetRequiredService<IMediator>(),
-                        projectionRequestPublishingModes, sp.GetRequiredService<IAggregateEventMediatorRequestSender>(),
+        return services.AddTransient<IEventStore<TAggregate>, EventStore<TAggregate>>()
+            .AddTransient<
+                IEventStoreOptions<TAggregate>>(_ =>
+                new EventStoreOptions<TAggregate> { IsSnapshotEnabled = isSnapshotEnabled })
+            .AddTransient<IProjectionRequester<TAggregate>, ProjectionRequester<TAggregate>>(sp =>
+                new ProjectionRequester<TAggregate>(sp.GetRequiredService<IEventStore<TAggregate>>(),
+                    new PublishAggregateEventSender(sp.GetRequiredService<IMediator>(),
+                        projectionRequestPublishingModes,
+                        sp.GetRequiredService<IAggregateEventMediatorRequestSender>(),
                         sp.GetRequiredService<IAggregateEventMediatorNotificationSender>(),
-                        sp.GetRequiredService<IAggregateEventOutboxSender>()), sp.GetRequiredService<Logging.ILoggerFactory>()));
+                        sp.GetRequiredService<IAggregateEventOutboxSender>()),
+                    sp.GetRequiredService<ILoggerFactory>()));
     }
 }

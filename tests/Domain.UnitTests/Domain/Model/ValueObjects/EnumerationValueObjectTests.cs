@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
-using Shouldly;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
-public class EnumValueObjectTests
+public class EnumerationValueObjectTests
 {
     [Fact]
     public void EnumValueObject_WhenCallingToString_ThenKeyIsReturned()
     {
         // Arrange
-        var sut = StubEnumValueObject.One;
+        var sut = StubEnumerationValueObject.One;
 
         // Act
         var key = sut.ToString();
@@ -29,19 +27,19 @@ public class EnumValueObjectTests
     public void EnumValueObject_WhenCallingAll_ThenAllPartsAreReturned()
     {
         // Act
-        var sut = StubEnumValueObject.All;
+        var sut = StubEnumerationValueObject.All;
 
         // Assert
-        sut.ShouldContain(StubEnumValueObject.One);
-        sut.ShouldContain(StubEnumValueObject.Two);
+        sut.ShouldContain(StubEnumerationValueObject.One);
+        sut.ShouldContain(StubEnumerationValueObject.Two);
     }
 
     [Fact]
     public void EnumValueObject_WhenComparingEqualOnes_ThenEqual()
     {
         // Arrange
-        var sut1 = StubEnumValueObject.One;
-        var sut2 = StubEnumValueObject.FromKey("One");
+        var sut1 = StubEnumerationValueObject.One;
+        var sut2 = StubEnumerationValueObject.FromKey("One");
 
         // Act
         var result = sut1 == sut2;
@@ -54,7 +52,7 @@ public class EnumValueObjectTests
     public void EnumValueObject_WhenComparingWithStringKey_ThenEqual()
     {
         // Arrange
-        var sut = StubEnumValueObject.One;
+        var sut = StubEnumerationValueObject.One;
         const string key = "One";
 
         // Act
@@ -69,7 +67,7 @@ public class EnumValueObjectTests
     {
         // Arrange
         // Act
-        var sut = StubEnumValueObject.FromKey("unk");
+        var sut = StubEnumerationValueObject.FromKey("unk");
 
         // Assert
         sut.ShouldBeNull();
@@ -82,19 +80,19 @@ public class EnumValueObjectTests
     public void NullOrEmptyKey_WhenCreating_ThenException(string key)
     {
         // Assert
-        Assert.Throws<ArgumentException>(() => new StubEnumValueObject(key));
+        Assert.Throws<ArgumentException>(() => new StubEnumerationValueObject(key));
     }
 
     [Theory]
     [InlineData(null, false)]
     [InlineData("Four", false)]
-    [InlineData(nameof(StubEnumValueObject.Two), true)]
-    [InlineData(nameof(StubEnumValueObject.One), true)]
+    [InlineData(nameof(StubEnumerationValueObject.Two), true)]
+    [InlineData(nameof(StubEnumerationValueObject.One), true)]
     public void PossibleKey_WhenCheckingIfKeyIsEnumValueObject_ThenShouldReturnTrueIfKeyRecognized(string key, bool expected)
     {
         // Arrange
         // Act
-        var sut = StubEnumValueObject.Is(key);
+        var sut = StubEnumerationValueObject.Is(key);
 
         // Assert
         sut.ShouldBe(expected);
@@ -125,11 +123,11 @@ public class EnumValueObjectTests
     }
 }
 
-public sealed class StubEnumValueObject(string key) : EnumValueObject<StubEnumValueObject>(key)
+public sealed class StubEnumerationValueObject(string key) : EnumerationValueObject<StubEnumerationValueObject>(key)
 {
-    public static readonly StubEnumValueObject One = new(nameof(One));
+    public static readonly StubEnumerationValueObject One = new(nameof(One));
 
-    public static readonly StubEnumValueObject Two = new(nameof(Two));
+    public static readonly StubEnumerationValueObject Two = new(nameof(Two));
 }
 
 public sealed class AnotherStubEnumValueObject : EnumerationValueObject<AnotherStubEnumValueObject, long>
@@ -139,7 +137,5 @@ public sealed class AnotherStubEnumValueObject : EnumerationValueObject<AnotherS
     public static readonly AnotherStubEnumValueObject Two = new(2, "test");
 
     private AnotherStubEnumValueObject(long key, string name)
-        : base(key, name)
-    {
-    }
+        : base(key, name) { }
 }

@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 public static partial class Extensions
 {
@@ -19,10 +16,7 @@ public static partial class Extensions
     {
         if (distinct is not null)
         {
-            source = source
-                .GroupBy(distinct)
-                .Select(g => g.FirstOrDefault())
-                .AsQueryable();
+            source = source.GroupBy(distinct).Select(g => g.FirstOrDefault()).AsQueryable();
         }
 
         return source;

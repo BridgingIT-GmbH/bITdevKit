@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
-using Xunit;
-using Shouldly;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
@@ -20,18 +15,19 @@ public class EnumerationTests
     public void GetAll_ShouldReturnAllEnumerations()
     {
         // Arrange & Act
-        var sut = Enumeration.GetAll<StubStatus>();
+        var sut = Enumeration.GetAll<StubStatus>()
+            .ToArray();
 
         // Assert
         sut.ShouldNotBeEmpty();
-        sut.Count().ShouldBe(3);
+        sut.Length.ShouldBe(3);
         sut.ShouldContain(e => e.Id == 1 && e.Value == "Stub01" && e.Code == "S1");
         sut.ShouldContain(e => e.Id == 2 && e.Value == "Stub02" && e.Code == "S2");
         sut.ShouldContain(e => e.Id == 3 && e.Value == "Stub03" && e.Code == "S3");
     }
 
     [Fact]
-    public void From_WithValidId_ShouldReturnCorrectEnumeration()
+    public void FromId_WithValidId_ShouldReturnCorrectEnumeration()
     {
         // Arrange & Act
         var sut = Enumeration.FromId<StubStatus>(2);
@@ -45,7 +41,7 @@ public class EnumerationTests
     }
 
     [Fact]
-    public void From_WithInvalidId_ShouldThrowInvalidOperationException()
+    public void FromId_WithInvalidId_ShouldThrowInvalidOperationException()
     {
         // Arrange & Act & Assert
         Should.Throw<InvalidOperationException>(() => Enumeration.FromId<StubStatus>(0))
@@ -53,7 +49,7 @@ public class EnumerationTests
     }
 
     [Fact]
-    public void From_WithValidName_ShouldReturnCorrectEnumeration()
+    public void FromValue_WithValidName_ShouldReturnCorrectEnumeration()
     {
         // Arrange & Act
         var sut = Enumeration.FromValue<StubStatus>("Stub03");
@@ -66,7 +62,7 @@ public class EnumerationTests
     }
 
     [Fact]
-    public void From_WithValidNameCaseInsensitive_ShouldReturnCorrectEnumeration()
+    public void FromValue_WithValidNameCaseInsensitive_ShouldReturnCorrectEnumeration()
     {
         // Arrange & Act
         var sut = Enumeration.FromValue<StubStatus>("STUB03");
@@ -79,7 +75,7 @@ public class EnumerationTests
     }
 
     [Fact]
-    public void From_WithInvalidName_ShouldThrowInvalidOperationException()
+    public void FromValue_WithInvalidName_ShouldThrowInvalidOperationException()
     {
         // Arrange & Act & Assert
         Should.Throw<InvalidOperationException>(() => Enumeration.FromValue<StubStatus>("Stub00"))
@@ -90,8 +86,8 @@ public class EnumerationTests
     public void Equals_WithSameEnumeration_ShouldReturnTrue()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub03");
-        var other = Enumeration.FromValue<StubStatus>("Stub03");
+        var sut = StubStatus.Stub03;
+        var other = StubStatus.Stub03;
 
         // Act
         var result = sut.Equals(other);
@@ -104,8 +100,8 @@ public class EnumerationTests
     public void Equals_WithDifferentEnumeration_ShouldReturnFalse()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub01");
-        var other = Enumeration.FromValue<StubStatus>("Stub03");
+        var sut = StubStatus.Stub01;
+        var other = StubStatus.Stub03;
 
         // Act
         var result = sut.Equals(other);
@@ -118,7 +114,7 @@ public class EnumerationTests
     public void Equals_WithNull_ShouldReturnFalse()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub01");
+        var sut = StubStatus.Stub01;
 
         // Act
         var result = sut.Equals(null);
@@ -131,7 +127,7 @@ public class EnumerationTests
     public void Equals_WithDifferentType_ShouldReturnFalse()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub01");
+        var sut = StubStatus.Stub01;
         var differentType = new object();
 
         // Act
@@ -142,35 +138,123 @@ public class EnumerationTests
     }
 
     [Fact]
-    public void Equals_WithSameEnumerationCaseInsensitive_ShouldReturnTrue()
+    public void EqualsOperator_WithSameEnumeration_ShouldReturnTrue()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub03");
-        var other = Enumeration.FromValue<StubStatus>("STUB03");
+        var sut = StubStatus.Stub03;
+        var other = StubStatus.Stub03;
 
         // Act
-        var result = sut.Equals(other);
+        var result = sut == other;
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void GetHashCode_ShouldBeConsistent()
+    public void EqualsOperator_WithDifferentEnumeration_ShouldReturnFalse()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub01");
-        var other = Enumeration.FromValue<StubStatus>("Stub01");
+        var sut = StubStatus.Stub01;
+        var other = StubStatus.Stub03;
 
-        // Act & Assert
-        sut.GetHashCode().ShouldBe(other.GetHashCode());
+        // Act
+        var result = sut == other;
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void NotEqualsOperator_WithSameEnumeration_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = StubStatus.Stub03;
+        var other = StubStatus.Stub03;
+
+        // Act
+        var result = sut != other;
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void NotEqualsOperator_WithDifferentEnumeration_ShouldReturnTrue()
+    {
+        // Arrange
+        var sut = StubStatus.Stub01;
+        var other = StubStatus.Stub03;
+
+        // Act
+        var result = sut != other;
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void EqualsOperator_WithNull_ShouldReturnFalse()
+    {
+        // Arrange
+        var sut = StubStatus.Stub01;
+
+        // Act
+        var result = sut == null;
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void EqualsOperator_WithNullOnBothSides_ShouldReturnTrue()
+    {
+        // Arrange
+        StubStatus sut = null;
+        StubStatus other = null;
+
+        // Act
+        var result = sut == other;
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GetHashCode_ShouldBeConsistentForSameEnumeration()
+    {
+        // Arrange
+        var sut1 = StubStatus.Stub01;
+        var sut2 = StubStatus.Stub01;
+
+        // Act
+        var hashCode1 = sut1.GetHashCode();
+        var hashCode2 = sut2.GetHashCode();
+
+        // Assert
+        hashCode1.ShouldBe(hashCode2);
+    }
+
+    [Fact]
+    public void GetHashCode_ShouldBeDifferentForDifferentEnumerations()
+    {
+        // Arrange
+        var sut1 = StubStatus.Stub01;
+        var sut2 = StubStatus.Stub02;
+
+        // Act
+        var hashCode1 = sut1.GetHashCode();
+        var hashCode2 = sut2.GetHashCode();
+
+        // Assert
+        hashCode1.ShouldNotBe(hashCode2);
     }
 
     [Fact]
     public void ToString_ShouldReturnName()
     {
         // Arrange
-        var sut = Enumeration.FromValue<StubStatus>("Stub01");
+        var sut = StubStatus.Stub01;
 
         // Act
         var result = sut.ToString();
@@ -192,7 +276,7 @@ public class EnumerationTests
         orderedList.Sort();
 
         // Assert
-        orderedList.ShouldBe([sut1, sut2, sut3]);
+        orderedList.ShouldBe(new List<StubStatus> { sut1, sut2, sut3 });
     }
 
     [Fact]
@@ -254,20 +338,31 @@ public class EnumerationTests
     }
 }
 
-public class StubStatus(int id, string value, string code, string description)
-    : Enumeration(id, value)
+public class StubStatus : Enumeration
 {
-    public static StubStatus Stub01 = new(1, "Stub01", "S1", "Lorem Ipsum");
-    public static StubStatus Stub02 = new(2, "Stub02", "S2", "Lorem Ipsum");
-    public static StubStatus Stub03 = new(3, "Stub03", "S3", "Lorem Ipsum");
+    public static readonly StubStatus Stub01 = new(1, "Stub01", "S1", "Lorem Ipsum");
+    public static readonly StubStatus Stub02 = new(2, "Stub02", "S2", "Lorem Ipsum");
+    public static readonly StubStatus Stub03 = new(3, "Stub03", "S3", "Lorem Ipsum");
 
-    public string Code { get; } = code;
+    private StubStatus(int id, string value, string code, string description)
+        : base(id, value)
+    {
+        this.Code = code;
+        this.Description = description;
+    }
 
-    public string Description { get; } = description;
+    public string Code { get; }
 
-    public static IEnumerable<StubStatus> GetAll() =>
-        GetAll<StubStatus>();
+    public string Description { get; }
 
-    public static StubStatus GetByCode(string code) =>
-        GetAll<StubStatus>().FirstOrDefault(e => e.Code == code);
+    public static IEnumerable<StubStatus> GetAll()
+    {
+        return GetAll<StubStatus>();
+    }
+
+    public static StubStatus GetByCode(string code)
+    {
+        return GetAll<StubStatus>()
+            .FirstOrDefault(e => e.Code == code);
+    }
 }

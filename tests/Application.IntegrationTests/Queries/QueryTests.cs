@@ -5,19 +5,21 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Queries;
 
-using BridgingIT.DevKit.Common;
-using FluentValidation;
+using Application.Queries;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class QueryTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-                !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase)).ToArray()));
-            s.AddTransient(typeof(IPipelineBehavior<,>), typeof(Application.Queries.DummyQueryBehavior<,>));
-        })
+public class QueryTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a =>
+                !a.GetName()
+                    .Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
+            .ToArray()));
+        s.AddTransient(typeof(IPipelineBehavior<,>), typeof(DummyQueryBehavior<,>));
+    })
 {
     //[Fact]
     //public async Task InvalidQueryHandler_Test()
@@ -43,10 +45,12 @@ public class QueryTests(ITestOutputHelper output) : TestsBase(output, s =>
         var query = new StubPersonQuery("John");
 
         // Act
-        var response = await mediator.Send(query).AnyContext();
+        var response = await mediator.Send(query)
+            .AnyContext();
 
         // Assert
-        response.Result.Count().ShouldBe(2);
+        response.Result.Count()
+            .ShouldBe(2);
         response.Result.ShouldAllBe(x => x.FirstName == "John");
         response.Cancelled.ShouldBeFalse();
     }

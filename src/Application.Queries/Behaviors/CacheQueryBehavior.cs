@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
+public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
+    : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));

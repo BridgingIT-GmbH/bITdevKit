@@ -5,15 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class GeoLocation : ValueObject
 {
-    private GeoLocation()
-    {
-    }
+    private GeoLocation() { }
 
     private GeoLocation(double longitude, double latitude)
     {
@@ -27,17 +24,9 @@ public class GeoLocation : ValueObject
 
     public static GeoLocation Create(double longitude, double latitude)
     {
-        DomainRules.Apply(
-        [
-            new LongitudeShouldBeInRange(longitude),
-            new LatitudeShouldBeInRange(latitude)
-        ]);
+        DomainRules.Apply([new LongitudeShouldBeInRange(longitude), new LatitudeShouldBeInRange(latitude)]);
 
-        return new GeoLocation
-        {
-            Longitude = longitude,
-            Latitude = latitude
-        };
+        return new GeoLocation { Longitude = longitude, Latitude = latitude };
     }
 
     protected override IEnumerable<object> GetAtomicValues()

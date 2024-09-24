@@ -1,16 +1,14 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
-using System;
-using System.Collections.Generic;
+
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
+using Domain.Model;
+using Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 [TypedEntityId<Guid>]
 public partial class CategoryId // generates a standalone typed id
-{
-}
+{ }
 
 [TypedEntityId<Guid>]
 public class Blog : AggregateRoot<BlogId>
@@ -29,12 +27,7 @@ public class Blog : AggregateRoot<BlogId>
 
     public static Blog Create(string name, string url, EmailAddressStub email)
     {
-        return new Blog()
-        {
-            Name = name,
-            Url = url,
-            Email = email,
-        };
+        return new Blog { Name = name, Url = url, Email = email };
     }
 
     public Blog AddPost(Post post)
@@ -88,13 +81,10 @@ public class Post : Entity<PostId>
 
     public DateOnly? PublishedDate { get; set; }
 
-    public static Post Create(string title, string content) =>
-        new()
-        {
-            Title = title,
-            Content = content,
-            CategoryId = CategoryId.Create()
-        };
+    public static Post Create(string title, string content)
+    {
+        return new Post { Title = title, Content = content, CategoryId = CategoryId.Create() };
+    }
 
     public Post Publish(DateOnly? date = null)
     {
@@ -115,11 +105,16 @@ public class PostStatus(int id, string value, string code, string description) :
 
     public string Description { get; } = description;
 
-    public static IEnumerable<Status> GetAll() =>
-        GetAll<Status>();
+    public static IEnumerable<Status> GetAll()
+    {
+        return GetAll<Status>();
+    }
 
-    public static Status GetByCode(string code) =>
-        GetAll<Status>().FirstOrDefault(e => e.Code == code);
+    public static Status GetByCode(string code)
+    {
+        return GetAll<Status>()
+            .FirstOrDefault(e => e.Code == code);
+    }
 }
 
 public class BlogEmailSpecification(string email) : Specification<Blog>
@@ -142,8 +137,7 @@ public class BlogEntityTypeConfiguration : IEntityTypeConfiguration<Blog>
 
         builder.Property(e => e.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => BlogId.Create(value));
 
         builder.Property(e => e.Name)
@@ -154,51 +148,53 @@ public class BlogEntityTypeConfiguration : IEntityTypeConfiguration<Blog>
             .IsRequired(false)
             .HasMaxLength(512);
 
-        builder.OwnsOne(e => e.Email, b =>
-        {
-            b.Property(e => e.Value)
-                .HasColumnName("Email")
-                .IsRequired(false)
-                .HasMaxLength(256);
+        builder.OwnsOne(e => e.Email,
+            b =>
+            {
+                b.Property(e => e.Value)
+                    .HasColumnName("Email")
+                    .IsRequired(false)
+                    .HasMaxLength(256);
 
-            b.HasIndex(nameof(Blog.Email.Value))
-                .IsUnique();
-        });
-        builder.Navigation(e => e.Email).IsRequired();
+                b.HasIndex(nameof(Blog.Email.Value))
+                    .IsUnique();
+            });
+        builder.Navigation(e => e.Email)
+            .IsRequired();
 
-        builder.OwnsMany(e => e.Posts, b =>
-        {
-            b.ToTable("Posts");
-            b.WithOwner().HasForeignKey("BlogId");
-            b.HasKey("Id", "BlogId");
+        builder.OwnsMany(e => e.Posts,
+            b =>
+            {
+                b.ToTable("Posts");
+                b.WithOwner()
+                    .HasForeignKey("BlogId");
+                b.HasKey("Id", "BlogId");
 
-            b.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasConversion(
-                    id => id.Value,
-                    value => PostId.Create(value));
+                b.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasConversion(id => id.Value,
+                        value => PostId.Create(value));
 
-            b.Property(e => e.Title)
-                .IsRequired().HasMaxLength(256);
+                b.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(256);
 
-            b.Property(e => e.Content)
-                .IsRequired(false);
+                b.Property(e => e.Content)
+                    .IsRequired(false);
 
-            b.Property(e => e.CategoryId)
-                .IsRequired()
-                .HasConversion(
-                    id => id.Value,
-                    value => CategoryId.Create(value));
+                b.Property(e => e.CategoryId)
+                    .IsRequired()
+                    .HasConversion(id => id.Value,
+                        value => CategoryId.Create(value));
 
-            b.Property(e => e.PublishedDate)
-                .IsRequired(false);
+                b.Property(e => e.PublishedDate)
+                    .IsRequired(false);
 
-            b.Property(e => e.Status)
-                .HasConversion(
-                    status => status.Id,
-                    id => Enumeration.FromId<PostStatus>(id));
-            //.HasConversion(
-            //    new EnumerationConverter<int, string, PostStatus>());
-        });
+                b.Property(e => e.Status)
+                    .HasConversion(status => status.Id,
+                        id => Enumeration.FromId<PostStatus>(id));
+                //.HasConversion(
+                //    new EnumerationConverter<int, string, PostStatus>());
+            });
     }
 }

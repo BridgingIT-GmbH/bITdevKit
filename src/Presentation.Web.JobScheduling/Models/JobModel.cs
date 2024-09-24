@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
-using System.Collections.Generic;
-
 public class JobModel
 {
     public string Group { get; set; }

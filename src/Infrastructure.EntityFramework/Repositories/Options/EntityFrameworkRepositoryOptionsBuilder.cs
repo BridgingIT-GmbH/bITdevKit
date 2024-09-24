@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-public class EntityFrameworkRepositoryOptionsBuilder :
-    OptionsBuilderBase<EntityFrameworkRepositoryOptions, EntityFrameworkRepositoryOptionsBuilder>
+public class EntityFrameworkRepositoryOptionsBuilder
+    : OptionsBuilderBase<EntityFrameworkRepositoryOptions, EntityFrameworkRepositoryOptionsBuilder>
 {
     public EntityFrameworkRepositoryOptionsBuilder DbContext(DbContext context)
     {

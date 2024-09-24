@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
 public class AggregateInsertedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
     where TEntity : class, IEntity, IAggregateRoot

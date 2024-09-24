@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 public class RequestModuleContextAccessor : IRequestModuleContextAccessor
@@ -15,9 +12,7 @@ public class RequestModuleContextAccessor : IRequestModuleContextAccessor
     private readonly IEnumerable<IModule> modules;
     private readonly string[] pathSelectors = ["/api/v", "/api"];
 
-    public RequestModuleContextAccessor(
-        IEnumerable<IModule> modules = null,
-        string[] pathSelectors = null)
+    public RequestModuleContextAccessor(IEnumerable<IModule> modules = null, string[] pathSelectors = null)
     {
         this.modules = modules.SafeNull();
 

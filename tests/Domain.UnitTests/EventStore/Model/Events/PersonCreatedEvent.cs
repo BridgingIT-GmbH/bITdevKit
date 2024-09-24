@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
 
-using System;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using EventSourcing.Model;
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 public class PersonCreatedEvent : AggregateCreatedEvent<Person>
 {

@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
+using Common;
+using DevKit.Application.Commands;
+using Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -19,8 +19,10 @@ public class CustomerCreateCommand : CommandRequestBase<Result<Customer>>
 
     public string Email { get; set; }
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<CustomerCreateCommand>
     {

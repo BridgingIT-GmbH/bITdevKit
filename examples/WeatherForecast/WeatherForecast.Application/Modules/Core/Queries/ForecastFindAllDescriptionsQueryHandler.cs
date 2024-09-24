@@ -5,19 +5,15 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Queries;
+using DevKit.Domain.Repositories;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class ForecastFindAllDescriptionsQueryHandler : QueryHandlerBase<ForecastFindAllDescriptionsQuery, IEnumerable<string>>
+public class ForecastFindAllDescriptionsQueryHandler
+    : QueryHandlerBase<ForecastFindAllDescriptionsQuery, IEnumerable<string>>
 {
     private readonly IGenericRepository<Forecast> forecastRepository;
 
@@ -35,34 +31,22 @@ public class ForecastFindAllDescriptionsQueryHandler : QueryHandlerBase<Forecast
         ForecastFindAllDescriptionsQuery query,
         CancellationToken cancellationToken)
     {
-        var descriptions = await this.forecastRepository.ProjectAllAsync(
-            e => e.Description,                // projection
-            options: new FindOptions<Forecast>
-            {
-                Order = new OrderOption<Forecast>(e => e.Description),
-                Distinct = new DistinctOption<Forecast>()
-            },
-            cancellationToken: cancellationToken).AnyContext();
+        var descriptions = await this.forecastRepository.ProjectAllAsync(e => e.Description, // projection
+                new FindOptions<Forecast>
+                {
+                    Order = new OrderOption<Forecast>(e => e.Description), Distinct = new DistinctOption<Forecast>()
+                },
+                cancellationToken)
+            .AnyContext();
 
-        return new QueryResponse<IEnumerable<string>>()
-        {
-            Result = descriptions
-        };
+        return new QueryResponse<IEnumerable<string>> { Result = descriptions };
     }
 }
 
 public class ForecastProjection
 {
-    public static Expression<Func<Forecast, ForecastProjection>> Expression
-    {
-        get
-        {
-            return e => new ForecastProjection()
-            {
-                Description = e.Description
-            };
-        }
-    }
+    public static Expression<Func<Forecast, ForecastProjection>> Expression =>
+        e => new ForecastProjection { Description = e.Description };
 
     public string Description { get; set; }
 }

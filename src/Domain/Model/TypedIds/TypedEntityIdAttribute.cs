@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
-
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public class TypedEntityIdAttribute<TId> : Attribute
-{
-}
+/// <summary>
+///     An attribute that specifies the TypedId for an Entity. This Attributes
+///     is used for the code generation of TypedId instances.
+/// </summary>
+/// <typeparam name="TId">The type of the identifier.</typeparam>
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class TypedEntityIdAttribute<TId> : Attribute { }

@@ -5,15 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Presentation.Web;
 
-using System;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
-using EventSourcingDemo.Infrastructure.Repositories;
+using DevKit.Infrastructure.EntityFramework.EventSourcing;
+using DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 public class Program
 {
@@ -41,7 +37,9 @@ public class Program
         host.Run();
     }
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+    {
+        return WebHost.CreateDefaultBuilder(args)
             .UseStartup<Startup>();
+    }
 }

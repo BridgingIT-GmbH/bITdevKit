@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation.Web.Controllers;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Presentation.Web;
+using Application;
+using Common;
+using DevKit.Presentation.Web;
+using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,9 @@ public class MarketingController(IMapper mapper, IMediator mediator) : Marketing
     }
 
     // Customer =====================================================================================
-    public override async Task<ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(string customerId, CancellationToken cancellationToken)
+    public override async Task<ActionResult<ResultOfCustomerResponseModel>> CustomerFindOne(
+        string customerId,
+        CancellationToken cancellationToken)
     {
         var query = new CustomerFindOneQuery(customerId);
         var result = (await this.mediator.Send(query, cancellationToken)).Result;
@@ -33,7 +35,8 @@ public class MarketingController(IMapper mapper, IMediator mediator) : Marketing
         return result.ToOkActionResult<Customer, ResultOfCustomerResponseModel>(this.mapper);
     }
 
-    public override async Task<ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll(CancellationToken cancellationToken)
+    public override async Task<ActionResult<ResultOfCustomersResponseModel>> CustomerFindAll(
+        CancellationToken cancellationToken)
     {
         var query = new CustomerFindAllQuery();
         var result = (await this.mediator.Send(query, cancellationToken).AnyContext()).Result;
@@ -41,7 +44,9 @@ public class MarketingController(IMapper mapper, IMediator mediator) : Marketing
         return result.ToOkActionResult<IEnumerable<Customer>, ResultOfCustomersResponseModel>(this.mapper);
     }
 
-    public override async Task<ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(string customerId, CancellationToken cancellationToken)
+    public override async Task<ActionResult<ResultResponseModel>> CustomerEmailUnsubscribe(
+        string customerId,
+        CancellationToken cancellationToken)
     {
         var command = new CustomerUnsubscribeCommand { CustomerId = customerId };
         var result = (await this.mediator.Send(command, cancellationToken).AnyContext()).Result;

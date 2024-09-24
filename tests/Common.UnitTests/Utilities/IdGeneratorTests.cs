@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System.Threading;
-
 [UnitTest("Common")]
 public class IdGeneratorTests(ITestOutputHelper output) : TestsBase(output)
 {
@@ -44,6 +42,10 @@ public class IdGeneratorTests(ITestOutputHelper output) : TestsBase(output)
     [Fact]
     public void Create_Benchmark()
     {
-        this.Benchmark(() => { var id = IdGenerator.Create(); }, 10000);
+        this.Benchmark(() =>
+            {
+                var id = IdGenerator.Create();
+            },
+            10000);
     }
 }

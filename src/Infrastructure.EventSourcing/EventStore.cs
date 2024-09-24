@@ -5,17 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Repositories;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using EnsureThat;
+using System.Diagnostics;
+using Common;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Repositories;
+using Domain.EventSourcing.Store;
 using MediatR;
 
 public class EventStore<TAggregate>(
@@ -37,7 +32,10 @@ public class EventStore<TAggregate>(
 
     public async Task<TAggregate> GetAsync(Guid aggregateId, bool forceReplay, CancellationToken cancellationToken)
     {
-        var snapshot = this.eventStoreOptions.IsSnapshotEnabled ? await this.eventStoreRepository.GetSnapshotAsync<TAggregate>(aggregateId, CancellationToken.None).AnyContext() : null;
+        var snapshot = this.eventStoreOptions.IsSnapshotEnabled
+            ? await this.eventStoreRepository.GetSnapshotAsync<TAggregate>(aggregateId, CancellationToken.None)
+                .AnyContext()
+            : null;
         if (snapshot is null || forceReplay)
         {
             var events = await this.GetEventsAsync(aggregateId, cancellationToken).AnyContext();
@@ -46,10 +44,7 @@ public class EventStore<TAggregate>(
                 return null;
             }
 
-            var methodInfo = typeof(TAggregate).GetConstructor(
-            [
-                typeof(Guid), typeof(IEnumerable<IAggregateEvent>)
-            ]);
+            var methodInfo = typeof(TAggregate).GetConstructor([typeof(Guid), typeof(IEnumerable<IAggregateEvent>)]);
             if (methodInfo is null)
             {
                 throw new AggregateCouldNotBeConstructedException();
@@ -58,7 +53,8 @@ public class EventStore<TAggregate>(
             var aggregate = methodInfo.Invoke([aggregateId, events]) as TAggregate;
             if (aggregate is null)
             {
-                throw new AggregateException($"Aggregate {typeof(TAggregate)} with id {aggregateId} could not be created");
+                throw new AggregateException(
+                    $"Aggregate {typeof(TAggregate)} with id {aggregateId} could not be created");
             }
 
             if (this.eventStoreOptions.IsSnapshotEnabled)
@@ -68,10 +64,8 @@ public class EventStore<TAggregate>(
 
             return aggregate;
         }
-        else
-        {
-            return snapshot;
-        }
+
+        return snapshot;
     }
 
     public async Task<IEnumerable<Guid>> GetAggregateIdsAsync(CancellationToken cancellationToken)
@@ -86,13 +80,15 @@ public class EventStore<TAggregate>(
         await this.SaveEventsAsync(aggregate, true, cancellationToken).AnyContext();
     }
 
-    public async Task SaveEventsAsync(TAggregate aggregate, bool sendProjectionRequestForEveryEvent,
+    public async Task SaveEventsAsync(
+        TAggregate aggregate,
+        bool sendProjectionRequestForEveryEvent,
         CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(aggregate, nameof(aggregate));
 
-        var maxVersion = await this.eventStoreRepository
-            .GetMaxVersionAsync<TAggregate>(aggregate.Id, cancellationToken).AnyContext();
+        var maxVersion = await this.eventStoreRepository.GetMaxVersionAsync<TAggregate>(aggregate.Id, cancellationToken)
+            .AnyContext();
 
         var fn = new Func<Task>(async () =>
         {
@@ -122,7 +118,7 @@ public class EventStore<TAggregate>(
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                     throw;
                 }
 
@@ -153,7 +149,8 @@ public class EventStore<TAggregate>(
 
     public async Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
-        return await this.eventStoreRepository.GetEventsAsync<TAggregate>(aggregateId, CancellationToken.None).AnyContext();
+        return await this.eventStoreRepository.GetEventsAsync<TAggregate>(aggregateId, CancellationToken.None)
+            .AnyContext();
     }
 
     public async Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId)

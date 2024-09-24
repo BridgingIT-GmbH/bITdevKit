@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Xunit;
 
+[UnitTest("Domain")]
 public class TypedEntityIdClassGeneratorTests
 {
     [Fact]
@@ -38,8 +37,10 @@ public class User : IEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult().Results.Single();
-        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
+        var result = driver.GetRunResult()
+            .Results.Single();
+        var generatedCode = result.GeneratedSources.Single()
+            .SourceText.ToString();
         Assert.NotEmpty(result.GeneratedSources);
 
         Assert.Contains("public partial class UserId : EntityId<Guid>", generatedCode);
@@ -77,8 +78,10 @@ public class Order : IEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult().Results.Single();
-        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
+        var result = driver.GetRunResult()
+            .Results.Single();
+        var generatedCode = result.GeneratedSources.Single()
+            .SourceText.ToString();
 
         Assert.NotEmpty(result.GeneratedSources);
         Assert.Contains("public partial class OrderId : EntityId<Int32>", generatedCode);
@@ -109,8 +112,10 @@ public partial class ProductId
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult().Results.Single();
-        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
+        var result = driver.GetRunResult()
+            .Results.Single();
+        var generatedCode = result.GeneratedSources.Single()
+            .SourceText.ToString();
 
         Assert.NotEmpty(result.GeneratedSources);
         Assert.Contains("public partial class ProductId : EntityId<Guid>", generatedCode);
@@ -143,8 +148,10 @@ public class Product : BaseEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult().Results.Single();
-        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
+        var result = driver.GetRunResult()
+            .Results.Single();
+        var generatedCode = result.GeneratedSources.Single()
+            .SourceText.ToString();
 
         Assert.Contains("public partial class ProductId : EntityId<Guid>", generatedCode);
         Assert.Contains("public static ProductId Create()", generatedCode);
@@ -157,13 +164,11 @@ public class Product : BaseEntity
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
         var references = new[]
         {
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location), MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
             MetadataReference.CreateFromFile(typeof(TypedEntityIdClassGenerator).Assembly.Location)
         };
 
-        var compilation = CSharpCompilation.Create(
-            "TestAssembly",
+        var compilation = CSharpCompilation.Create("TestAssembly",
             new[] { syntaxTree },
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

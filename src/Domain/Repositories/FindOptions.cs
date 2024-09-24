@@ -5,34 +5,28 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Model;
 
 /// <summary>
-/// Various options to specify the <see cref="IGenericRepository{T}" /> find operations.
+///     Various options to specify the find operations for a repository.
 /// </summary>
-/// <seealso cref="Domain.IFindOptions{TEntity}" />
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
 public class FindOptions<TEntity> : IFindOptions<TEntity>
-     where TEntity : class, IEntity
+    where TEntity : class, IEntity
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindOptions{T}"/> class.
+    ///     Initializes a new instance of the <see cref="FindOptions{TEntity}" /> class.
     /// </summary>
-    public FindOptions()
-    {
-    }
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    public FindOptions() { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindOptions{T}"/> class.
+    ///     Initializes a new instance of the <see cref="FindOptions{TEntity}" /> class.
+    ///     Provides options for finding entities in the repository.
     /// </summary>
-    /// <param name="skip">The skip amount.</param>
-    /// <param name="take">The take amount.</param>
-    /// <param name="order">The order option.</param>
-    /// <param name="orderExpression">the order expresion.</param>
-    /// <param name="orders">The order options.</param>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public FindOptions(
         int? skip = null,
         int? take = null,
@@ -55,79 +49,88 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     }
 
     /// <summary>
-    /// Gets or sets the skip amount.
+    ///     Gets or sets the number of elements to skip before starting to return elements.
     /// </summary>
     /// <value>
-    /// The skip.
+    ///     The number of elements to skip.
     /// </value>
     public int? Skip { get; set; }
 
     /// <summary>
-    /// Gets or sets the take amount.
+    ///     Gets or sets the maximum number of entities to retrieve.
     /// </summary>
     /// <value>
-    /// The take.
+    ///     The maximum number of entities to be retrieved.
     /// </value>
     public int? Take { get; set; }
 
     /// <summary>
-    /// Gets or sets the no tracking option.
+    ///     Gets or sets a value indicating whether the query should be executed with no tracking.
     /// </summary>
+    /// <value>
+    ///     True if the query should be executed without tracking; otherwise, false.
+    /// </value>
     public bool NoTracking { get; set; }
 
     /// <summary>
-    /// Gets or sets the distinction.
+    ///     Gets or sets the distinct option for the query.
     /// </summary>
     /// <value>
-    /// The distinction.
+    ///     The distinct option.
     /// </value>
     public DistinctOption<TEntity> Distinct { get; set; }
 
     /// <summary>
-    /// Gets or sets the order.
+    ///     Gets or sets the order option for sorting the query results.
     /// </summary>
     /// <value>
-    /// The order.
+    ///     An <see cref="OrderOption{TEntity}" /> that specifies the ordering criteria.
     /// </value>
     public OrderOption<TEntity> Order { get; set; }
 
     /// <summary>
-    /// Gets or sets the orders.
+    ///     Gets or sets a collection of order options for sorting the query results.
     /// </summary>
     /// <value>
-    /// The orders.
+    ///     The collection of order options.
     /// </value>
     public IEnumerable<OrderOption<TEntity>> Orders { get; set; }
 
     /// <summary>
-    /// Gets or sets the include.
+    ///     Gets or sets the inclusion option for related entities.
     /// </summary>
     /// <value>
-    /// The order.
+    ///     The inclusion option used to specify which related entities to include in the query results.
     /// </value>
     public IncludeOption<TEntity> Include { get; set; }
 
     /// <summary>
-    /// Gets or sets the includes.
+    ///     Gets or sets the collection of include options for find operations.
     /// </summary>
     /// <value>
-    /// The includes.
+    ///     A collection of <see cref="IncludeOption{TEntity}" /> to specify related entities to include in the query result.
     /// </value>
     public IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
 
     /// <summary>
-    /// Determines whether this instance has orders.
+    ///     Determines whether this instance has orders.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance has orders; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance has orders; otherwise, <c>false</c>.
     /// </returns>
-    public bool HasOrders() => this.Order is not null || this.Orders.SafeAny();
+    public bool HasOrders()
+    {
+        return this.Order is not null || this.Orders.SafeAny();
+    }
 
     /// <summary>
-    /// Determines whether this instance has includes.
+    ///     Determines whether this instance has includes.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance has includes; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance has includes; otherwise, <c>false</c>.
     /// </returns>
-    public bool HasIncludes() => this.Include is not null || this.Includes.SafeAny();
+    public bool HasIncludes()
+    {
+        return this.Include is not null || this.Includes.SafeAny();
+    }
 }

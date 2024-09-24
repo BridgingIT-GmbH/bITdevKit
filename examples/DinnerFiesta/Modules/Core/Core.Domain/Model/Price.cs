@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class Price : ValueObject // TODO: or use Money?
 {
-    private Price()
-    {
-    }
+    private Price() { }
 
     private Price(decimal amount, string currency)
     {
@@ -20,16 +18,13 @@ public class Price : ValueObject // TODO: or use Money?
         this.Currency = currency;
     }
 
-    public decimal Amount { get; private set; }
+    public decimal Amount { get; }
 
-    public string Currency { get; private set; }
+    public string Currency { get; }
 
     public static Price Create(decimal amount, string currency)
     {
-        DomainRules.Apply(
-        [
-            PriceRules.ShouldBeInRange(amount),
-        ]);
+        DomainRules.Apply([PriceRules.ShouldBeInRange(amount)]);
 
         return new Price(amount, currency);
     }

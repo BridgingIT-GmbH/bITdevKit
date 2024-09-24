@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 using Humanizer;
 
-public class ServiceBusMessageBrokerOptionsBuilder :
-        OptionsBuilderBase<ServiceBusMessageBrokerOptions, ServiceBusMessageBrokerOptionsBuilder>
+public class ServiceBusMessageBrokerOptionsBuilder
+    : OptionsBuilderBase<ServiceBusMessageBrokerOptions, ServiceBusMessageBrokerOptionsBuilder>
 {
     public ServiceBusMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {

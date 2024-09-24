@@ -7,21 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
-    <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="Microsoft.Extensions.Localization" />
-    <PackageReference Include="MudBlazor" />
-    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="Humanizer.Core"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client"/>
+    <PackageReference Include="Microsoft.Extensions.Http"/>
+    <PackageReference Include="Microsoft.Extensions.Http.Polly"/>
+    <PackageReference Include="Microsoft.Extensions.Localization"/>
+    <PackageReference Include="MudBlazor"/>
+    <PackageReference Include="System.ComponentModel.Annotations"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\Modules\Core\Core.Presentation.Web.Client\DinnerFiesta.Core.Presentation.Web.Client.csproj" />
-    <ProjectReference Include="..\Modules\Marketing\Marketing.Presentation.Web.Client\DinnerFiesta.Marketing.Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\Modules\Core\Core.Presentation.Web.Client\DinnerFiesta.Core.Presentation.Web.Client.csproj"/>
+    <ProjectReference Include="..\Modules\Marketing\Marketing.Presentation.Web.Client\DinnerFiesta.Marketing.Presentation.Web.Client.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

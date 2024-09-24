@@ -5,9 +5,10 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using Azure.Cosmos;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Azure;
-using Microsoft.Azure.Cosmos;
+using CosmosClientOptions = BridgingIT.DevKit.Infrastructure.Azure.CosmosClientOptions;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -16,26 +17,24 @@ public static partial class ServiceCollectionExtensions
         CosmosClient client,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddCosmosClient(null, client, lifetime);
+        return services.AddCosmosClient(null, client, lifetime);
     }
 
     public static CosmosClientBuilderContext AddCosmosClient(
         this IServiceCollection services,
-        Builder<CosmosClientOptionsBuilder, BridgingIT.DevKit.Infrastructure.Azure.CosmosClientOptions> optionsBuilder,
+        Builder<CosmosClientOptionsBuilder, CosmosClientOptions> optionsBuilder,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddCosmosClient(optionsBuilder(new CosmosClientOptionsBuilder()).Build(), null, lifetime);
+        return services.AddCosmosClient(optionsBuilder(new CosmosClientOptionsBuilder()).Build(), null, lifetime);
     }
 
     public static CosmosClientBuilderContext AddCosmosClient(
         this IServiceCollection services,
-        BridgingIT.DevKit.Infrastructure.Azure.CosmosClientOptions options,
+        CosmosClientOptions options,
         CosmosClient client = null,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        options ??= new BridgingIT.DevKit.Infrastructure.Azure.CosmosClientOptions();
+        options ??= new CosmosClientOptions();
         options.ClientOptions ??= new Azure.Cosmos.CosmosClientOptions
         {
             ConnectionMode = ConnectionMode.Direct,
@@ -48,7 +47,7 @@ public static partial class ServiceCollectionExtensions
             //        PropertyNameCaseInsensitive = true,
             //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             //    })
-            Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create()),
+            Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
             //SerializerOptions = new CosmosSerializationOptions
             //{
             //    Indented = true,
@@ -79,8 +78,7 @@ public static partial class ServiceCollectionExtensions
                     client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
                 break;
             default:
-                services.AddScoped(sp =>
-                    client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
+                services.AddScoped(sp => client ?? new CosmosClient(options.ConnectionString, options.ClientOptions));
                 break;
         }
 

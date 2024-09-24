@@ -5,14 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 
 public static partial class Extensions
 {
@@ -23,24 +20,24 @@ public static partial class Extensions
     {
         if (options is null || options?.HasOrders() == false)
         {
-            return source as IOrderedQueryable<TEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
+            return
+                source as IOrderedQueryable<TEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
         }
 
         IOrderedQueryable<TEntity> result = null;
-        foreach (var order in
-            (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)?.Where(o => o.Expression is not null))
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+                 ?.Where(o => o.Expression is not null))
         {
-            result = result is null
-                ? order.Direction == OrderDirection.Ascending
-                    ? source.OrderBy(order.Expression) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
-                    : source.OrderByDescending(order.Expression)
-                : order.Direction == OrderDirection.Ascending
-                    ? result.ThenBy(order.Expression)
-                    : result.ThenByDescending(order.Expression);
+            result = result is null ? order.Direction == OrderDirection.Ascending
+                    ? source.OrderBy(order
+                        .Expression) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                    : source.OrderByDescending(order.Expression) :
+                order.Direction == OrderDirection.Ascending ? result.ThenBy(order.Expression) :
+                result.ThenByDescending(order.Expression);
         }
 
-        foreach (var order in
-            (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)?.Where(o => !o.Ordering.IsNullOrEmpty()))
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+                 ?.Where(o => !o.Ordering.IsNullOrEmpty()))
         {
             result = result is null
                 ? result = source.OrderBy(order.Ordering) // of the form >   fieldname [ascending|descending], ...
@@ -58,19 +55,27 @@ public static partial class Extensions
     {
         if (options is null || options?.HasOrders() == false)
         {
-            return source as IOrderedQueryable<TDatabaseEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
+            return
+                source as IOrderedQueryable<TDatabaseEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
         }
 
         IOrderedQueryable<TDatabaseEntity> result = null;
         foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
             result = result is null
-                    ? order.Direction == OrderDirection.Ascending
-                        ? Queryable.OrderBy(source, mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
-                        : Queryable.OrderByDescending(source, mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
-                    : order.Direction == OrderDirection.Ascending
-                        ? result.ThenBy(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
-                        : result.ThenByDescending(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression));
+                ? order.Direction == OrderDirection.Ascending
+                    ? source.OrderBy(mapper
+                        .MapExpression<
+                            Expression<Func<TDatabaseEntity, object>>>(order
+                            .Expression)) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                    : source.OrderByDescending(
+                        mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
+                :
+                order.Direction == OrderDirection.Ascending
+                    ?
+                    result.ThenBy(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
+                    : result.ThenByDescending(
+                        mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression));
         }
 
         return result;

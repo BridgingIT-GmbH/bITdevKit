@@ -5,9 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
 public interface ICosmosSqlEntity
 {
-    [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
-    [System.Text.Json.Serialization.JsonPropertyName("id")]
+    [JsonProperty(PropertyName = "id")]
+    [JsonPropertyName("id")]
     string Id { get; set; } // maps to id
 }

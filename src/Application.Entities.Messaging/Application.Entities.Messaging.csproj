@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Entities\Application.Entities.csproj" />
-    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Entities\Application.Entities.csproj"/>
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj"/>
   </ItemGroup>
 
 </Project>

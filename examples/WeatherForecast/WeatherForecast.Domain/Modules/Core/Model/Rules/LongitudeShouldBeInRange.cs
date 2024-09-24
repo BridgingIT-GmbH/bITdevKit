@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class LongitudeShouldBeInRange : IDomainRule
 {
@@ -24,7 +24,9 @@ public class LongitudeShouldBeInRange : IDomainRule
     public string Message => "Longitude should be between -180 and 180";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {

@@ -5,24 +5,19 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using EnsureThat;
+using Common;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Registration;
+using Domain.EventSourcing.Store;
 
 /// <summary>
-/// EventStore, der die Events über EntityFramework in einer SqlServer-Datenbank persistiert.
-/// Der EventStore setzt voraus, dass alle zu persistierenden Aggregates \ AggregateEvents
-/// registriert wurden, so dass ein "immutable Name" intern werden kann.
-/// Dies ermöglicht, dass Aggregates bzw. AggregateEvents verschoben werden können bzw.
-/// umbenannt werden können, solange sich der "immutable Name" nicht ändert.
-/// <see cref="IEventStoreAggregateRegistration"/> bzw.
-/// <see cref="IEventStoreAggregateEventRegistration"/>.
+///     EventStore, der die Events über EntityFramework in einer SqlServer-Datenbank persistiert.
+///     Der EventStore setzt voraus, dass alle zu persistierenden Aggregates \ AggregateEvents
+///     registriert wurden, so dass ein "immutable Name" intern werden kann.
+///     Dies ermöglicht, dass Aggregates bzw. AggregateEvents verschoben werden können bzw.
+///     umbenannt werden können, solange sich der "immutable Name" nicht ändert.
+///     <see cref="IEventStoreAggregateRegistration" /> bzw.
+///     <see cref="IEventStoreAggregateEventRegistration" />.
 /// </summary>
 public class EventStoreRepository : IEventStoreRepository
 {
@@ -62,24 +57,28 @@ public class EventStoreRepository : IEventStoreRepository
     {
         EnsureArg.IsNotNull(@event, nameof(@event));
 
-        await this.aggregateEventRepository
-            .InsertAsync(
-                @event,
+        await this.aggregateEventRepository.InsertAsync(@event,
                 this.aggregateRegistration.GetImmutableName<TAggregate>(),
                 this.aggregateEventRegistration.GetImmutableName(@event),
                 this.serializer.SerializeToBytes(@event))
             .AnyContext();
     }
 
-    public async Task<IAggregateEvent[]> GetEventsAsync<TAggregate>(Guid aggregateId, CancellationToken cancellationToken)
+    public async Task<IAggregateEvent[]> GetEventsAsync<TAggregate>(
+        Guid aggregateId,
+        CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
     {
         var immutableAggregateName = this.aggregateRegistration.GetImmutableName<TAggregate>();
-        var events = await this.aggregateEventRepository.GetEventsAsync(aggregateId, immutableAggregateName, cancellationToken).AnyContext();
+        var events = await this.aggregateEventRepository
+            .GetEventsAsync(aggregateId, immutableAggregateName, cancellationToken)
+            .AnyContext();
 
         return events?.Select(ev =>
-            ev.Data.ConvertFromBlob(this.aggregateEventRegistration.GetTypeOnImmutableName(ev.EventType),
-                this.serializer, this.typeSelector)).ToArray();
+                ev.Data.ConvertFromBlob(this.aggregateEventRegistration.GetTypeOnImmutableName(ev.EventType),
+                    this.serializer,
+                    this.typeSelector))
+            .ToArray();
     }
 
     public async Task<Guid[]> GetAggregateIdsAsync(CancellationToken cancellationToken)
@@ -104,17 +103,22 @@ public class EventStoreRepository : IEventStoreRepository
     {
         var immutableAggregateName = this.aggregateRegistration.GetImmutableName<TAggregate>();
         return await this.aggregateEventRepository
-            .GetMaxVersionAsync(aggregateId, immutableAggregateName, cancellationToken).AnyContext();
+            .GetMaxVersionAsync(aggregateId, immutableAggregateName, cancellationToken)
+            .AnyContext();
     }
 
     public async Task<TAggregate?> GetSnapshotAsync<TAggregate>(Guid aggregateId, CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
     {
         var immutableAggregateName = this.aggregateRegistration.GetImmutableName<TAggregate>();
-        var aggregateBlob = await this.snapshotRepository.GetSnapshotAsync(aggregateId, immutableAggregateName, cancellationToken).AnyContext();
+        var aggregateBlob = await this.snapshotRepository
+            .GetSnapshotAsync(aggregateId, immutableAggregateName, cancellationToken)
+            .AnyContext();
         if (aggregateBlob is not null)
         {
-            var aggregate = aggregateBlob.ConvertFromBlob(typeof(TAggregate).FullName ?? throw new InvalidOperationException(), this.serializer,
+            var aggregate = aggregateBlob.ConvertFromBlob(
+                typeof(TAggregate).FullName ?? throw new InvalidOperationException(),
+                this.serializer,
                 this.aggregateTypeSelector);
             return aggregate as TAggregate;
         }
@@ -127,6 +131,8 @@ public class EventStoreRepository : IEventStoreRepository
     {
         var immutableAggregateName = this.aggregateRegistration.GetImmutableName<TAggregate>();
         var data = aggregate.ConvertToBlob(this.serializer);
-        await this.snapshotRepository.SaveSnapshotAsync(aggregate.Id, data.Blob, immutableAggregateName, cancellationToken).AnyContext();
+        await this.snapshotRepository
+            .SaveSnapshotAsync(aggregate.Id, data.Blob, immutableAggregateName, cancellationToken)
+            .AnyContext();
     }
 }

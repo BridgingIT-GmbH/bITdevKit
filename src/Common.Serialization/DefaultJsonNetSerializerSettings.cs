@@ -5,37 +5,36 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
+// TODO: get rid of Newtonsoft dependency
+
 public static class DefaultJsonNetSerializerSettings
 {
-    public static JsonSerializerSettings Create() => new()
+    public static JsonSerializerSettings Create()
     {
-        ContractResolver = new PropertyBackingFieldContractResolver
+        return new JsonSerializerSettings
         {
-            NamingStrategy = new CamelCaseNamingStrategy()
-        },
-        NullValueHandling = NullValueHandling.Ignore,
-        TypeNameHandling = TypeNameHandling.Auto,
-        DefaultValueHandling = DefaultValueHandling.Ignore,
-        DateFormatString = "o",
-        DateFormatHandling = DateFormatHandling.IsoDateFormat,
-        //DateParseHandling = DateParseHandling.DateTimeOffset,
-        //DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-        Converters = new List<JsonConverter>
-        {
-            //new GuidConverter(),
-            new StringEnumConverter()
+            ContractResolver =
+                new PropertyBackingFieldContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
+            NullValueHandling = NullValueHandling.Ignore,
+            TypeNameHandling = TypeNameHandling.Auto,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            DateFormatString = "o",
+            DateFormatHandling = DateFormatHandling.IsoDateFormat,
+            //DateParseHandling = DateParseHandling.DateTimeOffset,
+            //DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            Converters = new List<JsonConverter>
             {
-                AllowIntegerValues = true
-            },
-            new IsoDateTimeConverter
-            {
-                DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fffffffZ" // utc, no timezone offset (+0:00)
+                //new GuidConverter(),
+                new StringEnumConverter { AllowIntegerValues = true },
+                new IsoDateTimeConverter
+                {
+                    DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fffffffZ" // utc, no timezone offset (+0:00)
+                }
             }
-        }
-    };
+        };
+    }
 }

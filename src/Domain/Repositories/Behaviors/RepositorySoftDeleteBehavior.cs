@@ -5,57 +5,45 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
+using Model;
+using Specifications;
 
 [Obsolete("Use GenericRepositorySoftDeleteBehavior instead")]
 public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDeleteBehavior<TEntity>
     where TEntity : class, IEntity, ISoftDeletable
 {
     public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner)
-        : base(ínner)
-    {
-    }
+        : base(ínner) { }
 
     public GenericRepositorySoftDeleteDecorator(IGenericRepository<TEntity> ínner, bool excludeDeleted)
-        : base(ínner, excludeDeleted)
-    {
-    }
+        : base(ínner, excludeDeleted) { }
 }
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositorySoftDeleteBehavior<TEntity>(
-    IGenericRepository<TEntity> ínner,
-    bool excludeDeleted) : IGenericRepository<TEntity>
+public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> ínner, bool excludeDeleted)
+    : IGenericRepository<TEntity>
     where TEntity : class, IEntity, ISoftDeletable
 {
-    public RepositorySoftDeleteBehavior(
-        IGenericRepository<TEntity> ínner)
-        : this(ínner, true)
-    {
-    }
+    public RepositorySoftDeleteBehavior(IGenericRepository<TEntity> ínner)
+        : this(ínner, true) { }
 
     protected IGenericRepository<TEntity> Inner { get; } = ínner;
 
-    protected ISpecification<TEntity> Specification { get; } = excludeDeleted ? new Specification<TEntity>(e => e.Deleted != true) : null;
+    protected ISpecification<TEntity> Specification { get; } =
+        excludeDeleted ? new Specification<TEntity>(e => e.Deleted != true) : null;
 
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
@@ -64,7 +52,8 @@ public class RepositorySoftDeleteBehavior<TEntity>(
             return RepositoryActionResult.None;
         }
 
-        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken: cancellationToken).AnyContext();
+        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
+            .AnyContext();
         if (entity is not null)
         {
             entity.SetDeleted();
@@ -89,22 +78,17 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         return await this.DeleteAsync(entity?.Id, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         var entity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
         return entity is not null && this.Specification.IsSatisfiedBy(entity);
     }
 
-    public async Task<IEnumerable<TEntity>> FindAllAsync(IFindOptions<TEntity> options = null,
+    public async Task<IEnumerable<TEntity>> FindAllAsync(
+        IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(
-            [],
-            options,
-            cancellationToken)
-            .AnyContext();
+        return await this.FindAllAsync([], options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -112,10 +96,10 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(
-            new List<ISpecification<TEntity>>(new[] { specification }),
-            options,
-            cancellationToken).AnyContext();
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -123,10 +107,10 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
-            options,
-            cancellationToken).AnyContext();
+        return await this.Inner.FindAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -134,12 +118,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(
-            [],
-            projection,
-            options,
-            cancellationToken)
-            .AnyContext();
+        return await this.ProjectAllAsync([], projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -148,24 +127,24 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(
-            new List<ISpecification<TEntity>>(new[] { specification }),
-            projection,
-            options,
-            cancellationToken).AnyContext();
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+                projection,
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
-        return await this.Inner.ProjectAllAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()),
-            projection,
-            options,
-            cancellationToken).AnyContext();
+        return await this.Inner.ProjectAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
+                projection,
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -182,8 +161,8 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            this.Specification.And(specification), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(this.Specification.And(specification), options, cancellationToken)
+            .AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -191,8 +170,10 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
+        return await this.Inner.FindOneAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
+                options,
+                cancellationToken)
+            .AnyContext();
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -205,7 +186,9 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
@@ -226,7 +209,8 @@ public class RepositorySoftDeleteBehavior<TEntity>(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(
-            new[] { this.Specification }.Concat(specifications.SafeNull()), cancellationToken).AnyContext();
+        return await this.Inner
+            .CountAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), cancellationToken)
+            .AnyContext();
     }
 }

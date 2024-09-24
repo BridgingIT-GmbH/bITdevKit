@@ -26,12 +26,6 @@
         "resolved": "6.0.0",
         "contentHash": "+/SsmiySsXJlvQLCGBqaZKNVt3s/Y/HbAdwtop7Km2CnuZbaScoqkWJEBQ5Cy9ebkn6kCYKrHsXgwrFdTgcb3g=="
       },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
-      },
       "HashDepot": {
         "type": "Transitive",
         "resolved": "2.0.3",
@@ -355,6 +349,7 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Primitives": "[8.0.0, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"
@@ -366,7 +361,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.2, )",
+          "FluentValidation": "[11.10.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Configuration.Binder": "[8.0.2, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
@@ -401,7 +396,7 @@
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.2, )",
+          "FluentValidation": "[11.10.0, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
@@ -414,9 +409,9 @@
       },
       "FluentValidation": {
         "type": "CentralTransitive",
-        "requested": "[11.9.2, )",
-        "resolved": "11.9.2",
-        "contentHash": "XeHp9LvFvu1fsQ/NvDCymV02GOCB1nz7ZUhfpI3uMhCcHTkV1K5bMkv+Nc/kuNYyAsX5+5bcmUanIEMd5QN+Eg=="
+        "requested": "[11.10.0, )",
+        "resolved": "11.10.0",
+        "contentHash": "qsJGSJDdZ8qiG+lVJ70PZfJHcEdq8UQZ/tZDXoj78/iHKG6lVKtMJsD11zyyv/IPc7rwqGqnFoFLTNzpo3IPYg=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

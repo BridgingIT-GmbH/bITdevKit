@@ -5,31 +5,28 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
 public class DinnerCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Dinner> repository) : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>(loggerFactory)
 {
-    public override async Task<CommandResponse<Result<Dinner>>> Process(DinnerCreateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<Result<Dinner>>> Process(
+        DinnerCreateCommand command,
+        CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var dinner = Dinner.Create(
-            command.Name,
+        var dinner = Dinner.Create(command.Name,
             command.Description,
-            DinnerSchedule.Create(
-                command.Schedule.StartDateTime,
+            DinnerSchedule.Create(command.Schedule.StartDateTime,
                 command.Schedule.EndDateTime),
-            DinnerLocation.Create(
-                command.Location.Name,
+            DinnerLocation.Create(command.Location.Name,
                 command.Location.AddressLine1,
                 command.Location.AddressLine2,
                 command.Location.PostalCode,
@@ -45,10 +42,9 @@ public class DinnerCreateCommandHandler(
             Price.Create(command.Price.Amount, command.Price.Currency),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        DomainRules.Apply(
-        [
+        DomainRules.Apply([
             new DinnerNameMustBeUniqueRule(repository, dinner.Name),
-            new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule),
+            new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule)
         ]);
 
         await repository.InsertAsync(dinner, cancellationToken);

@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Configuration;
+using Configuration;
 using Scrutor;
 
 public class DocumentStoreBuilderContext<T>(
@@ -45,7 +45,8 @@ public class DocumentStoreBuilderContext<T>(
         return this;
     }
 
-    public DocumentStoreBuilderContext<T> WithBehavior<TBehavior>(Func<IDocumentStoreClient<T>, IServiceProvider, TBehavior> behavior)
+    public DocumentStoreBuilderContext<T> WithBehavior<TBehavior>(
+        Func<IDocumentStoreClient<T>, IServiceProvider, TBehavior> behavior)
         where TBehavior : notnull, IDocumentStoreClient<T>
     {
         EnsureArg.IsNotNull(behavior, nameof(behavior));
@@ -57,8 +58,8 @@ public class DocumentStoreBuilderContext<T>(
     }
 
     /// <summary>
-    /// Registers all recorded behaviors (decorators). Before registering all existing behavior registrations are removed.
-    /// This needs to be done to apply the registrations in reverse order.
+    ///     Registers all recorded behaviors (decorators). Before registering all existing behavior registrations are removed.
+    ///     This needs to be done to apply the registrations in reverse order.
     /// </summary>
     private IServiceCollection RegisterBehaviors()
     {
@@ -66,7 +67,8 @@ public class DocumentStoreBuilderContext<T>(
         this.clientDescriptor ??= this.Services.Find<IDocumentStoreClient<T>>();
         if (this.clientDescriptor is null)
         {
-            throw new Exception($"Cannot register behaviors for {typeof(IDocumentStoreClient<T>).PrettyName()} as it has not been registerd.");
+            throw new Exception(
+                $"Cannot register behaviors for {typeof(IDocumentStoreClient<T>).PrettyName()} as it has not been registerd.");
         }
 
         var descriptorIndex = this.Services.IndexOf<IDocumentStoreClient<T>>();
@@ -79,7 +81,10 @@ public class DocumentStoreBuilderContext<T>(
             return this.Services;
         }
 
-        foreach (var descriptor in this.Services.Where(s => s.ServiceType is DecoratedType && s.ServiceType.ImplementsInterface(typeof(IDocumentStoreClient<T>)))?.ToList())
+        foreach (var descriptor in this.Services.Where(s =>
+                         s.ServiceType is DecoratedType &&
+                         s.ServiceType.ImplementsInterface(typeof(IDocumentStoreClient<T>)))
+                     ?.ToList())
         {
             this.Services.Remove(descriptor); // remove the registered behavior
         }

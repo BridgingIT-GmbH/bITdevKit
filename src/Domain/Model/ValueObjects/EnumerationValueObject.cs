@@ -4,16 +4,16 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Reflection;
 
+// Better use the new Enumeration (non ValueObject) implementation
 public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
-        where TEnumeration : EnumerationValueObject<TEnumeration, TKey>
-        where TKey : struct
+    where TEnumeration : EnumerationValueObject<TEnumeration, TKey>
+    where TKey : struct
 {
     private static readonly Dictionary<TKey, TEnumeration> ByKey = GetEnumerations().ToDictionary(e => e.Key);
+
     private static readonly Dictionary<string, TEnumeration> ByName = GetEnumerations().ToDictionary(e => e.Name);
 
     private int? cachedHashCode;
@@ -70,9 +70,15 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
         return ByName.ContainsKey(name) ? ByName[name] : default;
     }
 
-    public static bool Is(string name) => All.Select(e => e.Name).Contains(name);
+    public static bool Is(string name)
+    {
+        return All.Select(e => e.Name).Contains(name);
+    }
 
-    public static bool Is(TKey key) => All.Select(e => e.Key).Contains(key);
+    public static bool Is(TKey key)
+    {
+        return All.Select(e => e.Key).Contains(key);
+    }
 
     public override bool Equals(object obj)
     {
@@ -86,15 +92,15 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
             return false;
         }
 
-        return this.GetAtomicValues().SequenceEqual(
-            ((EnumerationValueObject<TEnumeration, TKey>)obj).GetAtomicValues());
+        return this.GetAtomicValues()
+            .SequenceEqual(((EnumerationValueObject<TEnumeration, TKey>)obj).GetAtomicValues());
     }
 
     /// <summary>
-    /// Returns a hash code for this instance.
+    ///     Returns a hash code for this instance.
     /// </summary>
     /// <returns>
-    /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+    ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
     public override int GetHashCode()
     {
@@ -103,7 +109,10 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
-    public override string ToString() => this.Name;
+    public override string ToString()
+    {
+        return this.Name;
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
@@ -112,16 +121,15 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
 
     private static TEnumeration[] GetEnumerations()
     {
-        return typeof(TEnumeration)
-            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+        return typeof(TEnumeration).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .Where(info => info.FieldType == typeof(TEnumeration))
             .Select(info => (TEnumeration)info.GetValue(null))
             .ToArray();
     }
 }
 
-public abstract class EnumValueObject<TEnumeration> : ValueObject
-    where TEnumeration : EnumValueObject<TEnumeration>
+public abstract class EnumerationValueObject<TEnumeration> : ValueObject
+    where TEnumeration : EnumerationValueObject<TEnumeration>
 {
     private static readonly Dictionary<string, TEnumeration> Enumerations = GetEnumerations().ToDictionary(e => e.Key);
 
@@ -131,7 +139,7 @@ public abstract class EnumValueObject<TEnumeration> : ValueObject
     public static IReadOnlyCollection<TEnumeration> All = Enumerations.Values.OfType<TEnumeration>().ToList();
 #pragma warning restore SA1202 // Elements should be ordered by access
 
-    protected EnumValueObject(string key)
+    protected EnumerationValueObject(string key)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
@@ -143,7 +151,7 @@ public abstract class EnumValueObject<TEnumeration> : ValueObject
 
     public virtual string Key { get; protected set; }
 
-    public static bool operator ==(EnumValueObject<TEnumeration> left, string right)
+    public static bool operator ==(EnumerationValueObject<TEnumeration> left, string right)
     {
         if (left is null && right is null)
         {
@@ -158,28 +166,29 @@ public abstract class EnumValueObject<TEnumeration> : ValueObject
         return left.Key.Equals(right);
     }
 
-    public static bool operator !=(EnumValueObject<TEnumeration> left, string right)
+    public static bool operator !=(EnumerationValueObject<TEnumeration> left, string right)
     {
         return !(left == right);
     }
 
-    public static bool operator ==(string left, EnumValueObject<TEnumeration> right)
+    public static bool operator ==(string left, EnumerationValueObject<TEnumeration> right)
     {
         return right == left;
     }
 
-    public static bool operator !=(string left, EnumValueObject<TEnumeration> right)
+    public static bool operator !=(string left, EnumerationValueObject<TEnumeration> right)
     {
         return !(right == left);
     }
 
-    public static bool Is(string key) => All.Select(e => e.Key).Contains(key);
+    public static bool Is(string key)
+    {
+        return All.Select(e => e.Key).Contains(key);
+    }
 
     public static TEnumeration FromKey(string key)
     {
-        return Enumerations.ContainsKey(key)
-            ? Enumerations[key]
-            : default;
+        return Enumerations.ContainsKey(key) ? Enumerations[key] : default;
     }
 
     public override bool Equals(object obj)
@@ -194,18 +203,20 @@ public abstract class EnumValueObject<TEnumeration> : ValueObject
             return false;
         }
 
-        return this.GetAtomicValues().SequenceEqual(
-            ((EnumValueObject<TEnumeration>)obj).GetAtomicValues());
+        return this.GetAtomicValues().SequenceEqual(((EnumerationValueObject<TEnumeration>)obj).GetAtomicValues());
     }
 
     public override int GetHashCode()
     {
         return this.cachedHashCode ??= this.GetAtomicValues()
-                .Select(x => x?.GetHashCode() ?? 0)
-                .Aggregate((x, y) => x ^ y);
+            .Select(x => x?.GetHashCode() ?? 0)
+            .Aggregate((x, y) => x ^ y);
     }
 
-    public override string ToString() => this.Key;
+    public override string ToString()
+    {
+        return this.Key;
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
@@ -214,8 +225,7 @@ public abstract class EnumValueObject<TEnumeration> : ValueObject
 
     private static TEnumeration[] GetEnumerations()
     {
-        return typeof(TEnumeration)
-            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+        return typeof(TEnumeration).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
             .Where(info => info.FieldType == typeof(TEnumeration))
             .Select(info => (TEnumeration)info.GetValue(null))
             .ToArray();

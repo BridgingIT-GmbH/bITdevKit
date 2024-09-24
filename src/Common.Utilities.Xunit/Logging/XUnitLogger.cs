@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
@@ -14,19 +13,19 @@ public class XunitLogger(
     LoggerExternalScopeProvider scopeProvider,
     string categoryName) : ILogger
 {
-    private readonly ITestOutputHelper output = output;
     private readonly string categoryName = categoryName;
+    private readonly ITestOutputHelper output = output;
     private readonly LoggerExternalScopeProvider scopeProvider = scopeProvider;
 
-    public static ILogger Create(ITestOutputHelper output) =>
-        new XunitLogger(output, new LoggerExternalScopeProvider(), string.Empty);
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logLevel != LogLevel.None;
+    }
 
-    public static ILogger<T> Create<T>(ITestOutputHelper output) =>
-        new XunitLogger<T>(output, new LoggerExternalScopeProvider());
-
-    public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
-
-    public IDisposable BeginScope<TState>(TState state) => this.scopeProvider.Push(state);
+    public IDisposable BeginScope<TState>(TState state)
+    {
+        return this.scopeProvider.Push(state);
+    }
 
     public void Log<TState>(
         LogLevel logLevel,
@@ -35,9 +34,10 @@ public class XunitLogger(
         Exception exception,
         Func<TState, Exception, string> formatter)
     {
-        var sb = new StringBuilder()
-            .Append(GetLogLevelString(logLevel))
-            .Append(" [").Append(this.categoryName).Append("] ")
+        var sb = new StringBuilder().Append(GetLogLevelString(logLevel))
+            .Append(" [")
+            .Append(this.categoryName)
+            .Append("] ")
             .Append(formatter(state, exception));
 
         if (exception is not null)
@@ -47,13 +47,26 @@ public class XunitLogger(
 
         // Append scopes
         this.scopeProvider.ForEachScope((scope, state) =>
-        {
-            state.Append("\n => ");
-            state.Append(scope);
-        }, sb);
+            {
+                state.Append("\n => ");
+                state.Append(scope);
+            },
+            sb);
 
         this.output?.WriteLine(sb.ToString());
     }
+
+#pragma warning disable SA1204
+    public static ILogger Create(ITestOutputHelper output)
+    {
+        return new XunitLogger(output, new LoggerExternalScopeProvider(), string.Empty);
+    }
+
+    public static ILogger<T> Create<T>(ITestOutputHelper output)
+    {
+        return new XunitLogger<T>(output, new LoggerExternalScopeProvider());
+    }
+#pragma warning restore SA1204
 
     private static string GetLogLevelString(LogLevel logLevel)
     {

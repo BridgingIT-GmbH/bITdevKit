@@ -5,15 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain.EventSourcing.Store;
+using DevKit.Domain.Repositories;
 using Domain.Model;
 using Domain.Model.Events;
-using EnsureThat;
 using Microsoft.Extensions.Logging;
 
 public class CreatePersonCommandHandler : CommandHandlerBase<CreatePersonCommand, PersonOverviewViewModel>
@@ -21,7 +18,10 @@ public class CreatePersonCommandHandler : CommandHandlerBase<CreatePersonCommand
     private readonly IEventStore<Person> eventStore;
     private readonly IEntityMapper mapper;
 
-    public CreatePersonCommandHandler(ILoggerFactory loggerFactory, IEventStore<Person> eventStore, IEntityMapper mapper)
+    public CreatePersonCommandHandler(
+        ILoggerFactory loggerFactory,
+        IEventStore<Person> eventStore,
+        IEntityMapper mapper)
         : base(loggerFactory)
     {
         EnsureArg.IsNotNull(eventStore, nameof(eventStore));
@@ -31,18 +31,20 @@ public class CreatePersonCommandHandler : CommandHandlerBase<CreatePersonCommand
         this.mapper = mapper;
     }
 
-    public override async Task<CommandResponse<PersonOverviewViewModel>> Process(CreatePersonCommand request, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<PersonOverviewViewModel>> Process(
+        CreatePersonCommand request,
+        CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(request, nameof(request));
         EnsureArg.IsNotNull(request.Model, nameof(request.Model));
 
         // tag::DemoPersonCreatedEvent[]
-        var personCreated = new PersonCreatedEvent(request.Model.Lastname, request.Model.Firstname);  // <1>
-        var person = new Person(personCreated);  // <2>
-        await this.eventStore.SaveEventsAsync(person, cancellationToken).AnyContext();  // <3>
+        var personCreated = new PersonCreatedEvent(request.Model.Lastname, request.Model.Firstname); // <1>
+        var person = new Person(personCreated); // <2>
+        await this.eventStore.SaveEventsAsync(person, cancellationToken).AnyContext(); // <3>
         // end::DemoPersonCreatedEvent[]
 
-        return new CommandResponse<PersonOverviewViewModel>()
+        return new CommandResponse<PersonOverviewViewModel>
         {
             Result = this.mapper.Map<PersonOverviewViewModel>(person)
         };

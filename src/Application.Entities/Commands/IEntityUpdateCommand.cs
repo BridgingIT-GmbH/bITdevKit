@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
 public interface IEntityUpdateCommand
 {

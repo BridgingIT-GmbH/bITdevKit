@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class MessagingOptions : OptionsBase
 {

@@ -5,18 +5,21 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.EventSourcing.Model;
+using Domain.Repositories;
 
 public interface IAggregateEventRepository : IRepository
 {
-    Task InsertAsync(IAggregateEvent @event, string immutableAggregateTypeName, string immutableEventTypeName, byte[] data);
+    Task InsertAsync(
+        IAggregateEvent @event,
+        string immutableAggregateTypeName,
+        string immutableEventTypeName,
+        byte[] data);
 
-    Task<EventStoreAggregateEvent[]> GetEventsAsync(Guid aggregateId, string immutableAggregateTypeName, CancellationToken cancellationToken);
+    Task<EventStoreAggregateEvent[]> GetEventsAsync(
+        Guid aggregateId,
+        string immutableAggregateTypeName,
+        CancellationToken cancellationToken);
 
     Task<Guid[]> GetAggregateIdsAsync(CancellationToken cancellationToken);
 

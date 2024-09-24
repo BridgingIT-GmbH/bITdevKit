@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class DatabaseCreatorOptionsBuilder :
-    OptionsBuilderBase<DatabaseCreatorOptions, DatabaseCreatorOptionsBuilder>
+public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorOptions, DatabaseCreatorOptionsBuilder>
 {
     /// <summary>
-    /// Enable or Disable the database migrator.
+    ///     Enable or Disable the database migrator.
     /// </summary>
     public DatabaseCreatorOptionsBuilder Enabled(bool value = true)
     {
@@ -21,7 +19,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Disable the database migrator.
+    ///     Disable the database migrator.
     /// </summary>
     public DatabaseCreatorOptionsBuilder Disabled()
     {
@@ -30,7 +28,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(TimeSpan timespan)
     {
@@ -39,7 +37,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(int milliseconds)
     {
@@ -48,7 +46,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delay the startup of the database migrator.
+    ///     Delay the startup of the database migrator.
     /// </summary>
     public DatabaseCreatorOptionsBuilder StartupDelay(string value)
     {
@@ -57,7 +55,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Log the model.
+    ///     Log the model.
     /// </summary>
     public DatabaseCreatorOptionsBuilder LogModel(bool value = true)
     {
@@ -66,7 +64,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Delete database on startup.
+    ///     Delete database on startup.
     /// </summary>
     public DatabaseCreatorOptionsBuilder DeleteOnStartup(bool value = true)
     {
@@ -75,7 +73,7 @@ public class DatabaseCreatorOptionsBuilder :
     }
 
     /// <summary>
-    /// Truncate the database on startup.
+    ///     Truncate the database on startup.
     /// </summary>
     public DatabaseCreatorOptionsBuilder PurgeOnStartup(bool value = true, IEnumerable<string> ignoreTables = null)
     {

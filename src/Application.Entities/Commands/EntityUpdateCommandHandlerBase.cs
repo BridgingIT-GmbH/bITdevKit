@@ -5,15 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Commands;
+using Common;
+using Domain;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+using Constants = Commands.Constants;
 
 public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityUpdatedCommandResult>>
@@ -23,7 +22,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
     private readonly IGenericRepository<TEntity> repository;
     private readonly IStringLocalizer localizer;
     private List<IEntityUpdateCommandRule<TEntity>> rules;
-    private List<Func<TCommand, IEntityUpdateCommandRule<TEntity>>> rulesFuncs = null;
+    private List<Func<TCommand, IEntityUpdateCommandRule<TEntity>>> rulesFuncs;
 
     protected EntityUpdateCommandHandlerBase(
         ILoggerFactory loggerFactory,
@@ -39,8 +38,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
         this.localizer = localizer;
     }
 
-    public virtual EntityUpdateCommandHandlerBase<TCommand, TEntity> AddRule(
-        IEntityUpdateCommandRule<TEntity> rule)
+    public virtual EntityUpdateCommandHandlerBase<TCommand, TEntity> AddRule(IEntityUpdateCommandRule<TEntity> rule)
     {
         (this.rules ??= []).AddOrUpdate(rule);
 
@@ -48,8 +46,10 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
     }
 
     public virtual EntityUpdateCommandHandlerBase<TCommand, TEntity> AddRule<TRule>()
-        where TRule : class, IEntityUpdateCommandRule<TEntity> =>
-        this.AddRule(Factory<TRule>.Create());
+        where TRule : class, IEntityUpdateCommandRule<TEntity>
+    {
+        return this.AddRule(Factory<TRule>.Create());
+    }
 
     public virtual EntityUpdateCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityUpdateCommandRule<TEntity>> rule)
@@ -70,7 +70,8 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var entity = await this.repository.FindOneAsync(command.Entity.Id, cancellationToken: cancellationToken).AnyContext();
+        var entity = await this.repository.FindOneAsync(command.Entity.Id, cancellationToken: cancellationToken)
+            .AnyContext();
         this.EnsureEntityFound(command, entity);
         await this.CheckRulesAsync(command);
         this.SetAudit(command);
@@ -91,11 +92,13 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
         }
-        else if (entity is IAuditable auditable && auditable.AuditState.IsDeleted())
+
+        if (entity is IAuditable auditable && auditable.AuditState.IsDeleted())
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
         }
-        else if (entity is ISoftDeletable deletable && deletable.Deleted == true)
+
+        if (entity is ISoftDeletable deletable && deletable.Deleted == true)
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
         }
@@ -106,8 +109,15 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
         var rules = (this.rules ??= []).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
-        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Commands.Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);
-        this.Logger.LogInformation($"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Commands.Constants.LogKey);
+        this.Logger.LogInformation(
+            "{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})",
+            Constants.LogKey,
+            command.GetType().Name,
+            command.RequestId,
+            this.GetType().Name);
+        this.Logger.LogInformation(
+            $"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}",
+            Constants.LogKey);
 
         await Check.ThrowAsync(rules, command.Entity);
     }
@@ -121,7 +131,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
                 throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
             }
 
-            entity.AuditState ??= new();
+            entity.AuditState ??= new AuditState();
             entity.AuditState.SetUpdated(command.Identity);
         }
     }

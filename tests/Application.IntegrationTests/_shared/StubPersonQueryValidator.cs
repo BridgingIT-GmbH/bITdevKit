@@ -11,6 +11,8 @@ public class StubPersonQueryValidator : AbstractValidator<StubPersonQuery>
 {
     public StubPersonQueryValidator()
     {
-        this.RuleFor(c => c.FirstName).NotNull().NotEmpty();
+        this.RuleFor(c => c.FirstName)
+            .NotNull()
+            .NotEmpty();
     }
 }

@@ -5,13 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public class DomainRuleResultError : ResultErrorBase
 {
-    public DomainRuleResultError()
-    {
-    }
+    public DomainRuleResultError() { }
 
     public DomainRuleResultError(IEnumerable<string> messages = null)
     {

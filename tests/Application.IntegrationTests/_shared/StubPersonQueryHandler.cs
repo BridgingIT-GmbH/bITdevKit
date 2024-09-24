@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Queries;
 
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
+using Application.Queries;
 using Microsoft.Extensions.Logging;
 
 public class StubPersonQueryHandler(ILoggerFactory loggerFactory) : QueryHandlerBase<StubPersonQuery, IEnumerable<PersonStub>>(loggerFactory)
@@ -17,17 +16,18 @@ public class StubPersonQueryHandler(ILoggerFactory loggerFactory) : QueryHandler
         if (!validationResult.IsValid)
         {
             return await Task.FromResult(new QueryResponse<IEnumerable<PersonStub>>(string.Join(", ",
-                validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}")))).AnyContext();
+                    validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))))
+                .AnyContext();
         }
 
         // TODO : repo verwenden
 
         var persons = new List<PersonStub>
         {
-            new() {Id = Guid.NewGuid(), FirstName = "Frank", LastName = "Sinatra"},
-            new() {Id = Guid.NewGuid(), FirstName = "John", LastName = "Wick"},
-            new() {Id = Guid.NewGuid(), FirstName = "Petra", LastName = "Mustermann"},
-            new() {Id = Guid.NewGuid(), FirstName = "John", LastName = "Smith"},
+            new() { Id = Guid.NewGuid(), FirstName = "Frank", LastName = "Sinatra" },
+            new() { Id = Guid.NewGuid(), FirstName = "John", LastName = "Wick" },
+            new() { Id = Guid.NewGuid(), FirstName = "Petra", LastName = "Mustermann" },
+            new() { Id = Guid.NewGuid(), FirstName = "John", LastName = "Smith" }
         };
 
         return new QueryResponse<IEnumerable<PersonStub>>

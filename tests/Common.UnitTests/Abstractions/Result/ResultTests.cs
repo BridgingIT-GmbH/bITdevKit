@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
 
-using System.Collections.Generic;
-using Shouldly;
-using Xunit;
-
 [UnitTest("Common")]
 public class ResultTests
 {
@@ -32,7 +28,8 @@ public class ResultTests
     {
         // Arrange
         // Act
-        var result = Result.Failure().WithError<NotFoundResultError>();
+        var result = Result.Failure()
+            .WithError<NotFoundResultError>();
 
         // Assert
         result.IsSuccess.ShouldBeFalse();
@@ -117,7 +114,8 @@ public class ResultTests
     {
         // Arrange
         // Act
-        var result = Result<int>.Failure().WithError<NotFoundResultError>();
+        var result = Result<int>.Failure()
+            .WithError<NotFoundResultError>();
 
         // Assert
         result.IsSuccess.ShouldBeFalse();

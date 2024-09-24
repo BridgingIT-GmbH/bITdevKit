@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class MenuSectionItem : Entity<MenuSectionItemId, Guid>
 {
-    private MenuSectionItem()
-    {
-    }
+    private MenuSectionItem() { }
 
     private MenuSectionItem(string name, string description)
     {

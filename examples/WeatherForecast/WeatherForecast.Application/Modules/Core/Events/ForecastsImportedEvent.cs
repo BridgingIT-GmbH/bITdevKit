@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 
 public class ForecastsImportedEvent(IEnumerable<string> cities) : INotification // TODO: umstellen auf Message

@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Specifications;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Specifications;
-using System;
-using System.Linq;
 using System.Linq.Expressions;
 using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
-using Xunit;
-using Shouldly;
+using DevKit.Domain.Specifications;
 using IMapper = AutoMapper.IMapper;
 
 [UnitTest("Domain")]
@@ -35,19 +30,21 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age > 18);
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 15, FullName = "Jane Doe" }
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 15, FullName = "Jane Doe" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
-        result[0].Age.ShouldBe(25);
-        result[0].FullName.ShouldBe("John Doe");
+        result[0]
+            .Age.ShouldBe(25);
+        result[0]
+            .FullName.ShouldBe("John Doe");
     }
 
     [Fact]
@@ -57,18 +54,19 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
-        result[0].FullName.ShouldBe("John Doe");
+        result[0]
+            .FullName.ShouldBe("John Doe");
     }
 
     [Fact]
@@ -79,19 +77,21 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Id == id);
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = id, Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
+            new PersonDtoStub { Identifier = id, Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
-        result[0].Identifier.ShouldBe(id);
-        result[0].FullName.ShouldBe("John Doe");
+        result[0]
+            .Identifier.ShouldBe(id);
+        result[0]
+            .FullName.ShouldBe("John Doe");
     }
 
     [Fact]
@@ -101,20 +101,22 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age > 20 && p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 18, FullName = "John Smith" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
-        result[0].FullName.ShouldBe("John Doe");
-        result[0].Age.ShouldBe(25);
+        result[0]
+            .FullName.ShouldBe("John Doe");
+        result[0]
+            .Age.ShouldBe(25);
     }
 
     [Fact]
@@ -124,14 +126,14 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age > 25 || p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
@@ -147,38 +149,40 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age <= 25).Not();
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
-        result[0].FullName.ShouldBe("Jane Smith");
-        result[0].Age.ShouldBe(30);
+        result[0]
+            .FullName.ShouldBe("Jane Smith");
+        result[0]
+            .Age.ShouldBe(30);
     }
 
     [Fact]
     public void MapSpecification_ComplexSpecification_ShouldWorkCorrectly()
     {
         // Arrange
-        var sut = new Specification<PersonStub>(p => (p.Age > 25 && p.FirstName == "John") || (p.Age < 22 && p.LastName == "Johnson"));
+        var sut = new Specification<PersonStub>(p => p.Age > 25 && p.FirstName == "John" || p.Age < 22 && p.LastName == "Johnson");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "John Doe" },
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 35, FullName = "Alice Brown" }
         }.AsQueryable();
 
         // Act
         var mappedExpression = this.mapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(sut.ToExpression());
-        var result = sourcesDto.Where(mappedExpression).ToList();
+        var result = sourcesDto.Where(mappedExpression)
+            .ToList();
 
         // Assert
         result.ShouldNotBeNull();
@@ -197,8 +201,12 @@ public class MappedSpecificationTests
                 .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}"))
                 .ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
-                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault()))
-                .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None).LastOrDefault()));
+                .ForMember(d => d.FirstName,
+                    opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                        .FirstOrDefault()))
+                .ForMember(d => d.LastName,
+                    opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
+                        .LastOrDefault()));
         }
     }
 }

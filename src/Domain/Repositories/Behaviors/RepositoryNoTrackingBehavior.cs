@@ -5,31 +5,26 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
 using Microsoft.Extensions.Logging;
+using Model;
+using Specifications;
 
 [Obsolete("Use GenericRepositoryNoTrackingBehavior instead")]
-public class GenericRepositoryNoTrackingDecorator<TEntity>(IGenericRepository<TEntity> inner) : RepositoryNoTrackingBehavior<TEntity>(inner)
-    where TEntity : class, IEntity
-{
-}
+public class GenericRepositoryNoTrackingDecorator<TEntity>(IGenericRepository<TEntity> inner)
+    : RepositoryNoTrackingBehavior<TEntity>(inner)
+    where TEntity : class, IEntity { }
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
@@ -69,9 +64,7 @@ public class RepositoryNoTrackingBehavior<TEntity>(IGenericRepository<TEntity> i
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
@@ -132,10 +125,10 @@ public class RepositoryNoTrackingBehavior<TEntity>(IGenericRepository<TEntity> i
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         options ??= new FindOptions<TEntity>();
         options.NoTracking = true;
@@ -186,7 +179,9 @@ public class RepositoryNoTrackingBehavior<TEntity>(IGenericRepository<TEntity> i
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }

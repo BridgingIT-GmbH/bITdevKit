@@ -6,9 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure;
 
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Infrastructure.Azure;
-using Bogus;
 using DotNet.Testcontainers.Containers;
+using Infrastructure.Azure;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -42,8 +41,8 @@ public class CosmosSqlProviderTests : IDisposable
         // Act
         // Assert
         Should.Throw<ArgumentException>(() => new CosmosSqlProvider<EmailAddressStub>(o => o
-                   .Client(this.fixture.EnsureCosmosClient())
-                   .PartitionKey(e => e.Value)));
+            .Client(this.fixture.EnsureCosmosClient())
+            .PartitionKey(e => e.Value)));
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -111,7 +110,8 @@ public class CosmosSqlProviderTests : IDisposable
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange & Act
-        var result = await this.sut.ReadItemAsync(Guid.NewGuid().ToString());
+        var result = await this.sut.ReadItemAsync(Guid.NewGuid()
+            .ToString());
 
         // Assert
         result.ShouldBeNull();
@@ -126,13 +126,15 @@ public class CosmosSqlProviderTests : IDisposable
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
-        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24)
-        {
-            Id = Guid.NewGuid()
-        };
-        item.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24) { Id = Guid.NewGuid() };
+        item.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
 
         // Act
         await this.sut.CreateItemAsync(item);
@@ -170,10 +172,7 @@ public class CosmosSqlProviderTests : IDisposable
 
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24)
-        {
-            Id = Guid.NewGuid()
-        };
+        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", 24) { Id = Guid.NewGuid() };
 
         // Act
         await this.sut.UpsertItemAsync(item);
@@ -244,10 +243,14 @@ public class CosmosSqlProviderTests : IDisposable
         // Assert
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.First().ShouldNotBeNull();
-        results.First().Id.ShouldBe(item.Id);
-        results.First().Email.ShouldBe(item.Email);
-        results.First().Locations.ShouldNotBeNull();
+        results.First()
+            .ShouldNotBeNull();
+        results.First()
+            .Id.ShouldBe(item.Id);
+        results.First()
+            .Email.ShouldBe(item.Email);
+        results.First()
+            .Locations.ShouldNotBeNull();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -262,20 +265,19 @@ public class CosmosSqlProviderTests : IDisposable
 
         // Act
         var results = await this.sut.ReadItemsAsync(
-            new List<Expression<Func<PersonStub, bool>>>
-            {
-                e => e.FirstName == item.FirstName,
-                e => e.LastName == item.LastName,
-                e => e.Age > 10,
-            });
+            new List<Expression<Func<PersonStub, bool>>> { e => e.FirstName == item.FirstName, e => e.LastName == item.LastName, e => e.Age > 10 });
 
         // Assert
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.First().ShouldNotBeNull();
-        results.First().Id.ShouldBe(item.Id);
-        results.First().Email.ShouldBe(item.Email);
-        results.First().Locations.ShouldNotBeNull();
+        results.First()
+            .ShouldNotBeNull();
+        results.First()
+            .Id.ShouldBe(item.Id);
+        results.First()
+            .Email.ShouldBe(item.Email);
+        results.First()
+            .Locations.ShouldNotBeNull();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -289,27 +291,36 @@ public class CosmosSqlProviderTests : IDisposable
         var item2 = await this.CreateItemAsync(18);
         var item3 = await this.CreateItemAsync(21);
         var item4 = await this.CreateItemAsync(20); // second page
-        var item5 = await this.CreateItemAsync(24);
+        var item5 = await this.CreateItemAsync();
         var item6 = await this.CreateItemAsync(19); // second page
 
         // Act
-        var results = await this.sut.ReadItemsAsync(
-            e => e.FirstName == item1.FirstName || e.FirstName == item2.FirstName || e.FirstName == item3.FirstName || e.FirstName == item4.FirstName || e.FirstName == item5.FirstName || e.FirstName == item6.FirstName,
-            skip: 2, take: 2,
-            orderExpression: e => e.Age);
+        var results = await this.sut.ReadItemsAsync(e =>
+                e.FirstName == item1.FirstName ||
+                e.FirstName == item2.FirstName ||
+                e.FirstName == item3.FirstName ||
+                e.FirstName == item4.FirstName ||
+                e.FirstName == item5.FirstName ||
+                e.FirstName == item6.FirstName,
+            2,
+            2,
+            e => e.Age);
 
         // Assert
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.Count().ShouldBe(2);
+        results.Count()
+            .ShouldBe(2);
         results.ShouldNotContain(item1);
         results.ShouldNotContain(item2);
         results.ShouldNotContain(item3);
         results.ShouldNotContain(item5);
         results.ShouldContain(item4);
         results.ShouldContain(item6);
-        results.First().ShouldBe(item6); // age 18
-        results.Last().ShouldBe(item4); // age 20
+        results.First()
+            .ShouldBe(item6); // age 18
+        results.Last()
+            .ShouldBe(item4); // age 20
     }
 
     [SkippableFact]
@@ -379,19 +390,19 @@ public class CosmosSqlProviderTests : IDisposable
         result.ShouldBeFalse();
     }
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 
     private async Task<PersonStub> CreateItemAsync(int age = 24)
     {
-        var faker = new Faker("en");
+        var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
-        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age)
-        {
-            Id = Guid.NewGuid(),
-        };
-        item.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        var item = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age) { Id = Guid.NewGuid() };
+        item.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
 
         return await this.sut.CreateItemAsync(item);
     }

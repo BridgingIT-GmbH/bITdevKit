@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,34 +20,31 @@ public class BillEntityTypeConfiguration : IEntityTypeConfiguration<Bill>
 
         builder.Property(b => b.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => BillId.Create(value));
 
         builder.Property(b => b.DinnerId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => DinnerId.Create(value));
 
         builder.Property(b => b.GuestId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => GuestId.Create(value));
 
         builder.Property(b => b.HostId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => HostId.Create(value));
 
-        builder.OwnsOne(b => b.Price, pb =>
-        {
-            pb.Property(e => e.Currency)
-                .IsRequired()
-                .HasMaxLength(8);
-            pb.Property(p => p.Amount)
-                .IsRequired()
-                .HasColumnType("decimal(5,2)");
-        });
+        builder.OwnsOne(b => b.Price,
+            pb =>
+            {
+                pb.Property(e => e.Currency)
+                    .IsRequired()
+                    .HasMaxLength(8);
+                pb.Property(p => p.Amount)
+                    .IsRequired()
+                    .HasColumnType("decimal(5,2)");
+            });
 
         builder.OwnsOneAuditState();
     }

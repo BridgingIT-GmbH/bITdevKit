@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
+[UnitTest("Common")]
 public class CompressionHelperTests
 {
     [Fact]
@@ -56,14 +57,18 @@ public class CompressionHelperTests
     {
         // Arrange
         var source = Encoding.UTF8.GetBytes("hello world!");
-        var expected = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 }.Skip(10).ToArray();
+        var expected = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 }
+            .Skip(10)
+            .ToArray();
 
         // Act
         var result = await CompressionHelper.CompressAsync(source);
 
         // Assert
         result.ShouldNotBeNull();
-        result.Skip(10).ToArray().ShouldBe(expected); // skip first 10 bytes as they seem to differ across machines
+        result.Skip(10)
+            .ToArray()
+            .ShouldBe(expected); // skip first 10 bytes as they seem to differ across machines
     }
 
     [Fact]
@@ -71,14 +76,18 @@ public class CompressionHelperTests
     {
         // Arrange
         var source = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 };
-        var expected = Encoding.UTF8.GetBytes("hello world!").Skip(10).ToArray();
+        var expected = Encoding.UTF8.GetBytes("hello world!")
+            .Skip(10)
+            .ToArray();
 
         // Act
         var result = await CompressionHelper.DecompressAsync(source);
 
         // Assert
         result.ShouldNotBeNull();
-        result.Skip(10).ToArray().ShouldBe(expected); // skip first 10 bytes as they seem to differ across machines
+        result.Skip(10)
+            .ToArray()
+            .ShouldBe(expected); // skip first 10 bytes as they seem to differ across machines
     }
 
     [Fact]

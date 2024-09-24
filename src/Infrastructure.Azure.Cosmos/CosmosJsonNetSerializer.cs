@@ -5,24 +5,25 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System.IO;
-using System.Text;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 /// <summary>
-/// The default Cosmos JSON.NET serializer, replicated here to allow for custom settings.
+///     The default Cosmos JSON.NET serializer, replicated here to allow for custom settings.
 /// </summary>
-public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettings = null) : CosmosSerializer// source: https://raw.githubusercontent.com/Azure/azure-cosmos-dotnet-v3/master/Microsoft.Azure.Cosmos.Encryption/src/CosmosJsonDotNetSerializer.cs
+public class
+    CosmosJsonNetSerializer(
+        JsonSerializerSettings jsonSerializerSettings =
+            null) : CosmosSerializer // source: https://raw.githubusercontent.com/Azure/azure-cosmos-dotnet-v3/master/Microsoft.Azure.Cosmos.Encryption/src/CosmosJsonDotNetSerializer.cs
 {
-    private static readonly Encoding DefaultEncoding = new UTF8Encoding(
-        encoderShouldEmitUTF8Identifier: false,
-        throwOnInvalidBytes: true);
+    private static readonly Encoding DefaultEncoding = new UTF8Encoding(false, true);
 
     private readonly JsonSerializerSettings serializerSettings = jsonSerializerSettings;
 
     /// <summary>
-    /// Convert a Stream to the passed in type.
+    ///     Convert a Stream to the passed in type.
     /// </summary>
     /// <typeparam name="T">The type of object that should be deserialized</typeparam>
     /// <param name="stream">An open stream that is readable that contains JSON</param>
@@ -43,7 +44,7 @@ public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettin
     }
 
     /// <summary>
-    /// Converts an object to a open readable stream.
+    ///     Converts an object to a open readable stream.
     /// </summary>
     /// <typeparam name="T">The type of object being serialized</typeparam>
     /// <param name="input">The object to be serialized</param>
@@ -51,7 +52,7 @@ public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettin
     public override Stream ToStream<T>(T input)
     {
         var streamPayload = new MemoryStream();
-        using (var streamWriter = new StreamWriter(streamPayload, encoding: DefaultEncoding, bufferSize: 1024, leaveOpen: true))
+        using (var streamWriter = new StreamWriter(streamPayload, DefaultEncoding, 1024, true))
         using (JsonWriter writer = new JsonTextWriter(streamWriter))
         {
             writer.Formatting = Formatting.None;
@@ -66,8 +67,8 @@ public class CosmosJsonNetSerializer(JsonSerializerSettings jsonSerializerSettin
     }
 
     /// <summary>
-    /// JsonSerializer has hit a race conditions with custom settings that cause null reference exception.
-    /// To avoid the race condition a new JsonSerializer is created for each call
+    ///     JsonSerializer has hit a race conditions with custom settings that cause null reference exception.
+    ///     To avoid the race condition a new JsonSerializer is created for each call
     /// </summary>
     private JsonSerializer GetSerializer()
     {

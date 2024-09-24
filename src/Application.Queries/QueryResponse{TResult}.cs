@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
+
+using Common;
 
 public class QueryResponse<TResult>
 {
@@ -27,19 +28,15 @@ public class QueryResponse<TResult>
     {
         if (result?.IsFailure == true)
         {
-            return new QueryResponse<Result<TResult>>()
+            return new QueryResponse<Result<TResult>>
             {
-                Result = Result<TResult>.Failure()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+                Result = Result<TResult>.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
             };
         }
 
-        return new QueryResponse<Result<TResult>>()
+        return new QueryResponse<Result<TResult>>
         {
-            Result = Result<TResult>.Success()
-                    .WithMessages(result?.Messages)
-                    .WithErrors(result?.Errors),
+            Result = Result<TResult>.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
         };
     }
 

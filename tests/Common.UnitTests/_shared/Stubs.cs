@@ -18,9 +18,7 @@ public class PersonStub
 {
     private readonly List<LocationStub> locations = [];
 
-    public PersonStub()
-    {
-    }
+    public PersonStub() { }
 
     public PersonStub(string firstName, string lastName, string email, int age)
     {
@@ -59,33 +57,30 @@ public class PersonStub
     public static PersonStub Create(long ticks)
 #pragma warning restore SA1204 // Static elements should appear before instance elements
     {
-        return new PersonStub
-        {
-            FirstName = $"John{ticks}",
-            LastName = $"Doe{ticks}",
-            Age = 42
-        };
+        return new PersonStub { FirstName = $"John{ticks}", LastName = $"Doe{ticks}", Age = 42 };
     }
 }
 
 public class EmailAddressStub
 {
-    private EmailAddressStub()
-    {
-    }
+    private EmailAddressStub() { }
 
     private EmailAddressStub(string value)
     {
         this.Value = value;
     }
 
-    public string Value { get; private set; }
+    public string Value { get; }
 
-    public static implicit operator string(EmailAddressStub email) => email.Value;
+    public static implicit operator string(EmailAddressStub email)
+    {
+        return email.Value;
+    }
 
     public static EmailAddressStub Create(string value)
     {
-        value = value?.Trim()?.ToLowerInvariant();
+        value = value?.Trim()
+            ?.ToLowerInvariant();
 
         return new EmailAddressStub(value);
     }
@@ -98,12 +93,9 @@ public class EmailAddressStub
 
 public class LocationStub
 {
-    private LocationStub()
-    {
-    }
+    private LocationStub() { }
 
-    private LocationStub(
-        string name,
+    private LocationStub(string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
@@ -130,16 +122,14 @@ public class LocationStub
 
     public string Country { get; private set; }
 
-    public static LocationStub Create(
-        string name,
+    public static LocationStub Create(string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
         string city,
         string country)
     {
-        return new LocationStub(
-            name,
+        return new LocationStub(name,
             addressLine1,
             addressLine2,
             postalCode,
@@ -164,8 +154,7 @@ public class OptionsStub : OptionsBase
     public bool Parameter3 { get; set; }
 }
 
-public class OptionsStubBuilder :
-    OptionsBuilderBase<OptionsStub, OptionsStubBuilder>
+public class OptionsStubBuilder : OptionsBuilderBase<OptionsStub, OptionsStubBuilder>
 {
     public OptionsStubBuilder Parameter1(string value)
     {

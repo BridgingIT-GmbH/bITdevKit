@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -19,8 +18,7 @@ public class PrivateConstructorContractResolver : DefaultJsonTypeInfoResolver
         {
             if (jsonTypeInfo.Type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Length == 0)
             {
-                jsonTypeInfo.CreateObject = () =>
-                    Activator.CreateInstance(jsonTypeInfo.Type, true);
+                jsonTypeInfo.CreateObject = () => Activator.CreateInstance(jsonTypeInfo.Type, true);
             }
         }
 

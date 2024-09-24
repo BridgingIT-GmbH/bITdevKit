@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System;
-
 public interface ICacheQuery
 {
     CacheQueryOptions Options { get; }

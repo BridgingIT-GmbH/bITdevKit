@@ -7,13 +7,15 @@ namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
 public static partial class Extensions
 {
-    public static ILiteQueryableResult<T> TakeIf<T>(
-        this ILiteQueryable<T> source, int? take)
-        => take > 0 ? source.Limit(take.Value) : source;
+    public static ILiteQueryableResult<T> TakeIf<T>(this ILiteQueryable<T> source, int? take)
+    {
+        return take > 0 ? source.Limit(take.Value) : source;
+    }
 
-    public static ILiteQueryableResult<T> TakeIf<T>(
-        this ILiteQueryableResult<T> source, int? take)
-        => take > 0 ? source.Limit(take.Value) : source;
+    public static ILiteQueryableResult<T> TakeIf<T>(this ILiteQueryableResult<T> source, int? take)
+    {
+        return take > 0 ? source.Limit(take.Value) : source;
+    }
 
     //public static IEnumerable<T> TakeIf<T>(
     //    this ILiteQueryable<T> source, int? take)

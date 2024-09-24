@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 public static partial class Extensions
 {
     public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
@@ -16,23 +12,38 @@ public static partial class Extensions
         return ParallelForEachAsync(source, action, CancellationToken.None);
     }
 
-    public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action, CancellationToken cancellationToken = default)
+    public static Task ParallelForEachAsync<T>(
+        this IEnumerable<T> source,
+        Func<T, Task> action,
+        CancellationToken cancellationToken = default)
     {
         return ParallelForEachAsync(source, action, Environment.ProcessorCount, cancellationToken);
     }
 
-    public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action, int degreeOfParallelism)
+    public static Task ParallelForEachAsync<T>(
+        this IEnumerable<T> source,
+        Func<T, Task> action,
+        int degreeOfParallelism)
     {
         return ParallelForEachAsync(source, action, degreeOfParallelism, CancellationToken.None);
     }
 
-    public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action, int degreeOfParallelism, CancellationToken cancellationToken = default)
+    public static Task ParallelForEachAsync<T>(
+        this IEnumerable<T> source,
+        Func<T, Task> action,
+        int degreeOfParallelism,
+        CancellationToken cancellationToken = default)
     {
         if (source.IsNullOrEmpty() || action is null)
         {
             return Task.CompletedTask;
         }
 
-        return Parallel.ForEachAsync(source, new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism, CancellationToken = cancellationToken = default }, (item, ct) => new ValueTask(action(item)));
+        return Parallel.ForEachAsync(source,
+            new ParallelOptions
+            {
+                MaxDegreeOfParallelism = degreeOfParallelism, CancellationToken = cancellationToken = default
+            },
+            (item, ct) => new ValueTask(action(item)));
     }
 }

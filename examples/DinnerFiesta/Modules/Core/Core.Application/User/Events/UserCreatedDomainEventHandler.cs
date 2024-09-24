@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using DevKit.Application.Messaging;
+using DevKit.Domain;
+using Domain;
 using Microsoft.Extensions.Logging;
 
 public class UserCreatedDomainEventHandler(
@@ -27,11 +26,7 @@ public class UserCreatedDomainEventHandler(
 
         // forward the domain event as a message so it can be handled by other modules
         await messageBroker.Publish(
-            new UserCreatedMessage
-            {
-                FirstName = @event.FirstName,
-                LastName = @event.LastName,
-                Email = @event.Email
-            }, cancellationToken);
+            new UserCreatedMessage { FirstName = @event.FirstName, LastName = @event.LastName, Email = @event.Email },
+            cancellationToken);
     }
 }

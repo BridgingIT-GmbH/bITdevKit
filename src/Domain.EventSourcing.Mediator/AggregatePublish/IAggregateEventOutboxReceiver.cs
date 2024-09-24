@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Outbox;
+using Outbox;
 
 public interface IAggregateEventOutboxReceiver
 {
-    Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)> ReceiveAndPublishAsync(OutboxMessage message);
+    Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)> ReceiveAndPublishAsync(
+        OutboxMessage message);
 }

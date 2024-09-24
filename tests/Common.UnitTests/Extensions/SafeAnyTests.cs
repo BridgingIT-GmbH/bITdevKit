@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System.Linq;
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class SafeAnyTests
 {
@@ -81,7 +77,7 @@ public class SafeAnyTests
     public void SafeAny_ReturnsTrue_GivenPredicateSatisfied()
     {
         // Arrange
-        var enumerable = new int[] { 1, 2, 3, 4, 5 };
+        var enumerable = new[] { 1, 2, 3, 4, 5 };
 
         // Act
         var result = enumerable.SafeAny(i => i % 2 == 0);
@@ -94,7 +90,7 @@ public class SafeAnyTests
     public void SafeAny_ReturnsFalse_GivenPredicateNotSatisfied()
     {
         // Arrange
-        var enumerable = new int[] { 1, 3, 5 };
+        var enumerable = new[] { 1, 3, 5 };
 
         // Act
         var result = enumerable.SafeAny(i => i % 2 == 0);

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.EntityFrameworkCore;
 
 [Table("__Storage_Documents")]
@@ -46,10 +46,18 @@ public class StorageDocument
     public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
     [Column("Properties")]
-    public string PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections
+    public string
+        PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections
     {
-        get => this.Properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.Properties = value.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get =>
+            this.Properties.IsNullOrEmpty()
+                ? null
+                : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+        set =>
+            this.Properties = value.IsNullOrEmpty()
+                ? []
+                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
+                    DefaultSystemTextJsonSerializerOptions.Create());
     }
 
     [Timestamp]

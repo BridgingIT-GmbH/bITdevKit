@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class StubAddress : ValueObject
 {

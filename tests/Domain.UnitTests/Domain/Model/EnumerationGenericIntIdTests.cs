@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
-using Xunit;
-using Shouldly;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
@@ -19,7 +15,8 @@ public class EnumerationGenericIntIdTests
     public void GetAll_ShouldReturnAllUserRoles()
     {
         // Arrange & Act
-        var allRoles = StubUserRoles.GetAll<StubUserRoles>().ToList();
+        var allRoles = StubUserRoles.GetAll<StubUserRoles>()
+            .ToList();
 
         // Assert
         allRoles.Count.ShouldBe(3);
@@ -51,8 +48,8 @@ public class EnumerationGenericIntIdTests
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() =>
-            StubUserRoles.FromId<StubUserRoles>(invalidId)
-        ).Message.ShouldBe($"'{invalidId}' is not a valid id for {typeof(StubUserRoles)}");
+                StubUserRoles.FromId<StubUserRoles>(invalidId))
+            .Message.ShouldBe($"'{invalidId}' is not a valid id for {typeof(StubUserRoles)}");
     }
 
     [Fact]
@@ -78,8 +75,8 @@ public class EnumerationGenericIntIdTests
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() =>
-            StubUserRoles.FromValue<StubUserRoles>(invalidRole)
-        ).Message.ShouldContain("is not a valid value for");
+                StubUserRoles.FromValue<StubUserRoles>(invalidRole))
+            .Message.ShouldContain("is not a valid value for");
     }
 
     [Fact]
@@ -90,7 +87,8 @@ public class EnumerationGenericIntIdTests
         var role2 = StubUserRoles.FromId<StubUserRoles>(2);
 
         // Act & Assert
-        role1.Equals(role2).ShouldBeTrue();
+        role1.Equals(role2)
+            .ShouldBeTrue();
         (role1 == role2).ShouldBeTrue();
     }
 
@@ -102,7 +100,8 @@ public class EnumerationGenericIntIdTests
         var adminRole = StubUserRoles.Administrator;
 
         // Act & Assert
-        userRole.Equals(adminRole).ShouldBeFalse();
+        userRole.Equals(adminRole)
+            .ShouldBeFalse();
         (userRole == adminRole).ShouldBeFalse();
     }
 
@@ -114,7 +113,8 @@ public class EnumerationGenericIntIdTests
         var role2 = StubUserRoles.FromId<StubUserRoles>(3);
 
         // Act & Assert
-        role1.GetHashCode().ShouldBe(role2.GetHashCode());
+        role1.GetHashCode()
+            .ShouldBe(role2.GetHashCode());
     }
 }
 
@@ -148,8 +148,8 @@ public class StubRoleDetails(string name, bool canModerate, bool canAdminister)
         }
 
         return this.Name == other.Name &&
-               this.CanModerate == other.CanModerate &&
-               this.CanAdminister == other.CanAdminister;
+            this.CanModerate == other.CanModerate &&
+            this.CanAdminister == other.CanAdminister;
     }
 
     public override bool Equals(object obj)

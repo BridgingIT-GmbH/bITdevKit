@@ -5,24 +5,25 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 
 public class HostUpdateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Host> repository) : CommandHandlerBase<HostUpdateCommand, Result<Host>>(loggerFactory)
 {
-    public override async Task<CommandResponse<Result<Host>>> Process(HostUpdateCommand command, CancellationToken cancellationToken)
+    public override async Task<CommandResponse<Result<Host>>> Process(
+        HostUpdateCommand command,
+        CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        var hostResult = await repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken);
+        var hostResult =
+            await repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken);
         var host = hostResult.Value;
         if (hostResult.IsFailure)
         {

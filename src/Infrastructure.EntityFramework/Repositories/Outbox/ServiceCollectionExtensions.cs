@@ -4,12 +4,13 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace Microsoft.Extensions.DependencyInjection;
+
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using EntityFrameworkCore;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -18,9 +19,8 @@ public static partial class ServiceCollectionExtensions
         Builder<OutboxDomainEventOptionsBuilder, OutboxDomainEventOptions> optionsBuilder)
         where TContext : DbContext, IOutboxDomainEventContext
     {
-        return services
-            .AddOutboxDomainEventService<TContext>(
-                optionsBuilder(new OutboxDomainEventOptionsBuilder()).Build());
+        return services.AddOutboxDomainEventService<TContext>(optionsBuilder(new OutboxDomainEventOptionsBuilder())
+            .Build());
     }
 
     public static IServiceCollection AddOutboxDomainEventService<TContext>(
@@ -31,9 +31,8 @@ public static partial class ServiceCollectionExtensions
         services.AddSingleton(options ?? new OutboxDomainEventOptions());
         services.AddSingleton<IOutboxDomainEventWorker, OutboxDomainEventWorker<TContext>>();
         services.AddSingleton<IOutboxDomainEventQueue>(sp => // needed by OutboxMessagePublisherBehavior (optional)
-            new OutboxDomainEventQueue(
-                    sp.GetRequiredService<ILoggerFactory>(),
-                    id => sp.GetRequiredService<IOutboxDomainEventWorker>().ProcessAsync(id)));
+            new OutboxDomainEventQueue(sp.GetRequiredService<ILoggerFactory>(),
+                id => sp.GetRequiredService<IOutboxDomainEventWorker>().ProcessAsync(id)));
         services.AddHostedService<OutboxDomainEventService>();
 
         return services;
@@ -45,9 +44,8 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext, IOutboxDomainEventContext
         where TWorker : IOutboxDomainEventWorker
     {
-        return services
-            .AddOutboxDomainEventService<TContext, TWorker>(
-                optionsBuilder(new OutboxDomainEventOptionsBuilder()).Build());
+        return services.AddOutboxDomainEventService<TContext, TWorker>(
+            optionsBuilder(new OutboxDomainEventOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddOutboxDomainEventService<TContext, TWorker>(
@@ -57,11 +55,9 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxDomainEventWorker
     {
         services.AddSingleton(options ?? new OutboxDomainEventOptions());
-        services.AddHostedService(sp =>
-            new OutboxDomainEventService(
-                sp.GetRequiredService<ILoggerFactory>(),
-                sp.GetRequiredService<TWorker>(),
-                sp.GetService<OutboxDomainEventOptions>()));
+        services.AddHostedService(sp => new OutboxDomainEventService(sp.GetRequiredService<ILoggerFactory>(),
+            sp.GetRequiredService<TWorker>(),
+            sp.GetService<OutboxDomainEventOptions>()));
 
         return services;
     }

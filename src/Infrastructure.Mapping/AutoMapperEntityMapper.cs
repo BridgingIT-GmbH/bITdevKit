@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Mapping;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
 using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
+using Domain.Repositories;
+using Domain.Specifications;
 
 public class AutoMapperEntityMapper : IEntityMapper
 {
@@ -72,7 +70,8 @@ public class AutoMapperEntityMapper : IEntityMapper
         return this.mapper.MapExpression<TDestination>(expression);
     }
 
-    public Expression<Func<TDestination, bool>> MapSpecification<TSource, TDestination>(ISpecification<TSource> specification)
+    public Expression<Func<TDestination, bool>> MapSpecification<TSource, TDestination>(
+        ISpecification<TSource> specification)
     {
         if (specification is null)
         {
@@ -80,6 +79,8 @@ public class AutoMapperEntityMapper : IEntityMapper
         }
 
         return this.mapper
-            .MapExpression<Expression<Func<TDestination, bool>>>(specification.ToExpression()); // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+            .MapExpression<
+                Expression<Func<TDestination, bool>>>(specification
+                .ToExpression()); // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
     }
 }

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -44,7 +43,8 @@ public static partial class Extensions
                 return (T)parsedValue;
             }
 
-            throw new ArgumentException($"The Enum value of '{value}' is not defined as a valid value for '{targetType.FullName}'.");
+            throw new ArgumentException(
+                $"The Enum value of '{value}' is not defined as a valid value for '{targetType.FullName}'.");
         }
 
         if (targetTypeInfo.IsEnum && valueType.IsNumeric())
@@ -60,7 +60,9 @@ public static partial class Extensions
 
         if (!(value is IConvertible))
         {
-            throw new ArgumentException($"An incompatible value specified. Target Type: {targetType.FullName} Value Type: {value.GetType().FullName}", nameof(value));
+            throw new ArgumentException(
+                $"An incompatible value specified. Target Type: {targetType.FullName} Value Type: {value.GetType().FullName}",
+                nameof(value));
         }
 
         try
@@ -70,7 +72,10 @@ public static partial class Extensions
         }
         catch (Exception e)
         {
-            throw new ArgumentException($"An incompatible value specified. Target Type: {targetType.FullName} Value Type: {value.GetType().FullName}", nameof(value), e);
+            throw new ArgumentException(
+                $"An incompatible value specified. Target Type: {targetType.FullName} Value Type: {value.GetType().FullName}",
+                nameof(value),
+                e);
         }
     }
 }

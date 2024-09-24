@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System;
-using Shouldly;
-
 [UnitTest("Common")]
 public class ToTypeTests
 {
@@ -37,7 +34,7 @@ public class ToTypeTests
     public void ToType_WhenPassedNumericValue_ReturnsValueAsEnum()
     {
         // Arrange
-        int value = 2;
+        var value = 2;
 
         // Act
         var result = value.ToType<StubIntEnum>();

@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using Domain.Model;
 
 public interface IWeatherDataAdapter
 {

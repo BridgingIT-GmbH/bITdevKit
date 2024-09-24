@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Queries;
+using DevKit.Application.Queries;
 
 public class CityFindAllQuery : QueryRequestBase<IEnumerable<CityQueryResponse>>, ICacheQuery
 {
-    CacheQueryOptions ICacheQuery.Options => new()
-    {
-        Key = $"application_{nameof(CityFindAllQuery)}",
-        SlidingExpiration = new TimeSpan(0, 0, 30)
-    };
+    CacheQueryOptions ICacheQuery.Options =>
+        new() { Key = $"application_{nameof(CityFindAllQuery)}", SlidingExpiration = new TimeSpan(0, 0, 30) };
 }

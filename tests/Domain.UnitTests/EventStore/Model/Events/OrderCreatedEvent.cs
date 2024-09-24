@@ -5,18 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
 
-using System;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using EventSourcing.Model;
 
 public class OrderCreatedEvent : AggregateCreatedEvent<Order>
 {
     public OrderCreatedEvent()
-        : base(Guid.NewGuid())
-    {
-    }
+        : base(Guid.NewGuid()) { }
 
     public OrderCreatedEvent(Guid id)
-        : base(id)
-    {
-    }
+        : base(id) { }
 }

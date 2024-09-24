@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
-using System;
-
 [AttributeUsage(AttributeTargets.Class)]
 public class ImmutableNameAttribute(string immutableName) : Attribute
 {

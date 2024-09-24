@@ -1,8 +1,6 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Database;
 
-using System.Collections.Generic;
-using System.Linq;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public static class SqlStatements
 {
@@ -11,7 +9,8 @@ public static class SqlStatements
         public static string TruncateAllTables(IEnumerable<string> ignoreTables = null)
         {
             ignoreTables = ignoreTables.EmptyToNull();
-            ignoreTables ??= new List<string>([Guid.Empty.ToString()]); // need one non-empty value to avoid sql syntax error
+            ignoreTables ??=
+                new List<string>([Guid.Empty.ToString()]); // need one non-empty value to avoid sql syntax error
 
             return @$"
 -- Define the patterns of tables to be excluded using a global temporary table
@@ -80,7 +79,8 @@ DROP TABLE ##ExcludedTablePatterns
         public static string TruncateAllTables(IEnumerable<string> ignoreTables = null)
         {
             ignoreTables = ignoreTables.EmptyToNull();
-            ignoreTables ??= new List<string>([Guid.Empty.ToString()]); // need one non-empty value to avoid sql syntax error
+            ignoreTables ??=
+                new List<string>([Guid.Empty.ToString()]); // need one non-empty value to avoid sql syntax error
 
             return @$"
 -- Define the patterns of tables to be excluded using a temporary table

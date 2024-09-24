@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,7 +15,8 @@ public class FakeAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> schemeOptions,
     ILoggerFactory logger,
     UrlEncoder encoder,
-    FakeAuthenticationHandlerOptions options = null) : AuthenticationHandler<AuthenticationSchemeOptions>(schemeOptions, logger, encoder)
+    FakeAuthenticationHandlerOptions options = null)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(schemeOptions, logger, encoder)
 {
     private readonly FakeAuthenticationHandlerOptions options = options ?? new FakeAuthenticationHandlerOptions();
 

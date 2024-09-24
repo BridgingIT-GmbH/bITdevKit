@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 public static class DbInitializer
 {

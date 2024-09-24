@@ -8,9 +8,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Pulsar;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Configuration;
+using Extensions;
+using Logging;
 
 public static class ServiceCollectionExtensions
 {
@@ -22,7 +22,8 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<PulsarMessageBrokerConfiguration>() ?? new PulsarMessageBrokerConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<PulsarMessageBrokerConfiguration>() ??
+            new PulsarMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton<IMessageBroker>(sp =>
         {

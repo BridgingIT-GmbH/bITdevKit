@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Domain.Repositories;
+using Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -20,7 +18,8 @@ public class CoreDomainSeederTask(
     IGenericRepository<Menu> menuRepository,
     IGenericRepository<Dinner> dinnerRepository) : IStartupTask
 {
-    private readonly ILogger<CoreDomainSeederTask> logger = loggerFactory?.CreateLogger<CoreDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreDomainSeederTask>();
+    private readonly ILogger<CoreDomainSeederTask> logger = loggerFactory?.CreateLogger<CoreDomainSeederTask>() ??
+        NullLoggerFactory.Instance.CreateLogger<CoreDomainSeederTask>();
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -33,7 +32,9 @@ public class CoreDomainSeederTask(
     private async Task SeedUsers(IGenericRepository<User> repository)
     {
         foreach (var entity in CoreSeedModels.Users(0)
-            .Where(e => e.FirstName.StartsWith("John") || e.FirstName.StartsWith("Erik") || e.FirstName.StartsWith("Sophie")))
+                     .Where(e => e.FirstName.StartsWith("John") ||
+                         e.FirstName.StartsWith("Erik") ||
+                         e.FirstName.StartsWith("Sophie")))
         {
             if (!await repository.ExistsAsync(entity.Id))
             {

@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 public interface IStubService
 {
     public void MethodExplicitlyMarkedForTracing(Action stateValidation);
@@ -17,8 +13,7 @@ public interface IStubService
 
     public void MethodNotExplicitlyMarkedForTracing(Action stateValidation);
 
-    public void MethodWithStrangeParams1(
-        Action stateValidation,
+    public void MethodWithStrangeParams1(Action stateValidation,
         IList<string>[] arrayOfList,
         ISet<int[]> setOfArray,
         IDictionary<int, ICollection<string>> dictionary,
@@ -50,8 +45,7 @@ public class StubService : IStubService
         stateValidation();
     }
 
-    public void MethodWithStrangeParams1(
-        Action stateValidation,
+    public void MethodWithStrangeParams1(Action stateValidation,
         IList<string>[] arrayOfList,
         ISet<int[]> setOfArray,
         IDictionary<int, ICollection<string>> dict,
@@ -60,8 +54,7 @@ public class StubService : IStubService
         stateValidation();
     }
 
-    public void MethodJaggedAndMultiDimArraysParams(
-        Action stateValidation,
+    public void MethodJaggedAndMultiDimArraysParams(Action stateValidation,
         out string strVal,
         bool[][][] jaggedArrayOfBools,
         short[,,,][,][,,] multiDimArrayOfShorts,

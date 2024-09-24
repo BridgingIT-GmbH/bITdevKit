@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using BridgingIT.DevKit.Application.Messaging;
+using DevKit.Application.Messaging;
 
 public class EchoMessage : MessageBase
 {
     public EchoMessage() // TODO: needed?
-    {
-    }
+    { }
 
     public EchoMessage(string text)
     {

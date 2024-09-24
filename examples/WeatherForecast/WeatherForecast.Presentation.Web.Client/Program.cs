@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

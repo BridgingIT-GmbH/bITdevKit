@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -52,14 +50,18 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
 
-    public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
+    public override async Task Publish<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        MessagePublisherDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)
         {
             return;
         }
 
-        if (!message.Properties.ContainsKeyIgnoreCase(BehaviorMarkerPropertyKey)) // skip publishing the message into the outbox again as it was just read from the outbox
+        if (!message.Properties.ContainsKeyIgnoreCase(
+                BehaviorMarkerPropertyKey)) // skip publishing the message into the outbox again as it was just read from the outbox
         {
 #if DEBUG
             this.Logger.LogInformation("++++ PUBLISH:STORE " + message.MessageId);
@@ -102,7 +104,8 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
 
         if (this.options.AutoSave)
         {
-            await context.SaveChangesAsync<OutboxMessage>(this.Logger, cancellationToken).AnyContext(); // only save changes in this scoped context
+            await context.SaveChangesAsync<OutboxMessage>(this.Logger, cancellationToken)
+                .AnyContext(); // only save changes in this scoped context
         }
 
         if (this.options.ProcessingMode == OutboxMessageProcessingMode.Immediate)

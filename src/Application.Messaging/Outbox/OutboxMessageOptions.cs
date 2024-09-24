@@ -5,18 +5,17 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class OutboxMessageOptions : OptionsBase
 {
     public bool Enabled { get; set; } = true;
 
-    public TimeSpan StartupDelay { get; set; } = new TimeSpan(0, 0, 15);
+    public TimeSpan StartupDelay { get; set; } = new(0, 0, 15);
 
-    public TimeSpan ProcessingInterval { get; set; } = new TimeSpan(0, 0, 30);
+    public TimeSpan ProcessingInterval { get; set; } = new(0, 0, 30);
 
-    public TimeSpan ProcessingDelay { get; set; } = new TimeSpan(0, 0, 0, 0, 1);
+    public TimeSpan ProcessingDelay { get; set; } = new(0, 0, 0, 0, 1);
 
     public OutboxMessageProcessingMode ProcessingMode { get; set; }
 

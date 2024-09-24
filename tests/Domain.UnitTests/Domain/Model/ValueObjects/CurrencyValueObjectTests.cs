@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class CurrencyValueObjectTests
@@ -30,7 +30,7 @@ public class CurrencyValueObjectTests
     {
         // Arrange
         // Act
-        var currency = Currency.GBPound;
+        var currency = Currency.GbPound;
 
         // Assert
         currency.ShouldNotBeNull();

@@ -5,15 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Outbox;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Common.Options;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.Outbox;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using AggregatePublish;
+using Common;
+using Common.Options;
+using Domain.Outbox;
+using Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using Specifications;
 
 public class OutboxWorkerService(
     IOutboxMessageWorkerRepository repository,
@@ -27,9 +25,9 @@ public class OutboxWorkerService(
     public async Task DoWorkAsync()
     {
         foreach (var message in await this.repository.FindAllAsync(
-            new Specification<OutboxMessage>(m => !m.IsProcessed),
-            new FindOptions<OutboxMessage>(0, 0,
-                new OrderOption<OutboxMessage>(o => o.TimeStamp))).AnyContext())
+                         new Specification<OutboxMessage>(m => !m.IsProcessed),
+                         new FindOptions<OutboxMessage>(0, 0, new OrderOption<OutboxMessage>(o => o.TimeStamp)))
+                     .AnyContext())
         {
             try
             {

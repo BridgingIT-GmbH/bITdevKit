@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
-using BridgingIT.DevKit.Application.Storage;
+using Application.Storage;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
@@ -22,13 +22,10 @@ public class CosmosDocumentStoreCacheProviderTests
         this.fixture = fixture.WithOutput(output);
         if (this.fixture.CosmosContainer.State == TestcontainersStates.Running)
         {
-            var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(
-                XunitLoggerFactory.Create(this.fixture.Output),
-                new DocumentStoreClient<CacheDocument>(
-                    this.fixture.EnsureCosmosDocumentStoreProvider()));
+            var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.fixture.Output),
+                new DocumentStoreClient<CacheDocument>(this.fixture.EnsureCosmosDocumentStoreProvider()));
 
-            this.sut = new DocumentStoreCacheProvider(
-                XunitLoggerFactory.Create(this.fixture.Output),
+            this.sut = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.fixture.Output),
                 new DocumentStoreCache(client),
                 client);
 
@@ -199,7 +196,8 @@ public class CosmosDocumentStoreCacheProviderTests
         this.sut.Remove(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -213,7 +211,8 @@ public class CosmosDocumentStoreCacheProviderTests
         await this.sut.RemoveAsync(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -229,7 +228,8 @@ public class CosmosDocumentStoreCacheProviderTests
         this.sut.RemoveStartsWith(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -245,7 +245,8 @@ public class CosmosDocumentStoreCacheProviderTests
         await this.sut.RemoveStartsWithAsync(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -263,7 +264,8 @@ public class CosmosDocumentStoreCacheProviderTests
         this.sut.Set(key, value);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -283,7 +285,8 @@ public class CosmosDocumentStoreCacheProviderTests
         this.sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -303,7 +306,8 @@ public class CosmosDocumentStoreCacheProviderTests
         await this.sut.SetAsync(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeTrue();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
@@ -323,6 +327,7 @@ public class CosmosDocumentStoreCacheProviderTests
         this.sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(key, out _).ShouldBeFalse();
+        this.sut.TryGet<string>(key, out _)
+            .ShouldBeFalse();
     }
 }

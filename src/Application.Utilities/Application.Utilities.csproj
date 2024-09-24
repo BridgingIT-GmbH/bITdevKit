@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Modules\Common.Modules.csproj" />
-    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Common.Modules\Common.Modules.csproj"/>
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
 </Project>

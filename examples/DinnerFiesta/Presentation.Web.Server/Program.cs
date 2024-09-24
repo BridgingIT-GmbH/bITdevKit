@@ -4,8 +4,10 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.JobScheduling;
@@ -33,6 +35,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using ModuleExtensions = Microsoft.Extensions.DependencyInjection.ModuleExtensions;
 
 // ===============================================================================================
 // Create the webhost
@@ -47,7 +50,8 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<MarketingModule>()
     .WithModuleContextAccessors()
     .WithRequestModuleContextAccessors()
-    .WithModuleControllers(c => c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
+    .WithModuleControllers(c =>
+        c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 
 builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
 
@@ -84,19 +88,21 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
-    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-                                                         //.WithTask(sp =>
-                                                         //    new SqlServerQuartzSeederStartupTask(
-                                                         //        sp.GetRequiredService<ILoggerFactory>(),
-                                                         //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-                                                         //        "[dbo].QRTZ444_"))
+    .WithTask<
+        JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    //.WithTask(sp =>
+    //    new SqlServerQuartzSeederStartupTask(
+    //        sp.GetRequiredService<ILoggerFactory>(),
+    //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+    //        "[dbo].QRTZ444_"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>()
     //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
     .WithBehavior<RetryStartupTaskBehavior>()
     .WithBehavior<TimeoutStartupTaskBehavior>();
 
-builder.Services.AddMessaging(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+builder.Services.AddMessaging(builder.Configuration,
+        o => o
+            .StartupDelay("00:00:10"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -109,12 +115,13 @@ builder.Services.AddMessaging(builder.Configuration, o => o
         //.ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
         // ^^^ causes messaging to go bezerk
         .StartupDelay("00:00:05"))
-        //.PurgeOnStartup())
+    //.PurgeOnStartup())
     .WithInProcessBroker(); //.WithRabbitMQBroker();
 
 ConfigureHealth(builder.Services);
 
-builder.Services.AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
+builder.Services
+    .AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
 builder.Services.Configure<ApiBehaviorOptions>(ConfigureApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
@@ -128,7 +135,8 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
+builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument);
+// TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -172,7 +180,8 @@ app.UseStaticFiles(new StaticFileOptions
     ContentTypeProvider = CreateContentTypeProvider(),
     OnPrepareResponse = context =>
     {
-        if (context.Context.Response.ContentType == ContentType.YAML.MimeType()) // Disable caching for yaml (OpenAPI) files
+        if (context.Context.Response.ContentType ==
+            ContentType.YAML.MimeType()) // Disable caching for yaml (OpenAPI) files
         {
             context.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
             context.Context.Response.Headers.Expires = "-1";
@@ -211,13 +220,13 @@ void ConfigureJsonOptions(JsonOptions options)
     options.JsonSerializerOptions.WriteIndented = true;
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }
 
 void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
-        .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "self" });
+        .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { "self" });
     //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()
@@ -231,8 +240,7 @@ void ConfigureHealth(IServiceCollection services)
 void ConfigureMetrics(MeterProviderBuilder provider)
 {
     provider.AddRuntimeInstrumentation()
-        .AddMeter(
-            "Microsoft.AspNetCore.Hosting",
+        .AddMeter("Microsoft.AspNetCore.Hosting",
             "Microsoft.AspNetCore.Server.Kestrel",
             "System.Net.Http",
             "BridgingIT.DevKit");
@@ -248,7 +256,7 @@ void ConfigureTracing(TracerProviderBuilder provider)
 {
     // TODO: multiple per module tracer needed? https://github.com/open-telemetry/opentelemetry-dotnet/issues/2040
     // https://opentelemetry.io/docs/instrumentation/net/getting-started/
-    var serviceName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name; //TODO: use ModuleExtensions.ServiceName
+    var serviceName = Assembly.GetExecutingAssembly().GetName().Name; //TODO: use ModuleExtensions.ServiceName
 
     if (builder.Environment.IsDevelopment())
     {
@@ -262,7 +270,7 @@ void ConfigureTracing(TracerProviderBuilder provider)
     provider
         //.AddSource(ModuleExtensions.Modules.Select(m => m.Name).Insert(serviceName).ToArray()) // TODO: provide a nice (module) extension for this -> .AddModuleSources() // NOT NEEDED, * will add all activitysources
         .AddSource("*")
-        .SetErrorStatusOnException(true)
+        .SetErrorStatusOnException()
         .SetResourceBuilder(ResourceBuilder.CreateDefault()
             .AddService(serviceName)
             .AddTelemetrySdk()
@@ -270,18 +278,21 @@ void ConfigureTracing(TracerProviderBuilder provider)
             {
                 ["host.name"] = Environment.MachineName,
                 ["os.description"] = RuntimeInformation.OSDescription,
-                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLowerInvariant(),
+                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLowerInvariant()
             }))
-        .SetErrorStatusOnException(true)
+        .SetErrorStatusOnException()
         .AddAspNetCoreInstrumentation(options =>
         {
             options.RecordException = true;
-            options.Filter = context => !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
+            options.Filter = context =>
+                !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
         })
         .AddHttpClientInstrumentation(options =>
         {
             options.RecordException = true;
-            options.FilterHttpRequestMessage = request => !request.RequestUri.PathAndQuery.EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
+            options.FilterHttpRequestMessage = request =>
+                !request.RequestUri.PathAndQuery.EqualsPatternAny(
+                    new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
         })
         .AddSqlClientInstrumentation(options =>
         {
@@ -292,7 +303,9 @@ void ConfigureTracing(TracerProviderBuilder provider)
 
     if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
     {
-        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})", "TRC", builder.Configuration["Tracing:Jaeger:AgentHost"]);
+        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
+            "TRC",
+            builder.Configuration["Tracing:Jaeger:AgentHost"]);
         provider.AddJaegerExporter(opts =>
         {
             opts.AgentHost = builder.Configuration["Tracing:Jaeger:AgentHost"];
@@ -312,7 +325,8 @@ void ConfigureTracing(TracerProviderBuilder provider)
         Log.Logger.Information("{LogKey} azuremonitor exporter enabled", "TRC");
         provider.AddAzureMonitorTraceExporter(o =>
         {
-            o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ?? Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+            o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ??
+                Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
         });
     }
 }
@@ -322,8 +336,7 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
     settings.DocumentName = "v1";
     settings.Version = "v1";
     settings.Title = "Backend API";
-    settings.AddSecurity(
-        "bearer",
+    settings.AddSecurity("bearer",
         [],
         new OpenApiSecurityScheme
         {
@@ -341,7 +354,7 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
                         //{"openid", "openid"},
                     }
                 }
-            },
+            }
         });
     settings.OperationProcessors.Add(new AuthorizeRolesSummaryOperationProcessor());
     settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
@@ -351,12 +364,12 @@ void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings setting
 void ConfigureSwaggerUi(SwaggerUiSettings settings)
 {
     settings.CustomStylesheetPath = "css/swagger.css";
-    settings.SwaggerRoutes.Add(new SwaggerUiRoute("All (generated)", "/swagger/generated/swagger.json")); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
+    settings.SwaggerRoutes.Add(new SwaggerUiRoute("All (generated)",
+        "/swagger/generated/swagger.json")); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
 
     foreach (var module in ModuleExtensions.Modules.SafeNull().Where(m => m.Enabled))
     {
-        settings.SwaggerRoutes.Add(
-            new SwaggerUiRoute(module.Name, $"/openapi/{module.Name}-OpenAPI.yaml"));
+        settings.SwaggerRoutes.Add(new SwaggerUiRoute(module.Name, $"/openapi/{module.Name}-OpenAPI.yaml"));
     }
 }
 

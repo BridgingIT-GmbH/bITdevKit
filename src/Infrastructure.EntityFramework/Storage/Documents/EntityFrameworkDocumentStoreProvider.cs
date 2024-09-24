@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
+using Application.Storage;
+using Common;
 using Microsoft.EntityFrameworkCore;
 
 public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProvider
@@ -30,33 +26,36 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
     }
 
     /// <summary>
-    /// Retrieves entities of type T from document store asynchronously
+    ///     Retrieves entities of type T from document store asynchronously
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
-        return (await this.context.StorageDocuments
-            .Where(e => e.Type == type)
+        return (await this.context.StorageDocuments.Where(e => e.Type == type)
             .AsNoTracking()
-            .ToListAsync(cancellationToken))
-            .ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
+            .ToListAsync(cancellationToken)).ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
     }
 
     /// <summary>
-    /// Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
+    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
     /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.FindAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
     /// <summary>
-    /// Searches for entities of type T by the whole partitionKey and startswith rowKey
+    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
     /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
-    where T : class, new()
+    public async Task<IEnumerable<T>> FindAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
+        where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
@@ -64,27 +63,29 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         var type = this.GetTypeName<T>();
         if (filter == DocumentKeyFilter.FullMatch)
         {
-            return (await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
-                .ToListAsync(cancellationToken))
-                .ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey == documentKey.RowKey)
+                .ToListAsync(cancellationToken)).ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
         }
-        else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            return (await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey))
-                .ToListAsync(cancellationToken))
-                .ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.StartsWith(documentKey.RowKey))
+                .ToListAsync(cancellationToken)).ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
         }
-        else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            return (await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey))
-                .ToListAsync(cancellationToken))
-                .ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.EndsWith(documentKey.RowKey))
+                .ToListAsync(cancellationToken)).ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
         }
 
         return [];
@@ -94,19 +95,24 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
-        return await this.context.StorageDocuments
-            .AsNoTracking()
+        return await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type)
-            .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToListAsync(cancellationToken);
+            .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -115,44 +121,51 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         var type = this.GetTypeName<T>();
         if (filter == DocumentKeyFilter.FullMatch)
         {
-            return await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToListAsync(cancellationToken);
+            return await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey == documentKey.RowKey)
+                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                .ToListAsync(cancellationToken);
         }
-        else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            return await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey))
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToListAsync(cancellationToken);
+            return await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.StartsWith(documentKey.RowKey))
+                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                .ToListAsync(cancellationToken);
         }
-        else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            return await this.context.StorageDocuments
-                .AsNoTracking()
-                .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey))
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToListAsync(cancellationToken);
+            return await this.context.StorageDocuments.AsNoTracking()
+                .Where(e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.EndsWith(documentKey.RowKey))
+                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                .ToListAsync(cancellationToken);
         }
 
         return [];
     }
 
     /// <summary>
-    /// Counts the number of entities of type T in the document store
+    ///     Counts the number of entities of type T in the document store
     /// </summary>
     public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
-        return (await this.context.StorageDocuments
-            .AsNoTracking()
+        return (await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type)
             .ToListAsync(cancellationToken)).Count;
     }
 
     /// <summary>
-    /// Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
+    ///     Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
     /// </summary>
     public async Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
@@ -161,19 +174,15 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
 
         var type = this.GetTypeName<T>();
-        return (await this.context.StorageDocuments
-            .AsNoTracking()
+        return (await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
             .ToListAsync(cancellationToken)).SafeAny();
     }
 
     /// <summary>
-    /// Inserts or updates an entity of type T in the document store
+    ///     Inserts or updates an entity of type T in the document store
     /// </summary>
-    public async Task UpsertAsync<T>(
-        DocumentKey documentKey,
-        T entity,
-        CancellationToken cancellationToken = default)
+    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -181,15 +190,14 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
 
         var type = this.GetTypeName<T>();
-        var documentEntity = await this.context.StorageDocuments
-            .FirstOrDefaultAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, cancellationToken);
+        var documentEntity = await this.context.StorageDocuments.FirstOrDefaultAsync(e =>
+                e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+            cancellationToken);
         if (documentEntity is null)
         {
             documentEntity = new StorageDocument
             {
-                Type = type,
-                PartitionKey = documentKey.PartitionKey,
-                RowKey = documentKey.RowKey
+                Type = type, PartitionKey = documentKey.PartitionKey, RowKey = documentKey.RowKey
             };
 
             this.context.StorageDocuments.Add(documentEntity);
@@ -223,15 +231,14 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
                     cancellationToken.ThrowIfCancellationRequested();
                 }
 
-                var documentEntity = await this.context.StorageDocuments
-                    .FirstOrDefaultAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, cancellationToken);
+                var documentEntity = await this.context.StorageDocuments.FirstOrDefaultAsync(e =>
+                        e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+                    cancellationToken);
                 if (documentEntity is null)
                 {
                     documentEntity = new StorageDocument
                     {
-                        Type = type,
-                        PartitionKey = documentKey.PartitionKey,
-                        RowKey = documentKey.RowKey
+                        Type = type, PartitionKey = documentKey.PartitionKey, RowKey = documentKey.RowKey
                     };
 
                     this.context.StorageDocuments.Add(documentEntity);
@@ -251,7 +258,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
     }
 
     /// <summary>
-    /// Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
+    ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
     /// </summary>
     public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
@@ -274,6 +281,8 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         }
     }
 
-    private string GetTypeName<T>() =>
-        typeof(T).FullName.ToLowerInvariant().TruncateLeft(1024);
+    private string GetTypeName<T>()
+    {
+        return typeof(T).FullName.ToLowerInvariant().TruncateLeft(1024);
+    }
 }

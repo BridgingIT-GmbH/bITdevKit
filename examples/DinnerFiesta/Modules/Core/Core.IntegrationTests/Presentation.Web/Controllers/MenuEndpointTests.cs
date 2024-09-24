@@ -5,17 +5,19 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests.Presentation.Web;
 
+using System.Net.Mime;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests;
+using Core.Presentation.Web.Controllers;
 using Dumpify;
 using FluentAssertions;
+using UnitTests;
+using HttpContentExtensions = Common.HttpContentExtensions;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
 [Module("Core")]
-public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
+    : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
@@ -29,7 +31,8 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route.Replace("{hostId}", menu.HostId) + $"/{menu.Id}").AnyContext();
+            .GetAsync(route.Replace("{hostId}", menu.HostId) + $"/{menu.Id}")
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -37,7 +40,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Should().MatchInContent($"*{menu.HostId}*");
         response.Should().MatchInContent($"*{menu.Name}*");
         response.Should().MatchInContent($"*{menu.Id}*");
-        var responseModel = await response.Content.ReadAsAsync<MenuModel>();
+        var responseModel = await HttpContentExtensions.ReadAsAsync<MenuModel>(response.Content);
         responseModel.ShouldNotBeNull();
         this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
@@ -52,7 +55,8 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()) + $"/{Guid.NewGuid()}").AnyContext();
+            .GetAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()) + $"/{Guid.NewGuid()}")
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -68,16 +72,17 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
         var model = new MenuModel
         {
-            HostId = entity.HostId.ToString(),
-            Name = entity.Name,
-            Description = entity.Description
+            HostId = entity.HostId.ToString(), Name = entity.Name, Description = entity.Description
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -85,7 +90,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         response.Headers.Location.Should().NotBeNull();
         response.Should().MatchInContent($"*{model.HostId}*");
         response.Should().MatchInContent($"*{model.Name}*");
-        var responseModel = await response.Content.ReadAsAsync<MenuModel>();
+        var responseModel = await HttpContentExtensions.ReadAsAsync<MenuModel>(response.Content);
         responseModel.ShouldNotBeNull();
         this.fixture.Output.WriteLine($"ResponseModel: {responseModel.DumpText()}");
     }
@@ -97,23 +102,21 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         // Arrange
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
-        var model = new MenuModel
-        {
-            HostId = null,
-            Name = null,
-            Description = entity.Description
-        };
+        var model = new MenuModel { HostId = null, Name = null, Description = entity.Description };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
         response.Should().Be400BadRequest(); // https://github.com/adrianiftode/FluentAssertions.Web
-        response.Should().MatchInContent($"*[ValidationException]*");
+        response.Should().MatchInContent("*[ValidationException]*");
         response.Should().MatchInContent($"*{nameof(model.HostId)}*");
         response.Should().MatchInContent($"*{nameof(model.Name)}*");
     }
@@ -123,16 +126,17 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
         var model = new MenuModel
         {
-            HostId = entity.HostId.ToString(),
-            Name = entity.Name,
-            Description = entity.Description
+            HostId = entity.HostId.ToString(), Name = entity.Name, Description = entity.Description
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
+            .AnyContext();
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsAsync<MenuModel>();
+        return await HttpContentExtensions.ReadAsAsync<MenuModel>(response.Content);
     }
 }

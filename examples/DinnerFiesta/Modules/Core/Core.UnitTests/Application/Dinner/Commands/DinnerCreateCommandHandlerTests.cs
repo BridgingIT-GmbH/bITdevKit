@@ -5,16 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Shouldly;
-using Xunit;
 
 public class DinnerCreateCommandHandlerTests
 {
@@ -28,13 +22,13 @@ public class DinnerCreateCommandHandlerTests
         var menuId = Stubs.Menus(ticks).ToArray()[0].Id.Value; // Vegetarian Delights
         var dinner = Stubs.Dinners(ticks).ToArray()[0]; // Garden Delights
         var repository = Substitute.For<IGenericRepository<Dinner>>();
-        repository.FindAllAsync(
-            Arg.Any<DinnerForNameSpecification>(),
-            Arg.Any<IFindOptions<Dinner>>(),
-            Arg.Any<CancellationToken>()).Returns([]);
-        repository.InsertAsync(
-            Arg.Any<Dinner>(),
-            Arg.Any<CancellationToken>()).Returns(dinner);
+        repository.FindAllAsync(Arg.Any<DinnerForNameSpecification>(),
+                Arg.Any<IFindOptions<Dinner>>(),
+                Arg.Any<CancellationToken>())
+            .Returns([]);
+        repository.InsertAsync(Arg.Any<Dinner>(),
+                Arg.Any<CancellationToken>())
+            .Returns(dinner);
         var command = CreateCommand(dinner, hostId, menuId);
 
         // Act
@@ -88,11 +82,15 @@ public class DinnerCreateCommandHandlerTests
 
     private static DinnerCreateCommand CreateCommand(Dinner dinner, Guid hostId, Guid menuId)
     {
-        return new DinnerCreateCommand()
+        return new DinnerCreateCommand
         {
             Name = dinner.Name,
             Description = dinner.Description,
-            Schedule = new DinnerCreateCommand.DinnerSchedule { StartDateTime = dinner.Schedule.StartDateTime, EndDateTime = dinner.Schedule.EndDateTime },
+            Schedule =
+                new DinnerCreateCommand.DinnerSchedule
+                {
+                    StartDateTime = dinner.Schedule.StartDateTime, EndDateTime = dinner.Schedule.EndDateTime
+                },
             IsPublic = true,
             MaxGuests = 5,
             Price = new DinnerCreateCommand.DinnerPrice { Currency = "EUR", Amount = 10.99m },

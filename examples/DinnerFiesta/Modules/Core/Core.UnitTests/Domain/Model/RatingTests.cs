@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using Xunit;
-using Shouldly;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Domain;
+using Core.Domain;
+using DevKit.Domain;
 
+[UnitTest("Domain")]
 public class RatingTests
 {
     [Fact]

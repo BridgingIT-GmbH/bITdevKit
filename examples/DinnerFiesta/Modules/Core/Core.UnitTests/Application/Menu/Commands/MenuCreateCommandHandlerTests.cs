@@ -5,16 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Shouldly;
-using Xunit;
 
 public class MenuCreateCommandHandlerTests
 {
@@ -27,9 +21,9 @@ public class MenuCreateCommandHandlerTests
         var hostId = Stubs.Hosts(ticks).ToArray()[1].Id.Value; // Erik
         var menu = Stubs.Menus(ticks).ToArray()[0]; // Vegetarian Delights
         var repository = Substitute.For<IGenericRepository<Menu>>();
-        repository.InsertAsync(
-            Arg.Any<Menu>(),
-            Arg.Any<CancellationToken>()).Returns(menu);
+        repository.InsertAsync(Arg.Any<Menu>(),
+                Arg.Any<CancellationToken>())
+            .Returns(menu);
         var command = CreateCommand(menu, hostId);
 
         // Act
@@ -60,18 +54,21 @@ public class MenuCreateCommandHandlerTests
 
     private static MenuCreateCommand CreateCommand(Menu menu, Guid hostId)
     {
-        return new MenuCreateCommand()
+        return new MenuCreateCommand
         {
             Name = menu.Name,
             Description = menu.Description,
             HostId = hostId.ToString(),
             Sections = menu.Sections.Select(s =>
-                new MenuCreateCommand.MenuSection
-                {
-                    Name = s.Name,
-                    Description = s.Description,
-                    Items = s.Items.Select(i => new MenuCreateCommand.MenuSectionItem { Name = i.Name, Description = i.Description }).ToList()
-                }).ToList()
+                    new MenuCreateCommand.MenuSection
+                    {
+                        Name = s.Name,
+                        Description = s.Description,
+                        Items = s.Items.Select(i =>
+                                new MenuCreateCommand.MenuSectionItem { Name = i.Name, Description = i.Description })
+                            .ToList()
+                    })
+                .ToList()
         };
     }
 }

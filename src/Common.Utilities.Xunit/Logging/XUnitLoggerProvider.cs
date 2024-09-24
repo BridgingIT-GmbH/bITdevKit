@@ -18,7 +18,5 @@ public sealed class XunitLoggerProvider(ITestOutputHelper output) : ILoggerProvi
         return new XunitLogger(this.output, this.scopeProvider, categoryName);
     }
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

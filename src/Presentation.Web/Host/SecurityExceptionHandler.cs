@@ -4,16 +4,16 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Presentation.Web.Host;
-using System;
+
 using System.Security;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 public class SecurityExceptionHandler(
-    ILogger<SecurityExceptionHandler> logger, GlobalExceptionHandlerOptions options) : IExceptionHandler
+    ILogger<SecurityExceptionHandler> logger,
+    GlobalExceptionHandlerOptions options) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -29,10 +29,7 @@ public class SecurityExceptionHandler(
 
         if (options.EnableLogging)
         {
-            logger.LogError(
-                ex,
-                "{ExceptionType} occurred: {ExceptionMessage}",
-                ex.GetType().Name, ex.Message);
+            logger.LogError(ex, "{ExceptionType} occurred: {ExceptionMessage}", ex.GetType().Name, ex.Message);
         }
 
         var problemDetails = new ProblemDetails
@@ -45,8 +42,7 @@ public class SecurityExceptionHandler(
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;
 
-        await httpContext.Response
-            .WriteAsJsonAsync(problemDetails, cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
     }

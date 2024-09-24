@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="MessagePack" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" />
+    <PackageReference Include="Newtonsoft.Json"/>
+    <PackageReference Include="MessagePack"/>
+    <PackageReference Include="System.Threading.Tasks.Extensions"/>
   </ItemGroup>
 
 </Project>

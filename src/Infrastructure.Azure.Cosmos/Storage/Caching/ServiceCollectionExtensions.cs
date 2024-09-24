@@ -5,14 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using Azure.Cosmos;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Azure;
 using BridgingIT.DevKit.Infrastructure.Azure.Storage;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Configuration;
+using Extensions;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -24,7 +24,8 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ?? new DocumentStoreCacheProviderConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<DocumentStoreCacheProviderConfiguration>() ??
+            new DocumentStoreCacheProviderConfiguration();
 
         // store client > store provider > client
         //if (!configuration.ConnectionString.IsNullOrEmpty())
@@ -46,13 +47,11 @@ public static partial class ServiceCollectionExtensions
 
         context.Services.TryAddScoped<IDocumentStoreClient<CacheDocument>>(sp =>
             new DocumentStoreClient<CacheDocument>(
-                new CosmosDocumentStoreProvider(
-                    sp.GetRequiredService<ICosmosSqlProvider<CosmosStorageDocument>>())));
+                new CosmosDocumentStoreProvider(sp.GetRequiredService<ICosmosSqlProvider<CosmosStorageDocument>>())));
 
         // cache provider > distrbuted cache + store client
         context.Services.TryAddTransient<ICacheProvider>(sp =>
-            new DocumentStoreCacheProvider(
-                sp.GetRequiredService<ILoggerFactory>(),
+            new DocumentStoreCacheProvider(sp.GetRequiredService<ILoggerFactory>(),
                 new DocumentStoreCache(sp.GetRequiredService<IDocumentStoreClient<CacheDocument>>()),
                 sp.GetRequiredService<IDocumentStoreClient<CacheDocument>>(),
                 configuration: configuration));

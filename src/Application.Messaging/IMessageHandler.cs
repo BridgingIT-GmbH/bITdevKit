@@ -9,7 +9,7 @@ public interface IMessageHandler<TMessage>
     where TMessage : IMessage
 {
     /// <summary>
-    /// Handles the specified message.
+    ///     Handles the specified message.
     /// </summary>
     /// <param name="message">The event.</param>
     Task Handle(TMessage message, CancellationToken cancellationToken);

@@ -9,8 +9,8 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using EntityFrameworkCore;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -41,9 +41,7 @@ public static partial class ServiceCollectionExtensions
         Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
         where TContext : DbContext, IOutboxMessageContext
     {
-        return services
-            .AddOutboxMessageService<TContext>(
-                optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
+        return services.AddOutboxMessageService<TContext>(optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddOutboxMessageService<TContext>(
@@ -54,9 +52,8 @@ public static partial class ServiceCollectionExtensions
         services.AddSingleton(options ?? new OutboxMessageOptions());
         services.AddSingleton<IOutboxMessageWorker, OutboxMessageWorker<TContext>>();
         services.AddSingleton<IOutboxMessageQueue>(sp => // needed by RepositoryOutboxDomainEventBehavior (optional)
-            new OutboxMessageQueue(
-                    sp.GetRequiredService<ILoggerFactory>(),
-                    id => sp.GetRequiredService<IOutboxMessageWorker>().ProcessAsync(id)));
+            new OutboxMessageQueue(sp.GetRequiredService<ILoggerFactory>(),
+                id => sp.GetRequiredService<IOutboxMessageWorker>().ProcessAsync(id)));
         services.AddHostedService<OutboxMessageService>();
 
         return services;
@@ -68,9 +65,8 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext, IOutboxMessageContext
         where TWorker : IOutboxMessageWorker
     {
-        return services
-            .AddOutboxMessageService<TContext, TWorker>(
-                optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
+        return services.AddOutboxMessageService<TContext, TWorker>(optionsBuilder(new OutboxMessageOptionsBuilder())
+            .Build());
     }
 
     public static IServiceCollection AddOutboxMessageService<TContext, TWorker>(
@@ -80,11 +76,9 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxMessageWorker
     {
         services.AddSingleton(options ?? new OutboxMessageOptions());
-        services.AddHostedService(sp =>
-            new OutboxMessageService(
-                sp.GetRequiredService<ILoggerFactory>(),
-                sp.GetRequiredService<TWorker>(),
-                sp.GetService<OutboxMessageOptions>()));
+        services.AddHostedService(sp => new OutboxMessageService(sp.GetRequiredService<ILoggerFactory>(),
+            sp.GetRequiredService<TWorker>(),
+            sp.GetService<OutboxMessageOptions>()));
 
         return services;
     }

@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
+using Common;
+using DevKit.Application.Queries;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -37,14 +36,18 @@ public class CityFindOneQuery : QueryRequestBase<CityQueryResponse>, ICacheQuery
 
     public double? Latitude { get; }
 
-    CacheQueryOptions ICacheQuery.Options => new()
-    {
-        Key = $"application_{nameof(CityFindOneQuery)}_{this.Name}_{this.Longitude}_{this.Latitude}".TrimEnd('_'),
-        SlidingExpiration = new TimeSpan(0, 0, 30)
-    };
+    CacheQueryOptions ICacheQuery.Options =>
+        new()
+        {
+            Key =
+                $"application_{nameof(CityFindOneQuery)}_{this.Name}_{this.Longitude}_{this.Latitude}".TrimEnd('_'),
+            SlidingExpiration = new TimeSpan(0, 0, 30)
+        };
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<CityFindOneQuery>
     {

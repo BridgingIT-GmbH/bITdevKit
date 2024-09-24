@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Application.Utilities\Application.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
-    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj" />
-    <ProjectReference Include="..\Marketing.Infrastructure\DinnerFiesta.Marketing.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Application.Utilities\Application.Utilities.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Presentation.Web\Presentation.Web.csproj"/>
+    <ProjectReference Include="..\Marketing.Application\DinnerFiesta.Marketing.Application.csproj"/>
+    <ProjectReference Include="..\Marketing.Infrastructure\DinnerFiesta.Marketing.Infrastructure.csproj"/>
   </ItemGroup>
 
   <!-- NSwag tool API Controller generation (openapi2cscontroller) -->
@@ -35,7 +35,7 @@
   </PropertyGroup>
   <Target Name="GenerateApiController" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiControllerOutputDirectory)\$(ApiControllerClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <Exec Command="$(NSwagExe) openapi2cscontroller /input:$(ApiSpecLocation) /classname:$(ApiControllerClassName) /namespace:$(ApiControllerNamespace) /output:$(ApiControllerOutputDirectory)\$(ApiControllerClassName)ControllerBase.cs /ControllerBaseClass:Microsoft.AspNetCore.Mvc.Controller /RouteNamingStrategy:OperationId /ControllerStyle:Abstract /UseActionResultType:true /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseCancellationToken:true" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
-      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec"/>
     </Exec>
   </Target>
   <Target Name="CleanApiController" AfterTargets="CoreClean" Condition="'$(ApiSpecGenerate)' == 'true'">
@@ -43,14 +43,14 @@
   </Target>
 
   <ItemGroup>
-      <GeneratedFilesPresentation Include="$(MSBuildProjectDirectory)\..\__gen\Presentation\**\*.*" />
+    <GeneratedFilesPresentation Include="$(MSBuildProjectDirectory)\..\__gen\Presentation\**\*.*"/>
   </ItemGroup>
 
   <!-- Bundle and build documentation for the api specification, see https://redocly.com/docs/cli/commands for help -->
   <Target Name="GenerateApiSpec" BeforeTargets="CoreCompile" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <!--<Exec Command="docker run ++rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli bundle $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).yaml" ContinueOnError="WarnAndContinue" />-->
-    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli build-docs $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).html" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="@(GeneratedFilesPresentation)" DestinationFiles="@(GeneratedFilesPresentation->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="WarnAndContinue" />
+    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli build-docs $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).html" ContinueOnError="WarnAndContinue"/>
+    <Copy SourceFiles="@(GeneratedFilesPresentation)" DestinationFiles="@(GeneratedFilesPresentation->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="WarnAndContinue"/>
   </Target>
   <Target Name="CleanApiSpec" AfterTargets="CoreClean">
     <Delete Files="@(GeneratedFilesPresentation)"></Delete>

@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using EnsureThat;
 using global::AutoMapper;
 
 /// <summary>
-/// Maps an object of type <typeparamref name="TSource"/> to <typeparamref name="TDestination"/> by using automapper.
+///     Maps an object of type <typeparamref name="TSource" /> to <typeparamref name="TDestination" /> by using automapper.
 /// </summary>
 /// <typeparam name="TSource">The type of the object to map from.</typeparam>
 /// <typeparam name="TDestination">The type of the object to map to.</typeparam>
@@ -18,7 +17,7 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
     private readonly global::AutoMapper.IMapper mapper;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoMapper{TSource, TDestination}"/> class.
+    ///     Initializes a new instance of the <see cref="AutoMapper{TSource, TDestination}" /> class.
     /// </summary>
     /// <param name="mapper">The mapper.</param>
     public AutoMapper(global::AutoMapper.IMapper mapper)
@@ -29,7 +28,7 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoMapper{TSource, TDestination}"/> class.
+    ///     Initializes a new instance of the <see cref="AutoMapper{TSource, TDestination}" /> class.
     /// </summary>
     public AutoMapper(MapperConfiguration configuration)
     {
@@ -39,7 +38,7 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
     }
 
     /// <summary>
-    /// Maps the specified source object into the destination object.
+    ///     Maps the specified source object into the destination object.
     /// </summary>
     /// <param name="source">The source object to map from.</param>
     /// <param name="destination">The destination object to map to.</param>
@@ -53,14 +52,14 @@ public class AutoMapper<TSource, TDestination> : IMapper<TSource, TDestination>
 }
 
 /// <summary>
-/// Maps an object of type <typeparamref name="TSource"/> to <typeparamref name="TDestination"/> by using automapper.
+///     Maps an object of type <typeparamref name="TSource" /> to <typeparamref name="TDestination" /> by using automapper.
 /// </summary>
 public class AutoMapper : IMapper
 {
     private readonly global::AutoMapper.IMapper mapper;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoMapper"/> class.
+    ///     Initializes a new instance of the <see cref="AutoMapper" /> class.
     /// </summary>
     /// <param name="mapper">The mapper.</param>
     public AutoMapper(global::AutoMapper.IMapper mapper)
@@ -71,7 +70,7 @@ public class AutoMapper : IMapper
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutoMapper"/> class.
+    ///     Initializes a new instance of the <see cref="AutoMapper" /> class.
     /// </summary>
     public AutoMapper(MapperConfiguration configuration)
     {
@@ -81,7 +80,7 @@ public class AutoMapper : IMapper
     }
 
     /// <summary>
-    /// Maps the specified source object into the destination object.
+    ///     Maps the specified source object into the destination object.
     /// </summary>
     /// <param name="source">The source object to map from.</param>
     public TTarget Map<TSource, TTarget>(TSource source)

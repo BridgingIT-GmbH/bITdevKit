@@ -5,17 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class AdAccount : ValueObject
 {
     private AdAccount() // TODO: make private again when System.Text.Json can deserialize objects with a non-public ctor
-    {
-    }
+    { }
 
     private AdAccount(string domain, string name)
     {
@@ -36,7 +33,10 @@ public class AdAccount : ValueObject
         return new AdAccount(value.SliceTill("\\"), value.SliceFrom("\\"));
     }
 
-    public override string ToString() => $"{this.Domain}\\{this.Name}";
+    public override string ToString()
+    {
+        return $"{this.Domain}\\{this.Name}";
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {

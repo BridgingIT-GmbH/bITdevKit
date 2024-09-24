@@ -13,7 +13,8 @@ public abstract class JobSchedulingBehaviorBase : IJobSchedulingBehavior
 {
     protected JobSchedulingBehaviorBase(ILoggerFactory loggerFactory)
     {
-        this.Logger = this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+        this.Logger = this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
     }
 
     protected ILogger Logger { get; }

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
-using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
+using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

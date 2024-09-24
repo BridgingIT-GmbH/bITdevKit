@@ -5,25 +5,41 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Model;
-using EnsureThat;
+using Model;
 
+/// <summary>
+///     Represents an option to specify distinct selection criteria in queries.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
 public class DistinctOption<TEntity>
     where TEntity : class, IEntity
 {
-    public DistinctOption()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DistinctOption{TEntity}" /> class.
+    ///     Represents an option that allows for projection of distinct values
+    ///     from a particular entity type.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    public DistinctOption() { }
 
-    public DistinctOption(
-        Expression<Func<TEntity, object>> expression)
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DistinctOption{TEntity}" /> class.
+    ///     Represents a distinct option for querying entities.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    public DistinctOption(Expression<Func<TEntity, object>> expression)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));
 
         this.Expression = expression;
     }
 
+    /// <summary>
+    ///     Gets or sets the expression used to determine the distinctness criteria.
+    /// </summary>
+    /// <value>
+    ///     An expression that defines how to select distinct elements from a sequence of entities.
+    /// </value>
     public Expression<Func<TEntity, object>> Expression { get; set; }
 }

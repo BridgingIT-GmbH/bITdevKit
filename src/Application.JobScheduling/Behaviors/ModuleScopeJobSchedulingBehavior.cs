@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
+using System.Diagnostics;
+using Common;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using System.Diagnostics;
 
 public class ModuleScopeJobSchedulingBehavior(
     ILoggerFactory loggerFactory,
@@ -22,47 +22,45 @@ public class ModuleScopeJobSchedulingBehavior(
         var module = moduleAccessors.Find(context.JobDetail.JobType);
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-        {
-            [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
-        }))
+               {
+                   [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
+               }))
         {
             if (module is not null && !module.Enabled)
             {
                 throw new ModuleNotEnabledException(module.Name);
             }
-            else
-            {
-                var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
-                var jobTypeName = context.JobDetail.JobType.FullName;
-                var correlationId = context.Get(Constants.CorrelationIdKey) as string;
-                var flowId = context.Get(Constants.FlowIdKey) as string;
 
-                await this.activitySources.Find(module?.Name).StartActvity(
-                    $"MODULE {module?.Name}",
+            var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
+            var jobTypeName = context.JobDetail.JobType.FullName;
+            var correlationId = context.Get(Constants.CorrelationIdKey) as string;
+            var flowId = context.Get(Constants.FlowIdKey) as string;
+
+            await this.activitySources.Find(module?.Name)
+                .StartActvity($"MODULE {module?.Name}",
                     async (a, c) =>
                     {
                         using (this.Logger.BeginScope(new Dictionary<string, object>
+                               {
+                                   [Constants.TraceIdKey] = a.TraceId.ToString()
+                               }))
                         {
-                            [Constants.TraceIdKey] = a.TraceId.ToString(),
-                        }))
-                        {
-                            await this.activitySources.Find(module?.Name).StartActvity(
-                                $"JOB_EXECUTE {jobTypeName}",
-                                async (a, c) => await next().AnyContext(),
-                                tags: new Dictionary<string, string>
-                                {
-                                    ["job.id"] = jobId,
-                                    ["job.type"] = jobTypeName
-                                }, cancellationToken: c);
+                            await this.activitySources.Find(module?.Name)
+                                .StartActvity($"JOB_EXECUTE {jobTypeName}",
+                                    async (a, c) => await next().AnyContext(),
+                                    tags: new Dictionary<string, string>
+                                        {
+                                            ["job.id"] = jobId, ["job.type"] = jobTypeName
+                                        },
+                                    cancellationToken: c);
                         }
                     },
                     baggages: new Dictionary<string, string>
                     {
                         [ActivityConstants.ModuleNameTagKey] = module?.Name,
                         [ActivityConstants.CorrelationIdTagKey] = correlationId,
-                        [ActivityConstants.FlowIdTagKey] = flowId,
+                        [ActivityConstants.FlowIdTagKey] = flowId
                     });
-            }
         }
     }
 }

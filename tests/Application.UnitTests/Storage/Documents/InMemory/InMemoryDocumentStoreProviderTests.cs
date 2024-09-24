@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Application.Storage;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Shouldly;
-using Xunit;
-using BridgingIT.DevKit.Application.Storage;
 
+[UnitTest("Application")]
 public class InMemoryDocumentStoreProviderTests
 {
     [Fact]
@@ -24,11 +20,11 @@ public class InMemoryDocumentStoreProviderTests
         var sut = new InMemoryDocumentStoreProvider(loggerFactory, context);
         var expectedEntities = new List<UnitTests.PersonStub>
         {
-            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 },
-            new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 },
+            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 }, new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 }
         };
 
-        context.Find<UnitTests.PersonStub>().Returns(expectedEntities);
+        context.Find<UnitTests.PersonStub>()
+            .Returns(expectedEntities);
 
         // Act
         var result = await sut.FindAsync<UnitTests.PersonStub>();
@@ -47,11 +43,11 @@ public class InMemoryDocumentStoreProviderTests
         var documentKey = new DocumentKey("partition", "row");
         var expectedEntities = new List<UnitTests.PersonStub>
         {
-            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 },
-            new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 },
+            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 }, new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 }
         };
 
-        context.Find<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch).Returns(expectedEntities);
+        context.Find<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch)
+            .Returns(expectedEntities);
 
         // Act
         var result = await sut.FindAsync<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch);
@@ -67,13 +63,10 @@ public class InMemoryDocumentStoreProviderTests
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var context = Substitute.For<InMemoryDocumentStoreContext>();
         var sut = new InMemoryDocumentStoreProvider(loggerFactory, context);
-        var expectedDocumentKeys = new List<DocumentKey>
-        {
-            new("partition", "row1"),
-            new("partition", "row2")
-        };
+        var expectedDocumentKeys = new List<DocumentKey> { new("partition", "row1"), new("partition", "row2") };
 
-        context.List<UnitTests.PersonStub>().Returns(expectedDocumentKeys);
+        context.List<UnitTests.PersonStub>()
+            .Returns(expectedDocumentKeys);
 
         // Act
         var result = await sut.ListAsync<UnitTests.PersonStub>();
@@ -90,13 +83,10 @@ public class InMemoryDocumentStoreProviderTests
         var context = Substitute.For<InMemoryDocumentStoreContext>();
         var sut = new InMemoryDocumentStoreProvider(loggerFactory, context);
         var documentKey = new DocumentKey("partition", "row");
-        var expectedDocumentKeys = new List<DocumentKey>
-        {
-            new("partition", "row1"),
-            new("partition", "row2")
-        };
+        var expectedDocumentKeys = new List<DocumentKey> { new("partition", "row1"), new("partition", "row2") };
 
-        context.List<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch).Returns(expectedDocumentKeys);
+        context.List<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch)
+            .Returns(expectedDocumentKeys);
 
         // Act
         var result = await sut.ListAsync<UnitTests.PersonStub>(documentKey, DocumentKeyFilter.FullMatch);
@@ -114,10 +104,10 @@ public class InMemoryDocumentStoreProviderTests
         var sut = new InMemoryDocumentStoreProvider(loggerFactory, context);
         var expectedEntities = new List<UnitTests.PersonStub>
         {
-            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 },
-            new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 },
+            new() { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 }, new() { Nationality = "USA", FirstName = "Mary", LastName = "Jane", Age = 23 }
         };
-        context.Find<UnitTests.PersonStub>().Returns(expectedEntities);
+        context.Find<UnitTests.PersonStub>()
+            .Returns(expectedEntities);
 
         // Act
         var result = await sut.CountAsync<UnitTests.PersonStub>();
@@ -140,7 +130,8 @@ public class InMemoryDocumentStoreProviderTests
         await sut.UpsertAsync(documentKey, entity);
 
         // Assert
-        context.Received().AddOrUpdate(Arg.Any<UnitTests.PersonStub>(), documentKey);
+        context.Received()
+            .AddOrUpdate(Arg.Any<UnitTests.PersonStub>(), documentKey);
     }
 
     [Fact]
@@ -156,6 +147,7 @@ public class InMemoryDocumentStoreProviderTests
         await sut.DeleteAsync<UnitTests.PersonStub>(documentKey);
 
         // Assert
-        context.Received().Delete<UnitTests.PersonStub>(documentKey);
+        context.Received()
+            .Delete<UnitTests.PersonStub>(documentKey);
     }
 }

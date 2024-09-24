@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class JobWrapper(
     IServiceProvider serviceProvider,
@@ -40,17 +37,19 @@ public class JobWrapper(
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
-        {
-            [CorrelationKey] = correlationId,
-            [FlowKey] = flowId,
-            [JobIdKey] = jobId,
-            [JobTypeKey] = jobTypeName,
-        }))
+               {
+                   [CorrelationKey] = correlationId,
+                   [FlowKey] = flowId,
+                   [JobIdKey] = jobId,
+                   [JobTypeKey] = jobTypeName
+               }))
         {
             try
             {
                 var behaviors = this.serviceProvider?.GetServices<IJobSchedulingBehavior>();
-                logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
+                logger?.LogDebug(
+                    $"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute",
+                    Constants.LogKey);
                 // Activity.Current?.AddEvent(new($"behaviours: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute"));
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
@@ -63,7 +62,12 @@ public class JobWrapper(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}", Constants.LogKey, jobTypeName, jobId, ex.Message);
+                logger.LogError(ex,
+                    "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}",
+                    Constants.LogKey,
+                    jobTypeName,
+                    jobId,
+                    ex.Message);
             }
         }
     }
@@ -75,9 +79,14 @@ public class JobWrapper(
 
     private async Task ExecutePipelineAsync(IJobExecutionContext context, IEnumerable<IJobSchedulingBehavior> behaviors)
     {
-        async Task JobExecutor() => await this.InnerJob.Execute(context).AnyContext();
-        await behaviors.SafeNull().Reverse()
-          .Aggregate((JobDelegate)JobExecutor, (next, pipeline) => async () =>
-              await pipeline.Execute(context, next))();
+        async Task JobExecutor()
+        {
+            await this.InnerJob.Execute(context).AnyContext();
+        }
+
+        await behaviors.SafeNull()
+            .Reverse()
+            .Aggregate((JobDelegate)JobExecutor,
+                (next, pipeline) => async () => await pipeline.Execute(context, next))();
     }
 }

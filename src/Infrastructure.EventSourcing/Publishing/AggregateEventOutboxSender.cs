@@ -5,21 +5,26 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using BridgingIT.DevKit.Domain.Outbox;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using Common;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Registration;
+using Domain.Outbox;
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class AggregateEventOutboxSender(IOutboxMessageWriterRepository outboxMessageWriterRepository, IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
+public class AggregateEventOutboxSender(
+    IOutboxMessageWriterRepository outboxMessageWriterRepository,
+    IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
     IEventStoreAggregateRegistration eventStoreAggregateRegistration) : IAggregateEventOutboxSender
 {
     private readonly IOutboxMessageWriterRepository outboxMessageWriterRepository = outboxMessageWriterRepository;
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration = eventStoreAggregateEventRegistration;
+
+    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration =
+        eventStoreAggregateEventRegistration;
+
     private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
 
     public async Task WriteToOutboxAsync<TAggregate>(AggregateEvent savedEvent, TAggregate aggregate)
@@ -27,7 +32,7 @@ public class AggregateEventOutboxSender(IOutboxMessageWriterRepository outboxMes
     {
         var immutableEventTypeName = this.eventStoreAggregateEventRegistration.GetImmutableName(savedEvent);
         var immutableAggregateTypeName = this.eventStoreAggregateRegistration.GetImmutableName<TAggregate>();
-        var msg = new OutboxMessage()
+        var msg = new OutboxMessage
         {
             MessageId = savedEvent.EventId,
             AggregateId = savedEvent.AggregateId,

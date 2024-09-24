@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
-using BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.UnitTests.EventStore.Model;
+using Domain.UnitTests.EventStore.Model.Events;
+using EventSourcing.Publishing;
 using MediatR;
 
 [UnitTest("Infrastructure")]
@@ -32,8 +31,11 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.None,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.None,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
         eventSender.ShouldNotBeNull();
     }
 
@@ -43,11 +45,16 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.None,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.None,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
     }
 
@@ -57,11 +64,16 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.NotifyForProjectionUsingMediator,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.NotifyForProjectionUsingMediator,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
     }
 
@@ -71,11 +83,16 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.SendProjectionRequestUsingMediator,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.SendProjectionRequestUsingMediator,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
     }
 
@@ -85,16 +102,23 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.AddToOutbox,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.AddToOutbox,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.Received(1).WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.Received(1)
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
         await aggregateEventMediatorNotificationSender.DidNotReceiveWithAnyArgs()
-            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         await aggregateEventMediatorRequestSender.DidNotReceiveWithAnyArgs()
-            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
     }
 
     [Fact]
@@ -103,11 +127,16 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.AddToOutbox | EventStorePublishingModes.SendProjectionRequestUsingMediator,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.AddToOutbox | EventStorePublishingModes.SendProjectionRequestUsingMediator,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.Received(1).WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.Received(1)
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
     }
 
@@ -117,16 +146,23 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.AddToOutbox,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.AddToOutbox,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
         await aggregateEventMediatorNotificationSender.DidNotReceiveWithAnyArgs()
-            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         await aggregateEventMediatorRequestSender.DidNotReceiveWithAnyArgs()
-            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
     }
 
     [Fact]
@@ -135,16 +171,23 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.SendProjectionRequestUsingMediator,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.SendProjectionRequestUsingMediator,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
         await aggregateEventMediatorNotificationSender.DidNotReceiveWithAnyArgs()
-            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         await aggregateEventMediatorRequestSender.Received(1)
-            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
     }
 
     [Fact]
@@ -153,15 +196,22 @@ public class OutboxTests
         var aggregateEventMediatorRequestSender = Substitute.For<IAggregateEventMediatorRequestSender>();
         var aggregateEventMediatorNotificationSender = Substitute.For<IAggregateEventMediatorNotificationSender>();
         var outboxSender = Substitute.For<IAggregateEventOutboxSender>();
-        var eventSender = new PublishAggregateEventSender(this.mediator, EventStorePublishingModes.NotifyForProjectionUsingMediator,
-            aggregateEventMediatorRequestSender, aggregateEventMediatorNotificationSender, outboxSender);
-        await eventSender.PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+        var eventSender = new PublishAggregateEventSender(this.mediator,
+            EventStorePublishingModes.NotifyForProjectionUsingMediator,
+            aggregateEventMediatorRequestSender,
+            aggregateEventMediatorNotificationSender,
+            outboxSender);
+        await eventSender.PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         eventSender.ShouldNotBeNull();
-        await outboxSender.DidNotReceiveWithAnyArgs().WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
+        await outboxSender.DidNotReceiveWithAnyArgs()
+            .WriteToOutboxAsync(this.demoPersonEvent, this.demoPerson)
             .AnyContext();
         await aggregateEventMediatorNotificationSender.Received(1)
-            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .PublishProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
         await aggregateEventMediatorRequestSender.DidNotReceiveWithAnyArgs()
-            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson).AnyContext();
+            .SendProjectionEventAsync(this.demoPersonEvent, this.demoPerson)
+            .AnyContext();
     }
 }

@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using System.Collections.Generic;
-
 public class CityModel
 {
     public Guid Id { get; set; }

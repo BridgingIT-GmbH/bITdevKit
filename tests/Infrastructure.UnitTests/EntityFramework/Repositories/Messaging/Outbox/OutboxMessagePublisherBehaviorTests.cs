@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
+using Application.Messaging;
+using Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

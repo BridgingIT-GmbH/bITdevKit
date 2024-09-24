@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model.AAA;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class EntityRecordGuidIdTests
@@ -154,8 +153,6 @@ public record StubEntityRecord(string Name) : EntityRecord<Guid>
 public record StubEntityRecordProxy : StubEntityRecord
 {
     protected StubEntityRecordProxy(StubEntityRecord original)
-        : base(original)
-    {
-    }
+        : base(original) { }
 }
 #pragma warning restore SA1313 // Parameter names should begin with lower-case letter

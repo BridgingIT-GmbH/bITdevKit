@@ -17,8 +17,7 @@ public static partial class ServiceCollectionExtensions
         BlobServiceClient serviceClient,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddAzureBlobServiceClient(null, serviceClient, lifetime);
+        return services.AddAzureBlobServiceClient(null, serviceClient, lifetime);
     }
 
     public static AzureStorageBuilderContext AddAzureBlobServiceClient(
@@ -26,8 +25,9 @@ public static partial class ServiceCollectionExtensions
         Builder<AzureBlobServiceOptionsBuilder, AzureBlobServiceOptions> optionsBuilder,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddAzureBlobServiceClient(optionsBuilder(new AzureBlobServiceOptionsBuilder()).Build(), null, lifetime);
+        return services.AddAzureBlobServiceClient(optionsBuilder(new AzureBlobServiceOptionsBuilder()).Build(),
+            null,
+            lifetime);
     }
 
     public static AzureStorageBuilderContext AddAzureBlobServiceClient(
@@ -55,7 +55,7 @@ public static partial class ServiceCollectionExtensions
                 break;
         }
 
-        return new AzureStorageBuilderContext(services, lifetime, null, options.ConnectionString, Service.Blob);
+        return new AzureStorageBuilderContext(services, lifetime, null, options.ConnectionString);
     }
 
     public static AzureStorageBuilderContext AddAzureTableServiceClient(
@@ -63,8 +63,7 @@ public static partial class ServiceCollectionExtensions
         TableServiceClient serviceClient,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddAzureTableServiceClient(null, serviceClient, lifetime);
+        return services.AddAzureTableServiceClient(null, serviceClient, lifetime);
     }
 
     public static AzureStorageBuilderContext AddAzureTableServiceClient(
@@ -72,8 +71,9 @@ public static partial class ServiceCollectionExtensions
         Builder<AzureTableServiceOptionsBuilder, AzureTableServiceOptions> optionsBuilder,
         ServiceLifetime lifetime = ServiceLifetime.Singleton)
     {
-        return services
-            .AddAzureTableServiceClient(optionsBuilder(new AzureTableServiceOptionsBuilder()).Build(), null, lifetime);
+        return services.AddAzureTableServiceClient(optionsBuilder(new AzureTableServiceOptionsBuilder()).Build(),
+            null,
+            lifetime);
     }
 
     public static AzureStorageBuilderContext AddAzureTableServiceClient(

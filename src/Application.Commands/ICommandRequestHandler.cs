@@ -5,6 +5,4 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-internal interface ICommandRequestHandler
-{
-}
+internal interface ICommandRequestHandler { }

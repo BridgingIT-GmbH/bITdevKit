@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Repositories;
 
-using BridgingIT.DevKit.Domain.Repositories;
+using DevKit.Domain.Repositories;
 using Model;
 
-public interface IPersonOverviewRepository : IGenericRepository<PersonOverview>
-{
-}
+public interface IPersonOverviewRepository : IGenericRepository<PersonOverview> { }

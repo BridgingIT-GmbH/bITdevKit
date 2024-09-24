@@ -5,16 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core.Controllers;
 
-using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Application.Modules.Core;
+using Common;
+using Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 [Route("api/core/forecasttypes")]
 [ApiController]

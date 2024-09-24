@@ -6,12 +6,12 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 /// <summary>
-/// Describes the interface of the messagebus.
+///     Describes the interface of the messagebus.
 /// </summary>
 public interface IMessageBroker
 {
     /// <summary>
-    /// Subscribes for the message (TMessage) with a specific message handler (THandler).
+    ///     Subscribes for the message (TMessage) with a specific message handler (THandler).
     /// </summary>
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <typeparam name="THandler">The type of the message handler.</typeparam>
@@ -20,14 +20,14 @@ public interface IMessageBroker
         where THandler : IMessageHandler<TMessage>;
 
     /// <summary>
-    /// Subscribes for the message with a specific message handler.
+    ///     Subscribes for the message with a specific message handler.
     /// </summary>
     /// <typeparam name="messageType">The type of the message.</typeparam>
     /// <typeparam name="handlerType">The type of the message handler.</typeparam>
     Task Subscribe(Type messageType, Type handlerType);
 
     /// <summary>
-    /// Unsubscribes message (TMessage) and its message handler (THandler).
+    ///     Unsubscribes message (TMessage) and its message handler (THandler).
     /// </summary>
     /// <typeparam name="TMessage">The type of the message.</typeparam>
     /// <typeparam name="THandler">The type of the message handler.</typeparam>
@@ -36,25 +36,25 @@ public interface IMessageBroker
         where THandler : IMessageHandler<TMessage>;
 
     /// <summary>
-    /// Unsubscribes message and its message handler.
+    ///     Unsubscribes message and its message handler.
     /// </summary>
     /// <typeparam name="messageType">The type of the message.</typeparam>
     /// <typeparam name="handlerType">The type of the message handler.</typeparam>
     Task Unsubscribe(Type messageType, Type handlerType);
 
     /// <summary>
-    /// Unsubscribes all messages and its message handlers.
+    ///     Unsubscribes all messages and its message handlers.
     /// </summary>
     Task Unsubscribe();
 
     /// <summary>
-    /// Publishes the specified message.
+    ///     Publishes the specified message.
     /// </summary>
     /// <param name="message">The message.</param>
     Task Publish(IMessage message, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Process a subscribed message
+    ///     Process a subscribed message
     /// </summary>
     Task Process(MessageRequest messageRequest);
 }

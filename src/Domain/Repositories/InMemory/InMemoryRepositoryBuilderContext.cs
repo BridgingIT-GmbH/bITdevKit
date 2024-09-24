@@ -7,10 +7,11 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
-using Microsoft.Extensions.Configuration;
+using Configuration;
 
-public class InMemoryRepositoryBuilderContext<TEntity, TContext>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
+public class InMemoryRepositoryBuilderContext<TEntity, TContext>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
     where TEntity : class, IEntity
-    where TContext : InMemoryContext<TEntity>
-{
-}
+    where TContext : InMemoryContext<TEntity> { }

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Repositories;
 
-public class LiteDbRepositoryOptionsBuilder :
-    OptionsBuilderBase<LiteDbRepositoryOptions, LiteDbRepositoryOptionsBuilder>
+public class LiteDbRepositoryOptionsBuilder
+    : OptionsBuilderBase<LiteDbRepositoryOptions, LiteDbRepositoryOptionsBuilder>
 {
     public LiteDbRepositoryOptionsBuilder DbContext(ILiteDbContext context)
     {

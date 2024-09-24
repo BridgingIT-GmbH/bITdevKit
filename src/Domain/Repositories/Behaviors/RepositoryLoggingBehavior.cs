@@ -5,43 +5,39 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Model;
+using Specifications;
 
 [Obsolete("Use GenericRepositoryLoggingBehavior instead")]
-public class GenericRepositoryLoggingDecorator<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner) : RepositoryLoggingBehavior<TEntity>(loggerFactory, inner)
-    where TEntity : class, IEntity
-{
-}
+public class GenericRepositoryLoggingDecorator<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
+    : RepositoryLoggingBehavior<TEntity>(loggerFactory, inner)
+    where TEntity : class, IEntity { }
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public partial class RepositoryLoggingBehavior<TEntity>(
-    ILoggerFactory loggerFactory,
-    IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
+public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
+    : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
     private readonly string type = typeof(TEntity).Name;
 
-    protected ILogger<IGenericRepository<TEntity>> Logger { get; } = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
+    protected ILogger<IGenericRepository<TEntity>> Logger { get; } =
+        loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ??
+        NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
 
     protected IGenericRepository<TEntity> Inner { get; } = inner;
 
@@ -65,7 +61,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
@@ -85,9 +83,7 @@ public partial class RepositoryLoggingBehavior<TEntity>(
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.Logger, Constants.LogKey, this.type, id);
 
@@ -114,7 +110,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
 
         if (specification is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
@@ -130,7 +128,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
@@ -158,17 +158,19 @@ public partial class RepositoryLoggingBehavior<TEntity>(
 
         if (specification is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
@@ -199,7 +201,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
     {
         TypedLogger.LogFindOne(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
-        this.Logger.LogDebug("{LogKey} repository: specification={Specification}", Constants.LogKey, specification.GetType().PrettyName());
+        this.Logger.LogDebug("{LogKey} repository: specification={Specification}",
+            Constants.LogKey,
+            specification.GetType().PrettyName());
 
         return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
@@ -214,7 +218,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository: specification={Specification}", Constants.LogKey, specification.GetType().PrettyName());
+            this.Logger.LogDebug("{LogKey} repository: specification={Specification}",
+                Constants.LogKey,
+                specification.GetType().PrettyName());
         }
 
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
@@ -234,7 +240,9 @@ public partial class RepositoryLoggingBehavior<TEntity>(
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         TypedLogger.LogUpsert(this.Logger, Constants.LogKey, this.type, entity?.Id);
 
@@ -245,27 +253,38 @@ public partial class RepositoryLoggingBehavior<TEntity>(
     {
         if (options?.Distinct?.Expression is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: distinct={DistinctExpression}", Constants.LogKey, options.Distinct.Expression);
+            this.Logger.LogDebug("{LogKey} repository: distinct={DistinctExpression}",
+                Constants.LogKey,
+                options.Distinct.Expression);
         }
 
-        foreach (var order in (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
+        foreach (var order in
+                 (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
             if (order.Expression != null)
             {
-                this.Logger.LogDebug("{LogKey} repository: order={OrderExpression} [{OrderDirection}]", Constants.LogKey, order.Expression, order.Direction);
+                this.Logger.LogDebug("{LogKey} repository: order={OrderExpression} [{OrderDirection}]",
+                    Constants.LogKey,
+                    order.Expression,
+                    order.Direction);
             }
 
             if (order.Ordering != null)
             {
-                this.Logger.LogDebug("{LogKey} repository: order={Ordering}", Constants.LogKey, order.Ordering); // includes direction
+                this.Logger.LogDebug("{LogKey} repository: order={Ordering}",
+                    Constants.LogKey,
+                    order.Ordering); // includes direction
             }
         }
 
-        foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(options?.Include))
+        foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(
+                     options?.Include))
         {
             if (include.Expression is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository: include={IncludeExpression}", Constants.LogKey, include.Expression);
+                this.Logger.LogDebug("{LogKey} repository: include={IncludeExpression}",
+                    Constants.LogKey,
+                    include.Expression);
             }
 
             if (include.Path is not null)
@@ -274,11 +293,16 @@ public partial class RepositoryLoggingBehavior<TEntity>(
             }
         }
 
-        this.Logger.LogDebug("{LogKey} repository: notracking={NoTracking}", Constants.LogKey, options is not null && options.NoTracking);
+        this.Logger.LogDebug("{LogKey} repository: notracking={NoTracking}",
+            Constants.LogKey,
+            options is not null && options.NoTracking);
 
         if (options?.Skip.HasValue == true && options?.Take.HasValue == true)
         {
-            this.Logger.LogDebug("{LogKey} repository: skip={Skip}, take={Take}", Constants.LogKey, options.Skip.Value, options.Take.Value);
+            this.Logger.LogDebug("{LogKey} repository: skip={Skip}, take={Take}",
+                Constants.LogKey,
+                options.Skip.Value,
+                options.Take.Value);
         }
         else if (options?.Skip.HasValue == true && options?.Take.HasValue == false)
         {

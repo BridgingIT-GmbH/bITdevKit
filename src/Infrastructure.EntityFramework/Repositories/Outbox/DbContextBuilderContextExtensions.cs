@@ -8,11 +8,13 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+using EntityFrameworkCore;
 
 public static partial class DbContextBuilderContextExtensions
 {
-    public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(this DbContextBuilderContext<TContext> context, Builder<OutboxDomainEventOptionsBuilder, OutboxDomainEventOptions> optionsBuilder)
+    public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        Builder<OutboxDomainEventOptionsBuilder, OutboxDomainEventOptions> optionsBuilder)
         where TContext : DbContext, IOutboxDomainEventContext
     {
         context.Services.AddOutboxDomainEventService<TContext>(optionsBuilder);
@@ -20,7 +22,9 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
-    public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(this DbContextBuilderContext<TContext> context, OutboxDomainEventOptions options = null)
+    public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        OutboxDomainEventOptions options = null)
         where TContext : DbContext, IOutboxDomainEventContext
     {
         context.Services.AddOutboxDomainEventService<TContext>(options);

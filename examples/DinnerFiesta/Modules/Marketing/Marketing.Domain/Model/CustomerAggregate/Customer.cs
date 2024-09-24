@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class Customer : AuditableAggregateRoot<CustomerId, Guid>
 {
-    private Customer()
-    {
-    }
+    private Customer() { }
 
     private Customer(string firstName, string lastName, EmailAddress email)
     {
@@ -40,8 +38,7 @@ public class Customer : AuditableAggregateRoot<CustomerId, Guid>
 
         var customer = new Customer(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email));
 
-        customer.DomainEvents.Register(
-            new CustomerCreatedDomainEvent(customer));
+        customer.DomainEvents.Register(new CustomerCreatedDomainEvent(customer));
 
         return customer;
     }

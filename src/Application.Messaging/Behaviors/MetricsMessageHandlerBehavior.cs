@@ -6,15 +6,19 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics.Metrics;
-using System.Threading;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 
-public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null) : MessageHandlerBehaviorBase(loggerFactory)
+public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
+    : MessageHandlerBehaviorBase(loggerFactory)
 {
     private readonly IMeterFactory meterFactory = meterFactory;
 
-    public override async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    public override async Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
     {
         if (this.meterFactory is null || message is null)
         {

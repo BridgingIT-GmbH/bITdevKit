@@ -5,17 +5,15 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System;
 using System.Diagnostics;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, Name={Name} [{Country}]")]
 public class City : AggregateRoot<Guid>
 {
-    private City()
-    {
-    }
+    private City() { }
 
     public string Name { get; private set; }
 
@@ -39,7 +37,9 @@ public class City : AggregateRoot<Guid>
 
         var entity = new City
         {
-            Id = Common.GuidGenerator.Create($"{country}-{name}"), // create repeatable id auf basis country-name (=upsert friendly)
+            Id =
+                GuidGenerator.Create(
+                    $"{country}-{name}"), // create repeatable id auf basis country-name (=upsert friendly)
             Name = name,
             Country = country,
             Location = GeoLocation.Create(longitude, latitude),
@@ -61,10 +61,8 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        DomainRules.Apply(
-        [
-            new DeleteMustBeProvidedReasonRule(reason),
-            new DeleteCannotBeDoneTwiceRule(this.IsDeleted)
+        DomainRules.Apply([
+            new DeleteMustBeProvidedReasonRule(reason), new DeleteCannotBeDoneTwiceRule(this.IsDeleted)
         ]);
 
         this.IsDeleted = true;

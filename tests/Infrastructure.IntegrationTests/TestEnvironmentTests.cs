@@ -7,8 +7,13 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
 using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers;
+using global::Azure;
+using global::Azure.Data.Tables;
+using global::Azure.Storage.Blobs;
+using global::Azure.Storage.Queues;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Data.SqlClient;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -21,7 +26,7 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
     public async Task MsSql_EstablishesConnection_ReturnsSuccessful()
     {
         // Arrange
-        using DbConnection connection = new Microsoft.Data.SqlClient.SqlConnection(this.fixture.SqlConnectionString);
+        using DbConnection connection = new SqlConnection(this.fixture.SqlConnectionString);
 
         // Act
         await connection.OpenAsync();
@@ -37,7 +42,8 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
         const string scriptContent = "SELECT 1;";
 
         // Act
-        var result = await this.fixture.SqlContainer.ExecScriptAsync(scriptContent).AnyContext();
+        var result = await this.fixture.SqlContainer.ExecScriptAsync(scriptContent)
+            .AnyContext();
 
         // When
         Assert.True(0L.Equals(result.ExitCode), result.Stderr);
@@ -51,17 +57,17 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        using var client = new Microsoft.Azure.Cosmos.CosmosClient(
-            this.fixture.CosmosConnectionString,
-            new Microsoft.Azure.Cosmos.CosmosClientOptions
+        using var client = new CosmosClient(this.fixture.CosmosConnectionString,
+            new CosmosClientOptions
             {
-                SerializerOptions = new Microsoft.Azure.Cosmos.CosmosSerializationOptions { PropertyNamingPolicy = Microsoft.Azure.Cosmos.CosmosPropertyNamingPolicy.CamelCase },
-                ConnectionMode = Microsoft.Azure.Cosmos.ConnectionMode.Gateway,
+                SerializerOptions = new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase },
+                ConnectionMode = ConnectionMode.Gateway,
                 HttpClientFactory = () => this.fixture.CosmosContainer.HttpClient
             });
 
         // Act
-        var result = await client.ReadAccountAsync().AnyContext();
+        var result = await client.ReadAccountAsync()
+            .AnyContext();
 
         // Assert
         result.Id.ShouldBe("localhost");
@@ -72,41 +78,46 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
     public async Task AzuriteBlob_EstablishesConnection_ReturnsSuccessful()
     {
         // Give
-        var client = new global::Azure.Storage.Blobs.BlobServiceClient(
-            this.fixture.AzuriteConnectionString,
-            new global::Azure.Storage.Blobs.BlobClientOptions(global::Azure.Storage.Blobs.BlobClientOptions.ServiceVersion.V2023_01_03));
+        var client = new BlobServiceClient(this.fixture.AzuriteConnectionString,
+            new BlobClientOptions(BlobClientOptions.ServiceVersion.V2023_01_03));
 
         // When
-        var result = await client.GetPropertiesAsync().AnyContext();
+        var result = await client.GetPropertiesAsync()
+            .AnyContext();
 
         // Then
-        HasError(result).ShouldBeFalse();
+        HasError(result)
+            .ShouldBeFalse();
     }
 
     [Fact]
     public async Task AzuriteQueue_EstablishesConnection_ReturnsSuccessful()
     {
         // Give
-        var client = new global::Azure.Storage.Queues.QueueServiceClient(this.fixture.AzuriteConnectionString);
+        var client = new QueueServiceClient(this.fixture.AzuriteConnectionString);
 
         // When
-        var result = await client.GetPropertiesAsync().AnyContext();
+        var result = await client.GetPropertiesAsync()
+            .AnyContext();
 
         // Then
-        HasError(result).ShouldBeFalse();
+        HasError(result)
+            .ShouldBeFalse();
     }
 
     [Fact]
     public async Task AzuriteTable_EstablishesConnection_ReturnsSuccessful()
     {
         // Give
-        var client = new global::Azure.Data.Tables.TableServiceClient(this.fixture.AzuriteConnectionString);
+        var client = new TableServiceClient(this.fixture.AzuriteConnectionString);
 
         // When
-        var result = await client.GetPropertiesAsync().AnyContext();
+        var result = await client.GetPropertiesAsync()
+            .AnyContext();
 
         // Then
-        HasError(result).ShouldBeFalse();
+        HasError(result)
+            .ShouldBeFalse();
     }
 
     // RabbitMq container ===============================================================
@@ -128,7 +139,7 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
     //    connection.IsOpen.ShouldBeTrue();
     //}
 
-    private static bool HasError<TResponseEntity>(global::Azure.NullableResponse<TResponseEntity> response)
+    private static bool HasError<TResponseEntity>(NullableResponse<TResponseEntity> response)
     {
         using var rawResponse = response.GetRawResponse();
         return rawResponse.IsError;

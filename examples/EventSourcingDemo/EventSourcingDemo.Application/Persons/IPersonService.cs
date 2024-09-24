@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Model;
 
 public interface IPersonService
@@ -19,7 +15,11 @@ public interface IPersonService
 
     Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync();
 
-    Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync(string firstname, string lastname, int skip, int take);
+    Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync(
+        string firstname,
+        string lastname,
+        int skip,
+        int take);
 
     Task DeactivateAsync(Guid id);
 

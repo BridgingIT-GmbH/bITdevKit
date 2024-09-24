@@ -5,31 +5,32 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class JobSchedulingSqlServerSeederStartupTask :
-    IStartupTask,
-    IRetryStartupTask,
-    ITimeoutStartupTask
+public class JobSchedulingSqlServerSeederStartupTask : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
     private readonly ILogger<JobSchedulingSqlServerSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
 
     public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
-        : this(loggerFactory, configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"], configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"])
-    {
-    }
+        : this(loggerFactory,
+            configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
+            configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"]) { }
 
-    public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, string connectionString, string tablePrefix = "[dbo].[QRTZ_")
+    public JobSchedulingSqlServerSeederStartupTask(
+        ILoggerFactory loggerFactory,
+        string connectionString,
+        string tablePrefix = "[dbo].[QRTZ_")
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
-        this.logger = loggerFactory?.CreateLogger<JobSchedulingSqlServerSeederStartupTask>() ?? NullLoggerFactory.Instance.CreateLogger<JobSchedulingSqlServerSeederStartupTask>();
+        this.logger = loggerFactory?.CreateLogger<JobSchedulingSqlServerSeederStartupTask>() ??
+            NullLoggerFactory.Instance.CreateLogger<JobSchedulingSqlServerSeederStartupTask>();
         this.connectionString = connectionString;
         this.tablePrefix = tablePrefix.EmptyToNull() ?? "[dbo].[QRTZ_";
     }

@@ -6,11 +6,11 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Application.Messaging;
+using Domain;
+using Domain.Model;
+using Domain.Specifications;
+using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -20,9 +20,7 @@ public class PersonStub : AggregateRoot<Guid>
 {
     private readonly List<LocationStub> locations = [];
 
-    public PersonStub()
-    {
-    }
+    public PersonStub() { }
 
     public PersonStub(string firstName, string lastName, string email, int age, Status status = null)
     {
@@ -70,31 +68,38 @@ public class Status(int id, string value, string code, string description) : Enu
 
     public string Description { get; } = description;
 
-    public static IEnumerable<Status> GetAll() =>
-        GetAll<Status>();
+    public static IEnumerable<Status> GetAll()
+    {
+        return GetAll<Status>();
+    }
 
-    public static Status GetByCode(string code) =>
-        GetAll<Status>().FirstOrDefault(e => e.Code == code);
+    public static Status GetByCode(string code)
+    {
+        return GetAll<Status>()
+            .FirstOrDefault(e => e.Code == code);
+    }
 }
 
 public class EmailAddressStub : ValueObject
 {
-    private EmailAddressStub()
-    {
-    }
+    private EmailAddressStub() { }
 
     private EmailAddressStub(string value)
     {
         this.Value = value;
     }
 
-    public string Value { get; private set; }
+    public string Value { get; }
 
-    public static implicit operator string(EmailAddressStub email) => email.Value;
+    public static implicit operator string(EmailAddressStub email)
+    {
+        return email.Value;
+    }
 
     public static EmailAddressStub Create(string value)
     {
-        value = value?.Trim()?.ToLowerInvariant();
+        value = value?.Trim()
+            ?.ToLowerInvariant();
 
         return new EmailAddressStub(value);
     }
@@ -107,12 +112,9 @@ public class EmailAddressStub : ValueObject
 
 public class LocationStub : Entity<Guid>
 {
-    private LocationStub()
-    {
-    }
+    private LocationStub() { }
 
-    private LocationStub(
-        string name,
+    private LocationStub(string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
@@ -127,28 +129,26 @@ public class LocationStub : Entity<Guid>
         this.Country = country;
     }
 
-    public string Name { get; private set; }
+    public string Name { get; }
 
-    public string AddressLine1 { get; private set; }
+    public string AddressLine1 { get; }
 
-    public string AddressLine2 { get; private set; }
+    public string AddressLine2 { get; }
 
-    public string PostalCode { get; private set; }
+    public string PostalCode { get; }
 
-    public string City { get; private set; }
+    public string City { get; }
 
-    public string Country { get; private set; }
+    public string Country { get; }
 
-    public static LocationStub Create(
-        string name,
+    public static LocationStub Create(string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
         string city,
         string country)
     {
-        return new LocationStub(
-            name,
+        return new LocationStub(name,
             addressLine1,
             addressLine2,
             postalCode,
@@ -204,14 +204,10 @@ public class PersonStubDocument
 
 public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext
 {
-    public StubDbContext()
-    {
-    }
+    public StubDbContext() { }
 
     public StubDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<PersonStub> Persons { get; set; }
 
@@ -237,7 +233,8 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(this.GetType()
+            .Assembly);
     }
 }
 
@@ -301,23 +298,27 @@ public class PersonStubEntityTypeConfiguration : IEntityTypeConfiguration<Person
         builder.HasKey(u => u.Id);
 
         builder.Property(u => u.FirstName)
-            .IsRequired().HasMaxLength(128);
+            .IsRequired()
+            .HasMaxLength(128);
 
         builder.Property(u => u.LastName)
-            .IsRequired().HasMaxLength(128);
+            .IsRequired()
+            .HasMaxLength(128);
 
         builder.Property(e => e.Nationality)
-                .IsRequired().HasMaxLength(128);
+            .IsRequired()
+            .HasMaxLength(128);
 
-        builder.OwnsOne(b => b.Email, pb =>
-        {
-            pb.Property(e => e.Value)
-              .IsRequired().HasMaxLength(256);
-        });
+        builder.OwnsOne(b => b.Email,
+            pb =>
+            {
+                pb.Property(e => e.Value)
+                    .IsRequired()
+                    .HasMaxLength(256);
+            });
 
         builder.Property(e => e.Status)
-            .HasConversion(
-                new EnumerationConverter<int, string, Status>());
+            .HasConversion(new EnumerationConverter<int, string, Status>());
 
         //builder.HasMany(e => e.Locations)
         //   .WithOne()
@@ -325,30 +326,35 @@ public class PersonStubEntityTypeConfiguration : IEntityTypeConfiguration<Person
         //   .IsRequired()
         //   .OnDelete(DeleteBehavior.Cascade);
 
-        builder.OwnsMany(e => e.Locations, l =>
-        {
-            l.ToTable("Locations");
+        builder.OwnsMany(e => e.Locations,
+            l =>
+            {
+                l.ToTable("Locations");
 
-            l.HasKey(e => e.Id);
+                l.HasKey(e => e.Id);
 
-            l.Property(e => e.Name)
-                .HasMaxLength(128);
+                l.Property(e => e.Name)
+                    .HasMaxLength(128);
 
-            l.Property(e => e.AddressLine1)
-                .IsRequired().HasMaxLength(256);
+                l.Property(e => e.AddressLine1)
+                    .IsRequired()
+                    .HasMaxLength(256);
 
-            l.Property(e => e.AddressLine2)
-                .HasMaxLength(256);
+                l.Property(e => e.AddressLine2)
+                    .HasMaxLength(256);
 
-            l.Property(e => e.PostalCode)
-                .IsRequired().HasMaxLength(16);
+                l.Property(e => e.PostalCode)
+                    .IsRequired()
+                    .HasMaxLength(16);
 
-            l.Property(e => e.City)
-                .IsRequired().HasMaxLength(128);
+                l.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(128);
 
-            l.Property(e => e.Country)
-                .IsRequired().HasMaxLength(128);
-        });
+                l.Property(e => e.Country)
+                    .IsRequired()
+                    .HasMaxLength(128);
+            });
     }
 }
 

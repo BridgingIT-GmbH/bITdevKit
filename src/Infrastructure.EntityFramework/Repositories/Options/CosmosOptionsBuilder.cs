@@ -5,13 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-public class CosmosOptionsBuilder :
-    OptionsBuilderBase<CosmosOptions, CosmosOptionsBuilder>
+public class CosmosOptionsBuilder : OptionsBuilderBase<CosmosOptions, CosmosOptionsBuilder>
 {
     public CosmosOptionsBuilder UseConnectionString(string connectionString)
     {

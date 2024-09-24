@@ -8,10 +8,13 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Configuration;
+using EntityFrameworkCore;
 
-public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped, IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
+public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(
+    IServiceCollection services,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
     where TEntity : class, IEntity
     where TContext : DbContext
 {
@@ -20,13 +23,18 @@ public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(IService
         switch (this.Lifetime)
         {
             case ServiceLifetime.Singleton:
-                this.Services.AddSingleton<IRepositoryTransaction<TEntity>, EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+                this.Services
+                    .AddSingleton<IRepositoryTransaction<TEntity>,
+                        EntityFrameworkTransactionWrapper<TEntity, TContext>>();
                 break;
             case ServiceLifetime.Transient:
-                this.Services.AddTransient<IRepositoryTransaction<TEntity>, EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+                this.Services
+                    .AddTransient<IRepositoryTransaction<TEntity>,
+                        EntityFrameworkTransactionWrapper<TEntity, TContext>>();
                 break;
             default:
-                this.Services.AddScoped<IRepositoryTransaction<TEntity>, EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+                this.Services
+                    .AddScoped<IRepositoryTransaction<TEntity>, EntityFrameworkTransactionWrapper<TEntity, TContext>>();
                 break;
         }
 

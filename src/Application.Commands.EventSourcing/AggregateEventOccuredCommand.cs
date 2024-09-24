@@ -5,22 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Commands.EventSourcing;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Domain.EventSourcing.Model;
 
 /// <summary>
-/// Initializes a new instance of the <see cref="AggregateEventOccuredCommand{TAggregate}"/> class.
-///
+///     Initializes a new instance of the <see cref="AggregateEventOccuredCommand{TAggregate}" /> class.
 /// </summary>
 /// <param name="aggregate">Aggregate.</param>
-/// <param name="aggregateEvent">Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch null sein.</param>
-public class AggregateEventOccuredCommand<TAggregate>(TAggregate aggregate, AggregateEvent aggregateEvent) : CommandRequestBase<bool>
+/// <param name="aggregateEvent">
+///     Event, welches den Publish initiiert hat. Kann bei einer kompletten Neuprojektion auch
+///     null sein.
+/// </param>
+public class AggregateEventOccuredCommand<TAggregate>(TAggregate aggregate, AggregateEvent aggregateEvent)
+    : CommandRequestBase<bool>
     where TAggregate : EventSourcingAggregateRoot
 {
     public TAggregate Aggregate { get; private set; } = aggregate;
 
     /// <summary>
-    /// Event
+    ///     Event
     /// </summary>
     public AggregateEvent AggregateEvent { get; private set; } = aggregateEvent;
 }

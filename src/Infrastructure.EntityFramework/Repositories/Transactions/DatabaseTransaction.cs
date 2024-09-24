@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 public class DatabaseTransaction : IDatabaseTransaction
@@ -40,8 +38,9 @@ public class DatabaseTransaction : IDatabaseTransaction
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
-        await ResilientTransaction.Create(this.context).ExecuteAsync(async () =>
-            await action().AnyContext()).AnyContext();
+        await ResilientTransaction.Create(this.context)
+            .ExecuteAsync(async () => await action().AnyContext())
+            .AnyContext();
     }
 
     [Obsolete("Please use ExecuteScopedAsync from now on")]
@@ -52,11 +51,12 @@ public class DatabaseTransaction : IDatabaseTransaction
     }
 
     public async Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action)
-    where TEntity : class, IEntity
+        where TEntity : class, IEntity
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
-        return await ResilientTransaction.Create(this.context).ExecuteAsync(async () =>
-            await action().AnyContext()).AnyContext();
+        return await ResilientTransaction.Create(this.context)
+            .ExecuteAsync(async () => await action().AnyContext())
+            .AnyContext();
     }
 }

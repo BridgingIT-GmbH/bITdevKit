@@ -12,7 +12,8 @@ public abstract class StartupTaskBehaviorBase : IStartupTaskBehavior
 {
     protected StartupTaskBehaviorBase(ILoggerFactory loggerFactory)
     {
-        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
     }
 
     protected ILogger Logger { get; }

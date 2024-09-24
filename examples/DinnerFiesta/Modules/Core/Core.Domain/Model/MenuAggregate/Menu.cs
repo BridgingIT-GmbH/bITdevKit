@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class Menu : AuditableAggregateRoot<MenuId, Guid>
 {
@@ -13,9 +13,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
     private readonly List<DinnerId> dinnerIds = [];
     private readonly List<MenuReviewId> menuReviewIds = [];
 
-    private Menu()
-    {
-    }
+    private Menu() { }
 
     private Menu(
         HostId hostId,
@@ -43,7 +41,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
     public IReadOnlyList<MenuReviewId> MenuReviewIds => this.menuReviewIds.AsReadOnly();
 
-    public AverageRating AverageRating { get; private set; }
+    public AverageRating AverageRating { get; }
 
     public static Menu Create(
         HostId hostId,
@@ -56,15 +54,13 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
         EnsureArg.IsNotNull(name, nameof(name));
         EnsureArg.IsNotNull(description, nameof(description));
 
-        var menu = new Menu(
-            hostId,
+        var menu = new Menu(hostId,
             name,
             description,
             AverageRating.Create(),
             sections);
 
-        menu.DomainEvents.Register(
-            new MenuCreatedDomainEvent(menu));
+        menu.DomainEvents.Register(new MenuCreatedDomainEvent(menu));
 
         return menu;
     }
@@ -78,8 +74,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
         this.Name = name;
 
-        this.DomainEvents.Register(
-            new MenuUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new MenuUpdatedDomainEvent(this), true);
 
         return this;
     }
@@ -93,8 +88,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
         this.dinnerIds.Add(dinnerId);
 
-        this.DomainEvents.Register(
-            new MenuUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new MenuUpdatedDomainEvent(this), true);
 
         return this;
     }
@@ -108,8 +102,7 @@ public class Menu : AuditableAggregateRoot<MenuId, Guid>
 
         this.AverageRating.Add(rating);
 
-        this.DomainEvents.Register(
-            new MenuUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new MenuUpdatedDomainEvent(this), true);
 
         return this;
     }

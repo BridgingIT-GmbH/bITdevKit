@@ -9,14 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
-    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer"/>
+    <PackageReference Include="Microsoft.Data.SqlClient"/>
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" />-->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
   </ItemGroup>
 
 </Project>

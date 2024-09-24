@@ -5,26 +5,26 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Presentation.Web.Controllers;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Outbox;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using EventSourcingDemo.Application.Persons;
-using EventSourcingDemo.Domain.Model;
+using Application.Persons;
+using Common;
+using DevKit.Domain.EventSourcing.Outbox;
+using DevKit.Domain.EventSourcing.Store;
+using Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
-/// Person Controller.
+///     Person Controller.
 /// </summary>
-/// <remarks>Uses Event Sourcing to save and load a person. Every change on the event store triggers a projection to
-/// the table person.</remarks>
+/// <remarks>
+///     Uses Event Sourcing to save and load a person. Every change on the event store triggers a projection to
+///     the table person.
+/// </remarks>
 [Route("api/[controller]")]
 [ApiController]
-public class PersonController(IPersonService personService, IProjectionRequester<Person> personProjectionRequester, IOutboxWorkerService outboxWorkerService)
+public class PersonController(
+    IPersonService personService,
+    IProjectionRequester<Person> personProjectionRequester,
+    IOutboxWorkerService outboxWorkerService)
 {
     private readonly IPersonService personService = personService;
     private readonly IProjectionRequester<Person> personProjectionRequester = personProjectionRequester;
@@ -38,7 +38,11 @@ public class PersonController(IPersonService personService, IProjectionRequester
     }
 
     [HttpGet("{firstname}/{lastname}/{skip}/{take}")]
-    public async Task<ActionResult<IEnumerable<PersonOverviewViewModel>>> Get(string firstname, string lastname, int skip, int take)
+    public async Task<ActionResult<IEnumerable<PersonOverviewViewModel>>> Get(
+        string firstname,
+        string lastname,
+        int skip,
+        int take)
     {
         var persons = await this.personService.GetAllPersonsAsync(firstname, lastname, skip, take).AnyContext();
         return persons.ToArray();

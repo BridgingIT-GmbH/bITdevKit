@@ -4,14 +4,13 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Entities;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+
+using Commands;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityCreatedCommandResult>>
@@ -20,8 +19,8 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
 {
     private readonly IGenericRepository<TEntity> repository;
     private readonly IStringLocalizer localizer;
-    private List<IEntityCreateCommandRule<TEntity>> rules = null;
-    private List<Func<TCommand, IEntityCreateCommandRule<TEntity>>> rulesFuncs = null;
+    private List<IEntityCreateCommandRule<TEntity>> rules;
+    private List<Func<TCommand, IEntityCreateCommandRule<TEntity>>> rulesFuncs;
 
     protected EntityCreateCommandHandlerBase(
         ILoggerFactory loggerFactory,
@@ -37,8 +36,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
         this.localizer = localizer;
     }
 
-    public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule(
-        IEntityCreateCommandRule<TEntity> rule)
+    public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule(IEntityCreateCommandRule<TEntity> rule)
     {
         (this.rules ??= []).AddOrUpdate(rule);
 
@@ -46,8 +44,10 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     }
 
     public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule<TRule>()
-        where TRule : class, IEntityCreateCommandRule<TEntity> =>
-        this.AddRule(Factory<TRule>.Create());
+        where TRule : class, IEntityCreateCommandRule<TEntity>
+    {
+        return this.AddRule(Factory<TRule>.Create());
+    }
 
     public virtual EntityCreateCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityCreateCommandRule<TEntity>> rule)
@@ -86,8 +86,15 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
         var rules = (this.rules ??= []).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
-        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);
-        this.Logger.LogInformation($"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Constants.LogKey);
+        this.Logger.LogInformation(
+            "{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})",
+            Constants.LogKey,
+            command.GetType().Name,
+            command.RequestId,
+            this.GetType().Name);
+        this.Logger.LogInformation(
+            $"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}",
+            Constants.LogKey);
 
         await Check.ThrowAsync(rules, command.Entity, this.localizer);
     }
@@ -96,7 +103,7 @@ public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     {
         if (command.Entity is IAuditable auditable)
         {
-            auditable.AuditState ??= new();
+            auditable.AuditState ??= new AuditState();
             auditable.AuditState.SetCreated(command.Identity);
         }
     }

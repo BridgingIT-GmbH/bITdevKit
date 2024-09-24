@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -28,24 +25,23 @@ public class ModuleScopeQueryBehavior<TRequest, TResponse>(
     }
 
     protected override async Task<TResponse> Process(
-        TRequest request, RequestHandlerDelegate<TResponse> next,
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
         var module = this.moduleAccessors.Find(request.GetType());
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-        {
-            [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName,
-        }))
+               {
+                   [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
+               }))
         {
             if (module is not null && !module.Enabled)
             {
                 throw new ModuleNotEnabledException(module.Name);
             }
-            else
-            {
-                return await next().AnyContext();
-            }
+
+            return await next().AnyContext();
         }
     }
 }

@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using DevKit.Domain;
+using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class CityCreatedDomainEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<AggregateCreatedDomainEvent<City>>(loggerFactory)
+public class CityCreatedDomainEventHandler(ILoggerFactory loggerFactory)
+    : DomainEventHandlerBase<AggregateCreatedDomainEvent<City>>(loggerFactory)
 {
     public override bool CanHandle(AggregateCreatedDomainEvent<City> notification)
     {

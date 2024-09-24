@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class RatingShouldBeInRangeRule(int value) : IDomainRule
 {
@@ -14,7 +14,9 @@ public class RatingShouldBeInRangeRule(int value) : IDomainRule
     public string Message => "Rating should be between 1 and 5";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
@@ -22,7 +24,10 @@ public class RatingShouldBeInRangeRule(int value) : IDomainRule
     }
 }
 
-public static partial class RatingRules
+public static class RatingRules
 {
-    public static IDomainRule ShouldBeInRange(int value) => new RatingShouldBeInRangeRule(value);
+    public static IDomainRule ShouldBeInRange(int value)
+    {
+        return new RatingShouldBeInRangeRule(value);
+    }
 }

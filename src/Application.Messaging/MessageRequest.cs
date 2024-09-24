@@ -8,9 +8,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 public class MessageRequest
 {
     public MessageRequest(IMessage message, CancellationToken cancellationToken)
-        : this(message, success => { }, cancellationToken)
-    {
-    }
+        : this(message, success => { }, cancellationToken) { }
 
     public MessageRequest(IMessage message, Action<bool> onSendComplete, CancellationToken cancellationToken)
     {

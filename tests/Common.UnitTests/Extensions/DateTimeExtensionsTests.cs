@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System;
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class DateTimeExtensionsTests
 {

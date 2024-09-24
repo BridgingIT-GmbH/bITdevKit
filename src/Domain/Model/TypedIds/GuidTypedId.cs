@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System;
-
 public abstract class GuidTypedId(Guid value) : IEquatable<GuidTypedId>, IComparable<GuidTypedId>
 {
     public Guid Value { get; } = value;
 
-    public static implicit operator Guid(GuidTypedId typedId) => typedId.Value;
+    public static implicit operator Guid(GuidTypedId typedId)
+    {
+        return typedId.Value;
+    }
 
     public static bool operator ==(GuidTypedId left, GuidTypedId right)
     {

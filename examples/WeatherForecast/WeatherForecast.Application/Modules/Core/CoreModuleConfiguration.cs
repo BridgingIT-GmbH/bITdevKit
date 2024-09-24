@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using FluentValidation;
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 public class CoreModuleConfiguration
 {
@@ -24,16 +24,19 @@ public class CoreModuleConfiguration
         public Validator()
         {
             this.RuleFor(c => c.ConnectionStrings)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .Must(c => c.ContainsKey("Default"))
                 .WithMessage("Connection string with name 'default' is required");
 
             this.RuleFor(c => c.OpenWeatherUrl)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .WithMessage("OpenWeatherUrl cannot be null or empty");
 
             this.RuleFor(c => c.OpenWeatherApiKey)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .WithMessage("OpenWeatherApiKey cannot be null or empty");
         }
     }

@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Mediator;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 using MediatR;
-using NSubstitute;
-using Shouldly;
-using Xunit;
 
+[UnitTest("Domain")]
 public class DomainEventsTests
 {
     [Fact]
@@ -44,7 +39,7 @@ public class DomainEventsTests
         var domainEvent2 = Substitute.For<IDomainEvent>();
 
         // Act
-        sut.Register(new IDomainEvent[] { domainEvent1, domainEvent2 });
+        sut.Register(new[] { domainEvent1, domainEvent2 });
 
         // Assert
         var registeredEvents = sut.GetAll();
@@ -63,10 +58,11 @@ public class DomainEventsTests
 
         // Act
         sut.Register(domainEvent1);
-        sut.Register(domainEvent2, ensureSingleByType: true);
+        sut.Register(domainEvent2, true);
 
         // Assert
-        var registeredEvents = sut.GetAll().ToList();
+        var registeredEvents = sut.GetAll()
+            .ToList();
         registeredEvents.ShouldNotContain(domainEvent1);
         registeredEvents.ShouldContain(domainEvent2);
     }
@@ -87,8 +83,10 @@ public class DomainEventsTests
         await sut.DispatchAsync(mediator);
 
         // Assert
-        await mediator.Received(1).Publish(domainEvent1);
-        await mediator.Received(1).Publish(domainEvent2);
+        await mediator.Received(1)
+            .Publish(domainEvent1);
+        await mediator.Received(1)
+            .Publish(domainEvent2);
     }
 
     // Test for Clear method
@@ -127,7 +125,7 @@ public class DomainEventsTests
     {
         // Arrange
         var sut = new DomainEvents();
-        Func<Task> act = () => sut.DispatchAsync(null);
+        var act = () => sut.DispatchAsync(null);
 
         // Act & Assert
         await act.ShouldThrowAsync<ArgumentNullException>();

@@ -6,14 +6,13 @@
 namespace BridgingIT.DevKit.Common;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using Serilog;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 public class CustomWebApplicationFactory<TEntryPoint>(
@@ -23,9 +22,9 @@ public class CustomWebApplicationFactory<TEntryPoint>(
     string environment = "Development") : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    private readonly ITestOutputHelper output = output;
     private readonly string environment = environment;
     private readonly bool fakeAuthenticationEnabled = fakeAuthenticationEnabled;
+    private readonly ITestOutputHelper output = output;
     private readonly Action<IServiceCollection> services = services;
 
     protected override IHost CreateHost(IHostBuilder builder)
@@ -34,8 +33,8 @@ public class CustomWebApplicationFactory<TEntryPoint>(
         builder.ConfigureAppConfiguration((ctx, cnf) =>
         {
             cnf.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .AddEnvironmentVariables();
+                .AddJsonFile("appsettings.json", false, true)
+                .AddEnvironmentVariables();
         });
         builder.ConfigureLogging(ctx => ctx // TODO: webapp logs are not visible in test log anymore (serilog?)
             .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.output)));
@@ -44,7 +43,7 @@ public class CustomWebApplicationFactory<TEntryPoint>(
         var loggerConfiguration = new LoggerConfiguration().MinimumLevel.Information();
         if (this.output is not null)
         {
-            loggerConfiguration.WriteTo.TestOutput(this.output, Serilog.Events.LogEventLevel.Information);
+            loggerConfiguration.WriteTo.TestOutput(this.output, LogEventLevel.Information);
         }
 
         Log.Logger = loggerConfiguration.CreateLogger().ForContext<CustomWebApplicationFactory<TEntryPoint>>();
@@ -56,11 +55,15 @@ public class CustomWebApplicationFactory<TEntryPoint>(
             if (this.fakeAuthenticationEnabled)
             {
                 services.AddAuthentication(options => // add a fake authentication handler
-                {
-                    options.DefaultAuthenticateScheme = FakeAuthenticationHandler.SchemeName; // use the fake handler instead of the jwt handler (Startup)
-                    options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
-                })
-                .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(FakeAuthenticationHandler.SchemeName, null);
+                    {
+                        options.DefaultAuthenticateScheme =
+                            FakeAuthenticationHandler
+                                .SchemeName; // use the fake handler instead of the jwt handler (Startup)
+                        options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
+                    })
+                    .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(
+                        FakeAuthenticationHandler.SchemeName,
+                        null);
             }
         });
 

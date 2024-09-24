@@ -5,15 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Configuration;
+using EntityFrameworkCore;
 
 public class CosmosDbContextBuilderContext<TContext>(
     IServiceCollection services,
     ServiceLifetime lifetime = ServiceLifetime.Scoped,
     IConfiguration configuration = null,
     string connectionString = null,
-    Provider provider = Provider.SqlServer) : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
-    where TContext : DbContext
-{
-}
+    Provider provider = Provider.SqlServer)
+    : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
+    where TContext : DbContext { }

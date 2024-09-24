@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 using Microsoft.Extensions.Logging;
 
 public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<StubMessage>(loggerFactory),
@@ -22,10 +22,7 @@ public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
 
     public override async Task Handle(StubMessage message, CancellationToken cancellationToken)
     {
-        var loggerState = new Dictionary<string, object>
-        {
-            ["MessageId"] = message.MessageId,
-        };
+        var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };
 
         using (this.Logger.BeginScope(loggerState))
         {
@@ -33,7 +30,11 @@ public class StubMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
             Result = $"{message.FirstName} {message.Ticks}";
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ",
+                Constants.LogKey,
+                message.GetType()
+                    .PrettyName(),
+                message.MessageId);
         }
     }
 }
@@ -52,10 +53,7 @@ public class AnotherStubMessageHandler(ILoggerFactory loggerFactory) : MessageHa
 
     public override async Task Handle(StubMessage message, CancellationToken cancellationToken)
     {
-        var loggerState = new Dictionary<string, object>
-        {
-            ["MessageId"] = message.MessageId,
-        };
+        var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };
 
         using (this.Logger.BeginScope(loggerState))
         {
@@ -63,7 +61,11 @@ public class AnotherStubMessageHandler(ILoggerFactory loggerFactory) : MessageHa
             Result = $"{message.FirstName} {message.Ticks}";
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName} (name={{MessageName}}, id={{MessageId}}) ",
+                Constants.LogKey,
+                message.GetType()
+                    .PrettyName(),
+                message.MessageId);
         }
     }
 }

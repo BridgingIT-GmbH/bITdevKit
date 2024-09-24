@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Domain.EventSourcing.Model;
 
 public class OutboxPublishCommand<TAggregate, TAggregateEvent>
     where TAggregate : EventSourcingAggregateRoot
@@ -17,9 +17,7 @@ public class OutboxPublishCommand<TAggregate, TAggregateEvent>
         this.AggregateEvent = aggregateEvent;
     }
 
-    public OutboxPublishCommand()
-    {
-    }
+    public OutboxPublishCommand() { }
 
     public TAggregate Aggregate { get; set; }
 

@@ -5,22 +5,29 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-
+/// <summary>
+///     Represents an exception that is used to simulate chaotic behavior in a system for testing purposes.
+/// </summary>
 public class ChaosException : Exception
 {
-    public ChaosException()
-        : base()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ChaosException" /> class.
+    ///     Represents an exception that occurs specifically due to chaos engineering experiments.
+    /// </summary>
+    public ChaosException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ChaosException" /> class.
+    ///     Represents errors that occur during application execution related to the chaos scenarios.
+    ///     This exception is specific to unpredictable or intended disturbances in the normal flow.
+    /// </summary>
     public ChaosException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ChaosException" /> class.
+    ///     Represents errors that occur during application execution when a chaotic event happens.
+    /// </summary>
     public ChaosException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Client;
 
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Client;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Modules.Core.Presentation.Web.Client;
+using Modules.Marketing.Presentation.Web.Client;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
@@ -32,7 +27,8 @@ public static class Program
             .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
         builder.Services.AddScoped(sp => HttpClientFactory(sp, configuration));
         builder.Services.AddScoped<ICoreApiClient>(sp => new CoreApiClient(sp.GetRequiredService<HttpClient>()));
-        builder.Services.AddScoped<IMarketingApiClient>(sp => new MarketingApiClient(sp.GetRequiredService<HttpClient>()));
+        builder.Services.AddScoped<IMarketingApiClient>(sp =>
+            new MarketingApiClient(sp.GetRequiredService<HttpClient>()));
 
         builder.Services.AddMudServices(config =>
         {

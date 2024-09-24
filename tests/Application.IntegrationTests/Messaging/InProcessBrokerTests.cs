@@ -5,23 +5,19 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
-using BridgingIT.DevKit.Application.Messaging;
-using Microsoft.Extensions.DependencyInjection;
+using Application.Messaging;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMessaging()
-                .WithSubscription<EchoMessage, EchoMessageHandler>() // TODO: needed?
-                .WithBehavior<RetryMessageHandlerBehavior>()
-                .WithBehavior<TimeoutMessageHandlerBehavior>()
-                .WithInProcessBroker(new InProcessMessageBrokerConfiguration
-                {
-                    ProcessDelay = 0,
-                    MessageExpiration = new TimeSpan(0, 1, 0)
-                });
-        })
+public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMessaging()
+            .WithSubscription<EchoMessage, EchoMessageHandler>() // TODO: needed?
+            .WithBehavior<RetryMessageHandlerBehavior>()
+            .WithBehavior<TimeoutMessageHandlerBehavior>()
+            .WithInProcessBroker(new InProcessMessageBrokerConfiguration { ProcessDelay = 0, MessageExpiration = new TimeSpan(0, 1, 0) });
+    })
 {
     [Fact]
     public async Task Publish_SingleMessage_MessageHandledBySingleHandler()

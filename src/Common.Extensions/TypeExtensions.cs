@@ -5,15 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 public static class TypeExtensions
 {
     [DebuggerStepThrough]
-
     public static bool IsOfType(this object source, Type targetType)
     {
         if (source is null)
@@ -126,7 +123,10 @@ public static class TypeExtensions
     }
 
     [DebuggerStepThrough]
-    public static FieldInfo GetFieldUnambiguous(this Type source, string name, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
+    public static FieldInfo GetFieldUnambiguous(
+        this Type source,
+        string name,
+        BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(name);
@@ -149,7 +149,10 @@ public static class TypeExtensions
     }
 
     [DebuggerStepThrough]
-    public static PropertyInfo GetPropertyUnambiguous(this Type source, string name, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
+    public static PropertyInfo GetPropertyUnambiguous(
+        this Type source,
+        string name,
+        BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(name);
@@ -172,7 +175,7 @@ public static class TypeExtensions
     }
 
     /// <summary>
-    /// Determine if a type implements a specific (open) generic interface type
+    ///     Determine if a type implements a specific (open) generic interface type
     /// </summary>
     /// <param name="source">the instance to check</param>
     /// <param name="interface">the interface to implement</param>
@@ -191,8 +194,10 @@ public static class TypeExtensions
             : source.GetInterfaces().Any(c => c.Name == @interface.Name);
     }
 
-    /// <summary>Determines whether a type, like IList&lt;int&gt;, implements an open generic interface, like
-    /// IEnumerable&lt;&gt;. Note that this only checks against *interfaces*.</summary>
+    /// <summary>
+    ///     Determines whether a type, like IList&lt;int&gt;, implements an open generic interface, like
+    ///     IEnumerable&lt;&gt;. Note that this only checks against *interfaces*.
+    /// </summary>
     /// <param name="source">The type to check.</param>
     /// <param name="interface">The open generic type which it may impelement</param>
     [DebuggerStepThrough]
@@ -205,9 +210,8 @@ public static class TypeExtensions
             return false;
         }
 
-        return
-            source.Equals(@interface) ||
-            (source.IsGenericType && source.GetGenericTypeDefinition().Equals(@interface)) ||
+        return source.Equals(@interface) ||
+            source.IsGenericType && source.GetGenericTypeDefinition().Equals(@interface) ||
             source.GetInterfaces().Any(i => i.IsGenericType && i.ImplementsOpenGenericInterface(@interface));
     }
 }

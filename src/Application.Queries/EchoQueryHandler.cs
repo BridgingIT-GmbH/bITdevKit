@@ -5,19 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
+using Microsoft.Extensions.Logging;
 
-public class EchoQueryHandler(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory) : QueryHandlerBase<EchoQuery, string>(loggerFactory)
+public class EchoQueryHandler(ILoggerFactory loggerFactory) : QueryHandlerBase<EchoQuery, string>(loggerFactory)
 {
-    public override async Task<QueryResponse<string>> Process(
-        EchoQuery request,
-        CancellationToken cancellationToken)
+    public override async Task<QueryResponse<string>> Process(EchoQuery request, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(new QueryResponse<string>()
-        {
-            Result = "echo"
-        }).AnyContext();
+        return await Task.FromResult(new QueryResponse<string> { Result = "echo" }).AnyContext();
     }
 }

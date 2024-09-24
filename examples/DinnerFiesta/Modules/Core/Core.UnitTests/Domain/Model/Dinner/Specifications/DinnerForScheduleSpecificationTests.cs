@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Domain;
 
 public class DinnerForScheduleSpecificationTests
 {
@@ -21,23 +19,28 @@ public class DinnerForScheduleSpecificationTests
 
         var otherDinner0 = dinner.Clone(); // before
         otherDinner0.Id = DinnerId.Create();
-        otherDinner0.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(-5), dinner.Schedule.EndDateTime.AddHours(-6)));
+        otherDinner0.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(-5),
+            dinner.Schedule.EndDateTime.AddHours(-6)));
 
         var otherDinner1 = dinner.Clone(); // before and within
         otherDinner1.Id = DinnerId.Create();
-        otherDinner1.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(-2), dinner.Schedule.EndDateTime.AddHours(-1)));
+        otherDinner1.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(-2),
+            dinner.Schedule.EndDateTime.AddHours(-1)));
 
         var otherDinner2 = dinner.Clone(); // within and after
         otherDinner2.Id = DinnerId.Create();
-        otherDinner2.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(1), dinner.Schedule.EndDateTime.AddHours(5)));
+        otherDinner2.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(1),
+            dinner.Schedule.EndDateTime.AddHours(5)));
 
         var otherDinner3 = dinner.Clone(); // within
         otherDinner3.Id = DinnerId.Create();
-        otherDinner3.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(1), dinner.Schedule.EndDateTime.AddHours(-1)));
+        otherDinner3.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(1),
+            dinner.Schedule.EndDateTime.AddHours(-1)));
 
         var otherDinner4 = dinner.Clone(); // after
         otherDinner4.Id = DinnerId.Create();
-        otherDinner4.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(5), dinner.Schedule.EndDateTime.AddHours(6)));
+        otherDinner4.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(5),
+            dinner.Schedule.EndDateTime.AddHours(6)));
 
         dinners.AddRange(new[] { otherDinner0, otherDinner1, otherDinner2, otherDinner3, otherDinner4 });
 

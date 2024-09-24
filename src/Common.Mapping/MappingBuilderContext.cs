@@ -5,7 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.Extensions.Configuration;
+using Configuration;
 
 public class MappingBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {

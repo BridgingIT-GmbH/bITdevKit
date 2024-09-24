@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using System.IO;
-using BridgingIT.DevKit.Domain.UnitTests.EventStore.Model.Events;
+using Domain.UnitTests.EventStore.Model.Events;
 
 [UnitTest("Infrastructure")]
 public class EventSerializerJsonTests

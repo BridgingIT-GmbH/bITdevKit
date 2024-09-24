@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
+using Common;
+using DevKit.Domain.EventSourcing.Store;
 using Domain.Model;
 using Domain.Model.Events;
 
@@ -30,7 +28,7 @@ public class HelloWordDemo
         var person = new Person(createEvent); // <2>
         await this.eventStore.SaveEventsAsync(person, token).AnyContext(); // <3>
         // ...
-        var person2 = await this.eventStore.GetAsync(person.Id, token).AnyContext();  // <4>
+        var person2 = await this.eventStore.GetAsync(person.Id, token).AnyContext(); // <4>
         person2.ChangeSurname("Mustermann"); // <5>
         await this.eventStore.SaveEventsAsync(person2, token).AnyContext(); // <6>
         // end::EventStoreDemo1[]

@@ -126,17 +126,8 @@ public class MapsterMapperTests
         // Arrange
         var config = MapperConfig.Create();
         var faker = new Faker();
-        var source = new PersonStub
-        {
-            Age = faker.Random.Number(18, 80),
-            FirstName = faker.Name.FirstName(),
-            LastName = faker.Name.LastName()
-        };
-        var target = new PersonDtoStub
-        {
-            Age = faker.Random.Number(18, 80),
-            FullName = faker.Name.FullName()
-        };
+        var source = new PersonStub { Age = faker.Random.Number(18, 80), FirstName = faker.Name.FirstName(), LastName = faker.Name.LastName() };
+        var target = new PersonDtoStub { Age = faker.Random.Number(18, 80), FullName = faker.Name.FullName() };
         var sut = new MapsterMapper(config);
 
         // Act
@@ -202,11 +193,17 @@ public class MapsterMapperTests
             var config = new TypeAdapterConfig();
 
             config.ForType<PersonStub, PersonDtoStub>()
-                .Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}".Trim().EmptyToNull());
+                .Map(dest => dest.FullName,
+                    src => $"{src.FirstName} {src.LastName}".Trim()
+                        .EmptyToNull());
 
             config.ForType<PersonDtoStub, PersonStub>()
-                .Map(dest => dest.FirstName, src => src.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault())
-                .Map(dest => dest.LastName, src => src.FullName.Split(' ', StringSplitOptions.None).LastOrDefault());
+                .Map(dest => dest.FirstName,
+                    src => src.FullName.Split(' ', StringSplitOptions.None)
+                        .FirstOrDefault())
+                .Map(dest => dest.LastName,
+                    src => src.FullName.Split(' ', StringSplitOptions.None)
+                        .LastOrDefault());
 
             return config;
         }

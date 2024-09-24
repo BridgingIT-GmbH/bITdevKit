@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.IO;
-
 public class MessagePackSerializer : ISerializer
 {
     public void Serialize(object value, Stream output)

@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using Shouldly;
-using Xunit;
+using Core.Domain;
 
+[UnitTest("Domain")]
 public class AverageRatingTests
 {
     private readonly AverageRating sut;

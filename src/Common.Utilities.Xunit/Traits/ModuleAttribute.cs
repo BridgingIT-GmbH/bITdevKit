@@ -5,16 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using Xunit.Sdk;
 
 [TraitDiscoverer(ModuleDiscoverer.TypeName, ModuleDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 public class ModuleAttribute : Attribute, ITraitAttribute
 {
-    public ModuleAttribute()
-    {
-    }
+    public ModuleAttribute() { }
 
     public ModuleAttribute(string name)
     {

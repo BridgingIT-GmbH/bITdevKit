@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.IntegrationTests;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation;
+using DevKit.Presentation;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Presentation")]
 [Module("Core")]
-public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
+    : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
@@ -22,7 +22,8 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
         // arrang/act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var response = await this.fixture.CreateClient()
-            .GetAsync(route).AnyContext();
+            .GetAsync(route)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
@@ -37,13 +38,14 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var response = await this.fixture.CreateClient()
-            .GetAsync(route).AnyContext();
+            .GetAsync(route)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
-        response.Should().Satisfy<SystemInfo>(
-            model =>
+        response.Should()
+            .Satisfy<SystemInfo>(model =>
             {
                 model.ShouldNotBeNull();
                 model.Runtime.ShouldNotBeNull();
@@ -60,7 +62,8 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var response = await this.fixture.CreateClient()
-            .GetAsync(route).AnyContext();
+            .GetAsync(route)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert

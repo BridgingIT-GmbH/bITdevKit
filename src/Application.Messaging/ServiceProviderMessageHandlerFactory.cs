@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.DependencyInjection;
 
 public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory
@@ -13,7 +13,7 @@ public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory
     private readonly IServiceProvider serviceProvider;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceProviderMessageHandlerFactory"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceProviderMessageHandlerFactory" /> class.
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
     public ServiceProviderMessageHandlerFactory(IServiceProvider serviceProvider)
@@ -24,13 +24,11 @@ public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory
     }
 
     /// <summary>
-    /// Creates the specified message handler type.
+    ///     Creates the specified message handler type.
     /// </summary>
     /// <param name="messageHandlerType">Type of the message handler.</param>
     public object Create(Type messageHandlerType)
     {
-        return Factory.Create(
-            messageHandlerType,
-            this.serviceProvider.CreateScope().ServiceProvider);
+        return Factory.Create(messageHandlerType, this.serviceProvider.CreateScope().ServiceProvider);
     }
 }

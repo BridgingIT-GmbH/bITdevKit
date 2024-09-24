@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System;
-using BridgingIT.DevKit.Common;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Spi;

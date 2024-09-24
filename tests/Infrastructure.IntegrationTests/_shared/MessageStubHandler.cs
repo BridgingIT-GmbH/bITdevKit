@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 using Microsoft.Extensions.Logging;
 
 public class MessageState
@@ -27,10 +27,7 @@ public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messa
 
     public override async Task Handle(MessageStub message, CancellationToken cancellationToken)
     {
-        var loggerState = new Dictionary<string, object>
-        {
-            ["MessageId"] = message.MessageId,
-        };
+        var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };
 
         using (this.Logger.BeginScope(loggerState))
         {
@@ -38,7 +35,11 @@ public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messa
             this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ",
+                Constants.LogKey,
+                message.GetType()
+                    .PrettyName(),
+                message.MessageId);
         }
     }
 }
@@ -55,10 +56,7 @@ public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageStat
 
     public override async Task Handle(MessageStub message, CancellationToken cancellationToken)
     {
-        var loggerState = new Dictionary<string, object>
-        {
-            ["MessageId"] = message.MessageId,
-        };
+        var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };
 
         using (this.Logger.BeginScope(loggerState))
         {
@@ -66,7 +64,11 @@ public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageStat
             this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
-            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ", Constants.LogKey, message.GetType().PrettyName(), message.MessageId);
+            this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ",
+                Constants.LogKey,
+                message.GetType()
+                    .PrettyName(),
+                message.MessageId);
         }
     }
 }

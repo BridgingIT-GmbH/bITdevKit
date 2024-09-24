@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
+using Common;
+using DevKit.Application.Queries;
+using Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -15,8 +15,10 @@ public class CustomerFindOneQuery(string customerId) : QueryRequestBase<Result<C
 {
     public string CustomerId { get; } = customerId;
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<CustomerFindOneQuery>
     {

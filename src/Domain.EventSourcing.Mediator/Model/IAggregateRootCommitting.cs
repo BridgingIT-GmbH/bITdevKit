@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-using System.Threading.Tasks;
 using MediatR;
 
 public interface IAggregateRootCommitting

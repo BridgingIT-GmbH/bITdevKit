@@ -5,89 +5,91 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
 /// <summary>
-/// Various options to specify the <see cref="IGenericRepository{TEntity}"/> find operations.
+///     Interface for specifying various options to find operations in a repository.
 /// </summary>
 public interface IFindOptions<TEntity>
     where TEntity : class, IEntity
 {
     /// <summary>
-    /// Gets or sets the skip amount.
+    ///     Gets or sets the number of items to skip in a query.
     /// </summary>
     /// <value>
-    /// The skip.
+    ///     The number of items to skip.
     /// </value>
     int? Skip { get; set; }
 
     /// <summary>
-    /// Gets or sets the take amount.
+    ///     Gets or sets the number of records to return.
     /// </summary>
     /// <value>
-    /// The take.
+    ///     The number of records.
     /// </value>
     int? Take { get; set; }
 
     /// <summary>
-    /// Gets or sets the NoTracking.
+    ///     Gets or sets a value indicating whether the query should be executed with tracking disabled.
     /// </summary>
+    /// <value>
+    ///     <c>true</c> if the query should not track changes to the entities; otherwise, <c>false</c>.
+    /// </value>
     bool NoTracking { get; set; }
 
     /// <summary>
-    /// Gets or sets the distinction.
+    ///     Gets or sets the option to distinct the query results.
     /// </summary>
     /// <value>
-    /// The distinction.
+    ///     The distinct option.
     /// </value>
     DistinctOption<TEntity> Distinct { get; set; }
 
     /// <summary>
-    /// Gets or sets the ordering.
+    ///     Gets or sets the order options for querying entities.
     /// </summary>
     /// <value>
-    /// The ordering.
+    ///     The order options used to define how entities should be ordered.
     /// </value>
     OrderOption<TEntity> Order { get; set; }
 
     /// <summary>
-    /// Gets or sets the orderings.
+    ///     Gets or sets the collection of order options.
     /// </summary>
     /// <value>
-    /// The orderings.
+    ///     The collection of <see cref="OrderOption{TEntity}" /> that define the order criteria.
     /// </value>
     IEnumerable<OrderOption<TEntity>> Orders { get; set; }
 
     /// <summary>
-    /// Gets or sets the include.
+    ///     Gets or sets the include options for related entities.
     /// </summary>
     /// <value>
-    /// The order.
+    ///     The include option used to specify related entities to include in the query results.
     /// </value>
     IncludeOption<TEntity> Include { get; set; }
 
     /// <summary>
-    /// Gets or sets the includes.
+    ///     Gets or sets the collection of include options.
     /// </summary>
     /// <value>
-    /// The includes.
+    ///     The collection of include options.
     /// </value>
     IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
 
     /// <summary>
-    /// Determines whether this instance has orderings.
+    ///     Determines whether this instance has orderings.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance has orderings; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance has orderings; otherwise, <c>false</c>.
     /// </returns>
     bool HasOrders();
 
     /// <summary>
-    /// Determines whether this instance has includes.
+    ///     Determines whether this instance has includes.
     /// </summary>
     /// <returns>
-    ///   <c>true</c> if this instance has includes; otherwise, <c>false</c>.
+    ///     <c>true</c> if this instance has includes; otherwise, <c>false</c>.
     /// </returns>
     bool HasIncludes();
 }

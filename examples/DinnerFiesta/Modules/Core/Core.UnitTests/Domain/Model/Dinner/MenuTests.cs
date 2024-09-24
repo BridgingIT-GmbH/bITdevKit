@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Domain;
 
 public class DinnerTests
 {
@@ -19,12 +19,15 @@ public class DinnerTests
         var description = "A test menu";
 
         // Act
-        var sut = Dinner.Create(
-            name,
+        var sut = Dinner.Create(name,
             description,
             DinnerSchedule.Create(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddHours(2)),
             DinnerLocation.Create("Test Location", "Test Address", string.Empty, "Test PostalCode", "Test City", "NL"),
-            true, 5, menuId, hostId, Price.Create(10, "USD"));
+            true,
+            5,
+            menuId,
+            hostId,
+            Price.Create(10, "USD"));
 
         // Assert
         sut.HostId.ShouldBe(hostId);

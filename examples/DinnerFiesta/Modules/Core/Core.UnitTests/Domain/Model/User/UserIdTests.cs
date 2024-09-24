@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
-using System;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using Xunit;
-using Shouldly;
+using Core.Domain;
 
 public class UserIdTests
 {

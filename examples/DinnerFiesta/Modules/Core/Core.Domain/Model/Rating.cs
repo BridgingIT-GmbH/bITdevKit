@@ -5,28 +5,23 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class Rating : ValueObject
 {
-    private Rating()
-    {
-    }
+    private Rating() { }
 
     private Rating(int value)
     {
         this.Value = value;
     }
 
-    public int Value { get; private set; }
+    public int Value { get; }
 
     public static Rating Create(int value)
     {
-        DomainRules.Apply(
-        [
-            RatingRules.ShouldBeInRange(value),
-        ]);
+        DomainRules.Apply([RatingRules.ShouldBeInRange(value)]);
 
         return new Rating(value);
     }

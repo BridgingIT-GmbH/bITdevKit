@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
 using FluentAssertions;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("DinnerFiesta.Presentation")]
 [Module("Core")]
-public class CoreEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture) : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class CoreEndpointTests(ITestOutputHelper output, CustomWebApplicationFactoryFixture<Program> fixture)
+    : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
@@ -22,7 +22,8 @@ public class CoreEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         // Arrang/Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var response = await this.fixture.CreateClient()
-            .GetAsync(route).AnyContext();
+            .GetAsync(route)
+            .AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert

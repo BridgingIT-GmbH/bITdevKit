@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
-using System;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain.Model;
+using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbContextBase(options), IOutboxDomainEventContext, IOutboxMessageContext
+public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbContextBase(options),
+    IOutboxDomainEventContext, IOutboxMessageContext
 {
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Forecast> Forecasts { get; set; }
@@ -31,9 +31,10 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // seed some data
-        modelBuilder.Entity<ForecastType>().HasData(
-            new { Id = Guid.Parse("102954ff-aa73-495b-a730-98f2d5ca10f3"), Name = "AAA", Description = "test" },
-            new { Id = Guid.Parse("f059e932-d6ff-406d-ba9d-282fe4fdc084"), Name = "BBB", Description = "test" });
+        modelBuilder.Entity<ForecastType>()
+            .HasData(
+                new { Id = Guid.Parse("102954ff-aa73-495b-a730-98f2d5ca10f3"), Name = "AAA", Description = "test" },
+                new { Id = Guid.Parse("f059e932-d6ff-406d-ba9d-282fe4fdc084"), Name = "BBB", Description = "test" });
 
         base.OnModelCreating(modelBuilder);
     }

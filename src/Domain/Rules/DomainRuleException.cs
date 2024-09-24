@@ -5,22 +5,28 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System;
-
+/// <summary>
+///     The DomainRuleException is thrown when a domain rule is violated.
+/// </summary>
 public class DomainRuleException : Exception
 {
-    public DomainRuleException()
-        : base()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Represents errors that occur due to domain rule violations.
+    /// </summary>
+    public DomainRuleException() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Represents errors that occur when a domain rule is violated.
+    /// </summary>
     public DomainRuleException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Represents errors that occur when a domain rule is violated.
+    /// </summary>
     public DomainRuleException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

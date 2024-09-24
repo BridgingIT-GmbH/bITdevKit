@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
+using BenchmarkDotNet.Running;
+
 [UnitTest("Common")]
 public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -47,7 +49,7 @@ public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTe
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkDotNet.Running.BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
+        var summary = BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

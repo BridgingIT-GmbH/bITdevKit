@@ -1,14 +1,11 @@
 ﻿namespace BridgingIT.DevKit.Application.UnitTests.Messaging;
 
-using System;
-using Bogus;
-using BridgingIT.DevKit.Application.Messaging;
-using Shouldly;
-using Xunit;
+using Application.Messaging;
 
+[UnitTest("Application")]
 public class MessageBaseTests
 {
-    private readonly Faker faker = new Faker();
+    private readonly Faker faker = new();
 
     [Fact]
     public void Constructor_WithoutId_GeneratesId()
@@ -18,7 +15,8 @@ public class MessageBaseTests
 
         // Assert
         sut.MessageId.ShouldNotBeNullOrEmpty();
-        Guid.TryParse(sut.MessageId, out _).ShouldBeTrue();
+        Guid.TryParse(sut.MessageId, out _)
+            .ShouldBeTrue();
     }
 
     [Fact]
@@ -145,6 +143,9 @@ public class MessageBaseTests
     {
         public TestMessage() { }
 
-        public TestMessage(string id) { this.MessageId = id; }
+        public TestMessage(string id)
+        {
+            this.MessageId = id;
+        }
     }
 }

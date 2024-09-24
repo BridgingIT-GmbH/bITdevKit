@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation.Web.Controllers;
+using Common;
+using Domain;
 using Mapster;
+using Web.Controllers;
 
 public class MarketingMapperRegister : IRegister
 {

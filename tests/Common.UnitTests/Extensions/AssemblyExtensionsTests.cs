@@ -5,14 +5,9 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using Xunit;
-using NSubstitute;
-using Shouldly;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using BridgingIT.DevKit.Common;
 
+[UnitTest("Common")]
 public class AssemblyExtensionsTests
 {
     [Fact]

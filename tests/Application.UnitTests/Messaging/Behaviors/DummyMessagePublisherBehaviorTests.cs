@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Messaging;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Application")]
@@ -28,7 +27,8 @@ public class DummyMessagePublisherBehaviorTests
         await sut.Publish(message, cancellationToken, next);
 
         // Assert
-        await next.DidNotReceive().Invoke();
+        await next.DidNotReceive()
+            .Invoke();
     }
 
     [Fact]
@@ -46,6 +46,7 @@ public class DummyMessagePublisherBehaviorTests
         await sut.Publish(message, cancellationToken, next);
 
         // Assert
-        await next.Received().Invoke();
+        await next.Received()
+            .Invoke();
     }
 }

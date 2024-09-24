@@ -5,11 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class OutboxDomainEventOptionsBuilder :
-    OptionsBuilderBase<OutboxDomainEventOptions, OutboxDomainEventOptionsBuilder>
+public class OutboxDomainEventOptionsBuilder
+    : OptionsBuilderBase<OutboxDomainEventOptions, OutboxDomainEventOptionsBuilder>
 {
     public OutboxDomainEventOptionsBuilder Enabled(bool value = true)
     {

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using FluentValidation;
 
 public class RabbitMQMessageBrokerConfiguration
@@ -29,12 +29,14 @@ public class RabbitMQMessageBrokerConfiguration
         public Validator()
         {
             this.RuleFor(c => c.HostName)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .When(c => c.ConnectionString.IsNullOrEmpty())
                 .WithMessage("HostName cannot be null or empty");
 
             this.RuleFor(c => c.ConnectionString)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .When(c => c.HostName.IsNullOrEmpty())
                 .WithMessage("ConnectionString cannot be null or empty");
         }

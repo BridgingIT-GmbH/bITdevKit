@@ -5,43 +5,57 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using BridgingIT.DevKit.Common.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Options;
 
+/// <summary>
+///     Base class for defining options that include logging capabilities.
+/// </summary>
 public abstract class OptionsBase : ILoggerOptions
 {
-    protected OptionsBase()
-    {
-    }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="OptionsBase" /> class.
+    ///     Base class for logger options, providing common functionality
+    ///     for creating loggers.
+    /// </summary>
+    protected OptionsBase() { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="OptionsBase" /> class.
+    ///     Provides a base class for logger options, allowing for the creation of loggers.
+    /// </summary>
     protected OptionsBase(ILoggerFactory loggerFactory)
     {
         this.LoggerFactory = loggerFactory;
     }
 
     /// <summary>
-    /// Gets or sets the logger factory.
+    ///     Gets or sets the logger factory.
     /// </summary>
     /// <value>
-    /// The logger factory.
+    ///     A factory for creating logger instances.
     /// </value>
     public ILoggerFactory LoggerFactory { get; set; }
 
     /// <summary>
-    /// Creates the logger.
+    ///     Creates the logger.
     /// </summary>
     /// <param name="categoryName">Name of the category.</param>
-    public ILogger CreateLogger(string categoryName) =>
-        this.LoggerFactory is null
-            ? NullLogger.Instance
-            : this.LoggerFactory.CreateLogger(categoryName);
+    /// <returns>A logger instance for the specified category name.</returns>
+    public ILogger CreateLogger(string categoryName)
+    {
+        return this.LoggerFactory is null ? NullLogger.Instance : this.LoggerFactory.CreateLogger(categoryName);
+    }
 
     /// <summary>
-    /// Creates the typed logger.
+    ///     Creates the typed logger.
     /// </summary>
-    public ILogger<T> CreateLogger<T>() =>
-        this.LoggerFactory is null
-            ? new NullLogger<T>()
-            : this.LoggerFactory.CreateLogger<T>();
+    /// <returns>
+    ///     A logger instance for the given type.
+    /// </returns>
+    public ILogger<T> CreateLogger<T>()
+    {
+        return this.LoggerFactory is null ? new NullLogger<T>() : this.LoggerFactory.CreateLogger<T>();
+    }
 }

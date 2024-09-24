@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class EntityCommandMessagingBehaviorOptions : OptionsBase
 {

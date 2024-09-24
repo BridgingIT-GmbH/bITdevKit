@@ -5,15 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
-using EnsureThat;
+using Application.Modules.Core;
+using Common;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
-public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub) : INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
+public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub)
+    : INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
 {
     private readonly IHubContext<NotificationHub> hub = hub;
 
@@ -21,6 +19,8 @@ public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub) : I
     {
         EnsureArg.IsNotNull(notification, nameof(notification));
 
-        await this.hub.Clients.All.SendAsync("ReceiveMessage", $"[ForecastsImported]: {notification.Cities.ToString(", ")}", cancellationToken: cancellationToken);
+        await this.hub.Clients.All.SendAsync("ReceiveMessage",
+            $"[ForecastsImported]: {notification.Cities.ToString(", ")}",
+            cancellationToken);
     }
 }

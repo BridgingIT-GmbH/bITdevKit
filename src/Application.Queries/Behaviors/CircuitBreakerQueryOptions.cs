@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System;
-
 public interface ICircuitBreakerQuery
 {
     CircuitBreakerQueryOptions Options { get; }
@@ -16,9 +14,9 @@ public class CircuitBreakerQueryOptions
 {
     public int Attempts { get; set; } = 3;
 
-    public TimeSpan Backoff { get; set; } = new TimeSpan(0, 0, 0, 0, 200);
+    public TimeSpan Backoff { get; set; } = new(0, 0, 0, 0, 200);
 
     public bool BackoffExponential { get; set; }
 
-    public TimeSpan BreakDuration { get; set; } = new TimeSpan(0, 0, 0, 30);
+    public TimeSpan BreakDuration { get; set; } = new(0, 0, 0, 30);
 }

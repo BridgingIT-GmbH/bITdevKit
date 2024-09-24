@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests.Infrastructure;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
+using Core.Infrastructure;
+using Domain;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -29,7 +26,12 @@ public class MenuReviewRepositoryTests
     {
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = MenuReview.Create(5, $"test comment {ticks}", HostId.Create(), MenuId.Create(), GuestId.Create(), DinnerId.Create());
+        var entity = MenuReview.Create(5,
+            $"test comment {ticks}",
+            HostId.Create(),
+            MenuId.Create(),
+            GuestId.Create(),
+            DinnerId.Create());
 
         // Act
         this.context.MenuReviews.Add(entity);

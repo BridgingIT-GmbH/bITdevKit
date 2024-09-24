@@ -5,67 +5,58 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context, IEntityMapper mapper) : EntityFrameworkGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context, mapper)
+public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
+    ILoggerFactory loggerFactory,
+    TContext context,
+    IEntityMapper mapper) : EntityFrameworkGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context, mapper)
     where TEntity : class, IEntity
     where TDatabaseEntity : class
-    where TContext : DbContext
-{
-}
+    where TContext : DbContext { }
 
-public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO: rename to EntityFrameworkRepository + Obsolete
+public class
+    EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO: rename to EntityFrameworkRepository + Obsolete
     : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
     public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
-    public EntityFrameworkGenericRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build())
-    {
-    }
+    public EntityFrameworkGenericRepository(
+        Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
+        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
     public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
-        : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper))
-    {
-    }
+        : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
 
     /// <summary>
-    /// Inserts the provided entity.
+    ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    public virtual async Task<TEntity> InsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Updates the provided entity.
+    ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    public virtual async Task<TEntity> UpdateAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Insert or updates the provided entity.
+    ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
@@ -80,12 +71,17 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         var isNew = entity.Id == default;
         var existingEntity = isNew
             ? null
-            : await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+            : await this.Options.DbContext.Set<TDatabaseEntity>()
+                .FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken)
+                .AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         isNew = isNew || existingEntity is null;
 
         if (isNew)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})",
+                Constants.LogKey,
+                typeof(TEntity).Name,
+                entity.Id);
             var dbEntity = this.Options.Mapper.Map<TDatabaseEntity>(entity);
             this.Options.DbContext.Set<TDatabaseEntity>().Add(dbEntity);
 
@@ -97,7 +93,10 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         }
         else
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})",
+                Constants.LogKey,
+                typeof(TEntity).Name,
+                entity.Id);
             this.Options.DbContext.Entry(existingEntity)
                 .CurrentValues.SetValues(this.Options.Mapper.Map<TDatabaseEntity>(entity));
 
@@ -105,7 +104,12 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
             {
                 foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
                 {
-                    this.Logger.LogTrace("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                    this.Logger.LogTrace(
+                        "{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}",
+                        Constants.LogKey,
+                        entry.Entity.GetType().Name,
+                        entry.IsKeySet,
+                        entry.State);
                 }
 
                 await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
@@ -115,7 +119,9 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
     }
 
-    public virtual async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
+    public virtual async Task<RepositoryActionResult> DeleteAsync(
+        object id,
+        CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
@@ -123,7 +129,8 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         }
 
         var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>()
-            .FindAsync([this.ConvertEntityId(id)/*, cancellationToken: cancellationToken*/], cancellationToken: cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+            .FindAsync([this.ConvertEntityId(id) /*, cancellationToken: cancellationToken*/], cancellationToken)
+            .AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         if (existingEntity is not null)
         {
             this.Options.DbContext.Remove(existingEntity);
@@ -139,7 +146,9 @@ public class EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO:
         return RepositoryActionResult.None;
     }
 
-    public virtual async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public virtual async Task<RepositoryActionResult> DeleteAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         if (entity?.Id is null)
         {

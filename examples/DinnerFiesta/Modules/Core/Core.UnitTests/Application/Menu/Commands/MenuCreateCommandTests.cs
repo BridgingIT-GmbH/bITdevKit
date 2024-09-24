@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
+using Core.Application;
 using FluentValidation.TestHelper;
-using Shouldly;
-using Xunit;
 
 public class MenuCreateCommandTests
 {
@@ -49,9 +47,7 @@ public class MenuCreateCommandTests
 
         // Assert
         result.IsValid.ShouldBeFalse();
-        result.Errors.ShouldContain(e => e.PropertyName == "Name"
-            && e.ErrorMessage == "Must not be empty.");
-        result.Errors.ShouldContain(e => e.PropertyName == "HostId"
-            && e.ErrorMessage == "Must not be empty.");
+        result.Errors.ShouldContain(e => e.PropertyName == "Name" && e.ErrorMessage == "Must not be empty.");
+        result.Errors.ShouldContain(e => e.PropertyName == "HostId" && e.ErrorMessage == "Must not be empty.");
     }
 }

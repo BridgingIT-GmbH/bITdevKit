@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.IO;
 using System.Text.Json;
 
 public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : ISerializer, ITextSerializer
@@ -14,7 +12,7 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
     private readonly JsonSerializerOptions options = options ?? DefaultSystemTextJsonSerializerOptions.Create();
 
     /// <summary>
-    /// Serializes the specified value.
+    ///     Serializes the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="output">The output.</param>
@@ -34,7 +32,7 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     /// <param name="type">The type.</param>
@@ -55,7 +53,7 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="input">The input.</param>
     public T Deserialize<T>(Stream input)

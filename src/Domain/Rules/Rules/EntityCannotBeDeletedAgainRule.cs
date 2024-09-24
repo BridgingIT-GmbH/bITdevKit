@@ -5,16 +5,17 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using Model;
 
-public class EntityCannotBeDeletedAgainRule<TEntity>(TEntity entity)
-    : DomainRuleBase
+public class EntityCannotBeDeletedAgainRule<TEntity>(TEntity entity) : DomainRuleBase
     where TEntity : class, IEntity, IAuditable
 {
     private readonly bool? deleted = entity?.AuditState?.IsDeleted();
 
     public override string Message => "An already deleted entity cannot be deleted again.";
 
-    public override Task<bool> ApplyAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(this.deleted is null || this.deleted == false);
+    public override Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(this.deleted is null || this.deleted == false);
+    }
 }

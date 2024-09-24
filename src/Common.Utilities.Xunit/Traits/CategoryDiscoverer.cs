@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

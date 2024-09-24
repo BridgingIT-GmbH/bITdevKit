@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System.IO;
-using System.Text;
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class HashHelperTests
 {
@@ -98,7 +93,7 @@ public class HashHelperTests
     public void Compute_GivenObject_ReturnsCorrectHash()
     {
         // Arrange
-        var input = new List<string>() { "a", "b", "c" };
+        var input = new List<string> { "a", "b", "c" };
 
         // Act
         var result1 = HashHelper.Compute(input);

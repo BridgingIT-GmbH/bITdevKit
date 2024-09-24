@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" />
-    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" />
+    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage"/>
+    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />
-    <ProjectReference Include="..\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
+    <ProjectReference Include="..\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj"/>
+    <ProjectReference Include="..\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj"/>
   </ItemGroup>
 
 

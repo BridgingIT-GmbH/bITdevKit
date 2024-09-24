@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
+using Application.Storage;
+using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -125,14 +125,11 @@ public class EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHel
 
     protected override DocumentStoreCacheProvider GetProvider()
     {
-        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(
-            XunitLoggerFactory.Create(this.output),
+        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.output),
             new DocumentStoreClient<CacheDocument>(new
-                EntityFrameworkDocumentStoreProvider<StubDbContext>(
-                    this.fixture.EnsureSqliteDbContext(this.output))));
+                EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsureSqliteDbContext(this.output))));
 
-        var provider = new DocumentStoreCacheProvider(
-            XunitLoggerFactory.Create(this.output),
+        var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.output),
             new DocumentStoreCache(client),
             client);
 

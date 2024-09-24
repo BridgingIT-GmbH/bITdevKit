@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class User : AuditableAggregateRoot<UserId, Guid>
 {
-    private User()
-    {
-    }
+    private User() { }
 
     private User(string firstName, string lastName, EmailAddress email, string password)
     {
@@ -38,15 +36,11 @@ public class User : AuditableAggregateRoot<UserId, Guid>
         EnsureArg.IsNotNull(email, nameof(email));
         EnsureArg.IsNotNull(password, nameof(password));
 
-        DomainRules.Apply(
-        [
-            UserRules.IsValidPassword(password),
-        ]);
+        DomainRules.Apply([UserRules.IsValidPassword(password)]);
 
         var user = new User(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email), password);
 
-        user.DomainEvents.Register(
-            new UserCreatedDomainEvent(user));
+        user.DomainEvents.Register(new UserCreatedDomainEvent(user));
 
         return user;
     }
@@ -62,8 +56,7 @@ public class User : AuditableAggregateRoot<UserId, Guid>
 
         if (this.Id != null && this.Id.Value != Guid.Empty)
         {
-            this.DomainEvents.Register(
-                new UserUpdatedDomainEvent(this), true);
+            this.DomainEvents.Register(new UserUpdatedDomainEvent(this), true);
         }
     }
 }

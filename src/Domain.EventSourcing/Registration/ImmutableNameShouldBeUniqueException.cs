@@ -5,21 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
-using System;
-
 public class ImmutableNameShouldBeUniqueException : Exception
 {
-    public ImmutableNameShouldBeUniqueException()
-    {
-    }
+    public ImmutableNameShouldBeUniqueException() { }
 
     public ImmutableNameShouldBeUniqueException(string message)
-        : base(message)
-    {
-    }
+        : base(message) { }
 
     public ImmutableNameShouldBeUniqueException(string message, Exception innerException)
-        : base(message, innerException)
-    {
-    }
+        : base(message, innerException) { }
 }

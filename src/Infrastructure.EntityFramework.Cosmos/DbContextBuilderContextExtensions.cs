@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Diagnostics.HealthChecks;
+using EntityFrameworkCore;
 
 public static class DbContextBuilderContextExtensions
 {

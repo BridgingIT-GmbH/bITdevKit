@@ -5,24 +5,48 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using EnsureThat;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Provides a module context for each HTTP request.
+///     Middleware responsible for providing a module context for each HTTP request.
 /// </summary>
 public class RequestModuleMiddleware
 {
-    private readonly ILogger logger;
-    private readonly IEnumerable<IRequestModuleContextAccessor> moduleAccessors;
+    /// <summary>
+    ///     A collection of <see cref="ActivitySource" /> instances used for tracing and diagnostics.
+    /// </summary>
     private readonly IEnumerable<ActivitySource> activitySources;
+
+    /// <summary>
+    ///     Logger instance to record logs related to the request module processing.
+    /// </summary>
+    private readonly ILogger logger;
+
+    /// <summary>
+    ///     A collection of module accessors used to find and provide context for different modules
+    ///     during an HTTP request.
+    /// </summary>
+    private readonly IEnumerable<IRequestModuleContextAccessor> moduleAccessors;
+
+    /// <summary>
+    ///     Represents the next delegate in the HTTP request pipeline.
+    /// </summary>
     private readonly RequestDelegate next;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RequestModuleMiddleware" /> class.
+    ///     Provides a middleware component that processes HTTP requests and manages module context.
+    /// </summary>
+    /// <remarks>
+    ///     This middleware inspects incoming HTTP requests, determines the appropriate module
+    ///     context, and logs relevant information. It uses activity from the ASP.NET Core pipeline
+    ///     for tracing and enriches it with module-specific data. If a module context is
+    ///     successfully determined and enabled, it processes the request accordingly; otherwise,
+    ///     it passes the request to the next middleware component.
+    /// </remarks>
     public RequestModuleMiddleware(
         ILogger<RequestModuleMiddleware> logger,
         RequestDelegate next,
@@ -38,6 +62,11 @@ public class RequestModuleMiddleware
         this.activitySources = activitySources;
     }
 
+    /// <summary>
+    ///     Provides a module context for each HTTP request.
+    /// </summary>
+    /// <param name="httpContext">The HTTP context for the current request.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task Invoke(HttpContext httpContext)
     {
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));
@@ -47,33 +76,40 @@ public class RequestModuleMiddleware
         {
             this.logger.LogInformation("{LogKey} request module: {ModuleName}", "REQ", module.Name);
 
-            var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity; // Enrich the request activity created by ASP.NET Core
+            var activity = httpContext.Features.Get<IHttpActivityFeature>()
+                ?.Activity; // Enrich the request activity created by ASP.NET Core
             activity?.SetBaggage(ActivityConstants.ModuleNameTagKey, module.Name);
 
             httpContext.Response.Headers.AddOrUpdate(ModuleConstants.ModuleNameKey, module.Name);
             httpContext.Items.AddOrUpdate(ModuleConstants.ModuleNameKey, module.Name);
 
             using (this.logger.BeginScope(new Dictionary<string, object>
-            {
-                [ModuleConstants.ModuleNameKey] = module?.Name,
-            }))
+                   {
+                       [ModuleConstants.ModuleNameKey] = module?.Name
+                   }))
             {
                 if (module.Enabled)
                 {
-                    httpContext.Features.Get<IHttpMetricsTagsFeature>()?.Tags.Add(new KeyValuePair<string, object>("module_name", module.Name));  // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
+                    httpContext.Features.Get<IHttpMetricsTagsFeature>()
+                        ?.Tags
+                        .Add(new KeyValuePair<string, object>("module_name",
+                            module.Name)); // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
 
-                    await this.activitySources.Find(module.Name).StartActvity(
-                        $"MODULE {module.Name}",
-                        async (a, c) => await this.activitySources.Find(module.Name).StartActvity(
-                            $"HTTP_INBOUND {httpContext.Request.Method.ToUpperInvariant()} {httpContext.Request.Path}",
-                            async (a, c) => await this.next(httpContext).AnyContext(),
-                            kind: ActivityKind.Server,
-                            //baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = module.Name },
-                            cancellationToken: c));
+                    await this.activitySources.Find(module.Name)
+                        .StartActvity($"MODULE {module.Name}",
+                            async (a, c) => await this.activitySources.Find(module.Name)
+                                .StartActvity(
+                                    $"HTTP_INBOUND {httpContext.Request.Method.ToUpperInvariant()} {httpContext.Request.Path}",
+                                    async (a, c) => await this.next(httpContext).AnyContext(),
+                                    ActivityKind.Server,
+                                    //baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = module.Name },
+                                    cancellationToken: c));
                 }
                 else
                 {
-                    this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})", "REQ", module.Name);
+                    this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})",
+                        "REQ",
+                        module.Name);
                     throw new ModuleNotEnabledException(module.Name);
                 }
             }

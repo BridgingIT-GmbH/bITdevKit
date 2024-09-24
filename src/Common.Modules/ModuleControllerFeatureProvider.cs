@@ -5,15 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 
-public class ModuleControllerFeatureProvider(
-    IEnumerable<IModuleContextAccessor> moduleAccessors) : ControllerFeatureProvider
+public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor> moduleAccessors)
+    : ControllerFeatureProvider
 {
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
 
@@ -45,7 +43,9 @@ public class ModuleControllerFeatureProvider(
             return false;
         }
 
-        Log.Logger.Debug("{LogKey} controller provider CHECK (controller={ControllerType})", ModuleConstants.LogKey, typeInfo.Name);
+        Log.Logger.Debug("{LogKey} controller provider CHECK (controller={ControllerType})",
+            ModuleConstants.LogKey,
+            typeInfo.Name);
         Console.WriteLine($"{ModuleConstants.LogKey} controller provider CHECK (controller={typeInfo.Name})");
 
         var module = this.moduleAccessors.Find(typeInfo);
@@ -56,8 +56,12 @@ public class ModuleControllerFeatureProvider(
         }
 #pragma warning restore RCS1146 // Use conditional access.
 
-        Log.Logger.Debug("{LogKey} controller provider ADDED (controller={ControllerType}), module={ModuleName})", ModuleConstants.LogKey, typeInfo.Name, module?.Name);
-        Console.WriteLine($"{ModuleConstants.LogKey} controller provider ADDED (controller={typeInfo.Name}, module={module?.Name})");
+        Log.Logger.Debug("{LogKey} controller provider ADDED (controller={ControllerType}), module={ModuleName})",
+            ModuleConstants.LogKey,
+            typeInfo.Name,
+            module?.Name);
+        Console.WriteLine(
+            $"{ModuleConstants.LogKey} controller provider ADDED (controller={typeInfo.Name}, module={module?.Name})");
 
         return true;
     }

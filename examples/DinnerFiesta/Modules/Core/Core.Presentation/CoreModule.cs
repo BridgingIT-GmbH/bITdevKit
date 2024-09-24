@@ -5,17 +5,17 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
-using BridgingIT.DevKit.Application;
-using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Application;
+using Application.Jobs;
+using Common;
+using DevKit.Application;
+using DevKit.Application.JobScheduling;
+using DevKit.Application.Storage;
+using DevKit.Domain.Repositories;
+using DevKit.Infrastructure.EntityFramework;
+using DinnerFiesta.Application.Modules.Core;
+using Domain;
+using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -24,12 +24,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Host = Domain.Host;
 
 public class CoreModule : WebModuleBase
 {
-    public override IServiceCollection Register(IServiceCollection services, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IServiceCollection Register(
+        IServiceCollection services,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
-        var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
+        var moduleConfiguration =
+            this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         services.AddJobScheduling()
             .WithJob<EchoJob>(CronExpressions.Every5Minutes) // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
@@ -64,9 +69,9 @@ public class CoreModule : WebModuleBase
         //    .WithHealthChecks();
 
         services.AddSqlServerDbContext<CoreDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                //.UseLogger().UseSimpleLogger()
-                .UseCommandLogger(),
+                    .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+                    //.UseLogger().UseSimpleLogger()
+                    .UseCommandLogger(),
                 //.UseIntercepter<ModuleScopeInterceptor>()
                 //.UseIntercepter<CommandLoggerInterceptor>(),
                 c => c
@@ -101,10 +106,14 @@ public class CoreModule : WebModuleBase
         //    .UseConnectionString("connectionstring"))
         //    .WithHealthChecks();
 
-        services.AddEntityFrameworkDocumentStoreClient<DinnerSnapshotDocument, CoreDbContext>() // no need to setup the client+provider (sql)
+        services
+            .AddEntityFrameworkDocumentStoreClient<DinnerSnapshotDocument,
+                CoreDbContext>() // no need to setup the client+provider (sql)
             .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
             .WithBehavior((inner, sp) =>
-                new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+                new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(),
+                    inner,
+                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
 
         //services.AddAzureBlobDocumentStoreClient<DinnerSnapshotDocument>()
         //    .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
@@ -162,16 +171,16 @@ public class CoreModule : WebModuleBase
             //.WithBehavior<RepositoryDomainEventPublisherBehavior<Guest>>();
             .WithBehavior<RepositoryOutboxDomainEventBehavior<Guest, CoreDbContext>>();
 
-        services.AddEntityFrameworkRepository<Domain.Host, CoreDbContext>()
-            .WithTransactions<NullRepositoryTransaction<Domain.Host>>()
-            .WithBehavior<RepositoryTracingBehavior<Domain.Host>>()
-            .WithBehavior<RepositoryLoggingBehavior<Domain.Host>>()
+        services.AddEntityFrameworkRepository<Host, CoreDbContext>()
+            .WithTransactions<NullRepositoryTransaction<Host>>()
+            .WithBehavior<RepositoryTracingBehavior<Host>>()
+            .WithBehavior<RepositoryLoggingBehavior<Host>>()
             //.WithBehavior((inner) => new RepositoryIncludeBehavior<Domain.Host>(e => e.AuditState, inner));
-            .WithBehavior<RepositoryAuditStateBehavior<Domain.Host>>()
+            .WithBehavior<RepositoryAuditStateBehavior<Host>>()
             //.WithBehavior<RepositoryDomainEventBehavior<Domain.Host>>()
-            .WithBehavior<RepositoryDomainEventMetricsBehavior<Domain.Host>>()
+            .WithBehavior<RepositoryDomainEventMetricsBehavior<Host>>()
             //.WithBehavior<RepositoryDomainEventPublisherBehavior<Domain.Host>>();
-            .WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.Host, CoreDbContext>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Host, CoreDbContext>>();
 
         services.AddEntityFrameworkRepository<Menu, CoreDbContext>()
             .WithTransactions<NullRepositoryTransaction<Menu>>()
@@ -204,17 +213,23 @@ public class CoreModule : WebModuleBase
             //.WithBehavior<RepositoryDomainEventBehavior<User>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<User>>()
             //.WithBehavior<RepositoryDomainEventPublisherBehavior<User>>();
-            .WithBehavior<RepositoryOutboxDomainEventBehavior<Domain.User, CoreDbContext>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<User, CoreDbContext>>();
 
         return services;
     }
 
-    public override IApplicationBuilder Use(IApplicationBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IApplicationBuilder Use(
+        IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         return app;
     }
 
-    public override IEndpointRouteBuilder Map(IEndpointRouteBuilder app, IConfiguration configuration = null, IWebHostEnvironment environment = null)
+    public override IEndpointRouteBuilder Map(
+        IEndpointRouteBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
     {
         //app.MapGet("/hw", () => "Hello World!"); // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-8.0
 

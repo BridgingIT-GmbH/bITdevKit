@@ -4,11 +4,11 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.RabbitMQ;
-using System;
+
 using System.Diagnostics;
 using System.Globalization;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 using global::RabbitMQ.Client;
 using global::RabbitMQ.Client.Events;
 using Microsoft.Extensions.Logging;
@@ -24,39 +24,39 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
     private IModel subscriberChannel;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RabbitMQMessageBroker"/> class.
-    ///
-    /// General dotnet rabbitmw docs: https://www.rabbitmq.com/dotnet-api-guide.html
-    /// <para>
-    ///
-    /// Direct exchange behaving as fanout (pub/sub): https://www.rabbitmq.com/tutorials/tutorial-three-dotnet.html
-    /// Messages will be broadcasted to all the subscribers, because of the routing keys
-    ///
-    /// Multiple bindings (exchange fan out):
-    /// - single exchange (messaging)
-    /// - module bound queues with single subscriber (no round robing)
-    /// - multiple routing keys, per msg name
-    ///
-    ///                                       .-----------.         .------------.
-    ///                              .------->| Queue 1   |-------->| Consumer 1 |
-    ///                 bindkey=msg1/name     | (Module1) |         |            |
-    ///                            /  .------>|           |         |            | single consumer
-    ///             .-----------. /  /        "-----------"         "------------"
-    /// .---.       | Exchange  |/  /
-    /// |msg|---->  |           |--"
-    /// "---"       |           |\
-    ///  routkey=   "-----------" \           .-----------.         .------------.
-    ///   msg name     bindkey=msg2\name      | Queue 2   |-------->| Consumer 2 |
-    ///                             "-------->| (Module2) |         |            |
-    ///                                       |           |         |            |--.
-    ///                                       "-----------"         "------------"  |
-    ///                                                                | Consumer 3 | multiple consumers
-    ///                                                                |            | =round-robin
-    ///                                                                "------------"
-    /// </para>
+    ///     Initializes a new instance of the <see cref="RabbitMQMessageBroker" /> class.
+    ///     General dotnet rabbitmw docs: https://www.rabbitmq.com/dotnet-api-guide.html
+    ///     <para>
+    ///         Direct exchange behaving as fanout (pub/sub): https://www.rabbitmq.com/tutorials/tutorial-three-dotnet.html
+    ///         Messages will be broadcasted to all the subscribers, because of the routing keys
+    ///         Multiple bindings (exchange fan out):
+    ///         - single exchange (messaging)
+    ///         - module bound queues with single subscriber (no round robing)
+    ///         - multiple routing keys, per msg name
+    ///         .-----------.         .------------.
+    ///         .------->| Queue 1   |-------->| Consumer 1 |
+    ///         bindkey=msg1/name     | (Module1) |         |            |
+    ///         /  .------>|           |         |            | single consumer
+    ///         .-----------. /  /        "-----------"         "------------"
+    ///         .---.       | Exchange  |/  /
+    ///         |msg|---->  |           |--"
+    ///         "---"       |           |\
+    ///         routkey=   "-----------" \           .-----------.         .------------.
+    ///         msg name     bindkey=msg2\name      | Queue 2   |-------->| Consumer 2 |
+    ///         "-------->| (Module2) |         |            |
+    ///         |           |         |            |--.
+    ///         "-----------"         "------------"  |
+    ///         | Consumer 3 | multiple consumers
+    ///         |            | =round-robin
+    ///         "------------"
+    ///     </para>
     /// </summary>
     public RabbitMQMessageBroker(RabbitMQMessageBrokerOptions options)
-        : base(options.LoggerFactory, options.HandlerFactory, options.Serializer, options.PublisherBehaviors = null, options.HandlerBehaviors = null)
+        : base(options.LoggerFactory,
+            options.HandlerFactory,
+            options.Serializer,
+            options.PublisherBehaviors = null,
+            options.HandlerBehaviors = null)
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.Serializer, nameof(options.Serializer));
@@ -67,9 +67,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         {
             this.factory = new ConnectionFactory
             {
-                HostName = this.options.HostName,
-                AutomaticRecoveryEnabled = true,
-                DispatchConsumersAsync = true
+                HostName = this.options.HostName, AutomaticRecoveryEnabled = true, DispatchConsumersAsync = true
             };
         }
         else if (!this.options.ConnectionString.IsNullOrEmpty())
@@ -83,16 +81,18 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         }
         else
         {
-            throw new Exception($"Cannot create RabbitMQ connection, {nameof(options.HostName)} or {nameof(options.ConnectionString)} option values must be supplied.");
+            throw new Exception(
+                $"Cannot create RabbitMQ connection, {nameof(options.HostName)} or {nameof(options.ConnectionString)} option values must be supplied.");
         }
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})", Constants.LogKey, this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",
+            Constants.LogKey,
+            this.GetType().Name);
     }
 
-    public RabbitMQMessageBroker(Builder<RabbitMQMessageBrokerOptionsBuilder, RabbitMQMessageBrokerOptions> optionsBuilder)
-        : this(optionsBuilder(new RabbitMQMessageBrokerOptionsBuilder()).Build())
-    {
-    }
+    public RabbitMQMessageBroker(
+        Builder<RabbitMQMessageBrokerOptionsBuilder, RabbitMQMessageBrokerOptions> optionsBuilder)
+        : this(optionsBuilder(new RabbitMQMessageBrokerOptionsBuilder()).Build()) { }
 
     private string QueueName
     {
@@ -132,16 +132,22 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 
         if (this.options.MessageExpiration.HasValue)
         {
-            basicProperties.Expiration = this.options.MessageExpiration.Value.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+            basicProperties.Expiration =
+                this.options.MessageExpiration.Value.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
         }
 
-        this.publisherChannel.BasicPublish(
-            this.options.ExchangeName,
+        this.publisherChannel.BasicPublish(this.options.ExchangeName,
             messageName, // topic name
             basicProperties,
             this.options.Serializer.SerializeToBytes(message));
 
-        this.Logger.LogDebug("{LogKey} rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})", Constants.LogKey, messageName, message.MessageId, this.options.ExchangeName, this.QueueName);
+        this.Logger.LogDebug(
+            "{LogKey} rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})",
+            Constants.LogKey,
+            messageName,
+            message.MessageId,
+            this.options.ExchangeName,
+            this.QueueName);
 
         return Task.CompletedTask;
     }
@@ -179,26 +185,32 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 
         if (message is not null)
         {
-            this.Logger.LogDebug("{LogKey} rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})", Constants.LogKey, messageName, message.MessageId, args.BasicProperties.MessageId);
+            this.Logger.LogDebug(
+                "{LogKey} rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})",
+                Constants.LogKey,
+                messageName,
+                message.MessageId,
+                args.BasicProperties.MessageId);
 
             await this.Process(new MessageRequest(message, CancellationToken.None));
         }
 
-        this.Logger.LogDebug("{LogKey} rabbitmq consumer done (exchange={MessageSubscriptionName}, queue={MessageTopicName})", Constants.LogKey, this.options.ExchangeName, this.QueueName);
+        this.Logger.LogDebug(
+            "{LogKey} rabbitmq consumer done (exchange={MessageSubscriptionName}, queue={MessageTopicName})",
+            Constants.LogKey,
+            this.options.ExchangeName,
+            this.QueueName);
     }
 
-    private void CreateExchange(IModel channel) =>
-        channel.ExchangeDeclare(
-            this.options.ExchangeName,
-            ExchangeType.Fanout,
-            this.options.IsDurable,
-            false);
+    private void CreateExchange(IModel channel)
+    {
+        channel.ExchangeDeclare(this.options.ExchangeName, ExchangeType.Fanout, this.options.IsDurable);
+    }
 
     private string CreateQueue(IModel channel, string routingKey)
     {
         // declare the queue where messages will be send to, the routingkey determines which messages are received
-        var result = channel.QueueDeclare(
-            this.QueueName,
+        var result = channel.QueueDeclare(this.QueueName,
             this.options.IsDurable,
             this.options.ExclusiveQueue,
             this.options.AutoDeleteQueue);
@@ -229,7 +241,8 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         this.publisherChannel = this.publisherConnection.CreateModel();
         this.CreateExchange(this.publisherChannel);
 
-        this.Logger.LogDebug("The unique channel number for the publisher is : {ChannelNumber}", this.publisherChannel.ChannelNumber);
+        this.Logger.LogDebug("The unique channel number for the publisher is : {ChannelNumber}",
+            this.publisherChannel.ChannelNumber);
     }
 
     private void EnsureSubscriberChannel()
@@ -253,7 +266,8 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         this.subscriberChannel = this.subscriberConnection.CreateModel();
         this.CreateExchange(this.subscriberChannel);
 
-        this.Logger.LogDebug("The unique channel number for the subscriber is : {ChannelNumber}", this.subscriberChannel.ChannelNumber);
+        this.Logger.LogDebug("The unique channel number for the subscriber is : {ChannelNumber}",
+            this.subscriberChannel.ChannelNumber);
     }
 
     private void ClosePublisherConnection()

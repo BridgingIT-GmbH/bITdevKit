@@ -22,7 +22,8 @@ public class ServiceBusMessageBrokerConfiguration
         public Validator()
         {
             this.RuleFor(c => c.ConnectionString)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .WithMessage("ConnectionString cannot be null or empty");
         }
     }

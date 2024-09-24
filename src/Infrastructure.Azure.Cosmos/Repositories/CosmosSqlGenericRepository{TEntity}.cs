@@ -5,25 +5,18 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
+using Domain.Specifications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class CosmosSqlRepositoryWrapper<TEntity, TProvider>(ILoggerFactory loggerFactory, TProvider provider) : CosmosSqlGenericRepository<TEntity>(loggerFactory, provider)
+public class CosmosSqlRepositoryWrapper<TEntity, TProvider>(ILoggerFactory loggerFactory, TProvider provider)
+    : CosmosSqlGenericRepository<TEntity>(loggerFactory, provider)
     where TEntity : class, IEntity
-    where TProvider : ICosmosSqlProvider<TEntity>
-{
-}
+    where TProvider : ICosmosSqlProvider<TEntity> { }
 
 public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity
@@ -35,19 +28,18 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
 
         this.Options = options;
         this.Options.IdGenerator ??= new EntityGuidIdGenerator<TEntity>();
-        this.Logger = options.LoggerFactory?.CreateLogger<CosmosSqlGenericRepository<TEntity>>() ?? NullLoggerFactory.Instance.CreateLogger<CosmosSqlGenericRepository<TEntity>>();
+        this.Logger = options.LoggerFactory?.CreateLogger<CosmosSqlGenericRepository<TEntity>>() ??
+            NullLoggerFactory.Instance.CreateLogger<CosmosSqlGenericRepository<TEntity>>();
         this.Provider = options.Provider;
     }
 
-    public CosmosSqlGenericRepository(Builder<CosmosSqlGenericRepositoryOptionsBuilder<TEntity>, CosmosSqlGenericRepositoryOptions<TEntity>> optionsBuilder)
-        : this(optionsBuilder(new CosmosSqlGenericRepositoryOptionsBuilder<TEntity>()).Build())
-    {
-    }
+    public CosmosSqlGenericRepository(
+        Builder<CosmosSqlGenericRepositoryOptionsBuilder<TEntity>, CosmosSqlGenericRepositoryOptions<TEntity>>
+            optionsBuilder)
+        : this(optionsBuilder(new CosmosSqlGenericRepositoryOptionsBuilder<TEntity>()).Build()) { }
 
     public CosmosSqlGenericRepository(ILoggerFactory loggerFactory, ICosmosSqlProvider<TEntity> provider)
-        : this(o => o.LoggerFactory(loggerFactory).Provider(provider))
-    {
-    }
+        : this(o => o.LoggerFactory(loggerFactory).Provider(provider)) { }
 
     protected CosmosSqlGenericRepositoryOptions<TEntity> Options { get; }
 
@@ -76,22 +68,23 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
-        var order = (options?.Orders ?? new List<OrderOption<TEntity>>()).Insert(options?.Order).FirstOrDefault(); // cosmos only supports single orderby
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
+        var order = (options?.Orders ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+            .FirstOrDefault(); // cosmos only supports single orderby
 
         if (options?.Distinct is not null)
         {
             throw new NotSupportedException("Distinct is not supported for Cosmos");
         }
 
-        return (await this.Provider
-            .ReadItemsAsync(
-                expressions: expressions,
-                skip: options?.Skip ?? -1,
-                take: options?.Take ?? -1,
-                orderExpression: order?.Expression,
-                orderDescending: order?.Direction == OrderDirection.Descending,
-                cancellationToken: cancellationToken).AnyContext()).ToList();
+        return (await this.Provider.ReadItemsAsync(expressions,
+                options?.Skip ?? -1,
+                options?.Take ?? -1,
+                order?.Expression,
+                order?.Direction == OrderDirection.Descending,
+                cancellationToken: cancellationToken)
+            .AnyContext()).ToList();
     }
 
     public virtual Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -147,21 +140,14 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
 
-        return (await this.Options.Provider
-            .ReadItemsAsync(
-                expressions: expressions,
-                skip: -1,
-                take: 1,
-                null,
-                false,
-                cancellationToken: cancellationToken).AnyContext()).FirstOrDefault();
+        return (await this.Options.Provider.ReadItemsAsync(expressions, -1, 1, cancellationToken: cancellationToken)
+            .AnyContext()).FirstOrDefault();
     }
 
-    public virtual async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
@@ -172,29 +158,25 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     /// <summary>
-    /// Inserts the provided entity.
+    ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    public virtual async Task<TEntity> InsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).entity;
     }
 
     /// <summary>
-    /// Updates the provided entity.
+    ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    public virtual async Task<TEntity> UpdateAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).entity;
     }
 
     /// <summary>
-    /// Insert or updates the provided entity.
+    ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
@@ -206,7 +188,8 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
             return (default, RepositoryActionResult.None);
         }
 
-        var isNew = this.Options.IdGenerator.IsNew(entity.Id) || !await this.ExistsAsync(entity.Id, cancellationToken).AnyContext();
+        var isNew = this.Options.IdGenerator.IsNew(entity.Id) ||
+            !await this.ExistsAsync(entity.Id, cancellationToken).AnyContext();
         if (isNew)
         {
             this.Options.IdGenerator.SetNew(entity); // cosmos v3 needs an id, also for new items
@@ -244,7 +227,8 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
             return RepositoryActionResult.None;
         }
 
-        var response = await this.Provider.DeleteItemAsync(entity.Id.ToString(), cancellationToken: cancellationToken).AnyContext();
+        var response = await this.Provider.DeleteItemAsync(entity.Id.ToString(), cancellationToken: cancellationToken)
+            .AnyContext();
         if (response)
         {
             return RepositoryActionResult.Deleted;
@@ -270,11 +254,10 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         CancellationToken cancellationToken = default)
     {
         var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
-        var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
+        var expressions = specificationsArray.SafeNull()
+            .Select(s => s.ToExpression().Expand()); // expand fixes Invoke in expression issue
 
-        return (await this.Provider
-            .ReadItemsAsync(
-                expressions: expressions,
-                cancellationToken: cancellationToken).AnyContext()).LongCount();
+        return (await this.Provider.ReadItemsAsync(expressions, cancellationToken: cancellationToken).AnyContext())
+            .LongCount();
     }
 }

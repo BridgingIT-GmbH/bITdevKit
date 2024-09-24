@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 public static class ActivityHelper
 {
@@ -28,7 +26,15 @@ public static class ActivityHelper
             await operation(source, cancellationToken);
         }
 
-        await source.Source.StartActvity(operationName, operation, kind, parentId, tags, baggages, displayName, throwException, cancellationToken);
+        await source.Source.StartActvity(operationName,
+            operation,
+            kind,
+            parentId,
+            tags,
+            baggages,
+            displayName,
+            throwException,
+            cancellationToken);
     }
 
     public static async Task StartActvity(
@@ -109,7 +115,14 @@ public static class ActivityHelper
             return await operation(source, cancellationToken);
         }
 
-        return await source.Source.StartActvity(operationName, operation, kind, tags, baggages, displayName, throwException, cancellationToken);
+        return await source.Source.StartActvity(operationName,
+            operation,
+            kind,
+            tags,
+            baggages,
+            displayName,
+            throwException,
+            cancellationToken);
     }
 
     public static async Task<TResult> StartActvity<TResult>(
@@ -178,6 +191,6 @@ public static class ActivityHelper
 
         activity?.AddTag("exception.type", ex.GetType().Name);
         activity?.AddTag("exception.message", ex.Message);
-        activity?.AddTag("exception.stacktrace", ex.StackTrace.ToString());
+        activity?.AddTag("exception.stacktrace", ex.StackTrace);
     }
 }

@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+using Diagnostics.HealthChecks;
 
 public static class CosmosClientBuilderContextExtensions
 {

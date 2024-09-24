@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
 public class EventStoreSnapshot : AggregateRoot<Guid>
 {

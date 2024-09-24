@@ -10,8 +10,7 @@ using BridgingIT.DevKit.Infrastructure.Mapping;
 
 public static class ServiceCollectionExtensions
 {
-    public static AutoMapperBuilderContext WithEntityMapper(
-        this AutoMapperBuilderContext context)
+    public static AutoMapperBuilderContext WithEntityMapper(this AutoMapperBuilderContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
@@ -21,8 +20,7 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
-    public static MapsterBuilderContext WithEntityMapper(
-        this MapsterBuilderContext context)
+    public static MapsterBuilderContext WithEntityMapper(this MapsterBuilderContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));

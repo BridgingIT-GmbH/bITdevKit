@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System;
 using FluentValidation.Results;
 using MediatR;
 

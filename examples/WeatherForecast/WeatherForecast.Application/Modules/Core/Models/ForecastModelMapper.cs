@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class ForecastModelMapper : IMapper<ForecastQueryResponse, ForecastModel>
 {

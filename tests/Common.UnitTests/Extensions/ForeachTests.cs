@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests;
 
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading.Tasks;
 
 [UnitTest("Common")]
 public class ForeachTests
@@ -19,11 +17,12 @@ public class ForeachTests
         var items = new ConcurrentBag<int>();
 
         // Act
-        await Enumerable.Range(1, 100).ForEachAsync(async i =>
-        {
-            await Task.Yield();
-            items.Add(i);
-        });
+        await Enumerable.Range(1, 100)
+            .ForEachAsync(async i =>
+            {
+                await Task.Yield();
+                items.Add(i);
+            });
 
         // Assert
         items.Count.ShouldBe(100);

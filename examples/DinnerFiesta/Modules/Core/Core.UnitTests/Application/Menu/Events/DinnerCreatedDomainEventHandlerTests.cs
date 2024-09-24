@@ -5,18 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Core.Application;
+using Core.Domain;
+using DevKit.Domain;
+using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using NSubstitute.ReturnsExtensions;
-using Shouldly;
-using Xunit;
 
 public class DinnerCreatedDomainEventHandlerTests
 {
@@ -57,8 +51,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(
-            async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]
@@ -74,8 +67,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(
-            async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]
@@ -84,7 +76,8 @@ public class DinnerCreatedDomainEventHandlerTests
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         var dinner = Stubs.Dinners(ticks).ToArray()[0];
-        var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), Substitute.For<IGenericRepository<Menu>>());
+        var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(),
+            Substitute.For<IGenericRepository<Menu>>());
         var @event = new DinnerCreatedDomainEvent(dinner);
 
         // Act

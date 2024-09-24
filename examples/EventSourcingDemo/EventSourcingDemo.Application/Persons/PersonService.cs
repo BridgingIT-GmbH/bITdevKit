@@ -5,15 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using System.Diagnostics;
+using Common;
+using DevKit.Domain.EventSourcing.Store;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
 using Domain.Model;
 using Domain.Repositories;
 using MediatR;
@@ -46,7 +42,7 @@ public class PersonService : IPersonService
     {
         EnsureArg.IsNotNull(model, nameof(model));
 
-        var command = new CreatePersonCommand() { Model = model };
+        var command = new CreatePersonCommand { Model = model };
         var response = await this.mediator.Send(command, CancellationToken.None).AnyContext();
         if (!response.Cancelled)
         {
@@ -61,7 +57,9 @@ public class PersonService : IPersonService
         return await this.eventStore.GetAsync(id, CancellationToken.None).AnyContext();
     }
 
-    public async Task<PersonOverviewViewModel> ChangeSurnameAsync(ChangeSurnameViewModel model, CancellationToken cancellationToken)
+    public async Task<PersonOverviewViewModel> ChangeSurnameAsync(
+        ChangeSurnameViewModel model,
+        CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(model, nameof(model));
 
@@ -75,16 +73,19 @@ public class PersonService : IPersonService
 
     public async Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync()
     {
-        var query = await this.personRepository.FindAllAsync(new FindOptions<PersonOverview>() { NoTracking = true }).AnyContext();
-        return query.Select(p => new PersonOverviewViewModel()
+        var query = await this.personRepository.FindAllAsync(new FindOptions<PersonOverview> { NoTracking = true })
+            .AnyContext();
+        return query.Select(p => new PersonOverviewViewModel
         {
-            Firstname = p.Firstname,
-            Lastname = p.Lastname,
-            Id = p.Id
+            Firstname = p.Firstname, Lastname = p.Lastname, Id = p.Id
         });
     }
 
-    public async Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync(string firstname, string lastname, int skip, int take)
+    public async Task<IEnumerable<PersonOverviewViewModel>> GetAllPersonsAsync(
+        string firstname,
+        string lastname,
+        int skip,
+        int take)
     {
         firstname ??= string.Empty;
         var specFirstname
@@ -93,17 +94,15 @@ public class PersonService : IPersonService
         var specLastname
             = new Specification<PersonOverview>(p =>
                 p.Lastname.StartsWith(lastname));
-        var specs = new List<ISpecification<PersonOverview>>() { specFirstname, specLastname };
+        var specs = new List<ISpecification<PersonOverview>> { specFirstname, specLastname };
         var count = await this.personRepository.CountAsync(specs).AnyContext();
-        System.Diagnostics.Debug.WriteLine(count);
+        Debug.WriteLine(count);
         var orderOption = new OrderOption<PersonOverview>(p => p.Firstname);
-        var persons = await this.personRepository.FindAllAsync(specs, new FindOptions<PersonOverview>(skip, take, orderOption)).AnyContext();
-        return persons.ToList().Select(p => new PersonOverviewViewModel()
-        {
-            Firstname = p.Firstname,
-            Lastname = p.Lastname,
-            Id = p.Id
-        });
+        var persons = await this.personRepository
+            .FindAllAsync(specs, new FindOptions<PersonOverview>(skip, take, orderOption))
+            .AnyContext();
+        return persons.ToList()
+            .Select(p => new PersonOverviewViewModel { Firstname = p.Firstname, Lastname = p.Lastname, Id = p.Id });
     }
 
     public async Task DeactivateAsync(Guid id)

@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
-    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj"/>
+    <ProjectReference Include="..\..\..\src\Domain.Mediator\Domain.Mediator.csproj"/>
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj"/>
   </ItemGroup>
 
 </Project>

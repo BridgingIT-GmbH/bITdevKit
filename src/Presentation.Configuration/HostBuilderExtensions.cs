@@ -5,18 +5,19 @@
 
 namespace Microsoft.Extensions.Configuration;
 
-using Microsoft.Extensions.Hosting;
+using Hosting;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder ConfigureAppConfiguration(
-        this IHostBuilder builder, string environment = null)
+    public static IHostBuilder ConfigureAppConfiguration(this IHostBuilder builder, string environment = null)
     {
         return builder.ConfigureAppConfiguration((ctx, c) =>
         {
             c.AddJsonFileConfigurationProvider(environment ?? ctx.HostingEnvironment.EnvironmentName);
-            c.AddAzureKeyVaultProvider(environment ?? ctx.HostingEnvironment.EnvironmentName); // enable/configure in appsettings.json
-            c.AddAzureAppConfigurationProvider(environment ?? ctx.HostingEnvironment.EnvironmentName); // enable/configure in appsettings.json
+            c.AddAzureKeyVaultProvider(environment ??
+                ctx.HostingEnvironment.EnvironmentName); // enable/configure in appsettings.json
+            c.AddAzureAppConfigurationProvider(environment ??
+                ctx.HostingEnvironment.EnvironmentName); // enable/configure in appsettings.json
             c.AddEnvironmentVariablesProvider();
         });
     }

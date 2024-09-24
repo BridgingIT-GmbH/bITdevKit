@@ -5,27 +5,22 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Logging;
+using Model;
+using Specifications;
 
 /// <summary>
-/// <para>Decorates an <see cref="IGenericRepository{TEntity}"/>.</para>
-/// <para>
-///    .-----------.
-///    | Decorator |
-///    .-----------.        .------------.
-///          `------------> | decoratee  |
-///            (forward)    .------------.
-/// </para>
+///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
+///     <para>
+///         .-----------.
+///         | Decorator |
+///         .-----------.        .------------.
+///         `------------> | decoratee  |
+///         (forward)    .------------.
+///     </para>
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
@@ -34,9 +29,7 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
 {
     private readonly IMeterFactory meterFactory;
 
-    public RepositoryDomainEventMetricsBehavior(
-        IMeterFactory meterFactory,
-        IGenericRepository<TEntity> inner)
+    public RepositoryDomainEventMetricsBehavior(IMeterFactory meterFactory, IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(inner, nameof(inner));
 
@@ -48,16 +41,12 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
 
     protected IGenericRepository<TEntity> Inner { get; }
 
-    public async Task<RepositoryActionResult> DeleteAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.DeleteAsync(id, cancellationToken);
     }
 
-    public async Task<RepositoryActionResult> DeleteAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
@@ -90,9 +79,7 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
-    public async Task<bool> ExistsAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
@@ -131,16 +118,17 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
-        IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-       IEnumerable<ISpecification<TEntity>> specifications,
-       Expression<Func<TEntity, TProjection>> projection,
-       IFindOptions<TEntity> options = null,
-       CancellationToken cancellationToken = default)
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
@@ -163,7 +151,9 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
@@ -172,7 +162,9 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<long> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(
+        ISpecification<TEntity> specification,
+        CancellationToken cancellationToken = default)
     {
         return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
     }
@@ -182,7 +174,9 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
-    public async Task<long> CountAsync(IEnumerable<ISpecification<TEntity>> specifications, CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        CancellationToken cancellationToken = default)
     {
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }

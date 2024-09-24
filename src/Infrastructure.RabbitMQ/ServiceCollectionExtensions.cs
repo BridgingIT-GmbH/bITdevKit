@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure;
 
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.RabbitMQ;
+using Application.Messaging;
+using Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using RabbitMQ;
 
 public static class ServiceCollectionExtensions
 {
@@ -23,7 +23,8 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQMessageBrokerConfiguration>() ?? new RabbitMQMessageBrokerConfiguration();
+        configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQMessageBrokerConfiguration>() ??
+            new RabbitMQMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton<IMessageBroker>(sp =>
         {

@@ -6,10 +6,11 @@
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Domain.Model.Events;
 
 // tag::PersonCreatedEvent[]
-using System;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Registration;
-using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
+using DevKit.Domain.EventSourcing.Model;
+using DevKit.Domain.EventSourcing.Registration;
+using Newtonsoft.Json;
+
+// TODO: get rid of Newtonsoft dependency
 
 [ImmutableName("PersonAggregate_PersonCreatedEvent_v1_13.05.2019")] // <1>
 public class PersonCreatedEvent : AggregateCreatedEvent<Person> // <2>

@@ -5,26 +5,21 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
-using BridgingIT.DevKit.Application.Messaging;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
+using Application.Messaging;
 
 [IntegrationTest("Infrastructure")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class MessagingBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR();
+public class MessagingBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR();
 
-            s.AddMessaging(o => o
+        s.AddMessaging(o => o
                 .StartupDelay("00:00:10"))
-                .WithBehavior<RetryMessageHandlerBehavior>()
-                .WithBehavior<TimeoutMessageHandlerBehavior>()
-                .WithInProcessBroker(new InProcessMessageBrokerConfiguration
-                {
-                    ProcessDelay = 0,
-                    MessageExpiration = new TimeSpan(0, 1, 0)
-                });
-        })
+            .WithBehavior<RetryMessageHandlerBehavior>()
+            .WithBehavior<TimeoutMessageHandlerBehavior>()
+            .WithInProcessBroker(new InProcessMessageBrokerConfiguration { ProcessDelay = 0, MessageExpiration = new TimeSpan(0, 1, 0) });
+    })
 {
     [Fact]
     public void GetBroker_WhenRequested_ShouldNotBeNull()

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-
 public class ForecastModel
 {
     public Guid Id { get; set; }

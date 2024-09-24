@@ -5,13 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory),
-    IRetryJobScheduling,
+public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRetryJobScheduling,
     IChaosExceptionJobScheduling
 {
     RetryJobSchedulingOptions IRetryJobScheduling.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
@@ -20,7 +17,10 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory),
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        this.Logger.LogInformation("{LogKey} echo (jobKey={JobKey}, lastProcessed={LastProcessed})", Constants.LogKey, context.JobDetail.Key, this.ProcessedDate);
+        this.Logger.LogInformation("{LogKey} echo (jobKey={JobKey}, lastProcessed={LastProcessed})",
+            Constants.LogKey,
+            context.JobDetail.Key,
+            this.ProcessedDate);
 
         await Task.Delay(5000, cancellationToken);
     }

@@ -18,12 +18,14 @@ public class MarketingModuleConfiguration
         public Validator()
         {
             this.RuleFor(c => c.ConnectionStrings)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .Must(c => c.ContainsKey("Default"))
                 .WithMessage("Connection string with name 'Default' is required");
 
             this.RuleFor(c => c.SeederTaskStartupDelay)
-                .NotNull().NotEmpty()
+                .NotNull()
+                .NotEmpty()
                 .WithMessage("SeederTaskStartupDelay cannot be null or empty");
         }
     }

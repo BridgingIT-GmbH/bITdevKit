@@ -5,16 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 public static class ConditionalLinqExtensions
 {
     public static IEnumerable<TSource> WhereIf<TSource>(
-            this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate,
-            bool condition)
+        this IEnumerable<TSource> source,
+        Func<TSource, bool> predicate,
+        bool condition)
     {
         if (source == null)
         {
@@ -66,9 +62,9 @@ public static class ConditionalLinqExtensions
     }
 
     public static IOrderedEnumerable<TSource> OrderByIf<TSource, TKey>(
-            this IEnumerable<TSource> source,
-            Func<TSource, TKey> keySelector,
-            bool condition)
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        bool condition)
     {
         if (source == null)
         {
@@ -174,9 +170,9 @@ public static class ConditionalLinqExtensions
     }
 
     public static TSource FirstOrDefaultIf<TSource>(
-            this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate,
-            bool condition)
+        this IEnumerable<TSource> source,
+        Func<TSource, bool> predicate,
+        bool condition)
     {
         if (source == null)
         {
@@ -254,10 +250,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.SingleOrDefault(predicateIf) : source.SingleOrDefault(predicateElse);
     }
 
-    public static TSource ElementAtOrDefaultIf<TSource>(
-        this IEnumerable<TSource> source,
-        int index,
-        bool condition)
+    public static TSource ElementAtOrDefaultIf<TSource>(this IEnumerable<TSource> source, int index, bool condition)
     {
         if (source == null)
         {
@@ -281,10 +274,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.ElementAtOrDefault(indexIf) : source.ElementAtOrDefault(indexElse);
     }
 
-    public static int CountIf<TSource>(
-            this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate,
-            bool condition)
+    public static int CountIf<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, bool condition)
     {
         if (source == null)
         {
@@ -416,9 +406,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.Min(selectorIf) : source.Min(selectorElse);
     }
 
-    public static IEnumerable<TSource> DistinctIf<TSource>(
-            this IEnumerable<TSource> source,
-            bool condition)
+    public static IEnumerable<TSource> DistinctIf<TSource>(this IEnumerable<TSource> source, bool condition)
     {
         if (source == null)
         {
@@ -523,10 +511,7 @@ public static class ConditionalLinqExtensions
         return condition ? first.Except(secondIf) : first.Except(secondElse);
     }
 
-    public static IEnumerable<TSource> SkipIf<TSource>(
-            this IEnumerable<TSource> source,
-            int count,
-            bool condition)
+    public static IEnumerable<TSource> SkipIf<TSource>(this IEnumerable<TSource> source, int count, bool condition)
     {
         if (source == null)
         {
@@ -550,10 +535,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.Skip(countIf) : source.Skip(countElse);
     }
 
-    public static IEnumerable<TSource> TakeIf<TSource>(
-        this IEnumerable<TSource> source,
-        int count,
-        bool condition)
+    public static IEnumerable<TSource> TakeIf<TSource>(this IEnumerable<TSource> source, int count, bool condition)
     {
         if (source == null)
         {
@@ -683,9 +665,7 @@ public static class ConditionalLinqExtensions
             : outer.GroupJoin(innerElse, outerKeySelectorElse, innerKeySelectorElse, resultSelectorElse);
     }
 
-    public static IEnumerable<TSource> ReverseIf<TSource>(
-        this IEnumerable<TSource> source,
-        bool condition)
+    public static IEnumerable<TSource> ReverseIf<TSource>(this IEnumerable<TSource> source, bool condition)
     {
         if (source == null)
         {
@@ -722,10 +702,7 @@ public static class ConditionalLinqExtensions
         return condition ? first.Concat(secondIf) : first.Concat(secondElse);
     }
 
-    public static bool AnyIf<TSource>(
-        this IEnumerable<TSource> source,
-        Func<TSource, bool> predicate,
-        bool condition)
+    public static bool AnyIf<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, bool condition)
     {
         if (source == null)
         {
@@ -749,10 +726,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.Any(predicateIf) : source.Any(predicateElse);
     }
 
-    public static bool AllIf<TSource>(
-        this IEnumerable<TSource> source,
-        Func<TSource, bool> predicate,
-        bool condition)
+    public static bool AllIf<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, bool condition)
     {
         if (source == null)
         {
@@ -776,9 +750,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.All(predicateIf) : source.All(predicateElse);
     }
 
-    public static List<TSource> ToListIf<TSource>(
-        this IEnumerable<TSource> source,
-        bool condition)
+    public static List<TSource> ToListIf<TSource>(this IEnumerable<TSource> source, bool condition)
     {
         if (source == null)
         {
@@ -788,9 +760,7 @@ public static class ConditionalLinqExtensions
         return condition ? source.ToList() : [];
     }
 
-    public static TSource[] ToArrayIf<TSource>(
-        this IEnumerable<TSource> source,
-        bool condition)
+    public static TSource[] ToArrayIf<TSource>(this IEnumerable<TSource> source, bool condition)
     {
         if (source == null)
         {

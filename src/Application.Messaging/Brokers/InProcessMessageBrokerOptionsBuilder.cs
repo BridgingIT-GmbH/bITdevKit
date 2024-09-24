@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class InProcessMessageBrokerOptionsBuilder :
-    OptionsBuilderBase<InProcessMessageBrokerOptions, InProcessMessageBrokerOptionsBuilder>
+public class InProcessMessageBrokerOptionsBuilder
+    : OptionsBuilderBase<InProcessMessageBrokerOptions, InProcessMessageBrokerOptionsBuilder>
 {
     public InProcessMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {

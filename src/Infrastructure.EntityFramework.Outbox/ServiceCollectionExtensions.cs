@@ -9,22 +9,20 @@ using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using Microsoft.EntityFrameworkCore;
+using EntityFrameworkCore;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddEfOutbox<TContext>(this IServiceCollection services)
-    where TContext : DbContext
+        where TContext : DbContext
     {
         return services.AddTransient<IOutboxMessageWriterRepository>(sp =>
-            new OutboxMessageWriterRepository(
-                new EntityFrameworkRepositoryOptions(sp.GetRequiredService<TContext>(),
-                    sp.GetRequiredService<IEntityMapper>())
-                { Autosave = true }))
+                new OutboxMessageWriterRepository(new EntityFrameworkRepositoryOptions(
+                    sp.GetRequiredService<TContext>(),
+                    sp.GetRequiredService<IEntityMapper>()) { Autosave = true }))
             .AddTransient<IOutboxMessageWorkerRepository>(sp =>
-            new OutboxMessageWorkerRepository(
-                new EntityFrameworkRepositoryOptions(sp.GetRequiredService<TContext>(),
-                    sp.GetRequiredService<IEntityMapper>())
-                { Autosave = true }));
+                new OutboxMessageWorkerRepository(new EntityFrameworkRepositoryOptions(
+                    sp.GetRequiredService<TContext>(),
+                    sp.GetRequiredService<IEntityMapper>()) { Autosave = true }));
     }
 }

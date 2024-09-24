@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,8 +31,8 @@ public class TestGuidEntityTypeConfiguration : IEntityTypeConfiguration<TestGuid
             .HasDefaultValue(0);
 
         builder.HasMany(e => e.Children)
-           .WithOne()
-           .OnDelete(DeleteBehavior.Cascade);
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.OwnsOneAuditState();
     }

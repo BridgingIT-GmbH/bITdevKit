@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.IO;
-
 public static class SerializerExtensions
 {
     public static string SerializeToString<T>(this ISerializer source, T input)
@@ -27,7 +24,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Serializes the specified input to bytes.
+    ///     Serializes the specified input to bytes.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="input">The input.</param>
@@ -45,7 +42,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Deserializes the specified data.
+    ///     Deserializes the specified data.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="ìnput">The inout.</param>
@@ -55,7 +52,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="input">The input.</param>
@@ -66,7 +63,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="input">The input.</param>
@@ -78,7 +75,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="input">The input.</param>
@@ -103,7 +100,7 @@ public static class SerializerExtensions
     }
 
     /// <summary>
-    /// Deserializes the specified input.
+    ///     Deserializes the specified input.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="input">The input.</param>

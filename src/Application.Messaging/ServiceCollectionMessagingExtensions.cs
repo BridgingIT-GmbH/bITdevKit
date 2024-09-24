@@ -7,9 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Configuration;
+using Extensions;
+using Logging;
 
 public static class ServiceCollectionMessagingExtensions
 {
@@ -20,10 +20,7 @@ public static class ServiceCollectionMessagingExtensions
         this IServiceCollection services,
         Action<MessagingBuilderContext> optionsAction = null)
     {
-        return services.AddMessaging(
-                null,
-                options: null,
-                optionsAction);
+        return services.AddMessaging(null, options: null, optionsAction);
     }
 
     public static MessagingBuilderContext AddMessaging(
@@ -31,10 +28,7 @@ public static class ServiceCollectionMessagingExtensions
         IConfiguration configuration,
         Action<MessagingBuilderContext> optionsAction = null)
     {
-        return services.AddMessaging(
-                configuration,
-                options: null,
-                optionsAction);
+        return services.AddMessaging(configuration, options: null, optionsAction);
     }
 
     public static MessagingBuilderContext AddMessaging(
@@ -42,10 +36,9 @@ public static class ServiceCollectionMessagingExtensions
         Builder<MessagingOptionsBuilder, MessagingOptions> optionsBuilder,
         Action<MessagingBuilderContext> optionsAction = null)
     {
-        return services.AddMessaging(
-                null,
-                optionsBuilder is null ? null : optionsBuilder(new MessagingOptionsBuilder()).Build(),
-                optionsAction);
+        return services.AddMessaging(null,
+            optionsBuilder is null ? null : optionsBuilder(new MessagingOptionsBuilder()).Build(),
+            optionsAction);
     }
 
     public static MessagingBuilderContext AddMessaging(
@@ -54,10 +47,9 @@ public static class ServiceCollectionMessagingExtensions
         Builder<MessagingOptionsBuilder, MessagingOptions> optionsBuilder,
         Action<MessagingBuilderContext> optionsAction = null)
     {
-        return services.AddMessaging(
-                configuration,
-                optionsBuilder is null ? null : optionsBuilder(new MessagingOptionsBuilder()).Build(),
-                optionsAction);
+        return services.AddMessaging(configuration,
+            optionsBuilder is null ? null : optionsBuilder(new MessagingOptionsBuilder()).Build(),
+            optionsAction);
     }
 
     public static MessagingBuilderContext AddMessaging(
@@ -68,16 +60,15 @@ public static class ServiceCollectionMessagingExtensions
     {
         contextOptions ??= options;
 
-        services.Scan(scan => scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
-                                   //.FromExecutingAssembly()
-            .FromApplicationDependencies(a => !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }))
-            .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));
+        services.Scan(scan =>
+            scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
+                //.FromExecutingAssembly()
+                .FromApplicationDependencies(a =>
+                    !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }))
+                .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));
 
         services.AddHostedService(sp => // should be scoped
-            new MessagingService(
-                sp.GetService<ILoggerFactory>(),
-                sp,
-                contextOptions));
+            new MessagingService(sp.GetService<ILoggerFactory>(), sp, contextOptions));
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
 
         optionsAction?.Invoke(new MessagingBuilderContext(services));
@@ -104,7 +95,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior<TBehavior>(this MessagingBuilderContext context, IMessagePublisherBehavior behavior = null)
+    public static MessagingBuilderContext WithBehavior<TBehavior>(
+        this MessagingBuilderContext context,
+        IMessagePublisherBehavior behavior = null)
         where TBehavior : class, IMessagePublisherBehavior
     {
         if (behavior is null)
@@ -119,7 +112,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior(this MessagingBuilderContext context, Func<IServiceProvider, IMessagePublisherBehavior> implementationFactory)
+    public static MessagingBuilderContext WithBehavior(
+        this MessagingBuilderContext context,
+        Func<IServiceProvider, IMessagePublisherBehavior> implementationFactory)
     {
         if (implementationFactory is not null)
         {
@@ -129,7 +124,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior(this MessagingBuilderContext context, IMessagePublisherBehavior behavior)
+    public static MessagingBuilderContext WithBehavior(
+        this MessagingBuilderContext context,
+        IMessagePublisherBehavior behavior)
     {
         if (behavior is not null)
         {
@@ -139,7 +136,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior<TBehavior>(this MessagingBuilderContext context, IMessageHandlerBehavior behavior = null)
+    public static MessagingBuilderContext WithBehavior<TBehavior>(
+        this MessagingBuilderContext context,
+        IMessageHandlerBehavior behavior = null)
         where TBehavior : class, IMessageHandlerBehavior
     {
         if (behavior is null)
@@ -154,7 +153,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior(this MessagingBuilderContext context, Func<IServiceProvider, IMessageHandlerBehavior> implementationFactory)
+    public static MessagingBuilderContext WithBehavior(
+        this MessagingBuilderContext context,
+        Func<IServiceProvider, IMessageHandlerBehavior> implementationFactory)
     {
         if (implementationFactory is not null)
         {
@@ -164,7 +165,9 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    public static MessagingBuilderContext WithBehavior(this MessagingBuilderContext context, IMessageHandlerBehavior behavior)
+    public static MessagingBuilderContext WithBehavior(
+        this MessagingBuilderContext context,
+        IMessageHandlerBehavior behavior)
     {
         if (behavior is not null)
         {

@@ -5,13 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
-public interface IEntityFindOneQuery
-{
-}
+public interface IEntityFindOneQuery { }
 
 public interface IEntityFindOneQuery<TEntity> : IEntityFindOneQuery
-    where TEntity : class, IEntity
-{
-}
+    where TEntity : class, IEntity { }

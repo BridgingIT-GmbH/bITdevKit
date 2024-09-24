@@ -5,19 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 {
     private readonly ReaderWriterLockSlim @lock = new();
 
     public InMemoryDocumentStoreContext()
-        : this(Enumerable.Empty<DocumentEntity>())
-    {
-    }
+        : this(Enumerable.Empty<DocumentEntity>()) { }
 
     protected List<DocumentEntity> Entities { get; } = entities.SafeNull().ToList();
 
@@ -28,9 +23,10 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 
         try
         {
-            return this.Entities
-                .Where(e => e.Type == typeof(T).FullName)
-                .Select(e => e.Content as T).Where(e => e is not null).ToList();
+            return this.Entities.Where(e => e.Type == typeof(T).FullName)
+                .Select(e => e.Content as T)
+                .Where(e => e is not null)
+                .ToList();
         }
         finally
         {
@@ -46,8 +42,12 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         try
         {
             return this.Entities
-                .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
-                .Select(e => e.Content as T).Where(e => e is not null).ToList();
+                .Where(e => e.Type == typeof(T).FullName &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey == documentKey.RowKey)
+                .Select(e => e.Content as T)
+                .Where(e => e is not null)
+                .ToList();
         }
         finally
         {
@@ -65,20 +65,32 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
             if (filter == DocumentKeyFilter.FullMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
-                    .Select(e => e.Content as T).Where(e => e is not null).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey == documentKey.RowKey)
+                    .Select(e => e.Content as T)
+                    .Where(e => e is not null)
+                    .ToList();
             }
             else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey))
-                    .Select(e => e.Content as T).Where(e => e is not null).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey.StartsWith(documentKey.RowKey))
+                    .Select(e => e.Content as T)
+                    .Where(e => e is not null)
+                    .ToList();
             }
             else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey))
-                    .Select(e => e.Content as T).Where(e => e is not null).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey.EndsWith(documentKey.RowKey))
+                    .Select(e => e.Content as T)
+                    .Where(e => e is not null)
+                    .ToList();
             }
 
             return [];
@@ -96,9 +108,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 
         try
         {
-            return this.Entities
-                .Where(e => e.Type == typeof(T).FullName)
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList();
+            return this.Entities.Where(e => e.Type == typeof(T).FullName)
+                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                .ToList();
         }
         finally
         {
@@ -106,9 +118,7 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
-    public virtual IEnumerable<DocumentKey> List<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter)
+    public virtual IEnumerable<DocumentKey> List<T>(DocumentKey documentKey, DocumentKeyFilter filter)
         where T : class, new()
     {
         this.@lock.EnterReadLock();
@@ -118,20 +128,29 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
             if (filter == DocumentKeyFilter.FullMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
-                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey == documentKey.RowKey)
+                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                    .ToList();
             }
             else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey))
-                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey.StartsWith(documentKey.RowKey))
+                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                    .ToList();
             }
             else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
             {
                 return this.Entities
-                    .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey))
-                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList();
+                    .Where(e => e.Type == typeof(T).FullName &&
+                        e.PartitionKey == documentKey.PartitionKey &&
+                        e.RowKey.EndsWith(documentKey.RowKey))
+                    .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                    .ToList();
             }
 
             return [];
@@ -151,22 +170,24 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         {
             DateTimeOffset createdDate = DateTime.UtcNow;
 
-            foreach (var documentEntity in this.Entities
-               .Where(e => e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey).SafeNull())
+            foreach (var documentEntity in this.Entities.Where(e =>
+                             e.Type == typeof(T).FullName &&
+                             e.PartitionKey == documentKey.PartitionKey &&
+                             e.RowKey == documentKey.RowKey)
+                         .SafeNull())
             {
                 createdDate = documentEntity.CreatedDate;
                 this.Entities.Remove(documentEntity);
             }
 
-            this.Entities.Add(
-                new DocumentEntity
-                {
-                    Type = typeof(T).FullName,
-                    PartitionKey = documentKey.PartitionKey,
-                    RowKey = documentKey.RowKey,
-                    CreatedDate = createdDate,
-                    Content = content
-                });
+            this.Entities.Add(new DocumentEntity
+            {
+                Type = typeof(T).FullName,
+                PartitionKey = documentKey.PartitionKey,
+                RowKey = documentKey.RowKey,
+                CreatedDate = createdDate,
+                Content = content
+            });
         }
         finally
         {
@@ -182,7 +203,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         try
         {
             this.Entities.RemoveAll(e =>
-                e.Type == typeof(T).FullName && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey);
+                e.Type == typeof(T).FullName &&
+                e.PartitionKey == documentKey.PartitionKey &&
+                e.RowKey == documentKey.RowKey);
         }
         finally
         {

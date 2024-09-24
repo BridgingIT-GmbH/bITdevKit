@@ -1,9 +1,9 @@
 <Project>
 
- <PropertyGroup Condition="$(Configuration) == 'Release' AND Exists('..\bIT.snk') AND (!$(MSBuildProjectDirectory.Contains('examples')) and !$(MSBuildProjectDirectory.Contains('Pulsar')) and !$(MSBuildProjectDirectory.Contains('tests')) and !$(MSBuildProjectDirectory.Contains('Xunit')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.EntityFramework.Sqlite')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.Azure')) and !$(MSBuildProjectDirectory.Contains('Presentation.Web')) and !$(MSBuildProjectDirectory.Contains('Tests'))) ">
-   <SignAssembly>True</SignAssembly>
-   <AssemblyOriginatorKeyFile>..\bIT.snk</AssemblyOriginatorKeyFile>
- </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration) == 'Release' AND Exists('..\bIT.snk') AND (!$(MSBuildProjectDirectory.Contains('examples')) and !$(MSBuildProjectDirectory.Contains('Pulsar')) and !$(MSBuildProjectDirectory.Contains('tests')) and !$(MSBuildProjectDirectory.Contains('Xunit')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.EntityFramework.Sqlite')) and !$(MSBuildProjectDirectory.Contains('Infrastructure.Azure')) and !$(MSBuildProjectDirectory.Contains('Presentation.Web')) and !$(MSBuildProjectDirectory.Contains('Tests'))) ">
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\bIT.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 
   <PropertyGroup>
     <Icon>icon.png</Icon>
@@ -13,10 +13,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
   <ItemGroup>
-    <Compile Include="..\..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+    <Compile Include="..\..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs"/>
   </ItemGroup>
 
   <ItemGroup>

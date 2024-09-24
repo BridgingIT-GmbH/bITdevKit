@@ -9,25 +9,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="Microsoft.Extensions.DependencyInjection" />
-    <Using Include="Bogus" />
-    <Using Include="BridgingIT.DevKit.Common" />
-    <Using Include="FluentAssertions" />
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
+    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <Using Include="Bogus"/>
+    <Using Include="BridgingIT.DevKit.Common"/>
+    <Using Include="FluentAssertions"/>
+    <Using Include="NSubstitute"/>
+    <Using Include="Shouldly"/>
+    <Using Include="Xunit"/>
+    <Using Include="Xunit.Abstractions"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" />
-    <PackageReference Include="Dapper" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="FluentAssertions.Web" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="BenchmarkDotNet" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="Bogus"/>
+    <PackageReference Include="Dapper"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="FluentAssertions.Web"/>
+    <PackageReference Include="NSubstitute"/>
+    <PackageReference Include="BenchmarkDotNet"/>
+    <PackageReference Include="Shouldly"/>
+    <PackageReference Include="xunit"/>
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -39,11 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Domain\WeatherForecast.Domain.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Presentation.Web.Server\WeatherForecast.Presentation.Web.Server.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Domain\WeatherForecast.Domain.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Presentation.Web.Server\WeatherForecast.Presentation.Web.Server.csproj"/>
   </ItemGroup>
 
 </Project>

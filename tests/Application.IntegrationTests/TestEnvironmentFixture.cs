@@ -11,7 +11,6 @@ using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
@@ -20,28 +19,30 @@ using Testcontainers.RabbitMq;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
-    private ITestOutputHelper output = null;
     private IServiceProvider serviceProvider;
 
     public TestEnvironmentFixture()
     {
-        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.output)));
+        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.Output)));
 
         this.Network = new NetworkBuilder()
             .WithName(this.NetworkName)
             .Build();
 
         this.SqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
-        this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
-            .WithNetworkAliases(this.NetworkName)
-            .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
-            //.WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:mongodb") // prevents 'The evaluation period has expired.' for another 180 days
-            .Build();
+        this.CosmosContainer =
+            new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
+                .WithNetworkAliases(this.NetworkName)
+                .WithWaitStrategy(Wait.ForUnixContainer()
+                    .AddCustomWaitStrategy(new WaitUntil()))
+                //.WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:mongodb") // prevents 'The evaluation period has expired.' for another 180 days
+                .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
             .WithNetworkAliases(this.NetworkName)
@@ -54,7 +55,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public string NetworkName => HashHelper.Compute(DateTime.UtcNow.Ticks);
 
@@ -89,27 +90,29 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public StubDbContext SqliteDbContext { get; set; }
 
-    private static bool IsCIEnvironment =>
-        Environment.GetEnvironmentVariable("AGENT_NAME") is not null; // check if running on Microsoft's CI environment
+    private static bool IsCIEnvironment => Environment.GetEnvironmentVariable("AGENT_NAME") is not null; // check if running on Microsoft's CI environment
 
     public TestEnvironmentFixture WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
     public async Task InitializeAsync()
     {
-        await this.Network.CreateAsync().AnyContext();
+        await this.Network.CreateAsync()
+            .AnyContext();
 
-        await this.SqlContainer.StartAsync().AnyContext();
+        await this.SqlContainer.StartAsync()
+            .AnyContext();
 
         if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
             //await this.CosmosContainer.StartAsync().AnyContext();
         }
 
-        await this.AzuriteContainer.StartAsync().AnyContext();
+        await this.AzuriteContainer.StartAsync()
+            .AnyContext();
 
         //await this.RabbitMQContainer.StartAsync().AnyContext();
     }
@@ -118,15 +121,19 @@ public class TestEnvironmentFixture : IAsyncLifetime
     {
         //this.Context?.Dispose();
 
-        await this.SqlContainer.DisposeAsync().AnyContext();
+        await this.SqlContainer.DisposeAsync()
+            .AnyContext();
 
-        await this.CosmosContainer.DisposeAsync().AnyContext();
+        await this.CosmosContainer.DisposeAsync()
+            .AnyContext();
 
-        await this.AzuriteContainer.DisposeAsync().AnyContext();
+        await this.AzuriteContainer.DisposeAsync()
+            .AnyContext();
 
         //await this.RabbitMQContainer.DisposeAsync().AnyContext();
 
-        await this.Network.DeleteAsync().AnyContext();
+        await this.Network.DeleteAsync()
+            .AnyContext();
     }
 
     public StubDbContext EnsureSqlServerDbContext(ITestOutputHelper output = null, bool forceNew = false)
@@ -150,10 +157,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.SqlServerDbContext = context;
-            }
+
+            this.SqlServerDbContext = context;
         }
 
         return this.SqlServerDbContext;
@@ -179,10 +184,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
             {
                 return context;
             }
-            else
-            {
-                this.SqliteDbContext = context;
-            }
+
+            this.SqliteDbContext = context;
         }
 
         return this.SqliteDbContext;
@@ -190,8 +193,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public CosmosClient CreateCosmosClient()
     {
-        return new CosmosClient(
-            this.CosmosConnectionString,
+        return new CosmosClient(this.CosmosConnectionString,
             new CosmosClientOptions
             {
                 SerializerOptions = new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase },
@@ -211,8 +213,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
             try
             {
-                using var httpResponse = await httpClient.GetAsync(requestUri)
-                    .ConfigureAwait(false);
+                using var httpResponse = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
 
                 return httpResponse.IsSuccessStatusCode;
             }

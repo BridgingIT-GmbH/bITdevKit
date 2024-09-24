@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System;
 using System.Data;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -43,20 +42,24 @@ public class EntityFrameworkRepository<TEntity> : IRepository
 
     public EntityFrameworkRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build())
-    {
-    }
+        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
     protected EntityFrameworkRepositoryOptions Options { get; }
 
     protected ILogger<IRepository> Logger { get; }
 
-    protected DbSet<TEntity> GetDbSet() =>
-        this.Options.DbContext.Set<TEntity>();
+    protected DbSet<TEntity> GetDbSet()
+    {
+        return this.Options.DbContext.Set<TEntity>();
+    }
 
-    protected IDbConnection GetDbConnection() =>
-        this.Options.DbContext.Database.GetDbConnection();
+    protected IDbConnection GetDbConnection()
+    {
+        return this.Options.DbContext.Database.GetDbConnection();
+    }
 
-    protected IDbTransaction GetDbTransaction() =>
-        this.Options.DbContext.Database.CurrentTransaction?.GetDbTransaction();
+    protected IDbTransaction GetDbTransaction()
+    {
+        return this.Options.DbContext.Database.CurrentTransaction?.GetDbTransaction();
+    }
 }

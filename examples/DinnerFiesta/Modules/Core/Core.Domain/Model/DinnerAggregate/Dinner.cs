@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain;
+using DevKit.Domain.Model;
 
 public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 {
     private readonly List<DinnerReservation> reservations = [];
 
-    private Dinner()
-    {
-    }
+    private Dinner() { }
 
     private Dinner(
         string name,
@@ -59,9 +57,9 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
     public DinnerSchedule Schedule { get; private set; }
 
-    public DateTimeOffset? StartedDateTime { get; private set; }
+    public DateTimeOffset? StartedDateTime { get; }
 
-    public DateTimeOffset? EndedDateTime { get; private set; }
+    public DateTimeOffset? EndedDateTime { get; }
 
     public Uri ImageUrl { get; private set; } // TODO: use url value object
 
@@ -81,8 +79,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
         Price price,
         Uri imageUrl = null)
     {
-        var dinner = new Dinner(
-            name,
+        var dinner = new Dinner(name,
             description,
             schedule,
             location,
@@ -93,8 +90,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             price,
             imageUrl);
 
-        dinner.DomainEvents.Register(
-            new DinnerCreatedDomainEvent(dinner));
+        dinner.DomainEvents.Register(new DinnerCreatedDomainEvent(dinner));
 
         return dinner;
     }
@@ -108,8 +104,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
         this.Name = name;
 
-        this.DomainEvents.Register(
-            new DinnerUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new DinnerUpdatedDomainEvent(this), true);
 
         return this;
     }
@@ -121,15 +116,11 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        DomainRules.Apply(
-        [
-            DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime),
-        ]);
+        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime)]);
 
         this.Schedule = schedule;
 
-        this.DomainEvents.Register(
-            new DinnerUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new DinnerUpdatedDomainEvent(this), true);
 
         return this;
     }
@@ -145,8 +136,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 
         this.Status = status;
 
-        this.DomainEvents.Register(
-            new DinnerUpdatedDomainEvent(this), true);
+        this.DomainEvents.Register(new DinnerUpdatedDomainEvent(this), true);
 
         return this;
     }

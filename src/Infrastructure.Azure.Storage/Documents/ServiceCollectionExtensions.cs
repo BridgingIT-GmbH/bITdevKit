@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.Azure.Storage;
 using global::Azure.Data.Tables;
 using global::Azure.Storage.Blobs;
-using Microsoft.Extensions.Logging;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -24,21 +24,18 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>())));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>())));
                 break;
             default:
-                services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>())));
                 break;
         }
@@ -58,20 +55,17 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>())));
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>())));
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureBlobDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>())));
                 break;
         }
@@ -90,21 +84,18 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>())));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>())));
                 break;
             default:
-                services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>())));
                 break;
         }
@@ -124,20 +115,17 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>())));
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>())));
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    new AzureTableDocumentStoreProvider(
-                        sp.GetRequiredService<ILoggerFactory>(),
+                    new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>())));
                 break;
         }

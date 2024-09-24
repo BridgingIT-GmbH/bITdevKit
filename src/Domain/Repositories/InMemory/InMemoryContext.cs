@@ -5,17 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Collections.Generic;
-using System.Linq;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Model;
 
 public class InMemoryContext<TEntity>
     where TEntity : class, IEntity
 {
-    public InMemoryContext()
-    {
-    }
+    public InMemoryContext() { }
 
     public InMemoryContext(List<TEntity> entities)
     {

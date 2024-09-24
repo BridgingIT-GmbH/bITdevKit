@@ -6,23 +6,19 @@
 namespace BridgingIT.DevKit.Presentation;
 
 using System.Security.Cryptography;
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class FakeCurrentUserAccessor : ICurrentUserAccessor
 {
     private static readonly List<User> Users =
     [
 #pragma warning disable SA1010 // Opening square brackets should be spaced correctly
-        new User("john.doe@example.com", "John Doe", ["Admin"]),
-        new User("mary.jane@example.com", "Mary Jane", ["User"]),
-        new User("eva.woods@example.com", "Eva Woods", ["User"]),
-        new User("david.daniels@example.com", "David Daniels", ["Admin"]),
-        new User("frank.hill@example.com", "Frank Hill", ["User"]),
-        new User("grace.lee@example.com", "Grace Lee", ["User"]),
-        new User("hannah.miller@example.com", "Hannah Miller", ["User"]),
-        new User("ivy.johnson@example.com", "Ivy Johnson", ["Admin"]),
-        new User("jack.smith@example.com", "Jack Smith", ["User"])
+        new("john.doe@example.com", "John Doe", ["Admin"]), new("mary.jane@example.com", "Mary Jane", ["User"]),
+        new("eva.woods@example.com", "Eva Woods", ["User"]),
+        new("david.daniels@example.com", "David Daniels", ["Admin"]),
+        new("frank.hill@example.com", "Frank Hill", ["User"]), new("grace.lee@example.com", "Grace Lee", ["User"]),
+        new("hannah.miller@example.com", "Hannah Miller", ["User"]),
+        new("ivy.johnson@example.com", "Ivy Johnson", ["Admin"]), new("jack.smith@example.com", "Jack Smith", ["User"])
 #pragma warning restore SA1010 // Opening square brackets should be spaced correctly
     ];
 
@@ -63,8 +59,10 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         return UserStore.ElementAt(index);
     }
 
-    private static Guid GenerateDeterministicGuid(string input) =>
-        new Guid(MD5.HashData(Encoding.UTF8.GetBytes(input)));
+    private static Guid GenerateDeterministicGuid(string input)
+    {
+        return new Guid(MD5.HashData(Encoding.UTF8.GetBytes(input)));
+    }
 
     public class User(string email, string name, string[] roles)
     {

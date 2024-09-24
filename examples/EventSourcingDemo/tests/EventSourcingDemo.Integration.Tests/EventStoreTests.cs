@@ -4,18 +4,16 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+
 using DevKit.Domain.EventSourcing.Store;
-using BridgingIT.DevKit.Common;
 using Domain.Model;
 using Domain.Model.Events;
 using Domain.Repositories;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))]
-public class EventStoreTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EventstoreTestBase(output, fixture)
+public class EventStoreTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
+    : EventstoreTestBase(output, fixture)
 {
     [Fact]
     public async Task CreateAndChangePersonAggregate()

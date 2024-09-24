@@ -5,15 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Database.Command;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using EntityFrameworkCore;
+using EntityFrameworkCore.Database.Command;
+using EntityFrameworkCore.Diagnostics;
+using EntityFrameworkCore.Infrastructure;
+using Extensions;
+using Logging;
 
 public static class ServiceCollectionExtensions
 {
@@ -24,8 +23,9 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
-        return services
-            .AddCosmosDbContext<TContext>(optionsBuilder(new CosmosOptionsBuilder()).Build(), cosmosOptionsBuilder, lifetime);
+        return services.AddCosmosDbContext<TContext>(optionsBuilder(new CosmosOptionsBuilder()).Build(),
+            cosmosOptionsBuilder,
+            lifetime);
     }
 
     public static CosmosDbContextBuilderContext<TContext> AddCosmosDbContext<TContext>(
@@ -46,8 +46,7 @@ public static class ServiceCollectionExtensions
 
         RegisterInterceptors(services, options, lifetime);
 
-        services
-            .AddDbContext<TContext>((sp, o) =>
+        services.AddDbContext<TContext>((sp, o) =>
             {
                 if (options.InterceptorTypes.SafeAny())
                 {
@@ -65,8 +64,7 @@ public static class ServiceCollectionExtensions
                 if (options.SimpleLoggerEnabled)
                 {
                     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
-                    o.LogTo(
-                        Console.WriteLine,
+                    o.LogTo(Console.WriteLine,
                         new[] { DbLoggerCategory.Database.Command.Name },
                         options.SimpleLoggerLevel,
                         DbContextLoggerOptions.SingleLine | DbContextLoggerOptions.Level);
@@ -78,10 +76,10 @@ public static class ServiceCollectionExtensions
                 {
                     o.UseMemoryCache(options.MemoryCache);
                 }
-            }, lifetime);
+            },
+            lifetime);
 
-        return new CosmosDbContextBuilderContext<TContext>(
-            services,
+        return new CosmosDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: options.ConnectionString,
             provider: Provider.SqlServer);
@@ -98,17 +96,19 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
         EnsureArg.IsNotNullOrEmpty(database, nameof(database));
 
-        services.AddDbContext<TContext>((sp, o) => o
-                .UseCosmos(connectionString, database, cosmosOptionsBuilder), lifetime);
+        services.AddDbContext<TContext>((sp, o) => o.UseCosmos(connectionString, database, cosmosOptionsBuilder),
+            lifetime);
 
-        return new CosmosDbContextBuilderContext<TContext>(
-            services,
+        return new CosmosDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: connectionString,
             provider: Provider.SqlServer);
     }
 
-    private static void RegisterInterceptors(IServiceCollection services, CosmosOptions options, ServiceLifetime lifetime)
+    private static void RegisterInterceptors(
+        IServiceCollection services,
+        CosmosOptions options,
+        ServiceLifetime lifetime)
     {
         foreach (var interceptorType in options.InterceptorTypes.SafeNull())
         {

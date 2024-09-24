@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,18 +21,19 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
 
     private static void ConfigureHostMenuIdsTable(EntityTypeBuilder<Host> builder)
     {
-        builder.OwnsMany(h => h.MenuIds, mb =>
-        {
-            mb.WithOwner().HasForeignKey("HostId");
+        builder.OwnsMany(h => h.MenuIds,
+            mb =>
+            {
+                mb.WithOwner().HasForeignKey("HostId");
 
-            mb.ToTable("HostMenuIds");
+                mb.ToTable("HostMenuIds");
 
-            mb.HasKey("Id");
+                mb.HasKey("Id");
 
-            mb.Property(mi => mi.Value)
-                .ValueGeneratedNever()
-                .HasColumnName("HostMenuId");
-        });
+                mb.Property(mi => mi.Value)
+                    .ValueGeneratedNever()
+                    .HasColumnName("HostMenuId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Host.MenuIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -40,18 +41,19 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
 
     private static void ConfigureHostDinnerIdsTable(EntityTypeBuilder<Host> builder)
     {
-        builder.OwnsMany(h => h.DinnerIds, mb =>
-        {
-            mb.WithOwner().HasForeignKey("HostId");
+        builder.OwnsMany(h => h.DinnerIds,
+            mb =>
+            {
+                mb.WithOwner().HasForeignKey("HostId");
 
-            mb.ToTable("HostDinnerIds");
+                mb.ToTable("HostDinnerIds");
 
-            mb.HasKey("Id");
+                mb.HasKey("Id");
 
-            mb.Property(mi => mi.Value)
-                .ValueGeneratedNever()
-                .HasColumnName("HostDinnerId");
-        });
+                mb.Property(mi => mi.Value)
+                    .ValueGeneratedNever()
+                    .HasColumnName("HostDinnerId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Host.DinnerIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -65,8 +67,7 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
 
         builder.Property(h => h.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => HostId.Create(value));
 
         builder.Property(h => h.FirstName)
@@ -77,17 +78,17 @@ public class HostEntityTypeConfiguration : IEntityTypeConfiguration<Host>
             .IsRequired()
             .HasMaxLength(128);
 
-        builder.OwnsOne(h => h.AverageRating, ab =>
-        {
-            ab.Property(e => e.Value)
-                .IsRequired(false);
+        builder.OwnsOne(h => h.AverageRating,
+            ab =>
+            {
+                ab.Property(e => e.Value)
+                    .IsRequired(false);
 
-            ab.Property(e => e.NumRatings);
-        });
+                ab.Property(e => e.NumRatings);
+            });
 
         builder.Property(h => h.UserId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => UserId.Create(value));
 
         builder.OwnsOneAuditState();

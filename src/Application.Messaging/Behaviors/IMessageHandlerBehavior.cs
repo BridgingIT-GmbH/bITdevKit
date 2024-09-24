@@ -9,6 +9,10 @@ public delegate Task MessageHandlerDelegate();
 
 public interface IMessageHandlerBehavior
 {
-    Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
         where TMessage : IMessage;
 }

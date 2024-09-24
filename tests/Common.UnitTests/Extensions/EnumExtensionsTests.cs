@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System;
-using Xunit;
-using Shouldly;
 using System.ComponentModel;
 
 [UnitTest("Common")]
@@ -119,6 +116,4 @@ public class CustomAttribute(int value) : Attribute
 }
 
 [Custom(500)]
-public class MyClass
-{
-}
+public class MyClass { }

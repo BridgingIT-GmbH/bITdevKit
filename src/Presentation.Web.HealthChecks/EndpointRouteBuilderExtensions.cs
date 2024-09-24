@@ -14,32 +14,37 @@ public static class EndpointRouteBuilderExtensions
 {
     private static bool isMapped;
 
-    public static IEndpointRouteBuilder MapHealthChecks(this IEndpointRouteBuilder endpoints, string patternPrefix = "/healthz")
+    public static IEndpointRouteBuilder MapHealthChecks(
+        this IEndpointRouteBuilder endpoints,
+        string patternPrefix = "/healthz")
     {
         if (!isMapped)
         {
             try
             {
-                endpoints.MapHealthChecks(patternPrefix, new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks($"{patternPrefix}/self", new HealthCheckOptions
-                {
-                    Predicate = r => r.Tags.Contains("self"),
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks($"{patternPrefix}/ready", new HealthCheckOptions
-                {
-                    Predicate = r => r.Tags.Contains("ready"),
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks($"{patternPrefix}/live", new HealthCheckOptions
-                {
-                    Predicate = r => r.Tags.Contains("live"),
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
+                endpoints.MapHealthChecks(patternPrefix,
+                    new HealthCheckOptions
+                    {
+                        Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
+                endpoints.MapHealthChecks($"{patternPrefix}/self",
+                    new HealthCheckOptions
+                    {
+                        Predicate = r => r.Tags.Contains("self"),
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
+                endpoints.MapHealthChecks($"{patternPrefix}/ready",
+                    new HealthCheckOptions
+                    {
+                        Predicate = r => r.Tags.Contains("ready"),
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
+                endpoints.MapHealthChecks($"{patternPrefix}/live",
+                    new HealthCheckOptions
+                    {
+                        Predicate = r => r.Tags.Contains("live"),
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
 
                 endpoints.MapHealthChecksUI(setup =>
                 {

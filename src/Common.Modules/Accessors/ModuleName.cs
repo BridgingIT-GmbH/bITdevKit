@@ -11,11 +11,13 @@ public static class ModuleName
 {
     public static string From<TType>(bool throwIfNotFound = true)
     {
-        var value = typeof(TType).Assembly.GetCustomAttribute<Attribute>()?.Value; // TODO: cache this value lookup for better perf?
+        var value = typeof(TType).Assembly.GetCustomAttribute<Attribute>()
+            ?.Value; // TODO: cache this value lookup for better perf?
 
         if (string.IsNullOrEmpty(value) && throwIfNotFound)
         {
-            throw new Exception($"ModuleName property not found on assembly {typeof(TType).Assembly.GetName()}. Please add the following property '<ModuleName>NAME</ModuleName>' inside a '<PropertyGroup>'.");
+            throw new Exception(
+                $"ModuleName property not found on assembly {typeof(TType).Assembly.GetName()}. Please add the following property '<ModuleName>NAME</ModuleName>' inside a '<PropertyGroup>'.");
 
             // also add the following to propagate the property as an AssemblyAttribute
             //<ItemGroup>
@@ -30,11 +32,13 @@ public static class ModuleName
 
     public static string From(Type type, bool throwIfNotFound = true)
     {
-        var value = type.Assembly.GetCustomAttribute<Attribute>()?.Value; // TODO: cache this value lookup for better perf?
+        var value = type.Assembly.GetCustomAttribute<Attribute>()
+            ?.Value; // TODO: cache this value lookup for better perf?
 
         if (string.IsNullOrEmpty(value) && throwIfNotFound)
         {
-            throw new Exception($"ModuleName property not found on assembly {type.Assembly.GetName()}. Please add the following property '<ModuleName>NAME</ModuleName>' inside a '<PropertyGroup>'.");
+            throw new Exception(
+                $"ModuleName property not found on assembly {type.Assembly.GetName()}. Please add the following property '<ModuleName>NAME</ModuleName>' inside a '<PropertyGroup>'.");
 
             // also add the following to propagate the property as an AssemblyAttribute
             //<ItemGroup>
@@ -47,7 +51,7 @@ public static class ModuleName
         return value;
     }
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Assembly)]
     public class Attribute(string value) : System.Attribute
     {
         private readonly string value = value;

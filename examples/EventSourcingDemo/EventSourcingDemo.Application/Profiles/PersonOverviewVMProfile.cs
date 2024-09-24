@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Profiles;
 
+using AutoMapper;
 using Domain.Model;
 
-public class PersonOverviewVmProfile : AutoMapper.Profile
+public class PersonOverviewVmProfile : Profile
 {
     public PersonOverviewVmProfile()
     {

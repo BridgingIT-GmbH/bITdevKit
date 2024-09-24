@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
 
 public class IsValidPasswordRule(string password) : IDomainRule
 {
@@ -16,7 +14,9 @@ public class IsValidPasswordRule(string password) : IDomainRule
     public string Message => "Not a valid password";
 
     public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(true);
+    {
+        return Task.FromResult(true);
+    }
 
     public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
@@ -24,7 +24,10 @@ public class IsValidPasswordRule(string password) : IDomainRule
     }
 }
 
-public static partial class UserRules
+public static class UserRules
 {
-    public static IDomainRule IsValidPassword(string password) => new IsValidPasswordRule(password);
+    public static IDomainRule IsValidPassword(string password)
+    {
+        return new IsValidPasswordRule(password);
+    }
 }

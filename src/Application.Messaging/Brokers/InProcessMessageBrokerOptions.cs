@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class InProcessMessageBrokerOptions : OptionsBase
 {

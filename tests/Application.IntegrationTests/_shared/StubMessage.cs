@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 
 public class StubMessage(string firstname, long ticks) : MessageBase
 {

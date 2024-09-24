@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Reflection;
 
 public interface IActivityNamingSchema

@@ -5,27 +5,23 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Specifications;
-using EnsureThat;
+using Common;
 using Microsoft.Extensions.Logging;
+using Model;
+using Specifications;
 
-public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(ILoggerFactory loggerFactory, TContext context, Func<TDatabaseEntity, object> idSelector) : InMemoryRepository<TEntity, TDatabaseEntity>(loggerFactory, context, idSelector)
+public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
+    ILoggerFactory loggerFactory,
+    TContext context,
+    Func<TDatabaseEntity, object> idSelector)
+    : InMemoryRepository<TEntity, TDatabaseEntity>(loggerFactory, context, idSelector)
     where TEntity : class, IEntity
     where TContext : InMemoryContext<TEntity>
-    where TDatabaseEntity : class
-{
-}
+    where TDatabaseEntity : class { }
 
 /// <summary>
-/// Represents an InMemoryRepository.
+///     Represents an InMemoryRepository.
 /// </summary>
 /// <typeparam name="TEntity">The type of the domain entity.</typeparam>
 /// <typeparam name="TDatabaseEntity">The type of the destination/remote dto.</typeparam>
@@ -35,9 +31,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
 {
     private readonly Func<TDatabaseEntity, object> idSelector;
 
-    public InMemoryRepository(
-        InMemoryRepositoryOptions<TEntity> options,
-        Func<TDatabaseEntity, object> idSelector)
+    public InMemoryRepository(InMemoryRepositoryOptions<TEntity> options, Func<TDatabaseEntity, object> idSelector)
         : base(options)
     {
         EnsureArg.IsNotNull(idSelector, nameof(idSelector));
@@ -46,18 +40,18 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
     }
 
     public InMemoryRepository(
-        Builder<InMemoryRepositoryOptionsBuilder<TEntity>, InMemoryRepositoryOptions<TEntity>> optionsBuilder, Func<TDatabaseEntity, object> idSelector)
-        : this(optionsBuilder(new InMemoryRepositoryOptionsBuilder<TEntity>()).Build(), idSelector)
-    {
-    }
+        Builder<InMemoryRepositoryOptionsBuilder<TEntity>, InMemoryRepositoryOptions<TEntity>> optionsBuilder,
+        Func<TDatabaseEntity, object> idSelector)
+        : this(optionsBuilder(new InMemoryRepositoryOptionsBuilder<TEntity>()).Build(), idSelector) { }
 
-    public InMemoryRepository(ILoggerFactory loggerFactory, InMemoryContext<TEntity> context, Func<TDatabaseEntity, object> idSelector)
-        : this(o => o.LoggerFactory(loggerFactory).Context(context), idSelector)
-    {
-    }
+    public InMemoryRepository(
+        ILoggerFactory loggerFactory,
+        InMemoryContext<TEntity> context,
+        Func<TDatabaseEntity, object> idSelector)
+        : this(o => o.LoggerFactory(loggerFactory).Context(context), idSelector) { }
 
     /// <summary>
-    /// Finds all asynchronous.
+    ///     Finds all asynchronous.
     /// </summary>
     /// <param name="specifications">The specifications.</param>
     /// <param name="options">The options.</param>
@@ -80,7 +74,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
     }
 
     /// <summary>
-    /// Finds the by identifier asynchronous.
+    ///     Finds the by identifier asynchronous.
     /// </summary>
     /// <param name="id">The identifier.</param>
     /// <exception cref="ArgumentOutOfRangeException">id.</exception>
@@ -114,15 +108,15 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         return this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(specification).Compile();
     }
 
-    protected IEnumerable<TEntity> FindAll(
-        IEnumerable<TDatabaseEntity> entities,
-        IFindOptions<TEntity> options = null)
+    protected IEnumerable<TEntity> FindAll(IEnumerable<TDatabaseEntity> entities, IFindOptions<TEntity> options = null)
     {
         var result = entities;
 
         if (options?.Distinct?.Expression is not null)
         {
-            result = result.GroupBy(this.Options.Mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Distinct.Expression).Compile())
+            result = result.GroupBy(this.Options.Mapper
+                    .MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Distinct.Expression)
+                    .Compile())
                 .Select(g => g.FirstOrDefault());
         }
 
@@ -142,16 +136,19 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
             orderedResult = orderedResult is null
                 ? order.Direction == OrderDirection.Ascending
                     ? result.OrderBy(this.Options.Mapper
-                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression).Compile())
+                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
+                        .Compile())
                     : result.OrderByDescending(this.Options.Mapper
-                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression).Compile())
+                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
+                        .Compile())
                 : order.Direction ==
-                  OrderDirection
-                      .Ascending // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                OrderDirection.Ascending // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
                     ? orderedResult.ThenBy(this.Options.Mapper
-                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression).Compile())
+                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
+                        .Compile())
                     : orderedResult.ThenByDescending(this.Options.Mapper
-                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression).Compile());
+                        .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
+                        .Compile());
         }
 
         if (orderedResult is not null)

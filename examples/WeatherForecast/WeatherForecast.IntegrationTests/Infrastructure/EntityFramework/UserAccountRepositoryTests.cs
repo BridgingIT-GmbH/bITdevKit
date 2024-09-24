@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.IntegrationTests;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
+using Domain.Model;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Infrastructure")]
 [Module("Core")]
-public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class
+    UserAccountRepositoryTests
+    : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture;
     private readonly IGenericRepository<UserAccount> sut;
@@ -181,8 +179,8 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<UserAccount>>();
-        var result = await scopedSut.FindOneAsync(
-            new Specification<UserAccount>(e => e.Email == entity.Email)).AnyContext();
+        var result = await scopedSut.FindOneAsync(new Specification<UserAccount>(e => e.Email == entity.Email))
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -207,8 +205,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<UserAccount>>();
-        var result = await scopedSut.FindOneAsync(
-        new Specification<UserAccount>(e => e.Id == entity.Id)).AnyContext();
+        var result = await scopedSut.FindOneAsync(new Specification<UserAccount>(e => e.Id == entity.Id)).AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -283,8 +280,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<UserAccount>>();
-        var result = await scopedSut.FindAllAsync(
-        new Specification<UserAccount>(e => e.VisitCount >= 1)).AnyContext();
+        var result = await scopedSut.FindAllAsync(new Specification<UserAccount>(e => e.VisitCount >= 1)).AnyContext();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBeGreaterThan(0);
@@ -312,8 +308,7 @@ public class UserAccountRepositoryTests : IClassFixture<CustomWebApplicationFact
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<UserAccount>>();
-        var result = await scopedSut.FindAllAsync(
-            new FindOptions<UserAccount> { Skip = 5, Take = 5 }).AnyContext();
+        var result = await scopedSut.FindAllAsync(new FindOptions<UserAccount> { Skip = 5, Take = 5 }).AnyContext();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(5);

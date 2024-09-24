@@ -5,21 +5,18 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Model;
 
 public interface IProjectionRequester<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
     /// <summary>
-    /// Triggers a projection for all aggregates of type TAggregate
+    ///     Triggers a projection for all aggregates of type TAggregate
     /// </summary>
     Task RequestProjectionAsync(CancellationToken cancellationToken);
 
     /// <summary>
-    /// Triggres a projection for the aggregate with the id aggregateId.
+    ///     Triggres a projection for the aggregate with the id aggregateId.
     /// </summary>
     Task RequestProjectionAsync(Guid aggregateId, CancellationToken cancellationToken);
 }

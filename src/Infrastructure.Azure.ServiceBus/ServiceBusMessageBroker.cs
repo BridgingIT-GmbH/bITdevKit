@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Diagnostics;
-using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
+using Application.Messaging;
+using Common;
 using global::Azure.Messaging.ServiceBus;
 using global::Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Logging;
@@ -17,10 +17,16 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
     private readonly ServiceBusMessageBrokerOptions options;
     private readonly ServiceBusClient client;
     private readonly ServiceBusAdministrationClient managementClient;
-    private readonly IDictionary<string, ServiceBusProcessor> processors = new Dictionary<string, ServiceBusProcessor>();
+
+    private readonly IDictionary<string, ServiceBusProcessor>
+        processors = new Dictionary<string, ServiceBusProcessor>();
 
     public ServiceBusMessageBroker(ServiceBusMessageBrokerOptions options)
-        : base(options.LoggerFactory, options.HandlerFactory, options.Serializer, options.PublisherBehaviors = null, options.HandlerBehaviors = null)
+        : base(options.LoggerFactory,
+            options.HandlerFactory,
+            options.Serializer,
+            options.PublisherBehaviors = null,
+            options.HandlerBehaviors = null)
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.Serializer, nameof(options.Serializer));
@@ -30,20 +36,23 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         if (!this.options.ConnectionString.IsNullOrEmpty())
         {
             this.client = new ServiceBusClient(this.options.ConnectionString);
-            this.managementClient = new ServiceBusAdministrationClient(this.options.ConnectionString, new ServiceBusAdministrationClientOptions());
+            this.managementClient = new ServiceBusAdministrationClient(this.options.ConnectionString,
+                new ServiceBusAdministrationClientOptions());
         }
         else
         {
-            throw new Exception($"Cannot create ServiceBus connection, {nameof(options.ConnectionString)} option value must be supplied.");
+            throw new Exception(
+                $"Cannot create ServiceBus connection, {nameof(options.ConnectionString)} option value must be supplied.");
         }
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})", Constants.LogKey, this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",
+            Constants.LogKey,
+            this.GetType().Name);
     }
 
-    public ServiceBusMessageBroker(Builder<ServiceBusMessageBrokerOptionsBuilder, ServiceBusMessageBrokerOptions> optionsBuilder)
-        : this(optionsBuilder(new ServiceBusMessageBrokerOptionsBuilder()).Build())
-    {
-    }
+    public ServiceBusMessageBroker(
+        Builder<ServiceBusMessageBrokerOptionsBuilder, ServiceBusMessageBrokerOptions> optionsBuilder)
+        : this(optionsBuilder(new ServiceBusMessageBrokerOptionsBuilder()).Build()) { }
 
     public void Dispose()
     {
@@ -83,7 +92,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             ApplicationProperties =
             {
                 //{ "MessageName", messageName },
-            },
+            }
         };
 
         await using (var sender = this.client.CreateSender(topicName))
@@ -91,7 +100,12 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             await sender.SendMessageAsync(serviceBusMessage, cancellationToken).AnyContext();
         }
 
-        this.Logger.LogDebug("{LogKey} servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})", Constants.LogKey, messageName, message.MessageId, topicName);
+        this.Logger.LogDebug(
+            "{LogKey} servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})",
+            Constants.LogKey,
+            messageName,
+            message.MessageId,
+            topicName);
     }
 
     protected override async Task OnProcess(IMessage message, CancellationToken cancellationToken)
@@ -117,7 +131,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         {
             var processor = this.client.CreateProcessor(topicName, subscriptionName);
 
-            processor.ProcessMessageAsync += async (a) =>
+            processor.ProcessMessageAsync += async a =>
             {
                 try
                 {
@@ -126,15 +140,24 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
                 }
                 catch (Exception)
                 {
-                    this.Logger.LogError("{LogKey} servicebus message consume failed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})", Constants.LogKey, a.Message.Subject, a.Message.MessageId, a.EntityPath);
+                    this.Logger.LogError(
+                        "{LogKey} servicebus message consume failed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
+                        Constants.LogKey,
+                        a.Message.Subject,
+                        a.Message.MessageId,
+                        a.EntityPath);
 
                     await a.AbandonMessageAsync(a.Message);
                 }
             };
 
-            processor.ProcessErrorAsync += (a) =>
+            processor.ProcessErrorAsync += a =>
             {
-                this.Logger.LogError(a.Exception, "{LogKey} servicebus failed (path={ServiceBusEntityPath}) {ErrorMessage}", Constants.LogKey, a.EntityPath, a.Exception.Message);
+                this.Logger.LogError(a.Exception,
+                    "{LogKey} servicebus failed (path={ServiceBusEntityPath}) {ErrorMessage}",
+                    Constants.LogKey,
+                    a.EntityPath,
+                    a.Exception.Message);
                 return Task.CompletedTask;
             };
 
@@ -152,12 +175,19 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
         if (message is not null)
         {
-            this.Logger.LogDebug("{LogKey} servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})", Constants.LogKey, messageName, message.MessageId, args.EntityPath);
+            this.Logger.LogDebug(
+                "{LogKey} servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
+                Constants.LogKey,
+                messageName,
+                message.MessageId,
+                args.EntityPath);
 
             await this.Process(new MessageRequest(message, CancellationToken.None));
         }
 
-        this.Logger.LogDebug("{LogKey} servicebus consumer done (topic={MessageTopicName})", Constants.LogKey, messageName);
+        this.Logger.LogDebug("{LogKey} servicebus consumer done (topic={MessageTopicName})",
+            Constants.LogKey,
+            messageName);
     }
 
     private async Task EnsureTopicAsync(string topicName)
@@ -174,7 +204,9 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
     {
         if (!await this.managementClient.SubscriptionExistsAsync(topicName, subscriptionName).AnyContext())
         {
-            this.Logger.LogTrace("CreateSubscription(topic={MessageTopicName}, subscription={MessageSubscriptionName})", topicName, subscriptionName);
+            this.Logger.LogTrace("CreateSubscription(topic={MessageTopicName}, subscription={MessageSubscriptionName})",
+                topicName,
+                subscriptionName);
 
             await this.managementClient.CreateSubscriptionAsync(topicName, subscriptionName).AnyContext();
         }

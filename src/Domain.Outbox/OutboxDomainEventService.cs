@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using System;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
+using Common;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -29,7 +26,8 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
     {
         EnsureArg.IsNotNull(worker, nameof(worker));
 
-        this.logger = loggerFactory?.CreateLogger<OutboxDomainEventService>() ?? NullLoggerFactory.Instance.CreateLogger<OutboxDomainEventService>();
+        this.logger = loggerFactory?.CreateLogger<OutboxDomainEventService>() ??
+            NullLoggerFactory.Instance.CreateLogger<OutboxDomainEventService>();
         this.worker = worker;
         this.options = options ?? new OutboxDomainEventOptions();
         this.options.Serializer ??= new SystemTextJsonSerializer();
@@ -59,7 +57,9 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
 
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {
-            this.logger.LogDebug("{LogKey} outbox domain event service startup delayed (type={ProcessorType})", Constants.LogKey, typeof(OutboxDomainEventService).Name);
+            this.logger.LogDebug("{LogKey} outbox domain event service startup delayed (type={ProcessorType})",
+                Constants.LogKey,
+                typeof(OutboxDomainEventService).Name);
 
             await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
         }
@@ -76,10 +76,11 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         await Task.Delay(1, cancellationToken);
         this.semaphore = new SemaphoreSlim(1);
 
-        this.logger.LogInformation("{LogKey} outbox domain event service started (type={ProcessorType})", Constants.LogKey, typeof(OutboxDomainEventService).Name);
+        this.logger.LogInformation("{LogKey} outbox domain event service started (type={ProcessorType})",
+            Constants.LogKey,
+            typeof(OutboxDomainEventService).Name);
         // TODO: .NET8 use new PeriodicTimer https://bartwullems.blogspot.com/2023/10/create-aspnet-core-backgroundservice.html
-        this.processTimer = new Timer(
-            this.ProcessAsync,
+        this.processTimer = new Timer(this.ProcessAsync,
             CancellationTokenSource.CreateLinkedTokenSource(cancellationToken).Token,
             0,
             (int)this.options.ProcessingInterval.TotalMilliseconds);
@@ -100,7 +101,11 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox domain event service failed: {ErrorMessage} (type={ProcessorType})", Constants.LogKey, ex.Message, typeof(OutboxDomainEventService).Name);
+            this.logger.LogError(ex,
+                "{LogKey} outbox domain event service failed: {ErrorMessage} (type={ProcessorType})",
+                Constants.LogKey,
+                ex.Message,
+                typeof(OutboxDomainEventService).Name);
         }
         finally
         {

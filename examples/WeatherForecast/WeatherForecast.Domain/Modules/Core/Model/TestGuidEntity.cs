@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using System;
-using System.Collections.Generic;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class TestGuidEntity : AuditableAggregateRoot<Guid>
 {

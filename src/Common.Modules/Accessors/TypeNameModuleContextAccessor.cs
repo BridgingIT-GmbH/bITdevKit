@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public class TypeNameModuleContextAccessor : IModuleContextAccessor
 {
+    private readonly Func<Type, string> moduleNameSelector = t => t.FullName.SliceFrom("Modules.").SliceTill(".");
+
     private readonly IEnumerable<IModule> modules;
-    private readonly Func<Type, string> moduleNameSelector = (t) => t.FullName.SliceFrom("Modules.").SliceTill(".");
 
     public TypeNameModuleContextAccessor(
         IEnumerable<IModule> modules = null,
@@ -26,7 +25,6 @@ public class TypeNameModuleContextAccessor : IModuleContextAccessor
 
     public virtual IModule Find(Type type)
     {
-        return this.modules.FirstOrDefault(m =>
-            m.Name.SafeEquals(this.moduleNameSelector(type)));
+        return this.modules.FirstOrDefault(m => m.Name.SafeEquals(this.moduleNameSelector(type)));
     }
 }

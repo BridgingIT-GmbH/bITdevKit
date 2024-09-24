@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Dapper"/>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,14 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj" />
-    <ProjectReference Include="..\WeatherForecast.Domain\WeatherForecast.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj"/>
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj"/>
+    <ProjectReference Include="..\WeatherForecast.Domain\WeatherForecast.Domain.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Core\EntityFramework\Migrations\" />
+    <Folder Include="Modules\Core\EntityFramework\Migrations\"/>
   </ItemGroup>
 
 </Project>

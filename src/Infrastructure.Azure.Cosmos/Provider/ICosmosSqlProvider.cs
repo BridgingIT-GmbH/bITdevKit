@@ -5,18 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 public interface ICosmosSqlProvider<TItem>
 {
-    Task<TItem> ReadItemAsync(
-        string id,
-        object partitionKey = null,
-        CancellationToken cancellationToken = default);
+    Task<TItem> ReadItemAsync(string id, object partitionKey = null, CancellationToken cancellationToken = default);
 
     Task<TItem> CreateItemAsync(
         TItem item,

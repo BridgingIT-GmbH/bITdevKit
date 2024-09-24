@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
+using Common;
+using DevKit.Application.Commands;
+using Domain;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -24,8 +24,10 @@ public class DinnerCreateCommand : CommandRequestBase<Result<Dinner>>
     public string ImageUrl { get; set; }
     public DinnerLocation Location { get; set; }
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<DinnerCreateCommand>
     {

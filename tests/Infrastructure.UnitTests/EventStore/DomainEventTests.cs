@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EventStore;
 
-using BridgingIT.DevKit.Domain.EventSourcing;
+using Domain.EventSourcing;
 
 [UnitTest("Infrastructure")]
 public class DomainEventTests
@@ -16,7 +16,8 @@ public class DomainEventTests
         const int aggregateId = 10;
         var sut = new DomainEvent<int>(aggregateId);
         sut.ShouldNotBeNull();
-        sut.EventId.ToString().ShouldNotBeNullOrEmpty();
+        sut.EventId.ToString()
+            .ShouldNotBeNullOrEmpty();
         sut.AggregateId.ShouldBe(aggregateId);
     }
 
@@ -25,7 +26,8 @@ public class DomainEventTests
     {
         var sut = new DomainEvent<int>();
         sut.ShouldNotBeNull();
-        sut.EventId.ToString().ShouldNotBeNullOrEmpty();
+        sut.EventId.ToString()
+            .ShouldNotBeNullOrEmpty();
         sut.AggregateId.ShouldBe(0);
     }
 }

@@ -8,16 +8,24 @@
 
 @if (forecasts == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
 }
 else
 {
     <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0">
         <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Summary!)">Summary</MudTableSortLabel></MudTh>
+            <MudTh>
+                <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x => x.Date)">Date</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureC)">Temp. (C)</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureF)">Temp. (F)</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Summary!)">Summary</MudTableSortLabel>
+            </MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Date">@context.Date</MudTd>
@@ -26,7 +34,7 @@ else
             <MudTd DataLabel="Summary">@context.Summary</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+            <MudTablePager PageSizeOptions="new[] { 50, 100 }"/>
         </PagerContent>
     </MudTable>
 }
@@ -41,12 +49,7 @@ else
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);
         var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast { Date = startDate.AddDays(index), TemperatureC = Random.Shared.Next(-20, 55), Summary = summaries[Random.Shared.Next(summaries.Length)] }).ToArray();
 
         snackbar.Add($"{localizer["Notification_WeatherDataLoaded"]}");
     }
@@ -58,4 +61,5 @@ else
         public string Summary { get; set; }
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
+
 }

@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Scrutor" />
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="Scrutor"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj"/>
   </ItemGroup>
 
 </Project>

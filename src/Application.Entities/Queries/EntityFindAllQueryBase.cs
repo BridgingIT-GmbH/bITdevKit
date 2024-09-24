@@ -5,22 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
+using Common;
+using Domain.Model;
 using FluentValidation;
 using FluentValidation.Results;
+using Queries;
 
-public abstract class EntityFindAllQueryBase<TEntity>(int pageNumber = 1, int pageSize = int.MaxValue, string searchString = null, string orderBy = null, string include = null) :
-    QueryRequestBase<PagedResult<TEntity>>, IEntityFindAllQuery<TEntity>
+public abstract class EntityFindAllQueryBase<TEntity>(
+    int pageNumber = 1,
+    int pageSize = int.MaxValue,
+    string searchString = null,
+    string orderBy = null,
+    string include = null) : QueryRequestBase<PagedResult<TEntity>>, IEntityFindAllQuery<TEntity>
     where TEntity : class, IEntity
 {
     private List<AbstractValidator<EntityFindAllQueryBase<TEntity>>> validators;
 
     protected EntityFindAllQueryBase()
-        : this(1, int.MaxValue, null, null)
-    {
-    }
+        : this(1) { }
 
     public int PageNumber { get; set; } = pageNumber <= 0 ? 1 : pageNumber;
 
@@ -32,8 +34,7 @@ public abstract class EntityFindAllQueryBase<TEntity>(int pageNumber = 1, int pa
 
     public string Include { get; set; } = include;
 
-    public EntityFindAllQueryBase<TEntity> AddValidator(
-        AbstractValidator<EntityFindAllQueryBase<TEntity>> validator)
+    public EntityFindAllQueryBase<TEntity> AddValidator(AbstractValidator<EntityFindAllQueryBase<TEntity>> validator)
     {
         (this.validators ??= []).AddOrUpdate(validator);
 
@@ -41,11 +42,15 @@ public abstract class EntityFindAllQueryBase<TEntity>(int pageNumber = 1, int pa
     }
 
     public EntityFindAllQueryBase<TEntity> AddValidator<TValidator>()
-        where TValidator : class => this.AddValidator(
-            Factory<TValidator>.Create() as AbstractValidator<EntityFindAllQueryBase<TEntity>>);
+        where TValidator : class
+    {
+        return this.AddValidator(Factory<TValidator>.Create() as AbstractValidator<EntityFindAllQueryBase<TEntity>>);
+    }
 
-    public override ValidationResult Validate() =>
-        new Validator(this.validators).Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator(this.validators).Validate(this);
+    }
 
     public class Validator : AbstractValidator<EntityFindAllQueryBase<TEntity>>
     {

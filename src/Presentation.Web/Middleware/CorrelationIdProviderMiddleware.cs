@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 /// <summary>
-/// Provides correlation ids to each request to allow log entries grouping.
+///     Provides correlation ids to each request to allow log entries grouping.
 /// </summary>
 public class CorrelationIdProviderMiddleware
 {
@@ -52,20 +50,26 @@ public class CorrelationIdProviderMiddleware
 
         if (string.IsNullOrWhiteSpace(correlationId))
         {
-            correlationId = GuidGenerator.CreateSequential().ToString("N"); // TODO: or generate a shorter id? https://nima-ara-blog.azurewebsites.net/generating-ids-in-csharp/
+            correlationId = GuidGenerator.CreateSequential()
+                .ToString("N"); // TODO: or generate a shorter id? https://nima-ara-blog.azurewebsites.net/generating-ids-in-csharp/
         }
 
         httpContext.Response.Headers.AddOrUpdate(CorrelationKey, correlationId);
         httpContext.Items.AddOrUpdate(CorrelationKey, correlationId.ToString());
 
-        var flowId = GuidGenerator.Create(
-                httpContext.Features.Get<IEndpointFeature>()?.Endpoint?.Metadata?.GetMetadata<ControllerActionDescriptor>()?.AttributeRouteInfo?.Template).ToString("N");
+        var flowId = GuidGenerator.Create(httpContext.Features.Get<IEndpointFeature>()
+                ?.Endpoint?.Metadata?.GetMetadata<ControllerActionDescriptor>()
+                ?.AttributeRouteInfo?.Template)
+            .ToString("N");
         // TODO: is the ControllerActionDescriptor also available when using .net60 minimal apis? if not the flowId will be 00000000000000000000000000000000
-        flowId = flowId != "00000000000000000000000000000000" ? flowId : GuidGenerator.Create(httpContext.Request.Path).ToString("N");
+        flowId = flowId != "00000000000000000000000000000000"
+            ? flowId
+            : GuidGenerator.Create(httpContext.Request.Path).ToString("N");
         httpContext.Response.Headers.AddOrUpdate(FlowKey, flowId);
         httpContext.Items.AddOrUpdate(FlowKey, flowId);
 
-        var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity; // Enrich the request activity created by ASP.NET Core
+        var activity = httpContext.Features.Get<IHttpActivityFeature>()
+            ?.Activity; // Enrich the request activity created by ASP.NET Core
         if (activity is not null)
         {
             httpContext.Response.Headers.AddOrUpdate(TraceKey, activity.TraceId.ToString());
@@ -76,11 +80,11 @@ public class CorrelationIdProviderMiddleware
         //metricsFeature?.Tags.Add(new KeyValuePair<string, object>(FlowKey, flowId));
 
         using (this.logger.BeginScope(new Dictionary<string, object>
-        {
-            [TraceKey] = activity?.TraceId.ToString(),
-            [CorrelationKey] = correlationId.ToString(),
-            [FlowKey] = flowId
-        }))
+               {
+                   [TraceKey] = activity?.TraceId.ToString(),
+                   [CorrelationKey] = correlationId.ToString(),
+                   [FlowKey] = flowId
+               }))
         {
             activity?.SetBaggage(ActivityConstants.CorrelationIdTagKey, correlationId);
             activity?.SetBaggage(ActivityConstants.FlowIdTagKey, flowId);

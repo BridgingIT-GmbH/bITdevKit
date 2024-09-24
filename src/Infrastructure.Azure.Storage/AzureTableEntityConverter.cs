@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using global::Azure.Data.Tables;
@@ -16,8 +13,7 @@ public static class AzureTableEntityConverter
 {
     private static JsonSerializerOptions defaultJsonSerializerOptions = new();
 
-    public static void SetDefaultJsonSerializerOptions(
-        JsonSerializerOptions jsonSerializerOptions = default)
+    public static void SetDefaultJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions = default)
     {
         defaultJsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
     }
@@ -30,9 +26,10 @@ public static class AzureTableEntityConverter
         PropertyConverters<T> propertyConverters = default)
         where T : class, new()
     {
-        return CreateTableEntity(
-            entity,
-            typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToList(),
+        return CreateTableEntity(entity,
+            typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p => p.CanRead && p.CanWrite)
+                .ToList(),
             partitionKey,
             rowKey,
             jsonSerializerOptions ?? defaultJsonSerializerOptions,
@@ -47,10 +44,11 @@ public static class AzureTableEntityConverter
     {
         var entity = new T();
 
-        FillEntityProperties(
-            tableEntity,
+        FillEntityProperties(tableEntity,
             entity,
-            typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToList(),
+            typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p => p.CanRead && p.CanWrite)
+                .ToList(),
             jsonSerializerOptions ?? defaultJsonSerializerOptions,
             propertyConverters);
 
@@ -146,7 +144,9 @@ public static class AzureTableEntityConverter
 
         foreach (var propertyInfo in properties)
         {
-            if (propertyConverters is not null && tableEntity.Keys.Contains(propertyInfo.Name) && propertyConverters.ContainsKey(propertyInfo.Name))
+            if (propertyConverters is not null &&
+                tableEntity.Keys.Contains(propertyInfo.Name) &&
+                propertyConverters.ContainsKey(propertyInfo.Name))
             {
                 propertyConverters[propertyInfo.Name].SetObjectProperty(entity, tableEntity[propertyInfo.Name]);
             }
@@ -154,7 +154,9 @@ public static class AzureTableEntityConverter
             {
                 var value = tableEntity[propertyInfo.Name];
 
-                if (value is not null && (propertyInfo.PropertyType == typeof(DateTimeOffset) || propertyInfo.PropertyType == typeof(DateTimeOffset?)))
+                if (value is not null &&
+                    (propertyInfo.PropertyType == typeof(DateTimeOffset) ||
+                    propertyInfo.PropertyType == typeof(DateTimeOffset?)))
                 {
                     value = tableEntity.GetDateTimeOffset(propertyInfo.Name);
                 }
@@ -186,8 +188,7 @@ public static class AzureTableEntityConverter
                 var value = tableEntity.GetString($"{propertyInfo.Name}Json");
                 if (value is not null)
                 {
-                    propertyInfo.SetValue(
-                        entity,
+                    propertyInfo.SetValue(entity,
                         JsonSerializer.Deserialize(value, propertyInfo.PropertyType, jsonSerializerOptions));
                 }
             }
@@ -201,6 +202,4 @@ public class PropertyConverter<T>(Func<T, object> toTableEntityProperty, Action<
     public Action<T, object> SetObjectProperty { get; } = setObjectProperty;
 }
 
-public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>>
-{
-}
+public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>> { }

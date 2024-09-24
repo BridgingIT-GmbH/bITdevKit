@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using System;
-using System.Threading.Tasks;
-using Xunit;
-using Shouldly;
-
 [UnitTest("Common")]
 public class TaskExtensionsTests
 {
@@ -59,7 +54,7 @@ public class TaskExtensionsTests
     public async Task RetryWithResult_Success_Succeeds()
     {
         // Arrange
-        Func<Task<string>> taskFactory = () => Task.FromResult("Success");
+        var taskFactory = () => Task.FromResult("Success");
 
         // Act
         //string result = await Should.NotThrowAsync(() => taskFactory.Retry(retryCount, delay));

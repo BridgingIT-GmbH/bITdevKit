@@ -8,7 +8,5 @@ namespace BridgingIT.DevKit.Common;
 public class NotFoundResultError : ResultErrorBase
 {
     public NotFoundResultError()
-        : base("Not found")
-    {
-    }
+        : base("Not found") { }
 }

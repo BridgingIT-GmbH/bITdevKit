@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System.Collections.Generic;
-
 [UnitTest("Common")]
 public class ReflectionHelperTests
 {
@@ -14,13 +12,7 @@ public class ReflectionHelperTests
     public void CanSetProperties()
     {
         // Arrange
-        var items = new Dictionary<string, object>
-        {
-            ["FirstName"] = "John",
-            ["LastName"] = "Doe",
-            ["age"] = 99,
-            ["Title"] = "Sir"
-        };
+        var items = new Dictionary<string, object> { ["FirstName"] = "John", ["LastName"] = "Doe", ["age"] = 99, ["Title"] = "Sir" };
         var stub = new StubPerson();
 
         // Act
@@ -45,6 +37,7 @@ public class ReflectionHelperTests
         ReflectionHelper.SetProperty(stub, "age", 99);
         ReflectionHelper.SetProperty(stub, "YearBorn", 1980);
         ReflectionHelper.SetProperty(stub, "title", "Sir");
+        ReflectionHelper.SetProperty(stub, "CompanyName", "Acme");
 
         // Assert
         stub.FirstName.ShouldBe("John");
@@ -52,6 +45,7 @@ public class ReflectionHelperTests
         stub.Age.ShouldBe(99);
         stub.YearBorn.ShouldBe(1980);
         stub.Title.ShouldBe("Sir");
+        stub.CompanyName.ShouldBe("Acme");
     }
 
     [Fact]
@@ -71,7 +65,7 @@ public class ReflectionHelperTests
     public void CanGetMultipleProperties()
     {
         // Arrange
-        var stub = new StubPerson()
+        var stub = new StubPerson
         {
             FirstName = "John",
             LastName = "Doe",
@@ -82,25 +76,27 @@ public class ReflectionHelperTests
 
         // Act
         // Assert
-        ReflectionHelper.GetProperty<string>(stub, "FirstName").ShouldBe("John");
-        ReflectionHelper.GetProperty<int>(stub, "FirstName").ShouldBe(0);
-        ReflectionHelper.GetProperty<string>(stub, "LastName").ShouldBe("Doe");
-        ReflectionHelper.GetProperty<int>(stub, "age").ShouldBe(99);
-        ReflectionHelper.GetProperty<string>(stub, "age").ShouldBeNull();
-        ReflectionHelper.GetProperty<int>(stub, "YearBorn").ShouldBe(1980);
-        ReflectionHelper.GetProperty<string>(stub, "title").ShouldBe("Sir");
+        ReflectionHelper.GetProperty<string>(stub, "FirstName")
+            .ShouldBe("John");
+        ReflectionHelper.GetProperty<int>(stub, "FirstName")
+            .ShouldBe(0);
+        ReflectionHelper.GetProperty<string>(stub, "LastName")
+            .ShouldBe("Doe");
+        ReflectionHelper.GetProperty<int>(stub, "age")
+            .ShouldBe(99);
+        ReflectionHelper.GetProperty<string>(stub, "age")
+            .ShouldBeNull();
+        ReflectionHelper.GetProperty<int>(stub, "YearBorn")
+            .ShouldBe(1980);
+        ReflectionHelper.GetProperty<string>(stub, "title")
+            .ShouldBe("Sir");
     }
 
     [Fact]
     public void CanSetAndConvertProperties()
     {
         // Arrange
-        var items = new Dictionary<string, object>
-        {
-            ["FirstName"] = "John",
-            ["LastName"] = "Doe",
-            ["age"] = "99"
-        };
+        var items = new Dictionary<string, object> { ["FirstName"] = "John", ["LastName"] = "Doe", ["age"] = "99" };
         var stub = new StubPerson();
 
         // Act
@@ -117,13 +113,7 @@ public class ReflectionHelperTests
     public void CanSetNullableProperties()
     {
         // Arrange
-        var items = new Dictionary<string, object>
-        {
-            ["FirstName"] = "John",
-            ["LastName"] = "Doe",
-            ["age"] = 99,
-            ["YearBorn"] = "1980"
-        };
+        var items = new Dictionary<string, object> { ["FirstName"] = "John", ["LastName"] = "Doe", ["age"] = 99, ["YearBorn"] = "1980" };
         var stub = new StubPerson();
 
         // Act
@@ -140,16 +130,8 @@ public class ReflectionHelperTests
     public void CanSetPropertiesToNull()
     {
         // Arrange
-        var items = new Dictionary<string, object>
-        {
-            ["FirstName"] = null,
-            ["YearBorn"] = null
-        };
-        var stub = new StubPerson
-        {
-            FirstName = "John",
-            YearBorn = 1980
-        };
+        var items = new Dictionary<string, object> { ["FirstName"] = null, ["YearBorn"] = null };
+        var stub = new StubPerson { FirstName = "John", YearBorn = 1980 };
 
         // Act
         ReflectionHelper.SetProperties(stub, items);
@@ -163,10 +145,7 @@ public class ReflectionHelperTests
     public void CanSetInitOnlyProperties()
     {
         // Arrange
-        var items = new Dictionary<string, object>
-        {
-            ["Country"] = "USA"
-        };
+        var items = new Dictionary<string, object> { ["Country"] = "USA" };
         var stub = new StubPerson();
 
         // Act
@@ -185,14 +164,13 @@ public class ReflectionHelperTests
         // Assert
         result.ShouldNotBeNull();
         result.ShouldNotBeEmpty();
-        result.FirstOrDefault().Name.ShouldBe(nameof(StubPerson));
+        result.FirstOrDefault()
+            .Name.ShouldBe(nameof(StubPerson));
     }
 
     public class StubPerson
     {
-        public StubPerson()
-        {
-        }
+        public StubPerson() { }
 
         public StubPerson(string firstName)
         {
@@ -211,6 +189,7 @@ public class ReflectionHelperTests
 
         public string Country { get; init; }
 
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         public string CompanyName { get; private set; } = "Unknown";
     }
 }

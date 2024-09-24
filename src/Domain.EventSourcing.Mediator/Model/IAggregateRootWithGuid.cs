@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
-public interface IAggregateRootWithGuid : IEntity<Guid>, IAggregateRoot
-{
-}
+public interface IAggregateRootWithGuid : IEntity<Guid>, IAggregateRoot { }

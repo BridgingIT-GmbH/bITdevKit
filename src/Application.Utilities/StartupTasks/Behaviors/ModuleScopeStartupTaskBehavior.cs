@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.Utilities;
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 
 public class ModuleScopeStartupTaskBehavior(
@@ -25,36 +22,31 @@ public class ModuleScopeStartupTaskBehavior(
         var module = this.moduleAccessors.Find(task.GetType());
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-        {
-            [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
-        }))
+               {
+                   [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
+               }))
         {
             if (module?.Enabled == false)
             {
                 throw new ModuleNotEnabledException(module.Name);
             }
-            else
-            {
-                await this.activitySources.Find(module?.Name).StartActvity(
-                    $"MODULE {module?.Name}",
+
+            await this.activitySources.Find(module?.Name)
+                .StartActvity($"MODULE {module?.Name}",
                     async (a, c) =>
                     {
                         using (this.Logger.BeginScope(new Dictionary<string, object>
+                               {
+                                   [Constants.TraceIdKey] = a.TraceId.ToString()
+                               }))
                         {
-                            [Constants.TraceIdKey] = a.TraceId.ToString(),
-                        }))
-                        {
-                            await this.activitySources.Find(module?.Name).StartActvity(
-                                $"STARTUPTASK_EXECUTE {task.GetType().Name}",
-                                async (a, c) => await next().AnyContext(),
-                                cancellationToken: c);
+                            await this.activitySources.Find(module?.Name)
+                                .StartActvity($"STARTUPTASK_EXECUTE {task.GetType().Name}",
+                                    async (a, c) => await next().AnyContext(),
+                                    cancellationToken: c);
                         }
                     },
-                    baggages: new Dictionary<string, string>
-                    {
-                        [ActivityConstants.ModuleNameTagKey] = module?.Name,
-                    });
-            }
+                    baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = module?.Name });
         }
     }
 }

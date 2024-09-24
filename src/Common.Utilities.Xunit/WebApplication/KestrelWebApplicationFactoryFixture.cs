@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -15,17 +13,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 // origin: https://danieldonbavand.com/2022/06/13/using-playwright-with-the-webapplicationfactory-to-test-a-blazor-application/
-public class KestrelWebApplicationFactoryFixture<TEntryPoint>
-    : WebApplicationFactory<TEntryPoint>
+public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    private ITestOutputHelper output;
     private IHost host;
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public string ServerAddress
     {
@@ -38,7 +35,7 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint>
 
     public KestrelWebApplicationFactoryFixture<TEntryPoint> WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
@@ -52,14 +49,14 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint>
         // of TestServer so we can listen on a real address.
         builder.ConfigureWebHost(webHostBuilder => webHostBuilder.UseKestrel());
         builder.ConfigureLogging(ctx => ctx // TODO: webapp logs are not visible in test log anymore (serilog?)
-            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.output)));
+            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.Output)));
 
         builder.UseSerilog(); // comes before Program.cs > ConfigureLogging
 
         var loggerConfiguration = new LoggerConfiguration().MinimumLevel.Information();
-        if (this.output is not null)
+        if (this.Output is not null)
         {
-            loggerConfiguration.WriteTo.TestOutput(this.output, Serilog.Events.LogEventLevel.Information);
+            loggerConfiguration.WriteTo.TestOutput(this.Output, LogEventLevel.Information);
         }
 
         Log.Logger = loggerConfiguration.CreateLogger().ForContext<CustomWebApplicationFactory<TEntryPoint>>();
@@ -85,9 +82,7 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint>
         var server = this.host.Services.GetRequiredService<IServer>();
         var addresses = server.Features.Get<IServerAddressesFeature>();
 
-        this.ClientOptions.BaseAddress = addresses!.Addresses
-            .Select(x => new Uri(x))
-            .Last();
+        this.ClientOptions.BaseAddress = addresses!.Addresses.Select(x => new Uri(x)).Last();
 
         // Return the host that uses TestServer, rather than the real one.
         // Otherwise the internals will complain about the host's server

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
-using System;
-
 public interface IEventTypeSelector
 {
     Type FindType(string typename);

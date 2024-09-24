@@ -6,32 +6,30 @@
 namespace BridgingIT.DevKit.Common;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using Serilog;
+using Serilog.Events;
 using Xunit.Abstractions;
 
 public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.net/docs/shared-context#class-fixture
     : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    private ITestOutputHelper output = null;
     private string environment = "Development";
-    private bool fakeAuthenticationEnabled = false;
-    private Action<IServiceCollection> services = null;
+    private bool fakeAuthenticationEnabled;
+    private Action<IServiceCollection> services;
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public IServiceProvider ServiceProvider => this.Services.CreateScope().ServiceProvider;
 
     public CustomWebApplicationFactoryFixture<TEntryPoint> WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
@@ -59,17 +57,17 @@ public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.ne
         builder.ConfigureAppConfiguration((ctx, cnf) =>
         {
             cnf.SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .AddEnvironmentVariables();
+                .AddJsonFile("appsettings.json", false, true)
+                .AddEnvironmentVariables();
         });
         builder.ConfigureLogging(ctx => ctx // TODO: webapp logs are not visible in test log anymore (serilog?)
-            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.output)));
+            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.Output)));
 
         builder.UseSerilog(); // comes before Program.cs > ConfigureLogging
         var loggerConfiguration = new LoggerConfiguration().MinimumLevel.Information();
-        if (this.output is not null)
+        if (this.Output is not null)
         {
-            loggerConfiguration.WriteTo.TestOutput(this.output, Serilog.Events.LogEventLevel.Information);
+            loggerConfiguration.WriteTo.TestOutput(this.Output, LogEventLevel.Information);
         }
 
         Log.Logger = loggerConfiguration.CreateLogger().ForContext<CustomWebApplicationFactoryFixture<TEntryPoint>>();
@@ -81,11 +79,15 @@ public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.ne
             if (this.fakeAuthenticationEnabled)
             {
                 services.AddAuthentication(options => // add a fake authentication handler
-                {
-                    options.DefaultAuthenticateScheme = FakeAuthenticationHandler.SchemeName; // use the fake handler instead of the jwt handler (Startup)
-                    options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
-                })
-                .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(FakeAuthenticationHandler.SchemeName, null);
+                    {
+                        options.DefaultAuthenticateScheme =
+                            FakeAuthenticationHandler
+                                .SchemeName; // use the fake handler instead of the jwt handler (Startup)
+                        options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
+                    })
+                    .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(
+                        FakeAuthenticationHandler.SchemeName,
+                        null);
             }
         });
 

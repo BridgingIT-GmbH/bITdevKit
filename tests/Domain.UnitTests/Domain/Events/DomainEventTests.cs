@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain;
 
-using System;
-using BridgingIT.DevKit.Domain;
-using Shouldly;
-using Xunit;
-
+[UnitTest("Domain")]
 public class DomainEventTests
 {
     [Fact]

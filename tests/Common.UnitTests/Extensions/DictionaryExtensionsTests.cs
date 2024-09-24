@@ -95,7 +95,8 @@ public class DictionaryExtensionsTests
         Dictionary<string, int> dictionary = null;
 
         // Act
-        var result = dictionary.SafeNull().GetValueOrDefault("key", 100);
+        var result = dictionary.SafeNull()
+            .GetValueOrDefault("key", 100);
 
         // Assert
         result.ShouldBe(100);
@@ -108,7 +109,8 @@ public class DictionaryExtensionsTests
         var dictionary = new Dictionary<string, int> { { "key", 42 } };
 
         // Act
-        var result = dictionary.SafeNull().GetValueOrDefault(null, 100);
+        var result = dictionary.SafeNull()
+            .GetValueOrDefault(null, 100);
 
         // Assert
         result.ShouldBe(100);
@@ -125,7 +127,8 @@ public class DictionaryExtensionsTests
 
         // Assert
         dictionary.ShouldContainKey("key2");
-        dictionary["key2"].ShouldBe(100);
+        dictionary["key2"]
+            .ShouldBe(100);
     }
 
     [Fact]
@@ -138,7 +141,8 @@ public class DictionaryExtensionsTests
         dictionary.AddOrUpdate("key", 100);
 
         // Assert
-        dictionary["key"].ShouldBe(100);
+        dictionary["key"]
+            .ShouldBe(100);
     }
 
     [Fact]
@@ -165,7 +169,8 @@ public class DictionaryExtensionsTests
 
         // Assert
         dictionary.Count.ShouldBe(1);
-        dictionary["key"].ShouldBe(42);
+        dictionary["key"]
+            .ShouldBe(42);
     }
 
     [Fact]
@@ -173,19 +178,17 @@ public class DictionaryExtensionsTests
     {
         // Arrange
         var dictionary = new Dictionary<string, int> { { "key1", 42 } };
-        var itemsToAdd = new Dictionary<string, int>
-            {
-                { "key1", 100 },
-                { "key2", 200 }
-            };
+        var itemsToAdd = new Dictionary<string, int> { { "key1", 100 }, { "key2", 200 } };
 
         // Act
         dictionary.AddOrUpdate(itemsToAdd);
 
         // Assert
         dictionary.Count.ShouldBe(2);
-        dictionary["key1"].ShouldBe(100);
-        dictionary["key2"].ShouldBe(200);
+        dictionary["key1"]
+            .ShouldBe(100);
+        dictionary["key2"]
+            .ShouldBe(200);
     }
 
     [Fact]
@@ -200,7 +203,8 @@ public class DictionaryExtensionsTests
 
         // Assert
         dictionary.Count.ShouldBe(1);
-        dictionary["key1"].ShouldBe(42);
+        dictionary["key1"]
+            .ShouldBe(42);
     }
 
     [Fact]
@@ -272,12 +276,7 @@ public class DictionaryExtensionsTests
     public void ContainsKeyIgnoreCase_MultipleKeys_ReturnsTrue()
     {
         // Arrange
-        var sut = new Dictionary<string, int>
-        {
-            ["First"] = 1,
-            ["Second"] = 2,
-            ["Third"] = 3
-        };
+        var sut = new Dictionary<string, int> { ["First"] = 1, ["Second"] = 2, ["Third"] = 3 };
 
         // Act
         var result = sut.ContainsKeyIgnoreCase("sEcOnD");

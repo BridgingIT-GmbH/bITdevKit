@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Mediator.Repositories.Decorators;
 
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.UnitTests;
+using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Domain")]
@@ -19,14 +17,19 @@ public class GenericRepositoryDomainEventBehaviorTests
         // Arrange
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
+        var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger, inner);
         // Act
         await sut.InsertAsync(entity);
         // Assert
-        await inner.Received().InsertAsync(Arg.Any<PersonDtoStub>());
-        entity.DomainEvents.GetAll().Count().ShouldBe(1);
-        entity.DomainEvents.GetAll().First().ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
+        await inner.Received()
+            .InsertAsync(Arg.Any<PersonDtoStub>());
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(1);
+        entity.DomainEvents.GetAll()
+            .First()
+            .ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -35,14 +38,19 @@ public class GenericRepositoryDomainEventBehaviorTests
         // Arrange
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
+        var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger, inner);
         // Act
         await sut.UpdateAsync(entity);
         // Assert
-        await inner.Received().UpdateAsync(Arg.Any<PersonDtoStub>());
-        entity.DomainEvents.GetAll().Count().ShouldBe(1);
-        entity.DomainEvents.GetAll().First().ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
+        await inner.Received()
+            .UpdateAsync(Arg.Any<PersonDtoStub>());
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(1);
+        entity.DomainEvents.GetAll()
+            .First()
+            .ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -51,14 +59,19 @@ public class GenericRepositoryDomainEventBehaviorTests
         // Arrange
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
+        var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger, inner);
         // Act
         await sut.UpsertAsync(entity);
         // Assert
-        await inner.Received().UpsertAsync(Arg.Any<PersonDtoStub>());
-        entity.DomainEvents.GetAll().Count().ShouldBe(1);
-        entity.DomainEvents.GetAll().First().ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
+        await inner.Received()
+            .UpsertAsync(Arg.Any<PersonDtoStub>());
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(1);
+        entity.DomainEvents.GetAll()
+            .First()
+            .ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -67,15 +80,26 @@ public class GenericRepositoryDomainEventBehaviorTests
         // Arrange
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        inner.ExistsAsync(Arg.Any<string>()).Returns(true);
-        var entity = new PersonDtoStub() { Id = Guid.NewGuid().ToString(), FullName = "John Doe" };
+        inner.ExistsAsync(Arg.Any<string>())
+            .Returns(true);
+        var entity = new PersonDtoStub
+        {
+            Id = Guid.NewGuid()
+                .ToString(),
+            FullName = "John Doe"
+        };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger, inner);
         // Act
         await sut.UpsertAsync(entity);
         // Assert
-        await inner.Received().UpsertAsync(Arg.Any<PersonDtoStub>());
-        entity.DomainEvents.GetAll().Count().ShouldBe(1);
-        entity.DomainEvents.GetAll().First().ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
+        await inner.Received()
+            .UpsertAsync(Arg.Any<PersonDtoStub>());
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(1);
+        entity.DomainEvents.GetAll()
+            .First()
+            .ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -84,13 +108,18 @@ public class GenericRepositoryDomainEventBehaviorTests
         // Arrange
         var logger = Substitute.For<ILoggerFactory>();
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
-        var entity = new PersonDtoStub() { FullName = "John Doe" };
+        var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger, inner);
         // Act
         await sut.DeleteAsync(entity);
         // Assert
-        await inner.Received().DeleteAsync(Arg.Any<PersonDtoStub>());
-        entity.DomainEvents.GetAll().Count().ShouldBe(1);
-        entity.DomainEvents.GetAll().First().ShouldBeOfType<AggregateDeletedDomainEvent<PersonDtoStub>>();
+        await inner.Received()
+            .DeleteAsync(Arg.Any<PersonDtoStub>());
+        entity.DomainEvents.GetAll()
+            .Count()
+            .ShouldBe(1);
+        entity.DomainEvents.GetAll()
+            .First()
+            .ShouldBeOfType<AggregateDeletedDomainEvent<PersonDtoStub>>();
     }
 }

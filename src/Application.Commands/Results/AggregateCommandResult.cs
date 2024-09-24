@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using BridgingIT.DevKit.Domain.Model;
+using Domain.Model;
 
 public class AggregateCommandResult<TEntity>(TEntity entity)
     where TEntity : class, IAggregateRoot
 {
     /// <summary>
-    /// The aggregate id
+    ///     The aggregate id
     /// </summary>
     public TEntity Entity { get; } = entity;
 }

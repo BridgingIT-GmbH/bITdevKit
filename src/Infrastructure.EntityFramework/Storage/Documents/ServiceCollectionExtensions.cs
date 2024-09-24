@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
-using Microsoft.EntityFrameworkCore;
+using EntityFrameworkCore;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -29,7 +29,7 @@ public static partial class ServiceCollectionExtensions
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                   provider ?? new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
+                    provider ?? new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(

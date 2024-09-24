@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
-using System;
-using System.Linq;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Domain.EventSourcing.Store;
+using Domain.EventSourcing.Model;
+using Domain.EventSourcing.Store;
 
 public class EventTypeSelector : IEventTypeSelector
 {
@@ -19,14 +17,15 @@ public class EventTypeSelector : IEventTypeSelector
         if (this.typeCache.Length == 0)
         {
             var baseType = typeof(IAggregateEvent);
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-            {
-                var name = a.GetName().Name;
-                return name != null &&
-                       !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
-            });
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a =>
+                {
+                    var name = a.GetName().Name;
+                    return name != null && !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
+                });
             this.typeCache = assemblies.SelectMany(a => a.GetTypes()
-                .Where(t => baseType.IsAssignableFrom(t) && !t.IsInterface)).ToArray();
+                    .Where(t => baseType.IsAssignableFrom(t) && !t.IsInterface))
+                .ToArray();
         }
 
         return this.typeCache.First(t => t.FullName == typename);

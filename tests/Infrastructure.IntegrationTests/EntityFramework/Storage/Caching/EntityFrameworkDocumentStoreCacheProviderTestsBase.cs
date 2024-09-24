@@ -4,7 +4,8 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
-using BridgingIT.DevKit.Application.Storage;
+
+using Application.Storage;
 
 public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
 {
@@ -68,7 +69,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         await sut.RemoveAsync(this.key);
 
         // Assert
-        sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     public virtual async Task RemoveStartsWithAsync_WithValidKey_ShouldRemoveValue()
@@ -81,7 +83,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         await sut.RemoveStartsWithAsync(key);
 
         // Assert
-        sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     public virtual void RemoveStartsWith_WithValidKey_ShouldRemoveValue()
@@ -94,7 +97,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         sut.RemoveStartsWith(key);
 
         // Assert
-        sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     public virtual void Remove_WithValidKey_ShouldRemoveValue()
@@ -106,7 +110,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         sut.Remove(this.key);
 
         // Assert
-        sut.TryGet<string>(this.key, out _).ShouldBeFalse();
+        sut.TryGet<string>(this.key, out _)
+            .ShouldBeFalse();
     }
 
     public virtual async Task SetAsync_WithValidData_ShouldReturnValue()
@@ -123,7 +128,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         await sut.SetAsync(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        sut.TryGet<string>(key, out _).ShouldBeTrue();
+        sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     public virtual void Set_WithValidButExpiredData_ShouldNotReturnValue()
@@ -140,7 +146,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        sut.TryGet<string>(key, out _).ShouldBeFalse();
+        sut.TryGet<string>(key, out _)
+            .ShouldBeFalse();
     }
 
     public virtual void Set_WithValidDataNoExpiration_ShouldReturnValue()
@@ -155,7 +162,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         sut.Set(key, value);
 
         // Assert
-        sut.TryGet<string>(key, out _).ShouldBeTrue();
+        sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     public virtual void Set_WithValidData_ShouldReturnValue()
@@ -172,7 +180,8 @@ public abstract class EntityFrameworkDocumentStoreCacheProviderTestsBase
         sut.Set(key, value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        sut.TryGet<string>(key, out _).ShouldBeTrue();
+        sut.TryGet<string>(key, out _)
+            .ShouldBeTrue();
     }
 
     public virtual async Task TryGetAsync_WithInvalidKey_ShouldReturnFalse()

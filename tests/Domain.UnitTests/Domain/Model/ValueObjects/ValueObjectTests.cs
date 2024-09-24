@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class ValueObjectTests
@@ -16,28 +13,14 @@ public class ValueObjectTests
     [Fact]
     public void EqualityTests()
     {
-        var instance0 = new StubValueObject
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "Seattle"
-        };
+        var instance0 = new StubValueObject { StreetName = "One Microsoft Way", HouseNumber = 1, City = "Seattle" };
 
-        var instance1 = new StubValueObject
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "Seattle"
-        };
+        var instance1 = new StubValueObject { StreetName = "One Microsoft Way", HouseNumber = 1, City = "Seattle" };
 
-        var instance2 = new StubValueObject
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "New York"
-        };
+        var instance2 = new StubValueObject { StreetName = "One Microsoft Way", HouseNumber = 1, City = "New York" };
 
-        instance0.Equals(instance1).ShouldBeTrue(); //IEquatable (equals)
+        instance0.Equals(instance1)
+            .ShouldBeTrue(); //IEquatable (equals)
         instance0.ShouldBe(instance1);
         (instance0 == instance1).ShouldBeTrue(); // operator
         instance1.ShouldBe(instance1);
@@ -45,65 +28,46 @@ public class ValueObjectTests
         (instance1 == instance1).ShouldBeTrue(); // operator
 #pragma warning restore CS1718 // Comparison made to same variable
         instance1.ShouldNotBe(instance2);
-        instance0.Equals(instance2).ShouldBeFalse(); // IEquatable
+        instance0.Equals(instance2)
+            .ShouldBeFalse(); // IEquatable
     }
 
     [Fact]
     public void ComparableTests()
     {
-        var instance0 = new StubValueObjectComparable
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "Seattle",
-            ZipCode = 2222
-        };
+        var instance0 = new StubValueObjectComparable { StreetName = "One Microsoft Way", HouseNumber = 1, City = "Seattle", ZipCode = 2222 };
 
-        var instance1 = new StubValueObjectComparable
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "Seattle",
-            ZipCode = 3333
-        };
+        var instance1 = new StubValueObjectComparable { StreetName = "One Microsoft Way", HouseNumber = 1, City = "Seattle", ZipCode = 3333 };
 
-        var instance2 = new StubValueObjectComparable
-        {
-            StreetName = "One Microsoft Way",
-            HouseNumber = 1,
-            City = "New York",
-            ZipCode = 1111
-        };
+        var instance2 = new StubValueObjectComparable { StreetName = "One Microsoft Way", HouseNumber = 1, City = "New York", ZipCode = 1111 };
 
-        var instance3 = new StubValueObjectComparable
-        {
-            StreetName = "Second Microsoft Way",
-            HouseNumber = 10,
-            City = "New York",
-            ZipCode = 1111
-        };
+        var instance3 = new StubValueObjectComparable { StreetName = "Second Microsoft Way", HouseNumber = 10, City = "New York", ZipCode = 1111 };
 
-        instance0.Equals(instance1).ShouldBeTrue(); //IEquatable (equals), same address
+        instance0.Equals(instance1)
+            .ShouldBeTrue(); //IEquatable (equals), same address
         (instance0 == instance1).ShouldBeTrue(); //IEquatable (equals), operator, same address
         instance1.ShouldBe(instance1);
 #pragma warning disable CS1718 // Comparison made to same variable
         (instance1 == instance1).ShouldBeTrue(); // operator
 #pragma warning restore CS1718 // Comparison made to same variable
         instance1.ShouldNotBe(instance2);
-        instance0.Equals(instance2).ShouldBeFalse(); // IEquatable
+        instance0.Equals(instance2)
+            .ShouldBeFalse(); // IEquatable
 
-        var values = new List<StubValueObjectComparable>
-        {
-            instance0,
-            instance1,
-            instance2,
-            instance3
-        };
+        var values = new List<StubValueObjectComparable> { instance0, instance1, instance2, instance3 };
         values.Sort();
-        values.First().ZipCode.ShouldBe(1111); // IComparable (compare),
-        values.Skip(1).Take(1).First().ZipCode.ShouldBe(1111); // IComparable (compare),
-        values.Skip(2).Take(1).First().ZipCode.ShouldBe(2222); // IComparable (compare),
-        values.Last().ZipCode.ShouldBe(3333); // 3333
+        values.First()
+            .ZipCode.ShouldBe(1111); // IComparable (compare),
+        values.Skip(1)
+            .Take(1)
+            .First()
+            .ZipCode.ShouldBe(1111); // IComparable (compare),
+        values.Skip(2)
+            .Take(1)
+            .First()
+            .ZipCode.ShouldBe(2222); // IComparable (compare),
+        values.Last()
+            .ZipCode.ShouldBe(3333); // 3333
 
         (instance0 > instance2).ShouldBeTrue(); // operator
         (instance2 > instance1).ShouldBeFalse(); // operator

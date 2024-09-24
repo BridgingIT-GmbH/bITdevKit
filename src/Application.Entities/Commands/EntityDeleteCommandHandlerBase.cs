@@ -5,15 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Commands;
+using Common;
+using Domain;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
+using Constants = Commands.Constants;
 
 public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityDeletedCommandResult>>
@@ -23,7 +22,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     private readonly IGenericRepository<TEntity> repository;
     private readonly IStringLocalizer localizer;
     private List<IEntityDeleteCommandRule<TEntity>> rules;
-    private List<Func<TCommand, IEntityDeleteCommandRule<TEntity>>> rulesFuncs = null;
+    private List<Func<TCommand, IEntityDeleteCommandRule<TEntity>>> rulesFuncs;
 
     protected EntityDeleteCommandHandlerBase(
         ILoggerFactory loggerFactory,
@@ -39,8 +38,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         this.localizer = localizer;
     }
 
-    public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(
-        IEntityDeleteCommandRule<TEntity> rule)
+    public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(IEntityDeleteCommandRule<TEntity> rule)
     {
         (this.rules ??= []).AddOrUpdate(rule);
 
@@ -48,8 +46,10 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     }
 
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule<TRule>()
-        where TRule : class, IEntityDeleteCommandRule<TEntity> =>
-        this.AddRule(Factory<TRule>.Create());
+        where TRule : class, IEntityDeleteCommandRule<TEntity>
+    {
+        return this.AddRule(Factory<TRule>.Create());
+    }
 
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityDeleteCommandRule<TEntity>> rule)
@@ -74,7 +74,8 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
 
         if (!command.EntityId.IsNullOrEmpty())
         {
-            entity = await this.repository.FindOneAsync(command.EntityId, cancellationToken: cancellationToken).AnyContext();
+            entity = await this.repository.FindOneAsync(command.EntityId, cancellationToken: cancellationToken)
+                .AnyContext();
             this.EnsureEntityFound(command, entity);
 
             command.Entity = entity;
@@ -119,13 +120,16 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     {
         if (entity == null)
         {
-            throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.EntityId}"); // this could be a EntityDeleteRule
+            throw new EntityNotFoundException(
+                $"{typeof(TEntity).Name}: {command.EntityId}"); // this could be a EntityDeleteRule
         }
-        else if (entity is IAuditable auditable && auditable.AuditState.IsDeleted())
+
+        if (entity is IAuditable auditable && auditable.AuditState.IsDeleted())
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.EntityId}");
         }
-        else if (entity is ISoftDeletable deletable && deletable.Deleted == true)
+
+        if (entity is ISoftDeletable deletable && deletable.Deleted == true)
         {
             throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.EntityId}");
         }
@@ -136,8 +140,15 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         var rules = (this.rules ??= []).Union(this.AddRules(command).SafeNull()).ToList();
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
-        this.Logger.LogInformation("{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})", Commands.Constants.LogKey, command.GetType().Name, command.RequestId, this.GetType().Name);
-        this.Logger.LogInformation($"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}", Commands.Constants.LogKey);
+        this.Logger.LogInformation(
+            "{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})",
+            Constants.LogKey,
+            command.GetType().Name,
+            command.RequestId,
+            this.GetType().Name);
+        this.Logger.LogInformation(
+            $"{{LogKey}} entity rules: {rules.SafeNull().Select(b => b.GetType().PrettyName()).ToString(", ")}",
+            Constants.LogKey);
 
         await Check.ThrowAsync(rules, entity);
     }
@@ -146,7 +157,7 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     {
         if (command.Entity is IAuditable entity)
         {
-            entity.AuditState ??= new();
+            entity.AuditState ??= new AuditState();
             entity.AuditState.SetDeleted(command.Identity);
         }
     }

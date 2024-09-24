@@ -5,14 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
+using Core.Infrastructure;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
@@ -21,27 +20,28 @@ using Testcontainers.RabbitMq;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
-    private ITestOutputHelper output = null;
     private IServiceProvider serviceProvider;
 
     public TestEnvironmentFixture()
     {
-        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.output)));
+        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.Output)));
 
         this.Network = new NetworkBuilder()
             .WithName(this.NetworkName)
             .Build();
 
         this.SqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
-        this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
-            .WithNetworkAliases(this.NetworkName)
-            .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
-            .Build();
+        this.CosmosContainer =
+            new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
+                .WithNetworkAliases(this.NetworkName)
+                .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
+                .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
             .WithNetworkAliases(this.NetworkName)
@@ -54,7 +54,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
 
-    public ITestOutputHelper Output => this.output;
+    public ITestOutputHelper Output { get; private set; }
 
     public string NetworkName => HashHelper.Compute(DateTime.UtcNow.Ticks);
 
@@ -87,12 +87,12 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public CoreDbContext StubContext { get; private set; }
 
-    private static bool IsCIEnvironment =>
+    private static bool IsCiEnvironment =>
         Environment.GetEnvironmentVariable("AGENT_NAME") is not null; // check if running on Microsoft's CI environment
 
     public TestEnvironmentFixture WithOutput(ITestOutputHelper output)
     {
-        this.output = output;
+        this.Output = output;
         return this;
     }
 
@@ -102,7 +102,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
         await this.SqlContainer.StartAsync().AnyContext();
 
-        if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
+        if (!IsCiEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
             //await this.CosmosContainer.StartAsync().AnyContext();
         }
@@ -134,10 +134,10 @@ public class TestEnvironmentFixture : IAsyncLifetime
     {
         var optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>();
 
-        if (this.output is not null)
+        if (this.Output is not null)
         {
             optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>()
-                .LogTo(this.output.WriteLine);
+                .LogTo(this.Output.WriteLine);
         }
 
         optionsBuilder.UseSqlServer(this.SqlConnectionString);
@@ -149,10 +149,10 @@ public class TestEnvironmentFixture : IAsyncLifetime
     {
         var optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>();
 
-        if (this.output is not null)
+        if (this.Output is not null)
         {
             optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>()
-                .LogTo(this.output.WriteLine);
+                .LogTo(this.Output.WriteLine);
         }
 
         optionsBuilder.UseSqlite($"Data Source=.\\_test_{nameof(CoreDbContext)}_sqlite.db");
@@ -165,17 +165,19 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public CosmosClient CreateCosmosClient()
     {
-        return new CosmosClient(
-            this.CosmosConnectionString,
+        return new CosmosClient(this.CosmosConnectionString,
             new CosmosClientOptions
             {
-                SerializerOptions = new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase },
+                SerializerOptions =
+                    new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase },
                 ConnectionMode = ConnectionMode.Gateway,
                 HttpClientFactory = () => this.CosmosContainer.HttpClient
             });
     }
 
-    private sealed class WaitUntil : IWaitUntil // TODO: obsolete in next testcontainers (>3.7.0) release  https://github.com/testcontainers/testcontainers-dotnet/pull/1109
+    private sealed class
+        WaitUntil
+        : IWaitUntil // TODO: obsolete in next testcontainers (>3.7.0) release  https://github.com/testcontainers/testcontainers-dotnet/pull/1109
     {
         public async Task<bool> UntilAsync(IContainer container)
         {
@@ -186,8 +188,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
             try
             {
-                using var httpResponse = await httpClient.GetAsync(requestUri)
-                    .ConfigureAwait(false);
+                using var httpResponse = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
 
                 return httpResponse.IsSuccessStatusCode;
             }

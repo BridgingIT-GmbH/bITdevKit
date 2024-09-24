@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using DevKit.Domain.Specifications;
+using Model;
 
 public class CityHasLocationSpecification(double? longitude, double? latitude) : Specification<City>
 {
@@ -17,7 +16,6 @@ public class CityHasLocationSpecification(double? longitude, double? latitude) :
 
     public override Expression<Func<City, bool>> ToExpression()
     {
-        return e => e.Location.Longitude == this.longitude
-            && e.Location.Latitude == this.latitude;
+        return e => e.Location.Longitude == this.longitude && e.Location.Latitude == this.latitude;
     }
 }

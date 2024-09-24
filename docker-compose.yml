@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: bdk_mssql
     restart: unless-stopped
     environment:
@@ -10,7 +10,7 @@ services:
       - SA_PASSWORD=Abcd1234!
       - MSSQL_PID=Developer
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U SA -P 'Abcd1234!' -Q 'select 1'
+      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P 'Abcd1234!' -Q 'select 1'
     ports:
       - 14333:1433
     volumes:

@@ -5,17 +5,19 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Microsoft.Extensions.Primitives;
 
 public static partial class Extensions
 {
     [DebuggerStepThrough]
-    public static TValue To<TValue>(this object source, bool throws = false, TValue defaultValue = default, CultureInfo cultureInfo = null)
+    public static TValue To<TValue>(
+        this object source,
+        bool throws = false,
+        TValue defaultValue = default,
+        CultureInfo cultureInfo = null)
     {
         if (source is null)
         {
@@ -33,15 +35,16 @@ public static partial class Extensions
 
             if (targetType == typeof(Guid))
             {
-                return (TValue)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                return (TValue)TypeDescriptor.GetConverter(targetType)
+                    .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
             }
 
             if (targetType == typeof(DateTime))
             {
                 if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTime result))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var result))
                 {
                     return (TValue)(object)result;
                 }
@@ -57,9 +60,9 @@ public static partial class Extensions
             if (targetType == typeof(DateTimeOffset))
             {
                 if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTimeOffset result))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var result))
                 {
                     return (TValue)(object)result;
                 }
@@ -72,12 +75,13 @@ public static partial class Extensions
                 return defaultValue;
             }
 
-            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
+            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
             {
                 return (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
             }
 
-            if (targetType.IsEnum && (source is string || source is int || source is decimal || source is double || source is float))
+            if (targetType.IsEnum &&
+                (source is string || source is int || source is decimal || source is double || source is float))
             {
                 try
                 {
@@ -102,7 +106,12 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static object To(this object source, Type targetType, bool throws = false, object defaultValue = default, CultureInfo cultureInfo = null)
+    public static object To(
+        this object source,
+        Type targetType,
+        bool throws = false,
+        object defaultValue = default,
+        CultureInfo cultureInfo = null)
     {
         if (source is null)
         {
@@ -123,15 +132,16 @@ public static partial class Extensions
 
             if (targetType == typeof(Guid))
             {
-                return TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                return TypeDescriptor.GetConverter(targetType)
+                    .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
             }
 
             if (targetType == typeof(DateTime))
             {
                 if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTime result))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var result))
                 {
                     return result;
                 }
@@ -147,9 +157,9 @@ public static partial class Extensions
             if (targetType == typeof(DateTimeOffset))
             {
                 if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTimeOffset result))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var result))
                 {
                     return result;
                 }
@@ -162,12 +172,13 @@ public static partial class Extensions
                 return defaultValue;
             }
 
-            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
+            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
             {
                 return Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
             }
 
-            if (targetType.IsEnum && (source is string || source is int || source is decimal || source is double || source is float))
+            if (targetType.IsEnum &&
+                (source is string || source is int || source is decimal || source is double || source is float))
             {
                 try
                 {
@@ -206,16 +217,17 @@ public static partial class Extensions
         {
             if (targetType == typeof(Guid))
             {
-                result = (TValue)TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                result = (TValue)TypeDescriptor.GetConverter(targetType)
+                    .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
                 return true;
             }
 
             if (targetType == typeof(DateTime))
             {
                 if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTime dateTimeResult))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var dateTimeResult))
                 {
                     result = (TValue)(object)dateTimeResult;
                     return true;
@@ -228,9 +240,9 @@ public static partial class Extensions
             if (targetType == typeof(DateTimeOffset))
             {
                 if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTimeOffset dateTimeResult))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var dateTimeResult))
                 {
                     result = (TValue)(object)dateTimeResult;
                     return true;
@@ -240,13 +252,14 @@ public static partial class Extensions
                 return false;
             }
 
-            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
+            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
             {
                 result = (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
                 return true;
             }
 
-            if (targetType.IsEnum && (source is string || source is int || source is decimal || source is double || source is float))
+            if (targetType.IsEnum &&
+                (source is string || source is int || source is decimal || source is double || source is float))
             {
                 try
                 {
@@ -293,16 +306,17 @@ public static partial class Extensions
         {
             if (targetType == typeof(Guid))
             {
-                result = TypeDescriptor.GetConverter(targetType).ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                result = TypeDescriptor.GetConverter(targetType)
+                    .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
                 return true;
             }
 
             if (targetType == typeof(DateTime))
             {
                 if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTime dateTimeResult))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var dateTimeResult))
                 {
                     result = dateTimeResult;
                     return true;
@@ -315,9 +329,9 @@ public static partial class Extensions
             if (targetType == typeof(DateTimeOffset))
             {
                 if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
-                                      cultureInfo ?? CultureInfo.InvariantCulture,
-                                      DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-                                      out DateTimeOffset dateTimeResult))
+                        cultureInfo ?? CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                        out var dateTimeResult))
                 {
                     result = dateTimeResult;
                     return true;
@@ -327,7 +341,7 @@ public static partial class Extensions
                 return false;
             }
 
-            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
+            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
             {
                 result = Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
                 return true;
@@ -386,31 +400,27 @@ public static partial class Extensions
             return (TEnum)Enum.ToObject(typeof(TEnum), source);
         }
 
-        var values = Enum.GetValues(typeof(TEnum))
-            .Cast<int>()
-            .ToList();
+        var values = Enum.GetValues(typeof(TEnum)).Cast<int>().ToList();
 
         var isBitwise = values.Select((n, i) =>
-        {
-            if (i < 2)
             {
-                return n == 0 || n == 1;
-            }
+                if (i < 2)
+                {
+                    return n == 0 || n == 1;
+                }
 
-            return n / 2 == values[i - 1];
-        })
-        .All(y => y);
+                return n / 2 == values[i - 1];
+            })
+            .All(y => y);
 
         var maxValue = values.Sum();
 
-        if (Enum.TryParse(source.ToString(), out TEnum result)
-            && (source <= maxValue || !isBitwise))
+        if (Enum.TryParse(source.ToString(), out TEnum result) && (source <= maxValue || !isBitwise))
         {
             return result;
         }
 
-        var excess = Enumerable
-            .Range(0, 32)
+        var excess = Enumerable.Range(0, 32)
             .Select(n => (int)Math.Pow(2, n))
             .Where(n => n <= source && n > 0 && !values.Contains(n))
             .Sum();

@@ -8,13 +8,11 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class EchoStartupTask(ILoggerFactory loggerFactory) :
-    IStartupTask,
-    IChaosExceptionStartupTask,
-    IRetryStartupTask,
-    ITimeoutStartupTask
+public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChaosExceptionStartupTask,
+    IRetryStartupTask, ITimeoutStartupTask
 {
-    private readonly ILogger<EchoStartupTask> logger = loggerFactory?.CreateLogger<EchoStartupTask>() ?? NullLoggerFactory.Instance.CreateLogger<EchoStartupTask>();
+    private readonly ILogger<EchoStartupTask> logger = loggerFactory?.CreateLogger<EchoStartupTask>() ??
+        NullLoggerFactory.Instance.CreateLogger<EchoStartupTask>();
 
     ChaosExceptionStartupTaskOptions IChaosExceptionStartupTask.Options => new() { InjectionRate = 0.10 };
 

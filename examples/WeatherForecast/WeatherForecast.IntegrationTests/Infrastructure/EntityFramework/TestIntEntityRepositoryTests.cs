@@ -5,18 +5,16 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.IntegrationTests;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using DevKit.Domain.Repositories;
+using DevKit.Domain.Specifications;
+using Domain.Model;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Infrastructure")]
 [Module("Core")]
-public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
+public class
+    TestIntEntityRepositoryTests
+    : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture;
     private readonly IGenericRepository<TestIntEntity> sut;
@@ -53,9 +51,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
 
             using var scope = this.fixture.Services.CreateScope();
             var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-            var result = await scopedSut.FindOneAsync(
-                entity.Id,
-                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+            var result = await scopedSut.FindOneAsync(entity.Id,
+                    new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+                .AnyContext();
 
             result.ShouldNotBeNull();
             result.Id.ShouldBe(entity.Id);
@@ -81,7 +79,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -93,7 +94,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
             entity.MyProperty1 = "Mary " + ticks;
             entity.MyProperty2 = "Jane " + ticks;
-            entity.Children.Add(new TestIntChildEntity { MyProperty1 = "val new " + ticks, MyProperty2 = "val new " + ticks });
+            entity.Children.Add(new TestIntChildEntity
+            {
+                MyProperty1 = "val new " + ticks, MyProperty2 = "val new " + ticks
+            });
 
             await scopedSut.UpsertAsync(entity).AnyContext();
         }
@@ -102,9 +106,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         using (var scope = this.fixture.Services.CreateScope())
         {
             var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-            var result = await scopedSut.FindOneAsync(
-                entity.Id,
-                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+            var result = await scopedSut.FindOneAsync(entity.Id,
+                    new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+                .AnyContext();
 
             result.ShouldNotBeNull();
             result.Id.ShouldBe(entity.Id);
@@ -132,7 +136,7 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             {
                 new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
-                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
             })
         };
 
@@ -150,9 +154,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindOneAsync(
-            entity.Id,
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindOneAsync(entity.Id,
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -177,7 +181,7 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             {
                 new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
-                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
             })
         };
 
@@ -195,7 +199,12 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
                 MyProperty2 = "Jane " + ticks,
                 Children = new List<TestIntChildEntity>(new[]
                 {
-                    new TestIntChildEntity { Id = entity.Children.First().Id, MyProperty1 = "val new " + ticks, MyProperty2 = "val new " + ticks }
+                    new TestIntChildEntity
+                    {
+                        Id = entity.Children.First().Id,
+                        MyProperty1 = "val new " + ticks,
+                        MyProperty2 = "val new " + ticks
+                    }
                 })
             };
 
@@ -206,9 +215,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         using (var scope = this.fixture.Services.CreateScope())
         {
             var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-            var result = await scopedSut.FindOneAsync(
-                entity.Id,
-                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+            var result = await scopedSut.FindOneAsync(entity.Id,
+                    new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+                .AnyContext();
 
             result.ShouldNotBeNull();
             result.Id.ShouldBe(entity.Id);
@@ -231,7 +240,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -254,7 +266,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -263,9 +278,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindOneAsync(
-            entity.Id,
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindOneAsync(entity.Id,
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -283,7 +298,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -292,9 +310,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindOneAsync(
-            entity.Id.ToString(),
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindOneAsync(entity.Id.ToString(),
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -312,7 +330,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -322,8 +343,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
         var result = await scopedSut.FindOneAsync(
-            new Specification<TestIntEntity>(e => e.MyProperty1 == entity.MyProperty1),
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+                new Specification<TestIntEntity>(e => e.MyProperty1 == entity.MyProperty1),
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -341,7 +363,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -350,9 +375,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindOneAsync(
-            new Specification<TestIntEntity>(e => e.Id == entity.Id),
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindOneAsync(new Specification<TestIntEntity>(e => e.Id == entity.Id),
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(entity.Id);
@@ -370,7 +395,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -380,7 +408,8 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
         var result = await scopedSut.FindAllAsync(
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBeGreaterThan(0);
@@ -395,7 +424,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -404,9 +436,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindAllAsync(
-            new Specification<TestIntEntity>(e => e.MyProperty3 == 0),
-            new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindAllAsync(new Specification<TestIntEntity>(e => e.MyProperty3 == 0),
+                new FindOptions<TestIntEntity> { Include = new IncludeOption<TestIntEntity>(e => e.Children) })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBeGreaterThan(0);
@@ -423,7 +455,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
                 MyProperty1 = "John " + ticks,
                 MyProperty2 = "Doe " + ticks,
                 MyProperty3 = i,
-                Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+                Children = new List<TestIntChildEntity>(new[]
+                {
+                    new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+                })
             };
 
             entity.AuditState.SetCreated("test");
@@ -433,8 +468,11 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
         // Assert
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
-        var result = await scopedSut.FindAllAsync(
-            new FindOptions<TestIntEntity> { Skip = 5, Take = 5, Include = new IncludeOption<TestIntEntity>(e => e.Children) }).AnyContext();
+        var result = await scopedSut.FindAllAsync(new FindOptions<TestIntEntity>
+            {
+                Skip = 5, Take = 5, Include = new IncludeOption<TestIntEntity>(e => e.Children)
+            })
+            .AnyContext();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(5);
@@ -449,7 +487,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -469,7 +510,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -489,7 +533,10 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestIntChildEntity>(new[] { new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks } })
+            Children = new List<TestIntChildEntity>(new[]
+            {
+                new TestIntChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
+            })
         };
 
         entity.AuditState.SetCreated("test");
@@ -529,8 +576,9 @@ public class TestIntEntityRepositoryTests : IClassFixture<CustomWebApplicationFa
     public async Task UpsertNotTrackedTest()
     {
         // Arrange: get an existing entity
-        var entities = await this.sut.FindAllAsync(
-            options: new FindOptions<TestIntEntity> { NoTracking = true }).AnyContext(); // =not tracked
+        var entities =
+            await this.sut.FindAllAsync(new FindOptions<TestIntEntity> { NoTracking = true })
+                .AnyContext(); // =not tracked
         var entity = entities.FirstOrDefault();
         entity.ShouldNotBeNull();
 

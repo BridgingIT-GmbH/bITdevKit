@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
-public class ChaosExceptionCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
+public class ChaosExceptionCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
+    : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)
@@ -34,15 +35,13 @@ public class ChaosExceptionCommandBehavior<TRequest, TResponse>(ILoggerFactory l
         {
             return await next().AnyContext();
         }
-        else
-        {
-            // https://github.com/Polly-Contrib/Simmy#Inject-exception
-            var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(instance.Options.Fault ?? new ChaosException())
-                    .InjectionRate(instance.Options.InjectionRate)
-                    .Enabled());
 
-            return await policy.Execute(async (context) => await next().AnyContext(), cancellationToken);
-        }
+        // https://github.com/Polly-Contrib/Simmy#Inject-exception
+        var policy = MonkeyPolicy.InjectException(with =>
+            with.Fault(instance.Options.Fault ?? new ChaosException())
+                .InjectionRate(instance.Options.InjectionRate)
+                .Enabled());
+
+        return await policy.Execute(async context => await next().AnyContext(), cancellationToken);
     }
 }

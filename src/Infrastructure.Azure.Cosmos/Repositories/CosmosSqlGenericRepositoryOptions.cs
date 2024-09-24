@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 
 public class CosmosSqlGenericRepositoryOptions<TEntity> : OptionsBase
-   where TEntity : class, IEntity
+    where TEntity : class, IEntity
 {
     public ICosmosSqlProvider<TEntity> Provider { get; set; }
 

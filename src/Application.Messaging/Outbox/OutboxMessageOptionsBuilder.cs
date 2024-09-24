@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using System;
-using BridgingIT.DevKit.Common;
+using Common;
 
-public class OutboxMessageOptionsBuilder :
-    OptionsBuilderBase<OutboxMessageOptions, OutboxMessageOptionsBuilder>
+public class OutboxMessageOptionsBuilder : OptionsBuilderBase<OutboxMessageOptions, OutboxMessageOptionsBuilder>
 {
     public OutboxMessageOptionsBuilder Enabled(bool value = true)
     {

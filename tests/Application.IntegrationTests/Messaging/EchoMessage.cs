@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
-using BridgingIT.DevKit.Application.Messaging;
+using Application.Messaging;
 
 public class EchoMessage : MessageBase
 {
-    public EchoMessage()
-    {
-    }
+    public EchoMessage() { }
 
     public EchoMessage(string text)
     {

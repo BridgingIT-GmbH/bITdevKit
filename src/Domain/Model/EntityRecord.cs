@@ -11,8 +11,8 @@ public abstract record EntityRecord<TId> : IEntity<TId>
 
     object IEntity.Id
     {
-        get { return this.Id; }
-        set { this.Id = (TId)value; }
+        get => this.Id;
+        set => this.Id = (TId)value;
     }
 
     //public static bool operator ==(EntityRecord<TId> left, EntityRecord<TId> right)

@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -18,7 +16,10 @@ public abstract class CommandBehaviorBase<TRequest, TResponse>
     where TRequest : class, IRequest<TResponse>
 {
     protected CommandBehaviorBase(ILoggerFactory loggerFactory)
-        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    {
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    }
 
     protected ILogger Logger { get; }
 
@@ -28,19 +29,25 @@ public abstract class CommandBehaviorBase<TRequest, TResponse>
         CancellationToken cancellationToken)
     {
         if (!this.CanProcess(request) ||
-            !(request.GetType().ImplementsInterface(typeof(ICommandRequest)) || request.GetType().ImplementsInterface(typeof(ICommandRequest<>))))
+            !(request.GetType().ImplementsInterface(typeof(ICommandRequest)) ||
+                request.GetType().ImplementsInterface(typeof(ICommandRequest<>))))
         {
             return await next().AnyContext();
         }
 
         //try
         //{
-        this.Logger.LogDebug("{LogKey} behavior processing (type={BehaviorType})", Constants.LogKey, this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} behavior processing (type={BehaviorType})",
+            Constants.LogKey,
+            this.GetType().Name);
 
         var watch = ValueStopwatch.StartNew();
         var response = await this.Process(request, next, cancellationToken).AnyContext();
 
-        this.Logger.LogDebug("{LogKey} behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, this.GetType().Name, watch.GetElapsedMilliseconds());
+        this.Logger.LogDebug("{LogKey} behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms",
+            Constants.LogKey,
+            this.GetType().Name,
+            watch.GetElapsedMilliseconds());
 
         return response;
         //}

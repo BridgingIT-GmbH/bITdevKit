@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using DevKit.Infrastructure.EntityFramework;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,35 +25,33 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestRatingsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.Ratings, rb =>
-        {
-            rb.ToTable("GuestRatings");
+        builder.OwnsMany(d => d.Ratings,
+            rb =>
+            {
+                rb.ToTable("GuestRatings");
 
-            rb.WithOwner().HasForeignKey("GuestId");
+                rb.WithOwner().HasForeignKey("GuestId");
 
-            rb.HasKey("Id", "GuestId");
+                rb.HasKey("Id", "GuestId");
 
-            rb.Property(r => r.Id)
-                //.HasColumnName("GuestRatingId")
-                .ValueGeneratedNever()
-                .HasConversion(
-                    id => id.Value,
-                    value => GuestRatingId.Create(value));
+                rb.Property(r => r.Id)
+                    //.HasColumnName("GuestRatingId")
+                    .ValueGeneratedNever()
+                    .HasConversion(id => id.Value,
+                        value => GuestRatingId.Create(value));
 
-            rb.Property(r => r.HostId)
-                .HasConversion(
-                    id => id.Value,
-                    value => HostId.Create(value));
+                rb.Property(r => r.HostId)
+                    .HasConversion(id => id.Value,
+                        value => HostId.Create(value));
 
-            rb.Property(r => r.DinnerId)
-                .HasConversion(
-                    id => id.Value,
-                    value => DinnerId.Create(value));
+                rb.Property(r => r.DinnerId)
+                    .HasConversion(id => id.Value,
+                        value => DinnerId.Create(value));
 
-            rb.OwnsOne(r => r.Rating);
+                rb.OwnsOne(r => r.Rating);
 
-            rb.OwnsOneAuditState();
-        });
+                rb.OwnsOneAuditState();
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.Ratings))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -61,17 +59,18 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestMenuReviewIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.MenuReviewIds, mb =>
-        {
-            mb.ToTable("GuestMenuReviewIds");
+        builder.OwnsMany(d => d.MenuReviewIds,
+            mb =>
+            {
+                mb.ToTable("GuestMenuReviewIds");
 
-            mb.WithOwner().HasForeignKey("GuestId");
+                mb.WithOwner().HasForeignKey("GuestId");
 
-            mb.HasKey("Id");
+                mb.HasKey("Id");
 
-            mb.Property(di => di.Value)
-                .HasColumnName("MenuReviewId");
-        });
+                mb.Property(di => di.Value)
+                    .HasColumnName("MenuReviewId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.MenuReviewIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -79,17 +78,18 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestBillIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.BillIds, bp =>
-        {
-            bp.ToTable("GuestBillIds");
+        builder.OwnsMany(d => d.BillIds,
+            bp =>
+            {
+                bp.ToTable("GuestBillIds");
 
-            bp.WithOwner().HasForeignKey("GuestId");
+                bp.WithOwner().HasForeignKey("GuestId");
 
-            bp.HasKey("Id");
+                bp.HasKey("Id");
 
-            bp.Property(di => di.Value)
-                .HasColumnName("BillId");
-        });
+                bp.Property(di => di.Value)
+                    .HasColumnName("BillId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.BillIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -97,17 +97,18 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestPendingDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.PendingDinnerIds, pb =>
-        {
-            pb.ToTable("GuestPendingDinnerIds");
+        builder.OwnsMany(d => d.PendingDinnerIds,
+            pb =>
+            {
+                pb.ToTable("GuestPendingDinnerIds");
 
-            pb.WithOwner().HasForeignKey("GuestId");
+                pb.WithOwner().HasForeignKey("GuestId");
 
-            pb.HasKey("Id");
+                pb.HasKey("Id");
 
-            pb.Property(di => di.Value)
-                .HasColumnName("DinnerId");
-        });
+                pb.Property(di => di.Value)
+                    .HasColumnName("DinnerId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.PendingDinnerIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -115,17 +116,18 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestPastDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.PastDinnerIds, pb =>
-        {
-            pb.ToTable("GuestPastDinnerIds");
+        builder.OwnsMany(d => d.PastDinnerIds,
+            pb =>
+            {
+                pb.ToTable("GuestPastDinnerIds");
 
-            pb.WithOwner().HasForeignKey("GuestId");
+                pb.WithOwner().HasForeignKey("GuestId");
 
-            pb.HasKey("Id");
+                pb.HasKey("Id");
 
-            pb.Property(di => di.Value)
-                .HasColumnName("DinnerId");
-        });
+                pb.Property(di => di.Value)
+                    .HasColumnName("DinnerId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.PastDinnerIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -133,17 +135,18 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
     private static void ConfigureGuestUpcomingDinnerIdsTable(EntityTypeBuilder<Guest> builder)
     {
-        builder.OwnsMany(d => d.UpcomingDinnerIds, ub =>
-        {
-            ub.ToTable("GuestUpcomingDinnerIds");
+        builder.OwnsMany(d => d.UpcomingDinnerIds,
+            ub =>
+            {
+                ub.ToTable("GuestUpcomingDinnerIds");
 
-            ub.WithOwner().HasForeignKey("GuestId");
+                ub.WithOwner().HasForeignKey("GuestId");
 
-            ub.HasKey("Id");
+                ub.HasKey("Id");
 
-            ub.Property(di => di.Value)
-                .HasColumnName("DinnerId");
-        });
+                ub.Property(di => di.Value)
+                    .HasColumnName("DinnerId");
+            });
 
         builder.Metadata.FindNavigation(nameof(Guest.UpcomingDinnerIds))
             .SetPropertyAccessMode(PropertyAccessMode.Field);
@@ -157,8 +160,7 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
 
         builder.Property(g => g.Id)
             .ValueGeneratedOnAdd()
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => GuestId.Create(value));
 
         builder.Property(g => g.FirstName)
@@ -170,8 +172,7 @@ public class GuestEntityTypeConfiguration : IEntityTypeConfiguration<Guest>
             .HasMaxLength(128);
 
         builder.Property(g => g.UserId)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => UserId.Create(value));
 
         builder.OwnsOneAuditState();

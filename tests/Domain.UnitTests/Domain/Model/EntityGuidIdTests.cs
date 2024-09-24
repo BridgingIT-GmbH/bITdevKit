@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
-using System;
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 public class EntityGuidIdTests
@@ -137,11 +136,7 @@ public class EntityGuidIdTests
         Assert.False(entity1.Equals(entity2)); // because types are different
     }
 
-    private class StubEntity : Entity<Guid>
-    {
-    }
+    private class StubEntity : Entity<Guid> { }
 
-    private class StubEntityProxy : StubEntity
-    {
-    }
+    private class StubEntityProxy : StubEntity { }
 }

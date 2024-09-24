@@ -5,7 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using BridgingIT.DevKit.Domain;
+using DevKit.Domain;
+
 public class CustomerCreatedDomainEvent(Customer customer) : DomainEventBase
 {
     public Customer Customer { get; } = customer;

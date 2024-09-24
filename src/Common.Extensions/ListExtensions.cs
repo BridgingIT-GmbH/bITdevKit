@@ -10,12 +10,10 @@ using System.Diagnostics;
 public static class ListExtensions
 {
     /// <summary>
-    /// Adds or updates the entry in the list.
+    ///     Adds or updates the entry in the list.
     /// </summary>
     [DebuggerStepThrough]
-    public static void AddOrUpdate<T>(
-        this IList<T> source,
-        T item)
+    public static void AddOrUpdate<T>(this IList<T> source, T item)
     {
         if (source is null || item is null)
         {
@@ -31,12 +29,10 @@ public static class ListExtensions
     }
 
     /// <summary>
-    /// Adds or updates the entry in the collection.
+    ///     Adds or updates the entry in the collection.
     /// </summary>
     [DebuggerStepThrough]
-    public static void AddOrUpdate<T>(
-        this ICollection<T> source,
-        T item)
+    public static void AddOrUpdate<T>(this ICollection<T> source, T item)
     {
         if (source is null || item is null)
         {

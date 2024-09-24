@@ -5,31 +5,34 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
+using Domain.Repositories;
+using Infrastructure.EntityFramework;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR()
-                .AddSqlServerDbContext<StubDbContext>("dummy")
-                    .WithHealthChecks()
-                    .WithDatabaseCreatorService(o => o.DeleteOnStartup())
-                    .WithOutboxMessageService(o => o
-                        .ProcessingInterval("00:00:10").StartupDelay("00:00:30").PurgeOnStartup())
-                    .WithOutboxDomainEventService(o => o
-                        .ProcessingInterval("00:00:10").StartupDelay("00:00:05").PurgeOnStartup());
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR()
+            .AddSqlServerDbContext<StubDbContext>("dummy")
+            .WithHealthChecks()
+            .WithDatabaseCreatorService(o => o.DeleteOnStartup())
+            .WithOutboxMessageService(o => o
+                .ProcessingInterval("00:00:10")
+                .StartupDelay("00:00:30")
+                .PurgeOnStartup())
+            .WithOutboxDomainEventService(o => o
+                .ProcessingInterval("00:00:10")
+                .StartupDelay("00:00:05")
+                .PurgeOnStartup());
 
-            s.AddEntityFrameworkRepository<PersonStub, StubDbContext>()
-                //.WithTransactions()
-                .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
-                .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()
-                .WithBehavior<RepositoryDomainEventBehavior<PersonStub>>()
-                .WithBehavior<RepositoryOutboxDomainEventBehavior<PersonStub, StubDbContext>>();
-            //.WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
-        })
+        s.AddEntityFrameworkRepository<PersonStub, StubDbContext>()
+            //.WithTransactions()
+            .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
+            .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()
+            .WithBehavior<RepositoryDomainEventBehavior<PersonStub>>()
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<PersonStub, StubDbContext>>();
+        //.WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
+    })
 {
     [Fact]
     public void GetDbContext_WhenRequested_ShouldNotBeNull()

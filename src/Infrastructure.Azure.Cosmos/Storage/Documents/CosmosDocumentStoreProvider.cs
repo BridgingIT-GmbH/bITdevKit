@@ -5,13 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.Azure;
+using Application.Storage;
+using Common;
 
 public class CosmosDocumentStoreProvider : IDocumentStoreProvider
 {
@@ -29,31 +24,36 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
     }
 
     /// <summary>
-    /// Retrieves entities of type T from document store asynchronously
+    ///     Retrieves entities of type T from document store asynchronously
     /// </summary>
     public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
-        return (await this.provider
-            .ReadItemsAsync(e => e.Type == type, partitionKeyValue: type, cancellationToken: cancellationToken))
-            .Select(e => this.serializer.Deserialize<T>(e.Content));
+        return (await this.provider.ReadItemsAsync(e => e.Type == type,
+            partitionKeyValue: type,
+            cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
     }
 
     /// <summary>
-    /// Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
+    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
     /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.FindAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
     /// <summary>
-    /// Searches for entities of type T by the whole partitionKey and startswith rowKey
+    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
     /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
-    where T : class, new()
+    public async Task<IEnumerable<T>> FindAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
+        where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
@@ -61,21 +61,30 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         var type = this.GetTypeName<T>();
         if (filter == DocumentKeyFilter.FullMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
         }
-        else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey), partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.StartsWith(documentKey.RowKey),
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
         }
-        else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey), partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => this.serializer.Deserialize<T>(e.Content));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.EndsWith(documentKey.RowKey),
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
         }
 
         return [];
@@ -85,18 +94,23 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
-        return (await this.provider
-            .ReadItemsAsync(e => e.Type == type, partitionKeyValue: type, cancellationToken: cancellationToken))
-            .Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
+        return (await this.provider.ReadItemsAsync(e => e.Type == type,
+            partitionKeyValue: type,
+            cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -104,40 +118,50 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         var type = this.GetTypeName<T>();
         if (filter == DocumentKeyFilter.FullMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
         }
-        else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.StartsWith(documentKey.RowKey), partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.StartsWith(documentKey.RowKey),
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
         }
-        else if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+
+        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
         {
-            return (await this.provider
-                .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey.EndsWith(documentKey.RowKey), partitionKeyValue: type, cancellationToken: cancellationToken))
-                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
+            return (await this.provider.ReadItemsAsync(
+                e => e.Type == type &&
+                    e.PartitionKey == documentKey.PartitionKey &&
+                    e.RowKey.EndsWith(documentKey.RowKey),
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
         }
 
         return [];
     }
 
     /// <summary>
-    /// Counts the number of entities of type T in the document store
+    ///     Counts the number of entities of type T in the document store
     /// </summary>
     public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
 
-        return (await this.provider
-            .ReadItemsAsync(e => e.Type == type, partitionKeyValue: type, cancellationToken: cancellationToken)).Count();
+        return (await this.provider.ReadItemsAsync(e => e.Type == type,
+            partitionKeyValue: type,
+            cancellationToken: cancellationToken)).Count();
     }
 
     /// <summary>
-    /// Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
+    ///     Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
     /// </summary>
     public async Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
@@ -147,17 +171,16 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
 
         var type = this.GetTypeName<T>();
 
-        return (await this.provider
-            .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken)).SafeAny();
+        return (await this.provider.ReadItemsAsync(
+            e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+            partitionKeyValue: type,
+            cancellationToken: cancellationToken)).SafeAny();
     }
 
     /// <summary>
-    /// Inserts or updates an entity of type T in the document store
+    ///     Inserts or updates an entity of type T in the document store
     /// </summary>
-    public async Task UpsertAsync<T>(
-        DocumentKey documentKey,
-        T entity,
-        CancellationToken cancellationToken = default)
+    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -165,8 +188,11 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
 
         var type = this.GetTypeName<T>();
-        var document = (await this.provider
-            .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken)).FirstOrDefault();
+        var document =
+            (await this.provider.ReadItemsAsync(
+                e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+                partitionKeyValue: type,
+                cancellationToken: cancellationToken)).FirstOrDefault();
 
         if (document is null)
         {
@@ -175,7 +201,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
                 Id = GuidGenerator.Create($"{documentKey.PartitionKey}-{documentKey.RowKey}").ToString(),
                 Type = type,
                 PartitionKey = documentKey.PartitionKey,
-                RowKey = documentKey.RowKey,
+                RowKey = documentKey.RowKey
             };
         }
         else
@@ -186,7 +212,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         document.Content = this.serializer.SerializeToString(entity);
         document.ContentHash = HashHelper.Compute(entity);
 
-        await this.provider.UpsertItemAsync(document, partitionKeyValue: type, cancellationToken);
+        await this.provider.UpsertItemAsync(document, type, cancellationToken);
     }
 
     public async Task UpsertAsync<T>(
@@ -206,8 +232,13 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
                     cancellationToken.ThrowIfCancellationRequested();
                 }
 
-                var document = (await this.provider
-                    .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken)).FirstOrDefault();
+                var document =
+                    (await this.provider.ReadItemsAsync(
+                        e => e.Type == type &&
+                            e.PartitionKey == documentKey.PartitionKey &&
+                            e.RowKey == documentKey.RowKey,
+                        partitionKeyValue: type,
+                        cancellationToken: cancellationToken)).FirstOrDefault();
                 if (document is null)
                 {
                     document = new CosmosStorageDocument
@@ -226,13 +257,13 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
                 document.Content = this.serializer.SerializeToString(entity);
                 document.ContentHash = HashHelper.Compute(entity);
 
-                await this.provider.UpsertItemAsync(document, partitionKeyValue: type, cancellationToken);
+                await this.provider.UpsertItemAsync(document, type, cancellationToken);
             }
         }
     }
 
     /// <summary>
-    /// Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
+    ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
     /// </summary>
     public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
@@ -241,18 +272,22 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
 
         var type = this.GetTypeName<T>();
-        var documents = await this.provider
-            .ReadItemsAsync(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey, partitionKeyValue: type, cancellationToken: cancellationToken);
+        var documents = await this.provider.ReadItemsAsync(
+            e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
+            partitionKeyValue: type,
+            cancellationToken: cancellationToken);
 
         if (documents.SafeAny())
         {
             foreach (var documentEntity in documents)
             {
-                await this.provider.DeleteItemAsync(documentEntity.Id, partitionKeyValue: type, cancellationToken);
+                await this.provider.DeleteItemAsync(documentEntity.Id, type, cancellationToken);
             }
         }
     }
 
-    private string GetTypeName<T>() =>
-        typeof(T).FullName.ToLowerInvariant().TruncateLeft(1024);
+    private string GetTypeName<T>()
+    {
+        return typeof(T).FullName.ToLowerInvariant().TruncateLeft(1024);
+    }
 }

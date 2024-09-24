@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
-using Xunit;
-
 [UnitTest("Common")]
 public class EqualsPatternTests
 {

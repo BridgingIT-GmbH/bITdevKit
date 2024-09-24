@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System;
-using BridgingIT.DevKit.Application.Commands;
+using DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -19,8 +18,10 @@ public class CityCreateCommand(CityModel model) : CommandRequestBase<AggregateCr
 
     RetryCommandOptions IRetryCommand.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
-    public override ValidationResult Validate() =>
-        new Validator().Validate(this);
+    public override ValidationResult Validate()
+    {
+        return new Validator().Validate(this);
+    }
 
     public class Validator : AbstractValidator<CityCreateCommand>
     {

@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj" />
-    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Application.Commands\Application.Commands.csproj"/>
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj"/>
   </ItemGroup>
 
 </Project>

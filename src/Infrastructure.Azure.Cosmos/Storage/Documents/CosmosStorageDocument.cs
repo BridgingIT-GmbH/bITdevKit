@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
+using Common;
 
 public class CosmosStorageDocument
 {
@@ -42,8 +42,15 @@ public class CosmosStorageDocument
     [Column("Properties")]
     public string PropertiesJson
     {
-        get => this.Properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.Properties = value.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get =>
+            this.Properties.IsNullOrEmpty()
+                ? null
+                : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+        set =>
+            this.Properties = value.IsNullOrEmpty()
+                ? []
+                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
+                    DefaultSystemTextJsonSerializerOptions.Create());
     }
 
     [Timestamp]

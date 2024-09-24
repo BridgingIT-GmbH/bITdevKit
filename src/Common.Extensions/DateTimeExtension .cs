@@ -5,23 +5,28 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
 using System.Diagnostics;
 using System.Globalization;
 
 public static class DateTimeExtensions
 {
     [DebuggerStepThrough]
-    public static DateTime StartOfDay(this DateTime source) =>
-        new(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Kind);
+    public static DateTime StartOfDay(this DateTime source)
+    {
+        return new DateTime(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Kind);
+    }
 
     [DebuggerStepThrough]
-    public static DateTime EndOfDay(this DateTime source) =>
-        source.StartOfDay().AddDays(1).AddSeconds(-1);
+    public static DateTime EndOfDay(this DateTime source)
+    {
+        return source.StartOfDay().AddDays(1).AddSeconds(-1);
+    }
 
     [DebuggerStepThrough]
-    public static DateTime StartOfWeek(this DateTime source) =>
-        StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
+    public static DateTime StartOfWeek(this DateTime source)
+    {
+        return StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
+    }
 
     [DebuggerStepThrough]
     public static DateTime StartOfWeek(this DateTime source, DayOfWeek day)
@@ -36,32 +41,46 @@ public static class DateTimeExtensions
     }
 
     [DebuggerStepThrough]
-    public static DateTime StartOfMonth(this DateTime source) =>
-        new(source.Year, source.Month, 1, 0, 0, 0, 0, source.Kind);
+    public static DateTime StartOfMonth(this DateTime source)
+    {
+        return new DateTime(source.Year, source.Month, 1, 0, 0, 0, 0, source.Kind);
+    }
 
     [DebuggerStepThrough]
-    public static DateTime EndOfMonth(this DateTime source) =>
-        source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+    public static DateTime EndOfMonth(this DateTime source)
+    {
+        return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+    }
 
     [DebuggerStepThrough]
-    public static DateTime StartOfYear(this DateTime source) =>
-        new(source.Year, 1, 1, 0, 0, 0, 0, source.Kind);
+    public static DateTime StartOfYear(this DateTime source)
+    {
+        return new DateTime(source.Year, 1, 1, 0, 0, 0, 0, source.Kind);
+    }
 
     [DebuggerStepThrough]
-    public static DateTime EndOfYear(this DateTime source) =>
-        source.StartOfYear().AddYears(1).AddSeconds(-1);
+    public static DateTime EndOfYear(this DateTime source)
+    {
+        return source.StartOfYear().AddYears(1).AddSeconds(-1);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset StartOfDay(this DateTimeOffset source) =>
-        new(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Offset);
+    public static DateTimeOffset StartOfDay(this DateTimeOffset source)
+    {
+        return new DateTimeOffset(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Offset);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset EndOfDay(this DateTimeOffset source) =>
-        source.StartOfDay().AddDays(1).AddSeconds(-1);
+    public static DateTimeOffset EndOfDay(this DateTimeOffset source)
+    {
+        return source.StartOfDay().AddDays(1).AddSeconds(-1);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset StartOfWeek(this DateTimeOffset source) =>
-        StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
+    public static DateTimeOffset StartOfWeek(this DateTimeOffset source)
+    {
+        return StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
+    }
 
     [DebuggerStepThrough]
     public static DateTimeOffset StartOfWeek(this DateTimeOffset source, DayOfWeek day)
@@ -76,18 +95,26 @@ public static class DateTimeExtensions
     }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset StartOfMonth(this DateTimeOffset source) =>
-        new(source.Year, source.Month, 1, 0, 0, 0, 0, source.Offset);
+    public static DateTimeOffset StartOfMonth(this DateTimeOffset source)
+    {
+        return new DateTimeOffset(source.Year, source.Month, 1, 0, 0, 0, 0, source.Offset);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset EndOfMonth(this DateTimeOffset source) =>
-        source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+    public static DateTimeOffset EndOfMonth(this DateTimeOffset source)
+    {
+        return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset StartOfYear(this DateTimeOffset source) =>
-        new(source.Year, 1, 1, 0, 0, 0, 0, source.Offset);
+    public static DateTimeOffset StartOfYear(this DateTimeOffset source)
+    {
+        return new DateTimeOffset(source.Year, 1, 1, 0, 0, 0, 0, source.Offset);
+    }
 
     [DebuggerStepThrough]
-    public static DateTimeOffset EndOfYear(this DateTimeOffset source) =>
-        source.StartOfYear().AddYears(1).AddSeconds(-1);
+    public static DateTimeOffset EndOfYear(this DateTimeOffset source)
+    {
+        return source.StartOfYear().AddYears(1).AddSeconds(-1);
+    }
 }

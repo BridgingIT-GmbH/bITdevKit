@@ -5,12 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.JobScheduling;
+using DevKit.Application.JobScheduling;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Quartz;
 
 public class HealthCheckJob(
     ILoggerFactory loggerFactory,
@@ -20,24 +19,28 @@ public class HealthCheckJob(
     private readonly HealthCheckService healthCheckService = healthCheckService;
     private readonly IHubContext<SignalRHub> hub = hub;
 
-    public override async Task Process(Quartz.IJobExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var report = await this.healthCheckService.CheckHealthAsync(cancellationToken);
         if (report is not null)
         {
             if (report.Status == HealthStatus.Healthy)
             {
-                this.Logger.LogInformation("{LogKey} health status is {HealthStatus}", "JOB", report.Status.ToString().ToLower());
+                this.Logger.LogInformation("{LogKey} health status is {HealthStatus}",
+                    "JOB",
+                    report.Status.ToString().ToLower());
             }
             else
             {
-                this.Logger.LogWarning("{LogKey} health status is {HealthStatus}: {@HealthReport}", "JOB", report.Status.ToString().ToLower(), report);
+                this.Logger.LogWarning("{LogKey} health status is {HealthStatus}: {@HealthReport}",
+                    "JOB",
+                    report.Status.ToString().ToLower(),
+                    report);
             }
 
-            await this.hub.Clients.All.SendAsync(
-                    "CheckHealth",
-                    $"{report.Status}",
-                    cancellationToken);
+            await this.hub.Clients.All.SendAsync("CheckHealth",
+                $"{report.Status}",
+                cancellationToken);
         }
     }
 }

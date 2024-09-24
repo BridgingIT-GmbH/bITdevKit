@@ -5,24 +5,20 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 public static partial class Extensions
 {
     /// <summary>
-    /// Compares string with usage of pattern *.
+    ///     Compares string with usage of pattern *.
     /// </summary>
     /// <param name="source">the source string.</param>
     /// <param name="pattern">the value string to compare to.</param>
     /// <param name="ignoreCase">Ignore case.</param>
     /// <returns>true if equal, otherwhise false.</returns>
     [DebuggerStepThrough]
-    public static bool EqualsPattern(
-        this string source,
-        string pattern,
-        bool ignoreCase = true)
+    public static bool EqualsPattern(this string source, string pattern, bool ignoreCase = true)
     {
         if (source is null && pattern is null)
         {
@@ -41,21 +37,21 @@ public static partial class Extensions
 
         var regex = Regex.Escape(pattern).Replace("\\*", ".*");
 
-        return Regex.IsMatch(source, "^" + (ignoreCase ? "(?i)" : string.Empty) + regex + "$", ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None, new TimeSpan(0, 0, 3));
+        return Regex.IsMatch(source,
+            "^" + (ignoreCase ? "(?i)" : string.Empty) + regex + "$",
+            ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None,
+            new TimeSpan(0, 0, 3));
     }
 
     /// <summary>
-    /// Compares string with usage of pattern *.
+    ///     Compares string with usage of pattern *.
     /// </summary>
     /// <param name="source">the source string.</param>
     /// <param name="patterns">the value strings to compare to.</param>
     /// <param name="ignoreCase">Ignore case.</param>
     /// <returns>true if equal, otherwhise false.</returns>
     [DebuggerStepThrough]
-    public static bool EqualsPatternAny(
-        this string source,
-        IEnumerable<string> patterns,
-        bool ignoreCase = true)
+    public static bool EqualsPatternAny(this string source, IEnumerable<string> patterns, bool ignoreCase = true)
     {
         if (source is null && patterns is null)
         {

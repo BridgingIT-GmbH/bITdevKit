@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Application.Commands.EventSourcing;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
+using Application.Commands;
+using Application.Commands.EventSourcing;
+using Common;
+using Domain.EventSourcing.AggregatePublish;
+using Domain.EventSourcing.Model;
 using MediatR;
 
 public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAggregateEventMediatorNotificationSender
@@ -20,13 +18,17 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
     private readonly IMediator mediator = mediator;
 
     /// <summary>
-    /// Sendet das Event <see cref="savedEvent"/> über den Mediator als Notification
+    ///     Sendet das Event <see cref="savedEvent" /> über den Mediator als Notification
     /// </summary>
-    /// <exception cref="PublishAggregateEventCouldNotBeConstructedException">Das AggregateEvent konnte nicht erzeugt werden, da der zugehörige Konstruktor nicht gefunden wurde.</exception>
+    /// <exception cref="PublishAggregateEventCouldNotBeConstructedException">
+    ///     Das AggregateEvent konnte nicht erzeugt werden,
+    ///     da der zugehörige Konstruktor nicht gefunden wurde.
+    /// </exception>
     public async Task PublishProjectionEventAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        var genericPublishAggregateEvent = CreateGenericPublishAggregateEvent(aggregate, out var genericPublishAggregateEventConstructor);
+        var genericPublishAggregateEvent =
+            CreateGenericPublishAggregateEvent(aggregate, out var genericPublishAggregateEventConstructor);
         if (genericPublishAggregateEventConstructor is not null)
         {
             var @event = genericPublishAggregateEventConstructor.Invoke([aggregate, savedEvent]);
@@ -34,15 +36,17 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         }
         else
         {
-            throw new PublishAggregateEventCouldNotBeConstructedException(
-                "Constructor for " + genericPublishAggregateEvent.FullName + " not found.");
+            throw new PublishAggregateEventCouldNotBeConstructedException("Constructor for " +
+                genericPublishAggregateEvent.FullName +
+                " not found.");
         }
     }
 
     public async Task PublishEventOccuredAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        var genericPublishAggregateEvent = CreateGenericEventOccured(aggregate, out var genericPublishAggregateEventConstructor);
+        var genericPublishAggregateEvent =
+            CreateGenericEventOccured(aggregate, out var genericPublishAggregateEventConstructor);
         if (genericPublishAggregateEventConstructor is not null)
         {
             var @event = genericPublishAggregateEventConstructor.Invoke([aggregate, savedEvent]);
@@ -50,26 +54,27 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         }
         else
         {
-            throw new PublishAggregateEventCouldNotBeConstructedException(
-                "Constructor for " + genericPublishAggregateEvent.FullName + " not found.");
+            throw new PublishAggregateEventCouldNotBeConstructedException("Constructor for " +
+                genericPublishAggregateEvent.FullName +
+                " not found.");
         }
     }
 
     public async Task<bool> PublishEventOccuredAsync(object savedEvent, object aggregate)
     {
         var genericPublishAggregateCommand =
-            CreateAggregateEventOccuredCommand(aggregate,
-                out var genericPublishAggregateCommandConstructor);
+            CreateAggregateEventOccuredCommand(aggregate, out var genericPublishAggregateCommandConstructor);
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
-            return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult && commandResult.Cancelled == false && commandResult.Result;
+            return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
+                commandResult.Cancelled == false &&
+                commandResult.Result;
         }
-        else
-        {
-            throw new PublishAggregateEventCommandCouldNotBeConstructedException(
-                "Constructor for " + genericPublishAggregateCommand.FullName + " not found.");
-        }
+
+        throw new PublishAggregateEventCommandCouldNotBeConstructedException("Constructor for " +
+            genericPublishAggregateCommand.FullName +
+            " not found.");
     }
 
     private static Type CreateGenericPublishAggregateEvent<TAggregate>(TAggregate aggregate, out ConstructorInfo geni)

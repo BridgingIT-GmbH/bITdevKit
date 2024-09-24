@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Policies;
 
-using Shouldly;
-using Xunit;
-using System.Linq;
-
 [UnitTest("Domain")]
 public class DomainPolicyTests
 {
@@ -17,12 +13,7 @@ public class DomainPolicyTests
     {
         // Arrange
         var context = new StubContext { Value = 1 };
-        var policies = new IDomainPolicy<StubContext>[]
-        {
-            new EnabledPolicy(),
-            new ModifyContextPolicy(),
-            new ConditionalEnabledPolicy()
-        };
+        var policies = new IDomainPolicy<StubContext>[] { new EnabledPolicy(), new ModifyContextPolicy(), new ConditionalEnabledPolicy() };
 
         // Act
         var result = await DomainPolicies.ApplyAsync(context, policies);
@@ -30,11 +21,16 @@ public class DomainPolicyTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Messages.Count.ShouldBe(3);
-        result.Messages[0].ShouldBe("Always satisfied policy applied");
-        result.Messages[1].ShouldBe("Context modified");
-        result.Messages[2].ShouldBe("Conditional policy applied");
-        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(3);
+        result.Messages[0]
+            .ShouldBe("Always satisfied policy applied");
+        result.Messages[1]
+            .ShouldBe("Context modified");
+        result.Messages[2]
+            .ShouldBe("Conditional policy applied");
+        result.PolicyResults.GetValue<EnabledPolicy, int>()
+            .ShouldBe(1);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
+            .ShouldBe(3);
         context.Value.ShouldBe(11); // Original value + 10
     }
 
@@ -51,8 +47,10 @@ public class DomainPolicyTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Messages.Count.ShouldBe(0);
-        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(0);
+        result.PolicyResults.GetValue<EnabledPolicy, int>()
+            .ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
+            .ShouldBe(0);
         context.Value.ShouldBe(1); // Original value
     }
 
@@ -61,13 +59,7 @@ public class DomainPolicyTests
     {
         // Arrange
         var context = new StubContext { Value = 0 };
-        var policies = new IDomainPolicy<StubContext>[]
-        {
-            new EnabledPolicy(),
-            new DisabledPolicy(),
-            new ModifyContextPolicy(),
-            new ConditionalEnabledPolicy()
-        };
+        var policies = new IDomainPolicy<StubContext>[] { new EnabledPolicy(), new DisabledPolicy(), new ModifyContextPolicy(), new ConditionalEnabledPolicy() };
 
         // Act
         var result = await DomainPolicies.ApplyAsync(context, policies);
@@ -75,12 +67,18 @@ public class DomainPolicyTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Messages.Count.ShouldBe(3);
-        result.Messages[0].ShouldBe("Always satisfied policy applied");
-        result.Messages[1].ShouldBe("Context modified");
-        result.Messages[2].ShouldBe("Conditional policy applied");
-        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
-        result.PolicyResults.GetValue<DisabledPolicy, int>().ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(3);
+        result.Messages[0]
+            .ShouldBe("Always satisfied policy applied");
+        result.Messages[1]
+            .ShouldBe("Context modified");
+        result.Messages[2]
+            .ShouldBe("Conditional policy applied");
+        result.PolicyResults.GetValue<EnabledPolicy, int>()
+            .ShouldBe(1);
+        result.PolicyResults.GetValue<DisabledPolicy, int>()
+            .ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
+            .ShouldBe(3);
         context.Value.ShouldBe(10); // Original value + 10
     }
 
@@ -89,13 +87,7 @@ public class DomainPolicyTests
     {
         // Arrange
         var context = new StubContext { Value = 1 };
-        var policies = new IDomainPolicy<StubContext>[]
-        {
-            new EnabledPolicy(),
-            new ModifyContextPolicy(),
-            new FailingPolicy(),
-            new ConditionalEnabledPolicy()
-        };
+        var policies = new IDomainPolicy<StubContext>[] { new EnabledPolicy(), new ModifyContextPolicy(), new FailingPolicy(), new ConditionalEnabledPolicy() };
 
         // Act
         var result = await DomainPolicies.ApplyAsync(context, policies, DomainPolicyProcessingMode.StopOnPolicyFailure);
@@ -103,13 +95,19 @@ public class DomainPolicyTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Messages.Count.ShouldBe(2);
-        result.Messages[0].ShouldBe("Always satisfied policy applied");
-        result.Messages[1].ShouldBe("Context modified");
+        result.Messages[0]
+            .ShouldBe("Always satisfied policy applied");
+        result.Messages[1]
+            .ShouldBe("Context modified");
         result.Errors.Count.ShouldBe(1);
-        result.Errors.Single().ShouldBeOfType<TestError>();
-        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
-        result.PolicyResults.GetValue<FailingPolicy, int>().ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(0); // not called due to stopOnFailure
+        result.Errors.Single()
+            .ShouldBeOfType<TestError>();
+        result.PolicyResults.GetValue<EnabledPolicy, int>()
+            .ShouldBe(1);
+        result.PolicyResults.GetValue<FailingPolicy, int>()
+            .ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
+            .ShouldBe(0); // not called due to stopOnFailure
         context.Value.ShouldBe(11); // Original value + 10
     }
 
@@ -118,13 +116,7 @@ public class DomainPolicyTests
     {
         // Arrange
         var context = new StubContext { Value = 1 };
-        var policies = new IDomainPolicy<StubContext>[]
-        {
-            new EnabledPolicy(),
-            new ModifyContextPolicy(),
-            new FailingPolicy(),
-            new ConditionalEnabledPolicy()
-        };
+        var policies = new IDomainPolicy<StubContext>[] { new EnabledPolicy(), new ModifyContextPolicy(), new FailingPolicy(), new ConditionalEnabledPolicy() };
 
         // Act
         var result = await DomainPolicies.ApplyAsync(context, policies, DomainPolicyProcessingMode.ContinueOnPolicyFailure);
@@ -132,14 +124,21 @@ public class DomainPolicyTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Messages.Count.ShouldBe(3);
-        result.Messages[0].ShouldBe("Always satisfied policy applied");
-        result.Messages[1].ShouldBe("Context modified");
-        result.Messages[2].ShouldBe("Conditional policy applied");
+        result.Messages[0]
+            .ShouldBe("Always satisfied policy applied");
+        result.Messages[1]
+            .ShouldBe("Context modified");
+        result.Messages[2]
+            .ShouldBe("Conditional policy applied");
         result.Errors.Count.ShouldBe(1);
-        result.Errors.Single().ShouldBeOfType<TestError>();
-        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
-        result.PolicyResults.GetValue<FailingPolicy, int>().ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(3);
+        result.Errors.Single()
+            .ShouldBeOfType<TestError>();
+        result.PolicyResults.GetValue<EnabledPolicy, int>()
+            .ShouldBe(1);
+        result.PolicyResults.GetValue<FailingPolicy, int>()
+            .ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
+            .ShouldBe(3);
         context.Value.ShouldBe(11); // Original value + 10
     }
 
@@ -150,20 +149,16 @@ public class DomainPolicyTests
         var context = new StubContext { Value = 1 };
         var policies = new IDomainPolicy<StubContext>[]
         {
-            new EnabledPolicy(),
-            new ModifyContextPolicy(),
-            new FailingPolicy(), // this policy will cause throw
+            new EnabledPolicy(), new ModifyContextPolicy(), new FailingPolicy(), // this policy will cause throw
             new ConditionalEnabledPolicy()
         };
 
         // Act & Assert
         var exception = await Should.ThrowAsync<DomainPolicyException>(async () =>
         {
-            await DomainPolicies.ApplyAsync(
-                context,
+            await DomainPolicies.ApplyAsync(context,
                 policies,
-                DomainPolicyProcessingMode.ThrowOnPolicyFailure
-            );
+                DomainPolicyProcessingMode.ThrowOnPolicyFailure);
         });
 
         exception.ShouldNotBeNull();
@@ -172,10 +167,13 @@ public class DomainPolicyTests
         exception.Result.ShouldNotBeNull();
         exception.Result.IsFailure.ShouldBeTrue();
         exception.Result.Messages.Count.ShouldBe(2);
-        exception.Result.Messages[0].ShouldBe("Always satisfied policy applied");
-        exception.Result.Messages[1].ShouldBe("Context modified");
+        exception.Result.Messages[0]
+            .ShouldBe("Always satisfied policy applied");
+        exception.Result.Messages[1]
+            .ShouldBe("Context modified");
         exception.Result.Errors.Count.ShouldBe(1);
-        exception.Result.Errors.Single().ShouldBeOfType<TestError>();
+        exception.Result.Errors.Single()
+            .ShouldBeOfType<TestError>();
         context.Value.ShouldBe(11); // Original value + 10
     }
 }
@@ -197,7 +195,9 @@ public class EnabledPolicy : DomainPolicyBase<StubContext>
 public class DisabledPolicy : DomainPolicyBase<StubContext>
 {
     public override Task<bool> IsEnabledAsync(StubContext context, CancellationToken cancellationToken = default)
-        => Task.FromResult(false);
+    {
+        return Task.FromResult(false);
+    }
 
     public override Task<Result> ApplyAsync(StubContext context, CancellationToken cancellationToken = default)
     {
@@ -209,7 +209,9 @@ public class DisabledPolicy : DomainPolicyBase<StubContext>
 public class ConditionalEnabledPolicy : DomainPolicyBase<StubContext>
 {
     public override Task<bool> IsEnabledAsync(StubContext context, CancellationToken cancellationToken = default)
-        => Task.FromResult(context.Value > 0);
+    {
+        return Task.FromResult(context.Value > 0);
+    }
 
     public override Task<Result> ApplyAsync(StubContext context, CancellationToken cancellationToken = default)
     {

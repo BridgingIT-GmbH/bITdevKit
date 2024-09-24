@@ -5,14 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
-using EnsureThat;
+using Common;
+using DevKit.Application.Commands;
+using DevKit.Domain.Repositories;
+using Domain;
+using Domain.Model;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -46,8 +43,8 @@ public class CityDeleteCommandHandler : CommandHandlerBase<CityDeleteCommand, Ag
         CityDeleteCommand command,
         CancellationToken cancellationToken)
     {
-        var entity = (await this.mediator.Send(
-            new CityFindOneQuery(command.Name), cancellationToken).AnyContext())?.Result?.City;
+        var entity = (await this.mediator.Send(new CityFindOneQuery(command.Name), cancellationToken).AnyContext())
+            ?.Result?.City;
 
         this.Logger.LogInformation($"+++ delete city with name: {entity.Name} ({entity.Country})");
 
@@ -56,9 +53,9 @@ public class CityDeleteCommandHandler : CommandHandlerBase<CityDeleteCommand, Ag
         await this.cityRepository.UpsertAsync(entity, cancellationToken).AnyContext();
 
         // hard delete all city forecasts
-        foreach (var forecast in await this.forecastRepository.FindAllAsync(
-            new ForecastForCitySpecification(entity.Id),
-            cancellationToken: cancellationToken).AnyContext())
+        foreach (var forecast in await this.forecastRepository.FindAllAsync(new ForecastForCitySpecification(entity.Id),
+                         cancellationToken: cancellationToken)
+                     .AnyContext())
         {
             await this.forecastRepository.DeleteAsync(forecast, cancellationToken).AnyContext();
         }

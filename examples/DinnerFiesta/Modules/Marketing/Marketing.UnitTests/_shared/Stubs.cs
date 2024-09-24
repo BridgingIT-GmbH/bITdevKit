@@ -5,10 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.UnitTests;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
+using Domain;
 
 public static class Stubs
 {
-    public static IEnumerable<Customer> Customers(long ticks) => MarketingSeedModels.Customers(ticks);
+    public static IEnumerable<Customer> Customers(long ticks)
+    {
+        return MarketingSeedModels.Customers(ticks);
+    }
 }

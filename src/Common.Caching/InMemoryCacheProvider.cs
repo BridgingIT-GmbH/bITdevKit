@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 public partial class InMemoryCacheProvider : ICacheProvider
 {
-    private readonly ILogger<InMemoryCacheProvider> logger;
     private readonly IMemoryCache cache;
     private readonly InMemoryCacheProviderConfiguration configuration;
+    private readonly ILogger<InMemoryCacheProvider> logger;
 
     public InMemoryCacheProvider(
         ILoggerFactory loggerFactory,
@@ -36,7 +34,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
 
     public async Task<T> GetAsync<T>(string key, CancellationToken token = default)
     {
-        return (await this.TryGetAsync(key, out T value, token)) ? value : default;
+        return await this.TryGetAsync(key, out T value, token) ? value : default;
     }
 
     public bool TryGet<T>(string key, out T value)
@@ -99,13 +97,16 @@ public partial class InMemoryCacheProvider : ICacheProvider
         return Task.CompletedTask;
     }
 
-    public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null)
+    public void Set<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null)
     {
         TypedLogger.LogCacheSet(this.logger, key);
 
         // If the entry does not exist, it is created. If the specified entry exists, it is updated.
-        this.cache.Set(
-            key,
+        this.cache.Set(key,
             value,
             new MemoryCacheEntryOptions
             {
@@ -114,7 +115,12 @@ public partial class InMemoryCacheProvider : ICacheProvider
             });
     }
 
-    public Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, DateTimeOffset? absoluteExpiration = null, CancellationToken token = default)
+    public Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? slidingExpiration = null,
+        DateTimeOffset? absoluteExpiration = null,
+        CancellationToken token = default)
     {
         this.Set(key, value, slidingExpiration, absoluteExpiration);
         return Task.CompletedTask;

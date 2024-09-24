@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Repositories;
+using Domain.Repositories;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
@@ -192,7 +192,7 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var faker = new Faker("en");
+        var faker = new Faker();
         var entity = await this.InsertEntityAsync();
         using var context = this.GetContext(null, true);
         var sut = this.CreateRepository(context);
@@ -206,14 +206,29 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
             LastName = $"Jane {ticks}",
             Age = entity.Age
         };
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
-        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(), faker.Address.StreetAddress(), faker.Address.BuildingNumber(), faker.Address.ZipCode(), faker.Address.City(), faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
+        disconnectedEntity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
+            faker.Address.StreetAddress(),
+            faker.Address.BuildingNumber(),
+            faker.Address.ZipCode(),
+            faker.Address.City(),
+            faker.Address.Country()));
         var result = await sut.UpsertAsync(disconnectedEntity);
 
         // Assert
         result.action.ShouldBe(RepositoryActionResult.Updated);
-        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<PersonStub>() { NoTracking = true });
+        var existingEntity = await sut.FindOneAsync(entity.Id, new FindOptions<PersonStub> { NoTracking = true });
         existingEntity.ShouldNotBeNull();
         existingEntity.Id.ShouldBe(disconnectedEntity.Id);
         existingEntity.FirstName.ShouldBe(disconnectedEntity.FirstName);

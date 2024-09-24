@@ -11,10 +11,17 @@ using Microsoft.Extensions.Logging.Abstractions;
 public abstract class MessageHandlerBehaviorBase : IMessageHandlerBehavior
 {
     protected MessageHandlerBehaviorBase(ILoggerFactory loggerFactory)
-        => this.Logger = loggerFactory?.CreateLogger(this.GetType()) ?? NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    {
+        this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
+            NullLoggerFactory.Instance.CreateLogger(this.GetType());
+    }
 
     protected ILogger Logger { get; }
 
-    public abstract Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+    public abstract Task Handle<TMessage>(
+        TMessage message,
+        CancellationToken cancellationToken,
+        object handler,
+        MessageHandlerDelegate next)
         where TMessage : IMessage;
 }

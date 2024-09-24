@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure.Models;
 
-using System;
-
 public class PersonDatabaseEntity
 {
     public Guid Id { get; set; }

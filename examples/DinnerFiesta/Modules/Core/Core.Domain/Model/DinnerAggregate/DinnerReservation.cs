@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class DinnerReservation : AuditableEntity<DinnerReservationId, Guid>
 {
-    private DinnerReservation()
-    {
-    }
+    private DinnerReservation() { }
 
     private DinnerReservation(
         GuestId guestId,
@@ -44,8 +42,7 @@ public class DinnerReservation : AuditableEntity<DinnerReservationId, Guid>
         BillId billId = null,
         DateTimeOffset? arrivalDateTime = null)
     {
-        return new DinnerReservation(
-            guestId,
+        return new DinnerReservation(guestId,
             guestCount,
             arrivalDateTime,
             billId,

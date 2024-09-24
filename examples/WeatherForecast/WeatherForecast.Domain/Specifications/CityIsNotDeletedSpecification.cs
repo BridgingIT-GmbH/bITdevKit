@@ -5,10 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
-using System;
 using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain.Specifications;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
+using DevKit.Domain.Specifications;
+using Model;
 
 public class CityIsNotDeletedSpecification : Specification<City>
 {

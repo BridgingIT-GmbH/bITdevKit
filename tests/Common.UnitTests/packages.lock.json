@@ -4,9 +4,9 @@
     "net8.0": {
       "AutoMapper.Extensions.ExpressionMapping": {
         "type": "Direct",
-        "requested": "[7.0.1, )",
-        "resolved": "7.0.1",
-        "contentHash": "vHGQE/ZQGVHgX/p8pu+EtfBfcB5se433wC6PkGcA5zPkgcTKg+1SV2/NejDBna0gkM55W+Artgu/w7wfq2jD2Q==",
+        "requested": "[7.0.2, )",
+        "resolved": "7.0.2",
+        "contentHash": "lYvbA1OFi15epeHrrhbNuM/mJgcGGElYDd4MVuPjoqOjzMrwk263WZhzOIGaTxNmUzHkkG5wx4NEszGItvSX7g==",
         "dependencies": {
           "AutoMapper": "[13.0.0, 14.0.0)"
         }
@@ -34,6 +34,12 @@
         "requested": "[35.6.1, )",
         "resolved": "35.6.1",
         "contentHash": "QPJ8zLL0ScEunEoUNhMDigD4ykA/n7vXCZUQdGCFGHBfP2mNYjiCzR9Cj12eaFaDlwkhIC1HKQZihWl8OgbLsw=="
+      },
+      "coverlet.collector": {
+        "type": "Direct",
+        "requested": "[6.0.2, )",
+        "resolved": "6.0.2",
+        "contentHash": "bJShQ6uWRTQ100ZeyiMqcFlhP7WJ+bCuabUs885dJiBEzMsJMSFr7BOyeCw4rgvQokteGi5rKQTlkhfQPUXg2A=="
       },
       "Ensure.That": {
         "type": "Direct",
@@ -94,21 +100,15 @@
           "EmptyFiles": "4.4.0"
         }
       },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
-      },
       "xunit": {
         "type": "Direct",
-        "requested": "[2.9.0, )",
-        "resolved": "2.9.0",
-        "contentHash": "PtU3rZ0ThdmdJqTbK7GkgFf6iBaCR6Q0uvJHznID+XEYk2v6O/b7sRxqnbi3B2gRDXxjTqMkVNayzwsqsFUxRw==",
+        "requested": "[2.9.1, )",
+        "resolved": "2.9.1",
+        "contentHash": "db2l1I1Tde7OivowgxoxKgmqFl02KoOjFOQhV1FSVu+odTIntjhQhMwKIVvyWjBO6t7tS0PnFxblwSqeUuRZMQ==",
         "dependencies": {
-          "xunit.analyzers": "1.15.0",
-          "xunit.assert": "2.9.0",
-          "xunit.core": "[2.9.0]"
+          "xunit.analyzers": "1.16.0",
+          "xunit.assert": "2.9.1",
+          "xunit.core": "[2.9.1]"
         }
       },
       "xunit.runner.visualstudio": {
@@ -602,37 +602,37 @@
       },
       "xunit.analyzers": {
         "type": "Transitive",
-        "resolved": "1.15.0",
-        "contentHash": "s+M8K/Rtlgr6CmD7AYQKrNTvT5sh0l0ZKDoZ3Z/ExhlIwfV9mGAMR4f7KqIB7SSK7ZOhqDTgTUMYPmKfmvWUWQ=="
+        "resolved": "1.16.0",
+        "contentHash": "hptYM7vGr46GUIgZt21YHO4rfuBAQS2eINbFo16CV/Dqq+24Tp+P5gDCACu1AbFfW4Sp/WRfDPSK8fmUUb8s0Q=="
       },
       "xunit.assert": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "Z/1pyia//860wEYTKn6Q5dmgikJdRjgE4t5AoxJkK8oTmidzPLEPG574kmm7LFkMLbH6Frwmgb750kcyR+hwoA=="
+        "resolved": "2.9.1",
+        "contentHash": "Pb7x7MPfFgwRt88sJGbct/h7cc0wyxFHPhA2X0P8mUdPyrOTLN7QgsxX8ZFkJKm+Yj8YMKYOCzXtRWOGlMYjZw=="
       },
       "xunit.core": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "uRaop9tZsZMCaUS4AfbSPGYHtvywWnm8XXFNUqII7ShWyDBgdchY6gyDNgO4AK1Lv/1NNW61Zq63CsDV6oH6Jg==",
+        "resolved": "2.9.1",
+        "contentHash": "39DvKrtALB6DknhJrhTIwKF5wwuWqohGT0tEJnOstT2NfoDbvVKFv/hlgM6hH2ghUsxOhP0gHmj7HOR4D21fow==",
         "dependencies": {
-          "xunit.extensibility.core": "[2.9.0]",
-          "xunit.extensibility.execution": "[2.9.0]"
+          "xunit.extensibility.core": "[2.9.1]",
+          "xunit.extensibility.execution": "[2.9.1]"
         }
       },
       "xunit.extensibility.core": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "zjDEUSxsr6UNij4gIwCgMqQox+oLDPRZ+mubwWLci+SssPBFQD1xeRR4SvgBuXqbE0QXCJ/STVTp+lxiB5NLVA==",
+        "resolved": "2.9.1",
+        "contentHash": "lAsb+57Lk2gA/LW/IzlGlq0vyx5AgLtadJyGBUaS353HJT++qKdMlYi74pWgai7RLTnkV4ayownPredKe8REZQ==",
         "dependencies": {
           "xunit.abstractions": "2.0.3"
         }
       },
       "xunit.extensibility.execution": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "5ZTQZvmPLlBw6QzCOwM0KnMsZw6eGjbmC176QHZlcbQoMhGIeGcYzYwn5w9yXxf+4phtplMuVqTpTbFDQh2bqQ==",
+        "resolved": "2.9.1",
+        "contentHash": "KJ2LE0lOaN2wxtwwfM9nii218nzmxwMAqpolQJ0ZoLtZQ3gfJ1XtbEywGOCGZf9zBe9pPBEILqQaUO04lnekvQ==",
         "dependencies": {
-          "xunit.extensibility.core": "[2.9.0]"
+          "xunit.extensibility.core": "[2.9.1]"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -655,6 +655,7 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Primitives": "[8.0.0, )",
           "System.Threading.Tasks.Extensions": "[4.5.4, )"
@@ -678,7 +679,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.2, )",
+          "FluentValidation": "[11.10.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Configuration.Binder": "[8.0.2, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
@@ -713,7 +714,7 @@
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[11.9.2, )",
+          "FluentValidation": "[11.10.0, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
@@ -757,9 +758,9 @@
       },
       "FluentValidation": {
         "type": "CentralTransitive",
-        "requested": "[11.9.2, )",
-        "resolved": "11.9.2",
-        "contentHash": "XeHp9LvFvu1fsQ/NvDCymV02GOCB1nz7ZUhfpI3uMhCcHTkV1K5bMkv+Nc/kuNYyAsX5+5bcmUanIEMd5QN+Eg=="
+        "requested": "[11.10.0, )",
+        "resolved": "11.10.0",
+        "contentHash": "qsJGSJDdZ8qiG+lVJ70PZfJHcEdq8UQZ/tZDXoj78/iHKG6lVKtMJsD11zyyv/IPc7rwqGqnFoFLTNzpo3IPYg=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

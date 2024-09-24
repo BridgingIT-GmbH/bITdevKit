@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System.Collections.Generic;
-using BridgingIT.DevKit.Common;
+using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -25,10 +24,11 @@ public class CacheDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
         EnsureArg.IsNotNull(inner, nameof(inner));
         EnsureArg.IsNotNull(cacheProvideder, nameof(cacheProvideder));
 
-        this.Logger = loggerFactory?.CreateLogger<CacheDocumentStoreClientBehavior<T>>() ?? NullLoggerFactory.Instance.CreateLogger<CacheDocumentStoreClientBehavior<T>>();
+        this.Logger = loggerFactory?.CreateLogger<CacheDocumentStoreClientBehavior<T>>() ??
+            NullLoggerFactory.Instance.CreateLogger<CacheDocumentStoreClientBehavior<T>>();
         this.Inner = inner;
         this.cacheProvideder = cacheProvideder;
-        this.Options = options ?? new();
+        this.Options = options ?? new CacheDocumentStoreClientBehaviorOptions();
         this.type = typeof(T).Name;
     }
 
@@ -41,83 +41,135 @@ public class CacheDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         await this.Inner.DeleteAsync(documentKey, cancellationToken);
-        await this.cacheProvideder.RemoveAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}", cancellationToken);
+        await this.cacheProvideder.RemoveAsync(
+            $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}",
+            cancellationToken);
     }
 
     public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-find-all", out IEnumerable<T> cachedEntities, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-find-all",
+                out IEnumerable<T> cachedEntities,
+                cancellationToken))
         {
             return cachedEntities;
         }
 
         var entities = await this.Inner.FindAsync(cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-find-all", cachedEntities, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync($"storage-{this.type}-find-all",
+            cachedEntities,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return entities;
     }
 
     public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}", out IEnumerable<T> cachedEntities, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync(
+                $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}",
+                out IEnumerable<T> cachedEntities,
+                cancellationToken))
         {
             return cachedEntities;
         }
 
         var entities = await this.Inner.FindAsync(documentKey, cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}", cachedEntities, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}",
+            cachedEntities,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return entities;
     }
 
-    public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindAsync(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}", out IEnumerable<T> cachedEntities, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync(
+                $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}",
+                out IEnumerable<T> cachedEntities,
+                cancellationToken))
         {
             return cachedEntities;
         }
 
         var entities = await this.Inner.FindAsync(documentKey, filter, cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}", cachedEntities, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync(
+            $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}",
+            cachedEntities,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return entities;
     }
 
     public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-list-all", out IEnumerable<DocumentKey> cachedKeys, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-list-all",
+                out IEnumerable<DocumentKey> cachedKeys,
+                cancellationToken))
         {
             return cachedKeys;
         }
 
         var keys = await this.Inner.ListAsync(cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-list-all", keys, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync($"storage-{this.type}-list-all",
+            keys,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return keys;
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync(
+        DocumentKey documentKey,
+        CancellationToken cancellationToken = default)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}", out IEnumerable<DocumentKey> cachedKeys, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync(
+                $"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}",
+                out IEnumerable<DocumentKey> cachedKeys,
+                cancellationToken))
         {
             return cachedKeys;
         }
 
         var keys = await this.Inner.ListAsync(documentKey, cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}", keys, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}",
+            keys,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return keys;
     }
 
-    public async Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DocumentKey>> ListAsync(
+        DocumentKey documentKey,
+        DocumentKeyFilter filter,
+        CancellationToken cancellationToken = default)
     {
-        if (await this.cacheProvideder.TryGetAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}", out IEnumerable<DocumentKey> cachedKeys, cancellationToken))
+        if (await this.cacheProvideder.TryGetAsync(
+                $"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}",
+                out IEnumerable<DocumentKey> cachedKeys,
+                cancellationToken))
         {
             return cachedKeys;
         }
 
         var keys = await this.Inner.ListAsync(cancellationToken);
-        await this.cacheProvideder.SetAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}", keys, this.Options.SlidingExpiration, this.Options.AbsoluteExpiration, cancellationToken: cancellationToken);
+        await this.cacheProvideder.SetAsync(
+            $"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-{filter}",
+            keys,
+            this.Options.SlidingExpiration,
+            this.Options.AbsoluteExpiration,
+            cancellationToken);
 
         return keys;
     }
@@ -136,24 +188,42 @@ public class CacheDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     {
         await this.Inner.UpsertAsync(documentKey, entity, cancellationToken);
 
-        await this.cacheProvideder.RemoveAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}", cancellationToken);
-        await this.cacheProvideder.RemoveStartsWithAsync($"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-", cancellationToken); // filtered
+        await this.cacheProvideder.RemoveAsync(
+            $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}",
+            cancellationToken);
+        await this.cacheProvideder.RemoveStartsWithAsync(
+            $"storage-{this.type}-find-{documentKey.PartitionKey}-{documentKey.RowKey}-",
+            cancellationToken); // filtered
         await this.cacheProvideder.RemoveAsync($"storage-{this.type}-find-all", cancellationToken);
-        await this.cacheProvideder.RemoveAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}", cancellationToken);
-        await this.cacheProvideder.RemoveStartsWithAsync($"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-", cancellationToken); // filtered
+        await this.cacheProvideder.RemoveAsync(
+            $"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}",
+            cancellationToken);
+        await this.cacheProvideder.RemoveStartsWithAsync(
+            $"storage-{this.type}-list-{documentKey.PartitionKey}-{documentKey.RowKey}-",
+            cancellationToken); // filtered
         await this.cacheProvideder.RemoveAsync($"storage-{this.type}-list-all", cancellationToken);
     }
 
-    public async Task UpsertAsync(IEnumerable<(DocumentKey DocumentKey, T Entity)> entities, CancellationToken cancellationToken = default)
+    public async Task UpsertAsync(
+        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
+        CancellationToken cancellationToken = default)
     {
         await this.Inner.UpsertAsync(entities, cancellationToken);
 
         foreach (var entity in entities)
         {
-            await this.cacheProvideder.RemoveAsync($"storage-{this.type}-find-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}", cancellationToken);
-            await this.cacheProvideder.RemoveStartsWithAsync($"storage-{this.type}-find-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}-", cancellationToken); // filtered
-            await this.cacheProvideder.RemoveAsync($"storage-{this.type}-list-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}", cancellationToken);
-            await this.cacheProvideder.RemoveStartsWithAsync($"storage-{this.type}-list-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}-", cancellationToken); // filtered
+            await this.cacheProvideder.RemoveAsync(
+                $"storage-{this.type}-find-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}",
+                cancellationToken);
+            await this.cacheProvideder.RemoveStartsWithAsync(
+                $"storage-{this.type}-find-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}-",
+                cancellationToken); // filtered
+            await this.cacheProvideder.RemoveAsync(
+                $"storage-{this.type}-list-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}",
+                cancellationToken);
+            await this.cacheProvideder.RemoveStartsWithAsync(
+                $"storage-{this.type}-list-{entity.DocumentKey.PartitionKey}-{entity.DocumentKey.RowKey}-",
+                cancellationToken); // filtered
         }
 
         await this.cacheProvideder.RemoveAsync($"storage-{this.type}-find-all", cancellationToken);

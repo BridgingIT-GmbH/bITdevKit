@@ -20,12 +20,6 @@
         "resolved": "14.1.0",
         "contentHash": "Y7ydRTUCUi1DaVml6r3W7NMgvhkkJY1CTnFfc3jQIBPHwvvegVqRD3C5xdPwgZp+KZ5dUarH6bfK3J2Y2FjVhQ=="
       },
-      "StyleCop.Analyzers": {
-        "type": "Direct",
-        "requested": "[1.1.118, )",
-        "resolved": "1.1.118",
-        "contentHash": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw=="
-      },
       "Microsoft.AspNetCore.Authorization": {
         "type": "Transitive",
         "resolved": "8.0.8",

@@ -6,7 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Configuration;
+using Configuration;
 
 public class CosmosClientBuilderContext(
     IServiceCollection services,
@@ -28,7 +28,10 @@ public class CosmosClientBuilderContext(
         {
             if (!string.IsNullOrEmpty(this.ConnectionString))
             {
-                var match = Regex.Match(this.ConnectionString, @"(?i)AccountEndpoint=https://(.*?)(:|/|;)", RegexOptions.None, new TimeSpan(0, 0, 3));
+                var match = Regex.Match(this.ConnectionString,
+                    @"(?i)AccountEndpoint=https://(.*?)(:|/|;)",
+                    RegexOptions.None,
+                    new TimeSpan(0, 0, 3));
                 if (match.Success)
                 {
                     return match.Groups[1].Value;

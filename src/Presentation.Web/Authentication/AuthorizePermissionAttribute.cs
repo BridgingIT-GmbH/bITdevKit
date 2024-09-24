@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 
 public class AuthorizePermissionAttribute : AuthorizeAttribute
 {
-    public AuthorizePermissionAttribute(string permission) =>
+    public AuthorizePermissionAttribute(string permission)
+    {
         this.Policy = permission;
+    }
 }

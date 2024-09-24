@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
+using DevKit.Domain.Model;
 
 public class Host : AuditableAggregateRoot<HostId, Guid>
 {
     private readonly List<MenuId> menuIds = [];
     private readonly List<DinnerId> dinnerIds = [];
 
-    private Host()
-    {
-    }
+    private Host() { }
 
     private Host(
         string firstName,
@@ -50,15 +48,13 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
         UserId userId,
         Uri profileImage = null)
     {
-        var host = new Host(
-            firstName,
+        var host = new Host(firstName,
             lastName,
             userId,
             AverageRating.Create(),
             profileImage);
 
-        host.DomainEvents.Register(
-                new HostCreatedDomainEvent(host));
+        host.DomainEvents.Register(new HostCreatedDomainEvent(host));
 
         return host;
     }
@@ -75,8 +71,7 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
 
         if (this.Id != null && this.Id.Value != Guid.Empty)
         {
-            this.DomainEvents.Register(
-                new HostUpdatedDomainEvent(this), true);
+            this.DomainEvents.Register(new HostUpdatedDomainEvent(this), true);
         }
 
         return this;
@@ -94,8 +89,7 @@ public class Host : AuditableAggregateRoot<HostId, Guid>
 
         if (this.Id != null && this.Id.Value != Guid.Empty)
         {
-            this.DomainEvents.Register(
-            new HostUpdatedDomainEvent(this), true);
+            this.DomainEvents.Register(new HostUpdatedDomainEvent(this), true);
         }
 
         return this;

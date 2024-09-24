@@ -5,21 +5,18 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
 using System.Diagnostics;
 
 public static class DictionaryExtensions
 {
     /// <summary>
-    /// Gets a value by key
+    ///     Gets a value by key
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="source">The source.</param>
     /// <param name="key">The key.</param>
-    public static TValue GetValue<TKey, TValue>(
-        this IDictionary<TKey, TValue> source,
-        TKey key)
+    public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)
     {
         if (source is null || key is null)
         {
@@ -30,15 +27,13 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
-    /// Gets a value by key
+    ///     Gets a value by key
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="source">The source.</param>
     /// <param name="key">The key.</param>
-    public static TValue GetValue<TKey, TValue>(
-        this IReadOnlyDictionary<TKey, TValue> source,
-        TKey key)
+    public static TValue GetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key)
     {
         if (source is null || key is null)
         {
@@ -49,7 +44,7 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
-    /// Gets a value by key or the default value if key not found
+    ///     Gets a value by key or the default value if key not found
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -70,7 +65,7 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
-    /// Gets a value by key or the default value if key not found
+    ///     Gets a value by key or the default value if key not found
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -91,7 +86,7 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
-    /// Adds or updates the entry in the dictionary.
+    ///     Adds or updates the entry in the dictionary.
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -122,8 +117,8 @@ public static class DictionaryExtensions
     }
 
     /// <summary>
-    /// Adds the given <paramref name="items"/> to the given <paramref name="source"/>.
-    /// <remarks>This method is used to duck-type <see cref="IDictionary{TKey, TValue}"/> with multiple pairs.</remarks>
+    ///     Adds the given <paramref name="items" /> to the given <paramref name="source" />.
+    ///     <remarks>This method is used to duck-type <see cref="IDictionary{TKey, TValue}" /> with multiple pairs.</remarks>
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -154,7 +149,6 @@ public static class DictionaryExtensions
             return false;
         }
 
-        return source.Keys.Any(k =>
-            string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
+        return source.Keys.Any(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
     }
 }

@@ -5,25 +5,27 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Projection;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
-using BridgingIT.DevKit.Domain.Repositories;
+using System.Diagnostics;
+using Common;
+using DevKit.Domain.EventSourcing.AggregatePublish;
+using DevKit.Domain.Repositories;
 using Domain.Model;
 using Domain.Model.Events;
 using Domain.Repositories;
 using MediatR;
 
-public sealed class PersonCreatedNotificationProjection(IPersonOverviewRepository personOverviewRepository, IEntityMapper mapper) : INotificationHandler<PublishAggregateEvent<Person>> // <1>
+public sealed class PersonCreatedNotificationProjection(
+    IPersonOverviewRepository personOverviewRepository,
+    IEntityMapper mapper) : INotificationHandler<PublishAggregateEvent<Person>> // <1>
 {
     private readonly IPersonOverviewRepository personOverviewRepository = personOverviewRepository;
     private readonly IEntityMapper mapper = mapper;
 
     async Task INotificationHandler<PublishAggregateEvent<Person>>.Handle(
-        PublishAggregateEvent<Person> notification, CancellationToken cancellationToken) // <3>
+        PublishAggregateEvent<Person> notification,
+        CancellationToken cancellationToken) // <3>
     {
-        System.Diagnostics.Debug.WriteLine("Do projection of " + notification.Aggregate.Id);
+        Debug.WriteLine("Do projection of " + notification.Aggregate.Id);
         if (!(notification.AggregateEvent is UserDeactivatedEvent)) // <4>
         {
             var pov = this.mapper.Map<PersonOverview>(notification.Aggregate);

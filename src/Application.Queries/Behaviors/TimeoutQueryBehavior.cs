@@ -5,16 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
+using Common;
 using Humanizer;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Timeout;
 
-public class TimeoutQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
+public class TimeoutQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
+    : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)
@@ -33,12 +32,17 @@ public class TimeoutQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
             return await next().AnyContext();
         }
 
-        var timeoutPolicy = Policy
-            .TimeoutAsync(instance.Options.Timeout, TimeoutStrategy.Pessimistic, onTimeoutAsync: async (context, timeout, task) =>
+        var timeoutPolicy = Policy.TimeoutAsync(instance.Options.Timeout,
+            TimeoutStrategy.Pessimistic,
+            async (context, timeout, task) =>
             {
-                await Task.Run(() => this.Logger.LogError("{LogKey} query timeout behavior (timeout={Timeout}, type={BehaviorType})", Constants.LogKey, timeout.Humanize(), this.GetType().Name));
+                await Task.Run(() => this.Logger.LogError(
+                    "{LogKey} query timeout behavior (timeout={Timeout}, type={BehaviorType})",
+                    Constants.LogKey,
+                    timeout.Humanize(),
+                    this.GetType().Name));
             });
 
-        return await timeoutPolicy.ExecuteAsync(async (context) => await next().AnyContext(), cancellationToken);
+        return await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
     }
 }

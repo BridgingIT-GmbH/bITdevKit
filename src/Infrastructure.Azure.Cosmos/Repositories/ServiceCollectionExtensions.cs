@@ -5,13 +5,13 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using Azure.Cosmos;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.Azure;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
+using Extensions;
+using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -100,9 +100,8 @@ public static partial class ServiceCollectionExtensions
                     services.TryAddScoped(sp => provider);
                 }
 
-                services.TryAddScoped<IGenericRepository<TEntity>>(sp =>
-                    new CosmosSqlGenericRepository<TEntity>(o => o
-                        .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
+                services.TryAddScoped<IGenericRepository<TEntity>>(sp => new CosmosSqlGenericRepository<TEntity>(o =>
+                    o.LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(provider ?? sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
                 break;
@@ -141,9 +140,8 @@ public static partial class ServiceCollectionExtensions
                 break;
             default:
                 services.TryAddScoped(providerFactory);
-                services.TryAddScoped<IGenericRepository<TEntity>>(sp =>
-                    new CosmosSqlGenericRepository<TEntity>(o => o
-                        .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
+                services.TryAddScoped<IGenericRepository<TEntity>>(sp => new CosmosSqlGenericRepository<TEntity>(o =>
+                    o.LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
                 break;

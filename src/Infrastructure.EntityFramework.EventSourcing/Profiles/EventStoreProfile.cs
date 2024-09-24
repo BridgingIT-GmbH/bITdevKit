@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
-using BridgingIT.DevKit.Domain.EventSourcing.Model;
-using BridgingIT.DevKit.Infrastructure.EventSourcing;
 using AutoMapper;
+using Domain.EventSourcing.Model;
+using Infrastructure.EventSourcing;
 
 public class EventStoreProfile : Profile
 {

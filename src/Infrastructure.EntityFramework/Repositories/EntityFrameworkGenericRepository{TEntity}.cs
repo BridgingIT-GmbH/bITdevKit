@@ -5,66 +5,54 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
+using Common;
+using Domain.Model;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context) : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
+public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
+    : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
-    where TContext : DbContext
-{
-}
+    where TContext : DbContext { }
 
-public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename to EntityFrameworkRepository + Obsolete
-    EntityFrameworkReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
+public partial class EntityFrameworkGenericRepository<TEntity>
+    : // TODO: rename to EntityFrameworkRepository + Obsolete
+        EntityFrameworkReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
     public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
-    public EntityFrameworkGenericRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
-        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build())
-    {
-    }
+    public EntityFrameworkGenericRepository(
+        Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
+        : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
     public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context)
-        : base(o => o.LoggerFactory(loggerFactory).DbContext(context))
-    {
-    }
+        : base(o => o.LoggerFactory(loggerFactory).DbContext(context)) { }
 
     /// <summary>
-    /// Inserts the provided entity.
+    ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    public virtual async Task<TEntity> InsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Updates the provided entity.
+    ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    public virtual async Task<TEntity> UpdateAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
         return result.entity;
     }
 
     /// <summary>
-    /// Insert or updates the provided entity.
+    ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
@@ -79,7 +67,8 @@ public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename
         var isNew = entity.Id == default;
         var existingEntity = isNew
             ? null
-            : await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext(); // prevent the entity from being tracked (which find() does
+            : await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken)
+                .AnyContext(); // prevent the entity from being tracked (which find() does
         isNew = isNew || existingEntity is null;
 
         if (isNew)
@@ -93,7 +82,8 @@ public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename
             if (!this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id)))
             {
                 // only re-attach (+update) if not tracked already
-                this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+                this.Options.DbContext
+                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
             }
         }
 
@@ -101,7 +91,11 @@ public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename
         {
             foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
             {
-                TypedLogger.LogEntityState(this.Logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                TypedLogger.LogEntityState(this.Logger,
+                    Constants.LogKey,
+                    entry.Entity.GetType().Name,
+                    entry.IsKeySet,
+                    entry.State);
             }
 
             await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
@@ -149,10 +143,24 @@ public partial class EntityFrameworkGenericRepository<TEntity> : // TODO: rename
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId})")]
-        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string entityType, object entityId);
+        [LoggerMessage(0,
+            LogLevel.Debug,
+            "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId})")]
+        public static partial void LogUpsert(
+            ILogger logger,
+            string logKey,
+            string entityUpsertType,
+            string entityType,
+            object entityId);
 
-        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
-        public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
+        [LoggerMessage(2,
+            LogLevel.Trace,
+            "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        public static partial void LogEntityState(
+            ILogger logger,
+            string logKey,
+            string entityType,
+            bool entityKeySet,
+            EntityState entityEntryState);
     }
 }

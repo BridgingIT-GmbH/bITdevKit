@@ -5,26 +5,20 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
-using BridgingIT.DevKit.Domain.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
+using Domain.Repositories;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
-        {
-            s.AddMediatR();
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
+    s =>
+    {
+        s.AddMediatR();
 
-            s.AddInMemoryRepository(
-            new InMemoryContext<StubEntity>(new[]
-                {
-                    new StubEntity() { FirstName = "John" },
-                    new StubEntity() { FirstName = "Mary" },
-                }))
-                .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
-                .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
-                .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
-                .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>();
-        })
+        s.AddInMemoryRepository(new InMemoryContext<StubEntity>(new[] { new StubEntity { FirstName = "John" }, new StubEntity { FirstName = "Mary" } }))
+            .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
+            .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
+            .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
+            .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>();
+    })
 {
     [Fact]
     public void GetRepository_WhenRequested_ShouldNotBeNull()
@@ -41,13 +35,14 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
 }
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextNoInMemoryContextTests(ITestOutputHelper output) : TestsBase(output, s => s
-            .AddMediatR()
-            .AddInMemoryRepository<StubEntity>()
-                .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
-                .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
-                .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
-                .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>())
+public class RepositoryBuilderContextNoInMemoryContextTests(ITestOutputHelper output) : TestsBase(output,
+    s => s
+        .AddMediatR()
+        .AddInMemoryRepository<StubEntity>()
+        .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
+        .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
+        .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
+        .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>())
 {
     [Fact]
     public void GetRepository_WhenRequested_ShouldNotBeNull()

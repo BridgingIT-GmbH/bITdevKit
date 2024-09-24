@@ -5,13 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Generic;
-
 public class DomainPolicyResultError : ResultErrorBase
 {
-    public DomainPolicyResultError()
-    {
-    }
+    public DomainPolicyResultError() { }
 
     public DomainPolicyResultError(IEnumerable<string> messages = null)
     {

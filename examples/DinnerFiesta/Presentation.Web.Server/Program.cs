@@ -78,7 +78,8 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(RetryQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:15"), builder.Configuration)
+builder.Services.AddJobScheduling(o => o
+        .StartupDelay("00:00:15"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()

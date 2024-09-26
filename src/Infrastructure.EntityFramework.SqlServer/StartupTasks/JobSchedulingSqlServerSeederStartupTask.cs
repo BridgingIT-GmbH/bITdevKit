@@ -19,8 +19,8 @@ public class JobSchedulingSqlServerSeederStartupTask : IStartupTask, IRetryStart
 
     public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
         : this(loggerFactory,
-            configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-            configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"]) { }
+            configuration.GetSection("JobScheduling:Quartz", false)["quartz.dataSource.default.connectionString"],
+            configuration.GetSection("JobScheduling:Quartz", false)["quartz.jobStore.tablePrefix"]) { }
 
     public JobSchedulingSqlServerSeederStartupTask(
         ILoggerFactory loggerFactory,
@@ -45,11 +45,13 @@ public class JobSchedulingSqlServerSeederStartupTask : IStartupTask, IRetryStart
         var database = connectionStringBuilder.InitialCatalog;
 
         await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
-        connection.Open();
+        await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
         var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
 
-        //this.logger.LogDebug(sql);
+        this.logger.LogDebug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); // TODO: remove later!
+        this.logger.LogDebug(sql); // TODO: remove later!
         await using var command = new SqlCommand(sql, connection);
         await command.ExecuteNonQueryAsync(cancellationToken);
+        this.logger.LogDebug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); // TODO: remove later!
     }
 }

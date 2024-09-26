@@ -128,6 +128,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         CancellationToken cancellationToken = default)
     {
         var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
+
         return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : null;
     }
 

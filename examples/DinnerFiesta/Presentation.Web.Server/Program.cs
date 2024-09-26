@@ -377,6 +377,7 @@ static FileExtensionContentTypeProvider CreateContentTypeProvider()
 {
     var provider = new FileExtensionContentTypeProvider();
     provider.Mappings.Add(".yaml", ContentType.YAML.MimeType());
+
     return provider;
 }
 

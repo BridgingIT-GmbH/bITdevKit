@@ -63,6 +63,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 if (method is null)
                 {
                     Trace.WriteLine($"Method Register not found at {entry.Name}");
+
                     continue;
                 }
 
@@ -102,6 +103,7 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
                 if (method is null)
                 {
                     Trace.WriteLine($"Method Register not found at {entry.Name}");
+
                     continue;
                 }
 

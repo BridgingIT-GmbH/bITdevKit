@@ -53,6 +53,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
         }
 
         using var decompress = new DeflateStream(input, CompressionMode.Decompress, true);
+
         return this.inner.Deserialize(decompress, type);
     }
 
@@ -73,6 +74,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
         }
 
         using var decompress = new DeflateStream(input, CompressionMode.Decompress, true);
+
         return this.inner.Deserialize<T>(decompress);
     }
 }

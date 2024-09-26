@@ -26,15 +26,18 @@ public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(
                 this.Services
                     .AddSingleton<IRepositoryTransaction<TEntity>,
                         EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+
                 break;
             case ServiceLifetime.Transient:
                 this.Services
                     .AddTransient<IRepositoryTransaction<TEntity>,
                         EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+
                 break;
             default:
                 this.Services
                     .AddScoped<IRepositoryTransaction<TEntity>, EntityFrameworkTransactionWrapper<TEntity, TContext>>();
+
                 break;
         }
 

@@ -44,6 +44,7 @@ public static class ExpressionExtensions
             var result = source.ToString();
             // strip the parameter from the expression
             var name = result.SliceTill(" =>");
+
             return result.Replace($"{name}.", string.Empty).SliceFrom("=> ");
         }
 
@@ -57,6 +58,7 @@ public static class ExpressionExtensions
             var result = source.ToString();
             // strip the parameter from the expression
             var name = result.SliceTill(" =>");
+
             return result.Replace($"{name}.", string.Empty).SliceFrom("=> ");
         }
 
@@ -70,6 +72,7 @@ public static class ExpressionExtensions
             var result = source.ToString();
             // strip the parameter from the expression
             var name = result.SliceTill(" =>");
+
             return result.Replace($"{name}.", string.Empty).SliceFrom("=> ");
         }
 
@@ -83,6 +86,7 @@ public static class ExpressionExtensions
             var result = source.ToString();
             // strip the parameter from the expression
             var name = result.SliceTill(" =>");
+
             return result.Replace($"{name}.", string.Empty).SliceFrom("=> ");
         }
 
@@ -96,6 +100,7 @@ public static class ExpressionExtensions
             var result = source.ToString();
             // strip the parameter from the expression
             var name = result.SliceTill(" =>");
+
             return result.Replace($"{name}.", string.Empty).SliceFrom("=> ");
         }
 

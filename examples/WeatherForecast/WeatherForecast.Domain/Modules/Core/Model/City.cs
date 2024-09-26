@@ -46,6 +46,7 @@ public class City : AggregateRoot<Guid>
             CreatedDate = DateTime.UtcNow
         };
         entity.DomainEvents.Register(new CityCreatedDomainEvent(entity.Id, name));
+
         return entity;
     }
 

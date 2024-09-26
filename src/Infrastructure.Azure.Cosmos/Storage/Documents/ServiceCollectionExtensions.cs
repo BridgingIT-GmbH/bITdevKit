@@ -62,27 +62,33 @@ public static partial class ServiceCollectionExtensions
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient<IDocumentStoreClient<T>>(sp =>
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
+
                 break;
             default:
                 services.TryAddScoped<IDocumentStoreClient<T>>(sp =>
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions)));
                 });
+
                 break;
         }
 
@@ -102,12 +108,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.TryAddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+
                 break;
             default:
                 services.TryAddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+
                 break;
         }
 

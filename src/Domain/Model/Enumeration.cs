@@ -87,7 +87,7 @@ public abstract class Enumeration(int id, string value) : Enumeration<int, strin
     /// </summary>
     /// <param name="other">The other <see cref="Enumeration" /> instance to compare with the current instance.</param>
     /// <return>True if the current instance is equal to the specified instance; otherwise, false.</return>
-    public virtual new bool Equals(Enumeration other)
+    public new virtual bool Equals(Enumeration other)
     {
         if (other is null)
         {

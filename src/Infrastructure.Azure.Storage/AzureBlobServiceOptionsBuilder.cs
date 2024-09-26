@@ -14,18 +14,21 @@ public class AzureBlobServiceOptionsBuilder
     public AzureBlobServiceOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
+
         return this;
     }
 
     public AzureBlobServiceOptionsBuilder IgnoreServerCertificateValidation(bool value = true)
     {
         this.Target.IgnoreServerCertificateValidation = value;
+
         return this;
     }
 
     public AzureBlobServiceOptionsBuilder ClientOptions(BlobClientOptions options)
     {
         this.Target.ClientOptions = options;
+
         return this;
     }
 }

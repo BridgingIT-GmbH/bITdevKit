@@ -10,12 +10,14 @@ using MediatR;
 
 public sealed class PersonCreatedProjection : INotificationHandler<PublishAggregateEvent<Person>>
 {
-    Task INotificationHandler<PublishAggregateEvent<Person>>.Handle(PublishAggregateEvent<Person> notification,
+    Task INotificationHandler<PublishAggregateEvent<Person>>.Handle(
+        PublishAggregateEvent<Person> notification,
         CancellationToken cancellationToken)
     {
         notification.ShouldNotBeNull();
         notification.Aggregate.Id.ShouldNotBe(Guid.Empty);
         notification.AggregateEvent.ShouldNotBeNull();
+
         return Task.FromResult(notification.Aggregate);
     }
 }

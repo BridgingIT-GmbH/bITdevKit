@@ -4,19 +4,28 @@
 [![NuGet](https://img.shields.io/nuget/v/BridgingIT.DevKit.Common.Utilities?style=flat-square&label=nuget%20packages)](https://www.nuget.org/packages?q=bitdevkit)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
+Empowering developers with modular components for modern application development, centered around
+Domain-Driven Design principles.
 
-Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
+Our goal is to empower developers by offering modular components that can be easily integrated into
+your projects. Whether you're working with repositories, commands, queries, or other components, the
+bITDevKit provides flexible solutions that can adapt to your specific needs.
 
-This repository includes the complete source code for the bITDevKit, along with a variety of sample applications located in the ./examples folder within the solution. These samples serve as practical demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All components are available as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
+This repository includes the complete source code for the bITDevKit, along with a variety of sample
+applications located in the ./examples folder within the solution. These samples serve as practical
+demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All
+components are available
+as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
-For the latest updates and release notes, please refer to the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
+For the latest updates and release notes, please refer to
+the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
 
 Join us in advancing the world of software development with the bITDevKit!
 
 
 Supported patterns, elements:
 --------------------------------
+
 - Entity
 - AggregateRoot
 - ValueObjects
@@ -33,6 +42,7 @@ Supported patterns, elements:
 
 Features (excerpt):
 -------------------------------------
+
 - EventStore (CQRS)
 - Job Scheduling
 - Storage
@@ -45,6 +55,7 @@ Features (excerpt):
 
 Libraries used (excerpt):
 -------------------------------------
+
 - [Xunit](https://github.com/xunit/xunit)
 - [MediatR](https://github.com/jbogard/MediatR)
 - [EnsureThat.Core](https://github.com/danielwertheim/Ensure.That)
@@ -67,6 +78,7 @@ Libraries used (excerpt):
 
 Example projects
 -----------------
+
 - [GettingStarted](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
 - [EventStore](https://github.com/bridgingit/bitdevkit/examples)
 - [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)

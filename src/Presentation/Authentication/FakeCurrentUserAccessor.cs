@@ -56,6 +56,7 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
     private static KeyValuePair<string, User> GetRandomUser()
     {
         var index = Random.Next(UserStore.Count);
+
         return UserStore.ElementAt(index);
     }
 

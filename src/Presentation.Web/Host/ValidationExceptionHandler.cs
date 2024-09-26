@@ -41,10 +41,11 @@ public class ValidationExceptionHandler(
                 : null,
             Type = "https://httpstatuses.com/400",
             Errors = ex.Errors?.OrderBy(v => v.PropertyName)
-                .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),
-                    v => v.ErrorMessage)
+                    .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),
+                        v => v.ErrorMessage)
 #pragma warning disable SA1010 // Opening square brackets should be spaced correctly
-                .ToDictionary(g => g.Key, g => g.ToArray()) ?? []
+                    .ToDictionary(g => g.Key, g => g.ToArray()) ??
+                []
 #pragma warning restore SA1010 // Opening square brackets should be spaced correctly
         };
 

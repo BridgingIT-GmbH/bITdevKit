@@ -82,6 +82,7 @@ public static class CompositionRoot
             .AddSingleton<IRegistrationForEventStoreAggregatesAndEvents,
                 RegistrationForEventStoreAggregatesAndEvents>();
         services.AddTransient<IPersonService, PersonService>();
+
         return services;
     }
 

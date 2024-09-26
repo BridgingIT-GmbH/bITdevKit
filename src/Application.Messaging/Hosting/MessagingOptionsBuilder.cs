@@ -12,30 +12,35 @@ public class MessagingOptionsBuilder : OptionsBuilderBase<MessagingOptions, Mess
     public MessagingOptionsBuilder Enabled(bool value = true)
     {
         this.Target.Enabled = value;
+
         return this;
     }
 
     public MessagingOptionsBuilder Disabled()
     {
         this.Target.Enabled = false;
+
         return this;
     }
 
     public MessagingOptionsBuilder StartupDelay(TimeSpan timespan)
     {
         this.Target.StartupDelay = timespan;
+
         return this;
     }
 
     public MessagingOptionsBuilder StartupDelay(int milliseconds)
     {
         this.Target.StartupDelay = TimeSpan.FromMilliseconds(milliseconds);
+
         return this;
     }
 
     public MessagingOptionsBuilder StartupDelay(string value)
     {
         this.Target.StartupDelay = TimeSpan.Parse(value);
+
         return this;
     }
 }

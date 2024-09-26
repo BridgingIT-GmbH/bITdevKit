@@ -12,6 +12,7 @@ public static class HttpContentExtensions
     public static async Task<T> ReadAsAsync<T>(this HttpContent content, CancellationToken cancellationToken = default)
     {
         using var stream = await content.ReadAsStreamAsync(cancellationToken);
+
         return await JsonSerializer.DeserializeAsync<T>(stream,
             DefaultSystemTextJsonSerializerOptions.Create(),
             cancellationToken);
@@ -23,6 +24,7 @@ public static class HttpContentExtensions
         CancellationToken cancellationToken = default)
     {
         using var stream = await content.ReadAsStreamAsync(cancellationToken);
+
         return await JsonSerializer.DeserializeAsync<T>(stream,
             options ?? DefaultSystemTextJsonSerializerOptions.Create(),
             cancellationToken);

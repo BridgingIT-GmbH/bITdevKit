@@ -104,7 +104,8 @@ public class TraceActivityDecoratorTests
         serviceDecorated.MethodNotExplicitlyMarkedForTracing(() => Activity.Current.ShouldBeNull());
     }
 
-    private void ShouldHaveTags(Activity activity,
+    private void ShouldHaveTags(
+        Activity activity,
         string expectedClassName,
         string expectedMethodName,
         string expectedParameterTypes)

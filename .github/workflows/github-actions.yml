@@ -1,6 +1,6 @@
 name: CI
 
-on: [push]
+on: [ push ]
 
 permissions: # needed for test reporter
   pull-requests: write

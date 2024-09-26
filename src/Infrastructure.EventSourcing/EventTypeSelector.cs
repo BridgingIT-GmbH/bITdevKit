@@ -21,6 +21,7 @@ public class EventTypeSelector : IEventTypeSelector
                 .Where(a =>
                 {
                     var name = a.GetName().Name;
+
                     return name != null && !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
                 });
             this.typeCache = assemblies.SelectMany(a => a.GetTypes()

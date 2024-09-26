@@ -34,12 +34,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericRepository<TEntity>), repositoryFactory);
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericRepository<TEntity>), repositoryFactory);
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericRepository<TEntity>), repositoryFactory);
+
                 break;
         }
 
@@ -66,12 +69,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericRepository<TEntity>), typeof(TRepository));
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericRepository<TEntity>), typeof(TRepository));
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericRepository<TEntity>), typeof(TRepository));
+
                 break;
         }
 
@@ -99,12 +105,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericReadOnlyRepository<TEntity>), repositoryFactory);
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericReadOnlyRepository<TEntity>), repositoryFactory);
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericReadOnlyRepository<TEntity>), repositoryFactory);
+
                 break;
         }
 
@@ -131,12 +140,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericReadOnlyRepository<TEntity>), typeof(TRepository));
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericReadOnlyRepository<TEntity>), typeof(TRepository));
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericReadOnlyRepository<TEntity>), typeof(TRepository));
+
                 break;
         }
 

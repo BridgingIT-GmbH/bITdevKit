@@ -36,6 +36,7 @@ public class Specification<T> : ISpecification<T>
         }
 
         var predicate = this.ToPredicate();
+
         return predicate(entity);
     }
 

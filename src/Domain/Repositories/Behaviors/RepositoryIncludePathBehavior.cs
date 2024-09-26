@@ -61,6 +61,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
     }
 
@@ -70,6 +71,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
 
@@ -79,6 +81,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
@@ -92,6 +95,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindAllAsync(options, cancellationToken).AnyContext();
     }
 
@@ -101,6 +105,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
     }
 
@@ -110,6 +115,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
     }
 
@@ -119,6 +125,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
     }
 
@@ -129,6 +136,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
     }
 
@@ -139,6 +147,7 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         CancellationToken cancellationToken = default)
     {
         options = this.EnsureOptions(options);
+
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
 

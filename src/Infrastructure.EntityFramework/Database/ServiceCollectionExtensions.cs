@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
 using Logging;
+using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -17,8 +18,8 @@ public static partial class ServiceCollectionExtensions
         Builder<DatabaseCreatorOptionsBuilder, DatabaseCreatorOptions> optionsBuilder)
         where TContext : DbContext
     {
-        return services.AddDatabaseCreatorService<TContext>(optionsBuilder(new DatabaseCreatorOptionsBuilder())
-            .Build());
+        return services.AddDatabaseCreatorService<TContext>(
+            optionsBuilder(new DatabaseCreatorOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddDatabaseCreatorService<TContext>(
@@ -27,7 +28,11 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext
     {
         services.AddHostedService(sp =>
-            new DatabaseCreatorService<TContext>(sp.GetRequiredService<ILoggerFactory>(), sp, options));
+            new DatabaseCreatorService<TContext>(
+                sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp,
+                options));
 
         return services;
     }
@@ -37,8 +42,8 @@ public static partial class ServiceCollectionExtensions
         Builder<DatabaseMigratorOptionsBuilder, DatabaseMigratorOptions> optionsBuilder)
         where TContext : DbContext
     {
-        return services.AddDatabaseMigratorService<TContext>(optionsBuilder(new DatabaseMigratorOptionsBuilder())
-            .Build());
+        return services.AddDatabaseMigratorService<TContext>(optionsBuilder(
+            new DatabaseMigratorOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddDatabaseMigratorService<TContext>(
@@ -47,7 +52,11 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext
     {
         services.AddHostedService(sp =>
-            new DatabaseMigratorService<TContext>(sp.GetRequiredService<ILoggerFactory>(), sp, options));
+            new DatabaseMigratorService<TContext>(
+                sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp,
+                options));
 
         return services;
     }

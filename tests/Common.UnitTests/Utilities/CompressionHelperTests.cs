@@ -57,7 +57,8 @@ public class CompressionHelperTests
     {
         // Arrange
         var source = Encoding.UTF8.GetBytes("hello world!");
-        var expected = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 }
+        var expected = new byte[]
+                { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 }
             .Skip(10)
             .ToArray();
 
@@ -75,7 +76,8 @@ public class CompressionHelperTests
     public async Task DecompressAsync_ShouldDecompressByteArray()
     {
         // Arrange
-        var source = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 };
+        var source = new byte[]
+            { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 };
         var expected = Encoding.UTF8.GetBytes("hello world!")
             .Skip(10)
             .ToArray();
@@ -109,7 +111,8 @@ public class CompressionHelperTests
     public void IsCompressed_ShouldReturnTrueIfByteArrayIsCompressed()
     {
         // Arrange
-        var source = new byte[] { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 };
+        var source = new byte[]
+            { 31, 139, 8, 0, 0, 0, 0, 0, 0, 10, 202, 72, 205, 201, 201, 87, 40, 207, 47, 202, 73, 81, 4, 0, 0, 0, 255, 255, 3, 0, 109, 194, 180, 3, 12, 0, 0, 0 };
 
         // Act
         var result = CompressionHelper.IsCompressed(source);

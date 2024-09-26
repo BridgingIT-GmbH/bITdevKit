@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
 using Logging;
+using Microsoft.Extensions.Hosting;
 
 public static class ServiceCollectionMessagingExtensions
 {
@@ -68,7 +69,11 @@ public static class ServiceCollectionMessagingExtensions
                 .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));
 
         services.AddHostedService(sp => // should be scoped
-            new MessagingService(sp.GetService<ILoggerFactory>(), sp, contextOptions));
+            new MessagingService(
+                sp.GetService<ILoggerFactory>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp,
+                contextOptions));
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
 
         optionsAction?.Invoke(new MessagingBuilderContext(services));

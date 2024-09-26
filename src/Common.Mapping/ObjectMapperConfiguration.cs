@@ -119,6 +119,7 @@ public class ObjectMapperConfiguration<TSource, TTarget>
     {
         var target = Activator.CreateInstance<TTarget>();
         this.UpdateMapping(source, target);
+
         return target;
     }
 

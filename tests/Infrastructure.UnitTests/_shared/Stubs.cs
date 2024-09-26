@@ -109,7 +109,8 @@ public class PersonStubRepository : EntityFrameworkRepository<PersonStub>
     public PersonStubRepository(Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : base(optionsBuilder) { }
 
-    public async Task<IEnumerable<PersonStub>> FindAllAsync(IFindOptions<PersonStub> options = null,
+    public async Task<IEnumerable<PersonStub>> FindAllAsync(
+        IFindOptions<PersonStub> options = null,
         CancellationToken cancellationToken = default)
     {
         var query = this.Options.DbContext.Set<PersonDtoStub>()

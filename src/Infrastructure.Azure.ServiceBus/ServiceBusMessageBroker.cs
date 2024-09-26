@@ -158,6 +158,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
                     Constants.LogKey,
                     a.EntityPath,
                     a.Exception.Message);
+
                 return Task.CompletedTask;
             };
 

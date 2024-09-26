@@ -102,6 +102,7 @@ public class EventStoreRepository : IEventStoreRepository
         where TAggregate : EventSourcingAggregateRoot
     {
         var immutableAggregateName = this.aggregateRegistration.GetImmutableName<TAggregate>();
+
         return await this.aggregateEventRepository
             .GetMaxVersionAsync(aggregateId, immutableAggregateName, cancellationToken)
             .AnyContext();
@@ -120,6 +121,7 @@ public class EventStoreRepository : IEventStoreRepository
                 typeof(TAggregate).FullName ?? throw new InvalidOperationException(),
                 this.serializer,
                 this.aggregateTypeSelector);
+
             return aggregate as TAggregate;
         }
 

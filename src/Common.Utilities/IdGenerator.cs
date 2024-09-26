@@ -29,6 +29,7 @@ public static class IdGenerator
         buffer[4] = Prefix[4];
         buffer[5] = Prefix[5];
         buffer[6] = '0';
+
         return buffer;
     });
 

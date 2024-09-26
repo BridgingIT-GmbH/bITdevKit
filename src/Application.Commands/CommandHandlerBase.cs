@@ -96,6 +96,7 @@ public abstract partial class CommandHandlerBase<TCommand>
                     requestType,
                     command.RequestId,
                     ex.Message);
+
                 throw;
             }
         }
@@ -220,6 +221,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
                     command.GetType().Name,
                     command.RequestId,
                     ex.Message);
+
                 throw;
             }
         }

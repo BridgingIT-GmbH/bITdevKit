@@ -32,14 +32,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, InMemoryContext<TEntity>>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, InMemoryContext<TEntity>>));
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, InMemoryContext<TEntity>>));
+
                 break;
         }
 
@@ -59,14 +62,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, TContext>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, TContext>));
+
                 break;
             default:
                 services.AddScoped(typeof(IGenericRepository<TEntity>),
                     typeof(InMemoryRepositoryWrapper<TEntity, TContext>));
+
                 break;
         }
 

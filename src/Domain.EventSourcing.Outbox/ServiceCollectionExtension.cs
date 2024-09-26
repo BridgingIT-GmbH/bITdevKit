@@ -12,6 +12,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddEfOutboxWorker(this IServiceCollection services)
     {
         services.AddTransient<IOutboxWorkerService, OutboxWorkerService>();
+
         return services;
     }
 }

@@ -42,6 +42,7 @@ public static class Factory<T>
     {
         var instance = CreateFunc(); // without ctor, fast
         ReflectionHelper.SetProperties(instance, propertyItems);
+
         return instance;
     }
 
@@ -73,6 +74,7 @@ public static class Factory<T>
         {
             var instance = Activator.CreateInstance(typeof(T), parameters) as T;
             ReflectionHelper.SetProperties(instance, propertyItems);
+
             return instance;
         }
         catch (MissingMethodException)
@@ -116,6 +118,7 @@ public static class Factory<T>
 
         var instance = ActivatorUtilities.CreateInstance<T>(serviceProvider);
         ReflectionHelper.SetProperties(instance, propertyItems);
+
         return instance;
     }
 
@@ -132,6 +135,7 @@ public static class Factory<T>
 
         var instance = ActivatorUtilities.CreateInstance<T>(serviceProvider, parameters);
         ReflectionHelper.SetProperties(instance, propertyItems);
+
         return instance;
     }
 }
@@ -236,6 +240,7 @@ public static class Factory
         {
             var instance = Activator.CreateInstance(type, parameters);
             ReflectionHelper.SetProperties(instance, propertyItems);
+
             return instance;
         }
         catch (MissingMethodException)
@@ -307,6 +312,7 @@ public static class Factory
 
         var instance = ActivatorUtilities.CreateInstance(serviceProvider, type);
         ReflectionHelper.SetProperties(instance, propertyItems);
+
         return instance;
     }
 

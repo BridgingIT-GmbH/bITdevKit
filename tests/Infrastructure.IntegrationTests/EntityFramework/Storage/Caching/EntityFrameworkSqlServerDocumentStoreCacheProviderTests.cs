@@ -10,7 +10,8 @@ using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkSqlServerDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreCacheProviderTestsBase
+public class EntityFrameworkSqlServerDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
+    : EntityFrameworkDocumentStoreCacheProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;

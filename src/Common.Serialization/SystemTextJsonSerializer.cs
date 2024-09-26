@@ -49,6 +49,7 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
         }
 
         input.Position = 0;
+
         return JsonSerializer.Deserialize(input, type, this.options);
     }
 
@@ -64,6 +65,7 @@ public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : IS
         }
 
         input.Position = 0;
+
         return JsonSerializer.Deserialize<T>(input, this.options);
     }
 }

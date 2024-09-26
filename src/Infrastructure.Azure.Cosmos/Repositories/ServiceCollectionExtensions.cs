@@ -35,24 +35,30 @@ public static partial class ServiceCollectionExtensions
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new CosmosSqlProvider<TEntity>(providerOptions);
                 });
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient<ICosmosSqlProvider<TEntity>>(sp =>
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new CosmosSqlProvider<TEntity>(providerOptions);
                 });
+
                 break;
             default:
                 services.TryAddScoped<ICosmosSqlProvider<TEntity>>(sp =>
                 {
                     providerOptions.Client ??= sp.GetService<CosmosClient>();
                     providerOptions.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+
                     return new CosmosSqlProvider<TEntity>(providerOptions);
                 });
+
                 break;
         }
 
@@ -81,6 +87,7 @@ public static partial class ServiceCollectionExtensions
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(provider ?? sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
             case ServiceLifetime.Transient:
                 if (provider != null)
@@ -93,6 +100,7 @@ public static partial class ServiceCollectionExtensions
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(provider ?? sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
             default:
                 if (provider != null)
@@ -104,6 +112,7 @@ public static partial class ServiceCollectionExtensions
                     o.LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(provider ?? sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
         }
 
@@ -129,6 +138,7 @@ public static partial class ServiceCollectionExtensions
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient(providerFactory);
@@ -137,6 +147,7 @@ public static partial class ServiceCollectionExtensions
                         .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
             default:
                 services.TryAddScoped(providerFactory);
@@ -144,6 +155,7 @@ public static partial class ServiceCollectionExtensions
                     o.LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                         .Provider(sp.GetService<ICosmosSqlProvider<TEntity>>())
                         .IdGenerator(idGenerator)));
+
                 break;
         }
 

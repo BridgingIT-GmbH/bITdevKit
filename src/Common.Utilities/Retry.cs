@@ -190,6 +190,7 @@ public static class Retry
                 }
 
                 await func().ConfigureAwait(false);
+
                 return;
             }
             catch (Exception e) when (i == retryCount)
@@ -241,6 +242,7 @@ public static class Retry
 
                 failureCount++;
                 await func().ConfigureAwait(false);
+
                 return;
             }
             catch (Exception e) when (exceptionPredicate(e))
@@ -495,6 +497,7 @@ public static class Retry
                 }
 
                 failureCount++;
+
                 return await func().ConfigureAwait(false);
             }
             catch (Exception e) when (exceptionPredicate(e))

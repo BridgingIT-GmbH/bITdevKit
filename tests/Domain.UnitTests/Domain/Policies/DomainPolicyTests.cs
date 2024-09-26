@@ -234,6 +234,7 @@ public class ModifyContextPolicy : DomainPolicyBase<StubContext>
     public override Task<Result> ApplyAsync(StubContext context, CancellationToken cancellationToken = default)
     {
         context.Value += 10;
+
         return Task.FromResult<Result>(DomainPolicyResult<object>.Success()
             .WithMessage("Context modified"));
     }

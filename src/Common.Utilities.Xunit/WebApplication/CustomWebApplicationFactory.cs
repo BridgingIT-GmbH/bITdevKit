@@ -15,6 +15,15 @@ using Serilog;
 using Serilog.Events;
 using Xunit.Abstractions;
 
+/// <summary>
+/// CustomWebApplicationFactory is a specialized WebApplicationFactory for integration testing.
+/// It allows configuration of DI services, logging and environment settings for the tested application.
+/// </summary>
+/// <typeparam name="TEntryPoint">The entry point class of the web application.</typeparam>
+/// <param name="output">Optional XUnit ITestOutputHelper for capturing test output.</param>
+/// <param name="services">Optional action to configure additional services.</param>
+/// <param name="fakeAuthenticationEnabled">Indicates whether fake authentication is enabled.</param>
+/// <param name="environment">The environment name to use for the host configuration. Default is "Development".</param>
 public class CustomWebApplicationFactory<TEntryPoint>(
     ITestOutputHelper output = null,
     Action<IServiceCollection> services = null,
@@ -27,6 +36,11 @@ public class CustomWebApplicationFactory<TEntryPoint>(
     private readonly ITestOutputHelper output = output;
     private readonly Action<IServiceCollection> services = services;
 
+    /// <summary>
+    /// Creates and configures the host for the web application.
+    /// </summary>
+    /// <param name="builder">The <see cref="IHostBuilder"/> to configure the host.</param>
+    /// <returns>The configured <see cref="IHost"/>.</returns>
     protected override IHost CreateHost(IHostBuilder builder)
     {
         builder.UseEnvironment(this.environment);

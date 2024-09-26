@@ -14,18 +14,21 @@ public class RabbitMQMessageBrokerOptionsBuilder
     public RabbitMQMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {
         this.Target.PublisherBehaviors = behaviors;
+
         return this;
     }
 
     public RabbitMQMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessageHandlerBehavior> behaviors)
     {
         this.Target.HandlerBehaviors = behaviors;
+
         return this;
     }
 
     public RabbitMQMessageBrokerOptionsBuilder HandlerFactory(IMessageHandlerFactory handlerFactory)
     {
         this.Target.HandlerFactory = handlerFactory;
+
         return this;
     }
 
@@ -81,6 +84,7 @@ public class RabbitMQMessageBrokerOptionsBuilder
     public RabbitMQMessageBrokerOptionsBuilder QueueNameSuffix(string suffix)
     {
         this.Target.QueueNameSuffix = suffix;
+
         return this;
     }
 
@@ -97,6 +101,7 @@ public class RabbitMQMessageBrokerOptionsBuilder
     public RabbitMQMessageBrokerOptionsBuilder ProcessDelay(int milliseconds)
     {
         this.Target.ProcessDelay = milliseconds;
+
         return this;
     }
 
@@ -113,18 +118,21 @@ public class RabbitMQMessageBrokerOptionsBuilder
     public RabbitMQMessageBrokerOptionsBuilder DurableEnabled(bool enabled = true)
     {
         this.Target.IsDurable = enabled;
+
         return this;
     }
 
     public RabbitMQMessageBrokerOptionsBuilder ExclusiveQueueEnabled(bool enabled)
     {
         this.Target.ExclusiveQueue = enabled;
+
         return this;
     }
 
     public RabbitMQMessageBrokerOptionsBuilder AutoDeleteQueueEnabled(bool enabled)
     {
         this.Target.AutoDeleteQueue = enabled;
+
         return this;
     }
 }

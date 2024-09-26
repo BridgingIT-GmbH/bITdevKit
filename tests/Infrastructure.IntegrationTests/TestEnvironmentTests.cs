@@ -142,6 +142,7 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
     private static bool HasError<TResponseEntity>(NullableResponse<TResponseEntity> response)
     {
         using var rawResponse = response.GetRawResponse();
+
         return rawResponse.IsError;
     }
 }

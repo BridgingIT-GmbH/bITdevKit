@@ -12,18 +12,21 @@ public class CosmosClientOptionsBuilder : OptionsBuilderBase<CosmosClientOptions
     public CosmosClientOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
+
         return this;
     }
 
     public CosmosClientOptionsBuilder IgnoreServerCertificateValidation(bool value = true)
     {
         this.Target.IgnoreServerCertificateValidation = value;
+
         return this;
     }
 
     public CosmosClientOptionsBuilder ClientOptions(Microsoft.Azure.Cosmos.CosmosClientOptions options)
     {
         this.Target.ClientOptions = options;
+
         return this;
     }
 }

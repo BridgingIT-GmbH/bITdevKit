@@ -41,7 +41,7 @@ services:
     volumes:
       - seq:/data
     networks:
-    - bdk
+      - bdk
 
   jaeger:
     image: jaegertracing/all-in-one:latest

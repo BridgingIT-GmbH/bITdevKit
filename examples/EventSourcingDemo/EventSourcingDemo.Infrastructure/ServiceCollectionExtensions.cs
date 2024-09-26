@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .DbContext(sp.GetRequiredService<EventSourcingDemoDbContext>())
                 .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))));
+
         return services;
     }
 }

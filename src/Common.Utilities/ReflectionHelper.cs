@@ -158,6 +158,7 @@ public static class ReflectionHelper
             if (propertyName.SafeEquals(propertyInfo.Name) /*&& propertyValue is not null*/ && propertyInfo.CanRead)
             {
                 var propertyValue = propertyInfo.GetValue(instance);
+
                 return propertyValue.To<TType>();
             }
         }

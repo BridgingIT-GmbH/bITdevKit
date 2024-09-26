@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 using Logging;
+using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -55,9 +56,12 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxDomainEventWorker
     {
         services.AddSingleton(options ?? new OutboxDomainEventOptions());
-        services.AddHostedService(sp => new OutboxDomainEventService(sp.GetRequiredService<ILoggerFactory>(),
-            sp.GetRequiredService<TWorker>(),
-            sp.GetService<OutboxDomainEventOptions>()));
+        services.AddHostedService(sp =>
+            new OutboxDomainEventService(
+                sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<TWorker>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp.GetService<OutboxDomainEventOptions>()));
 
         return services;
     }

@@ -27,6 +27,6 @@ public static class UserSpecifications
 
     public static Specification<User> ForEmail2(EmailAddress email) // INFO: short version to define a specification
     {
-    return new Specification<User>(e => e.Email.Value == email.Value);
+        return new Specification<User>(e => e.Email.Value == email.Value);
     }
 }

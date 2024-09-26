@@ -119,6 +119,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         await Task.Yield();
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger())
@@ -136,6 +137,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             await Retry.On<NullReferenceException>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger(),
@@ -221,6 +223,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger())
@@ -238,6 +241,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             await Retry.OnAny<ArgumentNullException, NullReferenceException>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger(),
@@ -263,6 +267,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         counter++;
                         var inner = new ArgumentNullException("someArg");
+
                         throw new AggregateException(inner);
                     },
                     this.CreateLogger(),
@@ -291,6 +296,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                         counter++;
                         var inner1 = new ArgumentNullException("someArg1");
                         var inner2 = new IndexOutOfRangeException("someArg2");
+
                         throw new AggregateException(inner1, inner2);
                     },
                     this.CreateLogger(),
@@ -318,6 +324,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         counter++;
                         var inner = new IndexOutOfRangeException();
+
                         throw new AggregateException(inner);
                     },
                     this.CreateLogger(),
@@ -339,6 +346,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return true;
         };
 
@@ -349,6 +357,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             await Retry.On(() =>
                     {
                         executionCounter++;
+
                         throw new ArgumentException();
                     },
                     exceptionPredicate,
@@ -373,6 +382,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return false;
         };
 
@@ -383,6 +393,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             await Retry.On(() =>
                     {
                         executionCounter++;
+
                         throw new ArgumentException();
                     },
                     exceptionPredicate,
@@ -404,6 +415,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return true;
         };
 
@@ -412,6 +424,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             if (failureCount == 4)
             {
                 cts.Cancel();
+
                 return 0.Seconds();
             }
 
@@ -427,6 +440,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                         await Task.Delay(1)
                             .AnyContext();
                         executionCounter++;
+
                         throw new ArgumentException();
                     },
                     exceptionPredicate,
@@ -454,6 +468,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         await Task.Yield();
                         counter++;
+
                         return 42;
                     },
                     this.CreateLogger())
@@ -470,6 +485,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         await Task.Yield();
                         counter++;
+
                         return 42;
                     },
                     this.CreateLogger(),
@@ -565,6 +581,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             result = await Retry.On<NullReferenceException, int>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger(),
@@ -586,6 +603,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             result = await Retry.On<NullReferenceException, int>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger())
@@ -608,6 +626,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         await Task.Yield();
                         counter++;
+
                         return 42;
                     },
                     this.CreateLogger(),
@@ -658,6 +677,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             result = await Retry.OnAny<ArgumentNullException, NullReferenceException, int>(() =>
                     {
                         counter++;
+
                         throw new NullReferenceException();
                     },
                     this.CreateLogger(),
@@ -684,6 +704,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         counter++;
                         var inner = new ArgumentNullException("someArg");
+
                         throw new AggregateException(inner);
                         //return 1;
                     }),
@@ -713,6 +734,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                         counter++;
                         var inner1 = new ArgumentNullException("someArg1");
                         var inner2 = new IndexOutOfRangeException("someArg2");
+
                         throw new AggregateException(inner1, inner2);
                         //return 1;
                     }),
@@ -741,6 +763,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                     {
                         counter++;
                         var inner = new IndexOutOfRangeException();
+
                         throw new AggregateException(inner);
                         //return 1;
                     }),
@@ -763,6 +786,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return true;
         };
 
@@ -771,6 +795,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var task = () => Task.Run(() =>
         {
             executionCounter++;
+
             throw new ArgumentException();
 #pragma warning disable CS0162 // Unreachable code detected
             return 1;
@@ -800,6 +825,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return false;
         };
 
@@ -807,6 +833,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         var task = () => Task.Run(() =>
         {
             executionCounter++;
+
             throw new ArgumentException();
 #pragma warning disable CS0162 // Unreachable code detected
             return 1;
@@ -833,6 +860,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
         {
             e.ShouldBeOfType<ArgumentException>();
             predicateCounter++;
+
             return true;
         };
 
@@ -841,6 +869,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
             if (failureCount == 4)
             {
                 cts.Cancel();
+
                 return 0.Seconds();
             }
 
@@ -856,6 +885,7 @@ public class RetryTests(ITestOutputHelper output) : TestsBase(output)
                         await Task.Delay(1)
                             .AnyContext();
                         executionCounter++;
+
                         throw new ArgumentException();
 #pragma warning disable CS0162 // Unreachable code detected
                         return 1;

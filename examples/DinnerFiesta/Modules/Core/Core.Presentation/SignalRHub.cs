@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 
 using Microsoft.AspNetCore.SignalR;
+
 //using Microsoft.AspNetCore.Authorization;
 
 //[Authorize]

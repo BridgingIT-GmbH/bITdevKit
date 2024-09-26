@@ -16,6 +16,7 @@ public class EntityCommandMessagingBehaviorOptionsBuilder
     public EntityCommandMessagingBehaviorOptionsBuilder Enabled(bool enabled)
     {
         this.Target.Enabled = enabled;
+
         return this;
     }
 
@@ -32,6 +33,7 @@ public class EntityCommandMessagingBehaviorOptionsBuilder
     public EntityCommandMessagingBehaviorOptionsBuilder PublishDelay(int publishDelay)
     {
         this.Target.PublishDelay = publishDelay;
+
         return this;
     }
 }

@@ -30,6 +30,7 @@ public static class EventStoreExtensions
         var type = typeSelector.FindType(typename);
         using var stream = new MemoryStream(data);
         var @event = serializer.Deserialize(stream, type);
+
         return @event as IAggregateEvent;
     }
 
@@ -45,6 +46,7 @@ public static class EventStoreExtensions
         var type = typeSelector.Find(typename);
         using var stream = new MemoryStream(data);
         var @event = serializer.Deserialize(stream, type);
+
         return @event as EventSourcingAggregateRoot;
     }
 

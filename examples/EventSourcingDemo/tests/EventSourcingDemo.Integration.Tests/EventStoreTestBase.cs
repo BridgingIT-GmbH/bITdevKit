@@ -37,6 +37,7 @@ public class EventstoreTestBase : TestsBase
                     .Where(a =>
                     {
                         var name = a.GetName().Name ?? string.Empty;
+
                         return !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
                     })
                     .ToArray()));
@@ -76,6 +77,7 @@ public class EventstoreTestBase : TestsBase
                         .Where(a =>
                         {
                             var name = a.GetName().Name;
+
                             return name != null &&
                                 !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
                         })
@@ -100,6 +102,7 @@ public class EventstoreTestBase : TestsBase
         s.AddScoped<IGenericRepository<TEntity>>(r => new EntityFrameworkGenericRepository<TEntity>(op =>
         {
             op.DbContext(ctx);
+
             return op;
         }));
     }

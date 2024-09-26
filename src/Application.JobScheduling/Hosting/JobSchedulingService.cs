@@ -17,6 +17,7 @@ public class JobSchedulingService : BackgroundService
     private readonly ILogger<JobSchedulingService> logger;
     private readonly ISchedulerFactory schedulerFactory;
     private readonly IJobFactory jobFactory;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly IEnumerable<JobSchedule> jobSchedules;
     private readonly JobSchedulingOptions options;
 
@@ -24,6 +25,7 @@ public class JobSchedulingService : BackgroundService
         ILoggerFactory loggerFactory,
         ISchedulerFactory schedulerFactory,
         IJobFactory jobFactory,
+        IHostApplicationLifetime applicationLifetime,
         IEnumerable<JobSchedule> jobSchedules = null,
         JobSchedulingOptions options = null)
     {
@@ -34,6 +36,7 @@ public class JobSchedulingService : BackgroundService
             NullLoggerFactory.Instance.CreateLogger<JobSchedulingService>();
         this.schedulerFactory = schedulerFactory;
         this.jobFactory = jobFactory;
+        this.applicationLifetime = applicationLifetime;
         this.jobSchedules = jobSchedules;
         this.options = options ?? new JobSchedulingOptions();
     }
@@ -58,6 +61,15 @@ public class JobSchedulingService : BackgroundService
         {
             return;
         }
+
+        // Wait "indefinitely", until ApplicationStarted is triggered
+        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+            .ContinueWith(_ =>
+                {
+                    this.logger.LogDebug("{LogKey} scheduling service - application started", Constants.LogKey);
+                },
+                TaskContinuationOptions.OnlyOnCanceled)
+            .ConfigureAwait(false);
 
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {

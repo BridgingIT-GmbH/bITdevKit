@@ -40,6 +40,7 @@ public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory logg
         if (this.provider.TryGet(cacheKey, out TResponse cachedResult))
         {
             TypedLogger.LogCacheHit(this.Logger, Constants.LogKey, cacheKey, this.GetType().Name);
+
             return cachedResult;
         }
 

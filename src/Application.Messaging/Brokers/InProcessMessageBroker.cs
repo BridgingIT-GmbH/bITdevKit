@@ -64,6 +64,7 @@ public class InProcessMessageBroker : MessageBrokerBase
         this.messageProcessor.Post(new MessageRequest(message,
             result => tcs.SetResult(result),
             cancellationToken)); // TODO: message.Clone(), has issues with inheritance (EchoMessage = Message after clone)
+
         return tcs.Task;
     }
 

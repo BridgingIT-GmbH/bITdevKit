@@ -16,6 +16,7 @@ public static class TimeSpanExtensions
         {
             var result = new CancellationTokenSource();
             result.Cancel();
+
             return result;
         }
 

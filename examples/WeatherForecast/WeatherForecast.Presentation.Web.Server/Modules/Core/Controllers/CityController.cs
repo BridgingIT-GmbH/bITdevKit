@@ -90,6 +90,7 @@ public class CityController : ControllerBase
 
         var response = await this.mediator.Send(new CityCreateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
+
         return response.Cancelled
             ? this.BadRequest(response.CancelledReason)
             : this.Created($"/api/cities/{response.Result.EntityId}", null);
@@ -110,6 +111,7 @@ public class CityController : ControllerBase
 
         var response = await this.mediator.Send(new CityUpdateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
+
         return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Ok();
     }
 
@@ -124,6 +126,7 @@ public class CityController : ControllerBase
         var response = await this.mediator.Send(new CityDeleteCommand(name)).AnyContext();
 
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
+
         return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Ok();
     }
 }

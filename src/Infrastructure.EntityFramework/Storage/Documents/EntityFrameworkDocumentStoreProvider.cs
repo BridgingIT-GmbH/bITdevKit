@@ -32,6 +32,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
+
         return (await this.context.StorageDocuments.Where(e => e.Type == type)
             .AsNoTracking()
             .ToListAsync(cancellationToken)).ConvertAll(e => this.serializer.Deserialize<T>(e.Content));
@@ -95,6 +96,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
+
         return await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type)
             .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
@@ -159,6 +161,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
+
         return (await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type)
             .ToListAsync(cancellationToken)).Count;
@@ -174,6 +177,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
 
         var type = this.GetTypeName<T>();
+
         return (await this.context.StorageDocuments.AsNoTracking()
             .Where(e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey)
             .ToListAsync(cancellationToken)).SafeAny();

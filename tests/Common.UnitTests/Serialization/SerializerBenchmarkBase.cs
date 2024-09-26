@@ -40,6 +40,7 @@ public abstract class SerializerBenchmarkBase(ITestOutputHelper output) : TestsB
     public StubModel RoundTrip()
     {
         var data = this.serializer.SerializeToBytes(this.data);
+
         return this.serializer.Deserialize<StubModel>(data);
     }
 

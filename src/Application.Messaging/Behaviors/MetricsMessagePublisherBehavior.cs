@@ -41,6 +41,7 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
         {
             meter.CreateCounter<int>("messages_publish_failure").Add(1);
             meter.CreateCounter<int>($"messages_publish_{message.GetType().Name.ToLower()}_failure").Add(1);
+
             throw;
         }
     }

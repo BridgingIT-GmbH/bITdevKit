@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 // ReSharper disable ExpressionIsAlwaysNull
+
 namespace BridgingIT.DevKit.Common.UnitTests;
 
 public class ExceptionExtensionsTests

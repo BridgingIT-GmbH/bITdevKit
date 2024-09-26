@@ -14,12 +14,14 @@ public class LiteDbRepositoryOptionsBuilder
     public LiteDbRepositoryOptionsBuilder DbContext(ILiteDbContext context)
     {
         this.Target.DbContext = context;
+
         return this;
     }
 
     public LiteDbRepositoryOptionsBuilder Mapper(IEntityMapper mapper)
     {
         this.Target.Mapper = mapper;
+
         return this;
     }
 }

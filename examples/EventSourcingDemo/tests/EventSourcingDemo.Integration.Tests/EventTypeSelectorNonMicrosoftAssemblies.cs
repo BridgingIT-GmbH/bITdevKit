@@ -21,6 +21,7 @@ public class EventTypeSelectorNonMicrosoftAssemblies : IEventTypeSelector
                 .Where(a =>
                 {
                     var name = a.GetName().Name;
+
                     return name != null &&
                         !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
                 });

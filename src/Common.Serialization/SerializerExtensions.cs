@@ -59,6 +59,7 @@ public static class SerializerExtensions
     public static T Deserialize<T>(this ISerializer source, byte[] input)
     {
         using var stream = new MemoryStream(input);
+
         return (T)source.Deserialize(stream, typeof(T));
     }
 
@@ -71,6 +72,7 @@ public static class SerializerExtensions
     public static object Deserialize(this ISerializer source, byte[] input, Type type)
     {
         using var stream = new MemoryStream(input);
+
         return source.Deserialize(stream, type);
     }
 
@@ -96,6 +98,7 @@ public static class SerializerExtensions
         }
 
         using var stream = new MemoryStream(bytes);
+
         return (T)source.Deserialize(stream, typeof(T));
     }
 
@@ -122,6 +125,7 @@ public static class SerializerExtensions
         }
 
         using var stream = new MemoryStream(bytes);
+
         return source.Deserialize(stream, type);
     }
 }

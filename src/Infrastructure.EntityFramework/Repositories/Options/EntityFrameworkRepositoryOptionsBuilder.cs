@@ -15,12 +15,14 @@ public class EntityFrameworkRepositoryOptionsBuilder
     public EntityFrameworkRepositoryOptionsBuilder DbContext(DbContext context)
     {
         this.Target.DbContext = context;
+
         return this;
     }
 
     public EntityFrameworkRepositoryOptionsBuilder Mapper(IEntityMapper mapper)
     {
         this.Target.Mapper = mapper;
+
         return this;
     }
 }

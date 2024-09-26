@@ -41,6 +41,7 @@ public class InMemoryRepositoryDbTests
     public string GenerateRandomString(int length = 5)
     {
         var chars = Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 8);
+
         return new string(chars.SelectMany(str => str)
             .OrderBy(c => Guid.NewGuid())
             .Take(length)

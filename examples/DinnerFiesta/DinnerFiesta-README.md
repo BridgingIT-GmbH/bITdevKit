@@ -1,7 +1,8 @@
 # Architecture overview
 
 > An application built using .NET and following a Domain-Driven Design approach, that is
-> structurally divided into modular components, but still operates as a single monolithic application.
+> structurally divided into modular components, but still operates as a single monolithic
+> application.
 
 ## Features
 

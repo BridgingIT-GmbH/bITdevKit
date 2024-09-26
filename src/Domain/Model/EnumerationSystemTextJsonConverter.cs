@@ -54,6 +54,7 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : Jso
         }
 
         var id = (TId)ReadValue(ref reader, typeof(TId));
+
         return Enumeration<TId, TValue>.FromId<TEnumeration>(id);
     }
 
@@ -71,6 +72,7 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : Jso
         if (value == null)
         {
             writer.WriteNullValue();
+
             return;
         }
 

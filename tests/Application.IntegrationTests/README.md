@@ -3,4 +3,5 @@
 ### new migration:
 
 -
+
 `dotnet ef migrations add Initial --context StubDbContext --output-dir .\Migrations --project .\tests\Application.IntegrationTests\Application.IntegrationTests.csproj`

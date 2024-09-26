@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddEfCoreEventStore(defaultSchema, eventStorePublishingModes)
             .AddDbContext<EventStoreDbContext>(options => { options.UseSqlServer(connectionString); });
+
         return services;
     }
 
@@ -73,6 +74,7 @@ public static class ServiceCollectionExtensions
                         }
                     });
             });
+
         return services;
     }
 
@@ -126,6 +128,7 @@ public static class ServiceCollectionExtensions
                         options.ConfigureWarnings(w => w.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
                     });
             });
+
         return services;
     }
 

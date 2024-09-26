@@ -44,6 +44,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
         var blob = @event.ConvertToBlob(this.serializer);
         var eventdata = this.events[@event.AggregateId];
         eventdata.EventBlobs.Add(blob);
+
         return Task.CompletedTask;
     }
 
@@ -117,6 +118,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
         }
 
         var @event = (IAggregateEvent)this.serializer.Deserialize(stream, blob.EventType);
+
         return Task.FromResult(@event.AggregateVersion);
     }
 

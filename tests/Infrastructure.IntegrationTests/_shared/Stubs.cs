@@ -48,6 +48,7 @@ public class PersonStub : AggregateRoot<Guid>
     public PersonStub AddLocation(LocationStub location)
     {
         this.locations.Add(location);
+
         return this;
     }
 
@@ -114,7 +115,8 @@ public class LocationStub : Entity<Guid>
 {
     private LocationStub() { }
 
-    private LocationStub(string name,
+    private LocationStub(
+        string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
@@ -141,7 +143,8 @@ public class LocationStub : Entity<Guid>
 
     public string Country { get; }
 
-    public static LocationStub Create(string name,
+    public static LocationStub Create(
+        string name,
         string addressLine1,
         string addressLine2,
         string postalCode,

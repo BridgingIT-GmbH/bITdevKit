@@ -14,18 +14,21 @@ public class AzureTableServiceOptionsBuilder
     public AzureTableServiceOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
+
         return this;
     }
 
     public AzureTableServiceOptionsBuilder IgnoreServerCertificateValidation(bool value = true)
     {
         this.Target.IgnoreServerCertificateValidation = value;
+
         return this;
     }
 
     public AzureTableServiceOptionsBuilder ClientOptions(TableClientOptions options)
     {
         this.Target.ClientOptions = options;
+
         return this;
     }
 }

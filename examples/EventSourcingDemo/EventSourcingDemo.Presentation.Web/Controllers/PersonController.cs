@@ -34,6 +34,7 @@ public class PersonController(
     public async Task<ActionResult<IEnumerable<PersonOverviewViewModel>>> Get()
     {
         var persons = await this.personService.GetAllPersonsAsync().AnyContext();
+
         return persons.ToArray();
     }
 
@@ -45,6 +46,7 @@ public class PersonController(
         int take)
     {
         var persons = await this.personService.GetAllPersonsAsync(firstname, lastname, skip, take).AnyContext();
+
         return persons.ToArray();
     }
 

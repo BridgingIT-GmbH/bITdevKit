@@ -20,6 +20,7 @@ public static class ApplicationBuilderExtensions
         EnsureArg.IsNotNull(app, nameof(app));
 
         app.UseMiddleware<CorrelationIdProviderMiddleware>();
+
         return app;
     }
 

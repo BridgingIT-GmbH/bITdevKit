@@ -19,50 +19,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>();
@@ -81,50 +81,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.FullMatch);
@@ -143,50 +143,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeyPrefixMatch);
@@ -205,50 +205,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeySuffixMatch);
@@ -267,50 +267,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.ListAsync<PersonStub>();
@@ -331,50 +331,50 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
         // Arrange
         var ticks = DateTime.UtcNow.Ticks;
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Country = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await this.sut.ListAsync<PersonStub>(new DocumentKey("partition", "row" + ticks));

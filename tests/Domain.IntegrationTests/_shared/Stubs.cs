@@ -105,6 +105,7 @@ public static class StubEntityMapperConfiguration
         });
 
         mapper.AssertConfigurationIsValid();
+
         return mapper.CreateMapper();
     }
 
@@ -118,7 +119,10 @@ public static class StubEntityMapperConfiguration
 
     private class YearOfBirthResolver : IValueResolver<StubEntity, StubDbEntity, int>
     {
-        public int Resolve(StubEntity source, StubDbEntity destination, int destMember,
+        public int Resolve(
+            StubEntity source,
+            StubDbEntity destination,
+            int destMember,
             ResolutionContext context)
         {
             return DateTime.UtcNow.Year - source.Age;
@@ -143,7 +147,10 @@ public static class StubEntityMapperConfiguration
 
     private class AgeResolver : IValueResolver<StubDbEntity, StubEntity, int>
     {
-        public int Resolve(StubDbEntity source, StubEntity destination, int destMember,
+        public int Resolve(
+            StubDbEntity source,
+            StubEntity destination,
+            int destMember,
             ResolutionContext context)
         {
             return DateTime.UtcNow.Year - source.YearOfBirth;

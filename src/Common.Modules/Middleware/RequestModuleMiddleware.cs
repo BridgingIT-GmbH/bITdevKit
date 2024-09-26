@@ -110,6 +110,7 @@ public class RequestModuleMiddleware
                     this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})",
                         "REQ",
                         module.Name);
+
                     throw new ModuleNotEnabledException(module.Name);
                 }
             }

@@ -148,6 +148,7 @@ public class AsyncEnumerableExtensionsTests
         foreach (var item in items)
         {
             await Task.Yield();
+
             yield return item;
         }
     }

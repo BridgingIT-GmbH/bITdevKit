@@ -16,6 +16,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder Enabled(bool value = true)
     {
         this.Target.Enabled = value;
+
         return this;
     }
 
@@ -25,6 +26,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder Disabled()
     {
         this.Target.Enabled = false;
+
         return this;
     }
 
@@ -34,6 +36,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder StartupDelay(TimeSpan timespan)
     {
         this.Target.StartupDelay = timespan;
+
         return this;
     }
 
@@ -43,6 +46,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder StartupDelay(int milliseconds)
     {
         this.Target.StartupDelay = TimeSpan.FromMilliseconds(milliseconds);
+
         return this;
     }
 
@@ -52,6 +56,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder StartupDelay(string value)
     {
         this.Target.StartupDelay = TimeSpan.Parse(value);
+
         return this;
     }
 
@@ -61,6 +66,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder LogModel(bool value = true)
     {
         this.Target.LogModel = value;
+
         return this;
     }
 
@@ -70,6 +76,7 @@ public class DatabaseMigratorOptionsBuilder
     public DatabaseMigratorOptionsBuilder DeleteOnStartup(bool value = true)
     {
         this.Target.EnsureDeleted = value;
+
         return this;
     }
 
@@ -80,6 +87,7 @@ public class DatabaseMigratorOptionsBuilder
     {
         this.Target.EnsureTruncated = value;
         this.Target.EnsureTruncatedIgnoreTables.AddRange(ignoreTables.SafeNull());
+
         return this;
     }
 }

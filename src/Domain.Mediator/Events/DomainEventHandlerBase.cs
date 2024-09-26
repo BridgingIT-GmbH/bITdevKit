@@ -87,6 +87,7 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
                     @event.EventId,
                     @event.GetType().Name.Split(',')[0],
                     ex.Message);
+
                 throw;
             }
         }

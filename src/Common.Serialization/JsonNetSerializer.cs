@@ -64,6 +64,7 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
 
         using var sr = new StreamReader(input, Encoding.UTF8, true, 1024, true);
         using var reader = new JsonTextReader(sr);
+
         return this.serializer.Deserialize(reader, type);
     }
 
@@ -85,6 +86,7 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
 
         using var sr = new StreamReader(input, Encoding.UTF8, true, 1024, true);
         using var reader = new JsonTextReader(sr);
+
         return this.serializer.Deserialize<T>(reader);
     }
 }

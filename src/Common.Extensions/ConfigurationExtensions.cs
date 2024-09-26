@@ -63,10 +63,12 @@ public static partial class Extensions
         }
 
         var regex = new Regex($@"{Regex.Escape(placeholderStart)}(.*?){Regex.Escape(placeholderEnd)}");
+
         return regex.Replace(value,
             match =>
             {
                 var placeholder = match.Groups[1].Value;
+
                 return configuration[placeholder] ?? match.Value;
             });
     }

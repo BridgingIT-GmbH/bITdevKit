@@ -116,7 +116,7 @@ public class AuditState
     /// </returns>
     public virtual bool IsDeactivated()
     {
-        return this.Deactivated is not null && (bool)this.Deactivated || !this.DeactivatedReasons.IsNullOrEmpty();
+        return (this.Deactivated is not null && (bool)this.Deactivated) || !this.DeactivatedReasons.IsNullOrEmpty();
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public class AuditState
     /// </returns>
     public virtual bool IsDeleted()
     {
-        return this.Deleted is not null && (bool)this.Deleted || !this.DeletedReason.IsNullOrEmpty();
+        return (this.Deleted is not null && (bool)this.Deleted) || !this.DeletedReason.IsNullOrEmpty();
     }
 
     /// <summary>

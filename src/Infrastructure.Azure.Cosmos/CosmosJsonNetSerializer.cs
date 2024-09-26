@@ -40,6 +40,7 @@ public class
         using var sr = new StreamReader(stream);
         using var jsonTextReader = new JsonTextReader(sr);
         var jsonSerializer = this.GetSerializer();
+
         return jsonSerializer.Deserialize<T>(jsonTextReader);
     }
 
@@ -63,6 +64,7 @@ public class
         }
 
         streamPayload.Position = 0;
+
         return streamPayload;
     }
 

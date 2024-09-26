@@ -59,12 +59,14 @@ public class AggregateEventRepository(
         var spec = new Specification<EventStoreAggregateEvent>(s =>
             s.AggregateId == aggregateId && s.AggregateType == immutableAggregateTypeName);
         var result = await this.FindAllAsync(spec, options, cancellationToken).AnyContext();
+
         return result.ToArray();
     }
 
     public async Task<Guid[]> GetAggregateIdsAsync(CancellationToken cancellationToken)
     {
         var list = await this.FindAllAsync(null, cancellationToken).AnyContext();
+
         return list.Select(s => s.AggregateId).Distinct().ToArray();
     }
 
@@ -74,6 +76,7 @@ public class AggregateEventRepository(
         var aggregateType = this.aggregateRegistration.GetImmutableName<TAggregate>();
         var spec = new Specification<EventStoreAggregateEvent>(ev => ev.AggregateType == aggregateType);
         var list = await this.FindAllAsync(spec, null, cancellationToken).AnyContext();
+
         return list.Select(s => s.AggregateId).Distinct().ToArray();
     }
 

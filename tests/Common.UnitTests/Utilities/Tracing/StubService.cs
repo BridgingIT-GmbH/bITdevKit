@@ -13,14 +13,18 @@ public interface IStubService
 
     public void MethodNotExplicitlyMarkedForTracing(Action stateValidation);
 
-    public void MethodWithStrangeParams1(Action stateValidation,
+    public void MethodWithStrangeParams1(
+        Action stateValidation,
         IList<string>[] arrayOfList,
         ISet<int[]> setOfArray,
         IDictionary<int, ICollection<string>> dictionary,
         ref int intVal);
 
-    public void MethodJaggedAndMultiDimArraysParams(Action stateValidation, out string strVal,
-        bool[][][] jaggedArrayOfBools, short[,,,][,][,,] multiDimArrayOfShorts,
+    public void MethodJaggedAndMultiDimArraysParams(
+        Action stateValidation,
+        out string strVal,
+        bool[][][] jaggedArrayOfBools,
+        short[,,,][,][,,] multiDimArrayOfShorts,
         long[,,][][,][] mixMultiDimAndJaggedArraysOfLongs);
 }
 
@@ -45,7 +49,8 @@ public class StubService : IStubService
         stateValidation();
     }
 
-    public void MethodWithStrangeParams1(Action stateValidation,
+    public void MethodWithStrangeParams1(
+        Action stateValidation,
         IList<string>[] arrayOfList,
         ISet<int[]> setOfArray,
         IDictionary<int, ICollection<string>> dict,
@@ -54,7 +59,8 @@ public class StubService : IStubService
         stateValidation();
     }
 
-    public void MethodJaggedAndMultiDimArraysParams(Action stateValidation,
+    public void MethodJaggedAndMultiDimArraysParams(
+        Action stateValidation,
         out string strVal,
         bool[][][] jaggedArrayOfBools,
         short[,,,][,][,,] multiDimArrayOfShorts,

@@ -21,6 +21,7 @@ public class MarketingController(IMapper mapper, IMediator mediator) : Marketing
     public override async Task<ActionResult<ResultResponseModel>> EchoGet(CancellationToken cancellationToken)
     {
         await Task.Delay(1, cancellationToken);
+
         return new OkObjectResult(Result.Success().WithMessage("echo"));
     }
 

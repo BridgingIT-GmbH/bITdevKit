@@ -75,7 +75,7 @@ public static partial class Extensions
                 return defaultValue;
             }
 
-            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
+            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 return (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
             }
@@ -172,7 +172,7 @@ public static partial class Extensions
                 return defaultValue;
             }
 
-            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
+            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 return Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
             }
@@ -208,6 +208,7 @@ public static partial class Extensions
         if (source is null)
         {
             result = default;
+
             return false;
         }
 
@@ -219,6 +220,7 @@ public static partial class Extensions
             {
                 result = (TValue)TypeDescriptor.GetConverter(targetType)
                     .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+
                 return true;
             }
 
@@ -230,10 +232,12 @@ public static partial class Extensions
                         out var dateTimeResult))
                 {
                     result = (TValue)(object)dateTimeResult;
+
                     return true;
                 }
 
                 result = default;
+
                 return false;
             }
 
@@ -245,16 +249,19 @@ public static partial class Extensions
                         out var dateTimeResult))
                 {
                     result = (TValue)(object)dateTimeResult;
+
                     return true;
                 }
 
                 result = default;
+
                 return false;
             }
 
-            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
+            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 result = (TValue)Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
+
                 return true;
             }
 
@@ -264,31 +271,37 @@ public static partial class Extensions
                 try
                 {
                     result = (TValue)Enum.Parse(targetType, source.ToString());
+
                     return true;
                 }
                 catch (ArgumentException)
                 {
                     result = default;
+
                     return false;
                 }
             }
 
             result = (TValue)source;
+
             return true;
         }
         catch (OverflowException)
         {
             result = default;
+
             return false;
         }
         catch (FormatException)
         {
             result = default;
+
             return false;
         }
         catch (InvalidCastException)
         {
             result = default;
+
             return false;
         }
     }
@@ -299,6 +312,7 @@ public static partial class Extensions
         if (source is null)
         {
             result = default;
+
             return false;
         }
 
@@ -308,6 +322,7 @@ public static partial class Extensions
             {
                 result = TypeDescriptor.GetConverter(targetType)
                     .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+
                 return true;
             }
 
@@ -319,10 +334,12 @@ public static partial class Extensions
                         out var dateTimeResult))
                 {
                     result = dateTimeResult;
+
                     return true;
                 }
 
                 result = default;
+
                 return false;
             }
 
@@ -334,16 +351,19 @@ public static partial class Extensions
                         out var dateTimeResult))
                 {
                     result = dateTimeResult;
+
                     return true;
                 }
 
                 result = default;
+
                 return false;
             }
 
-            if (targetType is IConvertible || targetType.IsValueType && !targetType.IsEnum)
+            if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
             {
                 result = Convert.ChangeType(source, targetType, cultureInfo ?? CultureInfo.InvariantCulture);
+
                 return true;
             }
 
@@ -352,11 +372,13 @@ public static partial class Extensions
                 try
                 {
                     result = Enum.Parse(targetType, source.ToString());
+
                     return true;
                 }
                 catch (ArgumentException)
                 {
                     result = default;
+
                     return false;
                 }
             }
@@ -364,25 +386,30 @@ public static partial class Extensions
             if (targetType.IsEnum && source is int v)
             {
                 result = Enum.ToObject(targetType, v);
+
                 return true;
             }
 
             result = source;
+
             return true;
         }
         catch (OverflowException)
         {
             result = default;
+
             return false;
         }
         catch (FormatException)
         {
             result = default;
+
             return false;
         }
         catch (InvalidCastException)
         {
             result = default;
+
             return false;
         }
     }

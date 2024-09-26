@@ -208,6 +208,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
+
         return result.entity;
     }
 
@@ -218,6 +219,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
+
         return result.entity;
     }
 
@@ -325,6 +327,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
 
         var count = result.Count();
+
         return await Task.FromResult(count).AnyContext();
     }
 

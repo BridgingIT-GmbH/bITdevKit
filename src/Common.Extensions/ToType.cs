@@ -40,6 +40,7 @@ public static partial class Extensions
             if (EnumExtensions.TryEnumIsDefined(targetType, value.ToString()))
             {
                 var parsedValue = Enum.Parse(targetType, value.ToString(), false);
+
                 return (T)parsedValue;
             }
 
@@ -55,6 +56,7 @@ public static partial class Extensions
         if (converter.CanConvertFrom(valueType))
         {
             var convertedValue = converter.ConvertFrom(value);
+
             return (T)convertedValue;
         }
 
@@ -68,6 +70,7 @@ public static partial class Extensions
         try
         {
             var convertedValue = Convert.ChangeType(value, targetType);
+
             return (T)convertedValue;
         }
         catch (Exception e)

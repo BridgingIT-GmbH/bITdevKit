@@ -96,6 +96,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                     requestType,
                     query.RequestId,
                     ex.Message);
+
                 throw;
             }
         }

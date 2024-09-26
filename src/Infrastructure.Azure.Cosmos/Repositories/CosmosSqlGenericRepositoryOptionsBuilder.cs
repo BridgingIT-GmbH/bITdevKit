@@ -16,18 +16,21 @@ public class CosmosSqlGenericRepositoryOptionsBuilder<TEntity>
     public CosmosSqlGenericRepositoryOptionsBuilder<TEntity> Provider(ICosmosSqlProvider<TEntity> provider)
     {
         this.Target.Provider = provider;
+
         return this;
     }
 
     public CosmosSqlGenericRepositoryOptionsBuilder<TEntity> PublishEvents(bool publishEvents)
     {
         this.Target.PublishEvents = publishEvents;
+
         return this;
     }
 
     public CosmosSqlGenericRepositoryOptionsBuilder<TEntity> IdGenerator(IEntityIdGenerator<TEntity> idGenerator)
     {
         this.Target.IdGenerator = idGenerator;
+
         return this;
     }
 }
@@ -42,12 +45,14 @@ public class CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity>
         ICosmosSqlProvider<TDatabaseEntity> provider)
     {
         this.Target.Provider = provider;
+
         return this;
     }
 
     public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> PublishEvents(bool publishEvents)
     {
         this.Target.PublishEvents = publishEvents;
+
         return this;
     }
 
@@ -55,12 +60,14 @@ public class CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity>
         IEntityIdGenerator<TEntity> idGenerator)
     {
         this.Target.IdGenerator = idGenerator;
+
         return this;
     }
 
     public CosmosSqlRepositoryOptionsBuilder<TEntity, TDatabaseEntity> Mapper(IEntityMapper mapper)
     {
         this.Target.Mapper = mapper;
+
         return this;
     }
 }

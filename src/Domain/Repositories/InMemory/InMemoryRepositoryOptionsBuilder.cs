@@ -15,24 +15,28 @@ public class InMemoryRepositoryOptionsBuilder<TEntity>
     public InMemoryRepositoryOptionsBuilder<TEntity> Context(InMemoryContext<TEntity> context)
     {
         this.Target.Context = context;
+
         return this;
     }
 
     public InMemoryRepositoryOptionsBuilder<TEntity> Mapper(IEntityMapper mapper)
     {
         this.Target.Mapper = mapper;
+
         return this;
     }
 
     public InMemoryRepositoryOptionsBuilder<TEntity> PublishEvents(bool publishEvents)
     {
         this.Target.PublishEvents = publishEvents;
+
         return this;
     }
 
     public InMemoryRepositoryOptionsBuilder<TEntity> IdGenerator(IEntityIdGenerator<TEntity> idGenerator)
     {
         this.Target.IdGenerator = idGenerator;
+
         return this;
     }
 }

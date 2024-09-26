@@ -115,7 +115,7 @@
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.2"/>
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0"/>
     <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0"/>
-    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.0"/>
+    <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1"/>
     <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0"/>
     <PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0"/>
     <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.5"/>

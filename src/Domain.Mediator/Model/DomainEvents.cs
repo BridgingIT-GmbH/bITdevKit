@@ -69,6 +69,7 @@ public class DomainEvents // TODO: create interface?
         }
 
         this.registrations.Add(@event);
+
         return this;
     }
 

@@ -30,6 +30,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
+
         return (await this.provider.ReadItemsAsync(e => e.Type == type,
             partitionKeyValue: type,
             cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
@@ -94,6 +95,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         where T : class, new()
     {
         var type = this.GetTypeName<T>();
+
         return (await this.provider.ReadItemsAsync(e => e.Type == type,
             partitionKeyValue: type,
             cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));

@@ -91,6 +91,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
     public async Task<IResult> GetEcho(IMediator mediator, HttpContext httpContext)
     {
         var response = await mediator.Send(new EchoQuery());
+
         return Results.Ok(response.Result);
     }
 

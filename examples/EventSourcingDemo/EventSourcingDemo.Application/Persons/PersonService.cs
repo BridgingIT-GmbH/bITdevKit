@@ -67,6 +67,7 @@ public class PersonService : IPersonService
         var person = await this.eventStore.GetAsync(model.Id, cancellationToken).AnyContext(); // <1>
         person.ChangeSurname(model.Lastname); // <2>
         await this.eventStore.SaveEventsAsync(person, false, cancellationToken).AnyContext(); // <3>
+
         // end::ChangeSurnameExample[]
         return this.mapper.Map<PersonOverviewViewModel>(person);
     }
@@ -75,6 +76,7 @@ public class PersonService : IPersonService
     {
         var query = await this.personRepository.FindAllAsync(new FindOptions<PersonOverview> { NoTracking = true })
             .AnyContext();
+
         return query.Select(p => new PersonOverviewViewModel
         {
             Firstname = p.Firstname, Lastname = p.Lastname, Id = p.Id
@@ -101,6 +103,7 @@ public class PersonService : IPersonService
         var persons = await this.personRepository
             .FindAllAsync(specs, new FindOptions<PersonOverview>(skip, take, orderOption))
             .AnyContext();
+
         return persons.ToList()
             .Select(p => new PersonOverviewViewModel { Firstname = p.Firstname, Lastname = p.Lastname, Id = p.Id });
     }

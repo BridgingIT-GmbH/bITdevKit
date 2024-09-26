@@ -20,10 +20,12 @@ public class DatabaseCreatorService<TContext> : IHostedService
 {
     private readonly ILogger<DatabaseCreatorService<TContext>> logger;
     private readonly IServiceProvider serviceProvider;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseCreatorOptions options;
 
     public DatabaseCreatorService(
         ILoggerFactory loggerFactory,
+        IHostApplicationLifetime applicationLifetime,
         IServiceProvider serviceProvider,
         DatabaseCreatorOptions options = null)
     {
@@ -32,6 +34,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
         this.logger = loggerFactory?.CreateLogger<DatabaseCreatorService<TContext>>() ??
             NullLoggerFactory.Instance.CreateLogger<DatabaseCreatorService<TContext>>();
         this.serviceProvider = serviceProvider;
+        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseCreatorOptions();
     }
 
@@ -46,6 +49,16 @@ public class DatabaseCreatorService<TContext> : IHostedService
 
         _ = Task.Run(async () =>
             {
+                // Wait "indefinitely", until ApplicationStarted is triggered
+                // Wait "indefinitely", until ApplicationStarted is triggered
+                await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+                    .ContinueWith(_ =>
+                        {
+                            this.logger.LogDebug("{LogKey} database creator - application started", Constants.LogKey);
+                        },
+                        TaskContinuationOptions.OnlyOnCanceled)
+                    .ConfigureAwait(false);
+
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogDebug("{LogKey} database creator startup delayed (context={DbContextType})",

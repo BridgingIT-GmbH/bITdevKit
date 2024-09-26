@@ -42,50 +42,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.FullMatch);
@@ -104,50 +104,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeyPrefixMatch);
@@ -166,50 +166,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeySuffixMatch);
@@ -228,50 +228,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.FindAsync<PersonStub>();
@@ -290,50 +290,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.ListAsync<PersonStub>(new DocumentKey("partition", "row" + ticks));
@@ -354,50 +354,50 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.GetProvider();
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "Mary" + ticks,
-            LastName = "Jane",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "Mary" + ticks,
+                LastName = "Jane",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
         await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-        new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Nationality = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        });
+            new PersonStub
+            {
+                Id = Guid.NewGuid(),
+                Nationality = "USA",
+                FirstName = "John",
+                LastName = "Doe",
+                Age = 18
+            });
 
         // Act
         var result = await sut.ListAsync<PersonStub>();

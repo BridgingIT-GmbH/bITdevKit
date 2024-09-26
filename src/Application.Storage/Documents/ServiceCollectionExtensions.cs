@@ -22,12 +22,15 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton(typeof(IDocumentStoreClient<T>), clientFactory);
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient(typeof(IDocumentStoreClient<T>), clientFactory);
+
                 break;
             default:
                 services.AddScoped(typeof(IDocumentStoreClient<T>), clientFactory);
+
                 break;
         }
 

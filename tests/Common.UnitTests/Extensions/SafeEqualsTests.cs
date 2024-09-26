@@ -1,4 +1,5 @@
 ﻿// ReSharper disable ExpressionIsAlwaysNull
+
 namespace BridgingIT.DevKit.Common.Tests;
 
 using System;

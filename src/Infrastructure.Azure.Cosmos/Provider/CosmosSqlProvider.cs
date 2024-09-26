@@ -77,6 +77,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                     this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms",
                         "IFR",
                         watch.GetElapsedMilliseconds());
+
                     return result;
                 }
             }

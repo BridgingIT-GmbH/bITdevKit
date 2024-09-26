@@ -49,6 +49,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
+
             return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
                 commandResult.Cancelled == false &&
                 commandResult.Result;
@@ -84,6 +85,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
+
             return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
                 commandResult.Cancelled == false &&
                 commandResult.Result;
@@ -101,6 +103,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
+
         return gent;
     }
 
@@ -110,6 +113,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
+
         return gent;
     }
 
@@ -120,6 +124,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
+
         return gent;
     }
 
@@ -129,6 +134,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         var aggregateType = aggregate?.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
+
         return gent;
     }
 }

@@ -15,6 +15,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
 {
     private readonly ILogger<OutboxDomainEventService> logger;
     private readonly IOutboxDomainEventWorker worker;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly OutboxDomainEventOptions options;
     private Timer processTimer;
     private SemaphoreSlim semaphore;
@@ -22,6 +23,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
     public OutboxDomainEventService(
         ILoggerFactory loggerFactory,
         IOutboxDomainEventWorker worker,
+        IHostApplicationLifetime applicationLifetime,
         OutboxDomainEventOptions options = null)
     {
         EnsureArg.IsNotNull(worker, nameof(worker));
@@ -29,6 +31,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         this.logger = loggerFactory?.CreateLogger<OutboxDomainEventService>() ??
             NullLoggerFactory.Instance.CreateLogger<OutboxDomainEventService>();
         this.worker = worker;
+        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new OutboxDomainEventOptions();
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
@@ -54,6 +57,15 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         {
             return;
         }
+
+        // Wait "indefinitely", until ApplicationStarted is triggered
+        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+            .ContinueWith(_ =>
+                {
+                    this.logger.LogDebug("{LogKey} outbox domain event service - application started", Constants.LogKey);
+                },
+                TaskContinuationOptions.OnlyOnCanceled)
+            .ConfigureAwait(false);
 
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {

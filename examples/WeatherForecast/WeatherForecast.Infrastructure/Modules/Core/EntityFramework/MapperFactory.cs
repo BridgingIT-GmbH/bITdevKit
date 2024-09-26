@@ -33,6 +33,7 @@ public static class MapperFactory
         });
 
         configuration.AssertConfigurationIsValid();
+
         return configuration.CreateMapper();
     }
 

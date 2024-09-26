@@ -21,6 +21,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     public override async Task<ActionResult<ResultModel>> EchoGet(CancellationToken cancellationToken)
     {
         await Task.Delay(1, cancellationToken); // TODO: remove or Task.Run
+
         return new OkObjectResult(Result.Success().WithMessage("echo"));
     }
 
@@ -32,12 +33,14 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     public override async Task<ActionResult<HostModel>> HostFindOne(string hostId, CancellationToken cancellationToken)
     {
         var result = (await this.mediator.Send(new HostFindOneQuery(hostId), cancellationToken)).Result;
+
         return result.ToOkActionResult<Host, HostModel>(this.mapper);
     }
 
     public override async Task<ActionResult<ICollection<HostModel>>> HostFindAll(CancellationToken cancellationToken)
     {
         var result = (await this.mediator.Send(new HostFindAllQuery(), cancellationToken)).Result;
+
         return result.ToOkActionResult<Host, HostModel>(this.mapper);
     }
 
@@ -47,6 +50,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     {
         var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken))
             .Result;
+
         return result.ToCreatedActionResult<Host, HostModel>(this.mapper,
             $"Core_{nameof(this.HostFindOne)}",
             new { hostId = result.Value?.Id });
@@ -58,6 +62,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     {
         var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken))
             .Result;
+
         return result.ToUpdatedActionResult<Host, HostModel>(this.mapper,
             $"Core_{nameof(this.HostFindOne)}",
             new { hostId = result.Value?.Id });
@@ -71,6 +76,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     {
         var result = (await this.mediator.Send(new DinnerFindOneForHostQuery(hostId, dinnerId), cancellationToken))
             .Result;
+
         return result.ToOkActionResult<Dinner, DinnerModel>(this.mapper);
     }
 
@@ -79,6 +85,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         CancellationToken cancellationToken)
     {
         var result = (await this.mediator.Send(new DinnerFindAllForHostQuery(hostId), cancellationToken)).Result;
+
         return result.ToOkActionResult<Dinner, DinnerModel>(this.mapper);
     }
 
@@ -90,6 +97,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         var result = (await this.mediator.Send(
             this.mapper.Map<DinnerModel, DinnerCreateCommand>(body),
             cancellationToken)).Result;
+
         return result.ToCreatedActionResult<Dinner, DinnerModel>(this.mapper,
             $"Core_{nameof(this.DinnerFindOneForHost)}",
             new { hostId, dinnerId = result.Value?.Id });
@@ -102,6 +110,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         CancellationToken cancellationToken)
     {
         var result = (await this.mediator.Send(new MenuFindOneForHostQuery(hostId, menuId), cancellationToken)).Result;
+
         return result.ToOkActionResult<Menu, MenuModel>(this.mapper);
     }
 
@@ -110,6 +119,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         CancellationToken cancellationToken)
     {
         var result = (await this.mediator.Send(new MenuFindAllForHostQuery(hostId), cancellationToken)).Result;
+
         return result.ToOkActionResult<Menu, MenuModel>(this.mapper);
     }
 
@@ -120,6 +130,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     {
         var result = (await this.mediator.Send(this.mapper.Map<MenuModel, MenuCreateCommand>(body), cancellationToken))
             .Result;
+
         return result.ToCreatedActionResult<Menu, MenuModel>(this.mapper,
             $"Core_{nameof(this.MenuFindOneForHost)}",
             new { hostId, menuId = result.Value?.Id });
@@ -144,6 +155,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     {
         var result = (await this.mediator.Send(this.mapper.Map<UserModel, UserCreateCommand>(body), cancellationToken))
             .Result;
+
         return result.ToCreatedActionResult<User, UserModel>(this.mapper,
             $"Core_{nameof(this.UserFindOne)}",
             new

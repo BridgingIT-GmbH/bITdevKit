@@ -205,6 +205,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                                 this.GetType().Name);
                             //messageRequest.CancellationToken.ThrowIfCancellationRequested();
                             result = false;
+
                             break;
                         }
 
@@ -249,6 +250,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                                 subscription.HandlerType.Name,
                                 messageRequest.Message.MessageId);
                             result = false;
+
                             break;
                         }
 
@@ -270,6 +272,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                             messageRequest.Message.MessageId,
                             ex.Message);
                         result = false;
+
                         break;
                     }
                 }

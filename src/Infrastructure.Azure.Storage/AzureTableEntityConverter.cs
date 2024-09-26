@@ -83,43 +83,56 @@ public static class AzureTableEntityConverter
                 {
                     case int x:
                         entityProperty = x;
+
                         break;
                     case short x:
                         entityProperty = x;
+
                         break;
                     case byte x:
                         entityProperty = x;
+
                         break;
                     case string x:
                         entityProperty = x;
+
                         break;
                     case double x:
                         entityProperty = x;
+
                         break;
                     case DateTime x:
                         entityProperty = x;
+
                         break;
                     case DateTimeOffset x:
                         entityProperty = x;
+
                         break;
                     case bool x:
                         entityProperty = x;
+
                         break;
                     case byte[] x:
                         entityProperty = x;
+
                         break;
                     case long x:
                         entityProperty = x;
+
                         break;
                     case Guid x:
                         entityProperty = x;
+
                         break;
                     case null:
                         entityProperty = null;
+
                         break;
                     default:
                         name += "Json";
                         entityProperty = JsonSerializer.Serialize(value, jsonSerializerOptions);
+
                         break;
                 }
             }

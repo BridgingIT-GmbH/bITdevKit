@@ -49,9 +49,9 @@ public class ModuleScopeJobSchedulingBehavior(
                                 .StartActvity($"JOB_EXECUTE {jobTypeName}",
                                     async (a, c) => await next().AnyContext(),
                                     tags: new Dictionary<string, string>
-                                        {
-                                            ["job.id"] = jobId, ["job.type"] = jobTypeName
-                                        },
+                                    {
+                                        ["job.id"] = jobId, ["job.type"] = jobTypeName
+                                    },
                                     cancellationToken: c);
                         }
                     },

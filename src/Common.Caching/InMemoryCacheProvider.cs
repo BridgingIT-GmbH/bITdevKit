@@ -47,6 +47,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
         }
 
         TypedLogger.LogCacheMiss(this.logger, key);
+
         return false;
     }
 
@@ -60,6 +61,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
         }
 
         TypedLogger.LogCacheMiss(this.logger, key);
+
         return Task.FromResult(false);
     }
 
@@ -82,6 +84,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
     public Task RemoveAsync(string key, CancellationToken token = default)
     {
         this.Remove(key);
+
         return Task.CompletedTask;
     }
 
@@ -94,6 +97,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
     public Task RemoveStartsWithAsync(string key, CancellationToken token = default)
     {
         this.RemoveStartsWith(key);
+
         return Task.CompletedTask;
     }
 
@@ -123,6 +127,7 @@ public partial class InMemoryCacheProvider : ICacheProvider
         CancellationToken token = default)
     {
         this.Set(key, value, slidingExpiration, absoluteExpiration);
+
         return Task.CompletedTask;
     }
 

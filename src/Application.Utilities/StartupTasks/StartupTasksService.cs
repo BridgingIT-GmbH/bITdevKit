@@ -15,12 +15,14 @@ public class StartupTasksService : BackgroundService
 {
     private readonly ILogger<StartupTasksService> logger;
     private readonly IServiceProvider serviceProvider;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly IEnumerable<StartupTaskDefinition> definitions;
     private readonly StartupTaskServiceOptions options;
 
     public StartupTasksService(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
+        IHostApplicationLifetime applicationLifetime,
         IEnumerable<StartupTaskDefinition> definitions = null,
         StartupTaskServiceOptions options = null)
     {
@@ -29,6 +31,7 @@ public class StartupTasksService : BackgroundService
         this.logger = loggerFactory?.CreateLogger<StartupTasksService>() ??
             NullLoggerFactory.Instance.CreateLogger<StartupTasksService>();
         this.serviceProvider = serviceProvider;
+        this.applicationLifetime = applicationLifetime;
         this.definitions = definitions ?? [];
         this.options = options ?? new StartupTaskServiceOptions();
 
@@ -44,6 +47,15 @@ public class StartupTasksService : BackgroundService
         {
             return;
         }
+
+        // Wait "indefinitely", until ApplicationStarted is triggered
+        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+            .ContinueWith(_ =>
+                {
+                    this.logger.LogDebug("{LogKey} startup tasks - application started", Constants.LogKey);
+                },
+                TaskContinuationOptions.OnlyOnCanceled)
+            .ConfigureAwait(false);
 
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {

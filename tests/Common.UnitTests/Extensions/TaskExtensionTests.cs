@@ -87,6 +87,7 @@ public class TaskExtensionsTests
         {
             i++;
             await Task.Delay(100); // Simulate some work
+
             throw new Exception("Failed");
         };
 

@@ -35,6 +35,7 @@ public class MessagePackSerializer : ISerializer
         }
 
         input.Position = 0;
+
         return MessagePack.MessagePackSerializer.Deserialize(type, input, MessagePackSerializerSettings.Create());
     }
 
@@ -46,6 +47,7 @@ public class MessagePackSerializer : ISerializer
         }
 
         input.Position = 0;
+
         return MessagePack.MessagePackSerializer.Deserialize<T>(input, MessagePackSerializerSettings.Create());
     }
 }

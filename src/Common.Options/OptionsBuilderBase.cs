@@ -27,6 +27,7 @@ public abstract class OptionsBuilderBase<TOption, TBuilder> : OptionsBuilder<TOp
     public TBuilder LoggerFactory(ILoggerFactory loggerFactory)
     {
         this.Target.LoggerFactory = loggerFactory;
+
         return (TBuilder)this;
     }
 }

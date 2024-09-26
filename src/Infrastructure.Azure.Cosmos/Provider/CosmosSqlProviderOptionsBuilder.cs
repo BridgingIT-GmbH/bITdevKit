@@ -15,6 +15,7 @@ public class CosmosSqlProviderOptionsBuilder<T>
     public CosmosSqlProviderOptionsBuilder<T> Client(CosmosClient client)
     {
         this.Target.Client = client;
+
         return this;
     }
 
@@ -30,12 +31,14 @@ public class CosmosSqlProviderOptionsBuilder<T>
         this.Target.AccountEndPoint = endPoint;
         this.Target.AccountKey = key;
         this.Target.Client = new CosmosClient(endPoint, key);
+
         return this;
     }
 
     public CosmosSqlProviderOptionsBuilder<T> Database(string database)
     {
         this.Target.Database = database ?? "master";
+
         return this;
     }
 
@@ -48,6 +51,7 @@ public class CosmosSqlProviderOptionsBuilder<T>
         }
 
         this.DatabaseThroughPut(maxThroughPut);
+
         return this;
     }
 
@@ -64,6 +68,7 @@ public class CosmosSqlProviderOptionsBuilder<T>
         }
 
         this.Target.DatabaseThroughPut = throughPut;
+
         return this;
     }
 
@@ -71,12 +76,14 @@ public class CosmosSqlProviderOptionsBuilder<T>
     {
         this.Target.ContainerPrefix = prefix;
         this.Target.ContainerPrefixSeperator = seperator ?? '_';
+
         return this;
     }
 
     public CosmosSqlProviderOptionsBuilder<T> Container(string name)
     {
         this.Target.Container = name;
+
         return this;
     }
 
@@ -165,6 +172,7 @@ public class CosmosSqlProviderOptionsBuilder<T>
         }
 
         this.ThroughPut(maxThroughPut);
+
         return this;
     }
 
@@ -181,6 +189,7 @@ public class CosmosSqlProviderOptionsBuilder<T>
         }
 
         this.Target.ThroughPut = throughPut;
+
         return this;
     }
 
@@ -192,12 +201,14 @@ public class CosmosSqlProviderOptionsBuilder<T>
         }
 
         this.Target.TimeToLive = seconds;
+
         return this;
     }
 
     public CosmosSqlProviderOptionsBuilder<T> LogRequestCharges(bool value = true)
     {
         this.Target.LogRequestCharges = value;
+
         return this;
     }
 }

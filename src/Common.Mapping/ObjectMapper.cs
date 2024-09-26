@@ -82,6 +82,7 @@ public class ObjectMapper : IMapper
         {
             var target = Activator.CreateInstance<TTarget>();
             mapAction(source, target);
+
             return target;
         }
 
@@ -120,6 +121,7 @@ public class ObjectMapper : IMapper
         if (mappingDelegate is Action<TSource, TTarget> mapAction)
         {
             mapAction(source, target);
+
             return target;
         }
 

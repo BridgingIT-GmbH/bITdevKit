@@ -105,6 +105,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
         get
         {
             this.serviceProvider ??= this.Services.BuildServiceProvider();
+
             return this.serviceProvider;
         }
     }
@@ -125,6 +126,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
     public TestEnvironmentFixture WithOutput(ITestOutputHelper output)
     {
         this.Output = output;
+
         return this;
     }
 

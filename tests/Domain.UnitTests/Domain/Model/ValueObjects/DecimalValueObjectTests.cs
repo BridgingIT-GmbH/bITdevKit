@@ -11,7 +11,8 @@ using DevKit.Domain.Model;
 public class DecimalValueObjectTests
 {
     [Fact]
-    public void Operators_VariousAmounts_CompareAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
+    public void
+        Operators_VariousAmounts_CompareAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
     {
         // Arrange
         var sut00 = StubValueObject.Create(00);
@@ -32,7 +33,8 @@ public class DecimalValueObjectTests
     }
 
     [Fact]
-    public void Comparable_VariousAmounts_OrderAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
+    public void
+        Comparable_VariousAmounts_OrderAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
     {
         // Arrange
         var sut00 = StubValueObject.Create(00);
@@ -50,7 +52,8 @@ public class DecimalValueObjectTests
     }
 
     [Fact]
-    public void HasDecimals_VariousAmounts_ResultAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
+    public void
+        HasDecimals_VariousAmounts_ResultAsExpected() // [UnitOfWork_StateUnderTest_ExpectedBehavior] https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html
     {
         // Arrange
         // Act

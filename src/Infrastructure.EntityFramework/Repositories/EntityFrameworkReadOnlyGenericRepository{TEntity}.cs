@@ -193,6 +193,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
 
         var result = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken)
             .AnyContext() is not null;
+
         return result;
     }
 

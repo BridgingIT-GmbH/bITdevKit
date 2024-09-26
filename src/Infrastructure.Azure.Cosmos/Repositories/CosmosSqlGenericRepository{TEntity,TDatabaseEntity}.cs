@@ -179,6 +179,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
+
         return result.entity;
     }
 
@@ -189,6 +190,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
+
         return result.entity;
     }
 
@@ -277,6 +279,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
             .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s)
                 .Expand()); // expand fixes Invoke in expression issue
         var result = await this.Provider.ReadItemsAsync(expressions, cancellationToken: cancellationToken).AnyContext();
+
         return result.LongCount();
     }
 }

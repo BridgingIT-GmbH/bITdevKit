@@ -46,6 +46,7 @@ public static class TypeExtensions
             var genericClose = useAngleBrackets ? ">" : "]";
             var name = source.Name.Substring(0, source.Name.IndexOf('`'));
             var types = string.Join(",", source.GetGenericArguments().Select(t => t.PrettyName(useAngleBrackets)));
+
             return $"{name}{genericOpen}{types}{genericClose}";
         }
 
@@ -66,6 +67,7 @@ public static class TypeExtensions
             var genericClose = useAngleBrackets ? ">" : "]";
             var name = source.FullName.Substring(0, source.FullName.IndexOf('`'));
             var types = string.Join(",", source.GetGenericArguments().Select(t => t.FullPrettyName(useAngleBrackets)));
+
             return $"{name}{genericOpen}{types}{genericClose}";
         }
 
@@ -77,6 +79,7 @@ public static class TypeExtensions
     {
         // ommits the assembly version and culture
         var assemblyQualifiedName = source.AssemblyQualifiedName;
+
         return $"{assemblyQualifiedName.Split(',')[0]}, {assemblyQualifiedName.Split(',')[1]}".Replace("  ", " ");
     }
 
@@ -211,7 +214,7 @@ public static class TypeExtensions
         }
 
         return source.Equals(@interface) ||
-            source.IsGenericType && source.GetGenericTypeDefinition().Equals(@interface) ||
+            (source.IsGenericType && source.GetGenericTypeDefinition().Equals(@interface)) ||
             source.GetInterfaces().Any(i => i.IsGenericType && i.ImplementsOpenGenericInterface(@interface));
     }
 }

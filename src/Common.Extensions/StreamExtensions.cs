@@ -137,6 +137,7 @@ public static class StreamExtensions
         catch
         {
             await result.DisposeAsync().ConfigureAwait(false);
+
             throw;
         }
     }

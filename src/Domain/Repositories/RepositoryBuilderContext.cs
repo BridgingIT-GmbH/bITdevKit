@@ -57,12 +57,15 @@ public class RepositoryBuilderContext<TEntity>(
         {
             case ServiceLifetime.Singleton:
                 this.Services.AddSingleton<IRepositoryTransaction<TEntity>, TTransactions>();
+
                 break;
             case ServiceLifetime.Transient:
                 this.Services.AddTransient<IRepositoryTransaction<TEntity>, TTransactions>();
+
                 break;
             default:
                 this.Services.AddScoped<IRepositoryTransaction<TEntity>, TTransactions>();
+
                 break;
         }
 
@@ -85,12 +88,15 @@ public class RepositoryBuilderContext<TEntity>(
         {
             case ServiceLifetime.Singleton:
                 this.Services.AddSingleton<IRepositoryTransaction<TEntity>>(implementationFactory);
+
                 break;
             case ServiceLifetime.Transient:
                 this.Services.AddTransient<IRepositoryTransaction<TEntity>>(implementationFactory);
+
                 break;
             default:
                 this.Services.AddScoped<IRepositoryTransaction<TEntity>>(implementationFactory);
+
                 break;
         }
 

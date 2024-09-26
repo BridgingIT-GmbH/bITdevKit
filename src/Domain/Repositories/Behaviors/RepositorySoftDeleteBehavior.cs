@@ -81,6 +81,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> Ã
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         var entity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
+
         return entity is not null && this.Specification.IsSatisfiedBy(entity);
     }
 
@@ -153,6 +154,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> Ã
         CancellationToken cancellationToken = default)
     {
         var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
+
         return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : default;
     }
 

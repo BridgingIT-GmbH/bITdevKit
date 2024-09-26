@@ -70,6 +70,7 @@ public static class CloneHelper
         }
 
         var bytes = Serializer.SerializeToBytes(source);
+
         return bytes.IsNullOrEmpty() ? default : Serializer.Deserialize(bytes, type);
     }
 }

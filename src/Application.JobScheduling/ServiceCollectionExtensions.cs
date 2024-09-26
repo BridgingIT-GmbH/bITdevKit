@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
 using Logging;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Spi;
 
@@ -70,17 +71,17 @@ public static class ServiceCollectionExtensions
         }
 
         services.TryAddSingleton<IJobFactory, ScopedJobFactory>();
-        services.AddQuartz(properties,
-            configure); // https://github.com/quartznet/quartznet/blob/main/src/Quartz/Configuration/ServiceCollectionExtensions.cs#L31
+        // https://github.com/quartznet/quartznet/blob/main/src/Quartz/Configuration/ServiceCollectionExtensions.cs#L31
+        services.AddQuartz(properties, configure);
 
         services.AddHostedService(sp =>
-            new
-                JobSchedulingService( // QuartzHostedService https://github.com/quartznet/quartznet/blob/main/src/Quartz/Hosting/QuartzHostedService.cs#L21
-                    sp.GetService<ILoggerFactory>(),
-                    sp.GetRequiredService<ISchedulerFactory>(),
-                    sp.GetRequiredService<IJobFactory>(),
-                    sp.GetServices<JobSchedule>(),
-                    contextOptions));
+            new JobSchedulingService( // QuartzHostedService https://github.com/quartznet/quartznet/blob/main/src/Quartz/Hosting/QuartzHostedService.cs#L21
+                sp.GetService<ILoggerFactory>(),
+                sp.GetRequiredService<ISchedulerFactory>(),
+                sp.GetRequiredService<IJobFactory>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp.GetServices<JobSchedule>(),
+                contextOptions));
 
         //schedulerIsAdded = true;
         //}

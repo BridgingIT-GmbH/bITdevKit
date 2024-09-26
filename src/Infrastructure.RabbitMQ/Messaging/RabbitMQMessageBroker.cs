@@ -99,6 +99,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         get
         {
             var name = this.options.QueueName.IsNullOrEmpty() ? KeyGenerator.Create(22) : this.options.QueueName;
+
             return this.options.QueueNameSuffix.IsNullOrEmpty() ? name : $"{name}-{this.options.QueueNameSuffix}";
         }
     }

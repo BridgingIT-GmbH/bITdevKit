@@ -54,7 +54,8 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" }
         }.AsQueryable();
 
         // Act
@@ -101,7 +102,8 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age > 20 && p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 18, FullName = "John Smith" }
         }.AsQueryable();
 
@@ -126,7 +128,8 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age > 25 || p.FirstName == "John");
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" }
         }.AsQueryable();
 
@@ -149,7 +152,8 @@ public class MappedSpecificationTests
         var sut = new Specification<PersonStub>(p => p.Age <= 25).Not();
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "John Doe" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" }
         }.AsQueryable();
 
@@ -171,10 +175,11 @@ public class MappedSpecificationTests
     public void MapSpecification_ComplexSpecification_ShouldWorkCorrectly()
     {
         // Arrange
-        var sut = new Specification<PersonStub>(p => p.Age > 25 && p.FirstName == "John" || p.Age < 22 && p.LastName == "Johnson");
+        var sut = new Specification<PersonStub>(p => (p.Age > 25 && p.FirstName == "John") || (p.Age < 22 && p.LastName == "Johnson"));
         var sourcesDto = new[]
         {
-            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "John Doe" }, new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 30, FullName = "John Doe" },
+            new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 20, FullName = "Bob Johnson" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 25, FullName = "Jane Smith" },
             new PersonDtoStub { Identifier = Guid.NewGuid(), Age = 35, FullName = "Alice Brown" }
         }.AsQueryable();

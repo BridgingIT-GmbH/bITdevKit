@@ -15,6 +15,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder Enabled(bool value = true)
     {
         this.Target.Enabled = value;
+
         return this;
     }
 
@@ -24,6 +25,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder Disabled()
     {
         this.Target.Enabled = false;
+
         return this;
     }
 
@@ -33,6 +35,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder StartupDelay(TimeSpan timespan)
     {
         this.Target.StartupDelay = timespan;
+
         return this;
     }
 
@@ -42,6 +45,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder StartupDelay(int milliseconds)
     {
         this.Target.StartupDelay = TimeSpan.FromMilliseconds(milliseconds);
+
         return this;
     }
 
@@ -51,6 +55,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder StartupDelay(string value)
     {
         this.Target.StartupDelay = TimeSpan.Parse(value);
+
         return this;
     }
 
@@ -60,6 +65,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder LogModel(bool value = true)
     {
         this.Target.LogModel = value;
+
         return this;
     }
 
@@ -69,6 +75,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     public DatabaseCreatorOptionsBuilder DeleteOnStartup(bool value = true)
     {
         this.Target.EnsureDeleted = value;
+
         return this;
     }
 
@@ -79,6 +86,7 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     {
         this.Target.EnsureTruncated = value;
         this.Target.EnsureTruncatedIgnoreTables.AddRange(ignoreTables.SafeNull());
+
         return this;
     }
 }

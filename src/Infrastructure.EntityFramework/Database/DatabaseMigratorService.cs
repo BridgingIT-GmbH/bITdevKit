@@ -12,21 +12,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-
-[Obsolete("Use the new DatabaseMigratorService service extension from now on")]
-public class MigrationsHostedService<TContext>(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
-    : DatabaseMigratorService<TContext>(loggerFactory, serviceProvider)
-    where TContext : DbContext { }
+using Serilog;
 
 public class DatabaseMigratorService<TContext> : IHostedService
     where TContext : DbContext
 {
     private readonly ILogger<DatabaseMigratorService<TContext>> logger;
     private readonly IServiceProvider serviceProvider;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseMigratorOptions options;
 
     public DatabaseMigratorService(
         ILoggerFactory loggerFactory,
+        IHostApplicationLifetime applicationLifetime,
         IServiceProvider serviceProvider,
         DatabaseMigratorOptions options = null)
     {
@@ -35,6 +33,8 @@ public class DatabaseMigratorService<TContext> : IHostedService
         this.logger = loggerFactory?.CreateLogger<DatabaseMigratorService<TContext>>() ??
             NullLoggerFactory.Instance.CreateLogger<DatabaseMigratorService<TContext>>();
         this.serviceProvider = serviceProvider;
+        this.applicationLifetime = applicationLifetime;
+        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseMigratorOptions();
     }
 
@@ -49,6 +49,15 @@ public class DatabaseMigratorService<TContext> : IHostedService
 
         _ = Task.Run(async () =>
             {
+                // Wait "indefinitely", until ApplicationStarted is triggered
+                await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+                    .ContinueWith(_ =>
+                        {
+                            this.logger.LogDebug("{LogKey} database migrator - application started", Constants.LogKey);
+                        },
+                        TaskContinuationOptions.OnlyOnCanceled)
+                    .ConfigureAwait(false);
+
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogDebug("{LogKey} database migrator startup delayed (context={DbContextType})",

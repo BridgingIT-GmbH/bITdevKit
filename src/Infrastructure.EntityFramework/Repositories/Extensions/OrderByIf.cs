@@ -70,10 +70,8 @@ public static partial class Extensions
                             .Expression)) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
                     : source.OrderByDescending(
                         mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
-                :
-                order.Direction == OrderDirection.Ascending
-                    ?
-                    result.ThenBy(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
+                : order.Direction == OrderDirection.Ascending
+                    ? result.ThenBy(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression))
                     : result.ThenByDescending(
                         mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression));
         }

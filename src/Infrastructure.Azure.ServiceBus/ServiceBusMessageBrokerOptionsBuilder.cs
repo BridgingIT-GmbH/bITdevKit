@@ -15,18 +15,21 @@ public class ServiceBusMessageBrokerOptionsBuilder
     public ServiceBusMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessagePublisherBehavior> behaviors)
     {
         this.Target.PublisherBehaviors = behaviors;
+
         return this;
     }
 
     public ServiceBusMessageBrokerOptionsBuilder Behaviors(IEnumerable<IMessageHandlerBehavior> behaviors)
     {
         this.Target.HandlerBehaviors = behaviors;
+
         return this;
     }
 
     public ServiceBusMessageBrokerOptionsBuilder HandlerFactory(IMessageHandlerFactory handlerFactory)
     {
         this.Target.HandlerFactory = handlerFactory;
+
         return this;
     }
 
@@ -67,6 +70,7 @@ public class ServiceBusMessageBrokerOptionsBuilder
     public ServiceBusMessageBrokerOptionsBuilder ProcessDelay(int milliseconds)
     {
         this.Target.ProcessDelay = milliseconds;
+
         return this;
     }
 

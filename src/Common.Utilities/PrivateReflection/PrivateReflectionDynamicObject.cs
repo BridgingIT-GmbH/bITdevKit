@@ -23,6 +23,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         var prop = this.GetProperty(binder.Name);
         result = prop.GetValue(this.RealObject, null);
         result = WrapObjectIfNeeded(result);
+
         return true;
     }
 
@@ -30,6 +31,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
     {
         var prop = this.GetProperty(binder.Name);
         prop.SetValue(this.RealObject, value, null);
+
         return true;
     }
 
@@ -38,6 +40,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         var prop = this.GetIndexProperty();
         result = prop.GetValue(this.RealObject, indexes);
         result = WrapObjectIfNeeded(result);
+
         return true;
     }
 
@@ -45,6 +48,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
     {
         var prop = this.GetIndexProperty();
         prop.SetValue(this.RealObject, value, indexes);
+
         return true;
     }
 
@@ -52,12 +56,14 @@ public class PrivateReflectionDynamicObject : DynamicObject
     {
         result = InvokeMemberOnType(this.RealObject.GetType(), this.RealObject, binder.Name, args);
         result = WrapObjectIfNeeded(result);
+
         return true;
     }
 
     public override bool TryConvert(ConvertBinder binder, out object result)
     {
         result = Convert.ChangeType(this.RealObject, binder.Type);
+
         return true;
     }
 
@@ -140,6 +146,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         }
 
         var propNames = typeProperties.Keys.Where(name => name[0] != '<').OrderBy(name => name);
+
         throw new ArgumentException(
             $"The property {propertyName} doesn't exist on type {this.RealObject.GetType()}. Supported properties are: {string.Join(", ", propNames)}");
     }

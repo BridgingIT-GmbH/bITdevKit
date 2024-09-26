@@ -15,6 +15,7 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
     public SqlServerOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
+
         return this;
     }
 
@@ -28,6 +29,7 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
         this.Target.MigrationsSchemaEnabled = schemaEnabled;
         this.Target.MigrationsSchemaName = schemaName;
         this.Target.MigrationsAssemblyName = schemaAssemblyName;
+
         return this;
     }
 
@@ -35,12 +37,14 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
     {
         this.Target.LoggerEnabled = value;
         this.Target.SensitiveDataLoggingEnabled = sensitiveDataLoggingEnabled;
+
         return this;
     }
 
     public SqlServerOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;
+
         return this;
     }
 
@@ -48,6 +52,7 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
     {
         this.Target.SimpleLoggerEnabled = value;
         this.Target.SimpleLoggerLevel = logLevel;
+
         return this;
     }
 
@@ -55,18 +60,21 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
         where TInterceptor : class, IInterceptor
     {
         this.Target.InterceptorTypes.Add(typeof(TInterceptor));
+
         return this;
     }
 
     public SqlServerOptionsBuilder EnableDetailedErrors(bool value = true)
     {
         this.Target.DetailedErrorsEnabled = value;
+
         return this;
     }
 
     public SqlServerOptionsBuilder UseMemoryCache(IMemoryCache cache)
     {
         this.Target.MemoryCache = cache;
+
         return this;
     }
 }

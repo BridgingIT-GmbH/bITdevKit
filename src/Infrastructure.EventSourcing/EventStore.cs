@@ -119,6 +119,7 @@ public class EventStore<TAggregate>(
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
+
                     throw;
                 }
 

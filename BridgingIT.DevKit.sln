@@ -42,7 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		nuget.config = nuget.config
 		README.md = README.md
 		RELEASES.md = RELEASES.md
-		BridgingIT.DevKit.sln.DotSettings = BridgingIT.DevKit.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing", "src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj", "{22EDF536-7B1C-4216-8B98-9956F8737803}"

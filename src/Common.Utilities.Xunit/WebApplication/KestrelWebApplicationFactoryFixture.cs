@@ -17,28 +17,64 @@ using Serilog.Events;
 using Xunit.Abstractions;
 
 // origin: https://danieldonbavand.com/2022/06/13/using-playwright-with-the-webapplicationfactory-to-test-a-blazor-application/
+/// <summary>
+/// A fixture for creating a Kestrel web application factory for end-to-end testing
+/// with a specified entry point.
+/// </summary>
+/// <typeparam name="TEntryPoint">The type to use as the entry point for the application.</typeparam>
 public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
+    /// <summary>
+    /// Represents the host instance for managing the lifecycle of the Kestrel server used in the test fixture.
+    /// </summary>
     private IHost host;
 
+    /// <summary>
+    /// Gets the instance of <see cref="ITestOutputHelper"/> used for outputting
+    /// log information during the test execution.
+    /// </summary>
+    /// <remarks>
+    /// This property is set by invoking the <see cref="WithOutput"/> method, which
+    /// allows for capturing and displaying logs within the test framework.
+    /// </remarks>
     public ITestOutputHelper Output { get; private set; }
 
+    /// <summary>
+    /// Gets the server address to which the WebApplicationFactory instance is connected.
+    /// </summary>
+    /// <remarks>
+    /// The ServerAddress property ensures that the server is running and returns the base address
+    /// of the client options as a string.
+    /// </remarks>
     public string ServerAddress
     {
         get
         {
             this.EnsureServer();
+
             return this.ClientOptions.BaseAddress.ToString();
         }
     }
 
+    /// <summary>
+    /// Associates an <see cref="ITestOutputHelper"/> with the
+    /// <see cref="KestrelWebApplicationFactoryFixture{TEntryPoint}"/> instance.
+    /// </summary>
+    /// <param name="output">The output helper to associate with this fixture.</param>
+    /// <returns>The current instance of <see cref="KestrelWebApplicationFactoryFixture{TEntryPoint}"/> for chaining purposes.</returns>
     public KestrelWebApplicationFactoryFixture<TEntryPoint> WithOutput(ITestOutputHelper output)
     {
         this.Output = output;
+
         return this;
     }
 
+    /// <summary>
+    /// Creates and configures an <see cref="IHost" /> instance for testing.
+    /// </summary>
+    /// <param name="builder">The host builder to configure and create the host from.</param>
+    /// <returns>The configured host for testing purposes.</returns>
     protected override IHost CreateHost(IHostBuilder builder)
     {
         // Create the host for TestServer now before we
@@ -89,14 +125,24 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFa
         // not being an instance of the concrete type TestServer.
         // See https://github.com/dotnet/aspnetcore/pull/34702.
         testHost.Start();
+
         return testHost;
     }
 
+    /// <summary>
+    /// Disposes of the resources used by the KestrelWebApplicationFactoryFixture.
+    /// </summary>
+    /// <param name="disposing">Indicates whether the method is being called from the Dispose method (true) or from a finalizer (false).</param>
     protected override void Dispose(bool disposing)
     {
         this.host?.Dispose();
     }
 
+    /// Ensures that the Kestrel server is initialized and running.
+    /// This method checks if the server has already been created and started.
+    /// If the server is not yet initialized, it forces the WebApplicationFactory
+    /// to bootstrap the server by creating a default client. This is necessary
+    /// to properly set up the server environment for tests.
     private void EnsureServer()
     {
         if (this.host is null)

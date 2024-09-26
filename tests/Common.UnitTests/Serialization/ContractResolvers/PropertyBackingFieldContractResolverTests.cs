@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 using Newtonsoft.Json;
+
 // TODO: get rid of Newtonsoft dependency
 
 [UnitTest("Common")]

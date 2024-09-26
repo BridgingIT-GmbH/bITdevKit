@@ -116,12 +116,15 @@ public static class ServiceCollectionExtensions
             {
                 case ServiceLifetime.Singleton:
                     services.TryAddSingleton(interceptorType);
+
                     break;
                 case ServiceLifetime.Transient:
                     services.TryAddTransient(interceptorType);
+
                     break;
                 default:
                     services.TryAddScoped(interceptorType);
+
                     break;
             }
         }

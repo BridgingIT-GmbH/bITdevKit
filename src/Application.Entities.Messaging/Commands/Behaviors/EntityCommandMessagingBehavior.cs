@@ -59,6 +59,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         if (this.messageBroker is null)
         {
             this.Logger.LogWarning("{LogKey} cannot send entity message, no messagebroker specified", Constants.LogKey);
+
             return result;
         }
 

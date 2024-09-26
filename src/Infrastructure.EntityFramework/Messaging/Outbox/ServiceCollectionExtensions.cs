@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using EntityFrameworkCore;
 using Logging;
+using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -76,9 +77,12 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxMessageWorker
     {
         services.AddSingleton(options ?? new OutboxMessageOptions());
-        services.AddHostedService(sp => new OutboxMessageService(sp.GetRequiredService<ILoggerFactory>(),
-            sp.GetRequiredService<TWorker>(),
-            sp.GetService<OutboxMessageOptions>()));
+        services.AddHostedService(sp =>
+            new OutboxMessageService(
+                sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<TWorker>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp.GetService<OutboxMessageOptions>()));
 
         return services;
     }

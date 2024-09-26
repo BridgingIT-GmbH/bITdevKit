@@ -55,6 +55,7 @@ public class EventStoreAggregateRegistration : IEventStoreAggregateRegistration
     public string GetTypeOnImmutableName(string immutableName)
     {
         var found = this.registration.FirstOrDefault(pair => pair.Value == immutableName);
+
         return found.Key.FullName;
     }
 }

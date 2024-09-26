@@ -15,6 +15,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
 {
     private readonly ILogger<OutboxMessageService> logger;
     private readonly IOutboxMessageWorker worker;
+    private readonly IHostApplicationLifetime applicationLifetime;
     private readonly OutboxMessageOptions options;
     private Timer processTimer;
     private SemaphoreSlim semaphore;
@@ -22,6 +23,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
     public OutboxMessageService(
         ILoggerFactory loggerFactory,
         IOutboxMessageWorker worker,
+        IHostApplicationLifetime applicationLifetime,
         OutboxMessageOptions options = null)
     {
         EnsureArg.IsNotNull(worker, nameof(worker));
@@ -29,6 +31,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         this.logger = loggerFactory?.CreateLogger<OutboxMessageService>() ??
             NullLoggerFactory.Instance.CreateLogger<OutboxMessageService>();
         this.worker = worker;
+        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new OutboxMessageOptions();
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
@@ -54,6 +57,15 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         {
             return;
         }
+
+        // Wait "indefinitely", until ApplicationStarted is triggered
+        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+            .ContinueWith(_ =>
+                {
+                    this.logger.LogDebug("{LogKey} outbox message service - application started", Constants.LogKey);
+                },
+                TaskContinuationOptions.OnlyOnCanceled)
+            .ConfigureAwait(false);
 
         if (this.options.StartupDelay.TotalMilliseconds > 0)
         {

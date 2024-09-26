@@ -19,6 +19,7 @@ public static class AutoMapperExtensions
         this IMappingExpression<TSource, TDestination> expression)
     {
         expression.ForAllMembers(opt => opt.Ignore());
+
         return expression;
     }
 
@@ -31,6 +32,7 @@ public static class AutoMapperExtensions
         this IMappingExpression<TSource, TDestination> expression)
     {
         expression.ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember is not null));
+
         return expression;
     }
 

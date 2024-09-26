@@ -35,6 +35,7 @@ public class SnapshotRepository(
                 null,
                 cancellationToken)
             .AnyContext();
+
         return snapshots.ToArray().FirstOrDefault();
     }
 

@@ -95,7 +95,8 @@ public class LocationStub
 {
     private LocationStub() { }
 
-    private LocationStub(string name,
+    private LocationStub(
+        string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
@@ -122,7 +123,8 @@ public class LocationStub
 
     public string Country { get; private set; }
 
-    public static LocationStub Create(string name,
+    public static LocationStub Create(
+        string name,
         string addressLine1,
         string addressLine2,
         string postalCode,
@@ -159,18 +161,21 @@ public class OptionsStubBuilder : OptionsBuilderBase<OptionsStub, OptionsStubBui
     public OptionsStubBuilder Parameter1(string value)
     {
         this.Target.Parameter1 = value;
+
         return this;
     }
 
     public OptionsStubBuilder Parameter2(int value)
     {
         this.Target.Parameter2 = value;
+
         return this;
     }
 
     public OptionsStubBuilder SetParameter3()
     {
         this.Target.Parameter3 = true;
+
         return this;
     }
 }

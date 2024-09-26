@@ -27,14 +27,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.TryAddSingleton(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TContext>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TContext>));
+
                 break;
             default:
                 services.TryAddScoped(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TContext>));
+
                 break;
         }
 
@@ -60,14 +63,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.TryAddSingleton(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
             default:
                 services.TryAddScoped(typeof(IGenericRepository<TEntity>),
                     typeof(EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
         }
 
@@ -88,14 +94,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.TryAddSingleton(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>));
+
                 break;
             default:
                 services.TryAddScoped(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>));
+
                 break;
         }
 
@@ -121,14 +130,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.TryAddSingleton(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
             case ServiceLifetime.Transient:
                 services.TryAddTransient(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
             default:
                 services.TryAddScoped(typeof(IGenericReadOnlyRepository<TEntity>),
                     typeof(EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, TContext>));
+
                 break;
         }
 

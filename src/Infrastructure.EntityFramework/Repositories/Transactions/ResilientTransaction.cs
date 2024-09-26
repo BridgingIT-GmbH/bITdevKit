@@ -52,6 +52,7 @@ public class ResilientTransaction
                     catch (Exception)
                     {
                         await transaction.RollbackAsync().AnyContext();
+
                         throw;
                     }
                 })
@@ -74,6 +75,7 @@ public class ResilientTransaction
             // within an explicit BeginTransaction():
             // https://docs.microsoft.com/ef/core/miscellaneous/connection-resiliency
             var strategy = this.context.Database.CreateExecutionStrategy();
+
             return await strategy.ExecuteAsync(async () =>
                 {
                     using var transaction = this.context.Database.BeginTransaction();
@@ -81,11 +83,13 @@ public class ResilientTransaction
                     {
                         var result = await action().AnyContext();
                         transaction.Commit();
+
                         return result;
                     }
                     catch (Exception)
                     {
                         await transaction.RollbackAsync().AnyContext();
+
                         throw;
                     }
                 })

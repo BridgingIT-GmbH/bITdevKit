@@ -15,12 +15,14 @@ public class CosmosOptionsBuilder : OptionsBuilderBase<CosmosOptions, CosmosOpti
     public CosmosOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
+
         return this;
     }
 
     public CosmosOptionsBuilder UseDatabase(string database)
     {
         this.Target.Database = database;
+
         return this;
     }
 
@@ -28,12 +30,14 @@ public class CosmosOptionsBuilder : OptionsBuilderBase<CosmosOptions, CosmosOpti
     {
         this.Target.LoggerEnabled = value;
         this.Target.SensitiveDataLoggingEnabled = sensitiveDataLoggingEnabled;
+
         return this;
     }
 
     public CosmosOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;
+
         return this;
     }
 
@@ -41,6 +45,7 @@ public class CosmosOptionsBuilder : OptionsBuilderBase<CosmosOptions, CosmosOpti
     {
         this.Target.SimpleLoggerEnabled = value;
         this.Target.SimpleLoggerLevel = logLevel;
+
         return this;
     }
 
@@ -48,18 +53,21 @@ public class CosmosOptionsBuilder : OptionsBuilderBase<CosmosOptions, CosmosOpti
         where TInterceptor : class, IInterceptor
     {
         this.Target.InterceptorTypes.Add(typeof(TInterceptor));
+
         return this;
     }
 
     public CosmosOptionsBuilder EnableDetailedErrors(bool value = true)
     {
         this.Target.DetailedErrorsEnabled = value;
+
         return this;
     }
 
     public CosmosOptionsBuilder UseMemoryCache(IMemoryCache cache)
     {
         this.Target.MemoryCache = cache;
+
         return this;
     }
 }

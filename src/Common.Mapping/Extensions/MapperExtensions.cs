@@ -30,6 +30,7 @@ public static class MapperExtensions
 
         var target = Factory<TTarget>.Create();
         mapper.Map(source, target);
+
         return target;
     }
 
@@ -60,6 +61,7 @@ public static class MapperExtensions
 
         var target = Factory<TTarget>.Create();
         mapper.Map(source, target);
+
         return target;
     }
 
@@ -107,6 +109,7 @@ public static class MapperExtensions
                 var source = sources[i];
                 var target = Factory<TTarget>.Create();
                 mapper.Map(source, target);
+
                 yield return target;
             }
         }

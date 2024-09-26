@@ -48,6 +48,7 @@ public abstract record EntityRecord<TId> : IEntity<TId>
         }
 
         var a = EqualityComparer<TId>.Default.Equals(this.Id, other.Id);
+
         return a;
     }
 
@@ -62,6 +63,7 @@ public abstract record EntityRecord<TId> : IEntity<TId>
     protected static Type GetUnproxiedType(object obj)
     {
         var type = obj.GetType();
+
         return type.ToString().Contains("Castle.Proxies.") ? type.BaseType : type;
     }
 

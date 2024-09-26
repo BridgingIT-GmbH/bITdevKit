@@ -26,14 +26,17 @@ public static partial class ServiceCollectionExtensions
             case ServiceLifetime.Singleton:
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     provider ?? new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
+
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     provider ?? new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
+
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     provider ?? new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
+
                 break;
         }
 

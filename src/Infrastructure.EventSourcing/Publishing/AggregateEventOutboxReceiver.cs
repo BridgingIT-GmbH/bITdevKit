@@ -59,6 +59,7 @@ public class AggregateEventOutboxReceiver(
         var resultEventOccuredNotified = await this.aggregateEventMediatorNotificationSender
             .PublishEventOccuredAsync(aggregateEvent, aggregate)
             .AnyContext();
+
         return (projectionSended: resultProjectionSend, eventOccuredSended: resultEventOccured,
             eventOccuredNotified: resultEventOccuredNotified);
     }
@@ -97,6 +98,7 @@ public class AggregateEventOutboxReceiver(
 
         var genericAggregateEvent = method.MakeGenericMethod(aggregateEventType);
         var aggregateEvent = genericAggregateEvent.Invoke(null, [message.AggregateEvent, settings]);
+
         return (aggregate, aggregateEvent);
     }
 }

@@ -42,6 +42,7 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterF
         {
             meter.CreateCounter<int>("messaging_handle_failure").Add(1);
             meter.CreateCounter<int>($"messaging_handle_{message.GetType().Name.ToLower()}_failure").Add(1);
+
             throw;
         }
     }

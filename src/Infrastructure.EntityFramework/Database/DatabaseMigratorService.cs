@@ -79,7 +79,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
                         this.logger.LogDebug(context.Model.ToDebugString());
                     }
 
-                    if (!this.IsInMemoryContext(context))
+                    if (!IsInMemoryContext(context))
                     {
                         this.logger.LogDebug(
                             "{LogKey} database migrator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})",
@@ -175,7 +175,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
         return Task.CompletedTask;
     }
 
-    private bool IsInMemoryContext(TContext context)
+    private static bool IsInMemoryContext(TContext context)
     {
         return context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory";
     }

@@ -64,7 +64,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
                 BehaviorMarkerPropertyKey)) // skip publishing the message into the outbox again as it was just read from the outbox
         {
 #if DEBUG
-            this.Logger.LogInformation("++++ PUBLISH:STORE " + message.MessageId);
+            //this.Logger.LogInformation("++++ PUBLISH:STORE " + message.MessageId);
 #endif
             await this.StoreMessage(message, cancellationToken);
         }
@@ -99,7 +99,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
         this.PropagateContext(outboxMessage);
         context.OutboxMessages.Add(outboxMessage);
 #if DEBUG
-        this.Logger.LogDebug("++++ OUTBOX: STORE MESSAGE {@Message}", outboxMessage);
+        //this.Logger.LogDebug("++++ OUTBOX: STORE MESSAGE {@Message}", outboxMessage);
 #endif
 
         if (this.options.AutoSave)

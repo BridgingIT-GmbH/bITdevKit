@@ -18,7 +18,7 @@ public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChao
 
     RetryStartupTaskOptions IRetryStartupTask.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
-    TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
+    TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 60) };
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {

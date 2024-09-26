@@ -78,18 +78,20 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(RetryQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
+builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:15"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
     .WithBehavior<TimeoutJobSchedulingBehavior>();
 
-builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
-    .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+builder.Services.AddStartupTasks(o => o
+        .Enabled().StartupDelay("00:00:05"))
+    .WithTask<EchoStartupTask>(o => o
+        .Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
-    .WithTask<
-        JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+        .Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:10"))
     //.WithTask(sp =>
     //    new SqlServerQuartzSeederStartupTask(
     //        sp.GetRequiredService<ILoggerFactory>(),

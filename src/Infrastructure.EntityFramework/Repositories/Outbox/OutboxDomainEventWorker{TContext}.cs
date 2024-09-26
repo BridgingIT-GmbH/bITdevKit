@@ -10,6 +10,7 @@ using Common;
 using Domain;
 using Domain.Outbox;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -55,7 +56,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         var count = 0;
         TypedLogger.LogProcessing(this.logger, Constants.LogKey, this.contextTypeName, eventId);
 #if DEBUG
-        this.logger.LogDebug("++++ OUTBOX: READ DOMAINEVENTS (eventId={EventId})", eventId);
+       // this.logger.LogDebug("++++ OUTBOX: READ DOMAINEVENTS (eventId={EventId})", eventId);
 #endif
 
         await (await context.OutboxDomainEvents.Where(e => e.ProcessedDate == null)
@@ -81,16 +82,24 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         TypedLogger.LogPurging(this.logger, "DOM", this.contextTypeName);
 
-        if (processedOnly)
+        try
         {
-            await context.OutboxDomainEvents.Where(e => e.ProcessedDate != null).ExecuteDeleteAsync(cancellationToken);
+            if (processedOnly)
+            {
+                await context.OutboxDomainEvents
+                    .Where(e => e.ProcessedDate != null)
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
+            else
+            {
+                await context.OutboxDomainEvents
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
         }
-        else
+        catch (SqlException ex)
         {
-            await context.OutboxDomainEvents.ExecuteDeleteAsync(cancellationToken);
+            this.logger.LogError(ex, "{LogKey} outbox domain event purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
-
-        await context.OutboxDomainEvents.ExecuteDeleteAsync(cancellationToken);
     }
 
     private async Task ProcessEvent(
@@ -198,7 +207,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                             async (a, c) =>
                             {
 #if DEBUG
-                                this.logger.LogDebug("++++ WORKER: PROCESS STORED DOMAINEVENT {@DomainEvent}", @event);
+                               // this.logger.LogDebug("++++ WORKER: PROCESS STORED DOMAINEVENT {@DomainEvent}", @event);
 #endif
                                 await publisher.Send(@event, cancellationToken)
                                     .AnyContext(); // publish the actual domain event

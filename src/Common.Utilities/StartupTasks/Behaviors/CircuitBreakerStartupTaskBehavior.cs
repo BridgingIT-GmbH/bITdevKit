@@ -89,7 +89,7 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
 
             var policyWrap = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
 
-            await policyWrap.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+            await policyWrap.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

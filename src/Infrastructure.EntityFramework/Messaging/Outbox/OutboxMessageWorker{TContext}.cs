@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
 using Common;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         var count = 0;
         TypedLogger.LogProcessing(this.logger, "MSG", this.contextTypeName, messageId);
 #if DEBUG
-        this.logger.LogDebug("++++ OUTBOX: READ MESSAGES (messageId={MessageId})", messageId);
+        // this.logger.LogDebug("++++ OUTBOX: READ MESSAGES (messageId={MessageId})", messageId);
 #endif
 
         await (await context.OutboxMessages.Where(e => e.ProcessedDate == null)
@@ -70,13 +71,30 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         TypedLogger.LogProcessed(this.logger, "MSG", this.contextTypeName, count);
     }
 
-    public async Task PurgeAsync(CancellationToken cancellationToken = default)
+    public async Task PurgeAsync(bool processedOnly = false, CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         TypedLogger.LogPurging(this.logger, "MSG", this.contextTypeName);
 
-        await context.OutboxMessages.ExecuteDeleteAsync(cancellationToken);
+        try
+        {
+            if (processedOnly)
+            {
+                await context.OutboxMessages
+                    .Where(e => e.ProcessedDate != null)
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
+            else
+            {
+                await context.OutboxMessages
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
+        }
+        catch (SqlException ex)
+        {
+            this.logger.LogError(ex, "{LogKey} outbox message purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
+        }
     }
 
     private async Task ProcessMessage(
@@ -176,7 +194,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                        }))
                 {
 #if DEBUG
-                    this.logger.LogDebug("++++ WORKER: PROCESS STORED MESSAGE {@Message}", message);
+                    //this.logger.LogDebug("++++ WORKER: PROCESS STORED MESSAGE {@Message}", message);
 #endif
                     // triggers all publisher behaviors again (pipeline), however skips the OutboxMessagePublisherBehavior.
                     await this.messageBroker.Publish(message, cancellationToken)

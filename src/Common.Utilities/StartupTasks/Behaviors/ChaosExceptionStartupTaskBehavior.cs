@@ -25,7 +25,7 @@ public class ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory) : S
             var policy = MonkeyPolicy.InjectException(with =>
                 with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
 
-            await policy.Execute(async context => await next().AnyContext(), cancellationToken);
+            await policy.Execute(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

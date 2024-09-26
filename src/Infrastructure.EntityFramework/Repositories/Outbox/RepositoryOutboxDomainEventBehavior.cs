@@ -245,7 +245,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
                     this.PropagateContext(outboxEvent);
                     this.Context.OutboxDomainEvents.Add(outboxEvent);
 #if DEBUG
-                    this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", outboxEvent);
+                    //this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", outboxEvent);
 #endif
                 },
                 cancellationToken);

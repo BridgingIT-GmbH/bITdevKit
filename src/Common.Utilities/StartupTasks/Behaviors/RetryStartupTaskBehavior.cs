@@ -67,7 +67,7 @@ public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
                         });
             }
 
-            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+            await retryPolicy.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

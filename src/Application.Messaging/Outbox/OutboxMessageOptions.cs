@@ -19,6 +19,8 @@ public class OutboxMessageOptions : OptionsBase
 
     public OutboxMessageProcessingMode ProcessingMode { get; set; }
 
+    public bool PurgeProcessedOnStartup { get; set; }
+
     public bool PurgeOnStartup { get; set; }
 
     public ISerializer Serializer { get; set; }

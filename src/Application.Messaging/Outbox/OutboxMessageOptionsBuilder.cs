@@ -110,6 +110,13 @@ public class OutboxMessageOptionsBuilder : OptionsBuilderBase<OutboxMessageOptio
         return this;
     }
 
+    public OutboxMessageOptionsBuilder PurgeProcessedOnStartup(bool value = true)
+    {
+        this.Target.PurgeProcessedOnStartup = value;
+
+        return this;
+    }
+
     public OutboxMessageOptionsBuilder Serializer(ISerializer serializer)
     {
         this.Target.Serializer = serializer;

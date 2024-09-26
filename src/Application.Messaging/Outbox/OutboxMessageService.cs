@@ -71,22 +71,25 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         {
             this.logger.LogDebug("{LogKey} outbox message service startup delayed (type={ProcessorType})",
                 Constants.LogKey,
-                typeof(OutboxMessageService).Name);
+                nameof(OutboxMessageService));
 
             await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
         }
 
-        if (this.options.PurgeOnStartup)
+        if (this.options.PurgeProcessedOnStartup)
         {
-            await this.worker.PurgeAsync(cancellationToken);
+            await this.worker.PurgeAsync(true, cancellationToken);
+        }
+        else if (this.options.PurgeOnStartup)
+        {
+            await this.worker.PurgeAsync(false, cancellationToken);
         }
 
         await Task.Delay(0, cancellationToken); // startup delay is done inside the timer itself
         this.semaphore = new SemaphoreSlim(1);
 
-        this.logger.LogInformation("{LogKey} outbox message service started (type={ProcessorType})",
-            Constants.LogKey,
-            typeof(OutboxMessageService).Name);
+        this.logger.LogInformation("{LogKey} outbox message service started (type={ProcessorType})", Constants.LogKey, nameof(OutboxMessageService));
+
         // TODO: .NET8 use new PeriodicTimer https://bartwullems.blogspot.com/2023/10/create-aspnet-core-backgroundservice.html
         this.processTimer = new Timer(this.ProcessAsync,
             CancellationTokenSource.CreateLinkedTokenSource(cancellationToken).Token,
@@ -113,7 +116,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
                 "{LogKey} outbox message service failed: {ErrorMessage} (type={ProcessorType})",
                 Constants.LogKey,
                 ex.Message,
-                typeof(OutboxMessageService).Name);
+                nameof(OutboxMessageService));
         }
         finally
         {

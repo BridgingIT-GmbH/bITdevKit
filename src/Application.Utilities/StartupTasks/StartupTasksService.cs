@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class StartupTasksService : BackgroundService
+public class StartupTasksService : IHostedService
 {
     private readonly ILogger<StartupTasksService> logger;
     private readonly IServiceProvider serviceProvider;
@@ -32,7 +32,7 @@ public class StartupTasksService : BackgroundService
             NullLoggerFactory.Instance.CreateLogger<StartupTasksService>();
         this.serviceProvider = serviceProvider;
         this.applicationLifetime = applicationLifetime;
-        this.definitions = definitions ?? [];
+        this.definitions = (definitions ?? []).ToArray();
         this.options = options ?? new StartupTaskServiceOptions();
 
         if (this.definitions.Any(d => d.Options.Order > 0))
@@ -41,79 +41,90 @@ public class StartupTasksService : BackgroundService
         }
     }
 
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        // Wait "indefinitely", until ApplicationStarted is triggered
-        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
-            .ContinueWith(_ =>
-                {
-                    this.logger.LogDebug("{LogKey} startup tasks - application started", Constants.LogKey);
-                },
-                TaskContinuationOptions.OnlyOnCanceled)
-            .ConfigureAwait(false);
-
-        if (this.options.StartupDelay.TotalMilliseconds > 0)
-        {
-            this.logger.LogDebug("{LogKey} startup tasks service delayed", Constants.LogKey);
-
-            await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
-        }
-
-        try
-        {
-            using var scope = this.serviceProvider.CreateScope();
-            var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
-
-            Parallel.ForEach(this.definitions.SafeNull().Where(d => d.Options.Enabled),
-                new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = this.options.MaxDegreeOfParallelism, CancellationToken = cancellationToken
-                },
-                definition =>
-                {
-                    try
-                    {
-                        if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
+        _ = Task.Run(async () =>
+            {
+                // Wait "indefinitely", until ApplicationStarted is triggered
+                await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
+                    .ContinueWith(_ =>
                         {
-                            this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})",
-                                Constants.LogKey,
-                                definition.TaskType.Name);
+                            this.logger.LogDebug("{LogKey} startup tasks - application started", Constants.LogKey);
+                        },
+                        TaskContinuationOptions.OnlyOnCanceled)
+                    .ConfigureAwait(false);
 
-                            return;
-                        }
+                if (this.options.StartupDelay.TotalMilliseconds > 0)
+                {
+                    this.logger.LogDebug("{LogKey} startup tasks service delayed", Constants.LogKey);
 
-                        var correlationId = GuidGenerator.CreateSequential().ToString("N");
-                        var flowId = GuidGenerator.Create(task.GetType().ToString()).ToString("N");
+                    await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
+                }
 
-                        using (this.logger.BeginScope(new Dictionary<string, object>
-                               {
-                                   [Constants.CorrelationIdKey] = correlationId,
-                                   [Constants.FlowIdKey] = flowId,
-                                   [Constants.StartupTaskKey] = task.GetType().PrettyName()
-                               }))
+                try
+                {
+                    using var scope = this.serviceProvider.CreateScope();
+                    var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
+
+                    Parallel.ForEach(this.definitions.SafeNull().Where(d => d.Options.Enabled),
+                        new ParallelOptions
                         {
-                            this.ExecutePipeline(definition, task, behaviors, cancellationToken).Wait();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.LogError(ex,
-                            "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}",
-                            Constants.LogKey,
-                            definition.TaskType.Name,
-                            ex.Message);
-                    }
-                });
-        }
-        catch (Exception ex)
-        {
-            this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
-        }
+                            MaxDegreeOfParallelism = this.options.MaxDegreeOfParallelism, CancellationToken = cancellationToken
+                        },
+                        definition =>
+                        {
+                            try
+                            {
+                                if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
+                                {
+                                    this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})",
+                                        Constants.LogKey,
+                                        definition.TaskType.Name);
+
+                                    return;
+                                }
+
+                                var correlationId = GuidGenerator.CreateSequential().ToString("N");
+                                var flowId = GuidGenerator.Create(task.GetType().ToString()).ToString("N");
+
+                                using (this.logger.BeginScope(new Dictionary<string, object>
+                                       {
+                                           [Constants.CorrelationIdKey] = correlationId,
+                                           [Constants.FlowIdKey] = flowId,
+                                           [Constants.StartupTaskKey] = task.GetType().PrettyName()
+                                       }))
+                                {
+                                    this.ExecutePipeline(definition, task, behaviors, cancellationToken).Wait();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                this.logger.LogError(ex,
+                                    "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}",
+                                    Constants.LogKey,
+                                    definition.TaskType.Name,
+                                    ex.Message);
+                            }
+                        });
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+                }
+            },
+            cancellationToken);
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 
     private async Task ExecuteDefinitionAsync(
@@ -123,7 +134,7 @@ public class StartupTasksService : BackgroundService
     {
         if (definition.Options.StartupDelay.TotalMilliseconds > 0)
         {
-            this.logger.LogDebug("{LogKey} startup tasks delayed (task={StartupTaskType})",
+            this.logger.LogDebug("{LogKey} startup task delayed (task={StartupTaskType})",
                 Constants.LogKey,
                 task.GetType().Name);
 

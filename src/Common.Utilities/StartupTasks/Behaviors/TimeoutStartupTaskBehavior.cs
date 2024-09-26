@@ -27,9 +27,10 @@ public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupT
                 async (context, timeout, task) =>
                 {
                     await Task.Run(() =>
-                        this.Logger.LogError(
-                            $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, type={this.GetType().Name})",
-                            "UTL"));
+                            this.Logger.LogError(
+                                $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, type={this.GetType().Name})",
+                                "UTL"),
+                        cancellationToken).ConfigureAwait(false);
                 });
 
             await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);

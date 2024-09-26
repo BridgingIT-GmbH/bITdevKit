@@ -20,6 +20,8 @@ public interface IOutboxMessageWorker
     /// <summary>
     ///     Purges messages from the outbox.
     /// </summary>
+    /// <param name="processedOnly">Indicates whether only processed messages should be purged.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    Task PurgeAsync(CancellationToken cancellationToken = default);
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task PurgeAsync(bool processedOnly = false, CancellationToken cancellationToken = default);
 }

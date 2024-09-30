@@ -72,20 +72,22 @@ public class RequestModuleMiddleware
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));
 
         var module = this.moduleAccessors.Find(httpContext.Request);
+        var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
+
         if (module is not null)
         {
-            this.logger.LogInformation("{LogKey} request module: {ModuleName}", "REQ", module.Name);
+            this.logger.LogInformation("{LogKey} request module: {ModuleName}", "REQ", moduleName);
 
             var activity = httpContext.Features.Get<IHttpActivityFeature>()
                 ?.Activity; // Enrich the request activity created by ASP.NET Core
-            activity?.SetBaggage(ActivityConstants.ModuleNameTagKey, module.Name);
+            activity?.SetBaggage(ActivityConstants.ModuleNameTagKey, moduleName);
 
-            httpContext.Response.Headers.AddOrUpdate(ModuleConstants.ModuleNameKey, module.Name);
-            httpContext.Items.AddOrUpdate(ModuleConstants.ModuleNameKey, module.Name);
+            httpContext.Response.Headers.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
+            httpContext.Items.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
 
             using (this.logger.BeginScope(new Dictionary<string, object>
                    {
-                       [ModuleConstants.ModuleNameKey] = module?.Name
+                       [ModuleConstants.ModuleNameKey] = module.Name
                    }))
             {
                 if (module.Enabled)
@@ -93,11 +95,11 @@ public class RequestModuleMiddleware
                     httpContext.Features.Get<IHttpMetricsTagsFeature>()
                         ?.Tags
                         .Add(new KeyValuePair<string, object>("module_name",
-                            module.Name)); // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
+                            moduleName)); // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
 
-                    await this.activitySources.Find(module.Name)
-                        .StartActvity($"MODULE {module.Name}",
-                            async (a, c) => await this.activitySources.Find(module.Name)
+                    await this.activitySources.Find(moduleName)
+                        .StartActvity($"MODULE {moduleName}",
+                            async (a, c) => await this.activitySources.Find(moduleName)
                                 .StartActvity(
                                     $"HTTP_INBOUND {httpContext.Request.Method.ToUpperInvariant()} {httpContext.Request.Path}",
                                     async (a, c) => await this.next(httpContext).AnyContext(),
@@ -107,11 +109,9 @@ public class RequestModuleMiddleware
                 }
                 else
                 {
-                    this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})",
-                        "REQ",
-                        module.Name);
+                    this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})", "REQ", moduleName);
 
-                    throw new ModuleNotEnabledException(module.Name);
+                    throw new ModuleNotEnabledException(moduleName);
                 }
             }
         }

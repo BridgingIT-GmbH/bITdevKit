@@ -29,8 +29,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     public virtual async Task<QueryResponse<TResult>> Handle(TQuery query, CancellationToken cancellationToken)
     {
-        var requestType = query.GetType().Name;
-        var handlerType = this.GetType().Name;
+        var requestType = query.GetType().PrettyName();
+        var handlerType = this.GetType().PrettyName();
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {

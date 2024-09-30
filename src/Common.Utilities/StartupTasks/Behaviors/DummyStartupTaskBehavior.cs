@@ -16,7 +16,7 @@ public class DummyStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
             return;
         }
 
-        var taskName = task.GetType().Name;
+        var taskName = task.GetType().PrettyName();
 
         this.Logger.LogDebug("{LogKey} >>>>> dummy startup task behavior - before (task={StartupTaskType})", "UTL", taskName);
         await next().AnyContext(); // continue pipeline

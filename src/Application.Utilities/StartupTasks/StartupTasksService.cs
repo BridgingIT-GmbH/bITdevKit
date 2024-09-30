@@ -11,6 +11,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Service to manage and execute startup tasks.
+/// </summary>
 public class StartupTasksService : IHostedService
 {
     private readonly ILogger<StartupTasksService> logger;
@@ -19,6 +22,14 @@ public class StartupTasksService : IHostedService
     private readonly IEnumerable<StartupTaskDefinition> definitions;
     private readonly StartupTaskServiceOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StartupTasksService"/> class.
+    /// </summary>
+    /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="applicationLifetime">The application lifetime.</param>
+    /// <param name="definitions">The startup task definitions.</param>
+    /// <param name="options">The startup task service options.</param>
     public StartupTasksService(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
@@ -41,6 +52,11 @@ public class StartupTasksService : IHostedService
         }
     }
 
+    /// <summary>
+    /// Starts the service and executes the startup tasks.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task StartAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
@@ -68,9 +84,6 @@ public class StartupTasksService : IHostedService
 
                 try
                 {
-                    using var scope = this.serviceProvider.CreateScope();
-                    var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
-
                     Parallel.ForEach(this.definitions.SafeNull().Where(d => d.Options.Enabled),
                         new ParallelOptions
                         {
@@ -80,6 +93,8 @@ public class StartupTasksService : IHostedService
                         {
                             try
                             {
+                                using var scope = this.serviceProvider.CreateScope();
+
                                 if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
                                 {
                                     this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})",
@@ -89,18 +104,8 @@ public class StartupTasksService : IHostedService
                                     return;
                                 }
 
-                                var correlationId = GuidGenerator.CreateSequential().ToString("N");
-                                var flowId = GuidGenerator.Create(task.GetType().ToString()).ToString("N");
-
-                                using (this.logger.BeginScope(new Dictionary<string, object>
-                                       {
-                                           [Constants.CorrelationIdKey] = correlationId,
-                                           [Constants.FlowIdKey] = flowId,
-                                           [Constants.StartupTaskKey] = task.GetType().PrettyName()
-                                       }))
-                                {
-                                    this.ExecutePipeline(definition, task, behaviors, cancellationToken).Wait();
-                                }
+                                var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
+                                this.ExecutePipelineAsync(definition, task, behaviors, cancellationToken).AnyContext();
                             }
                             catch (Exception ex)
                             {
@@ -122,11 +127,23 @@ public class StartupTasksService : IHostedService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Stops the service.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes a startup task definition.
+    /// </summary>
+    /// <param name="definition">The startup task definition.</param>
+    /// <param name="task">The startup task.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     private async Task ExecuteDefinitionAsync(
         StartupTaskDefinition definition,
         IStartupTask task,
@@ -134,56 +151,54 @@ public class StartupTasksService : IHostedService
     {
         if (definition.Options.StartupDelay.TotalMilliseconds > 0)
         {
-            this.logger.LogDebug("{LogKey} startup task delayed (task={StartupTaskType})",
-                Constants.LogKey,
-                task.GetType().Name);
+            this.logger.LogDebug("{LogKey} startup task delayed (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
 
             await Task.Delay(definition.Options.StartupDelay, cancellationToken);
         }
 
-        try
-        {
-            this.logger.LogInformation("{LogKey} startup task started (task={StartupTaskType})",
-                Constants.LogKey,
-                task.GetType().Name);
-            var watch = ValueStopwatch.StartNew();
+        this.logger.LogInformation("{LogKey} startup task started (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
+        var watch = ValueStopwatch.StartNew();
 
-            await task.ExecuteAsync(cancellationToken);
-            this.logger.LogInformation(
-                "{LogKey} startup task finished (task={StartupTaskType}) -> took {TimeElapsed:0.0000} ms",
-                Constants.LogKey,
-                task.GetType().Name,
-                watch.GetElapsedMilliseconds());
-        }
-        catch (Exception ex)
-        {
-            this.logger.LogError(ex,
-                "{LogKey} startup task failed: {ErrorMessage} (task={StartupTaskType})",
-                Constants.LogKey,
-                ex.Message,
-                task.GetType().Name);
-        }
+        await task.ExecuteAsync(cancellationToken);
+
+        this.logger.LogInformation(
+            "{LogKey} startup task finished (task={StartupTaskType}) -> took {TimeElapsed:0.0000} ms",
+            Constants.LogKey,
+            task.GetType().PrettyName(),
+            watch.GetElapsedMilliseconds());
     }
 
-    private async Task ExecutePipeline(
+    /// <summary>
+    /// Executes the startup task pipeline.
+    /// </summary>
+    /// <param name="definition">The startup task definition.</param>
+    /// <param name="task">The startup task.</param>
+    /// <param name="behaviors">The startup task behaviors.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    private async Task ExecutePipelineAsync(
         StartupTaskDefinition definition,
         IStartupTask task,
         IEnumerable<IStartupTaskBehavior> behaviors,
         CancellationToken cancellationToken)
     {
         // create a behavior pipeline and run it (execute > next)
+        var startupTaskBehaviors = behaviors as IStartupTaskBehavior[] ?? behaviors.ToArray();
+
         this.logger.LogDebug(
-            $"{{LogKey}} startup task behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {task.GetType().Name}:Execute",
-            Constants.LogKey);
+            $"{{LogKey}} startup task behaviors: {startupTaskBehaviors.Select(b => b.GetType().Name).ToString(" -> ")} -> {task.GetType().PrettyName()}:Execute", Constants.LogKey);
+
+        await startupTaskBehaviors
+            .Reverse()
+            .Aggregate((TaskDelegate)TaskExecutor,
+                (next, pipeline) => async () =>
+                    await pipeline.Execute(task, cancellationToken, next).AnyContext())().AnyContext();
+
+        return;
 
         async Task TaskExecutor()
         {
             await this.ExecuteDefinitionAsync(definition, task, cancellationToken).AnyContext();
         }
-
-        await behaviors.SafeNull()
-            .Reverse()
-            .Aggregate((TaskDelegate)TaskExecutor,
-                (next, pipeline) => async () => await pipeline.Execute(task, cancellationToken, next))();
     }
 }

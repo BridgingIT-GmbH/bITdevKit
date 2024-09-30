@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Diagnostics;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -19,6 +20,7 @@ public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupT
             return;
         }
 
+        var taskName = task.GetType().PrettyName();
         var options = (task as ITimeoutStartupTask)?.Options;
         if (options is not null)
         {
@@ -27,9 +29,13 @@ public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupT
                 async (context, timeout, task) =>
                 {
                     await Task.Run(() =>
+                        {
+                            Activity.Current?.AddEvent(new ActivityEvent($"Timout (took={timeout.Humanize()}, task={taskName})"));
                             this.Logger.LogError(
-                                $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, type={this.GetType().Name})",
-                                "UTL"),
+                                $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, task={{StartupTaskType}})",
+                                "UTL",
+                                taskName);
+                        },
                         cancellationToken).ConfigureAwait(false);
                 });
 

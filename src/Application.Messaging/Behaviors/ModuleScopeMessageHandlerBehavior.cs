@@ -47,7 +47,7 @@ public class ModuleScopeMessageHandlerBehavior(
         {
             if (module is not null && !module.Enabled)
             {
-                throw new ModuleNotEnabledException(module.Name);
+                throw new ModuleNotEnabledException(moduleName);
             }
 
             var messageType = message.GetType().PrettyName(false);
@@ -55,9 +55,9 @@ public class ModuleScopeMessageHandlerBehavior(
             if (!string.IsNullOrEmpty(moduleNameOrigin) &&
                 !moduleNameOrigin.Equals(module?.Name, StringComparison.OrdinalIgnoreCase))
             {
-                await this.activitySources.Find(module.Name)
-                    .StartActvity($"MODULE {module.Name}",
-                        async (a, c) => await this.activitySources.Find(module?.Name)
+                await this.activitySources.Find(moduleName)
+                    .StartActvity($"MODULE {moduleName}",
+                        async (a, c) => await this.activitySources.Find(moduleName)
                             .StartActvity($"MESSAGE_PROCESS {messageType}",
                                 async (a, c) => await next().AnyContext(),
                                 ActivityKind.Consumer,
@@ -78,7 +78,7 @@ public class ModuleScopeMessageHandlerBehavior(
             }
             else
             {
-                await this.activitySources.Find(module?.Name)
+                await this.activitySources.Find(moduleName)
                     .StartActvity($"MESSAGE_PROCESS {messageType}",
                         async (a, c) => await next().AnyContext(),
                         ActivityKind.Consumer,

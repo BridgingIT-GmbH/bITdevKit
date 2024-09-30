@@ -30,15 +30,16 @@ public class ModuleScopeQueryBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         var module = this.moduleAccessors.Find(request.GetType());
+        var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
-                   [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
+                   [ModuleConstants.ModuleNameKey] = moduleName
                }))
         {
             if (module is not null && !module.Enabled)
             {
-                throw new ModuleNotEnabledException(module.Name);
+                throw new ModuleNotEnabledException(moduleName);
             }
 
             return await next().AnyContext();

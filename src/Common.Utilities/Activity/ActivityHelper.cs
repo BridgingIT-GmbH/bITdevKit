@@ -7,8 +7,25 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides helper methods for starting and managing activities.
+/// </summary>
 public static class ActivityHelper
 {
+    /// <summary>
+    /// Starts an activity with the specified parameters.
+    /// </summary>
+    /// <param name="source">The source activity.</param>
+    /// <param name="operationName">The name of the operation.</param>
+    /// <param name="operation">The operation to execute.</param>
+    /// <param name="kind">The kind of activity.</param>
+    /// <param name="parentId">The parent ID of the activity.</param>
+    /// <param name="tags">The tags to add to the activity.</param>
+    /// <param name="baggages">The baggages to add to the activity.</param>
+    /// <param name="displayName">The display name of the activity.</param>
+    /// <param name="throwException">Whether to throw an exception if the operation fails.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task StartActvity(
         this Activity source,
         string operationName,
@@ -37,6 +54,20 @@ public static class ActivityHelper
             cancellationToken);
     }
 
+    /// <summary>
+    /// Starts an activity with the specified parameters.
+    /// </summary>
+    /// <param name="source">The source activity.</param>
+    /// <param name="operationName">The name of the operation.</param>
+    /// <param name="operation">The operation to execute.</param>
+    /// <param name="kind">The kind of activity.</param>
+    /// <param name="parentId">The parent ID of the activity.</param>
+    /// <param name="tags">The tags to add to the activity.</param>
+    /// <param name="baggages">The baggages to add to the activity.</param>
+    /// <param name="displayName">The display name of the activity.</param>
+    /// <param name="throwException">Whether to throw an exception if the operation fails.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task StartActvity(
         this ActivitySource source,
         string operationName,
@@ -99,6 +130,20 @@ public static class ActivityHelper
         }
     }
 
+    /// <summary>
+    /// Starts an activity with the specified parameters and returns a result.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="source">The source activity.</param>
+    /// <param name="operationName">The name of the operation.</param>
+    /// <param name="operation">The operation to execute.</param>
+    /// <param name="kind">The kind of activity.</param>
+    /// <param name="tags">The tags to add to the activity.</param>
+    /// <param name="baggages">The baggages to add to the activity.</param>
+    /// <param name="displayName">The display name of the activity.</param>
+    /// <param name="throwException">Whether to throw an exception if the operation fails.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of type <typeparamref name="TResult"/>.</returns>
     public static async Task<TResult> StartActvity<TResult>(
         this Activity source,
         string operationName,
@@ -125,6 +170,20 @@ public static class ActivityHelper
             cancellationToken);
     }
 
+    /// <summary>
+    /// Starts an activity with the specified parameters and returns a result.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="source">The source activity.</param>
+    /// <param name="operationName">The name of the operation.</param>
+    /// <param name="operation">The operation to execute.</param>
+    /// <param name="kind">The kind of activity.</param>
+    /// <param name="tags">The tags to add to the activity.</param>
+    /// <param name="baggages">The baggages to add to the activity.</param>
+    /// <param name="displayName">The display name of the activity.</param>
+    /// <param name="throwException">Whether to throw an exception if the operation fails.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of type <typeparamref name="TResult"/>.</returns>
     public static async Task<TResult> StartActvity<TResult>(
         this ActivitySource source,
         string operationName,
@@ -182,6 +241,11 @@ public static class ActivityHelper
         return result;
     }
 
+    /// <summary>
+    /// Records an exception in the activity.
+    /// </summary>
+    /// <param name="activity">The activity.</param>
+    /// <param name="ex">The exception to record.</param>
     private static void RecordException(Activity activity, Exception ex)
     {
         if (activity is null || ex is null)

@@ -29,8 +29,8 @@ public abstract partial class CommandHandlerBase<TCommand>
 
     public virtual async Task<CommandResponse> Handle(TCommand command, CancellationToken cancellationToken)
     {
-        var requestType = command.GetType().Name;
-        var handlerType = this.GetType().Name;
+        var requestType = command.GetType().PrettyName();
+        var handlerType = this.GetType().PrettyName();
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {

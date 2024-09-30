@@ -12,27 +12,32 @@ using Microsoft.Extensions.Logging;
 public class ModuleScopeStartupTaskBehavior(
     ILoggerFactory loggerFactory,
     IEnumerable<ActivitySource> activitySources = null,
-    IEnumerable<IModuleContextAccessor> moduleAccessors = null) : StartupTaskBehaviorBase(loggerFactory)
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null)
+    : StartupTaskBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
-
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
-        var module = this.moduleAccessors.Find(task.GetType());
+        var correlationId = GuidGenerator.CreateSequential().ToString("N");
+        var flowId = GuidGenerator.Create(task.GetType().ToString()).ToString("N");
+        var taskName = task.GetType().PrettyName();
+        var module = moduleAccessors.Find(task.GetType());
+        var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
-                   [ModuleConstants.ModuleNameKey] = module?.Name ?? ModuleConstants.UnknownModuleName
+                   [ModuleConstants.ModuleNameKey] = moduleName,
+                   [Constants.CorrelationIdKey] = correlationId,
+                   [Constants.FlowIdKey] = flowId,
+                   [Constants.StartupTaskKey] = taskName
                }))
         {
             if (module?.Enabled == false)
             {
-                throw new ModuleNotEnabledException(module.Name);
+                throw new ModuleNotEnabledException(moduleName);
             }
 
-            await this.activitySources.Find(module?.Name)
-                .StartActvity($"MODULE {module?.Name}",
+            await activitySources.Find(moduleName)
+                .StartActvity($"MODULE {moduleName}",
                     async (a, c) =>
                     {
                         using (this.Logger.BeginScope(new Dictionary<string, object>
@@ -40,13 +45,23 @@ public class ModuleScopeStartupTaskBehavior(
                                    [Constants.TraceIdKey] = a.TraceId.ToString()
                                }))
                         {
-                            await this.activitySources.Find(module?.Name)
-                                .StartActvity($"STARTUPTASK_EXECUTE {task.GetType().Name}",
+                            await Activity.Current
+                                .StartActvity($"JOB_EXECUTE {taskName}",
                                     async (a, c) => await next().AnyContext(),
-                                    cancellationToken: c);
+                                    tags: new Dictionary<string, string>
+                                    {
+                                        ["startuptask.type"] = taskName
+                                    },
+                                    cancellationToken: c).AnyContext();
                         }
                     },
-                    baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = module?.Name });
+                    baggages: new Dictionary<string, string>
+                    {
+                        [ActivityConstants.ModuleNameTagKey] = moduleName,
+                        [ActivityConstants.CorrelationIdTagKey] = correlationId,
+                        [ActivityConstants.FlowIdTagKey] = flowId
+                    },
+                    cancellationToken: cancellationToken).AnyContext();
         }
     }
 }

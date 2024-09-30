@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 
 /// <summary>

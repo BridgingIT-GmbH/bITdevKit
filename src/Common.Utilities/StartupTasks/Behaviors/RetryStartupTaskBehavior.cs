@@ -20,6 +20,7 @@ public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
             return;
         }
 
+        var taskName = task.GetType().PrettyName();
         var options = (task as IRetryStartupTask)?.Options;
         if (options is not null)
         {
@@ -28,50 +29,40 @@ public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
                 options.Attempts = 1;
             }
 
-            var attempts = 1;
-            AsyncRetryPolicy retryPolicy;
-            if (!options.BackoffExponential)
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
-                            ? options.Backoff.Milliseconds
-                            : 0),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent(
-                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
-                                "UTL");
-                            attempts++;
-                        });
-            }
-            else
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
-                            ? options.Backoff.Milliseconds
-                            : 0 * Math.Pow(2, attempt)),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent(
-                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} startup task retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
-                                "UTL");
-                            attempts++;
-                        });
-            }
-
-            await retryPolicy.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
+            await this.CreatePolicy(options, taskName).ExecuteAsync(async _ =>
+                {
+                    await next().AnyContext();
+                },
+                cancellationToken).AnyContext();
         }
         else
         {
             await next().AnyContext(); // continue pipeline
         }
+    }
+
+    private AsyncRetryPolicy CreatePolicy(RetryStartupTaskOptions options, string taskName)
+    {
+        return Policy
+            .Handle<Exception>() // Consider specifying exact exception types if known
+            .WaitAndRetryAsync(
+                options.Attempts,
+                (attempt, _) =>
+                {
+                    var delay = options.BackoffExponential
+                        ? TimeSpan.FromMilliseconds(options.Backoff.Milliseconds * Math.Pow(2, attempt - 1))
+                        : options.Backoff;
+
+                    return delay;
+                },
+                (ex, timeSpan, attemptNumber, _) =>
+                {
+                    Activity.Current?.AddEvent(new ActivityEvent($"Retry (attempt=#{attemptNumber}, task={taskName}) {ex.Message}"));
+                    this.Logger.LogError(ex,
+                        $"{{LogKey}} startup task retry behavior (attempt=#{attemptNumber}, wait={timeSpan.Humanize()}, task={{StartupTaskType}}) {ex.Message}",
+                        "UTL",
+                        taskName);
+                }
+            );
     }
 }

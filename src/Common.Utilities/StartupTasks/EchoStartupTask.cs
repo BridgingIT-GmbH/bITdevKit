@@ -16,7 +16,7 @@ public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChao
 
     ChaosExceptionStartupTaskOptions IChaosExceptionStartupTask.Options => new() { InjectionRate = 0.10 };
 
-    RetryStartupTaskOptions IRetryStartupTask.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
+    RetryStartupTaskOptions IRetryStartupTask.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 3) };
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 60) };
 

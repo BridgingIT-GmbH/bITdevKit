@@ -34,13 +34,13 @@ public class ModuleScopeMessagePublisherBehavior(
         {
             if (module?.Enabled == false)
             {
-                throw new ModuleNotEnabledException(module.Name);
+                throw new ModuleNotEnabledException(moduleName);
             }
 
             this.PropagateContext(message, moduleName);
             var messageType = message.GetType().PrettyName(false);
 
-            await this.activitySources.Find(module?.Name)
+            await this.activitySources.Find(moduleName)
                 .StartActvity($"MESSAGE_SEND {messageType}",
                     async (a, c) =>
                     {

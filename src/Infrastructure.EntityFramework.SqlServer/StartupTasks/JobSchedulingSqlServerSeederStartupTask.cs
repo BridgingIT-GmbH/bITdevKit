@@ -11,7 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class JobSchedulingSqlServerSeederStartupTask : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
+public class JobSchedulingSqlServerSeederStartupTask
+    : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
     private readonly ILogger<JobSchedulingSqlServerSeederStartupTask> logger;
     private readonly string connectionString;
@@ -35,23 +36,20 @@ public class JobSchedulingSqlServerSeederStartupTask : IStartupTask, IRetryStart
         this.tablePrefix = tablePrefix.EmptyToNull() ?? "[dbo].[QRTZ_";
     }
 
-    RetryStartupTaskOptions IRetryStartupTask.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
+    RetryStartupTaskOptions IRetryStartupTask.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 3) };
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    public Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
-        var database = connectionStringBuilder.InitialCatalog;
-
-        await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
-        await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-        var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
-
-        this.logger.LogDebug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); // TODO: remove later!
-        this.logger.LogDebug(sql); // TODO: remove later!
-        await using var command = new SqlCommand(sql, connection);
-        await command.ExecuteNonQueryAsync(cancellationToken);
-        this.logger.LogDebug("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); // TODO: remove later!
+        throw new NotImplementedException();
+        // var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
+        // var database = connectionStringBuilder.InitialCatalog;
+        // var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
+        //
+        // await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
+        // await using var command = new SqlCommand(sql, connection);
+        // await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+        // await command.ExecuteNonQueryAsync(cancellationToken);
     }
 }

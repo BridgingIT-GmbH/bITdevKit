@@ -42,10 +42,10 @@ public class CoreModule : WebModuleBase
             .WithJob<DinnerSnapshotExportJob>(CronExpressions.EveryHour);
         //.WithJob<HealthCheckJob>(CronExpressions.EveryMinute);
 
-        services.AddStartupTasks()
-            .WithTask<CoreDomainSeederTask>(o => o
-                .Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+        // services.AddStartupTasks()
+        //     .WithTask<CoreDomainSeederTask>(o => o
+        //         .Enabled(environment?.IsDevelopment() == true)
+        //         .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         services.AddMessaging()
             .WithSubscription<EchoMessage, EchoMessageHandler>();

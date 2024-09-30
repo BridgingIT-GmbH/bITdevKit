@@ -30,10 +30,10 @@ public class MarketingModule : WebModuleBase
             this.Configure<MarketingModuleConfiguration, MarketingModuleConfiguration.Validator>(services,
                 configuration);
 
-        services.AddStartupTasks()
-            .WithTask<MarketingDomainSeederTask>(o => o
-                .Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+        // services.AddStartupTasks()
+        //     .WithTask<MarketingDomainSeederTask>(o => o
+        //         .Enabled(environment?.IsDevelopment() == true)
+        //         .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         services.AddMessaging(configuration)
             .WithSubscription<EchoMessage, EchoMessageHandler>()

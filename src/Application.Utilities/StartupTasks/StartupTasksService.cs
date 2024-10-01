@@ -108,32 +108,10 @@ public class StartupTasksService : IHostedService
                         });
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
-                    // Parallel.ForEach(this.definitions.SafeNull().Where(d => d.Options.Enabled),
-                    //     new ParallelOptions
-                    //     {
-                    //         MaxDegreeOfParallelism = this.options.MaxDegreeOfParallelism, CancellationToken = cancellationToken
-                    //     },
-                    //     async definition =>
-                    //     {
-                    //         try
-                    //         {
-                    //             using var scope = this.serviceProvider.CreateScope();
-                    //
-                    //             if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
-                    //             {
-                    //                 this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})", Constants.LogKey, definition.TaskType.Name);
-                    //
-                    //                 return;
-                    //             }
-                    //
-                    //             var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
-                    //             await this.ExecutePipelineAsync(definition, task, behaviors, cancellationToken).ConfigureAwait(false);
-                    //         }
-                    //         catch (Exception ex)
-                    //         {
-                    //             this.logger.LogError(ex, "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}", Constants.LogKey, definition.TaskType.Name, ex.Message);
-                    //         }
-                    //     });
+                }
+                catch (OperationCanceledException)
+                {
+                    this.logger.LogDebug("{LogKey} startup tasks canceled", Constants.LogKey);
                 }
                 catch (Exception ex)
                 {

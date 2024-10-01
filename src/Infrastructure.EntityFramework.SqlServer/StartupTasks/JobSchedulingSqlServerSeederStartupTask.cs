@@ -40,7 +40,7 @@ public class JobSchedulingSqlServerSeederStartupTask
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
 
-    public Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
         var database = connectionStringBuilder.InitialCatalog;

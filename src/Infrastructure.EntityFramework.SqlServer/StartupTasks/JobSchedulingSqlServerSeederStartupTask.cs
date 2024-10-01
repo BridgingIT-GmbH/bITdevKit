@@ -42,14 +42,13 @@ public class JobSchedulingSqlServerSeederStartupTask
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
-        // var database = connectionStringBuilder.InitialCatalog;
-        // var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
-        //
-        // await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
-        // await using var command = new SqlCommand(sql, connection);
-        // await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-        // await command.ExecuteNonQueryAsync(cancellationToken);
+        var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
+        var database = connectionStringBuilder.InitialCatalog;
+        var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
+
+        await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
+        await using var command = new SqlCommand(sql, connection);
+        await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+        await command.ExecuteNonQueryAsync(cancellationToken);
     }
 }

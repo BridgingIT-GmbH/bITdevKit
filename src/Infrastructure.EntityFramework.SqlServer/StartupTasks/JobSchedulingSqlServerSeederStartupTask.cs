@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 public class JobSchedulingSqlServerSeederStartupTask
     : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
-    private const string LogKey = "TSK";
+    private const string LogKey = "UTL";
     private readonly ILogger<JobSchedulingSqlServerSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;

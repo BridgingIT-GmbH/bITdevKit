@@ -29,6 +29,8 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         this.HandlerBehaviors = handlerBehaviors ?? [];
     }
 
+    private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
+
     protected ILogger Logger { get; }
 
     protected ISubscriptionMap Subscriptions { get; } = new SubscriptionMap();
@@ -187,8 +189,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
 
                         // construct the handler instance by using the DI container
                         var handlerInstance =
-                            this.HandlerFactory.Create(subscription
-                                .HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+                            this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
                         var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
                         var handlerMethod =
                             handlerType.GetMethod(
@@ -197,8 +198,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
 
                         if (messageRequest.CancellationToken.IsCancellationRequested)
                         {
-                            this.Logger.LogWarning(
-                                "{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})",
+                            this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})",
                                 Constants.LogKey,
                                 messageType,
                                 messageRequest.Message.MessageId,
@@ -211,34 +211,40 @@ public abstract partial class MessageBrokerBase : IMessageBroker
 
                         if (handlerInstance is not null && handlerMethod is not null)
                         {
-                            // convert consumed message for the handler message type
-                            var message = this.Serializer.Deserialize(
-                                this.Serializer.SerializeToString(messageRequest.Message),
-                                subscription.MessageType);
+                            await Semaphore.WaitAsync(messageRequest.CancellationToken);
 
-                            // create a behavior pipeline and run it (handler > next)
-                            this.Logger.LogDebug(
-                                $"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle",
-                                Constants.LogKey);
-
-                            async Task Handler()
+                            try
                             {
-                                await ((Task)handlerMethod.Invoke(handlerInstance,
-                                    [message, messageRequest.CancellationToken])).AnyContext();
-                            }
+                                // convert consumed message for the handler message type
+                                var message = this.Serializer.Deserialize(
+                                    this.Serializer.SerializeToString(messageRequest.Message),
+                                    subscription.MessageType);
+
+                                // create a behavior pipeline and run it (handler > next)
+                                this.Logger.LogDebug(
+                                    $"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle",
+                                    Constants.LogKey);
+
+                                async Task Handler()
+                                {
+                                    await ((Task)handlerMethod.Invoke(handlerInstance, [message, messageRequest.CancellationToken])).AnyContext();
+                                }
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                            this.HandlerBehaviors.SafeNull()
-                                .Reverse()
-                                .Aggregate((MessageHandlerDelegate)Handler,
-                                    (next, pipeline) => async () =>
-                                    {
-                                        // Activity.Current?.SetTag("messaging.handler", handlerInstance.GetType().PrettyName());
-                                        // Activity.Current?.AddEvent(new($"handle behaviours: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Handle"));
-                                        await pipeline.Handle(message as IMessage,
-                                            messageRequest.CancellationToken,
-                                            handlerInstance,
-                                            next);
-                                    })();
+                                this.HandlerBehaviors.SafeNull()
+                                    .Reverse()
+                                    .Aggregate((MessageHandlerDelegate)Handler,
+                                        (next, pipeline) => async () =>
+                                        {
+                                            // Activity.Current?.SetTag("messaging.handler", handlerInstance.GetType().PrettyName());
+                                            // Activity.Current?.AddEvent(new($"handle behaviours: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Handle"));
+
+                                            await pipeline.Handle(message as IMessage, messageRequest.CancellationToken, handlerInstance, next);
+                                        })();
+                            }
+                            finally
+                            {
+                                Semaphore.Release();
+                            }
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         }
                         else

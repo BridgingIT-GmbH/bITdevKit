@@ -46,8 +46,7 @@ public class ModuleScopeMessagePublisherBehavior(
                     {
                         if (message?.Properties?.ContainsKey(ModuleConstants.ActivityParentIdKey) == false)
                         {
-                            message?.Properties?.Add(ModuleConstants.ActivityParentIdKey,
-                                a?.Id); // propagate parent activity id
+                            message?.Properties?.Add(ModuleConstants.ActivityParentIdKey, a?.Id); // propagate parent activity id
                         }
 
                         await next().AnyContext();
@@ -55,8 +54,7 @@ public class ModuleScopeMessagePublisherBehavior(
                     ActivityKind.Producer,
                     tags: new Dictionary<string, string>
                     {
-                        ["messaging.module.origin"] =
-                            message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(),
+                        ["messaging.module.origin"] = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(),
                         ["messaging.message_id"] = message?.MessageId,
                         ["messaging.message_type"] = messageType
                     });

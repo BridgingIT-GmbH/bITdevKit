@@ -26,7 +26,7 @@ public class SwaggerGeneratorStartupTask(
     IOptions<AspNetCoreOpenApiDocumentGeneratorSettings> openApiSettings)
     : IStartupTask
 {
-    private const string LogKey = "TSK";
+    private const string LogKey = "UTL";
     private readonly SwaggerGeneratorOptions options = options?.Value ?? new SwaggerGeneratorOptions();
     private readonly AspNetCoreOpenApiDocumentGeneratorSettings openApiSettings = openApiSettings?.Value ?? new AspNetCoreOpenApiDocumentGeneratorSettings();
 

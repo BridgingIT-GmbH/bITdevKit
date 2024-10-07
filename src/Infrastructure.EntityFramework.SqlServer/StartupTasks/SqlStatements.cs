@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public static class SqlStatements
 {
-    public static string CreateQuartzTables(string database, string tablePrefix)
+    public static string QuartzTables(string database, string tablePrefix)
     {
         // source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_sqlServer.sql
         return $@"

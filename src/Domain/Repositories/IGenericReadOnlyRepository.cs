@@ -10,7 +10,9 @@ using Model;
 using Specifications;
 
 /// <summary>
-///     Interface for a generic read-only repository that provides methods to query entities without modifying them.
+///     Represents the base interface for all repository abstractions.
+///     Repositories serve as a bridge between the domain and data mapping layers, enabling
+///     a more abstract and decoupled approach to data access.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity managed by the repository.</typeparam>
 public interface IGenericReadOnlyRepository<TEntity> : IRepository

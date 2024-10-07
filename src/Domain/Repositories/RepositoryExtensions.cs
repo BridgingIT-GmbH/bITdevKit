@@ -29,8 +29,8 @@ public static class RepositoryExtensions
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
-        return (await source.ProjectAllAsync(e => e.Id, options, cancellationToken).AnyContext()).Select(i =>
-            i.To<TId>());
+        return (await source.ProjectAllAsync(e => e.Id, options, cancellationToken).AnyContext())
+            .Select(i => i.To<TId>());
     }
 
     /// <summary>
@@ -50,8 +50,8 @@ public static class RepositoryExtensions
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
-        return (await source.ProjectAllAsync(specification, e => e.Id, options, cancellationToken).AnyContext()).Select(
-            i => i.To<TId>());
+        return (await source.ProjectAllAsync(specification, e => e.Id, options, cancellationToken).AnyContext())
+            .Select(i => i.To<TId>());
     }
 
     /// <summary>

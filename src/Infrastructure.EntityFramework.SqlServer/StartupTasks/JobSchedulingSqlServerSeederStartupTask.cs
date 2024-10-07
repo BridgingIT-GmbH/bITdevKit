@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 public class JobSchedulingSqlServerSeederStartupTask
     : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
+    private const string LogKey = "TSK";
     private readonly ILogger<JobSchedulingSqlServerSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
@@ -42,13 +43,21 @@ public class JobSchedulingSqlServerSeederStartupTask
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
-        var database = connectionStringBuilder.InitialCatalog;
-        var sql = SqlStatements.CreateQuartzTables(database, this.tablePrefix);
+        try
+        {
+            var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
+            var database = connectionStringBuilder.InitialCatalog;
+            var sql = SqlStatements.QuartzTables(database, this.tablePrefix);
+            this.logger.LogInformation("{LogKey} quartz sqlserver seeding started (database={Database})", LogKey, database);
 
-        await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
-        await using var command = new SqlCommand(sql, connection);
-        await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-        await command.ExecuteNonQueryAsync(cancellationToken);
+            await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
+            await using var command = new SqlCommand(sql, connection);
+            await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "{LogKey} quartz sqlserver seeding failed", LogKey);
+        }
     }
 }

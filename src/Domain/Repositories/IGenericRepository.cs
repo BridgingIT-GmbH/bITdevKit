@@ -8,7 +8,9 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 using Model;
 
 /// <summary>
-///     Defines a generic repository interface for performing CRUD operations on entities.
+///     Represents the base interface for all repository abstractions.
+///     Repositories serve as a bridge between the domain and data mapping layers, enabling
+///     a more abstract and decoupled approach to data access.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 public interface IGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntity>

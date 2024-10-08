@@ -46,7 +46,7 @@ public class ModuleScopeStartupTaskBehavior(
                                }))
                         {
                             await Activity.Current
-                                .StartActvity($"JOB_EXECUTE {taskName}",
+                                .StartActvity($"JOB_EXECUTE {taskName} [{moduleName}]",
                                     async (a, c) => await next().AnyContext(),
                                     tags: new Dictionary<string, string>
                                     {

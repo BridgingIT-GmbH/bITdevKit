@@ -14,9 +14,6 @@ public class ModuleScopeMessageHandlerBehavior(
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
     IEnumerable<ActivitySource> activitySources = null) : MessageHandlerBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
-    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
-
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
@@ -33,7 +30,7 @@ public class ModuleScopeMessageHandlerBehavior(
         var flowId = message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var parentId = message?.Properties?.GetValue(ModuleConstants.ActivityParentIdKey)?.ToString();
 
-        var module = this.moduleAccessors.Find(handler?.GetType()); //this.moduleAccessors.Find(message?.GetType());
+        var module = moduleAccessors.Find(handler?.GetType()); //this.moduleAccessors.Find(message?.GetType());
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
@@ -53,10 +50,10 @@ public class ModuleScopeMessageHandlerBehavior(
             if (!string.IsNullOrEmpty(moduleNameOrigin) &&
                 !moduleNameOrigin.Equals(module?.Name, StringComparison.OrdinalIgnoreCase))
             {
-                await this.activitySources.Find(moduleName)
+                await activitySources.Find(moduleName)
                     .StartActvity($"MODULE {moduleName}",
-                        async (a, c) => await this.activitySources.Find(moduleName)
-                            .StartActvity($"MESSAGE_PROCESS {messageType} -> {handlerType}",
+                        async (a, c) => await activitySources.Find(moduleName)
+                            .StartActvity($"{Constants.TraceOperationHandleName} {messageType} -> {handlerType} [{moduleName}]",
                                 async (a, c) => await next().AnyContext(),
                                 ActivityKind.Consumer,
                                 tags: new Dictionary<string, string>
@@ -77,8 +74,8 @@ public class ModuleScopeMessageHandlerBehavior(
             }
             else
             {
-                await this.activitySources.Find(moduleName)
-                    .StartActvity($"MESSAGE_PROCESS {messageType}",
+                await activitySources.Find(moduleName)
+                    .StartActvity($"{Constants.TraceOperationHandleName} {messageType} [{moduleName}]",
                         async (a, c) => await next().AnyContext(),
                         ActivityKind.Consumer,
                         parentId,

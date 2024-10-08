@@ -14,15 +14,12 @@ public class ModuleScopeMessagePublisherBehavior(
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
     IEnumerable<ActivitySource> activitySources = null) : MessagePublisherBehaviorBase(loggerFactory)
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
-    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
-
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
         MessagePublisherDelegate next)
     {
-        var module = this.moduleAccessors.Find(message.GetType());
+        var module = moduleAccessors.Find(message.GetType());
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         if (cancellationToken.IsCancellationRequested)
@@ -40,8 +37,8 @@ public class ModuleScopeMessagePublisherBehavior(
             this.PropagateContext(message, moduleName);
             var messageType = message?.GetType().PrettyName(false);
 
-            await this.activitySources.Find(moduleName)
-                .StartActvity($"MESSAGE_PUBLISH {messageType}",
+            await activitySources.Find(moduleName)
+                .StartActvity($"{Constants.TraceOperationPublishName} {messageType} [{moduleName}]",
                     async (a, c) =>
                     {
                         if (message?.Properties?.ContainsKey(ModuleConstants.ActivityParentIdKey) == false)

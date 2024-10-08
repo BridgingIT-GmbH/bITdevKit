@@ -46,7 +46,7 @@ public class ModuleScopeJobSchedulingBehavior(
                                }))
                         {
                             await Activity.Current
-                                .StartActvity($"JOB_EXECUTE {jobTypeName}",
+                                .StartActvity($"JOB_EXECUTE {jobTypeName} [{moduleName}]",
                                     async (a, c) => await next().AnyContext(),
                                     tags: new Dictionary<string, string>
                                     {

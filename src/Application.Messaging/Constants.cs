@@ -15,7 +15,7 @@ public struct Constants
 
     public const string TimestampKey = "Timestamp";
 
-    public const string TraceOperationPublishName = "MESSAGE_SEND";
+    public const string TraceOperationPublishName = "MESSAGE_PUBLISH";
 
-    public const string TraceOperationProcessName = "MESSAGE_PROCESS";
+    public const string TraceOperationHandleName = "MESSAGE_HANDLE";
 }

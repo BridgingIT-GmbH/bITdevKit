@@ -12,14 +12,12 @@ using Microsoft.Extensions.Logging;
 public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
     : MessagePublisherBehaviorBase(loggerFactory)
 {
-    private readonly IMeterFactory meterFactory = meterFactory;
-
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
         MessagePublisherDelegate next)
     {
-        if (this.meterFactory is null || message is null)
+        if (meterFactory is null || message is null)
         {
             return;
         }
@@ -29,7 +27,7 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
             return;
         }
 
-        var meter = this.meterFactory.Create("bridgingit_devkit");
+        var meter = meterFactory.Create("bridgingit_devkit");
         meter.CreateCounter<int>("messages_publish").Add(1);
         meter.CreateCounter<int>($"messages_publish_{message.GetType().Name.ToLower()}").Add(1);
 

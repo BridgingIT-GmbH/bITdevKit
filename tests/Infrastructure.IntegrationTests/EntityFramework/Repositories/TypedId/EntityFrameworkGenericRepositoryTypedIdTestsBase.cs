@@ -275,12 +275,13 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
     public virtual async Task FindAllIdsAsync_AnyEntity_ManyFound()
     {
         // Arrange
-        var entity1 = await this.InsertEntityAsync();
-        var entity2 = await this.InsertEntityAsync();
-        var entity3 = await this.InsertEntityAsync();
-        var entity4 = await this.InsertEntityAsync();
-        var entity5 = await this.InsertEntityAsync();
-        var entity6 = await this.InsertEntityAsync();
+        var prefix = DateTime.UtcNow.Ticks.ToString();
+        var entity1 = await this.InsertEntityAsync(prefix);
+        var entity2 = await this.InsertEntityAsync(prefix);
+        var entity3 = await this.InsertEntityAsync(prefix);
+        var entity4 = await this.InsertEntityAsync(prefix);
+        var entity5 = await this.InsertEntityAsync(prefix);
+        var entity6 = await this.InsertEntityAsync(prefix);
 
         var sut = this.CreateBlogRepository(this.GetContext());
 

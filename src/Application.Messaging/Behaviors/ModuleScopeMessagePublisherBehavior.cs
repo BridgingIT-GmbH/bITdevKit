@@ -38,10 +38,10 @@ public class ModuleScopeMessagePublisherBehavior(
             }
 
             this.PropagateContext(message, moduleName);
-            var messageType = message.GetType().PrettyName(false);
+            var messageType = message?.GetType().PrettyName(false);
 
             await this.activitySources.Find(moduleName)
-                .StartActvity($"MESSAGE_SEND {messageType}",
+                .StartActvity($"MESSAGE_PUBLISH {messageType}",
                     async (a, c) =>
                     {
                         if (message?.Properties?.ContainsKey(ModuleConstants.ActivityParentIdKey) == false)
@@ -57,7 +57,8 @@ public class ModuleScopeMessagePublisherBehavior(
                         ["messaging.module.origin"] = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(),
                         ["messaging.message_id"] = message?.MessageId,
                         ["messaging.message_type"] = messageType
-                    });
+                    },
+                    cancellationToken: cancellationToken);
         }
     }
 

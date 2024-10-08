@@ -33,13 +33,13 @@ public class ModuleScopeMessageHandlerBehavior(
         var flowId = message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var parentId = message?.Properties?.GetValue(ModuleConstants.ActivityParentIdKey)?.ToString();
 
-        var module = this.moduleAccessors.Find(message?.GetType());
+        var module = this.moduleAccessors.Find(handler?.GetType()); //this.moduleAccessors.Find(message?.GetType());
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
+                   [ModuleConstants.ModuleNameKey] = moduleName,
                    [ModuleConstants.ModuleNameOriginKey] = moduleNameOrigin,
-                   [ModuleConstants.ModuleNameKey] = moduleName
                }))
         {
             if (module is not null && !module.Enabled)
@@ -47,7 +47,8 @@ public class ModuleScopeMessageHandlerBehavior(
                 throw new ModuleNotEnabledException(moduleName);
             }
 
-            var messageType = message.GetType().PrettyName(false);
+            var messageType = message?.GetType().PrettyName(false);
+            var handlerType = handler?.GetType().PrettyName(false);
 
             if (!string.IsNullOrEmpty(moduleNameOrigin) &&
                 !moduleNameOrigin.Equals(module?.Name, StringComparison.OrdinalIgnoreCase))
@@ -55,13 +56,13 @@ public class ModuleScopeMessageHandlerBehavior(
                 await this.activitySources.Find(moduleName)
                     .StartActvity($"MODULE {moduleName}",
                         async (a, c) => await this.activitySources.Find(moduleName)
-                            .StartActvity($"MESSAGE_PROCESS {messageType}",
+                            .StartActvity($"MESSAGE_PROCESS {messageType} -> {handlerType}",
                                 async (a, c) => await next().AnyContext(),
                                 ActivityKind.Consumer,
                                 tags: new Dictionary<string, string>
                                 {
                                     ["messaging.module.origin"] = moduleNameOrigin,
-                                    ["messaging.message_id"] = message.MessageId,
+                                    ["messaging.message_id"] = message?.MessageId,
                                     ["messaging.message_type"] = messageType
                                 },
                                 cancellationToken: c),
@@ -71,7 +72,8 @@ public class ModuleScopeMessageHandlerBehavior(
                             [ActivityConstants.ModuleNameTagKey] = moduleName,
                             [ActivityConstants.CorrelationIdTagKey] = correlationId,
                             [ActivityConstants.FlowIdTagKey] = flowId
-                        });
+                        },
+                        cancellationToken: cancellationToken);
             }
             else
             {
@@ -83,7 +85,7 @@ public class ModuleScopeMessageHandlerBehavior(
                         new Dictionary<string, string>
                         {
                             ["messaging.module.origin"] = moduleNameOrigin,
-                            ["messaging.message_id"] = message.MessageId,
+                            ["messaging.message_id"] = message?.MessageId,
                             ["messaging.message_type"] = messageType
                         },
                         new Dictionary<string, string>
@@ -91,7 +93,8 @@ public class ModuleScopeMessageHandlerBehavior(
                             [ActivityConstants.ModuleNameTagKey] = moduleName,
                             [ActivityConstants.CorrelationIdTagKey] = correlationId,
                             [ActivityConstants.FlowIdTagKey] = flowId
-                        });
+                        },
+                        cancellationToken: cancellationToken);
             }
         }
     }

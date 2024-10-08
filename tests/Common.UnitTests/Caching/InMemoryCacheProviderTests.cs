@@ -158,8 +158,7 @@ public class InMemoryCacheProviderTests
         await this.sut.RemoveAsync(this.key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _)
-            .ShouldBeFalse();
+        (await this.sut.TryGetAsync<string>(this.key, out _)).ShouldBeFalse();
     }
 
     [Fact]
@@ -172,8 +171,7 @@ public class InMemoryCacheProviderTests
         this.sut.RemoveStartsWith(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _)
-            .ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _) .ShouldBeFalse();
     }
 
     [Fact]
@@ -186,7 +184,7 @@ public class InMemoryCacheProviderTests
         await this.sut.RemoveStartsWithAsync(key);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _)
+        (await this.sut.TryGetAsync<string>(this.key, out _))
             .ShouldBeFalse();
     }
 
@@ -228,8 +226,7 @@ public class InMemoryCacheProviderTests
         await this.sut.SetAsync(this.key, this.value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _)
-            .ShouldBeTrue();
+        (await this.sut.TryGetAsync<string>(this.key, out _)).ShouldBeTrue();
     }
 
     [Fact]
@@ -243,7 +240,6 @@ public class InMemoryCacheProviderTests
         this.sut.Set(this.key, this.value, slidingExpiration, absoluteExpiration);
 
         // Assert
-        this.sut.TryGet<string>(this.key, out _)
-            .ShouldBeFalse();
+        this.sut.TryGet<string>(this.key, out _).ShouldBeFalse();
     }
 }

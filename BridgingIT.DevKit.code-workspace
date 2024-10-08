@@ -26,6 +26,12 @@
             "commandCenter.border": "#e7e7e799"
         },
         "peacock.color": "#14389d",
-        "dotnet.defaultSolution": "BridgingIT.DevKit.sln"
+        "dotnet.defaultSolution": "BridgingIT.DevKit.sln",
+        "yaml.schemas": {
+            "https://json.schemastore.org/qodana-1.0.json": [
+                "file:///f%3A/projects/bit/bIT.bITdevKit/qodana.yaml",
+                "file:///f%3A/projects/bit/bIT.bITdevKit/.qodana/qodana-profile.yaml"
+            ]
+        }
 	}
 }

@@ -1,0 +1,16 @@
+# https://www.jetbrains.com/help/qodana/dotnet.html
+name: "Qodana Profile"
+baseProfile: qodana.recommended
+
+#groups: # List of configured groups
+#- groupId: InspectionsToExclude
+#  groups:
+#    - "category:C#/Roslyn Analyzers"
+
+# https://www.jetbrains.com/help/qodana/custom-profiles.html#Configuration+examples
+inspections:
+  - group: "category:C#/Roslyn Analyzers"
+    ignore:
+      - "scope#file:*.*:./tests//*"
+      - "scope#file:*.*:./examples//*"
+      - "scope#file:*.json:**"

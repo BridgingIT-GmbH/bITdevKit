@@ -188,6 +188,36 @@ public class Result : IResult
     }
 
     /// <summary>
+    ///     Returns a string that represents the current Result object.
+    /// </summary>
+    /// <returns>A string that represents the current Result object, including its state, messages, and detailed errors.</returns>
+    public override string ToString()
+    {
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine($"Success: {this.IsSuccess}");
+
+        if (this.Messages.Any())
+        {
+            stringBuilder.AppendLine("Messages:");
+            foreach (var message in this.Messages)
+            {
+                stringBuilder.AppendLine($"- {message}".Trim());
+            }
+        }
+
+        if (this.Errors.Any())
+        {
+            stringBuilder.AppendLine("Errors:");
+            foreach (var error in this.Errors)
+            {
+                stringBuilder.AppendLine($"- [{error.GetType().Name}] {error.Message}".Trim());
+            }
+        }
+
+        return stringBuilder.ToString().TrimEnd();
+    }
+
+    /// <summary>
     ///     Creates a new failed result.
     /// </summary>
     /// <returns>A new instance of <see cref="Result" /> with a failure state.</returns>

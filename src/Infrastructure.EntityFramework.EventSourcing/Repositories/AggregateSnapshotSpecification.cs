@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
 using System.Linq.Expressions;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Infrastructure.EventSourcing;
 
 public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateType) : Specification<EventStoreSnapshot>

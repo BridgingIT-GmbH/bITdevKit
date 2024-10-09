@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using Common;
-
 /// <summary>
 ///     The <c>DomainPolicyException</c> class represents exceptions that occur
 ///     when a domain policy check fails within the application domain.

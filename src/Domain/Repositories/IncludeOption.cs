@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Model;
-
 /// <summary>
 ///     Represents an option for including related entities in a query.
 /// </summary>

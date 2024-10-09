@@ -6,12 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
-using Common;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Constants = Constants;
 
 public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker

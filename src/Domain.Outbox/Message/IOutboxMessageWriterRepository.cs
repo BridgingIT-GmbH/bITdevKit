@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using Repositories;
-
 public interface IOutboxMessageWriterRepository : IRepository
 {
     Task<OutboxMessage> InsertAsync(OutboxMessage outboxMessage, CancellationToken cancellationToken = default);

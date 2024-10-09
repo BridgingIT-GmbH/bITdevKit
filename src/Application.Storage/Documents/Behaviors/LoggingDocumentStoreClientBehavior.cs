@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     where T : class, new()
 {

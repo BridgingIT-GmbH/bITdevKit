@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics.Metrics;
-using Common;
-using Microsoft.Extensions.Logging;
 
 public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
     : MessagePublisherBehaviorBase(loggerFactory)

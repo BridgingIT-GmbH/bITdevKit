@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-using Microsoft.Extensions.DependencyInjection;
-using Quartz;
-using Quartz.Spi;
-
 public class ScopedJobFactory : IJobFactory
 {
     private readonly IServiceProvider rootServiceProvider;

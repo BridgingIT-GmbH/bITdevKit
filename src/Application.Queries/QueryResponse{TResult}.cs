@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-
 public class QueryResponse<TResult>
 {
     public QueryResponse(string cancelledReason = null)

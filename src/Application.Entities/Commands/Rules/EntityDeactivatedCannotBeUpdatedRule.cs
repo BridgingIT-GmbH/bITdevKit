@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Domain.Model;
 using Humanizer;
 
 public class EntityDeactivatedCannotBeUpdatedRule<TEntity> : EntityUpdateCommandRuleBase<TEntity>

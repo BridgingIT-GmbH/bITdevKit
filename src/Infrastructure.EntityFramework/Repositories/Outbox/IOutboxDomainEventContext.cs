@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.EntityFrameworkCore;
-
 public interface IOutboxDomainEventContext
 {
     DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }

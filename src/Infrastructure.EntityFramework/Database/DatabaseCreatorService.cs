@@ -5,15 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Common;
 using Database;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public class DatabaseCreatorService<TContext> : IHostedService
     where TContext : DbContext

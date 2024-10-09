@@ -5,8 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Application.Storage;
-
 public static partial class ServiceCollectionExtensions
 {
     public static DocumentStoreBuilderContext<T> AddDocumentStoreClient<T>(

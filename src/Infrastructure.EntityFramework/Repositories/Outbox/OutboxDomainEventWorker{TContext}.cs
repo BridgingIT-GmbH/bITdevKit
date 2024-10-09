@@ -6,15 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using System.Diagnostics;
-using Common;
 using Domain;
 using Domain.Outbox;
 using MediatR;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Constants = Constants;
 
 public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorker

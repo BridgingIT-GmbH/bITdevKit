@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Domain.Model;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class EnumValueObjectConverter<TEnumeration, TKey>

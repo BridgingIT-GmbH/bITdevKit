@@ -7,10 +7,6 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
-using Common;
-using Microsoft.Extensions.Logging;
-using Model;
-using Specifications;
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

@@ -6,9 +6,6 @@
 namespace BridgingIT.DevKit.Application.Queries;
 
 using System.Diagnostics;
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
 
 public class ModuleScopeQueryBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,

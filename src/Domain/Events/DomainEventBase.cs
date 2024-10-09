@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System.Diagnostics;
-using Common;
-
 /// <summary>
 ///     Base class for domain events, encapsulating common properties and behavior for events within the domain.
 /// </summary>

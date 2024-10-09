@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Model;
-
 /// <summary>
 ///     Interface for specifying various options to find operations in a repository.
 /// </summary>

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
 using FluentValidation.Results;
 
 public abstract class CommandRequestBase(Guid id) : ICommandRequest<CommandResponse>

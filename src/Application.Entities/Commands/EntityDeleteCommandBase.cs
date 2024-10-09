@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Commands;
-using Common;
-using Domain.Model;
-using FluentValidation;
-using FluentValidation.Results;
-
 public abstract class EntityDeleteCommandBase<TEntity>(string id, string identity = null)
     : CommandRequestBase<Result<EntityDeletedCommandResult>>, IEntityDeleteCommand<TEntity>
     where TEntity : class, IEntity

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
 using FluentValidation.Results;
 
 public abstract class QueryRequestBase<TResult>(Guid id) : IQueryRequest<QueryResponse<TResult>>, IQueryHandler

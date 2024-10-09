@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Infrastructure.Mapping;
 using FizzWare.NBuilder;
 

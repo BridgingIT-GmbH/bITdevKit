@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics;
-using Common;
-using Microsoft.Extensions.Logging;
 
 public class ModuleScopeMessagePublisherBehavior(
     ILoggerFactory loggerFactory,

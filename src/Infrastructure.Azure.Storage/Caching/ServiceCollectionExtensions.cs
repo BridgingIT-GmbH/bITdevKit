@@ -5,12 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
 using Configuration;
 using Extensions;
-using Logging;
 
 public static partial class ServiceCollectionExtensions
 {

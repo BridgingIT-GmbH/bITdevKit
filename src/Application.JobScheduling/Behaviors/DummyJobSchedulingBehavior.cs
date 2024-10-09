@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-using Microsoft.Extensions.Logging;
-using Quartz;
-
 public class DummyJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
     private const string JobIdKey = "JobId";

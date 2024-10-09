@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
 using Humanizer;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 

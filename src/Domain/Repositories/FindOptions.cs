@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-
 /// <summary>
 ///     Various options to specify the find operations for a repository.
 /// </summary>

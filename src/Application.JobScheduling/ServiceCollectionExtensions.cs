@@ -7,13 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Collections.Specialized;
 using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
-using Logging;
 using Microsoft.Extensions.Hosting;
-using Quartz;
-using Quartz.Spi;
 
 public static class ServiceCollectionExtensions
 {

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System.Diagnostics;
 using System.Reflection;
 
 /// <summary>

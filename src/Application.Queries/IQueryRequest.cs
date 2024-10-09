@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.Queries;
 
 using FluentValidation.Results;
-using MediatR;
 
 public interface IQueryRequest<out TResult> : IRequest<TResult>
 {

@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Logging;
 
 public abstract class ModuleDbContextBase(DbContextOptions options) : DbContext(options)
 {

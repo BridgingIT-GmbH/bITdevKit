@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 

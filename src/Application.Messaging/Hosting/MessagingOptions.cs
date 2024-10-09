@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-
 public class MessagingOptions : OptionsBase
 {
     public bool Enabled { get; set; } = true;

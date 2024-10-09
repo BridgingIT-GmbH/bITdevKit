@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using MediatR;
-
 public interface IQueryBehavior { }
 
 public interface IQueryBehavior<TRequest, TResponse> : IQueryBehavior

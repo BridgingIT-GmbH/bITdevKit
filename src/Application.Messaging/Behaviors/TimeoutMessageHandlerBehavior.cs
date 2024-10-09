@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Timeout;
 

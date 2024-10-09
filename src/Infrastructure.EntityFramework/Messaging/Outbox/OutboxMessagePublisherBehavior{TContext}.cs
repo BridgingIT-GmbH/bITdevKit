@@ -6,10 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
-using Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisherBehaviorBase
     where TContext : DbContext, IOutboxMessageContext

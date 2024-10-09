@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 

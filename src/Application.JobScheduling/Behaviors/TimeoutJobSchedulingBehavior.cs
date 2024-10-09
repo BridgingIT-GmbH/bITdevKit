@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Timeout;
-using Quartz;
 
 public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {

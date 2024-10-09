@@ -9,7 +9,7 @@ using Common;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Registration;
 using Domain.Repositories;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Infrastructure.EventSourcing;
 using Models;
 using Repositories;

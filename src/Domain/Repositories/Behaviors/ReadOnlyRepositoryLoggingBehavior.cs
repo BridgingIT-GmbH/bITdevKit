@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Model;
-using Specifications;
 
 [Obsolete("Use ReadOnlyGenericRepositoryLoggingBehavior instead")]
 public class ReadOnlyGenericRepositoryLoggingDecorator<TEntity> : ReadOnlyRepositoryLoggingBehavior<TEntity>

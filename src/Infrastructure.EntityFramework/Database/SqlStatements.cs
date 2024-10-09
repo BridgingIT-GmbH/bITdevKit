@@ -1,7 +1,5 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Database;
 
-using Common;
-
 public static class SqlStatements
 {
     public static class SqlServer

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
 using System.Linq.Expressions;
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class DinnerForScheduleSpecification(HostId hostId, DinnerSchedule schedule) : Specification<Dinner>
 {

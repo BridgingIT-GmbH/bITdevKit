@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 /// <summary>
 ///     A base class for handling domain events. Implementations of specific domain event handlers
 ///     should derive from this class and provide logic for handling events of type <typeparamref name="TEvent" />.

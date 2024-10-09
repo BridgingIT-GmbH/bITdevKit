@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-
 public class DatabaseTransaction : IDatabaseTransaction
 {
     private readonly DbContext context;

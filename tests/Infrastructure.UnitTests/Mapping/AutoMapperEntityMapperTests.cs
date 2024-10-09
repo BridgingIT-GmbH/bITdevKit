@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests.Mapping;
 
 using System.Linq.Expressions;
 using AutoMapper;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Infrastructure.Mapping;
 
 [UnitTest("Infrastructure")]

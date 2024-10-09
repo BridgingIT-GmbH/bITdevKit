@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-using Microsoft.Extensions.Logging;
-
 // generate a xunit test for this class and its methods, use nsubstitute and shoulpublic class DummyMessagePublisherBehaviorTests
 
 public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : MessagePublisherBehaviorBase(loggerFactory)

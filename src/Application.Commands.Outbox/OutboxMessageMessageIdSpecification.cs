@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Application.Commands.Outbox;
 
 using Domain.Outbox;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class OutboxMessageMessageIdSpecification(Guid messageId)
     : Specification<OutboxMessage>(message => message.MessageId == messageId) { }

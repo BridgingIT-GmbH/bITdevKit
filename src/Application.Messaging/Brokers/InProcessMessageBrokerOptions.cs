@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-
 public class InProcessMessageBrokerOptions : OptionsBase
 {
     public IEnumerable<IMessagePublisherBehavior> PublisherBehaviors { get; set; }

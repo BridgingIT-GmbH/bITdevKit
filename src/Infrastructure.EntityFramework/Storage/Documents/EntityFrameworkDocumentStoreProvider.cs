@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 using Application.Storage;
-using Common;
-using Microsoft.EntityFrameworkCore;
 
 public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProvider
     where TContext : DbContext, IDocumentStoreContext

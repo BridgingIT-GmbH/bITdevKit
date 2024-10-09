@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using MediatR;
-
 public interface ICommandBehavior { }
 
 public interface ICommandBehavior<TRequest, TResponse> : ICommandBehavior

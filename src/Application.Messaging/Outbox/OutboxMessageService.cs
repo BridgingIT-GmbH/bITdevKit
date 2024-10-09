@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 // HostedService > *Worker* > Broker
 public class OutboxMessageService : BackgroundService // OutboxMessageHostedService > Publisher?

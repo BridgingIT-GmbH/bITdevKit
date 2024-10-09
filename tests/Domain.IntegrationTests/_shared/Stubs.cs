@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain.IntegrationTests;
 using System.Linq.Expressions;
 using AutoMapper;
 using Model;
-using Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class StubPerson : Entity<int>
 {

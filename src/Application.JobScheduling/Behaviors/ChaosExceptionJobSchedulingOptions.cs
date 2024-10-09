@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-
 public interface IChaosExceptionJobScheduling
 {
     ChaosExceptionJobSchedulingOptions Options { get; }

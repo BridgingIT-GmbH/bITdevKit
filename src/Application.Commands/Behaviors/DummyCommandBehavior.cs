@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class DummyCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
     : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>

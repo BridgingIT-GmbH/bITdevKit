@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Common;
-
 public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorOptions, DatabaseCreatorOptionsBuilder>
 {
     /// <summary>

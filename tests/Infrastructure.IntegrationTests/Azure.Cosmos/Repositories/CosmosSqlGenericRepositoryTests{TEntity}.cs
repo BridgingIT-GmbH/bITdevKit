@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using Domain.Repositories;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using DotNet.Testcontainers.Containers;
 using Infrastructure.Azure;
 

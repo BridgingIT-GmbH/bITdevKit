@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Model;
-
 public interface IDatabaseTransaction
 {
     Task ExecuteScopedAsync(Func<Task> action);

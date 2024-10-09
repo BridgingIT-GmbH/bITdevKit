@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System.Diagnostics;
-
 /// <summary>
 ///     Represents an abstract base class for auditable entities, inheriting from the Entity class
 ///     and implementing the IAuditable interface.

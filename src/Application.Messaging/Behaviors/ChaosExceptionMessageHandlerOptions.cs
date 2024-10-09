@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-
 public interface IChaosExceptionMessageHandler
 {
     ChaosExceptionMessageHandlerOptions Options { get; }

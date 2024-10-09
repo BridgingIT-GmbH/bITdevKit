@@ -6,17 +6,9 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
-///     A generic client that implements the <see cref="IDocumentStoreClient
-///     
-///     
-///     
-///     
-///     
-///     <T>
-///         "/> interface
-///         which provides methods to interact with a <see cref="IDocumentStoreProvider" /> of type T.
+/// Represents a client for storing and retrieving documents.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">The type of documents managed by this client.</typeparam>
 public class DocumentStoreClient<T> : IDocumentStoreClient<T>
     where T : class, new()
 {

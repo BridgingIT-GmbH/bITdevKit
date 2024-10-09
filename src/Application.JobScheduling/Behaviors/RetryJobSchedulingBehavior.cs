@@ -6,12 +6,9 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Diagnostics;
-using Common;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using Quartz;
 
 public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {

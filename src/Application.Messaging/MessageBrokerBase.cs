@@ -5,10 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
 using FluentValidation;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract partial class MessageBrokerBase : IMessageBroker
 {

@@ -7,8 +7,6 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public class MessagingService : BackgroundService
 {

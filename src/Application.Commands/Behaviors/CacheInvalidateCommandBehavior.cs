@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
     : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>

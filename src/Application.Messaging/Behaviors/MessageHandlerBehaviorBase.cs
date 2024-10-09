@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public abstract class MessageHandlerBehaviorBase : IMessageHandlerBehavior
 {
     protected MessageHandlerBehaviorBase(ILoggerFactory loggerFactory)

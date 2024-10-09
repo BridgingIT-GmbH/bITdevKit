@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Specifications;
-
 /// <summary>
 ///     Provides methods for mapping entities.
 /// </summary>

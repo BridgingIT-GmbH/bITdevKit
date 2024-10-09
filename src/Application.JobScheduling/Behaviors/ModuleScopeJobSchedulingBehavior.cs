@@ -6,9 +6,6 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Diagnostics;
-using Common;
-using Microsoft.Extensions.Logging;
-using Quartz;
 
 public class ModuleScopeJobSchedulingBehavior(
     ILoggerFactory loggerFactory,

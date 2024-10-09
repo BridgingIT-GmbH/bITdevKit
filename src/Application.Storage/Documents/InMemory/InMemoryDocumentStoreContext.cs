@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Common;
-
 public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 {
     private readonly ReaderWriterLockSlim @lock = new();

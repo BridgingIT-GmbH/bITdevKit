@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using Common;
-
 /// <summary>
 ///     Provides extension methods for handling instances of the <see cref="Result" /> class.
 /// </summary>

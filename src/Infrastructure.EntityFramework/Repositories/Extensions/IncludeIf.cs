@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-
 public static partial class Extensions
 {
     public static IQueryable<TEntity> IncludeIf<TEntity>(this IQueryable<TEntity> source, IFindOptions<TEntity> options)

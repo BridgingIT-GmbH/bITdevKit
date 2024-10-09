@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
 using FluentValidation;
 
 public class RabbitMQMessageBrokerConfiguration

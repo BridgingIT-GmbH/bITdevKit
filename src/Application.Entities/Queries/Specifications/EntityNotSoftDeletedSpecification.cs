@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Application.Entities;
 
 using System.Linq.Expressions;
-using Domain.Model;
-using Domain.Specifications;
 
 public class EntityNotSoftDeletedSpecification<TEntity> : Specification<TEntity>
     where TEntity : class, IEntity, ISoftDeletable

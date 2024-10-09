@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using Common;
-
 /// <summary>
 ///     Represents the result of a domain policy execution, including the outcome (success or failure) and any associated
 ///     messages or errors.

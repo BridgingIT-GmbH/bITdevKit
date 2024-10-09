@@ -6,8 +6,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
-using BridgingIT.DevKit.Common;
-using MediatR;
 using MediatR.Pipeline;
 using MediatR.Registration;
 

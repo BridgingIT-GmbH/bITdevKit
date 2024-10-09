@@ -11,7 +11,7 @@ using Common.Options;
 using Domain.Outbox;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class OutboxWorkerService(
     IOutboxMessageWorkerRepository repository,

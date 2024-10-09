@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-
 public class CommandResponse
 {
     public CommandResponse(string cancelledReason = null)

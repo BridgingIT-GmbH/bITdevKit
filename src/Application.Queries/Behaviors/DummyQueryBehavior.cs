@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class DummyQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
     : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>

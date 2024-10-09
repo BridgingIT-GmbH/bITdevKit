@@ -2,7 +2,7 @@
 
 using System.Linq.Expressions;
 using Domain.Model;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

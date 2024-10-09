@@ -3,9 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Domain.Specifications;
-
-using System.Linq.Expressions;
+namespace BridgingIT.DevKit.Domain;
 
 public class Specification<T> : ISpecification<T>
 {

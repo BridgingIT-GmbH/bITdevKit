@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 // https://github.com/jbogard/MediatR/wiki/Behaviors

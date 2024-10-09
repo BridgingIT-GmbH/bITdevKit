@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 public class JobSchedulingBuilderContext(
     IServiceCollection services,

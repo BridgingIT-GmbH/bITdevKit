@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
 using System.Linq.Expressions;
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class CustomerForEmailSpecification(EmailAddress email) : Specification<Customer>
 {

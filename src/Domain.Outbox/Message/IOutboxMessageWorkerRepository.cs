@@ -5,6 +5,4 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using Repositories;
-
 public interface IOutboxMessageWorkerRepository : IGenericRepository<OutboxMessage> { }

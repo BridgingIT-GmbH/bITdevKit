@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Model;
-
 /// <summary>
 ///     Represents ordering options for querying entities from repositories.
 /// </summary>

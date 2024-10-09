@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using Common;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

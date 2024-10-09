@@ -6,11 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
-using EntityFrameworkCore;
-using Logging;
 using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions

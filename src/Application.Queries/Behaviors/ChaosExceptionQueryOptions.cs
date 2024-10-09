@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-
 public interface IChaosExceptionQuery
 {
     ChaosExceptionQueryOptions Options { get; }

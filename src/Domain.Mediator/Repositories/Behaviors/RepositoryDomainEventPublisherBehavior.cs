@@ -6,12 +6,6 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System.Linq.Expressions;
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Model;
-using Specifications;
 
 [Obsolete("Use GenericRepositoryDomainEventPublisherBehavior instead")]
 public class GenericRepositoryDomainEventPublisherDecorator<TEntity> : RepositoryDomainEventPublisherBehavior<TEntity>

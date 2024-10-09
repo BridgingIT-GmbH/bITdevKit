@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Microsoft.EntityFrameworkCore;
-
 public static partial class Extensions
 {
     /// <summary>

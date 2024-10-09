@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using Common;
-using global::Azure.Data.Tables;
-
 public class AzureTableServiceOptionsBuilder
     : OptionsBuilderBase<AzureTableServiceOptions, AzureTableServiceOptionsBuilder>
 {

@@ -6,9 +6,7 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics;
-using Common;
 using Humanizer;
-using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 

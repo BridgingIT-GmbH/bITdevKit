@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using Common;
-
 public interface IChaosExceptionCommand
 {
     ChaosExceptionCommandOptions Options { get; }

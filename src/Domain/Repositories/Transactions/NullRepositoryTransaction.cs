@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Model;
-
 public class NullRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity
 {

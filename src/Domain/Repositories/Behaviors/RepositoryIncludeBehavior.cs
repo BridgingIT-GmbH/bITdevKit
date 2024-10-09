@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositoryIncludeBehavior instead")]
 public class GenericRepositoryIncludeDecorator<TEntity> : RepositoryIncludeBehavior<TEntity>
     where TEntity : class, IEntity

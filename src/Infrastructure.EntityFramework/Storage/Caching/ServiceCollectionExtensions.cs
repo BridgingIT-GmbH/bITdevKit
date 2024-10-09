@@ -6,13 +6,9 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 using Configuration;
-using EntityFrameworkCore;
 using Extensions;
-using Logging;
 
 public static partial class ServiceCollectionExtensions
 {

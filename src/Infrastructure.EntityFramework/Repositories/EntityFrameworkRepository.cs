@@ -6,11 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using System.Data;
-using Common;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 public class EntityFrameworkRepository<TEntity> : IRepository
     where TEntity : class

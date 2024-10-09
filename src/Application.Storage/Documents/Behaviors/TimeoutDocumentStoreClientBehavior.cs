@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using Humanizer;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Polly;
 using Polly.Timeout;
 

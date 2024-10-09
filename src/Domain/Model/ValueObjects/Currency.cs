@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using Common;
-
 /// <summary>
 ///     Represents a currency with various predefined currency instances.
 /// </summary>

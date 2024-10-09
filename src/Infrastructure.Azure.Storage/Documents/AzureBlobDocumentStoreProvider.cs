@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using Application.Storage;
-using Common;
 using global::Azure.Storage;
-using global::Azure.Storage.Blobs;
 using global::Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider

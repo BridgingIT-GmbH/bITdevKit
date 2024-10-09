@@ -9,7 +9,6 @@ using System.Linq.Expressions;
 using Application.Messaging;
 using Domain;
 using Domain.Model;
-using Domain.Specifications;
 using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

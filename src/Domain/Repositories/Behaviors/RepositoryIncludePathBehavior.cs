@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositoryIncludePathBehavior instead")]
 public class GenericRepositoryIncludePathDecorator<TEntity> : RepositoryIncludePathBehavior<TEntity>
     where TEntity : class, IEntity

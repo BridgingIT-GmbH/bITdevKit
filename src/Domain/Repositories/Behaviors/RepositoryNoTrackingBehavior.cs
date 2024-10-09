@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
 using Microsoft.Extensions.Logging;
-using Model;
-using Specifications;
 
 [Obsolete("Use GenericRepositoryNoTrackingBehavior instead")]
 public class GenericRepositoryNoTrackingDecorator<TEntity>(IGenericRepository<TEntity> inner)

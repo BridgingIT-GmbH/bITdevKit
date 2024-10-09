@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using Common;
-using global::Azure.Storage.Blobs;
-
 public class AzureBlobServiceOptionsBuilder
     : OptionsBuilderBase<AzureBlobServiceOptions, AzureBlobServiceOptionsBuilder>
 {

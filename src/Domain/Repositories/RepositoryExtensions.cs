@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Common;
-using Model;
-using Specifications;
-
 /// <summary>
 ///     Provides extension methods for the <see cref="IGenericReadOnlyRepository{TEntity}" /> interface.
 /// </summary>

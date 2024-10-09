@@ -3,9 +3,9 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Domain.UnitTests.Specifications;
+namespace BridgingIT.DevKit.Domain.UnitTests;
 
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 
 [UnitTest("Domain")]
 public class SpecificationTests

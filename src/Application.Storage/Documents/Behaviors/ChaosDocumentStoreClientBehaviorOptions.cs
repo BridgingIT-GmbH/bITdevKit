@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Common;
-
 public class ChaosDocumentStoreClientBehaviorOptions
 {
     /// <summary>

@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Commands;
-using Common;
-using Domain.Model;
-using FluentValidation;
-using FluentValidation.Results;
-
 public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string identity = null)
     : CommandRequestBase<Result<EntityUpdatedCommandResult>>, IEntityUpdateCommand<TEntity>
     where TEntity : class, IEntity

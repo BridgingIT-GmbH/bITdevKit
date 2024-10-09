@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
     : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, IRequest<TResponse>

@@ -5,12 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
-using global::Azure.Data.Tables;
-using global::Azure.Storage.Blobs;
-using Logging;
-
 public static partial class ServiceCollectionExtensions
 {
     public static DocumentStoreBuilderContext<T> AddAzureBlobDocumentStoreClient<T>(

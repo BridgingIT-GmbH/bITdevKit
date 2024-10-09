@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using MediatR;
-
 /// <summary>
 ///     Interface for handling domain events. Implementations of this interface are responsible
 ///     for processing specific types of domain events.

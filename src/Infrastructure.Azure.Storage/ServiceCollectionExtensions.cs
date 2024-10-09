@@ -5,10 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Azure;
-using global::Azure.Data.Tables;
-using global::Azure.Storage.Blobs;
 
 public static partial class ServiceCollectionExtensions
 {

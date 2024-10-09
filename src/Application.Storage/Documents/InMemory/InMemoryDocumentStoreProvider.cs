@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
     ILoggerFactory loggerFactory,
     InMemoryDocumentStoreContext context = null) : IDocumentStoreProvider

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using FizzWare.NBuilder;
 
 [IntegrationTest("Domain")]

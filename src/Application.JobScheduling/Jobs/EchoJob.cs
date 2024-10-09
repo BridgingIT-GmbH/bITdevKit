@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Microsoft.Extensions.Logging;
-using Quartz;
-
 public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRetryJobScheduling,
     IChaosExceptionJobScheduling
 {

@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.Configuration;
 
-using BridgingIT.DevKit.Common;
 using global::Azure.Identity;
 using Serilog;
 

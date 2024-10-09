@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Quartz;
-
 public delegate Task JobDelegate();
 
 public interface IJobSchedulingBehavior

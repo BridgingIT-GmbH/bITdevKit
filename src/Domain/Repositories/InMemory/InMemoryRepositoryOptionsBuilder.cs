@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Common;
-using Model;
-
 public class InMemoryRepositoryOptionsBuilder<TEntity>
     : OptionsBuilderBase<InMemoryRepositoryOptions<TEntity>, InMemoryRepositoryOptionsBuilder<TEntity>>
     where TEntity : class, IEntity

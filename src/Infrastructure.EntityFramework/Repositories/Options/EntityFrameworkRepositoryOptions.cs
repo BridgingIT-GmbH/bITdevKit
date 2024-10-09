@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-
 public class EntityFrameworkRepositoryOptions : OptionsBase
 {
     public EntityFrameworkRepositoryOptions() { }

@@ -6,15 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Diagnostics;
-using System.Linq.Expressions;
-using Common;
-using Domain.Model;
 using Domain.Outbox;
-using Domain.Repositories;
-using Domain.Specifications;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using BridgingIT.DevKit.Domain;
 
 [Obsolete("Use RepositoryOutboxDomainEventBehavior instead")]
 public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(

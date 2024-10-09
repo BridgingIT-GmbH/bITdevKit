@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Domain.Model;
-
 public interface IEntityCreateCommand
 {
     object Entity { get; }

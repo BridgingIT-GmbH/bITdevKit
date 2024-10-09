@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Threading.Tasks.Dataflow;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public partial class OutboxMessageQueue : IOutboxMessageQueue
 {

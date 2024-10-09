@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Common;
 using DevKit.Domain.EventSourcing.Store;
 using DevKit.Domain.Repositories;
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Domain.Model;
 using Domain.Repositories;
 using MediatR;

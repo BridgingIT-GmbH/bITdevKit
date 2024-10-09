@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.EntityFrameworkCore;
-
 public interface IOutboxMessageContext
 {
     DbSet<OutboxMessage> OutboxMessages { get; set; }

@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Threading.Tasks.Dataflow;
-using Common;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 ///     An in-process message broker that uses TPL Dataflow to provide asynchronous messaging capabilities.

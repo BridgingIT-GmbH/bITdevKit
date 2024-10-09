@@ -5,8 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
 using Configuration;
 using Scrutor;
 

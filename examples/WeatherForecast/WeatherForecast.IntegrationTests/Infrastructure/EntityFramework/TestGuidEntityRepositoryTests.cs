@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.IntegrationTests;
 
 using DevKit.Domain.Repositories;
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Domain.Model;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture

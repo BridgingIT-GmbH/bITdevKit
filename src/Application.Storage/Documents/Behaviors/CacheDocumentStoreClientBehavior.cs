@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public class CacheDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     where T : class, new()
 {

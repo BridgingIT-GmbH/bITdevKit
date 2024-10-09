@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositorySoftDeleteBehavior instead")]
 public class GenericRepositorySoftDeleteDecorator<TEntity> : RepositorySoftDeleteBehavior<TEntity>
     where TEntity : class, IEntity, ISoftDeletable

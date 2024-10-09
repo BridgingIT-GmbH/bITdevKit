@@ -7,8 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 using BridgingIT.DevKit.Application.Queries;
-using BridgingIT.DevKit.Common;
-using MediatR;
 using MediatR.Registration;
 
 public static class ServiceCollectionExtensions

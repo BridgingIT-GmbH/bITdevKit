@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.Commands;
 
 using FluentValidation.Results;
-using MediatR;
 
 public interface ICommandRequest : IRequest
 {

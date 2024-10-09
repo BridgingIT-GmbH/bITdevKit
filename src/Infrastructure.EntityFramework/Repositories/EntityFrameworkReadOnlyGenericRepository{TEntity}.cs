@@ -6,14 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using System.Data;
-using System.Linq.Expressions;
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Domain.Specifications;
-using Microsoft.EntityFrameworkCore;
+using BridgingIT.DevKit.Domain;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : EntityFrameworkReadOnlyGenericRepository<TEntity>(loggerFactory, context)

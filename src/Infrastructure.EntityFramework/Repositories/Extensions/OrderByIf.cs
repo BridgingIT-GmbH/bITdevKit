@@ -6,10 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using Common;
-using Domain.Model;
-using Domain.Repositories;
 
 public static partial class Extensions
 {

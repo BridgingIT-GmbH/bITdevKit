@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
 using System.Linq.Expressions;
-using DevKit.Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Model;
 
 public class ForecastIsInFutureSpecification : Specification<Forecast>

@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositorySpecificationBehavior instead")]
 public class GenericRepositorySpecificationDecorator<TEntity>(
     ISpecification<TEntity> specification,

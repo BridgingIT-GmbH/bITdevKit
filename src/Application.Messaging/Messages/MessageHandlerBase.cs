@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public abstract class MessageHandlerBase<TMessage> : IMessageHandler<TMessage>
     where TMessage : IMessage
 {

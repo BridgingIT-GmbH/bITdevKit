@@ -6,9 +6,6 @@
 namespace BridgingIT.DevKit.Application.Commands;
 
 using System.Diagnostics;
-using Common;
-using MediatR;
-using Microsoft.Extensions.Logging;
 
 public class ModuleScopeCommandBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,

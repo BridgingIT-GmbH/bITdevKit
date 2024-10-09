@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using System.Linq.Expressions;
 using System.Reflection;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 public static partial class Extensions
 {

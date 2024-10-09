@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Linq.Expressions;
-
 public static partial class Extensions
 {
     public static IQueryable<TSource> WhereExpressionIf<TSource>(

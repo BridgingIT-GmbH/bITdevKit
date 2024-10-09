@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Quartz;
-
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
 public abstract partial class JobBase : IJob

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-
 public static class QueryResponse
 {
     public static QueryResponse<Result<TValue>> For<TValue>(Result<TValue> result)

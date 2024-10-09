@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Diagnostics;
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositoryTracingBehavior instead")]
 public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryTracingBehavior<TEntity>(inner)

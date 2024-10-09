@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-using Microsoft.Extensions.Logging;
-
 public class DummyMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
     public override async Task Handle<TMessage>(

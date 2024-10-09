@@ -8,8 +8,6 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using Common;
-using Microsoft.EntityFrameworkCore;
 
 [Table("__Outbox_Messages")]
 [Index(nameof(Type))]

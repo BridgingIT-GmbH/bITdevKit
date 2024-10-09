@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System.Diagnostics;
-
 [DebuggerDisplay("{Value}")]
 public abstract class EntityId<TId> : ValueObject
 {

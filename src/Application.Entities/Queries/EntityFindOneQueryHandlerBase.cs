@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Domain.Specifications;
-using Microsoft.Extensions.Logging;
-using Queries;
+using Constants = BridgingIT.DevKit.Application.Queries.Constants;
 
 public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<TQuery, Result<TEntity>>
     where TQuery : EntityFindOneQueryBase<TEntity>

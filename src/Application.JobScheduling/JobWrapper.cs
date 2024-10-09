@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Quartz;
-
 public class JobWrapper(
     IServiceProvider serviceProvider,
     IJob innerJob,

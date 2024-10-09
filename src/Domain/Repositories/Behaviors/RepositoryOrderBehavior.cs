@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositoryOrderBehavior instead")]
 public class GenericRepositoryOrderDecorator<TEntity> : RepositoryOrderBehavior<TEntity>
     where TEntity : class, IEntity

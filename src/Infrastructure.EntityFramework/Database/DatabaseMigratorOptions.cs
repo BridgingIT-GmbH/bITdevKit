@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Common;
-
 public class DatabaseMigratorOptions : OptionsBase
 {
     public bool Enabled { get; set; } = true;

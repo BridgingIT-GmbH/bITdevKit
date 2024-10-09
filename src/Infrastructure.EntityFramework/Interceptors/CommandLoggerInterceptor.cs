@@ -6,10 +6,7 @@
 namespace Microsoft.EntityFrameworkCore.Database.Command;
 
 using System.Data.Common;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Diagnostics;
-using Extensions.Logging;
-using Extensions.Logging.Abstractions;
 
 public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : DbCommandInterceptor
 {

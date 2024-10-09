@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Model;
-
 /// <summary>
 ///     Defines methods for generating and managing entity identifiers.
 /// </summary>

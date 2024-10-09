@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Common;
-using Domain.Model;
-using FluentValidation;
-using FluentValidation.Results;
-using Queries;
-
 public abstract class EntityFindAllQueryBase<TEntity>(
     int pageNumber = 1,
     int pageSize = int.MaxValue,

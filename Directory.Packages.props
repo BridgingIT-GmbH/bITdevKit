@@ -141,7 +141,8 @@
   <ItemGroup Label="upgrade some packages due to transitive vulnerabilities">
     <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management#transitive-pinning -->
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.4" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.5" />
+    <PackageVersion Include="System.Runtime.Caching" Version="8.0.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />

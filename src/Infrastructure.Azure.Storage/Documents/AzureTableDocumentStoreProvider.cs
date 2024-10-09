@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
-using Application.Storage;
-using Common;
-using global::Azure.Data.Tables;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 public class AzureTableDocumentStoreProvider : IDocumentStoreProvider

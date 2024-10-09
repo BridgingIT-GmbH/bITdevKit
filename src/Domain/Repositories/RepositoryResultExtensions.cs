@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 public static class RepositoryResultExtensions
 {
     public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(

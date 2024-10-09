@@ -5,11 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
 using Microsoft.Extensions.Logging;
-using Model;
-using Specifications;
 
 public class InMemoryRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : InMemoryRepository<TEntity>(loggerFactory, context)

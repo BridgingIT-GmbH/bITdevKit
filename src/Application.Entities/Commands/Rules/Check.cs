@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Domain.Model;
 using Microsoft.Extensions.Localization;
 
 public static class Check

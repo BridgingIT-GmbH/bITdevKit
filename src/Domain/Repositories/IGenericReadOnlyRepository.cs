@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Model;
-using Specifications;
-
 /// <summary>
 ///     Represents the base interface for all repository abstractions.
 ///     Repositories serve as a bridge between the domain and data mapping layers, enabling

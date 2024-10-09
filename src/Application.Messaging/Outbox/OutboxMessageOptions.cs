@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-
 public class OutboxMessageOptions : OptionsBase
 {
     public bool Enabled { get; set; } = true;

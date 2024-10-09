@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Common;
-
 public class SubscriptionMap : ISubscriptionMap
 {
     private readonly IDictionary<string, List<SubscriptionDetails>> map;

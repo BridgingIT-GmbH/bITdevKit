@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using Domain.Repositories;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 
 public class AutoMapperEntityMapper : IEntityMapper
 {

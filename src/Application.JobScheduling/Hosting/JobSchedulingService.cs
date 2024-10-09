@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Quartz;
-using Quartz.Spi;
 
 public class JobSchedulingService : BackgroundService
 {

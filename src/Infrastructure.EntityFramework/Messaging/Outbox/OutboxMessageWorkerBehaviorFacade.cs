@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 public static class OutboxMessageWorkerBehaviorFacade<TContext>
     where TContext : DbContext, IOutboxMessageContext

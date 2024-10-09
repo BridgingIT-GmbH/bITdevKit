@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Model;
-
 [Obsolete("To be removed. Please use IRepositoryTransaction")]
 public interface IGenericRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity { }

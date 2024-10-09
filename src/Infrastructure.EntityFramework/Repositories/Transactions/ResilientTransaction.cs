@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Domain.Model;
-using Microsoft.EntityFrameworkCore;
-
 public class ResilientTransaction
 {
     private readonly DbContext context;

@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using Common;
-using MediatR;
-
 /// <summary>
 ///     Represents a collection of domain events that can be registered, retrieved, and managed for an aggregate root.
 /// </summary>

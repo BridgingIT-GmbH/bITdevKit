@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using Common;
 using Domain.Model;
 using Domain.Repositories;
-using Domain.Specifications;
+using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.Logging;
 
 public class CosmosSqlRepositoryWrapper<TEntity, TProvider, TDatabaseEntity>(

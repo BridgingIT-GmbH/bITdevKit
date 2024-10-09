@@ -6,10 +6,8 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
-using Logging;
 
 public static class ServiceCollectionExtensions
 {

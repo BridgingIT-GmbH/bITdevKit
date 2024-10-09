@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Common;
-using Microsoft.Extensions.Logging;
-
 public class EchoQueryHandler(ILoggerFactory loggerFactory) : QueryHandlerBase<EchoQuery, string>(loggerFactory)
 {
     public override async Task<QueryResponse<string>> Process(EchoQuery request, CancellationToken cancellationToken)

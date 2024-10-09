@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Linq.Expressions;
-using Common;
-using Model;
-using Specifications;
-
 [Obsolete("Use GenericRepositoryCancellationBehavior instead")]
 public class GenericRepositoryCancellationDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryCancellationBehavior<TEntity>(inner)

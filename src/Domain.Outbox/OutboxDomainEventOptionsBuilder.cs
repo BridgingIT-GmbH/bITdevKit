@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using Common;
-
 public class OutboxDomainEventOptionsBuilder
     : OptionsBuilderBase<OutboxDomainEventOptions, OutboxDomainEventOptionsBuilder>
 {

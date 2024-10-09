@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
-using Model;
-
 public class OutboxMessage : Entity<Guid> // TODO: rename to OutboxEventMessage
 {
     public Guid AggregateId { get; set; }

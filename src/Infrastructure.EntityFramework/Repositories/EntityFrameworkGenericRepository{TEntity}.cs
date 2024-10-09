@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
 public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity

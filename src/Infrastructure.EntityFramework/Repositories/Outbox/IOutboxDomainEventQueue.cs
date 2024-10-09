@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.Extensions.Logging;
-
 public interface IOutboxDomainEventQueue
 {
     ILogger Logger { get; }

@@ -5,13 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Commands;
-using Common;
-using Domain;
-using Domain.Model;
-using Domain.Repositories;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Constants = Commands.Constants;
 
 public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>

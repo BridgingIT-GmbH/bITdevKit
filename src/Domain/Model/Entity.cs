@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System.Diagnostics;
-
 /// <summary>
 ///     Represents an abstract base class for entities with a unique identifier.
 /// </summary>

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using System.Diagnostics;
-
 /// <summary>
 ///     Represents a base class for type safe enum-like classes, providing comparison and equality operations
 ///     as well as methods for retrieving all enumeration instances and looking up instances by id or value.

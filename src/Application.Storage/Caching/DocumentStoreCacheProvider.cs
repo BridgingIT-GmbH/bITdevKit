@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Common;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 
 public class DocumentStoreCacheProvider : ICacheProvider
 {

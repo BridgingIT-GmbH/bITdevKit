@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Globalization;
-using Common;
 
 /// <summary>
 ///     Represents an audit state which captures the creation, update, deactivation, and deletion details

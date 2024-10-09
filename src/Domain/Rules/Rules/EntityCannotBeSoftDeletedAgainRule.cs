@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using Model;
-
 public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : DomainRuleBase
     where TEntity : class, IEntity, ISoftDeletable
 {

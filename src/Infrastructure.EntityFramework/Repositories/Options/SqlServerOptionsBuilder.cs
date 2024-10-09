@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Common;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlServerOptionsBuilder>
 {

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
 using System.Reflection;
 using System.Text.Json;
-using global::Azure.Data.Tables;
 
 public static class AzureTableEntityConverter
 {

@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Common;
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-
 public class EntityFrameworkTransactionWrapper<TEntity, TContext>(TContext context)
     : EntityFrameworkTransaction<TEntity>(context)
     where TEntity : class, IEntity

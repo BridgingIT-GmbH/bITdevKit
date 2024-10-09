@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.EntityFrameworkCore;
-
 public static partial class Extensions
 {
     public static Task<List<TSource>> ToListAsyncSafe<TSource>(

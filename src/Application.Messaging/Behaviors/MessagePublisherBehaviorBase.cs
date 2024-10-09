@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 public abstract class MessagePublisherBehaviorBase : IMessagePublisherBehavior
 {
     protected MessagePublisherBehaviorBase(ILoggerFactory loggerFactory)

@@ -5,11 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Configuration;
-using EntityFrameworkCore;
 
 public class EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(
     IServiceCollection services,

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Domain.Model;
-
 public abstract class EntityCommandRuleBase<TEntity> : IEntityCommandRule<TEntity>
     where TEntity : class, IEntity
 {

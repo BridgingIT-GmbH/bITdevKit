@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Domain.Model;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
-
 public static partial class Extensions
 {
     public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(this DbSet<TEntity> source, IFindOptions<TEntity> options)

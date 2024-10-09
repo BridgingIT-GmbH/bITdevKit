@@ -5,11 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Common;
-using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
-using Quartz;
 
 public class ChaosExceptionJobSchedulingBehavior(ILoggerFactory loggerFactory)
     : JobSchedulingBehaviorBase(loggerFactory)

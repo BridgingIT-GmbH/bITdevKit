@@ -7,8 +7,6 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Diagnostics;
 using Humanizer;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Polly;
 using Polly.Retry;
 

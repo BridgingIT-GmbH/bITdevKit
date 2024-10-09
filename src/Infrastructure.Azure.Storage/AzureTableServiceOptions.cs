@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using Common;
-using global::Azure.Data.Tables;
-
 public class AzureTableServiceOptions : OptionsBase
 {
     public virtual string ConnectionString { get; set; }

@@ -70,11 +70,7 @@ public class RequestLoggingMiddleware
 
                     await this.next(httpContext); // continue pipeline
 
-                    this.LogFinished(httpContext,
-                        collector,
-                        httpContext.Response.StatusCode,
-                        GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()),
-                        null);
+                    this.LogFinished(httpContext, collector, httpContext.Response.StatusCode, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), null);
                 }
                 else
                 {
@@ -85,11 +81,7 @@ public class RequestLoggingMiddleware
                 // Never caught, because `LogFinished()` returns false. This ensures e.g. the developer exception page is still
                 // shown, does also mean we see a duplicate "unhandled exception" event from ASP.NET Core.
 #pragma warning disable SA1501
-                when (this.LogFinished(httpContext,
-                          collector,
-                          500,
-                          GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()),
-                          ex)) { }
+                when (this.LogFinished(httpContext, collector, 500, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex)) { }
 #pragma warning restore SA1501
             finally
             {
@@ -141,11 +133,9 @@ public class RequestLoggingMiddleware
         {
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
-            new LogEventProperty(RequestPathKey,
-                new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
+            new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
             new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
-            new LogEventProperty(UserAgentKey,
-                new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
+            new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
         });
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateStarted, properties);
@@ -187,13 +177,11 @@ public class RequestLoggingMiddleware
         {
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
-            new LogEventProperty(RequestPathKey,
-                new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
+            new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
             new LogEventProperty(StatusCodeKey, new ScalarValue(statusCode)),
             new LogEventProperty(ElapsedKey, new ScalarValue(elapsedMs)),
             new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
-            new LogEventProperty(UserAgentKey,
-                new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
+            new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
         });
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateFinished, properties);

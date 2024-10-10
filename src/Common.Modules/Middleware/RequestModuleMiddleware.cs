@@ -78,8 +78,8 @@ public class RequestModuleMiddleware
         {
             this.logger.LogInformation("{LogKey} request module: {ModuleName}", "REQ", moduleName);
 
-            var activity = httpContext.Features.Get<IHttpActivityFeature>()
-                ?.Activity; // Enrich the request activity created by ASP.NET Core
+            // Enrich the request activity created by ASP.NET Core
+            var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
             activity?.SetBaggage(ActivityConstants.ModuleNameTagKey, moduleName);
 
             httpContext.Response.Headers.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
@@ -92,10 +92,8 @@ public class RequestModuleMiddleware
             {
                 if (module.Enabled)
                 {
-                    httpContext.Features.Get<IHttpMetricsTagsFeature>()
-                        ?.Tags
-                        .Add(new KeyValuePair<string, object>("module_name",
-                            moduleName)); // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
+                    // https://learn.microsoft.com/en-us/aspnet/core/log-mon/metrics/metrics?view=aspnetcore-8.0#enrich-the-aspnet-core-request-metric
+                    httpContext.Features.Get<IHttpMetricsTagsFeature>()?.Tags.Add(new KeyValuePair<string, object>("module_name", moduleName));
 
                     await this.activitySources.Find(moduleName)
                         .StartActvity($"MODULE {moduleName}",
@@ -104,7 +102,16 @@ public class RequestModuleMiddleware
                                     $"HTTP_INBOUND {httpContext.Request.Method.ToUpperInvariant()} {httpContext.Request.Path}",
                                     async (a, c) => await this.next(httpContext).AnyContext(),
                                     ActivityKind.Server,
-                                    //baggages: new Dictionary<string, string> { [ActivityConstants.ModuleNameTagKey] = module.Name },
+                                    tags: new Dictionary<string, string>
+                                    {
+                                        ["request.module.origin"] = moduleName,
+                                        ["request.method"] = httpContext.Request.Method,
+                                        ["request.path"] = httpContext.Request.Path
+                                    },
+                                    baggages: new Dictionary<string, string>
+                                    {
+                                        [ActivityConstants.ModuleNameTagKey] = moduleName,
+                                    },
                                     cancellationToken: c));
                 }
                 else

@@ -7,11 +7,27 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.AspNetCore.Http;
 
+/// <summary>
+/// Manages the context for request modules by providing functionality to
+/// find the appropriate module based on the provided HTTP request.
+/// </summary>
 public class RequestModuleContextAccessor : IRequestModuleContextAccessor
 {
+    /// <summary>
+    /// A variable representing a collection of modules within the application framework.
+    /// Utilized within RequestModuleContextAccessor for providing functionalities such as finding
+    /// the appropriate module based on a provided HTTP request.
+    /// </summary>
     private readonly IEnumerable<IModule> modules;
+
+    /// <summary>
+    /// An array of string paths used to identify specific modules within HTTP requests.
+    /// </summary>
     private readonly string[] pathSelectors = ["/api/v", "/api"];
 
+    /// <summary>
+    /// Provides functionality for accessing the appropriate module based on the provided HTTP request.
+    /// </summary>
     public RequestModuleContextAccessor(IEnumerable<IModule> modules = null, string[] pathSelectors = null)
     {
         this.modules = modules.SafeNull();
@@ -22,6 +38,11 @@ public class RequestModuleContextAccessor : IRequestModuleContextAccessor
         }
     }
 
+    /// <summary>
+    /// Finds the appropriate module based on the provided HTTP request.
+    /// </summary>
+    /// <param name="request">The HTTP request used to determine the module.</param>
+    /// <returns>The module associated with the HTTP request, or null if no module is found.</returns>
     public virtual IModule Find(HttpRequest request)
     {
         request.Headers.TryGetValue(ModuleConstants.ModuleNameKey, out var moduleName);
@@ -31,14 +52,30 @@ public class RequestModuleContextAccessor : IRequestModuleContextAccessor
             moduleName = request.Query[ModuleConstants.ModuleNameKey];
         }
 
-        foreach (var pathSelector in this.pathSelectors.SafeNull())
+        if (string.IsNullOrWhiteSpace(moduleName))
         {
-            if (string.IsNullOrWhiteSpace(moduleName) &&
-                request.Path.Value.Contains(pathSelector, StringComparison.OrdinalIgnoreCase))
+            foreach (var module in this.modules) // check if modulename is part of path
             {
-                // TODO: source generated regex? api/MODULENAME/controller
-                moduleName = request.Path.Value.SliceFrom(pathSelector);
-                moduleName = moduleName.ToString().SliceFrom("/").SliceTill("/");
+                if (request.Path.Value != null &&
+                    request.Path.Value.Contains($"/{module.Name}/", StringComparison.OrdinalIgnoreCase))
+                {
+                    moduleName = module.Name;
+                    break;
+                }
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(moduleName))
+        {
+            foreach (var pathSelector in this.pathSelectors.SafeNull()) // check if module is found with the path selectors
+            {
+                if (string.IsNullOrWhiteSpace(moduleName) &&
+                    request.Path.Value.Contains(pathSelector, StringComparison.OrdinalIgnoreCase))
+                {
+                    // TODO: source generated regex? api/MODULENAME/controller
+                    moduleName = request.Path.Value.SliceFrom(pathSelector);
+                    moduleName = moduleName.ToString().SliceFrom("/").SliceTill("/");
+                }
             }
         }
 

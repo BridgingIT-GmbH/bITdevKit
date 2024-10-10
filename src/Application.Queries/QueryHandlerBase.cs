@@ -16,10 +16,17 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     private const string QueryIdKey = "QueryRequestId";
     private const string QueryTypeKey = "QueryType";
 
-    protected QueryHandlerBase(ILoggerFactory loggerFactory)
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
+    private readonly IEnumerable<ActivitySource> activitySources;
+
+    protected QueryHandlerBase(ILoggerFactory loggerFactory,
+        IEnumerable<IModuleContextAccessor> moduleAccessors = null,
+        IEnumerable<ActivitySource> activitySources = null)
     {
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
             NullLoggerFactory.Instance.CreateLogger(this.GetType());
+        this.moduleAccessors = moduleAccessors;
+        this.activitySources = activitySources;
     }
 
     protected ILogger Logger { get; }
@@ -38,16 +45,15 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
             {
                 EnsureArg.IsNotNull(query, nameof(query));
 
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType}",
+                // TODO: move the Activity Starting to the ModuleScopeQueryBehavior so the module can be added to the Activity (tracing)
+                var module = this.moduleAccessors.Find(query.GetType());
+                var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
                             $"processing (type={requestType}, id={query.RequestId}, handler={handlerType})"));
-                        TypedLogger.LogProcessing(this.Logger,
-                            Constants.LogKey,
-                            requestType,
-                            query.RequestId,
-                            handlerType);
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, query.RequestId, handlerType);
 
                         this.ValidateRequest(query);
                         var watch = ValueStopwatch.StartNew();
@@ -71,17 +77,21 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger,
-                            Constants.LogKey,
-                            requestType,
-                            query.RequestId,
-                            watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, query.RequestId, watch.GetElapsedMilliseconds());
 
                         return response;
                     },
+                    tags: new Dictionary<string, string>
+                    {
+                        ["query.module.origin"] = moduleName,
+                        ["query.request_id"] = query.RequestId.ToString("N"),
+                        ["query.request_type"] = requestType
+                    },
                     baggages: new Dictionary<string, string>
                     {
-                        ["command.id"] = query.RequestId.ToString("N"), ["command.type"] = requestType
+                        ["query.id"] = query.RequestId.ToString("N"),
+                        ["query.type"] = requestType,
+                        [ActivityConstants.ModuleNameTagKey] = moduleName,
                     },
                     cancellationToken: cancellationToken);
             }

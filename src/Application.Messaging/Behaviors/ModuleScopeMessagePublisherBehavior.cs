@@ -25,7 +25,10 @@ public class ModuleScopeMessagePublisherBehavior(
             return;
         }
 
-        using (this.Logger.BeginScope(new Dictionary<string, object> { [ModuleConstants.ModuleNameKey] = moduleName }))
+        using (this.Logger.BeginScope(new Dictionary<string, object>
+               {
+                   [ModuleConstants.ModuleNameKey] = moduleName
+               }))
         {
             if (module?.Enabled == false)
             {
@@ -52,6 +55,12 @@ public class ModuleScopeMessagePublisherBehavior(
                         ["messaging.module.origin"] = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString(),
                         ["messaging.message_id"] = message?.MessageId,
                         ["messaging.message_type"] = messageType
+                    },
+                    baggages: new Dictionary<string, string>
+                    {
+                        [ActivityConstants.ModuleNameTagKey] = moduleName,
+                        [ActivityConstants.CorrelationIdTagKey] = message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString(),
+                        [ActivityConstants.FlowIdTagKey] = message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString()
                     },
                     cancellationToken: cancellationToken);
         }

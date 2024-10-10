@@ -37,7 +37,7 @@ public partial class MediatorDomainEventPublisher : IDomainEventPublisher
     {
         if (@event is not null)
         {
-            TypedLogger.LogSend(this.logger, Constants.LogKey, @event.EventId, @event.GetType().Name);
+            TypedLogger.LogSend(this.logger, Constants.LogKey, @event.EventId.ToString("N"), @event.GetType().Name);
 
             await this.mediator.Publish(@event, cancellationToken).AnyContext();
         }
@@ -58,6 +58,6 @@ public partial class MediatorDomainEventPublisher : IDomainEventPublisher
         [LoggerMessage(0,
             LogLevel.Information,
             "{LogKey} publish domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
-        public static partial void LogSend(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
+        public static partial void LogSend(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

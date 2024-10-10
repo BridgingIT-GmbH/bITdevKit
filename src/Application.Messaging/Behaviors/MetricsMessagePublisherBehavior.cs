@@ -25,6 +25,7 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
             return;
         }
 
+        // TODO: extract module name from message and use in metric name
         var meter = meterFactory.Create("bridgingit_devkit");
         meter.CreateCounter<int>("messages_publish").Add(1);
         meter.CreateCounter<int>($"messages_publish_{message.GetType().Name.ToLower()}").Add(1);

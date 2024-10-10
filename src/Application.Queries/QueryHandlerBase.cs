@@ -19,7 +19,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources;
 
-    protected QueryHandlerBase(ILoggerFactory loggerFactory,
+    protected QueryHandlerBase(
+        ILoggerFactory loggerFactory,
         IEnumerable<IModuleContextAccessor> moduleAccessors = null,
         IEnumerable<ActivitySource> activitySources = null)
     {
@@ -38,7 +39,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
-                   [QueryIdKey] = query.RequestId, [QueryTypeKey] = query.GetType().Name
+                   [QueryIdKey] = query.RequestId.ToString("N"),
+                   [QueryTypeKey] = requestType
                }))
         {
             try
@@ -48,12 +50,14 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                 // TODO: move the Activity Starting to the ModuleScopeQueryBehavior so the module can be added to the Activity (tracing)
                 var module = this.moduleAccessors.Find(query.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+
+                return await this.activitySources.Find(moduleName)
+                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
-                            $"processing (type={requestType}, id={query.RequestId}, handler={handlerType})"));
-                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, query.RequestId, handlerType);
+                            $"processing (type={requestType}, id={query.RequestId.ToString("N")}, handler={handlerType})"));
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, query.RequestId.ToString("N"), handlerType, moduleName);
 
                         this.ValidateRequest(query);
                         var watch = ValueStopwatch.StartNew();
@@ -65,11 +69,11 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                                 "{LogKey} processing cancelled (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, reason={QueryCancelledReason})",
                                 Constants.LogKey,
                                 requestType,
-                                query.RequestId,
+                                query.RequestId.ToString("N"),
                                 handlerType,
                                 response?.CancelledReason);
                             a?.AddEvent(new ActivityEvent(
-                                $"processing cancelled (type={requestType}, id={query.RequestId}, handler={handlerType}, reason={response?.CancelledReason})"));
+                                $"processing cancelled (type={requestType}, id={query.RequestId.ToString("N")}, handler={handlerType}, reason={response?.CancelledReason})"));
 
                             if (cancellationToken.IsCancellationRequested)
                             {
@@ -77,7 +81,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, query.RequestId, watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, query.RequestId.ToString("N"), moduleName, watch.GetElapsedMilliseconds());
 
                         return response;
                     },
@@ -101,7 +105,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                     "{LogKey} processing error (type={QueryType}, id={QueryRequestId}): {ErrorMessage}",
                     Constants.LogKey,
                     requestType,
-                    query.RequestId,
+                    query.RequestId.ToString("N"),
                     ex.Message);
 
                 throw;
@@ -113,10 +117,11 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     private void ValidateRequest(TQuery request)
     {
+        // TODO: use typed logger
         this.Logger.LogDebug("{LogKey} validating (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})",
             Constants.LogKey,
             request.GetType().Name,
-            request.RequestId,
+            request.RequestId.ToString("N"),
             this.GetType().Name);
 
         var validationResult = request.Validate();
@@ -128,24 +133,12 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})")]
-        public static partial void LogProcessing(
-            ILogger logger,
-            string logKey,
-            string queryType,
-            Guid queryRequestId,
-            string queryHandler);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, module={ModuleName})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, string queryType, string queryRequestId, string queryHandler, string moduleName);
 
         [LoggerMessage(1,
             LogLevel.Information,
-            "{LogKey} processed (type={QueryType}, id={QueryRequestId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(
-            ILogger logger,
-            string logKey,
-            string queryType,
-            Guid queryRequestId,
-            long timeElapsed);
+            "{LogKey} processed (type={QueryType}, id={QueryRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string queryType, string queryRequestId, string moduleName, long timeElapsed);
     }
 }

@@ -19,7 +19,8 @@ public abstract partial class CommandHandlerBase<TCommand>
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources;
 
-    protected CommandHandlerBase(ILoggerFactory loggerFactory,
+    protected CommandHandlerBase(
+        ILoggerFactory loggerFactory,
         IEnumerable<IModuleContextAccessor> moduleAccessors = null,
         IEnumerable<ActivitySource> activitySources = null)
     {
@@ -39,7 +40,8 @@ public abstract partial class CommandHandlerBase<TCommand>
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
-                   [CommandIdKey] = command.RequestId, [CommandTypeKey] = requestType
+                   [CommandIdKey] = command.RequestId.ToString("N"),
+                   [CommandTypeKey] = requestType
                }))
         {
             try
@@ -49,16 +51,19 @@ public abstract partial class CommandHandlerBase<TCommand>
                 // TODO: move the Activity Starting to the ModuleScopeCommandBehavior so the module can be added to the Activity (tracing)
                 var module = this.moduleAccessors.Find(command.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+
+                return await this.activitySources.Find(moduleName)
+                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
-                            $"processing (type={command.GetType().Name}, id={command.RequestId}, handler={handlerType})"));
+                            $"processing (type={command.GetType().Name}, id={command.RequestId.ToString("N")}, handler={handlerType})"));
                         TypedLogger.LogProcessing(this.Logger,
                             Constants.LogKey,
                             requestType,
-                            command.RequestId,
-                            handlerType);
+                            command.RequestId.ToString("N"),
+                            handlerType,
+                            moduleName);
 
                         this.ValidateRequest(command);
                         var watch = ValueStopwatch.StartNew();
@@ -70,11 +75,11 @@ public abstract partial class CommandHandlerBase<TCommand>
                                 "{LogKey} processing cancelled (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, reason={CommandCancelledReason})",
                                 Constants.LogKey,
                                 requestType,
-                                command.RequestId,
+                                command.RequestId.ToString("N"),
                                 handlerType,
                                 response?.CancelledReason);
                             a?.AddEvent(new ActivityEvent(
-                                $"processing cancelled (type={requestType}, id={command.RequestId}, handler={handlerType}, reason={response?.CancelledReason})"));
+                                $"processing cancelled (type={requestType}, id={command.RequestId.ToString("N")}, handler={handlerType}, reason={response?.CancelledReason})"));
 
                             if (cancellationToken.IsCancellationRequested)
                             {
@@ -82,7 +87,7 @@ public abstract partial class CommandHandlerBase<TCommand>
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, command.RequestId, watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, requestType, command.RequestId.ToString("N"), moduleName, watch.GetElapsedMilliseconds());
 
                         return response;
                     },
@@ -106,7 +111,7 @@ public abstract partial class CommandHandlerBase<TCommand>
                     "{LogKey} processing error (type={CommandType}, id={CommandRequestId}): {ErrorMessage}",
                     Constants.LogKey,
                     requestType,
-                    command.RequestId,
+                    command.RequestId.ToString("N"),
                     ex.Message);
 
                 throw;
@@ -118,10 +123,7 @@ public abstract partial class CommandHandlerBase<TCommand>
 
     private void ValidateRequest(TCommand request)
     {
-        this.Logger.LogDebug("{LogKey} validating (type={CommandType}, id={CommandRequestId})",
-            Constants.LogKey,
-            request.GetType().Name,
-            request.RequestId);
+        this.Logger.LogDebug("{LogKey} validating (type={CommandType}, id={CommandRequestId})", Constants.LogKey, request.GetType().Name, request.RequestId);
 
         var validationResult = request.Validate();
         if (validationResult?.IsValid == false)
@@ -132,34 +134,26 @@ public abstract partial class CommandHandlerBase<TCommand>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})")]
-        public static partial void LogProcessing(
-            ILogger logger,
-            string logKey,
-            string commandType,
-            Guid commandRequestId,
-            string commandHandler);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, module={ModuleName})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, string commandType, string commandRequestId, string commandHandler, string moduleName);
 
-        [LoggerMessage(1,
-            LogLevel.Information,
-            "{LogKey} processed (type={CommandType}, id={CommandRequestId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(
-            ILogger logger,
-            string logKey,
-            string commandType,
-            Guid commandRequestId,
-            long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={CommandType}, id={CommandRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string commandType, string commandRequestId, string moduleName, long timeElapsed);
     }
 }
 
-public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFactory loggerFactory)
+public abstract partial class CommandHandlerBase<TCommand, TResult>(
+    ILoggerFactory loggerFactory,
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null,
+    IEnumerable<ActivitySource> activitySources = null)
     : IRequestHandler<TCommand, CommandResponse<TResult>>, ICommandRequestHandler
     where TCommand : class, ICommandRequest<CommandResponse<TResult>>
 {
     private const string CommandIdKey = "CommandRequestId";
     private const string CommandTypeKey = "CommandType";
+
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     protected ILogger Logger { get; } = loggerFactory?.CreateLogger<CommandHandlerBase<TCommand, TResult>>() ??
         NullLoggerFactory.Instance.CreateLogger<CommandHandlerBase<TCommand, TResult>>();
@@ -171,7 +165,8 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
-                   [CommandIdKey] = command.RequestId, [CommandTypeKey] = requestType
+                   [CommandIdKey] = command.RequestId.ToString("N"),
+                   [CommandTypeKey] = requestType
                }))
         {
             try
@@ -179,16 +174,16 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
                 EnsureArg.IsNotNull(command, nameof(command));
 
                 // TODO: move the Activity Starting to the ModuleScopeCommandBehavior so the module can be added to the Activity (tracing)
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType}",
+                var module = this.moduleAccessors.Find(command.GetType());
+                var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
+
+                return await this.activitySources.Find(moduleName)
+                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
-                            $"processing (type={command.GetType().Name}, id={command.RequestId}, handler={handlerType})"));
-                        TypedLogger.LogProcessing(this.Logger,
-                            Constants.LogKey,
-                            command.GetType().Name,
-                            command.RequestId,
-                            handlerType);
+                            $"processing (type={command.GetType().Name}, id={command.RequestId.ToString("N")}, handler={handlerType})"));
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, command.GetType().Name, command.RequestId.ToString("N"), handlerType, moduleName);
 
                         this.ValidateRequest(command);
                         var watch = ValueStopwatch.StartNew();
@@ -204,7 +199,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
                                 handlerType,
                                 response?.CancelledReason);
                             a?.AddEvent(new ActivityEvent(
-                                $"processing cancelled (type={command.GetType().Name}, id={command.RequestId}, handler={handlerType}, reason={response?.CancelledReason})"));
+                                $"processing cancelled (type={command.GetType().Name}, id={command.RequestId.ToString("N")}, handler={handlerType}, reason={response?.CancelledReason})"));
 
                             if (cancellationToken.IsCancellationRequested)
                             {
@@ -212,17 +207,21 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger,
-                            Constants.LogKey,
-                            command.GetType().Name,
-                            command.RequestId,
-                            watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, command.GetType().Name, command.RequestId.ToString("N"), moduleName, watch.GetElapsedMilliseconds());
 
                         return response;
                     },
+                    tags: new Dictionary<string, string>
+                    {
+                        ["command.module.origin"] = moduleName,
+                        ["command.request_id"] = command.RequestId.ToString("N"),
+                        ["command.request_type"] = requestType
+                    },
                     baggages: new Dictionary<string, string>
                     {
-                        ["command.id"] = command.RequestId.ToString("N"), ["command.type"] = requestType
+                        ["command.id"] = command.RequestId.ToString("N"),
+                        ["command.type"] = requestType,
+                        [ActivityConstants.ModuleNameTagKey] = moduleName,
                     },
                     cancellationToken: cancellationToken);
             }
@@ -232,7 +231,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
                     "{LogKey} processing error (type={CommandType}, id={CommandRequestId}): {ErrorMessage}",
                     Constants.LogKey,
                     command.GetType().Name,
-                    command.RequestId,
+                    command.RequestId.ToString("N"),
                     ex.Message);
 
                 throw;
@@ -247,7 +246,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
         this.Logger.LogDebug("{LogKey} validating (type={CommandType}, id={CommandRequestId})",
             Constants.LogKey,
             request.GetType().Name,
-            request.RequestId);
+            request.RequestId.ToString("N"));
 
         var validationResult = request.Validate();
         if (validationResult?.IsValid == false)
@@ -258,24 +257,10 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(ILoggerFacto
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})")]
-        public static partial void LogProcessing(
-            ILogger logger,
-            string logKey,
-            string commandType,
-            Guid commandRequestId,
-            string commandHandler);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, module={ModuleName})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, string commandType, string commandRequestId, string commandHandler, string moduleName);
 
-        [LoggerMessage(1,
-            LogLevel.Information,
-            "{LogKey} processed (type={CommandType}, id={CommandRequestId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(
-            ILogger logger,
-            string logKey,
-            string commandType,
-            Guid commandRequestId,
-            long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={CommandType}, id={CommandRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string commandType, string commandRequestId, string moduleName, long timeElapsed);
     }
 }

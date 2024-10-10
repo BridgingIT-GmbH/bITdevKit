@@ -17,13 +17,10 @@ public static class ActivitySourceExtensions
             return Activity.Current?.Source;
         }
 
-        var result = source.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        // get activitysource for name or default
+        var result = source.FirstOrDefault(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            ?? source.FirstOrDefault(a => a.Name.Equals("default", StringComparison.OrdinalIgnoreCase));
 
-        if (result is null) // get fallback activitysource
-        {
-            result = source.FirstOrDefault(a => a.Name.Equals("default", StringComparison.OrdinalIgnoreCase));
-        }
-
-        return result;
+        return result ?? Activity.Current?.Source;
     }
 }

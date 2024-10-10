@@ -61,7 +61,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         var @event = new AggregateDeletedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
-            @event.EventId,
+            @event.EventId.ToString("N"),
             typeof(AggregateDeletedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
@@ -153,7 +153,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         var @event = new AggregateCreatedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
-            @event.EventId,
+            @event.EventId.ToString("N"),
             typeof(AggregateInsertedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
@@ -167,7 +167,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         var @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
-            @event.EventId,
+            @event.EventId.ToString("N"),
             typeof(AggregateUpdatedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
@@ -190,7 +190,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
             @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
         }
 
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId, @event.GetType().Name);
+        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId.ToString("N"), @event.GetType().Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -217,13 +217,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} repository register domain event (id={DomainEventId}, type={DomainEventType})")]
-        public static partial void LogRegister(
-            ILogger logger,
-            string logKey,
-            Guid domainEventId,
-            string domainEventType);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository register domain event (id={DomainEventId}, type={DomainEventType})")]
+        public static partial void LogRegister(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

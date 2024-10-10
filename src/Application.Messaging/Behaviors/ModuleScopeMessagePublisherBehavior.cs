@@ -9,8 +9,8 @@ using System.Diagnostics;
 
 public class ModuleScopeMessagePublisherBehavior(
     ILoggerFactory loggerFactory,
-    IEnumerable<IModuleContextAccessor> moduleAccessors = null,
-    IEnumerable<ActivitySource> activitySources = null) : MessagePublisherBehaviorBase(loggerFactory)
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null
+    /*IEnumerable<ActivitySource> activitySources = null*/) : MessagePublisherBehaviorBase(loggerFactory)
 {
     public override async Task Publish<TMessage>(
         TMessage message,
@@ -38,8 +38,8 @@ public class ModuleScopeMessagePublisherBehavior(
             this.PropagateContext(message, moduleName);
             var messageType = message?.GetType().PrettyName(false);
 
-            await activitySources.Find(moduleName)
-                .StartActvity($"{Constants.TraceOperationPublishName} {messageType} [{moduleName}]",
+            //await activitySources.Find(moduleName)
+            await Activity.Current.StartActvity($"{Constants.TraceOperationPublishName} {messageType} [{moduleName}]",
                     async (a, c) =>
                     {
                         if (message?.Properties?.ContainsKey(ModuleConstants.ActivityParentIdKey) == false)

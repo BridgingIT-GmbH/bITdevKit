@@ -50,17 +50,25 @@ public class ModuleScopeMessageHandlerBehavior(
             {
                 await activitySources.Find(moduleName)
                     .StartActvity($"MODULE {moduleName}",
-                        async (a, c) => await activitySources.Find(moduleName)
-                            .StartActvity($"{Constants.TraceOperationHandleName} {messageType} -> {handlerType} [{moduleName}]",
-                                async (a, c) => await next().AnyContext(),
-                                ActivityKind.Consumer,
-                                tags: new Dictionary<string, string>
-                                {
-                                    ["messaging.module.origin"] = moduleNameOrigin,
-                                    ["messaging.message_id"] = message?.MessageId,
-                                    ["messaging.message_type"] = messageType
-                                },
-                                cancellationToken: c),
+                        async (a, c) =>
+                        {
+                            using (this.Logger.BeginScope(new Dictionary<string, object>
+                                   {
+                                       ["TraceId"] = a.TraceId.ToString()
+                                   }))
+                            {
+                                await Activity.Current.StartActvity($"{Constants.TraceOperationHandleName} {messageType} -> {handlerType} [{moduleName}]",
+                                    async (a, c) => await next().AnyContext(),
+                                    ActivityKind.Consumer,
+                                    tags: new Dictionary<string, string>
+                                    {
+                                        ["messaging.module.origin"] = moduleNameOrigin,
+                                        ["messaging.message_id"] = message?.MessageId,
+                                        ["messaging.message_type"] = messageType
+                                    },
+                                    cancellationToken: c);
+                            }
+                        },
                         parentId: parentId,
                         baggages: new Dictionary<string, string>
                         {

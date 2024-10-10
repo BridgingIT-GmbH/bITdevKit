@@ -51,8 +51,8 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                 var module = this.moduleAccessors.Find(query.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
-                return await this.activitySources.Find(moduleName)
-                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+                //return await this.activitySources.Find(moduleName)
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(

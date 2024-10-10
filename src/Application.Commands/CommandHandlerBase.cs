@@ -52,8 +52,8 @@ public abstract partial class CommandHandlerBase<TCommand>
                 var module = this.moduleAccessors.Find(command.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
-                return await this.activitySources.Find(moduleName)
-                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+                //return await this.activitySources.Find(moduleName)
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
@@ -177,8 +177,8 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
                 var module = this.moduleAccessors.Find(command.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
-                return await this.activitySources.Find(moduleName)
-                    .StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+                //return await this.activitySources.Find(moduleName)
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
@@ -207,7 +207,12 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
                             }
                         }
 
-                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, command.GetType().Name, command.RequestId.ToString("N"), moduleName, watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger,
+                            Constants.LogKey,
+                            command.GetType().Name,
+                            command.RequestId.ToString("N"),
+                            moduleName,
+                            watch.GetElapsedMilliseconds());
 
                         return response;
                     },

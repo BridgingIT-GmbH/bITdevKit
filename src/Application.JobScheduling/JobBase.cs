@@ -125,14 +125,7 @@ public abstract partial class JobBase : IJob
         [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={JobType}, id={JobId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobId);
 
-        [LoggerMessage(1,
-            LogLevel.Information,
-            "{LogKey} processed (type={JobType}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(
-            ILogger logger,
-            string logKey,
-            string jobType,
-            string jobId,
-            long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobId, long timeElapsed);
     }
 }

@@ -48,6 +48,7 @@ public class ModuleScopeStartupTaskBehavior(
                             await Activity.Current
                                 .StartActvity($"STARTUPTASK_EXECUTE {taskName} [{moduleName}]",
                                     async (a, c) => await next().AnyContext(),
+                                    ActivityKind.Producer,
                                     tags: new Dictionary<string, string>
                                     {
                                         ["startuptask.type"] = taskName

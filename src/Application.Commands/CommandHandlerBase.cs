@@ -53,7 +53,7 @@ public abstract partial class CommandHandlerBase<TCommand>
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
                 //return await this.activitySources.Find(moduleName)
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationHandleName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(
@@ -178,7 +178,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
                 //return await this.activitySources.Find(moduleName)
-                return await Activity.Current.StartActvity($"{Constants.TraceOperationProcessName} {requestType} [{moduleName}]",
+                return await Activity.Current.StartActvity($"{Constants.TraceOperationHandleName} {requestType} [{moduleName}]",
                     async (a, c) =>
                     {
                         a?.AddEvent(new ActivityEvent(

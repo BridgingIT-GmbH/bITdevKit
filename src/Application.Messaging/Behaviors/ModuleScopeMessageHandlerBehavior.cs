@@ -34,7 +34,8 @@ public class ModuleScopeMessageHandlerBehavior(
         using (this.Logger.BeginScope(new Dictionary<string, object>
                {
                    [ModuleConstants.ModuleNameKey] = moduleName,
-                   [ModuleConstants.ModuleNameOriginKey] = moduleNameOrigin,
+                   [Constants.CorrelationIdKey] = correlationId,
+                   [Constants.FlowIdKey] = flowId,
                }))
         {
             if (module is not null && !module.Enabled)

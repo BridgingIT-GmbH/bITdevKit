@@ -9,5 +9,5 @@ public struct Constants
 {
     public const string LogKey = "QRY";
 
-    public const string TraceOperationProcessName = "QUERY_PROCESS";
+    public const string TraceOperationHandleName = "QUERY_HANDLE";
 }

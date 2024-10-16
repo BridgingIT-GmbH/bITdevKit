@@ -70,7 +70,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     {
         return specification is null
             ? await this.FindAllAsync(specifications: null, options: options, cancellationToken).AnyContext()
-            : await this.FindAllAsync(new[] { specification }, options, cancellationToken).AnyContext();
+            : await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return specification is null
             ? await this.ProjectAllAsync(specifications: null, projection, options: options, cancellationToken)
                 .AnyContext()
-            : await this.ProjectAllAsync(new[] { specification }, projection, options, cancellationToken).AnyContext();
+            : await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -165,7 +165,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync(new[] { specification }, options, cancellationToken);
+        return await this.FindOneAsync([specification], options, cancellationToken);
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -331,7 +331,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)

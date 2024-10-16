@@ -65,7 +65,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new[] { specification }, options, cancellationToken).AnyContext();
+        return await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -142,7 +142,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync(new[] { specification }, options, cancellationToken).AnyContext();
+        return await this.FindOneAsync([specification], options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(
@@ -262,7 +262,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)

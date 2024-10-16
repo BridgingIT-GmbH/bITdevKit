@@ -27,7 +27,7 @@ public class EnumerableExtensionTests
     public void Insert_WhenInsertingAtNegativeIndex_ShouldAddItemToEndOfCollection()
     {
         // Arrange
-        IEnumerable<int> source = new[] { 1, 2, 3 };
+        IEnumerable<int> source = [1, 2, 3];
         var item = 4;
         var expected = new[] { 1, 2, 3, item };
 
@@ -42,7 +42,7 @@ public class EnumerableExtensionTests
     public void Insert_WhenInsertingAtIndexOfZero_ShouldAddItemAtStart()
     {
         // Arrange
-        IEnumerable<int> source = new[] { 1, 2, 3 };
+        IEnumerable<int> source = [1, 2, 3];
         var item = 0;
         var expected = new List<int> { item, 1, 2, 3 };
 
@@ -87,7 +87,7 @@ public class EnumerableExtensionTests
     public void Add_WhenAdding_ShouldAddItemToEndOfCollection()
     {
         // Arrange
-        IEnumerable<int> source = new[] { 1, 2, 3 };
+        IEnumerable<int> source = [1, 2, 3];
         var item = 4;
         var expected = new[] { 1, 2, 3, item };
 

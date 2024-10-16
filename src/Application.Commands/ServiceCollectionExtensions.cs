@@ -8,9 +8,48 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using BridgingIT.DevKit.Application.Commands;
 using MediatR.Registration;
+using Scrutor;
 
 public static class ServiceCollectionExtensions
 {
+    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
+
+    public static CommandBuilderContext AddCommands(
+        this IServiceCollection services,
+        IEnumerable<string> assemblyExcludePatterns = null,
+        bool skipHandlerRegistration = false,
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
+    {
+        if (!skipHandlerRegistration)
+        {
+            ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
+
+            services.Scan(scan => scan
+                .FromApplicationDependencies(a =>
+                    !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                    .Where(c => !c.IsAbstract &&
+                        !c.IsGenericTypeDefinition &&
+                        c.ImplementsInterface(typeof(ICommandRequestHandler))))
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .AsSelfWithInterfaces()
+                .WithLifetime(lifetime));
+
+            services.Scan(scan => scan
+                .FromApplicationDependencies(a =>
+                    !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
+                    .Where(c => !c.IsAbstract &&
+                        !c.IsGenericTypeDefinition &&
+                        c.ImplementsInterface(typeof(ICommandRequestHandler))))
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .AsSelfWithInterfaces()
+                .WithLifetime(lifetime));
+        }
+
+        return new CommandBuilderContext(services);
+    }
+
     public static CommandBuilderContext AddCommands(
         this IServiceCollection services,
         IEnumerable<Type> types,
@@ -19,18 +58,20 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan.FromAssemblies(types.Select(t => t.Assembly).Distinct())
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
-                .Where(c => !c.IsAbstract &&
-                    !c.IsGenericTypeDefinition &&
-                    c.ImplementsInterface(typeof(ICommandRequestHandler))))
-            .AsSelfWithInterfaces()
-            .WithLifetime(lifetime));
+        .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+            .Where(c => !c.IsAbstract &&
+                !c.IsGenericTypeDefinition &&
+                c.ImplementsInterface(typeof(ICommandRequestHandler))))
+        .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+        .AsSelfWithInterfaces()
+        .WithLifetime(lifetime));
 
         services.Scan(scan => scan.FromAssemblies(types.Select(t => t.Assembly).Distinct())
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(ICommandRequestHandler))))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
@@ -57,6 +98,7 @@ public static class ServiceCollectionExtensions
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(ICommandRequestHandler))))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
@@ -74,6 +116,7 @@ public static class ServiceCollectionExtensions
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(ICommandRequestHandler))))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 
@@ -82,38 +125,7 @@ public static class ServiceCollectionExtensions
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(ICommandRequestHandler))))
-            .AsSelfWithInterfaces()
-            .WithLifetime(lifetime));
-
-        return new CommandBuilderContext(services);
-    }
-
-    public static CommandBuilderContext AddCommands(
-        this IServiceCollection services,
-        IEnumerable<string> assemblyExcludePatterns = null,
-        ServiceLifetime lifetime = ServiceLifetime.Transient)
-    {
-        ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
-
-        services.Scan(scan => scan
-            .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
-                .Where(c => !c.IsAbstract &&
-                    !c.IsGenericTypeDefinition &&
-                    c.ImplementsInterface(typeof(ICommandRequestHandler))))
-            .AsSelfWithInterfaces()
-            .WithLifetime(lifetime));
-
-        services.Scan(scan => scan
-            .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
-                .Where(c => !c.IsAbstract &&
-                    !c.IsGenericTypeDefinition &&
-                    c.ImplementsInterface(typeof(ICommandRequestHandler))))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));
 

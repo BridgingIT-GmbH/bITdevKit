@@ -35,7 +35,7 @@ public static class CompositionRoot
                 !a.GetName().Name.StartsWith("System.", StringComparison.OrdinalIgnoreCase))
             .ToArray()
             // Since the assembly of PersonCreatedProjection won't be loaded automatically, we add it to ensure it's loaded.
-            .Union(new[] { typeof(PersonService).Assembly, typeof(PersonCreatedNotificationProjection).Assembly })
+            .Union([typeof(PersonService).Assembly, typeof(PersonCreatedNotificationProjection).Assembly])
             .ToArray();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
@@ -45,11 +45,11 @@ public static class CompositionRoot
             .Where(a =>
                 !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
             .ToArray()
-            .Union(new[]
-            {
+            .Union(
+            [
                 typeof(OutboxMessageProfile).Assembly, typeof(EventStoreProfile).Assembly,
                 typeof(PersonProfile).Assembly
-            })
+            ])
             .ToArray());
         // end::AutomapperSetup[]
 

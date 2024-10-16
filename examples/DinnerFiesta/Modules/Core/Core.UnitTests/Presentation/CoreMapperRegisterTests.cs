@@ -81,7 +81,7 @@ public class CoreMapperRegisterTests
         var source = new Faker<Result<IEnumerable<Dinner>>>()
             .RuleFor(u => u.IsSuccess, true)
             .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, new[] { entities.First(), entities.Last() })
+            .RuleFor(u => u.Value, [entities.First(), entities.Last()])
             .Generate();
 
         // Act

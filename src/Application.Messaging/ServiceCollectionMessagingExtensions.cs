@@ -63,7 +63,7 @@ public static class ServiceCollectionMessagingExtensions
             scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
                 //.FromExecutingAssembly()
                 .FromApplicationDependencies(a =>
-                    !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }))
+                    !a.FullName.EqualsPatternAny(["Microsoft*", "System*", "Scrutor*", "HealthChecks*"]))
                 .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));
 
         services.AddHostedService(sp => // should be scoped

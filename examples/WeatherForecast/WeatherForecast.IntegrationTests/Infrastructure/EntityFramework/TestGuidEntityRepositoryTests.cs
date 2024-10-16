@@ -36,12 +36,12 @@ public class
                 MyProperty1 = "John " + ticks,
                 MyProperty2 = "Doe " + ticks,
                 MyProperty3 = i,
-                Children = new List<TestGuidChildEntity>(new[]
-                {
+                Children = new List<TestGuidChildEntity>(
+                [
                     new TestGuidChildEntity { MyProperty1 = "val a " + ticks, MyProperty2 = "val a " + ticks },
                     new TestGuidChildEntity { MyProperty1 = "val b " + ticks, MyProperty2 = "val b " + ticks },
                     new TestGuidChildEntity { MyProperty1 = "val c " + ticks, MyProperty2 = "val c " + ticks }
-                })
+                ])
             };
 
             entity.AuditState.SetCreated("test");
@@ -79,10 +79,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -132,12 +132,12 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -177,12 +177,12 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 100,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks },
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -197,8 +197,8 @@ public class
                 Id = entity.Id, // has same id as entity > should update
                 MyProperty1 = "Mary " + ticks,
                 MyProperty2 = "Jane " + ticks,
-                Children = new List<TestGuidChildEntity>(new[]
-                {
+                Children = new List<TestGuidChildEntity>(
+                [
                     new TestGuidChildEntity
                     {
                         Id = entity.Children.First().Id,
@@ -209,7 +209,7 @@ public class
                     {
                         MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks
                     } // added because no id present
-                })
+                ])
             };
 
             await scopedSut.UpsertAsync(disconnectedEntity).AnyContext();
@@ -244,10 +244,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -270,10 +270,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -302,10 +302,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -334,10 +334,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -367,10 +367,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -399,10 +399,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -428,10 +428,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -459,10 +459,10 @@ public class
                 MyProperty1 = "John " + ticks,
                 MyProperty2 = "Doe " + ticks,
                 MyProperty3 = i,
-                Children = new List<TestGuidChildEntity>(new[]
-                {
+                Children = new List<TestGuidChildEntity>(
+                [
                     new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-                })
+                ])
             };
 
             entity.AuditState.SetCreated("test");
@@ -491,10 +491,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -514,10 +514,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");
@@ -537,10 +537,10 @@ public class
             MyProperty1 = "John " + ticks,
             MyProperty2 = "Doe " + ticks,
             MyProperty3 = 0,
-            Children = new List<TestGuidChildEntity>(new[]
-            {
+            Children = new List<TestGuidChildEntity>(
+            [
                 new TestGuidChildEntity { MyProperty1 = "val " + ticks, MyProperty2 = "val " + ticks }
-            })
+            ])
         };
 
         entity.AuditState.SetCreated("test");

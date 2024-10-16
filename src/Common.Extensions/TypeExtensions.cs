@@ -197,6 +197,16 @@ public static class TypeExtensions
             : source.GetInterfaces().Any(c => c.Name == @interface.Name);
     }
 
+    public static bool ImplementsAllInterfaces(this Type type, params Type[] interfaces)
+    {
+        return interfaces.All(type.ImplementsInterface);
+    }
+
+    public static bool ImplementsAnyInterface(this Type type, params Type[] interfaces)
+    {
+        return interfaces.Any(type.ImplementsInterface);
+    }
+
     /// <summary>
     ///     Determines whether a type, like IList&lt;int&gt;, implements an open generic interface, like
     ///     IEnumerable&lt;&gt;. Note that this only checks against *interfaces*.

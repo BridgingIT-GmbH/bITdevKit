@@ -58,7 +58,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new[] { specification }, options, cancellationToken).AnyContext();
+        return await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -112,7 +112,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(new[] { specification }, projection, options, cancellationToken).AnyContext();
+        return await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -168,7 +168,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public virtual async Task<long> CountAsync(
@@ -209,7 +209,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync(new[] { specification }, options, cancellationToken).AnyContext();
+        return await this.FindOneAsync([specification], options, cancellationToken).AnyContext();
     }
 
     public virtual async Task<TEntity> FindOneAsync(

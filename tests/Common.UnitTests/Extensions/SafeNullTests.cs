@@ -42,7 +42,7 @@ public class SafeNullTests
 
         // Assert
         safeSource.ShouldNotBeNull();
-        safeSource.ShouldBe(new[] { "one", "two", "three" });
+        safeSource.ShouldBe(["one", "two", "three"]);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class SafeNullTests
 
         // Assert
         safeSource.ShouldNotBeNull();
-        safeSource.ShouldBe(new[] { "one", "two", "three" });
+        safeSource.ShouldBe(["one", "two", "three"]);
     }
 
     [Fact]

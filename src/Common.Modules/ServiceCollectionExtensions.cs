@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         context.Services.Scan(scan =>
             scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
                 .FromApplicationDependencies(a =>
-                    !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }))
+                    !a.FullName.EqualsPatternAny(["Microsoft*", "System*", "Scrutor*", "HealthChecks*"]))
                 .AddClasses(classes => classes.AssignableTo(typeof(IModuleContextAccessor)), true)
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
@@ -228,7 +228,7 @@ public static class ServiceCollectionExtensions
         context.Services.Scan(scan =>
             scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
                 .FromApplicationDependencies(a =>
-                    !a.FullName.EqualsPatternAny(new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }))
+                    !a.FullName.EqualsPatternAny(["Microsoft*", "System*", "Scrutor*", "HealthChecks*"]))
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestModuleContextAccessor)), true)
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());

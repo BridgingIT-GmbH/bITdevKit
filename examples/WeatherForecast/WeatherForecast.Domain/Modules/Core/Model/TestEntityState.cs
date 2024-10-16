@@ -113,10 +113,10 @@ public class TestEntityState
                 this.UpdatedReasons = [];
             }
 
-            this.UpdatedReasons = this.UpdatedReasons.Concat(new[]
-            {
+            this.UpdatedReasons = this.UpdatedReasons.Concat(
+            [
                 $"{by}: ({this.UpdatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-            });
+            ]);
         }
     }
 
@@ -143,10 +143,10 @@ public class TestEntityState
                 this.DeactivatedReasons = new List<string>();
             }
 
-            this.DeactivatedReasons = this.DeactivatedReasons.Concat(new[]
-            {
+            this.DeactivatedReasons = this.DeactivatedReasons.Concat(
+            [
                 $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
-            });
+            ]);
         }
     }
 

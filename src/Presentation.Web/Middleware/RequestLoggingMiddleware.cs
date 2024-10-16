@@ -129,14 +129,14 @@ public class RequestLoggingMiddleware
             collectedProperties = NoProperties;
         }
 
-        var properties = collectedProperties.Concat(new[]
-        {
+        var properties = collectedProperties.Concat(
+        [
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
             new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
             new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
             new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
-        });
+        ]);
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateStarted, properties);
         logger.Write(@event);
@@ -173,8 +173,8 @@ public class RequestLoggingMiddleware
             collectedProperties = NoProperties;
         }
 
-        var properties = collectedProperties.Concat(new[]
-        {
+        var properties = collectedProperties.Concat(
+        [
             new LogEventProperty("LogKey", new ScalarValue(LogKey)),
             new LogEventProperty(RequestMethodKey, new ScalarValue(httpContext.Request.Method)),
             new LogEventProperty(RequestPathKey, new ScalarValue(GetPath(httpContext, this.options.IncludeRequestQuery))),
@@ -182,7 +182,7 @@ public class RequestLoggingMiddleware
             new LogEventProperty(ElapsedKey, new ScalarValue(elapsedMs)),
             new LogEventProperty(ClientIpKey, new ScalarValue(httpContext.Connection.RemoteIpAddress?.ToString())),
             new LogEventProperty(UserAgentKey, new ScalarValue(httpContext.Request.Headers["User-Agent"].FirstOrDefault()))
-        });
+        ]);
 
         var @event = new LogEvent(DateTimeOffset.Now, level, ex, this.messageTemplateFinished, properties);
         logger.Write(@event);

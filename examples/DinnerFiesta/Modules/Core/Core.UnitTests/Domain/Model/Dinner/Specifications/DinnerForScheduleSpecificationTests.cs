@@ -42,7 +42,7 @@ public class DinnerForScheduleSpecificationTests
         otherDinner4.ChangeSchedule(DinnerSchedule.Create(dinner.Schedule.StartDateTime.AddHours(5),
             dinner.Schedule.EndDateTime.AddHours(6)));
 
-        dinners.AddRange(new[] { otherDinner0, otherDinner1, otherDinner2, otherDinner3, otherDinner4 });
+        dinners.AddRange([otherDinner0, otherDinner1, otherDinner2, otherDinner3, otherDinner4]);
 
         // Act
         var sut = new DinnerForScheduleSpecification(dinner.HostId, dinner.Schedule);

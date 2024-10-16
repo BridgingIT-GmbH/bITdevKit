@@ -205,7 +205,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)

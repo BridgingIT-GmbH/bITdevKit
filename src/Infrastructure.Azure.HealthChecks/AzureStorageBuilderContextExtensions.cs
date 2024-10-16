@@ -23,7 +23,7 @@ public static class AzureStorageBuilderContextExtensions
                 .AddAzureBlobStorage(context.ConnectionString,
                     name: name ?? $"blobstorage ({context.AccountName})",
                     failureStatus: failureStatus,
-                    tags: tags ?? new[] { "ready" });
+                    tags: tags ?? ["ready"]);
         }
         else if (context.Service == Service.Table)
         {
@@ -31,7 +31,7 @@ public static class AzureStorageBuilderContextExtensions
                 .AddAzureBlobStorage(context.ConnectionString,
                     name: name ?? $"tablestorage ({context.AccountName})",
                     failureStatus: failureStatus,
-                    tags: tags ?? new[] { "ready" });
+                    tags: tags ?? ["ready"]);
         }
         else if (context.Service == Service.Queue)
         {
@@ -39,7 +39,7 @@ public static class AzureStorageBuilderContextExtensions
                 .AddAzureQueueStorage(context.ConnectionString,
                     name: name ?? $"queuestorage ({context.AccountName})",
                     failureStatus: failureStatus,
-                    tags: tags ?? new[] { "ready" });
+                    tags: tags ?? ["ready"]);
         }
 
         return context;

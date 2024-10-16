@@ -188,7 +188,7 @@ public class CoreModule : WebModuleBase
 
         //tag::Partend[]
         services.AddHealthChecks()
-            .AddCheck("self-core", () => HealthCheckResult.Healthy(), new[] { "ready" });
+            .AddCheck("self-core", () => HealthCheckResult.Healthy(), ["ready"]);
 
         return services;
     } //end::Part1[]

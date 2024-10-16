@@ -25,7 +25,7 @@ public static class DbContextBuilderContextExtensions
                 null,
                 name ?? $"{context.Provider.ToString().ToLower()} ({typeof(TContext).Name})",
                 failureStatus,
-                tags ?? new[] { "ready" },
+                tags ?? ["ready"],
                 timeout);
 
         return context;

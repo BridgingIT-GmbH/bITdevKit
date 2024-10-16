@@ -49,7 +49,7 @@ public static class AssemblyExtensions
             return [];
         }
 
-        return assemblies.SelectMany(t => SafeGetTypes(t, @interface));
+        return assemblies.SelectMany(a => SafeGetTypes(a, @interface));
     }
 
     public static IEnumerable<Type> SafeGetTypes(this Assembly assembly, Type @interface)
@@ -61,11 +61,38 @@ public static class AssemblyExtensions
 
         try
         {
-            return assembly.GetTypes().Where(t => t != null && t.ImplementsInterface(@interface));
+            return assembly.GetTypes().Where(t => t.ImplementsInterface(@interface));
         }
         catch (ReflectionTypeLoadException e)
         {
             return e.Types.Where(t => t != null && t.ImplementsInterface(@interface));
+        }
+    }
+
+    public static IEnumerable<Type> SafeGetTypes(this IEnumerable<Assembly> assemblies, params Type[] interfaces)
+    {
+        if (assemblies is null || interfaces is null || interfaces.Length == 0)
+        {
+            return Array.Empty<Type>();
+        }
+
+        return assemblies.SelectMany(a => SafeGetTypes(a, interfaces));
+    }
+
+    public static IEnumerable<Type> SafeGetTypes(this Assembly assembly, params Type[] interfaces)
+    {
+        if (assembly is null || interfaces is null || interfaces.Length == 0)
+        {
+            return Array.Empty<Type>();
+        }
+
+        try
+        {
+            return assembly.GetTypes().Where(t => t.ImplementsAnyInterface(interfaces));
+        }
+        catch (ReflectionTypeLoadException e)
+        {
+            return e.Types.Where(t => t != null && t.ImplementsAnyInterface(interfaces));
         }
     }
 

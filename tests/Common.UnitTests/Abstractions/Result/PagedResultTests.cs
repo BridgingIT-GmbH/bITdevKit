@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
 [UnitTest("Common")]
 public class PagedResultTests
 {
-    private readonly IEnumerable<string> messages = new[] { "message1", "message2" };
+    private readonly IEnumerable<string> messages = ["message1", "message2"];
     private readonly long count = 100;
     private readonly int page = 2;
     private readonly int pageSize = 10;

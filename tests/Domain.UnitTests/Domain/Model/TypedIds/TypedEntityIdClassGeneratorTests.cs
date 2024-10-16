@@ -169,7 +169,7 @@ public class Product : BaseEntity
         };
 
         var compilation = CSharpCompilation.Create("TestAssembly",
-            new[] { syntaxTree },
+            [syntaxTree],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 

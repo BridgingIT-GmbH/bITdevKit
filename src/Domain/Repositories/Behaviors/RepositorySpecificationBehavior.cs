@@ -65,7 +65,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]),
                 options,
                 cancellationToken)
             .AnyContext();
@@ -97,7 +97,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>([specification]),
                 projection,
                 options,
                 cancellationToken)
@@ -173,7 +173,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(

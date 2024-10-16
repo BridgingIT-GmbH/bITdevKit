@@ -25,8 +25,8 @@ public class InMemoryRepositoryDbTests
             .With(x => x.LastName, this.GenerateRandomString(5))
             .With(x => x.Country, "USA")
             .Build()
-            .Concat(new[]
-            {
+            .Concat(
+            [
                 new StubEntity
                 {
                     Id = "Id99",
@@ -35,7 +35,7 @@ public class InMemoryRepositoryDbTests
                     Age = 38,
                     Country = "USA"
                 }
-            });
+            ]);
     }
 
     public string GenerateRandomString(int length = 5)

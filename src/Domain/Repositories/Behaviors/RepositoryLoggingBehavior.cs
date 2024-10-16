@@ -46,7 +46,7 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.CountAsync(new[] { specification }, cancellationToken).AnyContext();
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(

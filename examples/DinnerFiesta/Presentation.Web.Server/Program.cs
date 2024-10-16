@@ -58,8 +58,9 @@ builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json
 // ===============================================================================================
 // Configure the services
 builder.Services.AddMediatR(); // or AddDomainEvents()?
-//builder.Services.AddDomainEvents(ServiceLifetime.Scoped);
 builder.Services.AddMapping().WithMapster();
+
+//builder.Services.AddDomainEvents(ServiceLifetime.Scoped);
 builder.Services.AddCaching(builder.Configuration)
     //.WithEntityFrameworkDocumentStoreProvider<CoreDbContext>()
     //.WithAzureBlobDocumentStoreProvider()
@@ -72,11 +73,14 @@ builder.Services.AddCommands()
     //.WithBehavior(typeof(ChaosExceptionCommandBehavior<,>))
     .WithBehavior(typeof(RetryCommandBehavior<,>))
     .WithBehavior(typeof(TimeoutCommandBehavior<,>));
+
 builder.Services.AddQueries()
     .WithBehavior(typeof(ModuleScopeQueryBehavior<,>))
     //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
     .WithBehavior(typeof(RetryQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
+
+builder.Services.PrintMediatRRegistrations(builder.Environment.IsDevelopment());
 
 builder.Services.AddJobScheduling(o => o
         .StartupDelay("00:00:15"), builder.Configuration)
@@ -229,7 +233,7 @@ void ConfigureJsonOptions(JsonOptions options)
 void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
-        .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { "self" });
+        .AddCheck("self", () => HealthCheckResult.Healthy(), ["self"]);
     //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()

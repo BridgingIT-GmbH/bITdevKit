@@ -43,7 +43,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = await DomainRules.ReturnAsync(new[] { rule1, rule2, rule3 });
+        var result = await DomainRules.ReturnAsync([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeTrue();
@@ -58,7 +58,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = DomainRules.Return(new[] { rule1, rule2, rule3 });
+        var result = DomainRules.Return([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeTrue();
@@ -139,7 +139,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act & Assert
-        Task.Run(async () => await DomainRules.ApplyAsync(new[] { rule1, rule2, rule3 }));
+        Task.Run(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = await DomainRules.ApplyAsync(new[] { rule1, rule2, rule3 }, null, () => 1);
+        var result = await DomainRules.ApplyAsync([rule1, rule2, rule3], null, () => 1);
 
         // Assert
         result.ShouldBe(1);
@@ -166,7 +166,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act & Assert
-        DomainRules.Apply(new[] { rule1, rule2, rule3 });
+        DomainRules.Apply([rule1, rule2, rule3]);
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = DomainRules.Apply(new[] { rule1, rule2, rule3 }, null, () => 1);
+        var result = DomainRules.Apply([rule1, rule2, rule3], null, () => 1);
 
         // Assert
         // Assert
@@ -194,7 +194,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(async () => await DomainRules.ApplyAsync(new[] { rule1, rule2, rule3 }));
+        Should.Throw<DomainRuleException>(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
@@ -206,7 +206,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(async () => await DomainRules.ApplyAsync(new[] { rule1, rule2, rule3 }));
+        Should.Throw<ApplicationException>(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
@@ -218,7 +218,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(() => DomainRules.Apply(new[] { rule1, rule2, rule3 }));
+        Should.Throw<DomainRuleException>(() => DomainRules.Apply([rule1, rule2, rule3]));
     }
 
     [Fact]
@@ -230,7 +230,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(() => DomainRules.Apply(new[] { rule1, rule2, rule3 }));
+        Should.Throw<ApplicationException>(() => DomainRules.Apply([rule1, rule2, rule3]));
     }
 
     [Fact]
@@ -242,7 +242,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = await DomainRules.ReturnAsync(new[] { rule1, rule2, rule3 });
+        var result = await DomainRules.ReturnAsync([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeFalse();
@@ -257,7 +257,7 @@ public class DomainRulesTests
         var rule3 = new StubDomainRule(true);
 
         // Act
-        var result = DomainRules.Return(new[] { rule1, rule2, rule3 });
+        var result = DomainRules.Return([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeFalse();

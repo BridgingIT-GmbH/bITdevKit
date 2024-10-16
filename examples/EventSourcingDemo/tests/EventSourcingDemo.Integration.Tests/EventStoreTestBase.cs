@@ -81,7 +81,7 @@ public class EventstoreTestBase : TestsBase
                             return name != null &&
                                 !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
                         })
-                        .Union(new[] { typeof(EventStoreProfile).Assembly })
+                        .Union([typeof(EventStoreProfile).Assembly])
                         .ToArray())
                     .RegisterAutomapperAsEntityMapper();
 

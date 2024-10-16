@@ -220,7 +220,7 @@ void ConfigureJsonOptions(JsonOptions options)
 void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
-        .AddCheck("self", () => HealthCheckResult.Healthy(), new[] { "self" });
+        .AddCheck("self", () => HealthCheckResult.Healthy(), ["self"]);
     //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()

@@ -13,6 +13,39 @@ using MediatR.Registration;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
+
+    /// <summary>
+    ///     Adds domain event handlers from application dependencies to the service collection.
+    /// </summary>
+    /// <param name="services">The IServiceCollection to add the services to.</param>
+    /// <param name="lifetime">The ServiceLifetime of the domain event handlers. Defaults to Transient.</param>
+    /// <param name="assemblyExcludePatterns">Optional patterns for excluding assemblies from the scan.</param>
+    /// <returns>The updated IServiceCollection.</returns>
+    public static IServiceCollection AddDomainEvents(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Transient,
+        bool skipHandlerRegistration = false,
+        IEnumerable<string> assemblyExcludePatterns = null)
+    {
+        ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
+
+        if (!skipHandlerRegistration)
+        {
+            services.Scan(scan => scan
+            .FromApplicationDependencies(a =>
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
+                .Where(c => !c.IsAbstract &&
+                    !c.IsGenericTypeDefinition &&
+                    c.ImplementsInterface(typeof(IDomainEventHandler))))
+            .AsSelfWithInterfaces()
+            .WithLifetime(lifetime));
+        }
+
+        return services;
+    }
+
     /// <summary>
     ///     Registers domain event handlers within the specified assemblies or types into the service collection with a given
     ///     service lifetime.
@@ -78,34 +111,6 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan.FromAssemblies(typeof(T).Assembly)
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
-                .Where(c => !c.IsAbstract &&
-                    !c.IsGenericTypeDefinition &&
-                    c.ImplementsInterface(typeof(IDomainEventHandler))))
-            .AsSelfWithInterfaces()
-            .WithLifetime(lifetime));
-
-        return services;
-    }
-
-    /// <summary>
-    ///     Adds domain event handlers from application dependencies to the service collection.
-    /// </summary>
-    /// <param name="services">The IServiceCollection to add the services to.</param>
-    /// <param name="lifetime">The ServiceLifetime of the domain event handlers. Defaults to Transient.</param>
-    /// <param name="assemblyExcludePatterns">Optional patterns for excluding assemblies from the scan.</param>
-    /// <returns>The updated IServiceCollection.</returns>
-    public static IServiceCollection AddDomainEvents(
-        this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Transient,
-        IEnumerable<string> assemblyExcludePatterns = null)
-    {
-        ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
-
-        services.Scan(scan => scan
-            .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&

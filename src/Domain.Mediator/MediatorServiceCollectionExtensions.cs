@@ -14,13 +14,34 @@ using MediatR.Registration;
 /// </summary>
 public static class MediatorServiceCollectionExtensions
 {
+    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
+
+    public static IServiceCollection AddMediatR(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Transient,
+        IEnumerable<string> assemblyExcludePatterns = null)
+    {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a => !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+            .SafeGetTypes(
+                typeof(INotificationHandler<>), typeof(IRequestHandler<,>), typeof(IRequestHandler<>), typeof(IStreamRequestHandler<,>),
+                typeof(IRequestExceptionHandler<,,>), typeof(IRequestExceptionAction<,>))
+            .Select(t => t.Assembly)
+            .Distinct().ToArray();
+
+        return services.AddMediatR(assemblies, lifetime);
+    }
+
     /// <summary>
     ///     Adds MediatR handlers and services to the <see cref="IServiceCollection" /> from the provided types.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add the MediatR services to.</param>
     /// <param name="types">A collection of types containing MediatR handlers.</param>
     /// <returns>The modified <see cref="IServiceCollection" />.</returns>
-    public static IServiceCollection AddMediatR(this IServiceCollection services, IEnumerable<Type> types)
+    public static IServiceCollection AddMediatR(
+        this IServiceCollection services,
+        IEnumerable<Type> types,
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         return services.AddMediatR(types.Select(t => t.Assembly));
     }
@@ -31,9 +52,16 @@ public static class MediatorServiceCollectionExtensions
     /// <param name="services">The service collection to add the services to.</param>
     /// <param name="assemblies">The assemblies to scan for MediatR handlers, requests, and other related classes.</param>
     /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddMediatR(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+    public static IServiceCollection AddMediatR(
+        this IServiceCollection services,
+        IEnumerable<Assembly> assemblies,
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
-        return services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
+        return services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblies(assemblies.ToArray());
+            cfg.Lifetime = lifetime;
+        });
     }
 
     /// <summary>
@@ -41,9 +69,15 @@ public static class MediatorServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection to add MediatR services to.</param>
     /// <returns>The original IServiceCollection with MediatR services added.</returns>
-    public static IServiceCollection AddMediatR<T>(this IServiceCollection services)
+    public static IServiceCollection AddMediatR<T>(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
-        return services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<T>());
+        return services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<T>();
+            cfg.Lifetime = lifetime;
+        });
     }
 
     /// <summary>
@@ -54,7 +88,8 @@ public static class MediatorServiceCollectionExtensions
     /// <param name="lifetime">The service lifetime for the MediatR services. Defaults to ServiceLifetime.Transient.</param>
     /// <param name="assemblyExcludePatterns">Optional assembly exclusion patterns to filter assemblies from being scanned.</param>
     /// <returns>The original service collection with MediatR services added.</returns>
-    public static IServiceCollection AddMediatR(
+    [Obsolete]
+    public static IServiceCollection AddMediatRScan(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Transient,
         IEnumerable<string> assemblyExcludePatterns = null)
@@ -63,17 +98,15 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
-            .WithLifetime(lifetime));
+            .WithLifetime(lifetime)); // WARN: causes double registrations due to open-generic handler types (domain event handlers are registered twice and thus handled twice)
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -81,8 +114,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -90,8 +122,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IStreamRequestHandler<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -99,8 +130,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestExceptionHandler<,,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -108,8 +138,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(
-                    new[] { "Microsoft*", "System*", "Scrutor*", "HealthChecks*" }.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestExceptionAction<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()

@@ -84,7 +84,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]),
                 options,
                 cancellationToken)
             .AnyContext();
@@ -112,7 +112,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(new[] { specification }),
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>([specification]),
                 projection,
                 options,
                 cancellationToken)

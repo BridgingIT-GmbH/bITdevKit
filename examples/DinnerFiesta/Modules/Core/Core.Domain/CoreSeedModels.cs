@@ -47,163 +47,144 @@ public static class CoreSeedModels
                 HostId.Create(Hosts(ticks).ToArray()[1].Id.Value), // Erik
                 $"Vegetarian Delights {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Starters {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Roasted tomato soup with basil and croutons",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Bruschetta with tomatoes, basil, and balsamic vinegar",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Main course {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Spinach and ricotta stuffed shells",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Vegetable stir fry with rice or noodles",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Dessert {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Vegan cheesecake with a nut crust and cashew filling",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 1
                 HostId.Create(Hosts(ticks).ToArray()[6].Id.Value), // Jane
                 $"Spicey Delights {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Bold Bites {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Fire-roasted red pepper hummus with pita chips and vegetables",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Chipotle-spiced sweet potato fries with cilantro-lime aioli",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Fiery fusions {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Spicy Korean stir-fry with tofu and vegetables",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Grilled spicy shrimp skewers with pineapple salsa",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Jerk-spiced roasted vegetables with coconut rice\r\n",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Blaze a Trail {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Mango and chili sorbet with lime and mint",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Mexican hot chocolate with whipped cream and cinnamon",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 2
                 HostId.Create(Hosts(ticks).ToArray()[6].Id.Value), // Jane
                 $"A Coastal Culinary Voyage {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Tide-to-Table (Starters) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Coastal Crab Cakes with Spicy Remoulade",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Calamari Fritto Misto with Zesty Marinara Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Tuna Tartare with Avocado and Wasabi Aioli",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"From the Deep Blue (Main course) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Grilled Whole Red Snapper with Citrus Salsa",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Pan-Seared Sea Bass with Lemon Caper Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Siren's Sweetness (Dessert) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Lemon Blueberry Mascarpone Parfait",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Mango and Passionfruit Sorbet with Fresh Berries",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("White Chocolate Mousse with Raspberry Coulis",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 3
                 HostId.Create(Hosts(ticks).ToArray()[0].Id.Value), // John
                 $"Flavors of East and West {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Oriental Delights (Starters) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Crispy Spring Rolls with Sweet Chili Dipping Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Thai Coconut Soup with Lemongrass and Galangal",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Cross-Cultural Connections (Main course) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Teriyaki Glazed Salmon with Sesame Stir-Fried Vegetables",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Thai Green Curry Chicken with Fragrant Jasmine Rice",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Vietnamese Lemongrass Tofu Banh Mi Sandwich",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Siren's Sweetness (Dessert) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Matcha Green Tea Tiramisu",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Yuzu Lemon Tart with Citrus Infusion",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 4
                 HostId.Create(Hosts(ticks).ToArray()[7].Id.Value), // Emily
                 $"A Carnivore's Culinary Journey {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Prime Cuts (Starters) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Classic Beef Carpaccio with Arugula and Parmesan",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Loaded Potato Skins with Bacon, Cheddar, and Sour Cream",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"From the Grill (Main course) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Dry-Aged Ribeye Steak with Red Wine Demi-Glace",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Grilled Filet Mignon with Béarnaise Sauce",
@@ -212,40 +193,36 @@ public static class CoreSeedModels
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Porterhouse Steak with Sautéed Mushrooms and Onions",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Sweet Indulgence (Dessert) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Caramelized Banana Foster with Whipped Cream",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Classic New York Cheesecake with Berry Compote",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Rich Chocolate Mousse with Fresh Berries",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 5
                 HostId.Create(Hosts(ticks).ToArray()[4].Id.Value), // Matthias
                 $"Prost & Pretzels {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Biergarten Bites (Starters) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Soft Pretzels with Mustard Dip",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Beer Cheese Soup with Pretzel Croutons",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Sauerkraut Fritters with Spicy Mustard",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Festive Feasts (Main course) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Traditional Bratwurst with Sauerkraut and German Potato Salad",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Sauerbraten (Braised Pot Roast) with Red Cabbage and Spaetzle",
@@ -253,53 +230,48 @@ public static class CoreSeedModels
                             MenuSectionItem.Create(
                                 "Roasted Chicken with Beer Gravy, Mashed Potatoes, and Roasted Vegetables",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Sweet Endings (Dessert) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Apple Strudel with Vanilla Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Bavarian Cream Puffs with Chocolate Ganache",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 6
                 HostId.Create(Hosts(ticks).ToArray()[3].Id.Value), // Isabella
                 $"Berlin's Culinary Adventure {ticks}",
                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                new[]
-                {
+                [
                     MenuSection.Create($"Currywurst Corner (Starters) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Classic Currywurst with Spicy Curry Ketchup",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Bockwurst Bites with Mustard Dipping Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Kreuzberg Specials (Main course) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Currywurst with Fries and Curry Ketchup",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Kartoffelsuppe  with Sausage and Rye Bread",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        }),
+                        ]),
                     MenuSection.Create($"Sweet Treats (Dessert) {ticks}",
                         "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.",
-                        new[]
-                        {
+                        [
                             MenuSectionItem.Create("Apfelstrudel with Vanilla Sauce",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Schmalzkuchen with Powdered Sugar",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et."),
                             MenuSectionItem.Create("Berliner with Jam Filling",
                                 "Duo aliquyam sea aliquyam voluptua elitr eum et duo lorem adipiscing amet. Magna invidunt sanctus ex consectetuer aliquyam. Vero duo sed justo magna magna ex elitr stet lorem ut elitr accusam eirmod diam sed dolore sed magna. Accusam lorem et molestie sanctus sed luptatum et ipsum duis et.")
-                        })
-                }),
+                        ])
+                ]),
             Menu.Create( // 7
                 HostId.Create(Hosts(ticks).ToArray()[0].Id.Value),
                 $"Empty Menu {ticks}",

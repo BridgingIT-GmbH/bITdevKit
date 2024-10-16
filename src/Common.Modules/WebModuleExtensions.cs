@@ -96,7 +96,7 @@ public static class WebModuleExtensions
         this ModuleBuilderContext context,
         Action<IMvcBuilder> optionsAction = null)
     {
-        return context.WithModuleControllers(new[] { typeof(T).Assembly }, optionsAction);
+        return context.WithModuleControllers([typeof(T).Assembly], optionsAction);
     }
 
     /// <summary>

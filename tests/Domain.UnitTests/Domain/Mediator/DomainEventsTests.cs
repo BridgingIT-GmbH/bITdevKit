@@ -39,7 +39,7 @@ public class DomainEventsTests
         var domainEvent2 = Substitute.For<IDomainEvent>();
 
         // Act
-        sut.Register(new[] { domainEvent1, domainEvent2 });
+        sut.Register([domainEvent1, domainEvent2]);
 
         // Assert
         var registeredEvents = sut.GetAll();

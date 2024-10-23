@@ -228,6 +228,7 @@ void ConfigureJsonOptions(JsonOptions options)
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 }
 
 void ConfigureHealth(IServiceCollection services)

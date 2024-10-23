@@ -8,8 +8,7 @@ namespace BridgingIT.DevKit.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class
-    JsonTypeConverter
+public class JsonTypeConverter
     : JsonConverter<Type> // source: https://stackoverflow.com/questions/66919668/net-core-graphql-graphql-systemtextjson-serialization-and-deserialization-of
 {
     public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

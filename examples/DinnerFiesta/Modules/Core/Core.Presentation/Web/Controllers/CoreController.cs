@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 
 using Application;
+using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Presentation.Web;
 using Domain;
@@ -43,6 +44,22 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
 
         return result.ToOkActionResult<Host, HostModel>(this.mapper);
     }
+
+    // [HttpGet, Route("api/core/hosts/filtered", Name = "Core_HostFindAllFilteredQuery")]
+    // public async Task<ActionResult<ICollection<HostModel>>> HostFindAllFilteredQuery([FromQueryFilter] FilterModel filter, CancellationToken cancellationToken)
+    // {
+    //     var result = (await this.mediator.Send(new HostFindAllQuery(), cancellationToken)).Result;
+    //
+    //     return result.ToOkActionResult<Host, HostModel>(this.mapper);
+    // }
+    //
+    // [HttpPost, Route("api/core/hosts/filtered", Name = "Core_HostFindAllFilteredBody")]
+    // public async Task<ActionResult<ICollection<HostModel>>> HostFindAllFilteredBody([FromBodyFilter] FilterModel filter, CancellationToken cancellationToken)
+    // {
+    //     var result = (await this.mediator.Send(new HostFindAllQuery(), cancellationToken)).Result;
+    //
+    //     return result.ToOkActionResult<Host, HostModel>(this.mapper);
+    // }
 
     public override async Task<ActionResult<HostModel>> HostCreate(
         [FromBody] HostModel body,

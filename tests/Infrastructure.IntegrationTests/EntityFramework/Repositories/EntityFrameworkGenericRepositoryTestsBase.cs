@@ -64,10 +64,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         var result = await sut.ExistsAsync(entity.Id);
 
         // Assert
-        this.GetContext()
-            .Persons.AsNoTracking()
-            .ToList()
-            .Count.ShouldBeGreaterThanOrEqualTo(1);
+        this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(1);
         result.ShouldBeTrue();
     }
 
@@ -128,23 +125,17 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
             new FindOptions<PersonStub>(2, 2, new OrderOption<PersonStub>(e => e.Age)));
 
         // Assert
-        this.GetContext()
-            .Persons.AsNoTracking()
-            .ToList()
-            .Count.ShouldBeGreaterThanOrEqualTo(5);
+        this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
-        results.Count()
-            .ShouldBe(2);
+        results.Count().ShouldBe(2);
         results.ShouldNotContain(entity1);
         results.ShouldNotContain(entity2);
         results.ShouldContain(entity3);
         results.ShouldContain(entity4);
         results.ShouldNotContain(entity5);
-        results.First()
-            .ShouldBe(entity4); // age 18
-        results.Last()
-            .ShouldBe(entity3); // age 20
+        results.First().ShouldBe(entity4); // age 18
+        results.Last().ShouldBe(entity3); // age 20
     }
 
     public virtual async Task FindAllAsync_AnyEntity_EntitiesFound()
@@ -162,10 +153,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         var results = await sut.FindAllAsync();
 
         // Assert
-        this.GetContext()
-            .Persons.AsNoTracking()
-            .ToList()
-            .Count.ShouldBeGreaterThanOrEqualTo(5);
+        this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(5);
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity1);
@@ -205,16 +193,11 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity);
-        results.Count()
-            .ShouldBe(1);
-        results.First()
-            .ShouldNotBeNull();
-        results.First()
-            .Id.ShouldBe(entity.Id);
-        results.First()
-            .Locations.ShouldNotBeNull();
-        results.First()
-            .Locations.ShouldNotBeEmpty();
+        results.Count().ShouldBe(1);
+        results.First().ShouldNotBeNull();
+        results.First().Id.ShouldBe(entity.Id);
+        results.First().Locations.ShouldNotBeNull();
+        results.First().Locations.ShouldNotBeEmpty();
     }
 
     public virtual async Task FindAllAsync_EntitySpecification_EntitiesFound()
@@ -231,16 +214,11 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         results.ShouldNotBeNull();
         results.ShouldNotBeEmpty();
         results.ShouldContain(entity);
-        results.Count()
-            .ShouldBe(1);
-        results.First()
-            .ShouldNotBeNull();
-        results.First()
-            .Id.ShouldBe(entity.Id);
-        results.First()
-            .Locations.ShouldNotBeNull();
-        results.First()
-            .Locations.ShouldNotBeEmpty();
+        results.Count().ShouldBe(1);
+        results.First().ShouldNotBeNull();
+        results.First().Id.ShouldBe(entity.Id);
+        results.First().Locations.ShouldNotBeNull();
+        results.First().Locations.ShouldNotBeEmpty();
     }
 
     public virtual async Task FindAllPagedAsync_AnyEntity_EntitiesFound()
@@ -268,10 +246,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
             2);
 
         // Assert
-        this.GetContext()
-            .Persons.AsNoTracking()
-            .ToList()
-            .Count.ShouldBeGreaterThanOrEqualTo(6);
+        this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
         results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
@@ -281,18 +256,15 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         results.CurrentPage.ShouldBe(1);
         results.HasNextPage.ShouldBeTrue();
         results.HasPreviousPage.ShouldBeFalse();
-        results.Value.Count()
-            .ShouldBe(2);
+        results.Value.Count().ShouldBe(2);
         results.Value.ShouldNotContain(entity1);
         results.Value.ShouldNotContain(entity2);
         results.Value.ShouldContain(entity3);
         results.Value.ShouldContain(entity4);
         results.Value.ShouldNotContain(entity5);
         results.Value.ShouldNotContain(entity6);
-        results.Value.First()
-            .ShouldBe(entity4); // age 18
-        results.Value.Last()
-            .ShouldBe(entity3); // age 20
+        results.Value.First().ShouldBe(entity4); // age 18
+        results.Value.Last().ShouldBe(entity3); // age 20
     }
 
     public virtual async Task FindAllIdsAsync_AnyEntity_ManyFound()
@@ -317,16 +289,12 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
             e.FirstName == entity6.FirstName));
 
         // Assert
-        this.GetContext()
-            .Persons.AsNoTracking()
-            .ToList()
-            .Count.ShouldBeGreaterThanOrEqualTo(6);
+        this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
         results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();
-        results.Value.Count()
-            .ShouldBe(6);
+        results.Value.Count().ShouldBe(6);
     }
 
     public virtual async Task FindOneAsync_ExistingEntityByIdSpecification_EntityFound()
@@ -464,14 +432,10 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(4);
-        existingEntity.Locations[0]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[1]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[2]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[3]
-            .Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[0].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[1].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[2].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[3].Id.ShouldNotBe(Guid.Empty);
     }
 
     public virtual async Task UpsertAsync_ExistingEntityChildRemoval_EntityUpdated()
@@ -534,12 +498,9 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(3);
-        existingEntity.Locations[0]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[1]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[2]
-            .Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[0].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[1].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[2].Id.ShouldNotBe(Guid.Empty);
         existingEntity.Locations.ShouldNotContain(location1);
         existingEntity.Locations.ShouldNotContain(location2);
         existingEntity.Locations.ShouldContain(location3);
@@ -687,14 +648,10 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Locations.ShouldNotBeNull();
         existingEntity.Locations.ShouldNotBeEmpty();
         existingEntity.Locations.Count.ShouldBe(4);
-        existingEntity.Locations[0]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[1]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[2]
-            .Id.ShouldNotBe(Guid.Empty);
-        existingEntity.Locations[3]
-            .Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[0].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[1].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[2].Id.ShouldNotBe(Guid.Empty);
+        existingEntity.Locations[3].Id.ShouldNotBe(Guid.Empty);
         existingEntity.Locations.ShouldContain(entity.Locations[0]);
         existingEntity.Locations.ShouldContain(location1);
         existingEntity.Locations.ShouldContain(location2);

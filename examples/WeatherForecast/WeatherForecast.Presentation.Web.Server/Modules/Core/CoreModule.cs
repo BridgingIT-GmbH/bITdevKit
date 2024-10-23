@@ -41,13 +41,11 @@ public class CoreModule : WebModuleBase
                 var validator = new InlineValidator<CoreModuleConfiguration>();
                 validator
                     .RuleFor(applicationOptions => applicationOptions.OpenWeatherUrl)
-                    .NotNull()
-                    .NotEmpty()
+                    .NotNull().NotEmpty()
                     .WithMessage("OpenWeatherUrl cannot be null or empty");
                 validator
                     .RuleFor(applicationOptions => applicationOptions.OpenWeatherApiKey)
-                    .NotNull()
-                    .NotEmpty()
+                    .NotNull().NotEmpty()
                     .WithMessage("OpenWeatherApiKey cannot be null or empty");
 
                 return validator

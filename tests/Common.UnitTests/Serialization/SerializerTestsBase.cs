@@ -208,7 +208,7 @@ public class StubModel
     public IReadOnlyList<int> Items
     {
         get => this.items;
-        init => this.items = new List<int>(value); // init needed for systemtextjson deserialization
+        init => this.items = [..value]; // init needed for systemtextjson deserialization
     }
 
     public object ObjectProperty { get; set; }

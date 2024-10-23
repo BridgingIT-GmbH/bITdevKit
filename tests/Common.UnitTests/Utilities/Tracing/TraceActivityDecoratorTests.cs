@@ -90,7 +90,7 @@ public class TraceActivityDecoratorTests
                     "Action|String&|Boolean[][][]|Int16[,,][,][,,,]|Int64[][,][][,,]");
             },
             out var strVal,
-            Array.Empty<bool[][]>(),
+            [],
             new short[,,,][,][,,] { },
             new long[,,][][,][] { });
     }

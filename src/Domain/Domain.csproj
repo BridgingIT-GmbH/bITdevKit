@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions"/>
     <PackageReference Include="MediatR.Contracts"/>
     <PackageReference Include="Scrutor"/>
+    <PackageReference Include="System.Linq.Dynamic.Core"/>
   </ItemGroup>
 
   <ItemGroup>

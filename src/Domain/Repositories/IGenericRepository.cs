@@ -42,9 +42,7 @@ public interface IGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntit
     ///     A <see cref="Task" /> that represents the asynchronous operation, containing a tuple with the entity and the
     ///     action result.
     /// </returns>
-    Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default);
+    Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Deletes the entity for the provided id.

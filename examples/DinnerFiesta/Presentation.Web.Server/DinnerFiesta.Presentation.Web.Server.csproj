@@ -70,16 +70,16 @@
   </ItemGroup>
 
   <!-- Discover and copy all bundled api specifications + documentation to the wwwroot folder, SwaggerUI needs these files -->
-  <Target Name="CopyApiSpec" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <SourceScripts Include="$(MSBuildProjectDirectory)\..\**\wwwroot\openapi\*.*"/>
-    </ItemGroup>
-    <Copy SourceFiles="@(SourceScripts)" DestinationFiles="@(SourceScripts -> '$(MSBuildProjectDirectory)\wwwroot\openapi\%(Filename)%(Extension)')" SkipUnchangedFiles="true"/>
-    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli bundle ./wwwroot/openapi/*-OpenAPI.yaml -o ./wwwroot/openapi/OpenAPI.yaml" ContinueOnError="WarnAndContinue"/>
-  </Target>
-  <Target Name="CleanApiSpec" AfterTargets="CoreClean">
-    <Delete Files=".\wwwroot\openapi\*.yaml"></Delete>
-    <Delete Files=".\wwwroot\openapi\*.html"></Delete>
-  </Target>
+<!--  <Target Name="CopyApiSpec" BeforeTargets="CoreCompile">-->
+<!--    <ItemGroup>-->
+<!--      <SourceScripts Include="$(MSBuildProjectDirectory)\..\**\wwwroot\openapi\*.*"/>-->
+<!--    </ItemGroup>-->
+<!--    <Copy SourceFiles="@(SourceScripts)" DestinationFiles="@(SourceScripts -> '$(MSBuildProjectDirectory)\wwwroot\openapi\%(Filename)%(Extension)')" SkipUnchangedFiles="true"/>-->
+<!--    <Exec Command="docker run &#45;&#45;rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli bundle ./wwwroot/openapi/*-OpenAPI.yaml -o ./wwwroot/openapi/OpenAPI.yaml" ContinueOnError="WarnAndContinue"/>-->
+<!--  </Target>-->
+<!--  <Target Name="CleanApiSpec" AfterTargets="CoreClean">-->
+<!--    <Delete Files=".\wwwroot\openapi\*.yaml"></Delete>-->
+<!--    <Delete Files=".\wwwroot\openapi\*.html"></Delete>-->
+<!--  </Target>-->
 
 </Project>

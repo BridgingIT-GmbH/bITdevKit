@@ -62,8 +62,7 @@ public static class Configure
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
-                Detail =
-                    $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request",
+                Detail = $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request",
                 Type = "https://httpstatuses.com/400",
                 Errors = ex.Errors?.OrderBy(v => v.PropertyName)
                         .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),

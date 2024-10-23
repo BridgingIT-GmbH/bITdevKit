@@ -81,7 +81,9 @@ public static class MediatRInspector
     private static string FormatGenericType(Type type)
     {
         if (!type.IsGenericType)
+        {
             return type.Name;
+        }
 
         var genericArguments = string.Join(", ", type.GetGenericArguments().Select(t => t.Name));
         return $"{type.Name.Split('`')[0]}<{genericArguments}>";

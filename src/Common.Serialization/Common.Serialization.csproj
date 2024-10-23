@@ -13,4 +13,8 @@
     <PackageReference Include="System.Threading.Tasks.Extensions"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

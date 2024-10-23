@@ -5,11 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests;
 
+using System.Linq.Dynamic.Core.Exceptions;
 using BridgingIT.DevKit.Domain;
 
 [UnitTest("Domain")]
 public class SpecificationTests
 {
+    private readonly Faker faker = new();
+
     [Fact]
     public void Specification_ExpressionCtorIsSatisfiedBy_ShouldReturnTrue()
     {
@@ -291,5 +294,156 @@ public class SpecificationTests
 
         // Assert
         result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionCtorIsSatisfiedBy_ShouldReturnTrue()
+    {
+        // Arrange
+        var firstName = this.faker.Person.FirstName;
+        var sut = new Specification<PersonStub>("FirstName == @0", firstName);
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName };
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionOrCtorIsSatisfiedBy_ShouldReturnTrue()
+    {
+        // Arrange
+        var firstName = this.faker.Person.FirstName;
+        var age = 10;
+        var sut = new Specification<PersonStub>("FirstName == @0 OR Age == @1", firstName, age);
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age};
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionAndCtorIsSatisfiedBy_ShouldReturnTrue()
+    {
+        // Arrange
+        var firstName = this.faker.Person.FirstName;
+        var age = 10;
+        var sut = new Specification<PersonStub>("FirstName == @0 AND Age == @1", firstName, age);
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age};
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionNoValuesCtorIsSatisfiedBy_ShouldReturnTrue()
+    {
+        // Arrange
+        var firstName = this.faker.Person.FirstName;
+        var sut = new Specification<PersonStub>($"FirstName == \"{firstName}\"");
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName };
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionCtorIsNotSatisfiedBy_ShouldReturnFalse()
+    {
+        // Arrange
+        var firstName = this.faker.Person.FirstName;
+        var sut = new Specification<PersonStub>("FirstName == @0", firstName);
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "unknown" };
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionCtorWithMultipleParameters_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var minAge = this.faker.Random.Number(18, 30);
+        var maxAge = this.faker.Random.Number(31, 60);
+        var sut = new Specification<PersonStub>("Age >= @0 && Age <= @1", minAge, maxAge);
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = this.faker.Random.Number(minAge, maxAge) };
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionCtorWithInvalidExpression_ShouldThrowException()
+    {
+        // Arrange
+        var invalidExpression = "InvalidProperty == @0";
+
+        // Act & Assert
+        Should.Throw<ParseException>(()
+            => new Specification<PersonStub>(invalidExpression, "value").ToExpression());
+    }
+
+    [Fact]
+    public void Specification_DynamicExpressionCtorWithComplexExpression_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var minAge = this.faker.Random.Number(18, 30);
+        var firstName = this.faker.Person.FirstName;
+        var sut = new Specification<PersonStub>("Age > @0 || (FirstName == @1 && LastName.StartsWith(\"D\"))", minAge, firstName);
+        var person = new PersonStub { Id = Guid.NewGuid(), Age = minAge - 1, FirstName = firstName, LastName = "Doe" };
+
+        // Act
+        var result = sut.IsSatisfiedBy(person);
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ToExpression_DynamicExpressionCtor_ShouldReturnCorrectExpression()
+    {
+        // Arrange
+        var age = this.faker.Random.Number(18, 60);
+        var sut = new Specification<PersonStub>("Age == @0", age);
+
+        // Act
+        var expression = sut.ToExpression();
+
+        // Assert
+        expression.ShouldNotBeNull();
+        expression.Body.NodeType.ShouldBe(System.Linq.Expressions.ExpressionType.Equal);
+    }
+
+    [Fact]
+    public void ToPredicate_DynamicExpressionCtor_ShouldReturnCorrectPredicate()
+    {
+        // Arrange
+        var age = this.faker.Random.Number(18, 60);
+        var sut = new Specification<PersonStub>("Age == @0", age);
+
+        // Act
+        var predicate = sut.ToPredicate();
+
+        // Assert
+        predicate.ShouldNotBeNull();
+        predicate(new PersonStub { Age = age }).ShouldBeTrue();
+        predicate(new PersonStub { Age = age + 1 }).ShouldBeFalse();
     }
 }

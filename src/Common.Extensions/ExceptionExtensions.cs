@@ -5,7 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
+using System.Net.Sockets;
 
 public static class ExceptionExtensions
 {
@@ -155,4 +158,8 @@ public static class ExceptionExtensions
 
         return false;
     }
+
+    public static bool IsTransientException(this Exception ex) =>
+        ex is DbException or DBConcurrencyException or SocketException or HttpRequestException or TaskCanceledException or TimeoutException;
+    // || ex is SqlException || ex is RequestFailedException
 }

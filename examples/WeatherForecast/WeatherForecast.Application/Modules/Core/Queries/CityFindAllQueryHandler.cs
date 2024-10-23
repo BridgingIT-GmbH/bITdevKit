@@ -27,10 +27,12 @@ public class CityFindAllQueryHandler : QueryHandlerBase<CityFindAllQuery, IEnume
     }
 
     public override async Task<QueryResponse<IEnumerable<CityQueryResponse>>> Process(
-        CityFindAllQuery request,
+        CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var cities = await this.cityRepository.FindAllAsync(new CityIsNotDeletedSpecification(),
+        var cities = await this.cityRepository.FindAllAsync(
+                query.Filter,
+                [new CityIsNotDeletedSpecification()],
                 cancellationToken: cancellationToken)
             .AnyContext();
 

@@ -57,9 +57,10 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
                 Constants.LogKey,
-                specification.GetType().PrettyName());
+                specification.GetType().PrettyName(),
+                specification.ToString());
         }
 
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
@@ -106,9 +107,10 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
 
         if (specification is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
                 Constants.LogKey,
-                specification.GetType().PrettyName());
+                specification.GetType().PrettyName(),
+                specification.ToString());
         }
 
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
@@ -124,9 +126,10 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
                 Constants.LogKey,
-                specification.GetType().PrettyName());
+                specification.GetType().PrettyName(),
+                specification.ToString());
         }
 
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
@@ -154,9 +157,10 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
 
         if (specification is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
                 Constants.LogKey,
-                specification.GetType().PrettyName());
+                specification.GetType().PrettyName(),
+                specification.ToString());
         }
 
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();

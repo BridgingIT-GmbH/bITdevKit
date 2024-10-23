@@ -47,15 +47,14 @@
   </ItemGroup>
 
   <!-- Bundle and build documentation for the api specification, see https://redocly.com/docs/cli/commands for help -->
-  <Target Name="GenerateApiSpec" BeforeTargets="CoreCompile" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
-    <!--<Exec Command="docker run ++rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli bundle $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).yaml" ContinueOnError="WarnAndContinue" />-->
-    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli build-docs $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).html" ContinueOnError="WarnAndContinue"/>
-    <Copy SourceFiles="@(GeneratedFilesPresentation)" DestinationFiles="@(GeneratedFilesPresentation->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="WarnAndContinue"/>
-  </Target>
-  <Target Name="CleanApiSpec" AfterTargets="CoreClean">
-    <Delete Files="@(GeneratedFilesPresentation)"></Delete>
-    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).yaml"></Delete>
-    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).html"></Delete>
-  </Target>
+<!--  <Target Name="GenerateApiSpec" BeforeTargets="CoreCompile" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">-->
+<!--    <Exec Command="docker run &#45;&#45;rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli build-docs $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).html" ContinueOnError="WarnAndContinue"/>-->
+<!--    <Copy SourceFiles="@(GeneratedFilesPresentation)" DestinationFiles="@(GeneratedFilesPresentation->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="WarnAndContinue"/>-->
+<!--  </Target>-->
+<!--  <Target Name="CleanApiSpec" AfterTargets="CoreClean">-->
+<!--    <Delete Files="@(GeneratedFilesPresentation)"></Delete>-->
+<!--    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).yaml"></Delete>-->
+<!--    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).html"></Delete>-->
+<!--  </Target>-->
 
 </Project>

@@ -22,6 +22,13 @@ the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEA
 
 Join us in advancing the world of software development with the bITDevKit!
 
+<!-- TOC -->
+* [Supported patterns, elements:](#supported-patterns-elements)
+* [Features (excerpt):](#features-excerpt)
+* [Libraries used (excerpt):](#libraries-used-excerpt)
+* [Example projects](#example-projects)
+* [Collaboration](#collaboration)
+<!-- TOC -->
 
 Supported patterns, elements:
 --------------------------------
@@ -31,7 +38,7 @@ Supported patterns, elements:
 - ValueObjects
   - TypedId
 - DomainEvents
-- BusinesRules, Check
+- DomainRules/Policies
 - Repository
 - Specifications
 - Commands/Queries
@@ -43,15 +50,19 @@ Supported patterns, elements:
 Features (excerpt):
 -------------------------------------
 
+- [Results](./docs/features-results.md)
+- [Commands](./docs/features-commands.md) & [Queries](./docs/features-queries.md)
+- [Domain Model](./docs/features-domain-models.md)
+- [Domain Repositories](./docs/features-domain-repositories.md)
+- [Modules](./docs/features-modules.md)
+- [Filtering](./docs/features-filtering.md)
+- [Messaging](./docs/features-messaging.md)
+- [JobScheduling](./docs/features-jobscheduling.md)
+- [StartupTasks](./docs/features-startuptasks.md)
+- [DocumentStorage](./docs/features-documentstorage.md)
 - EventStore (CQRS)
-- Job Scheduling
-- Storage
-  - Documents
-  - Files (TODO)
 - Caching
-- Messaging
 - Queuing (TODO)
-- Modules
 
 Libraries used (excerpt):
 -------------------------------------

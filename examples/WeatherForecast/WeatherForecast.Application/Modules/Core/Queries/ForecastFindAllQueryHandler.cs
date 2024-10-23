@@ -30,8 +30,8 @@ public class ForecastFindAllQueryHandler : QueryHandlerBase<ForecastFindAllQuery
         CancellationToken cancellationToken)
     {
         var forecasts = await this.forecastRepository.FindAllAsync(
-                new FindOptions<Forecast> { Order = new OrderOption<Forecast>(e => e.Timestamp) },
-                cancellationToken)
+                query.Filter,
+                cancellationToken: cancellationToken) // //new FindOptions<Forecast> { Order = new OrderOption<Forecast>(e => e.Timestamp) },
             .AnyContext();
 
         return new QueryResponse<IEnumerable<ForecastQueryResponse>>

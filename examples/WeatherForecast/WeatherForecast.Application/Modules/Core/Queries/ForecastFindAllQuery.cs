@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
+using BridgingIT.DevKit.Common;
 using DevKit.Application.Queries;
 
-public class ForecastFindAllQuery : QueryRequestBase<IEnumerable<ForecastQueryResponse>> { }
+public class ForecastFindAllQuery(FilterModel filter = null) : QueryRequestBase<IEnumerable<ForecastQueryResponse>>
+{
+    public FilterModel Filter { get; } = filter;
+}

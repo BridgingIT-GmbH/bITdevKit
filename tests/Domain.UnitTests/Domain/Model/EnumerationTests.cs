@@ -276,7 +276,7 @@ public class EnumerationTests
         orderedList.Sort();
 
         // Assert
-        orderedList.ShouldBe(new List<StubStatus> { sut1, sut2, sut3 });
+        orderedList.ShouldBe([sut1, sut2, sut3]);
     }
 
     [Fact]

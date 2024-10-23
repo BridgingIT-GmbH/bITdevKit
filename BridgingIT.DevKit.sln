@@ -57,6 +57,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.AutoMapper", "src\Infrastructure.AutoMapper\Infrastructure.AutoMapper.csproj", "{B4D8B3F4-A9EA-4F74-A9F8-D7F15F45946C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4AAB-482C-AF16-A3434D9716A8}"
+	ProjectSection(SolutionItems) = preProject
+		docs\features-filtering.md = docs\features-filtering.md
+		docs\features-commands.md = docs\features-commands.md
+		docs\features-messaging.md = docs\features-messaging.md
+		docs\features-queries.md = docs\features-queries.md
+		docs\features-modules.md = docs\features-modules.md
+		docs\features-jobscheduling.md = docs\features-jobscheduling.md
+		docs\features-startuptasks.md = docs\features-startuptasks.md
+		docs\features-documentstorage.md = docs\features-documentstorage.md
+		docs\features-domain-repositories.md = docs\features-domain-repositories.md
+		docs\features-results.md = docs\features-results.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing.SqlServer", "src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj", "{F8BD56DD-C6F9-4853-9E09-F761F3CD2051}"
 EndProject

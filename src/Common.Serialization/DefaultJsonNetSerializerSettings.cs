@@ -22,13 +22,16 @@ public static class DefaultJsonNetSerializerSettings
             NullValueHandling = NullValueHandling.Ignore,
             TypeNameHandling = TypeNameHandling.Auto,
             DefaultValueHandling = DefaultValueHandling.Ignore,
-            DateFormatString = "o",
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            DateFormatString = "yyyy-MM-ddTHH:mm:ss.FFFFFFFZ",
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             //DateParseHandling = DateParseHandling.DateTimeOffset,
             //DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             Converters = new List<JsonConverter>
             {
                 //new GuidConverter(),
+                new EnumConverter(),
+                new FilterCriteriaConverter(),
                 new StringEnumConverter { AllowIntegerValues = true },
                 new IsoDateTimeConverter
                 {

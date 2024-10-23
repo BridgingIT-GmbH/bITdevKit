@@ -32,6 +32,16 @@ public static class TypeExtensions
         return source.GetType() != targetType;
     }
 
+    public static bool IsNullableType(this Type source)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        return source.IsGenericType && source.GetGenericTypeDefinition() == typeof(Nullable<>);
+    }
+
     [DebuggerStepThrough]
     public static string PrettyName(this Type source, bool useAngleBrackets = true)
     {
@@ -175,6 +185,16 @@ public static class TypeExtensions
         }
 
         return null;
+    }
+
+    /// <summary>
+    ///     Determine if a type implements a specific (open) generic interface type
+    /// </summary>
+    /// <param name="source">the instance to check</param>
+    [DebuggerStepThrough]
+    public static bool ImplementsInterface<T>(this Type source)
+    {
+        return source.ImplementsInterface(typeof(T));
     }
 
     /// <summary>

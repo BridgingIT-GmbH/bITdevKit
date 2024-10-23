@@ -61,8 +61,8 @@ public class PersonStub : AggregateRoot<Guid>
 
 public class Status(int id, string value, string code, string description) : Enumeration(id, value)
 {
-    public static Status Active = new(1, "Active", "ACT", "Lorem Ipsum");
-    public static Status Inactive = new(2, "Inactive", "INA", "Lorem Ipsum");
+    public static readonly Status Active = new(1, "Active", "ACT", "Lorem Ipsum");
+    public static readonly Status Inactive = new(2, "Inactive", "INA", "Lorem Ipsum");
 
     public string Code { get; } = code;
 

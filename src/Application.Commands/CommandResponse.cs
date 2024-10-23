@@ -117,6 +117,22 @@ public class CommandResponse
         };
     }
 
+    public static CommandResponse<Result<TValue>> For<TValue>(Result result, TValue value)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new CommandResponse<Result<TValue>>
+            {
+                Result = Result<TValue>.Failure(value).WithMessages(result?.Messages).WithErrors(result?.Errors)
+            };
+        }
+
+        return new CommandResponse<Result<TValue>>
+        {
+            Result = Result<TValue>.Success(value).WithMessages(result?.Messages).WithErrors(result?.Errors)
+        };
+    }
+
     public static CommandResponse<Result<TValue>> Success<TValue>(TValue value)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Success(value) };

@@ -47,6 +47,22 @@ public static class QueryResponse
         };
     }
 
+    public static QueryResponse<Result<TValue>> For<TValue>(Result result, TValue value)
+    {
+        if (result?.IsFailure == true)
+        {
+            return new QueryResponse<Result<TValue>>
+            {
+                Result = Result<TValue>.Failure(value).WithMessages(result?.Messages).WithErrors(result?.Errors)
+            };
+        }
+
+        return new QueryResponse<Result<TValue>>
+        {
+            Result = Result<TValue>.Success(value).WithMessages(result?.Messages).WithErrors(result?.Errors)
+        };
+    }
+
     public static QueryResponse<Result<TValue>> Success<TValue>(TValue value)
     {
         return new QueryResponse<Result<TValue>> { Result = Result<TValue>.Success(value) };

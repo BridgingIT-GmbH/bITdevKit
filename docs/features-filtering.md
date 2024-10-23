@@ -168,29 +168,27 @@ comprehensive examples and best practices for common scenarios.
 ### ASP.NET Controller Example
 
 ```csharp
-[ApiController]
-[Route("api/[controller]")]
+[ApiController][Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    ...
     [HttpGet]
-    public async Task<ActionResult<PagedResult<UserModel>>> GetAll(
+    public async Task<ActionResult<PagedResult<User>>> GetAll(
         [FromQueryFilter] FilterModel filter)
     {
         // or: var filter await this.HttpContext.FromQueryFilterAsync();
         var response = await mediator.Send(new UserFindAllQuery(filter)); // handler calls repository.FindAllPagedResultAsync(filter)
 
-        return Ok(mapper.Map(response));
+        return Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
     }
 
     [HttpPost("search")]
-    public async Task<ActionResult<PagedResult<UserModel>>> Search(
+    public async Task<ActionResult<PagedResult<User>>> Search(
         [FromBodyFilter] FilterModel filter)
     {
         // or: var filter await this.HttpContext.FromBodyFilterAsync();
         var response = await mediator.Send(new UserSearchQuery(filter)); // handler calls repository.FindAllPagedResultAsync(filter)
 
-        return Ok(mapper.Map(response));
+        return Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
     }
 }
 ```
@@ -198,13 +196,13 @@ public class UsersController : ControllerBase
 ### ASP.NET Minimal API Example
 
 ```csharp
-app.MapGet("/api/users/search", async (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
+app.MapGet("/api/users/search", async Task<Results<Ok<PagedResult<User>>, NotFound>> (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
 {
     var filter = await context.FromQueryFilterAsync();
     var response = await mediator.Send(
         new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllPagedResultAsync(filter)
 
-    return Results.Ok(response);
+    return TypedResults.Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
 });
 ```
 

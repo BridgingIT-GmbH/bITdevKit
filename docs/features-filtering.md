@@ -196,7 +196,8 @@ public class UsersController : ControllerBase
 ### ASP.NET Minimal API Example
 
 ```csharp
-app.MapGet("/api/users/search", async Task<Results<Ok<PagedResult<User>>, NotFound>> (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
+app.MapGet("/api/users/search", async Task<Results<Ok<PagedResult<User>>, NotFound>>
+  (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
 {
     var filter = await context.FromQueryFilterAsync();
     var response = await mediator.Send(

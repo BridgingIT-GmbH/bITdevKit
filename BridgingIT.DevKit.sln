@@ -29,7 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
-		src\bITDevKit_Logo.png = src\bITDevKit_Logo.png
 		CODE-OF-CONDUCT.md = CODE-OF-CONDUCT.md
 		CONTRIBUTION.md = CONTRIBUTION.md
 		Directory.Build.props = Directory.Build.props
@@ -45,6 +44,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
 		qodana.yaml = qodana.yaml
 		.qodana\qodana-profile.yaml = .qodana\qodana-profile.yaml
+		bITDevKit_Icon.png = bITDevKit_Icon.png
+		bITDevKit_Icon.svg = bITDevKit_Icon.svg
+		bITDevKit_Logo.png = bITDevKit_Logo.png
+		bITDevKit_Logo.svg = bITDevKit_Logo.svg
+		bITDevKit_Logo_white.svg = bITDevKit_Logo_white.svg
+		bITDevKit_Logo_whiteblue.svg = bITDevKit_Logo_whiteblue.svg
+		bITDevKit_Text.svg = bITDevKit_Text.svg
+		bITDevKit_Icon_variants.svg = bITDevKit_Icon_variants.svg
+		bITDevKit_Text_variants.svg = bITDevKit_Text_variants.svg
+		bITDevKit_Logo_variant.svg = bITDevKit_Logo_variant.svg
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing", "src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj", "{22EDF536-7B1C-4216-8B98-9956F8737803}"

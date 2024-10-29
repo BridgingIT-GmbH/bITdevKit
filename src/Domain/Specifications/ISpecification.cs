@@ -56,4 +56,12 @@ public interface ISpecification<T>
     ///     A new specification that represents the negation of the current specification.
     /// </returns>
     ISpecification<T> Not();
+
+    /// <summary>
+    /// Converts the specification to a string representation.
+    /// </summary>
+    /// <returns>
+    /// A string representation of the specification's expression.
+    /// </returns>
+    string ToExpressionString();
 }

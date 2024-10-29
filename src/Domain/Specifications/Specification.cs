@@ -81,7 +81,7 @@ public class Specification<T> : ISpecification<T>
     /// <returns>
     /// A string representation of the specification's expression.
     /// </returns>
-    public override string ToString()
+    public string ToExpressionString()
     {
         return this.ToExpression()?.ToString();
     }

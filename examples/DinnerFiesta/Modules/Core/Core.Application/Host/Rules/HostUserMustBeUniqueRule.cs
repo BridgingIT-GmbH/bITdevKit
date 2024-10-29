@@ -32,7 +32,9 @@ public class HostUserMustBeUniqueRule : IDomainRule
 
     public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
     {
-        return !(await this.repository.FindAllAsync(HostSpecifications.ForUser(this.userId),
+        var spec = HostSpecifications.ForUser(this.userId);
+        return !(await this.repository.FindAllAsync(
+            spec,
             cancellationToken: cancellationToken)).SafeAny();
     }
 }

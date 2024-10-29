@@ -65,8 +65,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         [FromBody] HostModel body,
         CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken))
-            .Result;
+        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostCreateCommand>(body), cancellationToken)).Result;
 
         return result.ToCreatedActionResult<Host, HostModel>(this.mapper,
             $"Core_{nameof(this.HostFindOne)}",
@@ -77,8 +76,7 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         [FromBody] HostModel body,
         CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken))
-            .Result;
+        var result = (await this.mediator.Send(this.mapper.Map<HostModel, HostUpdateCommand>(body), cancellationToken)).Result;
 
         return result.ToUpdatedActionResult<Host, HostModel>(this.mapper,
             $"Core_{nameof(this.HostFindOne)}",

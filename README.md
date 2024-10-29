@@ -4,8 +4,20 @@
 [![NuGet](https://img.shields.io/nuget/v/BridgingIT.DevKit.Common.Utilities?style=flat-square&label=nuget%20packages)](https://www.nuget.org/packages?q=bitdevkit)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-Empowering developers with modular components for modern application development, centered around
-Domain-Driven Design principles.
+> Empowering developers with modular components for modern application development, centered around
+> Domain-Driven Design principles.
+
+<!-- TOC -->
+
+* [Introduction:](#introduction)
+* [Features:](#features)
+* [Libraries used](#libraries-used-excerpt)
+* [Example projects](#example-projects)
+* [Collaboration](#collaboration)
+
+<!-- TOC -->
+
+## Introduction
 
 Our goal is to empower developers by offering modular components that can be easily integrated into
 your projects. Whether you're working with repositories, commands, queries, or other components, the
@@ -22,33 +34,7 @@ the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEA
 
 Join us in advancing the world of software development with the bITDevKit!
 
-<!-- TOC -->
-* [Supported patterns, elements:](#supported-patterns-elements)
-* [Features (excerpt):](#features-excerpt)
-* [Libraries used (excerpt):](#libraries-used-excerpt)
-* [Example projects](#example-projects)
-* [Collaboration](#collaboration)
-<!-- TOC -->
-
-Supported patterns, elements:
---------------------------------
-
-- Entities
-- AggregateRoots
-- ValueObjects
-- TypedIds
-- DomainEvents
-- DomainRules/Policies
-- Repositories
-- Specifications
-- Commands/Queries
-- Outbox
-  - DomainEvents
-  - Messaging
-- Decorators (Behavior)
-
-Features (excerpt):
--------------------------------------
+## Features:
 
 - [Commands](./docs/features-commands.md) & [Queries](./docs/features-queries.md)
 - [Domain Model](./docs/features-domain-models.md)
@@ -67,8 +53,7 @@ Features (excerpt):
 - [StartupTasks](./docs/features-startuptasks.md)
 - [DocumentStorage](./docs/features-documentstorage.md)
 
-Libraries used (excerpt):
--------------------------------------
+## Libraries used (excerpt):
 
 - [Xunit](https://github.com/xunit/xunit)
 - [MediatR](https://github.com/jbogard/MediatR)
@@ -90,15 +75,16 @@ Libraries used (excerpt):
 - Azure CosmosDb
 - RabbitMQ
 
-Example projects
------------------
+## Example projects
 
-- [GettingStarted](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
-- [EventStore](https://github.com/bridgingit/bitdevkit/examples)
+- [GettingStarted (Basic)](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
+- [BookFiesta (DDD)](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.BookFiesta)
+- [EventStore (CQRS)](https://github.com/bridgingit/bitdevkit/examples)
 - [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
 - [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
 - [Shop](https://github.com/bridgingit/bitdevkit/examples)
 
-Collaboration
----------
+## Collaboration
+
 Simply create a pull request with your ideas or contact us.
+Please refer to the [CONTRIBUTING](./CONTRIBUTING.md) guidelines for more information.

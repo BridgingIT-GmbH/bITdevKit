@@ -39,21 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		global.json = global.json
 		LICENSE = LICENSE
 		nuget.config = nuget.config
-		README.md = README.md
 		RELEASES.md = RELEASES.md
 		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
 		qodana.yaml = qodana.yaml
 		.qodana\qodana-profile.yaml = .qodana\qodana-profile.yaml
-		bITDevKit_Icon.png = bITDevKit_Icon.png
-		bITDevKit_Icon.svg = bITDevKit_Icon.svg
-		bITDevKit_Logo.png = bITDevKit_Logo.png
-		bITDevKit_Logo.svg = bITDevKit_Logo.svg
-		bITDevKit_Logo_white.svg = bITDevKit_Logo_white.svg
-		bITDevKit_Logo_whiteblue.svg = bITDevKit_Logo_whiteblue.svg
-		bITDevKit_Text.svg = bITDevKit_Text.svg
-		bITDevKit_Icon_variants.svg = bITDevKit_Icon_variants.svg
-		bITDevKit_Text_variants.svg = bITDevKit_Text_variants.svg
-		bITDevKit_Logo_variant.svg = bITDevKit_Logo_variant.svg
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing", "src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj", "{22EDF536-7B1C-4216-8B98-9956F8737803}"
@@ -77,6 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4
 		docs\features-documentstorage.md = docs\features-documentstorage.md
 		docs\features-domain-repositories.md = docs\features-domain-repositories.md
 		docs\features-results.md = docs\features-results.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing.SqlServer", "src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj", "{F8BD56DD-C6F9-4853-9E09-F761F3CD2051}"
@@ -332,6 +322,20 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.CodeGen", "src\Domain.CodeGen\Domain.CodeGen.csproj", "{6AE1B48F-144D-4179-8C6D-4C6E7AF7D655}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Results", "src\Common.Results\Common.Results.csproj", "{39918CB1-7AFD-4A93-8A4C-6A04B70AD13D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{60F2A54B-EDD0-447C-8168-9BE7E35BF656}"
+	ProjectSection(SolutionItems) = preProject
+		docs\assets\bITDevKit_Icon.png = docs\assets\bITDevKit_Icon.png
+		docs\assets\bITDevKit_Icon.svg = docs\assets\bITDevKit_Icon.svg
+		docs\assets\bITDevKit_Icon_variants.svg = docs\assets\bITDevKit_Icon_variants.svg
+		docs\assets\bITDevKit_Logo.png = docs\assets\bITDevKit_Logo.png
+		docs\assets\bITDevKit_Logo.svg = docs\assets\bITDevKit_Logo.svg
+		docs\assets\bITDevKit_Logo_variant.svg = docs\assets\bITDevKit_Logo_variant.svg
+		docs\assets\bITDevKit_Logo_white.svg = docs\assets\bITDevKit_Logo_white.svg
+		docs\assets\bITDevKit_Logo_whiteblue.svg = docs\assets\bITDevKit_Logo_whiteblue.svg
+		docs\assets\bITDevKit_Text.svg = docs\assets\bITDevKit_Text.svg
+		docs\assets\bITDevKit_Text_variants.svg = docs\assets\bITDevKit_Text_variants.svg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -833,6 +837,7 @@ Global
 		{5F24F274-B83C-4947-A878-B02C81061876} = {D2F9AF42-30B2-475B-807B-73BD00EAA795}
 		{6AE1B48F-144D-4179-8C6D-4C6E7AF7D655} = {4C01229A-6BA1-4185-BF3E-E4D1E58B82F9}
 		{39918CB1-7AFD-4A93-8A4C-6A04B70AD13D} = {862110B7-95CF-40ED-8DF8-F6E4FC3A5900}
+		{60F2A54B-EDD0-447C-8168-9BE7E35BF656} = {16A3992B-4AAB-482C-AF16-A3434D9716A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71C09054-DA91-4896-83AE-024F259D5330}

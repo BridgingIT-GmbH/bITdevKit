@@ -82,19 +82,13 @@ public class DomainPolicyTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Messages.Count.ShouldBe(2);
-        result.Messages[0]
-            .ShouldBe("Always satisfied policy applied");
-        result.Messages[1]
-            .ShouldBe("Context modified");
+        result.Messages[0].ShouldBe("Always satisfied policy applied");
+        result.Messages[1].ShouldBe("Context modified");
         result.Errors.Count.ShouldBe(1);
-        result.Errors.Single()
-            .ShouldBeOfType<TestError>();
-        result.PolicyResults.GetValue<EnabledPolicy, int>()
-            .ShouldBe(1);
-        result.PolicyResults.GetValue<FailingPolicy, int>()
-            .ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
-            .ShouldBe(0); // not called due to stopOnFailure
+        result.Errors.Single().ShouldBeOfType<TestError>();
+        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
+        result.PolicyResults.GetValue<FailingPolicy, int>().ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(0); // not called due to stopOnFailure
         context.Value.ShouldBe(11); // Original value + 10
     }
 
@@ -111,21 +105,14 @@ public class DomainPolicyTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Messages.Count.ShouldBe(3);
-        result.Messages[0]
-            .ShouldBe("Always satisfied policy applied");
-        result.Messages[1]
-            .ShouldBe("Context modified");
-        result.Messages[2]
-            .ShouldBe("Conditional policy applied");
+        result.Messages[0].ShouldBe("Always satisfied policy applied");
+        result.Messages[1].ShouldBe("Context modified");
+        result.Messages[2].ShouldBe("Conditional policy applied");
         result.Errors.Count.ShouldBe(1);
-        result.Errors.Single()
-            .ShouldBeOfType<TestError>();
-        result.PolicyResults.GetValue<EnabledPolicy, int>()
-            .ShouldBe(1);
-        result.PolicyResults.GetValue<FailingPolicy, int>()
-            .ShouldBe(0);
-        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>()
-            .ShouldBe(3);
+        result.Errors.Single().ShouldBeOfType<TestError>();
+        result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
+        result.PolicyResults.GetValue<FailingPolicy, int>().ShouldBe(0);
+        result.PolicyResults.GetValue<ConditionalEnabledPolicy, int>().ShouldBe(3);
         context.Value.ShouldBe(11); // Original value + 10
     }
 
@@ -143,9 +130,7 @@ public class DomainPolicyTests
         // Act & Assert
         var exception = await Should.ThrowAsync<DomainPolicyException>(async () =>
         {
-            await DomainPolicies.ApplyAsync(context,
-                policies,
-                DomainPolicyProcessingMode.ThrowOnPolicyFailure);
+            await DomainPolicies.ApplyAsync(context, policies, DomainPolicyProcessingMode.ThrowOnPolicyFailure);
         });
 
         exception.ShouldNotBeNull();
@@ -154,13 +139,10 @@ public class DomainPolicyTests
         exception.Result.ShouldNotBeNull();
         exception.Result.IsFailure.ShouldBeTrue();
         exception.Result.Messages.Count.ShouldBe(2);
-        exception.Result.Messages[0]
-            .ShouldBe("Always satisfied policy applied");
-        exception.Result.Messages[1]
-            .ShouldBe("Context modified");
+        exception.Result.Messages[0].ShouldBe("Always satisfied policy applied");
+        exception.Result.Messages[1].ShouldBe("Context modified");
         exception.Result.Errors.Count.ShouldBe(1);
-        exception.Result.Errors.Single()
-            .ShouldBeOfType<TestError>();
+        exception.Result.Errors.Single().ShouldBeOfType<TestError>();
         context.Value.ShouldBe(11); // Original value + 10
     }
 }
@@ -174,9 +156,8 @@ public class EnabledPolicy : DomainPolicyBase<StubContext>
 {
     public override Task<IResult> ApplyAsync(StubContext context, CancellationToken cancellationToken = default)
     {
-        var result = DomainPolicyResult<int>.Success(1).WithMessage("Always satisfied policy applied");
-
-        return Task.FromResult<IResult>(result); // TODO: looses value due to implicit conversion to Result (non generic)
+        return Task.FromResult<IResult>(
+            DomainPolicyResult<int>.Success(1).WithMessage("Always satisfied policy applied"));
     }
 }
 

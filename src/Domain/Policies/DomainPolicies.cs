@@ -45,6 +45,11 @@ public static class DomainPolicies
         IDomainPolicy<TContext>[] policies,
         CancellationToken cancellationToken = default)
     {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         return await ApplyAsync(context,
             policies,
             DomainPolicyProcessingMode.ContinueOnPolicyFailure,

@@ -8,14 +8,31 @@ namespace BridgingIT.DevKit.Domain;
 using System.Globalization;
 using System.Text.Json;
 
+/// <summary>
+/// A static utility class for building collections of entity specifications based on filtering criteria.
+/// </summary>
 public static class SpecificationBuilder
 {
+    /// <summary>
+    /// Builds a collection of <see cref="ISpecification{TEntity}"/> based on the provided <see cref="FilterModel"/>.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="filterModel">The filter model that provides the criteria for building specifications.</param>
+    /// <param name="specifications">An optional collection of existing specifications to be included.</param>
+    /// <returns>A collection of <see cref="ISpecification{TEntity}"/> that meet the criteria defined in the filter model.</returns>
     public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(FilterModel filterModel, IEnumerable<ISpecification<TEntity>> specifications = null)
         where TEntity : class, IEntity
     {
         return Build(filterModel?.Filters, specifications);
     }
 
+    /// <summary>
+    /// Builds a collection of <see cref="ISpecification{TEntity}"/> based on the provided filters and existing specifications.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="filters">The filters to be applied.</param>
+    /// <param name="specifications">An optional set of existing specifications to be included.</param>
+    /// <returns>A collection of <see cref="ISpecification{TEntity}"/> that apply the given filters and existing specifications.</returns>
     public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(IEnumerable<FilterCriteria> filters, IEnumerable<ISpecification<TEntity>> specifications = null)
         where TEntity : class, IEntity
     {

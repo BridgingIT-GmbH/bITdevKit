@@ -546,7 +546,8 @@ public class SpecificationBuilderTests
                 {
                     ["field"] = "Age",
                     ["min"] = 18,
-                    ["max"] = 65
+                    ["max"] = 65,
+                    ["inclusive"] = true // also the default
                 }
             }
         };
@@ -558,11 +559,13 @@ public class SpecificationBuilderTests
         Assert.Single(result);
         var spec = result.First();
 
-        var matchingPerson = new PersonStub { Age = 30 };
+        var matchingPerson1 = new PersonStub { Age = 30 };
+        var matchingPerson2 = new PersonStub { Age = 65 };
         var nonMatchingPersonYoung = new PersonStub { Age = 17 };
         var nonMatchingPersonOld = new PersonStub { Age = 66 };
 
-        Assert.True(spec.IsSatisfiedBy(matchingPerson));
+        Assert.True(spec.IsSatisfiedBy(matchingPerson1));
+        Assert.True(spec.IsSatisfiedBy(matchingPerson2));
         Assert.False(spec.IsSatisfiedBy(nonMatchingPersonYoung));
         Assert.False(spec.IsSatisfiedBy(nonMatchingPersonOld));
     }

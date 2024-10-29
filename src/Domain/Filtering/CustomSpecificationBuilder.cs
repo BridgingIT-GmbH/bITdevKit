@@ -7,8 +7,17 @@ namespace BridgingIT.DevKit.Domain;
 
 using System.Globalization;
 
+/// <summary>
+/// Provides methods to build custom specifications based on filter criteria.
+/// </summary>
 public static class CustomSpecificationBuilder
 {
+    /// <summary>
+    /// Builds an ISpecification instance based on the provided filter criteria.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity that the specification is for.</typeparam>
+    /// <param name="filter">The filter criteria to be used for building the specification.</param>
+    /// <returns>An ISpecification instance that matches the filter criteria.</returns>
     public static ISpecification<TEntity> Build<TEntity>(FilterCriteria filter)
         where TEntity : class, IEntity
     {
@@ -210,12 +219,23 @@ public static class CustomSpecificationBuilder
         var minValue = Convert.ToDouble(minValueObj);
         var maxValue = Convert.ToDouble(maxValueObj);
 
+        // Get inclusive parameter with default true if not specified
+        var inclusive = !filter.CustomParameters.TryGetValue("inclusive", out var inclusiveObj) ||
+            inclusiveObj is not bool inclusiveValue ||
+            inclusiveValue;
+
         var parameter = Expression.Parameter(typeof(TEntity), "x");
         var property = Expression.Property(parameter, field);
         var convertedProperty = Expression.Convert(property, typeof(double));
 
-        var greaterThanOrEqual = Expression.GreaterThanOrEqual(convertedProperty, Expression.Constant(minValue));
-        var lessThanOrEqual = Expression.LessThanOrEqual(convertedProperty, Expression.Constant(maxValue));
+        Expression greaterThanOrEqual = inclusive
+            ? Expression.GreaterThanOrEqual(convertedProperty, Expression.Constant(minValue))
+            : Expression.GreaterThan(convertedProperty, Expression.Constant(minValue));
+
+        Expression lessThanOrEqual = inclusive
+            ? Expression.LessThanOrEqual(convertedProperty, Expression.Constant(maxValue))
+            : Expression.LessThan(convertedProperty, Expression.Constant(maxValue));
+
         var rangeExpression = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
 
         var lambda = Expression.Lambda<Func<TEntity, bool>>(rangeExpression, parameter);

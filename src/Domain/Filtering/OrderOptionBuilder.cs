@@ -5,8 +5,18 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Provides functionality to build a list of <see cref="OrderOption{TEntity}"/>
+/// from a collection of <see cref="FilterOrderCriteria"/>.
+/// </summary>
 public static class OrderOptionBuilder
 {
+    /// <summary>
+    /// Builds a list of order options from the provided filter order criteria.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="criterias">The collection of filter order criteria used to build order options.</param>
+    /// <returns>A list of OrderOption objects for the specified entity type.</returns>
     public static List<OrderOption<TEntity>> Build<TEntity>(IEnumerable<FilterOrderCriteria> criterias)
         where TEntity : class, IEntity
     {

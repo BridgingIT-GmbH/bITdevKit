@@ -779,7 +779,8 @@ Filter numbers within a range
   "customParameters": {
     "field": "price",
     "min": 10.00,
-    "max": 50.00
+    "max": 50.00,
+    "inclusive": true
   }
 }
 ```

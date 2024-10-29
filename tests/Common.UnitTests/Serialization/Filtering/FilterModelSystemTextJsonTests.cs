@@ -119,6 +119,14 @@ public class FilterModelSystemTextJsonTests
                     Operator = FilterOperator.Contains,
                     Value = "John"
                 },
+                new FilterCriteria
+                {
+                    Field = "Addresses",
+                    Operator = FilterOperator.Any,
+                    Filters = [
+                        new FilterCriteria { Field = "City", Operator = FilterOperator.Equal, Value = "Berlin" }
+                    ]
+                },
                 new FilterCriteria(FilterCustomType.DateRange,
                     new Dictionary<string, object>
                     {
@@ -203,6 +211,17 @@ public class FilterModelSystemTextJsonTests
                                    "field": "Name",
                                    "operator": "contains",
                                    "value": "John"
+                               },
+                               {
+                                   "field": "Addresses",
+                                   "operator": "any",
+                                   "filters": [
+                                       {
+                                           "field": "City",
+                                           "operator": "eq",
+                                           "value": "Berlin"
+                                       }
+                                   ]
                                }
                            ],
                            "orderings": [
@@ -221,7 +240,7 @@ public class FilterModelSystemTextJsonTests
         model.ShouldNotBeNull();
         model.Page.ShouldBe(2);
         model.PageSize.ShouldBe(15);
-        model.Filters.Count.ShouldBe(2);
+        model.Filters.Count.ShouldBe(3);
         model.Orderings.Count.ShouldBe(1);
         model.Includes.Count.ShouldBe(2);
 
@@ -231,6 +250,10 @@ public class FilterModelSystemTextJsonTests
 
         model.Filters[1].Field.ShouldBe("Name");
         model.Filters[1].Operator.ShouldBe(FilterOperator.Contains);
+        //model.Filters[1].Value.ShouldBe("John");
+
+        model.Filters[2].Field.ShouldBe("Addresses");
+        model.Filters[2].Operator.ShouldBe(FilterOperator.Any);
         //model.Filters[1].Value.ShouldBe("John");
 
         model.Orderings[0].Field.ShouldBe("LastName");

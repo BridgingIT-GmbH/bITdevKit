@@ -18,7 +18,7 @@ public class HostFindOneQueryHandler(ILoggerFactory loggerFactory, IGenericRepos
         HostFindOneQuery query,
         CancellationToken cancellationToken)
     {
-        return QueryResponse.For(await repository.FindOneResultAsync(HostId.Create(query.HostId),
+        return QueryResult.For(await repository.FindOneResultAsync(HostId.Create(query.HostId),
                 cancellationToken: cancellationToken)
             .AnyContext());
     }

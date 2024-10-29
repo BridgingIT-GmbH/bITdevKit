@@ -14,9 +14,7 @@ public class CommandTests(ITestOutputHelper output) : TestsBase(output,
     s =>
     {
         s.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a =>
-                !a.GetName()
-                    .Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
+            .Where(a => !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
             .ToArray()));
         s.AddTransient(typeof(IPipelineBehavior<,>), typeof(DummyCommandBehavior<,>));
     })

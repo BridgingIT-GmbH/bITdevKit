@@ -5,8 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class NotFoundResultError : ResultErrorBase
+public class UnauthorizedError(string message = null) : ResultErrorBase(message ?? "Unauthorized")
 {
-    public NotFoundResultError()
-        : base("Not found") { }
+    public UnauthorizedError() : this(null)
+    {
+    }
 }

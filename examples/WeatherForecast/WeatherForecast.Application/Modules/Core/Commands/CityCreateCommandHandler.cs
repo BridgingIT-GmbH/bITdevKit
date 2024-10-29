@@ -11,20 +11,11 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class CityCreateCommandHandler : CommandHandlerBase<CityCreateCommand, AggregateCreatedCommandResult>
+public class CityCreateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<City> repository)
+    : CommandHandlerBase<CityCreateCommand, AggregateCreatedCommandResult>(loggerFactory)
 {
-    private readonly IGenericRepository<City> repository;
-
-    public CityCreateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<City> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.repository = repository;
-    }
-
     public override async Task<CommandResponse<AggregateCreatedCommandResult>> Process(
         CityCreateCommand command,
         CancellationToken cancellationToken)
@@ -36,7 +27,7 @@ public class CityCreateCommandHandler : CommandHandlerBase<CityCreateCommand, Ag
             command.Model.Country,
             command.Model.Longitude,
             command.Model.Latitude);
-        await this.repository.InsertAsync(entity, cancellationToken).AnyContext();
+        await repository.InsertAsync(entity, cancellationToken).AnyContext();
 
         return new CommandResponse<AggregateCreatedCommandResult>
         {

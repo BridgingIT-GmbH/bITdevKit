@@ -42,42 +42,6 @@ public interface IResult
     bool IsFailure { get; }
 
     /// <summary>
-    ///     Adds a message to the Result's Messages list.
-    /// </summary>
-    /// <param name="message">The message to add. It should be a non-null and non-whitespace string.</param>
-    /// <returns>Returns the current Result instance.</returns>
-    Result WithMessage(string message);
-
-    /// <summary>
-    ///     Adds an error to the current result instance and marks the result as unsuccessful.
-    /// </summary>
-    /// <param name="error">The error to be added to the result.</param>
-    /// <return>The current result instance with the error added.</return>
-    Result WithError(IResultError error);
-
-    /// <summary>
-    ///     Adds a new instance of the specified error type to the result and marks it as a failure.
-    /// </summary>
-    /// <typeparam name="TError">The type of error to add.</typeparam>
-    /// <return>An instance of <see cref="Result" /> with the specified error added and marked as failure.</return>
-    Result WithError<TError>()
-        where TError : IResultError, new();
-
-    /// <summary>
-    ///     Appends multiple messages to the current <see cref="Result" /> instance.
-    /// </summary>
-    /// <param name="messages">An enumerable collection of messages to add.</param>
-    /// <returns>The current <see cref="Result" /> instance with the added messages.</returns>
-    Result WithMessages(IEnumerable<string> messages);
-
-    /// <summary>
-    ///     Appends a collection of <see cref="IResultError" /> objects to the current result instance.
-    /// </summary>
-    /// <param name="errors">The collection of <see cref="IResultError" /> objects to be added.</param>
-    /// <returns>The current instance of <see cref="Result" /> with the errors added.</returns>
-    Result WithErrors(IEnumerable<IResultError> errors);
-
-    /// <summary>
     ///     Determines whether the result contains any errors.
     /// </summary>
     /// <returns>True if the result contains any errors; otherwise, false.</returns>
@@ -109,8 +73,8 @@ public interface IResult
 public interface IResult<out TValue> : IResult
 {
     /// <summary>
-    ///     Gets the value associated with the result.
+    ///     Gets the values associated with the result.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
     TValue Value { get; }
 }

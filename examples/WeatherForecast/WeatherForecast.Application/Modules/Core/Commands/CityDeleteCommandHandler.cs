@@ -13,51 +13,35 @@ using Domain.Model;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class CityDeleteCommandHandler : CommandHandlerBase<CityDeleteCommand, AggregateDeletedCommandResult>
+public class CityDeleteCommandHandler(
+    ILoggerFactory loggerFactory,
+    IMediator mediator,
+    IWeatherDataAdapter dataAdapter,
+    IGenericRepository<City> cityRepository,
+    IGenericRepository<Forecast> forecastRepository)
+    : CommandHandlerBase<CityDeleteCommand, AggregateDeletedCommandResult>(loggerFactory)
 {
-    private readonly IMediator mediator;
-    private readonly IWeatherDataAdapter dataAdapter;
-    private readonly IGenericRepository<City> cityRepository;
-    private readonly IGenericRepository<Forecast> forecastRepository;
-
-    public CityDeleteCommandHandler(
-        ILoggerFactory loggerFactory,
-        IMediator mediator,
-        IWeatherDataAdapter dataAdapter,
-        IGenericRepository<City> cityRepository,
-        IGenericRepository<Forecast> forecastRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(mediator, nameof(mediator));
-        EnsureArg.IsNotNull(dataAdapter, nameof(dataAdapter));
-        EnsureArg.IsNotNull(cityRepository, nameof(cityRepository));
-        EnsureArg.IsNotNull(forecastRepository, nameof(forecastRepository));
-
-        this.mediator = mediator;
-        this.dataAdapter = dataAdapter;
-        this.cityRepository = cityRepository;
-        this.forecastRepository = forecastRepository;
-    }
+    private readonly IWeatherDataAdapter dataAdapter = dataAdapter;
 
     public override async Task<CommandResponse<AggregateDeletedCommandResult>> Process(
         CityDeleteCommand command,
         CancellationToken cancellationToken)
     {
-        var entity = (await this.mediator.Send(new CityFindOneQuery(command.Name), cancellationToken).AnyContext())
+        var entity = (await mediator.Send(new CityFindOneQuery(command.Name), cancellationToken).AnyContext())
             ?.Result?.City;
 
         this.Logger.LogInformation($"+++ delete city with name: {entity.Name} ({entity.Country})");
 
         // soft delete city
         entity.Delete("command"); // checks business rules
-        await this.cityRepository.UpsertAsync(entity, cancellationToken).AnyContext();
+        await cityRepository.UpsertAsync(entity, cancellationToken).AnyContext();
 
         // hard delete all city forecasts
-        foreach (var forecast in await this.forecastRepository.FindAllAsync(new ForecastForCitySpecification(entity.Id),
+        foreach (var forecast in await forecastRepository.FindAllAsync(new ForecastForCitySpecification(entity.Id),
                          cancellationToken: cancellationToken)
                      .AnyContext())
         {
-            await this.forecastRepository.DeleteAsync(forecast, cancellationToken).AnyContext();
+            await forecastRepository.DeleteAsync(forecast, cancellationToken).AnyContext();
         }
 
         return new CommandResponse<AggregateDeletedCommandResult>

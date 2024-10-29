@@ -8,7 +8,8 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 using BridgingIT.DevKit.Common;
 using DevKit.Application.Queries;
 
-public class CityFindAllQuery(FilterModel filter = null) : QueryRequestBase<IEnumerable<CityQueryResponse>>, ICacheQuery
+public class CityFindAllQuery(FilterModel filter = null)
+    : QueryRequestBase<IEnumerable<CityQueryResponse>>, ICacheQuery
 {
     public FilterModel Filter { get; } = filter;
 

@@ -18,7 +18,7 @@ public class DinnerFindAllForHostQueryHandler(ILoggerFactory loggerFactory, IGen
         DinnerFindAllForHostQuery query,
         CancellationToken cancellationToken)
     {
-        return QueryResponse.For(await repository.FindAllResultAsync(
+        return QueryResult.For(await repository.FindAllResultAsync(
                 DinnerSpecifications.ForHost(HostId.Create(query.HostId)),
                 cancellationToken: cancellationToken)
             .AnyContext());

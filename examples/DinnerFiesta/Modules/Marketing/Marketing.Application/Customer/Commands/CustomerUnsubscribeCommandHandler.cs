@@ -22,7 +22,7 @@ public class CustomerUnsubscribeCommandHandler(
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        DomainRules.Apply(Array.Empty<IDomainRule>());
+        DomainRules.Apply([]);
 
         var customer = await repository
             .FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken)
@@ -35,6 +35,6 @@ public class CustomerUnsubscribeCommandHandler(
             return new CommandResponse<Result> { Result = Result.Success() };
         }
 
-        return new CommandResponse<Result> { Result = Result.Failure<NotFoundResultError>() };
+        return new CommandResponse<Result> { Result = Result.Failure<NotFoundError>() };
     }
 }

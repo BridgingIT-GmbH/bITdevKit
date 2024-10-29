@@ -11,32 +11,36 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class ForecastFindAllQueryHandler : QueryHandlerBase<ForecastFindAllQuery, IEnumerable<ForecastQueryResponse>>
+public class ForecastFindAllQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Forecast> forecastRepository)
+    : QueryHandlerBase<ForecastFindAllQuery, IEnumerable<ForecastQueryResponse>>(loggerFactory)
 {
-    private readonly IGenericRepository<Forecast> forecastRepository;
-
-    public ForecastFindAllQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Forecast> forecastRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(forecastRepository, nameof(forecastRepository));
-
-        this.forecastRepository = forecastRepository;
-    }
-
     public override async Task<QueryResponse<IEnumerable<ForecastQueryResponse>>> Process(
         ForecastFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var forecasts = await this.forecastRepository.FindAllAsync(
-                query.Filter,
-                cancellationToken: cancellationToken) // //new FindOptions<Forecast> { Order = new OrderOption<Forecast>(e => e.Timestamp) },
-            .AnyContext();
+        var forecasts = await forecastRepository.FindAllAsync( // repo takes care of the filter
+                query.Filter, cancellationToken: cancellationToken);
 
         return new QueryResponse<IEnumerable<ForecastQueryResponse>>
         {
             Result = forecasts.Select(c => ForecastQueryResponse.Create(c))
         };
+    }
+}
+
+public class ForecastFindAllPagedQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Forecast> forecastRepository)
+    : QueryHandlerBase<ForecastFindAllPagedQuery, PagedResult<Forecast>>(loggerFactory)
+{
+    public override async Task<QueryResponse<PagedResult<Forecast>>> Process(
+        ForecastFindAllPagedQuery query, CancellationToken cancellationToken)
+    {
+        var result = await forecastRepository.FindAllPagedResultAsync( // repo takes care of the filter and paging
+                query.Filter, cancellationToken: cancellationToken);
+
+        return QueryResponse.For(result); // new result to response syntax (use For)
     }
 }

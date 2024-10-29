@@ -38,7 +38,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.CountResultAsync();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedCount);
     }
 
@@ -54,7 +54,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.CountResultAsync(p => p.Age > 30);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedCount);
         await repository.Received(1).CountAsync(Arg.Any<ISpecification<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -72,7 +72,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.CountResultAsync(specification);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedCount);
         await repository.Received(1).CountAsync(Arg.Is(specification), Arg.Any<CancellationToken>());
     }
@@ -94,7 +94,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.CountResultAsync(specifications);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedCount);
         await repository.Received(1).CountAsync(Arg.Is(specifications), Arg.Any<CancellationToken>());
     }
@@ -111,7 +111,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.CountResultAsync();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Errors.First().ShouldBeOfType<ExceptionError>();
     }
@@ -131,7 +131,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         // result.Value.ShouldBe(expectedIds);
     }
 
@@ -152,7 +152,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedIds);
     }
 
@@ -172,7 +172,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBeEmpty();
     }
 
@@ -194,7 +194,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>(p => p.Age > 30);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         //result.Value.ShouldBe(expectedIds);
         // await repository.Received(1).ProjectAllAsync(
         //     Arg.Any<ISpecification<PersonStub>>(),
@@ -221,7 +221,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>(specification);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         // result.Value.ShouldBe(expectedIds);
         // await repository.Received(1).ProjectAllAsync(
         //     Arg.Any<Expression<Func<PersonStub, object>>>(),
@@ -247,7 +247,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>(findOptions);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedIds);
         await repository.Received(1).ProjectAllAsync(
             Arg.Any<Expression<Func<PersonStub, object>>>(),
@@ -270,7 +270,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllIdsResultAsync<PersonStub, Guid>();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Errors.First().ShouldBeOfType<ExceptionError>();
     }
@@ -288,7 +288,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(expectedPerson.Id);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPerson);
         await repository.Received(1).FindOneAsync(Arg.Is(expectedPerson.Id), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -305,8 +305,8 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(Guid.NewGuid());
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(e => e is NotFoundResultError);
+        result.ShouldBeFailure();
+        result.ShouldContainError<EntityNotFoundError>();
     }
 
     [Fact]
@@ -322,7 +322,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(p => p.Id == expectedPerson.Id);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPerson);
         await repository.Received(1).FindOneAsync(Arg.Any<ISpecification<PersonStub>>(), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -339,8 +339,8 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(p => p.Age > 100);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(e => e is NotFoundResultError);
+        result.ShouldBeFailure();
+        result.ShouldContainError<EntityNotFoundError>();
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(specification);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPerson);
         await repository.Received(1).FindOneAsync(Arg.Is(specification), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -375,8 +375,8 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(specification);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(e => e is NotFoundResultError);
+        result.ShouldBeFailure();
+        result.ShouldContainError<EntityNotFoundError>();
     }
 
     [Fact]
@@ -397,7 +397,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(specifications);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPerson);
         await repository.Received(1).FindOneAsync(Arg.Is(specifications), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -419,8 +419,8 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(specifications);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(e => e is NotFoundResultError);
+        result.ShouldBeFailure();
+        result.ShouldContainError<EntityNotFoundError>();
     }
 
     [Fact]
@@ -435,7 +435,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindOneResultAsync(Guid.NewGuid());
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Errors.First().ShouldBeOfType<ExceptionError>();
     }
@@ -453,7 +453,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -470,7 +470,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBeEmpty();
     }
 
@@ -487,7 +487,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(p => p.Age > 20);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(Arg.Any<ISpecification<PersonStub>>(), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -504,7 +504,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(p => p.Age > 100);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBeEmpty();
     }
 
@@ -522,7 +522,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(specification);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(Arg.Is(specification), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -540,7 +540,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(specification);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBeEmpty();
     }
 
@@ -562,7 +562,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(specifications);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(Arg.Is(specifications), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>());
     }
@@ -584,7 +584,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(specifications);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBeEmpty();
     }
 
@@ -600,7 +600,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Errors.First().ShouldBeOfType<ExceptionError>();
     }
@@ -624,7 +624,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
         var result = await repository.FindAllResultAsync(findOptions);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(Arg.Is<IFindOptions<PersonStub>>(
                 opt => opt.Skip == 5 && opt.Take == 10 && opt.NoTracking),
@@ -649,7 +649,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             pageSize: 3);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(totalCount);
         result.CurrentPage.ShouldBe(1);
@@ -681,7 +681,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             orderDirection: OrderDirection.Descending);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(totalCount);
         result.CurrentPage.ShouldBe(2);
@@ -713,7 +713,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             pageSize: 3);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(totalCount);
         result.CurrentPage.ShouldBe(1);
@@ -747,7 +747,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             pageSize: 3);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(totalCount);
         result.CurrentPage.ShouldBe(2);
@@ -785,7 +785,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             pageSize: 5);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(totalCount);
         result.CurrentPage.ShouldBe(3);
@@ -818,7 +818,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             includePath: "RelatedEntity");
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         result.Value.ShouldBe(expectedPersons);
         await repository.Received(1).FindAllAsync(
             Arg.Is<IFindOptions<PersonStub>>(opt =>
@@ -841,7 +841,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             pageSize: 3);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Errors.First().ShouldBeOfType<ExceptionError>();
     }

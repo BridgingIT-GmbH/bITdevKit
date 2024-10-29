@@ -244,6 +244,11 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
         }
     }
 
+    protected CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string messages = null , string errorMessage = null)
+    {
+        return CommandResult.Failure(value);
+    }
+
     public abstract Task<CommandResponse<TResult>> Process(TCommand request, CancellationToken cancellationToken);
 
     private void ValidateRequest(TCommand request)

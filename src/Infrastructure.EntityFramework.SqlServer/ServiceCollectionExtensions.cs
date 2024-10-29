@@ -102,7 +102,7 @@ public static class ServiceCollectionExtensions
                 {
                     // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
                     o.LogTo(Console.WriteLine,
-                        new[] { DbLoggerCategory.Database.Command.Name },
+                        [DbLoggerCategory.Database.Command.Name],
                         options.SimpleLoggerLevel,
                         DbContextLoggerOptions.SingleLine | DbContextLoggerOptions.Level);
                 }

@@ -37,17 +37,12 @@ public static class RepositoryExtensions
         where TEntity : class, IEntity
     {
         filterModel ??= new FilterModel();
-        specifications = SpecificationBuilder.Build(filterModel.Filters, specifications).ToArray();
-        var orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings).ToArray();
-        var includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes).ToArray();
+        specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+        var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
 
         return await source.FindAllAsync(
                 specifications,
-                new FindOptions<TEntity>
-                {
-                    Orders = orders,
-                    Includes = includes
-                },
+                findOptions,
                 cancellationToken)
             .AnyContext();
     }
@@ -101,18 +96,13 @@ public static class RepositoryExtensions
         where TEntity : class, IEntity
     {
         filterModel ??= new FilterModel();
-        specifications = SpecificationBuilder.Build(filterModel.Filters, specifications).ToArray();
-        var orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings).ToArray();
-        var includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes).ToArray();
+        specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+        var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
 
         return (await source.ProjectAllAsync(
                 specifications,
                 e => e.Id,
-                new FindOptions<TEntity>
-                {
-                    Orders = orders,
-                    Includes = includes
-                },
+                findOptions,
                 cancellationToken).AnyContext())
             .Select(i => i.To<TId>());
     }

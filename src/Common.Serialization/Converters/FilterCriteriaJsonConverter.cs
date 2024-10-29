@@ -8,8 +8,25 @@ using System.Text.Json.Serialization;
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// A custom JSON converter for the <see cref="FilterCriteria"/> class.
+/// </summary>
+/// <remarks>
+/// This converter handles the serialization and deserialization of <see cref="FilterCriteria"/>
+/// objects to and from JSON, using the System.Text.Json library.
+/// </remarks>
 public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
 {
+    /// <summary>
+    /// Reads and converts the JSON to an instance of <see cref="FilterCriteria"/>.
+    /// </summary>
+    /// <param name="reader">The reader instance used to read the JSON.</param>
+    /// <param name="typeToConvert">The type of the object to convert.</param>
+    /// <param name="options">The serializer options to use.</param>
+    /// <returns>A <see cref="FilterCriteria"/> instance converted from the JSON.</returns>
+    /// <exception cref="JsonException">
+    /// Thrown when the JSON is not valid or cannot be properly deserialized into a <see cref="FilterCriteria"/> object.
+    /// </exception>
     public override FilterCriteria Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -84,6 +101,12 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
         throw new JsonException();
     }
 
+    /// <summary>
+    /// Writes the <see cref="FilterCriteria"/> object to JSON using the specified <see cref="Utf8JsonWriter"/>.
+    /// </summary>
+    /// <param name="writer">The <see cref="Utf8JsonWriter"/> used to write the JSON output.</param>
+    /// <param name="value">The <see cref="FilterCriteria"/> instance to be serialized.</param>
+    /// <param name="options">Options to control the behavior during writing to JSON.</param>
     public override void Write(Utf8JsonWriter writer, FilterCriteria value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();

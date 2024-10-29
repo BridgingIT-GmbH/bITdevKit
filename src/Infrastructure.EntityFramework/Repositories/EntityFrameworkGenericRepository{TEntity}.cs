@@ -15,7 +15,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         EntityFrameworkReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
+    protected EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
     public EntityFrameworkGenericRepository(
@@ -29,6 +29,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -40,6 +41,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -51,6 +53,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

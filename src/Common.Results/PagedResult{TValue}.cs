@@ -16,48 +16,46 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     ///     Represents a paginated result with additional metadata for paging.
     /// </summary>
     /// <typeparam name="TValue">The type of the values contained in the paginated result.</typeparam>
-    public PagedResult() { }
+    public PagedResult() { } // needs to be public for mapster
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PagedResult{TValue}" /> class.
     ///     Represents a paged result, extending the standard Result class with pagination capabilities.
     /// </summary>
     /// <typeparam name="TValue">The type of the elements in the paged result.</typeparam>
-    public PagedResult(
-        IEnumerable<TValue> value = default,
-        IEnumerable<string> messages = null,
+    private PagedResult(
+        IEnumerable<TValue> values = default,
         long count = 0,
         int page = 1,
         int pageSize = 10)
     {
-        this.Value = value;
+        this.Value = values;
+        this.TotalCount = count;
         this.CurrentPage = page;
         this.PageSize = pageSize;
         this.TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        this.TotalCount = count;
-        this.WithMessages(messages);
     }
 
     /// <summary>
     ///     Gets the current page number in a paginated result set.
     /// </summary>
-    public int CurrentPage { get; init; }
+    public int CurrentPage { get; }
 
     /// <summary>
     ///     Gets the total number of pages available in the paged result.
     ///     This property is calculated based on the total count of items divided by the page size.
     /// </summary>
-    public int TotalPages { get; init; }
+    public int TotalPages { get; }
 
     /// <summary>
     ///     Gets the total count of items available before paging is applied.
     /// </summary>
-    public long TotalCount { get; init; }
+    public long TotalCount { get; }
 
     /// <summary>
     ///     Gets the number of items to be displayed in a single page of the paginated result.
     /// </summary>
-    public int PageSize { get; init; }
+    public int PageSize { get; }
 
     /// <summary>
     ///     Gets a value indicating whether there is a previous page of results available.
@@ -86,7 +84,8 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     public static new PagedResult<TValue> Failure<TError>()
         where TError : IResultError, new()
     {
-        return new PagedResult<TValue>(default) { success = false }.WithError<TError>();
+        return new PagedResult<TValue>(default) { success = false }
+            .WithError<TError>();
     }
 
     /// <summary>
@@ -97,7 +96,8 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     /// <returns>A new <see cref="PagedResult{TValue}" /> representing the failure.</returns>
     public static new PagedResult<TValue> Failure(string message, IResultError error = null)
     {
-        return new PagedResult<TValue>(default) { success = false }.WithMessage(message).WithError(error);
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessage(message).WithError(error);
     }
 
     /// <summary>
@@ -108,64 +108,65 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     /// <returns>A new instance of PagedResult with the provided error messages and errors.</returns>
     public static new PagedResult<TValue> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors)
     {
-        return new PagedResult<TValue>(default) { success = false }.WithMessages(messages).WithErrors(errors);
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessages(messages).WithErrors(errors);
     }
 
     /// <summary>
     ///     Creates a successful PagedResult instance containing a collection of values.
     /// </summary>
     /// <typeparam name="TValue">The type of elements in the collection.</typeparam>
-    /// <param name="value">The collection of values.</param>
-    /// <param name="count">The total number of elements in the overall collection. Default is 0.</param>
+    /// <param name="values">The collection of values.</param>
+    /// <param name="count"></param>
     /// <param name="page">The current page number. Default is 1.</param>
     /// <param name="pageSize">The number of items per page. Default is 10.</param>
     /// <returns>A new instance of <see cref="PagedResult{TValue}" /> containing the provided values.</returns>
     public static PagedResult<TValue> Success(
-        IEnumerable<TValue> value,
+        IEnumerable<TValue> values,
         long count = 0,
         int page = 1,
         int pageSize = 10)
     {
-        return new PagedResult<TValue>(value, null, count, page, pageSize);
+        return new PagedResult<TValue>(values, count, page, pageSize);
     }
 
     /// <summary>
     ///     Creates a successful PagedResult with a single message.
     /// </summary>
     /// <typeparam name="TValue">The type of the items in the paged result.</typeparam>
-    /// <param name="value">The items for the paged result.</param>
+    /// <param name="values">The items for the paged result.</param>
     /// <param name="message">A message associated with the success.</param>
-    /// <param name="count">The total count of items available for pagination.</param>
+    /// <param name="count"></param>
     /// <param name="page">The current page number.</param>
     /// <param name="pageSize">The number of items per page.</param>
     /// <returns>A successful PagedResult containing the provided items and message.</returns>
     public static PagedResult<TValue> Success(
-        IEnumerable<TValue> value,
+        IEnumerable<TValue> values,
         string message,
         long count = 0,
         int page = 1,
         int pageSize = 10)
     {
-        return new PagedResult<TValue>(value, null, count, page, pageSize).WithMessage(message);
+        return new PagedResult<TValue>(values, count, page, pageSize).WithMessage(message);
     }
 
     /// <summary>
     ///     Creates a successful <see cref="PagedResult{TValue}" /> with the specified values and messages.
     /// </summary>
-    /// <param name="value">The enumerable of values to be included in the result.</param>
+    /// <param name="values">The enumerable of values to be included in the result.</param>
     /// <param name="messages">The collection of messages to be included in the result.</param>
-    /// <param name="count">The total count of items.</param>
+    /// <param name="count"></param>
     /// <param name="page">The current page number.</param>
     /// <param name="pageSize">The size of each page.</param>
     /// <returns>A <see cref="PagedResult{TValue}" /> containing the provided values and messages.</returns>
     public static PagedResult<TValue> Success(
-        IEnumerable<TValue> value,
+        IEnumerable<TValue> values,
         IEnumerable<string> messages,
         long count = 0,
         int page = 1,
         int pageSize = 10)
     {
-        return new PagedResult<TValue>(value, null, count, page, pageSize).WithMessages(messages);
+        return new PagedResult<TValue>(values, count, page, pageSize).WithMessages(messages);
     }
 
     /// <summary>

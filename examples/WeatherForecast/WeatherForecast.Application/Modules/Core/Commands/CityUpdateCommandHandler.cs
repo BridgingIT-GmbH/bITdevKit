@@ -13,22 +13,13 @@ using Domain.Model;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-public class CityUpdateCommandHandler : CommandHandlerBase<CityUpdateCommand, AggregateUpdatedCommandResult>
+public class CityUpdateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IMediator mediator,
+    IGenericRepository<City> repository)
+    : CommandHandlerBase<CityUpdateCommand, AggregateUpdatedCommandResult>(loggerFactory)
 {
-    private readonly IMediator mediator;
-    private readonly IGenericRepository<City> repository;
-
-    public CityUpdateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IMediator mediator,
-        IGenericRepository<City> repository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(repository, nameof(repository));
-
-        this.mediator = mediator;
-        this.repository = repository;
-    }
+    private readonly IMediator mediator = mediator;
 
     public override async Task<CommandResponse<AggregateUpdatedCommandResult>> Process(
         CityUpdateCommand command,
@@ -36,16 +27,16 @@ public class CityUpdateCommandHandler : CommandHandlerBase<CityUpdateCommand, Ag
     {
         this.Logger.LogInformation($"+++ update city with name: {command.Model.Name} ({command.Model.Country})");
 
-        if (!await this.repository.ExistsAsync(command.Model.Id, cancellationToken).AnyContext())
+        if (!await repository.ExistsAsync(command.Model.Id, cancellationToken).AnyContext())
         {
             throw new EntityNotFoundException();
         }
 
         var entity =
-            await this.repository.FindOneAsync(command.Model.Id, cancellationToken: cancellationToken).AnyContext() ??
+            await repository.FindOneAsync(command.Model.Id, cancellationToken: cancellationToken).AnyContext() ??
             throw new AggregateNotFoundException(nameof(City));
         entity.Update(command.Model.Name, command.Model.Country, command.Model.Longitude, command.Model.Latitude);
-        await this.repository.UpsertAsync(entity, cancellationToken).AnyContext();
+        await repository.UpsertAsync(entity, cancellationToken).AnyContext();
 
         // TODO: invalidate query cache
 

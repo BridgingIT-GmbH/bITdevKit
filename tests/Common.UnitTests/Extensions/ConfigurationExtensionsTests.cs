@@ -1,4 +1,9 @@
-﻿namespace BridgingIT.DevKit.Common.Tests;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
 using Microsoft.Extensions.Configuration;
 using Shouldly;
@@ -24,7 +29,7 @@ public class ConfigurationExtensionsTests
         var key = this.faker.Random.Word();
 
         // Act
-        var result = Extensions.GetSection(null, key, false);
+        var result = ConfExtensions.GetSection(null, key, false);
 
         // Assert
         result.ShouldBeNull();
@@ -38,7 +43,7 @@ public class ConfigurationExtensionsTests
         var key = this.faker.Random.Word();
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -61,7 +66,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, true);
+        var result = ConfExtensions.GetSection(source, key, true);
 
         // Assert
         result.ShouldNotBeNull();
@@ -83,7 +88,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -116,7 +121,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -138,7 +143,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -158,7 +163,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -183,7 +188,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -207,7 +212,7 @@ public class ConfigurationExtensionsTests
     //     });
     //
     //     // Act
-    //     var result = Extensions.GetSection(source, key, false);
+    //     var result = Extensions2.GetSection(source, key, false);
     //
     //     // Assert
     //     result.ShouldNotBeNull();
@@ -227,7 +232,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();
@@ -246,7 +251,7 @@ public class ConfigurationExtensionsTests
         });
 
         // Act
-        var result = Extensions.GetSection(source, key, false);
+        var result = ConfExtensions.GetSection(source, key, false);
 
         // Assert
         result.ShouldNotBeNull();

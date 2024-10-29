@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
+using FluentValidation;
+
 public class StubMapper : IMapper<PersonStub, PersonDtoStub>
 {
     public void Map(PersonStub source, PersonDtoStub target)
@@ -20,12 +22,13 @@ public class PersonStub
 
     public PersonStub() { }
 
-    public PersonStub(string firstName, string lastName, string email, int age)
+    public PersonStub(string firstName, string lastName, string email, int age, IEnumerable<LocationStub> locations = null)
     {
         this.FirstName = firstName;
         this.LastName = lastName;
         this.Email = EmailAddressStub.Create(email);
         this.Age = age;
+        this.locations = (locations ?? []).ToList();
     }
 
     public string FirstName { get; set; }
@@ -177,5 +180,14 @@ public class OptionsStubBuilder : OptionsBuilderBase<OptionsStub, OptionsStubBui
         this.Target.Parameter3 = true;
 
         return this;
+    }
+}
+
+public class TestValidator : AbstractValidator<PersonStub>
+{
+    public TestValidator()
+    {
+        this.RuleFor(x => x.Age).GreaterThanOrEqualTo(18).WithMessage("Must be 18 or older");
+        this.RuleFor(x => x.Email.Value).NotEmpty().EmailAddress().WithMessage("Invalid email");
     }
 }

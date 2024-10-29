@@ -27,6 +27,6 @@ public class MenuFindOneForHostQueryHandler(ILoggerFactory loggerFactory, IGener
                 cancellationToken: cancellationToken)
             .AnyContext();
 
-        return QueryResponse.For(result);
+        return QueryResult.For(result);
     }
 }

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Common.Caching\Common.Caching.csproj"/>
     <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj"/>
     <ProjectReference Include="..\Common.Modules\Common.Modules.csproj"/>
+    <ProjectReference Include="..\Common.Results\Common.Results.csproj" />
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 

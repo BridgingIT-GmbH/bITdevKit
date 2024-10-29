@@ -42,13 +42,14 @@ public class DinnerCreateCommandHandler(
             Price.Create(command.Price.Amount, command.Price.Currency),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        DomainRules.Apply([
-            new DinnerNameMustBeUniqueRule(repository, dinner.Name),
-            new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule)
-        ]);
+        await DomainRules.ApplyAsync([
+                new DinnerNameMustBeUniqueRule(repository, dinner.Name),
+                new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule)
+            ],
+            cancellationToken);
 
         await repository.InsertAsync(dinner, cancellationToken);
 
-        return CommandResponse.Success(dinner);
+        return CommandResult.Success(dinner);
     }
 }

@@ -22,7 +22,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
-    public EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
+    protected EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.DbContext, nameof(options.DbContext));
@@ -32,11 +32,11 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         this.Logger = options.CreateLogger<IGenericRepository<TEntity>>();
     }
 
-    public EntityFrameworkReadOnlyGenericRepository(
+    protected EntityFrameworkReadOnlyGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
-    public EntityFrameworkReadOnlyGenericRepository(
+    protected EntityFrameworkReadOnlyGenericRepository(
         ILoggerFactory loggerFactory,
         DbContext context,
         IEntityMapper mapper = null)

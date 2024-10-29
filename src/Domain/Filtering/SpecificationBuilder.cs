@@ -10,18 +10,11 @@ using System.Text.Json;
 
 public static class SpecificationBuilder
 {
-    // public static void Register<TEntity, TSpecification>(string name)
-    //     where TEntity : class, IEntity
-    //     where TSpecification : ISpecification<TEntity>
-    // {
-    //     SpecificationResolver.Register<TEntity, TSpecification>(name);
-    // }
-    //
-    // public static void Register<TEntity>(string name, Type specificationType)
-    //     where TEntity : class, IEntity
-    // {
-    //     SpecificationResolver.Register<TEntity>(specificationType, name);
-    // }
+    public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(FilterModel filterModel, IEnumerable<ISpecification<TEntity>> specifications = null)
+        where TEntity : class, IEntity
+    {
+        return Build(filterModel?.Filters, specifications);
+    }
 
     public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(IEnumerable<FilterCriteria> filters, IEnumerable<ISpecification<TEntity>> specifications = null)
         where TEntity : class, IEntity
@@ -98,9 +91,9 @@ public static class SpecificationBuilder
 
         var body = filter.Operator switch
         {
-            FilterOperator.Any => BuildAnyExpression(parameter, filter.Field, (FilterCriteria)filter.Value),
-            FilterOperator.All => BuildAllExpression(parameter, filter.Field, (FilterCriteria)filter.Value),
-            FilterOperator.None => BuildNoneExpression(parameter, filter.Field, (FilterCriteria)filter.Value),
+            FilterOperator.Any => BuildAnyExpression(parameter, filter.Field, filter.Value as FilterCriteria ?? filter.Filters?.FirstOrDefault()),
+            FilterOperator.All => BuildAllExpression(parameter, filter.Field, filter.Value as FilterCriteria ?? filter.Filters?.FirstOrDefault()),
+            FilterOperator.None => BuildNoneExpression(parameter, filter.Field, filter.Value as FilterCriteria ?? filter.Filters?.FirstOrDefault()),
             _ => BuildSimpleExpression(parameter, filter)
         };
 

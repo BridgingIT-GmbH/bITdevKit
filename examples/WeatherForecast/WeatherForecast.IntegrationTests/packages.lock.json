@@ -1736,6 +1736,7 @@
           "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Humanizer.Core": "[2.14.1, )",
@@ -1803,6 +1804,7 @@
         "type": "Project",
         "dependencies": {
           "AutoMapper": "[13.0.1, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Mapster": "[7.4.0, )",
@@ -1833,6 +1835,14 @@
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
           "Microsoft.Extensions.Logging.Abstractions": "[8.0.2, )"
+        }
+      },
+      "BridgingIT.DevKit.Common.Results": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[11.10.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Serialization": {
@@ -1870,6 +1880,7 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.AspNetCore.Mvc.Testing": "[8.0.10, )",
           "Serilog": "[4.1.0, )",
@@ -1885,6 +1896,7 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "MediatR.Contracts": "[2.0.1, )",
@@ -1962,7 +1974,7 @@
           "Microsoft.Extensions.Http": "[8.0.1, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.10, )",
           "Microsoft.Extensions.Localization": "[8.0.10, )",
-          "MudBlazor": "[7.13.0, )",
+          "MudBlazor": "[7.14.0, )",
           "Newtonsoft.Json": "[13.0.3, )",
           "System.ComponentModel.Annotations": "[5.0.0, )"
         }
@@ -1989,7 +2001,7 @@
           "Ensure.That": "[10.1.0, )",
           "Microsoft.ApplicationInsights.AspNetCore": "[2.22.0, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[8.0.10, )",
-          "MudBlazor": "[7.13.0, )",
+          "MudBlazor": "[7.14.0, )",
           "OpenTelemetry.Exporter.Console": "[1.9.0, )",
           "OpenTelemetry.Exporter.Jaeger": "[1.5.1, )",
           "OpenTelemetry.Exporter.Prometheus.AspNetCore": "[1.7.0-rc.1, )",
@@ -2678,9 +2690,9 @@
       },
       "MudBlazor": {
         "type": "CentralTransitive",
-        "requested": "[7.13.0, )",
-        "resolved": "7.13.0",
-        "contentHash": "FapnlYCCN84ah+5vwMjcLAvdwFUXhsNxroi7y1sRI0vqYtUR6IZu0CaTbI9zcFAjDHQ4acHVNN71rcRbOfX+Rg==",
+        "requested": "[7.14.0, )",
+        "resolved": "7.14.0",
+        "contentHash": "hpuNSlI6/BVCe4H6X4BoHijxMffFE1ldunvFzAFZRTGuSGoYC7N6IIUv64MN3F/hkiRllx3gtivTZjivymxIpQ==",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "8.0.8",
           "Microsoft.AspNetCore.Components.Web": "8.0.8",

@@ -22,6 +22,19 @@
   * [API Controller Example](#api-controller-example)
   * [Complex Workflow Example](#complex-workflow-example)
 * [Appendix A: Repository Extensions](#appendix-a-repository-extensions)
+  * [Available Extensions](#available-extensions)
+  * [Usage Examples](#usage-examples)
+    * [Basic CRUD Operations](#basic-crud-operations)
+    * [Query Operations](#query-operations)
+    * [Advanced Queries](#advanced-queries)
+    * [Error Handling](#error-handling-1)
+  * [Best Practices](#best-practices-1)
+* [Appendix B: Functional Extensions](#appendix-b-functional-extensions)
+  * [Core Operations](#core-operations)
+  * [Side Effects](#side-effects)
+  * [Control Flow](#control-flow)
+  * [Transformations](#transformations)
+  * [Pattern Matching](#pattern-matching)
 
 <!-- TOC -->
 
@@ -58,64 +71,97 @@ The Result pattern implementation provides a comprehensive solution by:
 
 ### Architecture
 
+> A type-safe Result pattern implementation for explicit success/failure handling with optional
+> functional extensions.
+
+The Result pattern consists of three primary classes in hierarchy: `Result` provides base
+success/failure tracking with message and error collections, `ResultT` adds generic type support for
+strongly-typed value handling, and `PagedResultT` extends this for collection scenarios with
+pagination metadata. Each maintains a fluent interface with factory methods (`Success()`,
+`Failure()`). Error handling is supported through `IResultError`, enabling custom error types across
+the hierarchy.
+
+The pattern can be enhanced with optional functional extensions like `Map/Bind` for transformations,
+`Tap` for side effects, and `Filter/Unless` for conditionals and more.
+See [Appendix B: Functional Extensions](#appendix-b-functional-extensions) for an overview
+of the available functional operations.
+
 ```mermaid
 classDiagram
-    class IResult {
-        +Messages: IReadOnlyList~string~
-        +Errors: IReadOnlyList~IResultError~
-        +IsSuccess: bool
-        +IsFailure: bool
-        +WithMessage(message: string): Result
-        +WithError(error: IResultError): Result
-        +WithError~TError~(): Result
-        +HasError(): bool
-    }
-
-    class Result {
-        -success: bool
-        -messages: List~string~
-        -errors: List~IResultError~
-        +static Success(): Result
-        +static Failure(): Result
-        +WithMessage(message: string): Result
-        +WithError(error: IResultError): Result
-    }
-
-    class Result~T~ {
-        +Value: T
-        +static Success(value: T): Result~T~
-        +static Failure(): Result~T~
-    }
-
-    class PagedResult~T~ {
-        +CurrentPage: int
-        +TotalPages: int
-        +TotalCount: long
-        +PageSize: int
-        +HasPreviousPage: bool
-        +HasNextPage: bool
-    }
-
     class IResultError {
-        +Message: string
+        <<interface>>
+        +string Message
     }
 
     class ResultErrorBase {
-        +Message: string
+        <<abstract>>
+        +string Message
+        +ResultErrorBase(string message)
     }
 
-    class ExceptionError {
-        -exception: Exception
-        +ExceptionType: string
-        +StackTrace: string
-        +OriginalException: Exception
+    class IResult {
+        <<interface>>
+        +IReadOnlyList Messages
+        +IReadOnlyList Errors
+        +bool IsSuccess
+        +bool IsFailure
+        +bool HasError()
     }
 
-    IResult <|.. Result
-    Result <|-- Result~T~
-    Result~T~ <|-- PagedResult~T~
+    class IResultT {
+        <<interface>>
+        +T Value
+    }
+
+    class Result {
+        -List messages
+        -List errors
+        -bool success
+        +bool IsSuccess
+        +bool IsFailure
+        +Result WithMessage(string)
+        +Result WithMessages(IEnumerable)
+        +Result WithError(IResultError)
+        +Result WithErrors(IEnumerable)
+        +Result For()
+        +static Result Success()
+        +static Result Failure()
+    }
+
+    class ResultT {
+        -List messages
+        -List errors
+        -bool success
+        +T Value
+        +ResultT WithMessage(string)
+        +ResultT WithMessages(IEnumerable)
+        +ResultT WithError(IResultError)
+        +ResultT WithErrors(IEnumerable)
+        +Result For()
+        +static ResultT Success(T value)
+        +static ResultT Failure()
+    }
+
+    class PagedResultT {
+        +int CurrentPage
+        +int TotalPages
+        +long TotalCount
+        +int PageSize
+        +bool HasPreviousPage
+        +bool HasNextPage
+        +static PagedResultT Success(IEnumerable, long, int, int)
+        +static PagedResultT Failure()
+    }
+
     IResultError <|.. ResultErrorBase
-    IResultError <|.. ExceptionError
+    IResult <|-- IResultT
+    IResult <|.. Result
+    IResultT <|.. ResultT
+    ResultT <|-- PagedResultT
+    Result ..> IResultError : uses
+    ResultT ..> IResultError : uses
+    PagedResultT ..> IResultError : uses
+    IResult ..> IResultError : contains
 ```
 
 ### Use Cases
@@ -151,30 +197,35 @@ The Result pattern is particularly useful in the following scenarios:
 ### Basic Result Operations
 
 ```csharp
-public class ResultDemo
+// Creating success results
+var success = Result.Success();
+var successWithMessage = Result.Success("Operation completed successfully");
+
+// Creating failure results
+var failure = Result.Failure("Operation failed")
+  .WithError<ValidationError>();
+
+// Checking result status
+if (success.IsSuccess)
 {
-    public void BasicOperations()
-    {
-        // Creating success results
-        var success = Result.Success();
-        var successWithMessage = Result.Success("Operation completed successfully");
-
-        // Creating failure results
-        var failure = Result.Failure();
-        var failureWithMessage = Result.Failure("Operation failed");
-
-        // Checking result status
-        if (success.IsSuccess)
-        {
-            // Handle success
-        }
-
-        if (failure.IsFailure)
-        {
-            // Handle failure
-        }
-    }
+    // Handle success
 }
+
+if (failure.IsFailure)
+{
+    // Handle failure
+}
+
+// Error handling
+if (failure.HasError<ValidationError>())
+{
+    // Handle specific error type
+}
+
+// Paged result
+var pagedResult = PagedResultT<Item>.Success(
+    items, totalCount: 100, page: 1, pageSize: 10
+);
 ```
 
 ### Result with Values
@@ -789,7 +840,7 @@ This example demonstrates:
 - Structured error handling
 - Comprehensive logging
 
-# Appendix A: Repository Extensions
+## Appendix A: Repository Extensions
 
 > The DevKit provides extension methods for repositories that don't natively support the Result
 > pattern. These extensions wrap standard repository operations in Result objects, providing
@@ -810,9 +861,9 @@ This example demonstrates:
 - Upsert operations
 - Delete operations
 
-## Usage Examples
+### Usage Examples
 
-### Basic CRUD Operations
+#### Basic CRUD Operations
 
 ```csharp
 public class UserService
@@ -839,7 +890,7 @@ public class UserService
 }
 ```
 
-### Query Operations
+#### Query Operations
 
 ```csharp
 public class ProductService
@@ -871,7 +922,7 @@ public class ProductService
 }
 ```
 
-### Advanced Queries
+#### Advanced Queries
 
 ```csharp
 public class OrderService
@@ -901,7 +952,7 @@ public class OrderService
 }
 ```
 
-### Error Handling
+#### Error Handling
 
 The extensions automatically handle exceptions and wrap them in Result objects:
 
@@ -929,7 +980,7 @@ public class InventoryService
 }
 ```
 
-## Best Practices
+### Best Practices
 
 1. **Consistent Usage**: Use these extensions throughout the application for consistent error
    handling:
@@ -1000,3 +1051,251 @@ public async Task<PagedResult<Order>> GetOrdersAsync(FilterModel filterModel)
 
 These extensions provide a seamless way to integrate the Result pattern with existing repository
 implementations, ensuring consistent error handling and operation results across your application.
+
+## Appendix B: Functional Extensions
+
+> Composable, type-safe operations for elegant Result error handling and flow control.
+
+The functional programming extensions transform the Result pattern from a simple success/failure
+container into a powerful composition tool. By providing fluent, chainable operations like `Map`,
+`Bind`, and `Match`, complex workflows can be expressed as a series of small, focused
+transformations. This approach eliminates nested error handling, reduces complexity, and makes the
+code's intent clearer.
+
+Each operation maintains the Result context, automatically handling error
+propagation and ensuring type safety throughout the chain. The pattern enables both synchronous and
+asynchronous operations, side effects, and validations while keeping the core business logic clean
+and maintainable. This functional style particularly shines in handling complex flows where multiple
+operations must be composed together, each potentially failing, with proper error context preserved
+throughout the chain.
+
+### Core Operations
+
+> Essential value transformations and validations ensuring Result integrity.
+
+- **Map**: Transform success value into different type
+
+```csharp
+await result.MapAsync(async (user, ct) => await LoadUserPreferencesAsync(user));
+```
+
+- **Bind**: Chain Results together, preserving errors
+
+```csharp
+await result.BindAsync(async (user, ct) => await ValidateAndTransformUserAsync(user));
+```
+
+- **Ensure**: Verify condition on success value
+
+```csharp
+await result.EnsureAsync(
+    async (user, ct) => await CheckUserStatusAsync(user),
+    new Error("Invalid status"));
+```
+
+- **Try**: Wrap async operation in Result handling exceptions
+
+```csharp
+await Result<User>.TryAsync(async ct => await repository.GetUserAsync(userId, ct));
+```
+
+- **Validate**: Validate collection of values using FluentValidation
+
+```csharp
+await result.ValidateAsync(new UserValidator(),
+    strategy => strategy.IncludeRuleSets("Create"));
+```
+
+### Side Effects
+
+> Execute operations without changing Result value.
+
+- **Tap**: Execute side effect on success value
+
+```csharp
+await result.TapAsync(async (user, ct) => await _cache.StoreUserAsync(user));
+```
+
+- **TeeMap**: Transform and execute side effect
+
+```csharp
+await result.TeeMapAsync(
+    user => user.ToDto(),
+    async (dto, ct) => await _cache.StoreDtoAsync(dto));
+```
+
+- **Do**: Execute action regardless of Result state
+
+```csharp
+await result.DoAsync(async ct => await InitializeSystemAsync(ct));
+```
+
+- **AndThen**: Chain operations preserving original value
+
+```csharp
+await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
+```
+
+### Control Flow
+
+> Conditional logic and alternative paths.
+
+- **Filter**: Convert to failure if predicate fails
+
+```csharp
+await result.FilterAsync(
+    async (user, ct) => await HasValidSubscriptionAsync(user),
+    new SubscriptionError("Invalid subscription"));
+```
+
+- **Unless**: Convert to failure if predicate succeeds
+
+```csharp
+await result.UnlessAsync(
+    async (user, ct) => await IsBlacklistedAsync(user),
+    new BlacklistError("Blacklisted"));
+```
+
+- **OrElse**: Provide fallback value on failure
+
+```csharp
+await result.OrElseAsync(
+    async ct => await LoadDefaultUserAsync());
+```
+
+- **Switch**: Execute conditional side effect
+
+```csharp
+await result.SwitchAsync(
+    user => user.IsAdmin,
+    async (user, ct) => await NotifyAdminLoginAsync(user));
+```
+
+### Transformations
+
+> Value mappings and collection handling.
+
+- **BiMap**: Transform both success and failure cases
+
+```csharp
+await result.BiMap(
+    user => new UserDto(user),
+    errors => errors.Select(e => new PublicError(e)));
+```
+
+- **Choose**: Filter optional values
+
+```csharp
+await result.ChooseAsync(async (user, ct) =>
+    user.IsActive ? Option<UserDto>.Some(new UserDto(user)) : Option<UserDto>.None());
+```
+
+- **Collect**: Transform collection preserving all errors
+
+```csharp
+await result.CollectAsync(async (user, ct) => await ValidateUserAsync(user));
+```
+
+### Pattern Matching
+
+> Success/failure case handling.
+
+- **Match**: Handle success/failure with async functions
+
+```csharp
+await result.MatchAsync(
+    async (user, ct) => await ProcessUserAsync(user),
+    async (errors, ct) => await HandleErrorsAsync(errors));
+```
+
+- **MatchAsync (mixed)**: Handle with mix of sync/async functions
+
+```csharp
+await result.MatchAsync(
+    async (user, ct) => await ProcessUserAsync(user),
+    errors => "Processing failed");
+```
+
+- **Match (values)**: Return different values for success/failure
+
+```csharp
+await result.Match(
+    success: "Valid",
+    failure: "Invalid");
+```
+
+### Usage Example
+
+> Clean validation, external integration and transformation flow with automatic error propagation.
+
+The chain processes a list of persons through a series of validations and transformations.
+Starting with input validation (age checks, location requirements), it transforms the data (email
+normalization), interacts with external services (email notifications), and performs final
+validations (database checks). Each operation in the chain either transforms the data or validates
+it, with errors propagating automatically through the chain (`ResultT`).
+
+The functional style ensures that if
+any step fails, subsequent operations are skipped and the error context is preserved. The chain
+concludes by matching the result to either a success or failure message.
+
+``` mermaid
+flowchart TB
+    Input[Result List<Person>] --> A
+
+    subgraph "Initial Validation"
+        A[Do - Log Start] --> B[Validate persons]
+        B --> C[Ensure age >= 18]
+        C --> E[Filter locations]
+    end
+
+    subgraph "Data Transformation"
+        E --> F[Map emails lowercase]
+    end
+
+    subgraph "External Operations"
+        F --> H[AndThenAsync send emails]
+    end
+
+    subgraph "Final Validation"
+        H --> K[EnsureAsync DB check]
+    end
+
+    K --> Final[Match result to string]
+
+    %% Side Effects
+    subgraph "Side Effects System"
+        direction LR
+        Email[Email Service]
+        DB[Database]
+    end
+
+    H -.-> Email
+    K -.-> DB
+```
+
+```csharp
+var people = new List<Person>{ personA, personB };
+var result = await Result<List>.Success(people)
+    .Do(() => logger.LogInformation("Starting person processing"))
+    .Validate(validator)
+    .Ensure(
+        persons => persons.All(p => p.Age >= 18),
+        new Error("All persons must be adults"))
+    .Filter(
+        persons => persons.All(p => p.Locations.Any()),
+        new Error("All persons must have at least one location"))
+    .Map(persons => persons.Select(p => {
+        var email = EmailAddress.Create(p.Email.Value.ToLowerInvariant());
+        return new Person(p.FirstName, p.LastName, email, p.Age, p.Locations);
+    }).ToList())
+    .AndThenAsync(async (persons, ct) =>
+        await emailService.SendWelcomeEmailAsync(persons),
+        CancellationToken.None)
+    .EnsureAsync(async (persons, ct) =>
+        await database.PersonsExistAsync(persons),
+        new Error("Not all persons were saved correctly"))
+    .Match(
+        list => $"Successfully processed {list.Count} persons",
+        errors => $"Processing failed: {string.Join(", ", errors)}"
+    );
+```

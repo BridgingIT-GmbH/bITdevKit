@@ -31,6 +31,6 @@ public class MenuCreateCommandHandler(
 
         await repository.InsertAsync(menu, cancellationToken);
 
-        return CommandResponse.Success(menu);
+        return CommandResult.Success(menu);
     }
 }

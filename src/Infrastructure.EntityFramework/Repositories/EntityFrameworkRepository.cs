@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 public class EntityFrameworkRepository<TEntity> : IRepository
     where TEntity : class
 {
-    public EntityFrameworkRepository(EntityFrameworkRepositoryOptions options)
+    protected EntityFrameworkRepository(EntityFrameworkRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.DbContext, nameof(options.DbContext));
@@ -36,7 +36,7 @@ public class EntityFrameworkRepository<TEntity> : IRepository
         }
     }
 
-    public EntityFrameworkRepository(
+    protected EntityFrameworkRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 

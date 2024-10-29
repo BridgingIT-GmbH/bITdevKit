@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\..\..\..\src\Common.Mapping\Common.Mapping.csproj"/>
     <ProjectReference Include="..\..\..\..\..\src\Application.Commands\Application.Commands.csproj"/>
     <ProjectReference Include="..\..\..\..\..\src\Application.Queries\Application.Queries.csproj"/>
+    <ProjectReference Include="..\..\..\..\..\src\Common.Results\Common.Results.csproj" />
     <ProjectReference Include="..\..\..\..\..\src\Common.Utilities\Common.Utilities.csproj"/>
     <ProjectReference Include="..\Core.Domain\DinnerFiesta.Core.Domain.csproj"/>
   </ItemGroup>

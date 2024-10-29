@@ -19,7 +19,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IGenericReadOnlyRepository<TEntity>
     where TEntity : class, IEntity
 {
-    public EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
+    protected EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.DbContext, nameof(options.DbContext));
@@ -28,7 +28,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         this.Logger = options.CreateLogger<IGenericRepository<TEntity>>();
     }
 
-    public EntityFrameworkReadOnlyGenericRepository(
+    protected EntityFrameworkReadOnlyGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
@@ -70,8 +70,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
                 .WhereExpressions(expressions)
                 .OrderByIf(options)
                 .DistinctIf(options)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
+                .SkipIf(options.Skip)
+                .TakeIf(options.Take)
                 .ToListAsyncSafe(cancellationToken)
                 .AnyContext();
         }
@@ -122,8 +122,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
                 .OrderByIf(options)
                 .Select(projection)
                 .DistinctIf(options, this.Options.Mapper)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
+                .SkipIf(options.Skip)
+                .TakeIf(options.Take)
                 .ToListAsyncSafe(cancellationToken)
                 .AnyContext();
         }

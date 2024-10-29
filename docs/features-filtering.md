@@ -14,7 +14,8 @@
 * [Complex Filter Examples](#complex-filter-examples)
 * [Appendix A: Angular Usage Guide](#appendix-a-angular-usage-guide)
 * [Appendix B: Flow Diagram](#appendix-b-flow-diagram)
-* [Appendix C: Disclaimer](#appendix-c-disclaimer)
+* [Appendix C: Filter Model Builder](#appendix-c-filter-model-builder)
+* [Appendix D: Disclaimer](#appendix-c-disclaimer)
 
 <!-- TOC -->
 
@@ -27,9 +28,9 @@
 
 ```mermaid
 graph LR
-    R[Client Request]-->|filter|E[Endpoint]-->|filter|Q[QueryHandler]-->|filter|P[Repository]
+    R[Client Request]-->|filter|E[API Endpoint]-->|filter|Q[QueryHandler or Service]-->|filter|P[Repository]
     P-->|query|D[(Database)]
-    P-.->|PagedResult|R
+    P-.->|Result_IEnumerable_T|R
 ```
 
 ### Challenges
@@ -56,41 +57,48 @@ graph LR
 > The Filtering feature solves these challenges by providing:
 
 1. **Unified Query Interface**
-  - Single, consistent way to express complex queries
-  - Works across different entity types
-  - Supports both simple and complex filtering scenarios
-  - No need to create custom endpoints for each query scenario╬
+
+- Single, consistent way to express complex queries
+- Works across different entity types
+- Supports both simple and complex filtering scenarios
+- No need to create custom endpoints for each query scenario╬
 
 2. **Type-Safe Implementation**
-  - Strongly-typed models for both client and server (Swagger)
-  - Compile-time validation of filter structures
-  - Clear contract between frontend and backend (FilterModel)
+
+- Strongly-typed models for both client and server (Swagger)
+- Compile-time validation of filter structures
+- Clear contract between frontend and backend (FilterModel)
 
 3. **Flexible Architecture**
-  - Extensible design for more custom filter types [TODO]
-  - Support for additional domain-specific specifications
-  - Easy integration with existing repositories (FindOptions)
+
+- Extensible design for more custom filter types [TODO]
+- Support for additional domain-specific specifications
+- Easy integration with existing repositories (FindOptions)
 
 4. **Performance Optimization**
-  - Built-in pagination support
-  - Efficient query building (Expressions)
-  - Optimized database access through specifications
+
+- Built-in pagination support
+- Efficient query building (Expressions)
+- Optimized database access through specifications
 
 ### Use Cases
 
 1. **Data Grids, Tables and Lists**
-  - Dynamic column filtering
-  - Multi-column sorting
-  - Server-side pagination
+
+- Dynamic column filtering
+- Multi-column sorting
+- Server-side pagination
 
 2. **Search Interfaces**
-  - Full-text search across multiple fields
-  - Combined filters (date ranges, categories, status)
-  - Related entity filtering
+
+- Full-text search across multiple fields
+- Combined filters (date ranges, categories, status)
+- Related entity filtering
 
 3. **Lookup lists**
-  - Dynamic data loading for select components
-  - Type-ahead/autocomplete requests
+
+- Dynamic data loading for select components
+- Type-ahead/autocomplete requests
 
 ## Request Flow Diagram
 
@@ -397,24 +405,28 @@ The following considerations apply to HTTP POST requests:
 ## Best Practices
 
 1. **Request Method Selection**
-  - Use GET for simple queries and basic filtering
-  - Use POST for complex filters or when URL length might be an issue
-  - Consider using POST when sending sensitive filter data
+
+- Use GET for simple queries and basic filtering
+- Use POST for complex filters or when URL length might be an issue
+- Consider using POST when sending sensitive filter data
 
 2. **Performance Considerations**
-  - Keep page sizes reasonable (recommended: 10-50 items)
-  - Use includes selectively to prevent excessive data loading
-  - Consider adding indexes for commonly filtered fields
+
+- Keep page sizes reasonable (recommended: 10-50 items)
+- Use includes selectively to prevent excessive data loading
+- Consider adding indexes for commonly filtered fields
 
 3. **Error Handling**
-  - Always check the `success` property in responses
-  - Handle error messages appropriately in your client application
-  - Log error details for debugging purposes
+
+- Always check the `success` property in responses
+- Handle error messages appropriately in your client application
+- Log error details for debugging purposes
 
 4. **Security**
-  - Validate all filter inputs server-side
-  - Implement appropriate rate limiting
-  - Consider adding pagination limits to prevent DOS attacks
+
+- Validate all filter inputs server-side
+- Implement appropriate rate limiting
+- Consider adding pagination limits to prevent DOS attacks
 
 # Standard Filter Operators
 
@@ -1578,7 +1590,35 @@ graph TD
     H -->|PagedResult| I[Response]
 ```
 
-# Appendix C: Disclaimer
+# Appendix C: Filter Model Builder
+
+> Build a Filter Model using Fluent C# syntax.
+
+Can be used in a Blazor or server side environment to construct complex filters.
+
+```csharp
+var filterModel = FilterModelBuilder.For<PersonStub>()
+      .SetPaging(2, PageSize.Large) // Fluent paging setup
+      .AddFilter(p => p.Age, FilterOperator.GreaterThan, 25) // Age > 25
+      .AddFilter(p => p.FirstName, FilterOperator.Contains, "A") // FirstName contains "A"
+      .AddFilter(p => p.Locations,
+          FilterOperator.Any, b => b
+              .AddFilter(loc => loc.City, FilterOperator.Equal, "Berlin")
+              .AddFilter(loc => loc.PostalCode, FilterOperator.StartsWith, "100")) // Any location with City = New York or ZipCode starts with "100"
+      .AddCustomFilter(FilterCustomType.FullTextSearch)
+      .AddParameter("searchTerm", "John")
+      .AddParameter("fields", new[] { "FirstName", "LastName" }).Done()
+      .AddOrdering(p => p.LastName, OrderDirection.Descending) // Order by LastName Descending
+      .AddOrdering(p => p.FirstName, OrderDirection.Ascending) // Then order by FirstName Ascending
+      .AddInclude(p => p.Locations)
+      .Build();
+
+filterModel.Page.ShouldBe(2);
+filterModel.PageSize.ShouldBe((int)PageSize.Large);
+// etc.
+```
+
+# Appendix D: Disclaimer
 
 > This Filtering feature described here is designed to provide a pragmatic, flexible filtering
 > solution for

@@ -1222,6 +1222,14 @@
           "Microsoft.Extensions.Logging.Abstractions": "[8.0.2, )"
         }
       },
+      "BridgingIT.DevKit.Common.Results": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[11.10.0, )"
+        }
+      },
       "BridgingIT.DevKit.Common.Serialization": {
         "type": "Project",
         "dependencies": {

@@ -12,33 +12,42 @@ using Domain;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class CityFindAllQueryHandler : QueryHandlerBase<CityFindAllQuery, IEnumerable<CityQueryResponse>>
+public class CityFindAllQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<City> cityRepository)
+    : QueryHandlerBase<CityFindAllQuery, IEnumerable<CityQueryResponse>>(loggerFactory)
 {
-    private readonly IGenericRepository<City> cityRepository;
-
-    public CityFindAllQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<City> cityRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(cityRepository, nameof(cityRepository));
-
-        this.cityRepository = cityRepository;
-    }
-
     public override async Task<QueryResponse<IEnumerable<CityQueryResponse>>> Process(
         CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var cities = await this.cityRepository.FindAllAsync(
-                query.Filter,
-                [new CityIsNotDeletedSpecification()],
-                cancellationToken: cancellationToken)
-            .AnyContext();
+        var cities = await cityRepository.FindAllAsync(  // repo takes care of the filter
+                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken);
 
-        return new QueryResponse<IEnumerable<CityQueryResponse>>
-        {
-            Result = cities.Select(c => CityQueryResponse.Create(c))
-        };
+        return QueryResponse.For(
+            cities.Select(c => CityQueryResponse.Create(c)));
+    }
+
+    public async Task<QueryResponse<IEnumerable<CityQueryResponse>>> ProcessEntities(
+        CityFindAllQuery query,
+        CancellationToken cancellationToken)
+    {
+        var cities = (await cityRepository.FindAllResultAsync( // repo takes care of the filter
+                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+            .Ensure(e => e != null, new EntityNotFoundError())
+            .Map(e => e.Select(c => CityQueryResponse.Create(c))).Value;
+
+        return QueryResponse.For(cities);
+    }
+
+    public async Task<QueryResponse<Result<IEnumerable<CityQueryResponse>>>> ProcessResult(
+        CityFindAllQuery query,
+        CancellationToken cancellationToken)
+    {
+        return QueryResult.For(
+            (await cityRepository.FindAllResultAsync( // repo takes care of the filter
+                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+            .Ensure(e => e != null, new EntityNotFoundError())
+            .Map(e => e.Select(c => CityQueryResponse.Create(c))));
     }
 }

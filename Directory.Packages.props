@@ -25,7 +25,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="Dapper" Version="2.1.44" />
-    <PackageVersion Include="DotPulsar" Version="3.3.2" />
+    <PackageVersion Include="DotPulsar" Version="3.4.0" />
     <PackageVersion Include="Dumpify" Version="0.6.6" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.5.0" />
@@ -47,7 +47,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
     <PackageVersion Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.44.1" />
+    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.45.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
@@ -81,7 +81,7 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.48.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.48.0" />
     <PackageVersion Include="MinVer" Version="6.0.0" />
-    <PackageVersion Include="MudBlazor" Version="7.13.0" />
+    <PackageVersion Include="MudBlazor" Version="7.14.0" />
     <PackageVersion Include="NBuilder" Version="6.1.0" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
     <PackageVersion Include="NSwag.ApiDescription.Client" Version="14.1.0" />

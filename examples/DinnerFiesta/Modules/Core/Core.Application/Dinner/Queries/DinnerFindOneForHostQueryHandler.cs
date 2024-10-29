@@ -22,7 +22,7 @@ public class DinnerFindOneForHostQueryHandler(ILoggerFactory loggerFactory, IGen
         var hostId = HostId.Create(query.HostId);
         var dinnerId = HostId.Create(query.DinnerId);
 
-        return QueryResponse.For(await repository.FindOneResultAsync(
+        return QueryResult.For(await repository.FindOneResultAsync(
                 new Specification<Dinner>(e => e.HostId == hostId && e.Id == dinnerId),
                 cancellationToken: cancellationToken)
             .AnyContext());

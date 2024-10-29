@@ -3,10 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
+namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
 [UnitTest("Common")]
-public class PagedResultTests
+public class PagedResultValueTests
 {
     private readonly IEnumerable<string> messages = ["message1", "message2"];
     private readonly long count = 100;
@@ -68,10 +68,10 @@ public class PagedResultTests
     public void FailureTError_ShouldAddError()
     {
         //Arrange
-        var sut = PagedResult<PersonStub>.Failure<NotFoundResultError>();
+        var sut = PagedResult<PersonStub>.Failure<NotFoundError>();
 
         //Act & Assert
-        sut.ShouldContainError<NotFoundResultError>();
+        sut.ShouldContainError<NotFoundError>();
         sut.ShouldBeFailure();
     }
 
@@ -136,10 +136,10 @@ public class PagedResultTests
         var sut = PagedResult<PersonStub>.Success(this.values);
 
         //Act
-        sut.WithError(new NotFoundResultError());
+        sut.WithError(new NotFoundError());
 
         //Assert
-        sut.ShouldContainError<NotFoundResultError>();
+        sut.ShouldContainError<NotFoundError>();
         sut.ShouldBeFailure();
     }
 
@@ -150,10 +150,10 @@ public class PagedResultTests
         var sut = PagedResult<PersonStub>.Success(this.values);
 
         //Act
-        sut.WithError<NotFoundResultError>();
+        sut.WithError<NotFoundError>();
 
         //Assert
-        sut.ShouldContainError<NotFoundResultError>();
+        sut.ShouldContainError<NotFoundError>();
         sut.ShouldBeFailure();
     }
 }

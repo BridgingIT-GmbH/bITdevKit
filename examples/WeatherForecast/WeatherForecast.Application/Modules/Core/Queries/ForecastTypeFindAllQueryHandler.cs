@@ -11,25 +11,16 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class ForecastTypeFindAllQueryHandler : QueryHandlerBase<ForecastTypeFindAllQuery, IEnumerable<ForecastType>>
+public class ForecastTypeFindAllQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<ForecastType> forecastTypeRepository)
+    : QueryHandlerBase<ForecastTypeFindAllQuery, IEnumerable<ForecastType>>(loggerFactory)
 {
-    private readonly IGenericRepository<ForecastType> forecastTypeRepository;
-
-    public ForecastTypeFindAllQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<ForecastType> forecastTypeRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(forecastTypeRepository, nameof(forecastTypeRepository));
-
-        this.forecastTypeRepository = forecastTypeRepository;
-    }
-
     public override async Task<QueryResponse<IEnumerable<ForecastType>>> Process(
         ForecastTypeFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var forecastTypes = await this.forecastTypeRepository.FindAllAsync(cancellationToken: cancellationToken)
+        var forecastTypes = await forecastTypeRepository.FindAllAsync(cancellationToken: cancellationToken)
             .AnyContext();
 
         return new QueryResponse<IEnumerable<ForecastType>> { Result = forecastTypes };

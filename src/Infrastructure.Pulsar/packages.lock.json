@@ -4,12 +4,12 @@
     "net8.0": {
       "DotPulsar": {
         "type": "Direct",
-        "requested": "[3.3.2, )",
-        "resolved": "3.3.2",
-        "contentHash": "Y0cITYoGLynef9b/xDg4mRRnDCbXk6afiw7zAzMPJIF6C2aDP+KUq7Xvb72/b9yHCS9moJCFr+LMozxLdNNE1Q==",
+        "requested": "[3.4.0, )",
+        "resolved": "3.4.0",
+        "contentHash": "dDSNMub0kkvBViWp11nv58uKJVQ4d3VX8WkTkNFkClZOC4YM5f/zdnGwGMv5nnVQxMhtnN59FwRMN4Bry97+zg==",
         "dependencies": {
           "HashDepot": "2.0.3",
-          "Microsoft.Extensions.ObjectPool": "8.0.7",
+          "Microsoft.Extensions.ObjectPool": "8.0.10",
           "System.IO.Pipelines": "8.0.0",
           "protobuf-net": "3.2.30"
         }
@@ -228,8 +228,8 @@
       },
       "Microsoft.Extensions.ObjectPool": {
         "type": "Transitive",
-        "resolved": "8.0.7",
-        "contentHash": "2yLweyqmpuuFSRo+I3sLHMxmnAgNcI537kBJiyv49U2ZEqo00jZcG8lrnD8uCiOJp9IklYyTZULtbsXoFVzsjQ=="
+        "resolved": "8.0.10",
+        "contentHash": "u7gAG7JgxF8VSJUGPSudAcPxOt+ymJKQCSxNRxiuKV+klCQbHljQR75SilpedCTfhPWDhtUwIJpnDVtspr9nMg=="
       },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",

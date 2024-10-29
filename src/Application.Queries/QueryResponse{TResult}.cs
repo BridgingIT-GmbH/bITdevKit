@@ -5,45 +5,33 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-public class QueryResponse<TResult>
+public class QueryResponse<TValue>
 {
     public QueryResponse(string cancelledReason = null)
     {
-        if (!string.IsNullOrEmpty(cancelledReason))
+        if (string.IsNullOrEmpty(cancelledReason))
         {
-            this.Cancelled = true;
-            this.CancelledReason = cancelledReason;
+            return;
         }
+
+        this.Cancelled = true;
+        this.CancelledReason = cancelledReason;
     }
 
     public bool Cancelled { get; private set; }
 
     public string CancelledReason { get; private set; }
 
-    public TResult Result { get; set; }
-
-    public static QueryResponse<Result<TResult>> For(Result result = null)
-    {
-        if (result?.IsFailure == true)
-        {
-            return new QueryResponse<Result<TResult>>
-            {
-                Result = Result<TResult>.Failure().WithMessages(result?.Messages).WithErrors(result?.Errors)
-            };
-        }
-
-        return new QueryResponse<Result<TResult>>
-        {
-            Result = Result<TResult>.Success().WithMessages(result?.Messages).WithErrors(result?.Errors)
-        };
-    }
+    public TValue Result { get; set; }
 
     public void SetCancelled(string cancelledReason)
     {
-        if (!string.IsNullOrEmpty(cancelledReason))
+        if (string.IsNullOrEmpty(cancelledReason))
         {
-            this.Cancelled = true;
-            this.CancelledReason = cancelledReason;
+            return;
         }
+
+        this.Cancelled = true;
+        this.CancelledReason = cancelledReason;
     }
 }

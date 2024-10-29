@@ -34,7 +34,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(endpoints, nameof(endpoints));
 
-        return services.AddEndpoints(new[] { endpoints }, enabled);
+        return services.AddEndpoints([endpoints], enabled);
     }
 
     public static IServiceCollection AddEndpoints<T>(this IServiceCollection services, bool enabled = true)
@@ -42,7 +42,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
-        return services.AddEndpoints(new[] { typeof(T) }, enabled);
+        return services.AddEndpoints([typeof(T)], enabled);
     }
 
     public static IServiceCollection AddEndpoints(
@@ -108,7 +108,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
-        return services.AddEndpoints(new[] { assembly }, enabled);
+        return services.AddEndpoints([assembly], enabled);
     }
 
     public static IServiceCollection AddEndpoints(

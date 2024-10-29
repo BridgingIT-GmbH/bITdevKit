@@ -19,22 +19,22 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
-         public void BuildSpecifications_WithValidFilters_ReturnsCorrectSpecifications()
-         {
-             // Arrange
-             var filters = new[]
-             {
-                 new FilterCriteria { Field = "FirstName", Operator = FilterOperator.Equal, Value = "John" },
-                 new FilterCriteria { Field = "Age", Operator = FilterOperator.GreaterThanOrEqual, Value = 18 }
-             };
+    public void BuildSpecifications_WithValidFilters_ReturnsCorrectSpecifications()
+    {
+        // Arrange
+        var filters = new[]
+        {
+            new FilterCriteria { Field = "FirstName", Operator = FilterOperator.Equal, Value = "John" },
+            new FilterCriteria { Field = "Age", Operator = FilterOperator.GreaterThanOrEqual, Value = 18 }
+        };
 
-             // Act
-             var result = SpecificationBuilder.Build<PersonStub>(filters);
+        // Act
+        var result = SpecificationBuilder.Build<PersonStub>(filters);
 
-             // Assert
-             result.Count().ShouldBe(2);
-             result.ShouldAllBe(spec => spec.GetType().ImplementsInterface<ISpecification<PersonStub>>());
-         }
+        // Assert
+        result.Count().ShouldBe(2);
+        result.ShouldAllBe(spec => spec.GetType().ImplementsInterface<ISpecification<PersonStub>>());
+    }
 
     [Fact]
     public void BuildSpecifications_WithChildFilter_ReturnsCorrectSpecification()
@@ -229,7 +229,7 @@ public class SpecificationBuilderTests
     // }
 
     [Fact]
-    public void BuildSpecifications_WithAnyOperator_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithAnyOperatorAndValue_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]
@@ -238,7 +238,10 @@ public class SpecificationBuilderTests
             {
                 Field = "Addresses",
                 Operator = FilterOperator.Any,
-                Value = new FilterCriteria { Field = "City", Operator = FilterOperator.Equal, Value = "Berlin" }
+                Value = new FilterCriteria
+                {
+                    Field = "City", Operator = FilterOperator.Equal, Value = "Berlin"
+                }
             }
         };
 
@@ -271,7 +274,55 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
-    public void BuildSpecifications_WithAllOperator_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithAnyOperatorAndFilters_ReturnsCorrectSpecification()
+    {
+        // Arrange
+        var filters = new[]
+        {
+            new FilterCriteria
+            {
+                Field = "Addresses",
+                Operator = FilterOperator.Any,
+                Filters = new[]
+                {
+                    new FilterCriteria
+                    {
+                        Field = "City", Operator = FilterOperator.Equal, Value = "Berlin"
+                    }
+                }.ToList()
+            }
+        };
+
+        // Act
+        var result = SpecificationBuilder.Build<PersonStub>(filters);
+
+        // Assert
+        result.Count().ShouldBe(1);
+        var spec = result.First();
+
+        var matchingPerson = new PersonStub
+        {
+            Addresses =
+            [
+                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
+                AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany")
+            ]
+        };
+        var nonMatchingPerson = new PersonStub
+        {
+            Addresses =
+            [
+                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
+                AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany")
+            ]
+        };
+
+        spec.IsSatisfiedBy(matchingPerson).ShouldBeTrue();
+        spec.IsSatisfiedBy(nonMatchingPerson).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BuildSpecifications_WithAllOperatorAndValue_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]
@@ -280,7 +331,10 @@ public class SpecificationBuilderTests
             {
                 Field = "Addresses",
                 Operator = FilterOperator.All,
-                Value = new FilterCriteria { Field = "Country", Operator = FilterOperator.Equal, Value = "Germany" }
+                Value = new FilterCriteria
+                {
+                    Field = "Country", Operator = FilterOperator.Equal, Value = "Germany"
+                }
             }
         };
 
@@ -313,7 +367,7 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
-    public void BuildSpecifications_WithNoneOperator_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithNoneOperatorAndValue_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]
@@ -322,7 +376,10 @@ public class SpecificationBuilderTests
             {
                 Field = "Addresses",
                 Operator = FilterOperator.None,
-                Value = new FilterCriteria { Field = "PostalCode", Operator = FilterOperator.StartsWith, Value = "1" }
+                Value = new FilterCriteria
+                {
+                    Field = "PostalCode", Operator = FilterOperator.StartsWith, Value = "1"
+                }
             }
         };
 
@@ -837,15 +894,18 @@ public class SpecificationBuilderTests
     [Fact]
     public void BuildSpecifications_WithNullInput_ReturnsEmptyList()
     {
+        // Arrange
+        FilterModel filterModel = null;
+
         // Act
-        var result = SpecificationBuilder.Build<PersonStub>(null);
+        var result = SpecificationBuilder.Build<PersonStub>(filterModel);
 
         // Assert
         Assert.Empty(result);
     }
 
     [Fact]
-    public void BuildSpecifications__WithChildStartsWithFilter_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithChildStartsWithFilter_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]
@@ -879,7 +939,7 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
-    public void BuildSpecifications__WithChildEqualsFilter_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithChildEqualsFilter_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]
@@ -913,7 +973,7 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
-    public void BuildSpecifications__WithChildFilters_ReturnsCorrectSpecification()
+    public void BuildSpecifications_WithChildFilters_ReturnsCorrectSpecification()
     {
         // Arrange
         var filters = new[]

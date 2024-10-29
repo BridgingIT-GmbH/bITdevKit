@@ -125,7 +125,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(id, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<NotFoundResultError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
@@ -171,7 +171,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(specification, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<NotFoundResultError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
@@ -199,7 +199,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(specifications, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<NotFoundResultError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
@@ -261,18 +261,13 @@ public static class GenericReadOnlyRepositoryResultExtensions
         try
         {
             filterModel ??= new FilterModel();
-            specifications = SpecificationBuilder.Build(filterModel.Filters, specifications).ToArray();
-            var orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings).ToArray();
-            var includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes).ToArray();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
 
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
                     specifications,
-                    new FindOptions<TEntity>
-                    {
-                        Orders = orders,
-                        Includes = includes
-                    },
+                    findOptions,
                     cancellationToken)
                 .AnyContext();
 
@@ -661,20 +656,13 @@ public static class GenericReadOnlyRepositoryResultExtensions
         try
         {
             filterModel ??= new FilterModel();
-            specifications = SpecificationBuilder.Build(filterModel.Filters, specifications).ToArray();
-            var orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings).ToArray();
-            var includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes).ToArray();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
 
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
                     specifications,
-                    new FindOptions<TEntity>
-                    {
-                        Orders = orders,
-                        Skip = (filterModel.Page - 1) * filterModel.PageSize,
-                        Take = filterModel.PageSize,
-                        Includes = includes
-                    },
+                    findOptions,
                     cancellationToken)
                 .AnyContext();
 

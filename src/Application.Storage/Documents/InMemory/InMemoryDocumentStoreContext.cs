@@ -10,7 +10,7 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
     private readonly ReaderWriterLockSlim @lock = new();
 
     public InMemoryDocumentStoreContext()
-        : this(Enumerable.Empty<DocumentEntity>()) { }
+        : this([]) { }
 
     protected List<DocumentEntity> Entities { get; } = entities.SafeNull().ToList();
 

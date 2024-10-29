@@ -12,26 +12,16 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class ForecastFindAllDescriptionsQueryHandler
-    : QueryHandlerBase<ForecastFindAllDescriptionsQuery, IEnumerable<string>>
+public class ForecastFindAllDescriptionsQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<Forecast> forecastRepository)
+    : QueryHandlerBase<ForecastFindAllDescriptionsQuery, IEnumerable<string>>(loggerFactory)
 {
-    private readonly IGenericRepository<Forecast> forecastRepository;
-
-    public ForecastFindAllDescriptionsQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<Forecast> forecastRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(forecastRepository, nameof(forecastRepository));
-
-        this.forecastRepository = forecastRepository;
-    }
-
     public override async Task<QueryResponse<IEnumerable<string>>> Process(
         ForecastFindAllDescriptionsQuery query,
         CancellationToken cancellationToken)
     {
-        var descriptions = await this.forecastRepository.ProjectAllAsync(e => e.Description, // projection
+        var descriptions = await forecastRepository.ProjectAllAsync(e => e.Description, // projection
                 new FindOptions<Forecast>
                 {
                     Order = new OrderOption<Forecast>(e => e.Description), Distinct = new DistinctOption<Forecast>()

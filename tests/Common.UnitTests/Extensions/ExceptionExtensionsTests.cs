@@ -5,7 +5,7 @@
 
 // ReSharper disable ExpressionIsAlwaysNull
 
-namespace BridgingIT.DevKit.Common.UnitTests;
+namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
 public class ExceptionExtensionsTests
 {

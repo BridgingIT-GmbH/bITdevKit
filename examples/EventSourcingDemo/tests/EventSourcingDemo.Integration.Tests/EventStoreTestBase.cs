@@ -43,7 +43,7 @@ public class EventstoreTestBase : TestsBase
                     .ToArray()));
 
                 s.AddMapping().WithAutoMapper();
-                s.AddMediatR(new[] { typeof(PersonEventOccuredCommandHandler).Assembly });
+                s.AddMediatR([typeof(PersonEventOccuredCommandHandler).Assembly]);
                 s.AddTransient(typeof(IPipelineBehavior<,>), typeof(DummyCommandBehavior<,>));
 
                 var ctx = fixture.CreateSqlServerDbContext();

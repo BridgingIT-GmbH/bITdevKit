@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class ValidationResultError : ResultErrorBase
+public class DomainRuleError : ResultErrorBase
 {
-    public ValidationResultError() { }
+    public DomainRuleError() { }
 
-    public ValidationResultError(IEnumerable<string> messages = null)
+    public DomainRuleError(IEnumerable<string> messages = null)
     {
         this.Messages = messages;
 

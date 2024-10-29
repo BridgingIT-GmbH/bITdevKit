@@ -12,49 +12,32 @@ using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 //tag::DatabaseTransaction[]
-public class ForecastUpdateCommandHandler : CommandHandlerBase<ForecastUpdateCommand>
+public class ForecastUpdateCommandHandler(
+    ILoggerFactory loggerFactory,
+    IWeatherDataAdapter dataAdapter,
+    IGenericRepository<Forecast> forecastRepository,
+    IGenericRepository<ForecastType> forecastTypeRepository,
+    IRepositoryTransaction<Forecast> transaction)
+    : CommandHandlerBase<ForecastUpdateCommand>(loggerFactory)
 {
-    private readonly IWeatherDataAdapter dataAdapter;
-    private readonly IGenericRepository<Forecast> forecastRepository;
-    private readonly IGenericRepository<ForecastType> forecastTypeRepository;
-    private readonly IRepositoryTransaction<Forecast> transaction;
-
-    public ForecastUpdateCommandHandler(
-        ILoggerFactory loggerFactory,
-        IWeatherDataAdapter dataAdapter,
-        IGenericRepository<Forecast> forecastRepository,
-        IGenericRepository<ForecastType> forecastTypeRepository,
-        IRepositoryTransaction<Forecast> transaction)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(dataAdapter, nameof(dataAdapter));
-        EnsureArg.IsNotNull(forecastRepository, nameof(forecastRepository));
-        EnsureArg.IsNotNull(forecastTypeRepository, nameof(forecastTypeRepository));
-
-        this.dataAdapter = dataAdapter;
-        this.forecastRepository = forecastRepository;
-        this.forecastTypeRepository = forecastTypeRepository;
-        this.transaction = transaction;
-    }
-
     public override async Task<CommandResponse> Process(
         ForecastUpdateCommand command,
         CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"import forecasts for city {command.City.Name}");
 
-        await this.transaction.ExecuteScopedAsync(async () =>
+        await transaction.ExecuteScopedAsync(async () =>
             {
-                var type = await this.forecastTypeRepository
+                var type = await forecastTypeRepository
                     .FindOneAsync("102954ff-aa73-495b-a730-98f2d5ca10f3", cancellationToken: cancellationToken)
                     .AnyContext(); // find a specific type (AAA)
 
                 // retrieve forecasts from external system, anti corruption is implemented by using an adapter
-                await foreach (var forecast in this.dataAdapter.ToForecastAsync(command.City)
+                await foreach (var forecast in dataAdapter.ToForecastAsync(command.City)
                                    .WithCancellation(cancellationToken))
                 {
                     forecast.TypeId = type.Id;
-                    await this.forecastRepository.UpsertAsync(forecast, cancellationToken).AnyContext();
+                    await forecastRepository.UpsertAsync(forecast, cancellationToken).AnyContext();
                 }
             })
             .AnyContext();

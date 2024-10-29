@@ -1,6 +1,6 @@
 ﻿// ReSharper disable ExpressionIsAlwaysNull
 
-namespace BridgingIT.DevKit.Common.Tests;
+namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
 using System;
 using Bogus;

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public static class ResultExtensions
 {
-    public static ActionResult ToOkActionResult(this IResult result, IActionResultMapper actionResultMapper = null)
+    public static ActionResult ToOkActionResult(this Result result, IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result)
@@ -18,12 +18,12 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
-        this IResult result,
+        this Result result,
         IMapper mapper,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<IResult, TModel>(result);
+        var model = mapper.Map<Result, TModel>(result);
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, model)
@@ -31,7 +31,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
@@ -40,7 +40,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -51,7 +51,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToOkActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -64,7 +64,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<ICollection<TModel>> ToOkActionResult<TModel>(
-        this IResult<IEnumerable<TModel>> result,
+        this Result<IEnumerable<TModel>> result,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
@@ -74,7 +74,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<ICollection<TModel>> ToOkActionResult<TSource, TModel>(
-        this IResult<IEnumerable<TSource>> result,
+        this Result<IEnumerable<TSource>> result,
         IMapper mapper,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -103,11 +103,11 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         var models = result.Value.Select(mapper.Map<TSource, TModel>);
-        var pagedResult =
-            new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
-            {
-                IsSuccess = result.IsSuccess
-            };
+        var pagedResult = result.IsSuccess
+            ? PagedResult<TModel>.Success(models, result.CurrentPage, result.PageSize)
+                .WithMessages(result.Messages)
+            : PagedResult<TModel>.Failure()
+                .WithMessages(result.Messages);
 
         foreach (var error in result.Errors.SafeNull())
         {
@@ -120,7 +120,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -131,7 +131,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string routeName = null,
         object routeValues = null,
         IActionResultMapper actionResultMapper = null)
@@ -143,7 +143,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string routeName = null,
         object routeValues = null,
@@ -158,7 +158,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string routeName = null,
         object routeValues = null,
@@ -171,7 +171,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string routeName = null,
         object routeValues = null,
@@ -184,7 +184,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string actionName,
         string controllerName,
         object routeValues = null,
@@ -197,7 +197,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string actionName,
         string controllerName,
@@ -213,7 +213,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string actionName,
         string controllerName,
@@ -227,7 +227,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string actionName,
         string controllerName,
@@ -241,7 +241,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string routeName = null,
         object routeValues = null,
         IActionResultMapper actionResultMapper = null)
@@ -253,7 +253,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string routeName = null,
         object routeValues = null,
@@ -268,7 +268,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string routeName = null,
         object routeValues = null,
@@ -281,7 +281,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string routeName = null,
         object routeValues = null,
@@ -294,7 +294,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string actionName,
         string controllerName,
         object routeValues = null,
@@ -307,7 +307,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string actionName,
         string controllerName,
@@ -323,7 +323,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string actionName,
         string controllerName,
@@ -337,7 +337,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string actionName,
         string controllerName,
@@ -351,7 +351,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string routeName = null,
         object routeValues = null,
         IActionResultMapper actionResultMapper = null)
@@ -363,7 +363,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string routeName = null,
         object routeValues = null,
@@ -378,7 +378,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string routeName = null,
         object routeValues = null,
@@ -391,7 +391,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string routeName = null,
         object routeValues = null,
@@ -404,7 +404,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         string actionName,
         string controllerName,
         object routeValues = null,
@@ -417,7 +417,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         string actionName,
         string controllerName,
@@ -433,7 +433,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         string actionName,
         string controllerName,
@@ -447,7 +447,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         Action<TModel> action,
         string actionName,
         string controllerName,
@@ -460,7 +460,7 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Accepted(result, action, actionName, controllerName, routeValues);
     }
 
-    public static ActionResult ToDeletedActionResult(this IResult result, IActionResultMapper actionResultMapper = null)
+    public static ActionResult ToDeletedActionResult(this Result result, IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
             ? actionResultMapper.Deleted(result)
@@ -468,7 +468,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToDeletedActionResult<TModel>(
-        this IResult result,
+        this Result result,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
@@ -478,7 +478,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToNoContentActionResult<TModel>(
-        this IResult result,
+        this Result result,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
@@ -488,7 +488,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToObjectActionResult<TModel>(
-        this IResult<TModel> result,
+        this Result<TModel> result,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -499,7 +499,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToObjectActionResult<TModel>(
-        this IResult result,
+        this Result result,
         TModel model,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
@@ -511,7 +511,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<TModel> ToObjectActionResult<TSource, TModel>(
-        this IResult<TSource> result,
+        this Result<TSource> result,
         IMapper mapper,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
@@ -525,7 +525,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(
-        this IResult<IEnumerable<TModel>> result,
+        this Result<IEnumerable<TModel>> result,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -536,7 +536,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel, TSource>(
-        this IResult<IEnumerable<TSource>> result,
+        this Result<IEnumerable<TSource>> result,
         IMapper mapper,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
@@ -568,11 +568,17 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         var models = result.Value.Select(mapper.Map<TSource, TModel>);
-        var pagedResult =
-            new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
-            {
-                IsSuccess = result.IsSuccess
-            };
+        var pagedResult = result.IsSuccess
+            ? PagedResult<TModel>.Success(models, result.CurrentPage, result.PageSize)
+                .WithMessages(result.Messages)
+            : PagedResult<TModel>.Failure()
+                .WithMessages(result.Messages);
+
+        // var pagedResult =
+        //     new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
+        //     {
+        //         IsSuccess = result.IsSuccess
+        //     };
 
         foreach (var error in result.Errors.SafeNull())
         {

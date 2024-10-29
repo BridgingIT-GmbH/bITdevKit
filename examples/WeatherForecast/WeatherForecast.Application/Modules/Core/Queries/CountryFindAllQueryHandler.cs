@@ -11,25 +11,16 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class CountryFindAllQueryHandler : QueryHandlerBase<CountryFindAllQuery, IEnumerable<string>>
+public class CountryFindAllQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<City> cityRepository)
+    : QueryHandlerBase<CountryFindAllQuery, IEnumerable<string>>(loggerFactory)
 {
-    private readonly IGenericRepository<City> cityRepository;
-
-    public CountryFindAllQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<City> cityRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(cityRepository, nameof(cityRepository));
-
-        this.cityRepository = cityRepository;
-    }
-
     public override async Task<QueryResponse<IEnumerable<string>>> Process(
         CountryFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var countries = await this.cityRepository.ProjectAllAsync(e => e.Country,
+        var countries = await cityRepository.ProjectAllAsync(e => e.Country,
                 new FindOptions<City>
                 {
                     Order = new OrderOption<City>(e => e.Country), Distinct = new DistinctOption<City>()

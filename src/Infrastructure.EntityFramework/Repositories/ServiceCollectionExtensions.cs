@@ -151,7 +151,7 @@ public static partial class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
-        services.AddDbContext<TContext>((sp, o) =>
+        services.AddDbContext<TContext>((_, o) =>
             {
                 o.UseInMemoryDatabase(name ?? typeof(TContext).Name, inMemoryOptionsAction);
                 o.ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning));

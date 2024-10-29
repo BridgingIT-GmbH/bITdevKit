@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Mod
 
 using System.Net;
 using Application.Modules.Core;
+using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Presentation.Web;
@@ -39,6 +40,26 @@ public class CityController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<IEnumerable<CityModel>>> GetAll([FromQueryFilter] FilterModel filter)
+    {
+        // Example filter model:
+        // {
+        //     "page": 1,
+        //     "pageSize": 10,
+        //     "filters": [
+        //       { "field": "Name", "operator": "eq", "value": "Berlin" }
+        //     ]
+        // }
+
+        var response = await this.mediator.Send(
+            new CityFindAllQuery(filter)).AnyContext();
+
+        return this.Ok(this.mapper.Map(response.Result));
+    }
+
+    [HttpPost("search")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<IEnumerable<CityModel>>> PostSearch([FromBodyFilter] FilterModel filter)
     {
         // Example filter model:
         // {

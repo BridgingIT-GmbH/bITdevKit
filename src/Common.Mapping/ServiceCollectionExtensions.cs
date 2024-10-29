@@ -64,7 +64,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(type, nameof(type));
 
-        return context.WithAutoMapper(new[] { type }, configuration, section);
+        return context.WithAutoMapper([type], configuration, section);
     }
 
     public static AutoMapperBuilderContext WithAutoMapper(
@@ -88,7 +88,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(assembly, nameof(assembly));
 
-        return context.WithAutoMapper(new[] { assembly }, configuration, section);
+        return context.WithAutoMapper([assembly], configuration, section);
     }
 
     public static AutoMapperBuilderContext WithAutoMapper(
@@ -148,7 +148,7 @@ public static class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        return context.WithMapster(new[] { typeof(T) }, configuration, section);
+        return context.WithMapster([typeof(T)], configuration, section);
     }
 
     public static MapsterBuilderContext WithMapster(
@@ -160,7 +160,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(type, nameof(type));
 
-        return context.WithMapster(new[] { type }, configuration, section);
+        return context.WithMapster([type], configuration, section);
     }
 
     public static MapsterBuilderContext WithMapster(
@@ -180,7 +180,7 @@ public static class ServiceCollectionExtensions
         MapsterConfiguration configuration = null,
         string section = "Mapping:Mapster")
     {
-        return context.WithMapster(new[] { assembly }, configuration, section);
+        return context.WithMapster([assembly], configuration, section);
     }
 
     public static MapsterBuilderContext WithMapster(

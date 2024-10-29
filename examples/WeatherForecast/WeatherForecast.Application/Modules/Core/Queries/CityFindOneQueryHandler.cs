@@ -13,24 +13,12 @@ using Domain;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
 
-public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQueryResponse>
+public class CityFindOneQueryHandler(
+    ILoggerFactory loggerFactory,
+    IGenericRepository<City> cityRepository,
+    IGenericRepository<Forecast> forecastRepository)
+    : QueryHandlerBase<CityFindOneQuery, CityQueryResponse>(loggerFactory)
 {
-    private readonly IGenericRepository<City> cityRepository;
-    private readonly IGenericRepository<Forecast> forecastRepository;
-
-    public CityFindOneQueryHandler(
-        ILoggerFactory loggerFactory,
-        IGenericRepository<City> cityRepository,
-        IGenericRepository<Forecast> forecastRepository)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(cityRepository, nameof(cityRepository));
-        EnsureArg.IsNotNull(forecastRepository, nameof(forecastRepository));
-
-        this.cityRepository = cityRepository;
-        this.forecastRepository = forecastRepository;
-    }
-
     public override async Task<QueryResponse<CityQueryResponse>> Process(
         CityFindOneQuery query,
         CancellationToken cancellationToken)
@@ -38,13 +26,13 @@ public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQu
         if (!query.Name.IsNullOrEmpty())
         {
             // find by name
-            var city = await this.cityRepository
+            var city = await cityRepository
                     .FindOneAsync(new CityHasNameSpecification(query.Name).And(new CityIsNotDeletedSpecification()),
                         cancellationToken: cancellationToken)
                     .AnyContext() ??
                 throw new AggregateNotFoundException(nameof(City));
             var forecasts = city is not null
-                ? await this.forecastRepository.FindAllAsync(
+                ? await forecastRepository.FindAllAsync(
                         new Specification<Forecast>(c => c.CityId == city.Id).And(
                             new ForecastIsInFutureSpecification()),
                         new FindOptions<Forecast>(order: new OrderOption<Forecast>(f => f.Timestamp)),
@@ -60,13 +48,13 @@ public class CityFindOneQueryHandler : QueryHandlerBase<CityFindOneQuery, CityQu
                 new LongitudeShouldBeInRange(query.Longitude), new LatitudeShouldBeInRange(query.Latitude)
             ]);
 
-            var city = await this.cityRepository
+            var city = await cityRepository
                     .FindOneAsync(new CityHasLocationSpecification(query.Longitude, query.Latitude),
                         cancellationToken: cancellationToken)
                     .AnyContext() ??
                 throw new AggregateNotFoundException(nameof(City));
             var forecasts = city is not null
-                ? await this.forecastRepository
+                ? await forecastRepository
                     .FindAllAsync(
                         new Specification<Forecast>(c => c.CityId == city.Id).And(
                             new ForecastIsInFutureSpecification()),

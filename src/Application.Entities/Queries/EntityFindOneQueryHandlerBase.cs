@@ -74,7 +74,7 @@ public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<T
 
         return new QueryResponse<Result<TEntity>>
         {
-            Result = Result<TEntity>.Failure("NotFound").WithError<NotFoundResultError>()
+            Result = Result<TEntity>.Failure("NotFound").WithError<NotFoundError>()
         };
     }
 }

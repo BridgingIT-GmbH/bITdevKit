@@ -45,10 +45,10 @@ public class ForecastController : ControllerBase
         //     "page": 0,
         //     "pageSize": 0,
         //     "filters": [
-        //     { "field": "type.name", "operator": "isnotnull" },
-        //     { "field": "type.name", "operator": "eq", "value": "AAA" },
-        //     { "field": "temperatureMin", "operator": "gte", "value": 16.1 },
-        //     { "field": "timestamp", "operator": "gte", "value": "2024-10-24T10:00:00+00:00" }
+        //       { "field": "type.name", "operator": "isnotnull" },
+        //       { "field": "type.name", "operator": "eq", "value": "AAA" },
+        //       { "field": "temperatureMin", "operator": "gte", "value": 16.1 },
+        //       { "field": "timestamp", "operator": "gte", "value": "2024-10-24T10:00:00+00:00" }
         //     ]
         // }
 
@@ -56,6 +56,55 @@ public class ForecastController : ControllerBase
             new ForecastFindAllQuery(filter)).AnyContext();
 
         return this.Ok(this.mapper.Map(response.Result));
+    }
+
+    [HttpPost("search")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<IEnumerable<ForecastModel>>> PostSearch([FromBodyFilter] FilterModel filter)
+    {
+        // Example filter model:
+        // {
+        //     "page": 0,
+        //     "pageSize": 0,
+        //     "filters": [
+        //       { "field": "type.name", "operator": "isnotnull" },
+        //       { "field": "type.name", "operator": "eq", "value": "AAA" },
+        //       { "field": "temperatureMin", "operator": "gte", "value": 16.1 },
+        //       { "field": "timestamp", "operator": "gte", "value": "2024-10-24T10:00:00+00:00" }
+        //     ]
+        // }
+
+        var response = await this.mediator.Send(
+            new ForecastFindAllQuery(filter)).AnyContext();
+
+        return this.Ok(this.mapper.Map(response.Result));
+    }
+
+    [HttpPost("paged")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<PagedResult<Forecast>>> PostPaged([FromBodyFilter] FilterModel filter)
+    {
+        // Example filter model:
+        // {
+        //     "page": 1,
+        //     "pageSize": 5,
+        //     "filters": [
+        //       { "field": "temperatureMin", "operator": "gte", "value": 3.1 },
+        //     ],
+        //   "orderings": [
+        //     {
+        //        "field": "temperatureMin",
+        //        "direction": "asc"
+        //     }
+        // ]
+        // }
+
+        var response = await this.mediator.Send(
+            new ForecastFindAllPagedQuery(filter)).AnyContext();
+
+        return this.Ok(response.Result);
     }
 
     [HttpGet]

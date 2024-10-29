@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class DomainPolicyResultError : ResultErrorBase
+public class DomainPolicyError : ResultErrorBase
 {
-    public DomainPolicyResultError() { }
+    public DomainPolicyError() { }
 
-    public DomainPolicyResultError(IEnumerable<string> messages = null)
+    public DomainPolicyError(IEnumerable<string> messages = null)
     {
         this.Messages = messages;
 

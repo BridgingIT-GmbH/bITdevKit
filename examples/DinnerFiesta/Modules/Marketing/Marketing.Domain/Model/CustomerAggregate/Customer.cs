@@ -34,7 +34,7 @@ public class Customer : AuditableAggregateRoot<CustomerId, Guid>
         EnsureArg.IsNotNull(lastName, nameof(lastName));
         EnsureArg.IsNotNull(email, nameof(email));
 
-        DomainRules.Apply(Array.Empty<IDomainRule>());
+        DomainRules.Apply([]);
 
         var customer = new Customer(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email));
 

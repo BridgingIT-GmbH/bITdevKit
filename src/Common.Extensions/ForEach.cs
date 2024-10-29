@@ -15,6 +15,7 @@ public static partial class Extensions
     /// <typeparam name="T">Element type.</typeparam>
     /// <param name="source">The items.</param>
     /// <param name="action">Action to perform on every item.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>the source with the actions applied.</returns>
     [DebuggerStepThrough]
     public static IEnumerable<T> ForEach<T>(
@@ -108,5 +109,48 @@ public static partial class Extensions
         }
 
         return source;
+    }
+
+    /// <summary>
+    ///     Executes an action for each batch of items in parallel.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var items = Enumerable.Range(1, 1000);
+    /// await items.ParallelForEachAsync(
+    ///     async number => {
+    ///         await ProcessItemAsync(number);
+    ///     },
+    ///     maxDegreeOfParallelism: 5,
+    ///     batchSize: 100
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task ForEachParallelAsync<T>(
+        this IEnumerable<T> source,
+        Func<T, Task> action,
+        int maxDegreeOfParallelism = 5,
+        int batchSize = 100)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(batchSize);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxDegreeOfParallelism);
+
+        if (source.IsNullOrEmpty() || action is null)
+        {
+            return;
+        }
+
+        var batches = source.Batch(batchSize);
+
+        await Parallel.ForEachAsync(
+            batches,
+            new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism },
+            async (batch, token) =>
+            {
+                foreach (var item in batch)
+                {
+                    await action(item);
+                }
+            });
     }
 }

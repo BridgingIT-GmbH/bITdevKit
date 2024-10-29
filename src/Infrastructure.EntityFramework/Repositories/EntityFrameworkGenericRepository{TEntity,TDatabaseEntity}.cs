@@ -22,17 +22,18 @@ public class
     public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
-    public EntityFrameworkGenericRepository(
+    protected EntityFrameworkGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
-    public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
+    protected EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
 
     /// <summary>
     ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -44,6 +45,7 @@ public class
     ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -55,6 +57,7 @@ public class
     ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
+    /// <param name="cancellationToken"></param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

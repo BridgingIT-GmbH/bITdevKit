@@ -25,7 +25,7 @@ public static class ResultExtensions
     ///     A new <see cref="Result{TValue}" /> instance containing the transformed value, with the original messages and
     ///     errors.
     /// </returns>
-    public static Result<TResult> For<TValue, TResult>(this Result<TValue> source, IMapper mapper)
+    public static Result<TResult> Map<TValue, TResult>(this Result<TValue> source, IMapper mapper)
         where TResult : class
     {
         EnsureArg.IsNotNull(mapper, nameof(mapper));

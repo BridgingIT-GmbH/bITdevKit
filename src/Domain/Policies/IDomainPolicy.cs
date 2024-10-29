@@ -31,5 +31,5 @@ public interface IDomainPolicy<TContext>
     /// <param name="context">The context in which the policy should be applied.</param>
     /// <param name="cancellationToken">An optional token used to observe cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation, containing the result of applying the policy.</returns>
-    Task<Result> ApplyAsync(TContext context, CancellationToken cancellationToken = default);
+    Task<IResult> ApplyAsync(TContext context, CancellationToken cancellationToken = default);
 }

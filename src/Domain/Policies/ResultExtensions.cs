@@ -19,7 +19,7 @@ public static class ResultExtensions
     ///     <see cref="DomainPolicyResult{T}" /> or <see cref="Result{T}" />;
     ///     otherwise, returns the default value for the type.
     /// </returns>
-    public static object GetValue(this Result source)
+    public static object GetValue(this IResult source)
     {
         if (source == null)
         {
@@ -27,21 +27,28 @@ public static class ResultExtensions
         }
 
         var type = source.GetType();
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DomainPolicyResult<>))
+        switch (type.IsGenericType) // use some generics to get the value from the non generic IResult
         {
-            var property = type.GetProperty("Value");
-            if (property != null)
-            {
-                return property.GetValue(source);
-            }
-        }
-        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Result<>))
-        {
-            var property = type.GetProperty("Value");
-            if (property != null)
-            {
-                return property.GetValue(source);
-            }
+            case true when type.GetGenericTypeDefinition() == typeof(DomainPolicyResult<>):
+                {
+                    var property = type.GetProperty("Value"); // Result<>.Value
+                    if (property != null)
+                    {
+                        return property.GetValue(source);
+                    }
+
+                    break;
+                }
+            case true when type.GetGenericTypeDefinition() == typeof(Result<>):
+                {
+                    var property = type.GetProperty("Value"); // Result<>.Value
+                    if (property != null)
+                    {
+                        return property.GetValue(source);
+                    }
+
+                    break;
+                }
         }
 
         return default;

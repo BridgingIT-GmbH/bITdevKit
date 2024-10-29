@@ -37,5 +37,5 @@ public abstract class DomainPolicyBase<TContext> : IDomainPolicy<TContext>
     ///     A task representing the asynchronous operation, with a result indicating the success or failure of applying
     ///     the policy.
     /// </returns>
-    public abstract Task<Result> ApplyAsync(TContext context, CancellationToken cancellationToken = default);
+    public abstract Task<IResult> ApplyAsync(TContext context, CancellationToken cancellationToken = default);
 }

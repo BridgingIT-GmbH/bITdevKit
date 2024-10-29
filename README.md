@@ -33,36 +33,39 @@ Join us in advancing the world of software development with the bITDevKit!
 Supported patterns, elements:
 --------------------------------
 
-- Entity
-- AggregateRoot
+- Entities
+- AggregateRoots
 - ValueObjects
-  - TypedId
+- TypedIds
 - DomainEvents
 - DomainRules/Policies
-- Repository
+- Repositories
 - Specifications
 - Commands/Queries
 - Outbox
   - DomainEvents
   - Messaging
-- Decorator (Behavior)
+- Decorators (Behavior)
 
 Features (excerpt):
 -------------------------------------
 
-- [Results](./docs/features-results.md)
 - [Commands](./docs/features-commands.md) & [Queries](./docs/features-queries.md)
 - [Domain Model](./docs/features-domain-models.md)
+- Domain Events
+- Domain Specifications
 - [Domain Repositories](./docs/features-domain-repositories.md)
+- Domain TypedIds
+- Domain Policies & Rules
+- Domain EventSourcing
 - [Modules](./docs/features-modules.md)
 - [Filtering](./docs/features-filtering.md)
+- [Results](./docs/features-results.md)
 - [Messaging](./docs/features-messaging.md)
+- Queuing (TODO)
 - [JobScheduling](./docs/features-jobscheduling.md)
 - [StartupTasks](./docs/features-startuptasks.md)
 - [DocumentStorage](./docs/features-documentstorage.md)
-- EventStore (CQRS)
-- Caching
-- Queuing (TODO)
 
 Libraries used (excerpt):
 -------------------------------------

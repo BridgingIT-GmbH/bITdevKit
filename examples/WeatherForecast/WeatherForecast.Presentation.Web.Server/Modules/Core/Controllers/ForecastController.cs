@@ -65,8 +65,8 @@ public class ForecastController : ControllerBase
     {
         // Example filter model:
         // {
-        //     "page": 0,
-        //     "pageSize": 0,
+        //     "page": 1,
+        //     "pageSize": 5,
         //     "filters": [
         //       { "field": "type.name", "operator": "isnotnull" },
         //       { "field": "type.name", "operator": "eq", "value": "AAA" },
@@ -91,14 +91,18 @@ public class ForecastController : ControllerBase
         //     "page": 1,
         //     "pageSize": 5,
         //     "filters": [
-        //       { "field": "temperatureMin", "operator": "gte", "value": 3.1 },
-        //     ],
-        //   "orderings": [
         //     {
-        //        "field": "temperatureMin",
-        //        "direction": "asc"
+        //         "field": "temperatureMin",
+        //         "operator": "gte",
+        //         "value": 13.1
         //     }
-        // ]
+        //     ],
+        //     "orderings": [
+        //     {
+        //         "field": "temperatureMin",
+        //         "direction": "asc"
+        //     }
+        //     ]
         // }
 
         var response = await this.mediator.Send(

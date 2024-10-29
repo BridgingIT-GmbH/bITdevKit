@@ -137,7 +137,7 @@ public static class DomainPolicies
     /// </returns>
     private static DomainPolicyResult<TContext> CombineResults<TContext>(
         DomainPolicyResult<TContext> result,
-        Result applyResult)
+        IResult applyResult)
     {
         return (result.IsSuccess && applyResult.IsSuccess
                 ? DomainPolicyResult<TContext>.Success()

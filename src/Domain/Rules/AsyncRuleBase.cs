@@ -53,7 +53,7 @@ public abstract class AsyncRuleBase : IRule
         {
             return await this.ExecuteRuleAsync(cancellationToken).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) // TODO: maybe don't hide this inside an error?
         {
             return Result.Failure().WithError(new OperationCancelledError(this.GetType().Name));
         }

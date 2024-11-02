@@ -46,4 +46,30 @@ public static class RuleBuilderExtensions
     {
         builder.Add(rule);
     }
+
+    public static RulesBuilder Add<T>(this RulesBuilder builder, Func<T, IRule> ruleFactory)
+    {
+        return builder.Add(new ItemRule<T>(ruleFactory));
+    }
+
+    public static RulesBuilder And<T>(this RulesBuilder builder, Func<T, IRule> ruleFactory)
+    {
+        return builder.Add(ruleFactory);
+    }
+}
+
+public class ItemRule<T>(Func<T, IRule> ruleFactory) : RuleBase
+{
+    private T currentItem;
+
+    internal void SetItem(T item)
+    {
+        this.currentItem = item;
+    }
+
+    protected override Result ExecuteRule() =>
+        ruleFactory(this.currentItem).Apply();
+
+    public override Task<Result> ApplyAsync(CancellationToken cancellationToken = default) =>
+        ruleFactory(this.currentItem).ApplyAsync(cancellationToken);
 }

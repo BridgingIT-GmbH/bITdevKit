@@ -107,6 +107,7 @@ public static class Rules
 
         try
         {
+            cancellationToken.ThrowIfCancellationRequested();
             Result result = null;
             if (rule is AsyncRuleBase)
             {
@@ -124,7 +125,7 @@ public static class Rules
 
             return result;
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) // TODO: maybe don't hide this inside an error?
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError(rule.GetType().Name));

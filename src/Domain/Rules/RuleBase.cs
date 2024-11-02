@@ -31,7 +31,7 @@ public abstract class RuleBase : IRule
     /// Applies the rule with proper error handling and disabled state checking.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
-    public Result Apply()
+    public virtual Result Apply()
     {
         if (!this.IsEnabled)
         {
@@ -53,7 +53,7 @@ public abstract class RuleBase : IRule
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the operation (not used in sync rules).</param>
     /// <returns>A task containing the result of the rule execution.</returns>
-    public Task<Result> ApplyAsync(CancellationToken cancellationToken = default)
+    public virtual Task<Result> ApplyAsync(CancellationToken cancellationToken = default)
     {
         return Task.FromResult(this.Apply());
     }

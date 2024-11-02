@@ -306,10 +306,39 @@ public class RulesBuilder
     }
 
     /// <summary>
-    /// Applies the domain rules added to the builder.
+    /// Applies the domain rules synchronously to validate a single object or state.
+    /// If continueOnFailure is disabled (default), stops at the first rule failure.
+    /// If continueOnFailure is enabled, collects all rule failures.
     /// </summary>
-    /// <param name="logger">Optional logger to use for logging rule execution outcomes. Defaults to a null logger if not provided.</param>
+    /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Rules.For()
+    ///     .Add(RuleSet.IsNotEmpty(product.Name))
+    ///     .Add(RuleSet.NumericRange(product.Price, 0.01m, 999.99m))
+    ///     .When(!product.IsDigital, builder => builder
+    ///         .Add(RuleSet.IsNotEmpty(product.ShippingAddress))
+    ///         .Add(RuleSet.HasStringLength(product.ShippingAddress, 10, 200)))
+    ///     .Unless(product.IsDigital,
+    ///         RuleSet.GreaterThan(product.Price, 10m))
+    ///     .ContinueOnFailure()
+    ///     .Apply();
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     // Product validation passed
+    /// }
+    /// else
+    /// {
+    ///     // Handle validation errors
+    ///     foreach (var error in result.Errors)
+    ///     {
+    ///         // Process each validation error
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public Result Apply(ILogger logger = null)
     {
         logger ??= NullLogger.Instance;
@@ -363,11 +392,48 @@ public class RulesBuilder
     }
 
     /// <summary>
-    /// Executes all rules asynchronously.
+    /// Applies the domain rules asynchronously to validate a single object or state.
+    /// If continueOnFailure is disabled (default), stops at the first rule failure.
+    /// If continueOnFailure is enabled, collects all rule failures.
+    /// Supports async conditions and rules.
     /// </summary>
-    /// <param name="logger"></param>
+    /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task containing the result of the rule executions.</returns>
+    /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Rules.For()
+    ///     .Add(RuleSet.IsNotEmpty(order.CustomerId))
+    ///     .Add(RuleSet.All(order.Items, item =>
+    ///         RuleSet.GreaterThan(item.Quantity, 0)))
+    ///     .WhenAsync(
+    ///         async (token) => await IsCustomerActive(order.CustomerId, token),
+    ///         builder => builder
+    ///             .Add(RuleSet.IsNotNull(order.ShippingAddress))
+    ///             .Add(RuleSet.HasStringLength(order.ShippingAddress, 10, 200)))
+    ///     .WhenAll(new[]
+    ///     {
+    ///         order.Total > 100,
+    ///         !order.IsDigital,
+    ///         order.Items?.Count > 2
+    ///     }, RuleSet.IsNotEmpty(order.ShippingInstructions))
+    ///     .ContinueOnFailure()
+    ///     .ApplyAsync(logger, cancellationToken);
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     // Order validation passed
+    /// }
+    /// else
+    /// {
+    ///     // Handle validation errors
+    ///     foreach (var error in result.Errors)
+    ///     {
+    ///         // Process each validation error
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public async Task<Result> ApplyAsync(ILogger logger = null, CancellationToken cancellationToken = default)
     {
         logger ??= NullLogger.Instance;
@@ -418,5 +484,200 @@ public class RulesBuilder
         return hasFailures
             ? Result.Failure().WithErrors(errors)
             : Result.Success();
+    }
+
+    /// <summary>
+    /// Filters a collection of items based on the defined rules synchronously.
+    /// Items are excluded from the result if they fail any rule validation.
+    /// The operation only stops on critical errors (ExceptionError).
+    /// </summary>
+    /// <typeparam name="T">The type of items to filter.</typeparam>
+    /// <param name="items">The collection of items to filter.</param>
+    /// <param name="logger">Optional logger instance.</param>
+    /// <returns>A Result containing the filtered collection.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Rules.For()
+    ///     .Add(Product p => RuleSet.IsNotEmpty(p.Name))
+    ///     .Add(Product p => RuleSet.NumericRange(p.Price, 0.01m, 999.99m))
+    ///     .When(!isDigital, builder => builder
+    ///         .Add(Product p => RuleSet.IsNotEmpty(p.ShippingAddress)))
+    ///     .Filter(products);
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     var filteredProducts = result.Value;
+    ///     // Process products that passed all rules
+    /// }
+    /// </code>
+    /// </example>
+    public Result<IEnumerable<T>> Filter<T>(IEnumerable<T> items, ILogger logger = null)
+    {
+        try
+        {
+            if (this.rules.IsNullOrEmpty())
+            {
+                return HandleEmptyInput();
+            }
+
+            var filteredItems = new List<T>();
+
+            foreach (var item in items)
+            {
+                var result = EvaluateRules(item);
+                if (result.HasError<ExceptionError>()) // Only critical errors stop the filtering
+                {
+                    return Result<IEnumerable<T>>.Failure().WithErrors(result.Errors);
+                }
+
+                if (result.IsSuccess) // Normal rule failures just exclude the item
+                {
+                    filteredItems.Add(item);
+                }
+            }
+
+            return Result<IEnumerable<T>>.Success(filteredItems);
+
+            Result<IEnumerable<T>> HandleEmptyInput()
+            {
+                return items is null
+                    ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
+                    : Result<IEnumerable<T>>.Success(items);
+            }
+
+            Result EvaluateRules(T item)
+            {
+                foreach (var rule in this.rules)
+                {
+                    if (rule is ItemRule<T> itemRule)
+                    {
+                        itemRule.SetItem(item);
+                    }
+
+                    var result = Rules.Apply(rule);
+
+                    if (result.HasError<ExceptionError>())
+                    {
+                        return result; // Only propagate critical errors
+                    }
+
+                    if (result.IsFailure)
+                    {
+                        return Result.Failure(); // Normal failures just exclude the item
+                    }
+                }
+
+                return Result.Success();
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<T>>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Filters a collection of items based on the defined rules asynchronously.
+    /// Items are excluded from the result if they fail any rule validation.
+    /// The operation only stops on critical errors (ExceptionError, OperationCancelledError).
+    /// </summary>
+    /// <typeparam name="T">The type of items to filter.</typeparam>
+    /// <param name="items">The collection of items to filter.</param>
+    /// <param name="logger">Optional logger instance.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A Result containing the filtered collection.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Rules.For()
+    ///     .Add(User u => RuleSet.IsNotEmpty(u.Email))
+    ///     .Add(User u => RuleSet.IsValidEmail(u.Email))
+    ///     .When(isActive, builder => builder
+    ///         .Add(User u => RuleSet.IsNotNull(u.LastLoginDate)))
+    ///     .WhenAsync(
+    ///         async (token) => await IsFeatureEnabled(token),
+    ///         builder => builder.Add(User u => RuleSet.HasValues(u.Role, allowedRoles)))
+    ///     .FilterAsync(users, logger, cancellationToken);
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     var filteredUsers = result.Value;
+    ///     // Process users that passed all rules
+    /// }
+    /// </code>
+    /// </example>
+    public async Task<Result<IEnumerable<T>>> FilterAsync<T>(IEnumerable<T> items, ILogger logger = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (this.rules.IsNullOrEmpty())
+            {
+                return HandleEmptyInput();
+            }
+
+            var filteredItems = new List<T>();
+
+            foreach (var item in items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var result = await EvaluateRules(item);
+                if (result.HasError<OperationCancelledError>() ||
+                    result.HasError<ExceptionError>()) // Only critical errors stop the filtering
+                {
+                    return Result<IEnumerable<T>>.Failure().WithErrors(result.Errors);
+                }
+
+                if (result.IsSuccess) // Normal rule failures just exclude the item
+                {
+                    filteredItems.Add(item);
+                }
+            }
+
+            return Result<IEnumerable<T>>.Success(filteredItems);
+
+            Result<IEnumerable<T>> HandleEmptyInput()
+            {
+                return items is null
+                    ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
+                    : Result<IEnumerable<T>>.Success(items);
+            }
+
+            async Task<Result> EvaluateRules(T item)
+            {
+                foreach (var rule in this.rules)
+                {
+                    if (rule is ItemRule<T> itemRule)
+                    {
+                        itemRule.SetItem(item);
+                    }
+
+                    var result = await Rules.ApplyAsync(rule, cancellationToken);
+
+                    if (result.HasError<OperationCancelledError>() ||
+                        result.HasError<ExceptionError>())
+                    {
+                        return result; // Only propagate critical errors
+                    }
+
+                    if (result.IsFailure)
+                    {
+                        return Result.Failure(); // Normal failures just exclude the item
+                    }
+                }
+
+                return Result.Success();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<T>>.Failure()
+                .WithError(new OperationCancelledError("Filtering operation was cancelled"));
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<T>>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
     }
 }

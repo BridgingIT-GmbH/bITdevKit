@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Common;
 /// Represents an enhanced validation error that captures property information and attempted value.
 /// </summary>
 public class ValidationError(string message, string propertyName = null, object attemptedValue = null)
-    : ResultErrorBase(message ?? "Validation error")
+    : ResultErrorBase(message ?? "Validation not satisfied")
 {
     // public ValidationError(string message) : this(message, null, null)
     // {

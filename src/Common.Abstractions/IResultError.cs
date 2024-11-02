@@ -14,4 +14,6 @@ public interface IResultError
     ///     Gets the error message associated with the result error.
     /// </summary>
     string Message { get; }
+
+    public void Throw();
 }

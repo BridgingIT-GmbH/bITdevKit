@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain;
 /// <summary>
 /// Represents a domain rule that can be applied synchronously or asynchronously.
 /// </summary>
-public interface IDomainRule
+public interface IRule
 {
     /// <summary>
     /// Gets a message describing the purpose or validation of the rule.

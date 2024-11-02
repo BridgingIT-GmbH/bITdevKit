@@ -5,22 +5,15 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-public class BusinessHoursRule(DateTime dateTime) : DomainRuleBase
+public class BusinessHoursRule(DateTime dateTime) : RuleBase
 {
-    public override bool IsEnabled =>
-        dateTime.DayOfWeek != DayOfWeek.Saturday &&
-        dateTime.DayOfWeek != DayOfWeek.Sunday;
+    public override string Message { get; } = "Datetime should be during business hours (MO-FR: 9 AM - 5 PM)";
 
     protected override Result ExecuteRule()
     {
-        if (dateTime.Hour < 9 || dateTime.Hour >= 17)
-        {
-            return Result.Failure()
-                .WithError(new DomainRuleError(
-                    nameof(BusinessHoursRule),
-                    "Operation can only be performed during business hours (9 AM - 5 PM)"));
-        }
-
-        return Result.Success();
+        return Result.SuccessIf(
+            dateTime.DayOfWeek != DayOfWeek.Saturday &&
+            dateTime.DayOfWeek != DayOfWeek.Sunday &&
+            dateTime.Hour is < 9 or >= 17);
     }
 }

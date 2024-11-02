@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : DomainRuleBase
+public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : RuleBase
     where TEntity : class, IEntity, ISoftDeletable
 {
     private readonly bool? deleted = entity?.Deleted;
@@ -14,12 +14,6 @@ public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : Domai
 
     protected override Result ExecuteRule()
     {
-        if (this.deleted is null or false)
-        {
-            return Result.Success();
-        }
-
-        return Result.Failure()
-            .WithError(new DomainRuleError(nameof(EntityCannotBeSoftDeletedAgainRule<TEntity>), this.Message));
+        return Result.SuccessIf(this.deleted is null or false);
     }
 }

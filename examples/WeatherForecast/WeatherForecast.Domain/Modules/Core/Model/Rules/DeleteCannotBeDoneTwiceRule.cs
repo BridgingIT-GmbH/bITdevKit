@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : DomainRuleBase
+public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : RuleBase
 {
     public override string Message => "Deleting can only be done once";
 

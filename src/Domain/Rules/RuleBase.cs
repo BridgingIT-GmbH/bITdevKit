@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain;
 /// <summary>
 /// Base class for synchronous domain rules that provides standard implementation and error handling.
 /// </summary>
-public abstract class DomainRuleBase : IDomainRule
+public abstract class RuleBase : IRule
 {
     /// <summary>
     /// Gets the default message for the rule. Override this property to provide a specific message.
@@ -44,8 +44,7 @@ public abstract class DomainRuleBase : IDomainRule
         }
         catch (Exception ex)
         {
-            return Result.Failure()
-                .WithError(new DomainRuleError(this.GetType().Name, ex.Message));
+            return Result.Failure().WithError(new ExceptionError(ex));
         }
     }
 

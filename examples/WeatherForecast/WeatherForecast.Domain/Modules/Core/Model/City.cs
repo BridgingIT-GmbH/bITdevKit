@@ -33,7 +33,7 @@ public class City : AggregateRoot<Guid>
 
     public static City Create(string name, string country, double longitude, double latitude)
     {
-        DomainRules.Apply(new CountryShouldBeKnown(country));
+        Rules.Apply(new CountryShouldBeKnown(country));
 
         var entity = new City
         {
@@ -52,7 +52,7 @@ public class City : AggregateRoot<Guid>
 
     public void Update(string name, string country, double longitude, double latitude)
     {
-        DomainRules.Apply(new CountryShouldBeKnown(country));
+        Rules.Apply(new CountryShouldBeKnown(country));
 
         this.Name = name;
         this.Country = country;
@@ -62,7 +62,7 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        DomainRules.For(
+        Rules.For(
                 new DeleteMustBeProvidedReasonRule(reason),
                 new DeleteCannotBeDoneTwiceRule(this.IsDeleted))
             .Apply();

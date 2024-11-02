@@ -20,7 +20,7 @@ public class DomainRuleExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
-        if (exception is not DomainRuleException ex)
+        if (exception is not RuleException ex)
         {
             return false;
         }

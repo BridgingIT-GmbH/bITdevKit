@@ -10,26 +10,36 @@ using System.Globalization;
 
 public static class DateTimeExtensions
 {
+    /// <summary>
+    /// Gets the start of the day for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the start of the day for.</param>
+    /// <returns>A DateTime representing the start of the day.</returns>
     [DebuggerStepThrough]
     public static DateTime StartOfDay(this DateTime source)
     {
         return new DateTime(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Kind);
     }
 
+    /// <summary>
+    /// Gets the end of the day for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the end of the day for.</param>
+    /// <returns>A DateTime representing the end of the day.</returns>
     [DebuggerStepThrough]
     public static DateTime EndOfDay(this DateTime source)
     {
         return source.StartOfDay().AddDays(1).AddSeconds(-1);
     }
 
+    /// <summary>
+    /// Gets the start of the week for the specified DateTime with a defined first day of the week.
+    /// </summary>
+    /// <param name="source">The DateTime to get the start of the week for.</param>
+    /// <param name="day">The first day of the week.</param>
+    /// <returns>A DateTime representing the start of the week.</returns>
     [DebuggerStepThrough]
-    public static DateTime StartOfWeek(this DateTime source)
-    {
-        return StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTime StartOfWeek(this DateTime source, DayOfWeek day)
+    public static DateTime StartOfWeek(this DateTime source, DayOfWeek day = DayOfWeek.Monday)
     {
         var offset = source.DayOfWeek - day;
         if (offset < 0)
@@ -37,83 +47,60 @@ public static class DateTimeExtensions
             offset += 7;
         }
 
-        return source.AddDays(-1 * offset);
+        return source.AddDays(-1 * offset).StartOfDay();
     }
 
+    /// <summary>
+    /// Gets the end of the week for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the end of the week for.</param>
+    /// <returns>A DateTime representing the end of the week.</returns>
+    [DebuggerStepThrough]
+    public static DateTime EndOfWeek(this DateTime source)
+    {
+        return source.StartOfWeek().AddDays(7).AddSeconds(-1);
+    }
+
+    /// <summary>
+    /// Gets the start of the month for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the start of the month for.</param>
+    /// <returns>A DateTime representing the start of the month.</returns>
     [DebuggerStepThrough]
     public static DateTime StartOfMonth(this DateTime source)
     {
         return new DateTime(source.Year, source.Month, 1, 0, 0, 0, 0, source.Kind);
     }
 
+    /// <summary>
+    /// Gets the end of the month for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the end of the month for.</param>
+    /// <returns>A DateTime representing the end of the month.</returns>
     [DebuggerStepThrough]
     public static DateTime EndOfMonth(this DateTime source)
     {
         return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
     }
 
+    /// <summary>
+    /// Gets the start of the year for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the start of the year for.</param>
+    /// <returns>A DateTime representing the start of the year.</returns>
     [DebuggerStepThrough]
     public static DateTime StartOfYear(this DateTime source)
     {
         return new DateTime(source.Year, 1, 1, 0, 0, 0, 0, source.Kind);
     }
 
+    /// <summary>
+    /// Gets the end of the year for the specified DateTime.
+    /// </summary>
+    /// <param name="source">The DateTime to get the end of the year for.</param>
+    /// <returns>A DateTime representing the end of the year.</returns>
     [DebuggerStepThrough]
     public static DateTime EndOfYear(this DateTime source)
-    {
-        return source.StartOfYear().AddYears(1).AddSeconds(-1);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset StartOfDay(this DateTimeOffset source)
-    {
-        return new DateTimeOffset(source.Year, source.Month, source.Day, 0, 0, 0, 0, source.Offset);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset EndOfDay(this DateTimeOffset source)
-    {
-        return source.StartOfDay().AddDays(1).AddSeconds(-1);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset StartOfWeek(this DateTimeOffset source)
-    {
-        return StartOfWeek(source, CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset StartOfWeek(this DateTimeOffset source, DayOfWeek day)
-    {
-        var offset = source.DayOfWeek - day;
-        if (offset < 0)
-        {
-            offset += 7;
-        }
-
-        return source.AddDays(-1 * offset);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset StartOfMonth(this DateTimeOffset source)
-    {
-        return new DateTimeOffset(source.Year, source.Month, 1, 0, 0, 0, 0, source.Offset);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset EndOfMonth(this DateTimeOffset source)
-    {
-        return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset StartOfYear(this DateTimeOffset source)
-    {
-        return new DateTimeOffset(source.Year, 1, 1, 0, 0, 0, 0, source.Offset);
-    }
-
-    [DebuggerStepThrough]
-    public static DateTimeOffset EndOfYear(this DateTimeOffset source)
     {
         return source.StartOfYear().AddYears(1).AddSeconds(-1);
     }
@@ -161,6 +148,7 @@ public static class DateTimeExtensions
         throw new ArgumentException($"Invalid date format: {source}. Useany format or Unix epoch.");
     }
 
+    [DebuggerStepThrough]
     public static bool TryParseDateOrEpoch(this string source, out DateTime result)
     {
         result = DateTime.MinValue;
@@ -221,4 +209,233 @@ public static class DateTimeExtensions
             DateTimeStyles.None,
             out result);
     }
+
+    [DebuggerStepThrough]
+    public static DateTime Add(this DateTime date, DateUnit unit, int amount)
+    {
+        return unit switch
+        {
+            DateUnit.Day => date.AddDays(amount),
+            DateUnit.Week => date.AddDays(7 * amount),
+            DateUnit.Month => AddMonths(date, amount),
+            DateUnit.Year => AddMonths(date, amount * 12),
+            _ => throw new ArgumentException("Unsupported DateUnit.", nameof(unit))
+        };
+    }
+
+    [DebuggerStepThrough]
+    private static DateTime AddMonths(DateTime date, int months)
+    {
+        // Calculate the target year and month
+        var totalMonths = date.Year * 12 + (date.Month - 1) + months;
+        var targetYear = totalMonths / 12;
+        var targetMonth = totalMonths % 12 + 1;
+
+        // Determine the last day of the target month to avoid invalid dates
+        var daysInTargetMonth = DateTime.DaysInMonth(targetYear, targetMonth);
+        var targetDay = Math.Min(date.Day, daysInTargetMonth);
+
+        return new DateTime(targetYear, targetMonth, targetDay, date.Hour, date.Minute, date.Second, date.Millisecond, date.Kind);
+    }
+
+    [DebuggerStepThrough]
+    public static bool IsInRange(this DateTime date, DateTime start, DateTime end, bool inclusive = true)
+    {
+        return inclusive ? date >= start && date <= end : date > start && date < end;
+    }
+
+    /// <summary>
+    /// Determines whether a given date is within a specified relative range from the current date.
+    /// </summary>
+    /// <param name="date">The date to be evaluated.</param>
+    /// <param name="unit">The unit of time for the range (e.g., Days, Weeks, Months, Years).</param>
+    /// <param name="amount">The amount of the unit to define the range.</param>
+    /// <param name="direction">The direction relative to the current date (Past or Future).</param>
+    /// <param name="inclusive">Specifies whether the range should be inclusive of the boundary dates.</param>
+    /// <returns>True if the date is within the specified relative range; otherwise, false.</returns>
+    [DebuggerStepThrough]
+    public static bool IsInRelativeRange(this DateTime date, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
+    {
+        var now = DateTime.Now;
+        var referenceDate = direction == DateTimeDirection.Past ? now.Add(unit, -amount) : now.Add(unit, amount);
+
+        return direction == DateTimeDirection.Past
+            ? (inclusive ? date <= now && date >= referenceDate : date < now && date > referenceDate)
+            : (inclusive ? date >= now && date <= referenceDate : date > now && date < referenceDate);
+    }
+
+    [DebuggerStepThrough]
+    public static int GetWeekOfYear(this DateTime date)
+    {
+        var cultureInfo = CultureInfo.InvariantCulture;
+        var calendar = cultureInfo.Calendar;
+
+        return calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+    }
+
+    [DebuggerStepThrough]
+    public static bool IsLeapYear(this DateTime date)
+    {
+        return DateTime.IsLeapYear(date.Year);
+    }
+
+    [DebuggerStepThrough]
+    public static int DaysUntil(this DateTime date)
+    {
+        return (date - DateTime.Now).Days;
+    }
+
+    [DebuggerStepThrough]
+    public static long ToUnixTimeSeconds(this DateTime date)
+    {
+        return new DateTimeOffset(date).ToUnixTimeSeconds();
+    }
+
+    [DebuggerStepThrough]
+    public static DateTimeOffset ToDateTimeOffset(this DateTime date, TimeSpan? offset = null)
+    {
+        return new DateTimeOffset(date, offset ?? TimeSpan.Zero);
+    }
+
+    [DebuggerStepThrough]
+    public static TimeSpan TimeSpanTo(this DateTime date, DateTime target)
+    {
+        return target - date;
+    }
+
+    [DebuggerStepThrough]
+    private static DateTime ToDateTime(this DateOnly date, TimeOnly time)
+    {
+        return date.ToDateTime(time);
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime RoundToNearest(this DateTime dateTime, DateUnit dateUnit)
+    {
+        switch (dateUnit)
+        {
+            case DateUnit.Day:
+                return dateTime.StartOfDay();
+            case DateUnit.Week:
+                return dateTime.StartOfWeek();
+            case DateUnit.Month:
+                return dateTime.StartOfMonth();
+            case DateUnit.Year:
+                return dateTime.StartOfYear();
+            default:
+                throw new ArgumentException("Unsupported DateUnit.", nameof(dateUnit));
+        }
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime RoundToNearest(this DateTime dateTime, TimeUnit timeUnit)
+    {
+        switch (timeUnit)
+        {
+            case TimeUnit.Minute:
+                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, (dateTime.Minute / 1) * 1, 0, dateTime.Kind);
+            case TimeUnit.Hour:
+                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, (dateTime.Hour / 1) * 1, 0, 0, dateTime.Kind);
+            default:
+                throw new ArgumentException("Unsupported TimeUnit.", nameof(timeUnit));
+        }
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime AddBusinessDays(this DateTime dateTime, int days, DateTime[] holidays, params DayOfWeek[] nonWorkingDays)
+    {
+        if (days == 0) return dateTime;
+
+        // Use default non-working days if none specified
+        if (nonWorkingDays == null || nonWorkingDays.Length == 0)
+        {
+            nonWorkingDays = new[] { DayOfWeek.Saturday, DayOfWeek.Sunday };
+        }
+
+        var result = dateTime;
+        var step = days > 0 ? 1 : -1;
+        var absDays = Math.Abs(days);
+        var addedDays = 0;
+
+        while (addedDays < absDays)
+        {
+            result = result.AddDays(step);
+            if (IsBusinessDay(result, holidays, nonWorkingDays))
+            {
+                addedDays++;
+            }
+        }
+
+        return result;
+    }
+
+    private static bool IsBusinessDay(DateTime dateTime, DateTime[] holidays, DayOfWeek[] nonWorkingDays)
+    {
+        // Check if the date is a non-working day
+        if (Array.Exists(nonWorkingDays, day => day == dateTime.DayOfWeek))
+        {
+            return false;
+        }
+
+        // Check if the date is in the list of holidays
+        return holidays == null || !holidays.Any(holiday => holiday.Date == dateTime.Date);
+    }
+}
+
+/// <summary>
+/// Specifies the unit of time for date-based relative operations.
+/// </summary>
+public enum DateUnit
+{
+    /// <summary>
+    /// Represents a day unit for relative date calculations.
+    /// </summary>
+    Day,
+
+    /// <summary>
+    /// Represents a week unit (7 days) for relative date calculations.
+    /// </summary>
+    Week,
+
+    /// <summary>
+    /// Represents a month unit (30 days) for relative date calculations.
+    /// </summary>
+    Month,
+
+    /// <summary>
+    /// Represents a year unit (365 days) for relative date calculations.
+    /// </summary>
+    Year
+}
+
+/// <summary>
+/// Specifies the unit of time for time-based relative operations.
+/// </summary>
+public enum TimeUnit
+{
+    /// <summary>
+    /// Represents a minute unit for relative time calculations.
+    /// </summary>
+    Minute,
+
+    /// <summary>
+    /// Represents an hour unit for relative time calculations.
+    /// </summary>
+    Hour
+}
+
+/// <summary>
+/// Specifies the direction for relative date/time calculations.
+/// </summary>
+public enum DateTimeDirection
+{
+    /// <summary>
+    /// Indicates that the calculation should look backward in time from the reference point.
+    /// </summary>
+    Past,
+
+    /// <summary>
+    /// Indicates that the calculation should look forward in time from the reference point.
+    /// </summary>
+    Future
 }

@@ -30,7 +30,7 @@ public class HostUpdateCommandHandler(
 
         this.Logger.LogInformation("entity retrieved");
 
-        await DomainRules.For().ApplyAsync(cancellationToken: cancellationToken);
+        await Rules.For().ApplyAsync(cancellationToken: cancellationToken);
 
         host.ChangeName(command.FirstName, command.LastName)
             .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
@@ -48,8 +48,8 @@ public class HostUpdateCommandHandler(
             (await repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
             .Tap(_ => this.Logger.LogInformation("entity retrieved"))
-            .AndThen(e => DomainRules.For().Apply())
-            .AndThenAsync(async (e,ct) => await DomainRules.For().ApplyAsync(cancellationToken: ct), cancellationToken)
+            .AndThen(e => Rules.For().Apply())
+            .AndThenAsync(async (e,ct) => await Rules.For().ApplyAsync(cancellationToken: ct), cancellationToken)
             .BindAsync(async (e, ct) =>
                 {
                    //await DomainRules.ApplyAsync([ /* add some rules*/], ct);

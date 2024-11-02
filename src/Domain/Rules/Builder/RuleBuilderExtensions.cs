@@ -16,7 +16,7 @@ public static class RuleBuilderExtensions
     /// <param name="builder">The rule builder.</param>
     /// <param name="rule">The rule to add.</param>
     /// <returns>The rule builder for method chaining.</returns>
-    public static DomainRulesBuilder And(this DomainRulesBuilder builder, IDomainRule rule)
+    public static RulesBuilder And(this RulesBuilder builder, IRule rule)
     {
         return builder.Add(rule);
     }
@@ -27,7 +27,7 @@ public static class RuleBuilderExtensions
     /// <param name="builder">The rule builder.</param>
     /// <param name="rules">The rules to add.</param>
     /// <returns>The rule builder for method chaining.</returns>
-    public static DomainRulesBuilder And(this DomainRulesBuilder builder, params IDomainRule[] rules)
+    public static RulesBuilder And(this RulesBuilder builder, params IRule[] rules)
     {
         foreach (var rule in rules)
         {
@@ -42,7 +42,7 @@ public static class RuleBuilderExtensions
     /// </summary>
     /// <param name="builder">The rule builder.</param>
     /// <param name="rule">The rule to add.</param>
-    public static void Add(this DomainRulesBuilder builder, IDomainRule rule)
+    public static void Add(this RulesBuilder builder, IRule rule)
     {
         builder.Add(rule);
     }

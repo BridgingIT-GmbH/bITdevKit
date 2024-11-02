@@ -89,14 +89,19 @@ public partial class Result
     }
 
     /// <summary>
-    /// Throws a ResultException if the current Result indicates a failure.
+    /// Throws an exception if the result indicates failure.
     /// </summary>
-    /// <returns>The current Result if it indicates success.</returns>
+    /// <returns>The original result if it represents a success; otherwise, throws an exception.</returns>
     public Result ThrowIfFailed()
     {
         if (this.IsSuccess)
         {
             return this;
+        }
+
+        if (this.HasError())
+        {
+            this.Errors.FirstOrDefault()?.Throw();
         }
 
         throw new ResultException(this);

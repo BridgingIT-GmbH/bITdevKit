@@ -74,7 +74,7 @@ public static class Configure
             };
         });
 
-        options.Map<DomainRuleException>(ex =>
+        options.Map<RuleException>(ex =>
         {
             return new MvcProblemDetails
             {

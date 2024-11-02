@@ -8,17 +8,17 @@ namespace BridgingIT.DevKit.Domain;
 /// <summary>
 /// Wraps a rule with a synchronous condition that determines if the rule should be executed.
 /// </summary>
-public class ConditionalRule : DomainRuleBase
+public class ConditionalRule : RuleBase
 {
     private readonly Func<bool> condition;
-    private readonly IDomainRule rule;
+    private readonly IRule rule;
 
     /// <summary>
     /// Initializes a new instance of the SyncConditionalRule class.
     /// </summary>
     /// <param name="condition">A function that determines if the rule should be executed.</param>
     /// <param name="rule">The rule to execute if the condition is met.</param>
-    public ConditionalRule(Func<bool> condition, IDomainRule rule)
+    public ConditionalRule(Func<bool> condition, IRule rule)
     {
         this.condition = condition;
         this.rule = rule;
@@ -43,8 +43,7 @@ public class ConditionalRule : DomainRuleBase
         }
         catch (Exception ex)
         {
-            return Result.Failure()
-                .WithError(new DomainRuleError(this.GetType().Name, ex.Message));
+            return Result.Failure().WithError(new ExceptionError(ex));
         }
     }
 }

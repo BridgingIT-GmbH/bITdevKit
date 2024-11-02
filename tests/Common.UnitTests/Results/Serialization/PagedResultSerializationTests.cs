@@ -175,7 +175,7 @@ public class PagedResultSerializationTests
             count: 0,
             page: 1,
             pageSize: 10)
-            .WithError(new DomainRuleError("ValidationRule", "Filter validation failed"));
+            .WithError(new Error("Filter validation failed"));
 
         // Act
         var json = this.serializer.SerializeToString(result);
@@ -190,7 +190,6 @@ public class PagedResultSerializationTests
         // jsonMessages.ShouldContain(messages);
 
         var error = root.GetProperty("errors")[0];
-        error.GetProperty("rule").GetString().ShouldBe("ValidationRule");
         error.GetProperty("message").GetString().ShouldBe("Filter validation failed");
     }
 

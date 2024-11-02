@@ -13,7 +13,7 @@ using Domain;
 public class DinnerScheduleMustNotOverlapRule(
     IGenericRepository<Dinner> repository,
     HostId hostId,
-    DinnerSchedule schedule) : AsyncDomainRuleBase
+    DinnerSchedule schedule) : AsyncRuleBase
 {
     public override string Message => "Dinners for same host cannot overlap";
 

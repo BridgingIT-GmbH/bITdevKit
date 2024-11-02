@@ -81,7 +81,7 @@ public class AddressStub : ValueObject
         var address = new AddressStub(name, line1, line2, postalCode, city, country);
         if (!IsValid(address))
         {
-            throw new DomainRuleException("Invalid address");
+            throw new RuleException("Invalid address");
         }
 
         return address;

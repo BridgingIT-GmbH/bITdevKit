@@ -24,7 +24,7 @@ public class GeoLocation : ValueObject
 
     public static GeoLocation Create(double longitude, double latitude)
     {
-        DomainRules.For(
+        Rules.For(
                 new LongitudeShouldBeInRange(longitude),
                 new LatitudeShouldBeInRange(latitude))
             .Apply();

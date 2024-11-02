@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class AdAccountShouldBePartOfDomain(string value) : DomainRuleBase
+public class AdAccountShouldBePartOf(string value) : RuleBase
 {
     public override string Message => "AD Account should be part of a domain";
 

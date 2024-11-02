@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class PriceShouldBeInRangeRule(decimal amount) : DomainRuleBase
+public class PriceShouldBeInRangeRule(decimal amount) : RuleBase
 {
     private readonly decimal amount = amount;
 
@@ -22,7 +22,7 @@ public class PriceShouldBeInRangeRule(decimal amount) : DomainRuleBase
 
 public static class PriceRules
 {
-    public static IDomainRule ShouldBeInRange(decimal amount)
+    public static IRule ShouldBeInRange(decimal amount)
     {
         return new PriceShouldBeInRangeRule(amount);
     }

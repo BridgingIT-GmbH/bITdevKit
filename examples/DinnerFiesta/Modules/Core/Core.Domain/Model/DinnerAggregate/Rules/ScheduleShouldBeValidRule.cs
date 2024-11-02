@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime) : DomainRuleBase
+public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime) : RuleBase
 {
     public override string Message => "StartDate should be earlier than the EndDate";
 
@@ -20,7 +20,7 @@ public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOff
 
 public static partial class DinnerRules
 {
-    public static IDomainRule ScheduleShouldBeValid(DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+    public static IRule ScheduleShouldBeValid(DateTimeOffset startDateTime, DateTimeOffset endDateTime)
     {
         return new ScheduleShouldBeValidRule(startDateTime, endDateTime);
     }

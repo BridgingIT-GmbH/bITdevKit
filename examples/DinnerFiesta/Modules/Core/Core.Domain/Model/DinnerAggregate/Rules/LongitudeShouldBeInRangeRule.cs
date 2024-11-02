@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class LongitudeShouldBeInRangeRule : DomainRuleBase
+public class LongitudeShouldBeInRangeRule : RuleBase
 {
     private readonly double? value;
 
@@ -32,7 +32,7 @@ public class LongitudeShouldBeInRangeRule : DomainRuleBase
 
 public static partial class DinnerRules
 {
-    public static IDomainRule LongitudeShouldBeInRange(double? value)
+    public static IRule LongitudeShouldBeInRange(double? value)
     {
         return new LongitudeShouldBeInRangeRule(value);
     }

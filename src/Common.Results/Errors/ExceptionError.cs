@@ -19,12 +19,29 @@ public class ExceptionError : IResultError
     public ExceptionError(Exception exception)
     {
         this.exception = exception ?? throw new ArgumentNullException(nameof(exception));
+        this.Message = exception.Message;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionError"/> class.
+    /// </summary>
+    /// <param name="exception">The exception to encapsulate.</param>
+    /// <param name="message"></param>
+    public ExceptionError(Exception exception, string message)
+    {
+        this.exception = exception ?? throw new ArgumentNullException(nameof(exception));
+        this.Message = message ?? exception.Message;
     }
 
     /// <summary>
     /// Gets the error message associated with the encapsulated exception.
     /// </summary>
-    public string Message => this.exception.Message;
+    public string Message { get; init; }
+
+    public void Throw()
+    {
+        throw this.exception;
+    }
 
     /// <summary>
     /// Gets the type of the encapsulated exception.

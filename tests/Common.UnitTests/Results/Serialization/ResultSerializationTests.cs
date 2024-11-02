@@ -142,7 +142,7 @@ public class ResultSerializationTests
     {
         // Arrange
         var result = Result.Failure()
-            .WithError(new DomainRuleError("rule", "Rule1"));
+            .WithError(new Error("Rule1"));
 
         // Act
         var json = this.serializer.SerializeToString(result);
@@ -205,7 +205,7 @@ public class ResultSerializationTests
             .Ensure(p => p.Age >= 18, new ValidationError("age", "Must be 18 or older"))
             .WithMessage("Age validation")
             .Map(p => p.Age)
-            .WithError(new DomainRuleError("Additional rule failed"));
+            .WithError(new Error("Additional rule failed"));
 
         // Act
         var json = this.serializer.SerializeToString(result);

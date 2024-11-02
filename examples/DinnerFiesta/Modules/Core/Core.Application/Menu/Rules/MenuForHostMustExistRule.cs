@@ -10,7 +10,7 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : AsyncDomainRuleBase
+public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : AsyncRuleBase
 {
     public override string Message => "Menu for host must exist";
 

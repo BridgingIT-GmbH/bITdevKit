@@ -205,7 +205,7 @@ public class ResultValueTests
             return p.Age >= 18
                 ? Result<int>.Success(p.Age)
                 : Result<int>.Failure()
-                    .WithError(new ValidationError("age", "Must be 18 or older"));
+                    .WithError(new ValidationError("Must be 18 or older", "age"));
         });
 
         // Assert
@@ -236,7 +236,7 @@ public class ResultValueTests
             .Bind(age => age >= 18
                 ? Result<string>.Success($"Age {age} is valid")
                 : Result<string>.Failure()
-                    .WithError(new ValidationError("age", "Must be 18 or older")))
+                    .WithError(new ValidationError("Must be 18 or older", "age")))
             .WithMessage(bindMessage);
 
         // Assert
@@ -267,7 +267,7 @@ public class ResultValueTests
             await Task.Delay(10, ct);
 
             return Result<int>.Failure()
-                .WithError(new ValidationError("age", $"Age {p.Age} is invalid"))
+                .WithError(new ValidationError($"Age {p.Age} is invalid", "age"))
                 .WithMessage($"Validation failed for {p.FirstName}");
         });
 

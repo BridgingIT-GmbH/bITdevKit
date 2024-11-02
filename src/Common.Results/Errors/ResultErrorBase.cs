@@ -7,5 +7,10 @@ namespace BridgingIT.DevKit.Common;
 
 public abstract class ResultErrorBase(string message = null) : IResultError
 {
-    public string Message { get; init; } = message;
+    public string Message { get; protected init; } = message;
+
+    public virtual void Throw()
+    {
+        throw new ResultException(this.Message);
+    }
 }

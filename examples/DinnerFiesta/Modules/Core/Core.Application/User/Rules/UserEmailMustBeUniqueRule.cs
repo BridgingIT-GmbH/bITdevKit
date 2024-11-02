@@ -10,7 +10,7 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class UserEmailMustBeUniqueRule : AsyncDomainRuleBase
+public class UserEmailMustBeUniqueRule : AsyncRuleBase
 {
     private readonly IGenericRepository<User> repository;
     private readonly User user;
@@ -34,7 +34,7 @@ public class UserEmailMustBeUniqueRule : AsyncDomainRuleBase
 
 public static class UserRules
 {
-    public static IDomainRule EmailMustBeUnique(IGenericRepository<User> repository, User user)
+    public static IRule EmailMustBeUnique(IGenericRepository<User> repository, User user)
     {
         return new UserEmailMustBeUniqueRule(repository, user);
     }

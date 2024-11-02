@@ -51,7 +51,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<RuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<RuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]

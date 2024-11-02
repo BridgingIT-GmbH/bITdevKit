@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class IsValidEmailAddressRule(string value) : DomainRuleBase
+public class IsValidEmailAddressRule(string value) : RuleBase
 {
     private static readonly Regex Regex = new(
         @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +

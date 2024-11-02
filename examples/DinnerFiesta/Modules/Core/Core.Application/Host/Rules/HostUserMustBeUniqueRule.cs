@@ -10,7 +10,7 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class HostUserMustBeUniqueRule : AsyncDomainRuleBase
+public class HostUserMustBeUniqueRule : AsyncRuleBase
 {
     private readonly IGenericRepository<Host> repository;
     private readonly UserId userId;
@@ -35,7 +35,7 @@ public class HostUserMustBeUniqueRule : AsyncDomainRuleBase
 
 public static class HostRules
 {
-    public static IDomainRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId)
+    public static IRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId)
     {
         return new HostUserMustBeUniqueRule(repository, userId);
     }

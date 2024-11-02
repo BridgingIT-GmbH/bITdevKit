@@ -10,7 +10,7 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : AsyncDomainRuleBase
+public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : AsyncRuleBase
 {
     public override string Message => "Name should be unique";
 

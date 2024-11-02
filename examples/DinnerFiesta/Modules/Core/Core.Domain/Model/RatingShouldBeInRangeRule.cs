@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class RatingShouldBeInRangeRule(int value) : DomainRuleBase
+public class RatingShouldBeInRangeRule(int value) : RuleBase
 {
     private readonly double? value = value;
 
@@ -22,7 +22,7 @@ public class RatingShouldBeInRangeRule(int value) : DomainRuleBase
 
 public static class RatingRules
 {
-    public static IDomainRule ShouldBeInRange(int value)
+    public static IRule ShouldBeInRange(int value)
     {
         return new RatingShouldBeInRangeRule(value);
     }

@@ -5,17 +5,19 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Rules;
 
+using Rules = BridgingIT.DevKit.Domain.Rules;
+
 [UnitTest("Domain")]
-public class DomainRulesTests
+public class RulesTests
 {
     [Fact]
     public async Task ReturnAsync_SatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(true);
+        var rule = new StubRule(true);
 
         // Act
-        var result = await DomainRules.ReturnAsync(rule);
+        var result = await Rules.ReturnAsync(rule);
 
         // Assert
         result.ShouldBeTrue();
@@ -25,10 +27,10 @@ public class DomainRulesTests
     public void Return_SatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(true);
+        var rule = new StubRule(true);
 
         // Act
-        var result = DomainRules.Return(rule);
+        var result = Rules.Return(rule);
 
         // Assert
         result.ShouldBeTrue();
@@ -38,12 +40,12 @@ public class DomainRulesTests
     public async Task ReturnAsync_ManySatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = await DomainRules.ReturnAsync([rule1, rule2, rule3]);
+        var result = await Rules.ReturnAsync([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeTrue();
@@ -53,12 +55,12 @@ public class DomainRulesTests
     public void Return_ManySatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = DomainRules.Return([rule1, rule2, rule3]);
+        var result = Rules.Return([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeTrue();
@@ -68,10 +70,10 @@ public class DomainRulesTests
     public async Task ReturnAsync_NotSatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(false);
+        var rule = new StubRule(false);
 
         // Act
-        var result = await DomainRules.ReturnAsync(rule);
+        var result = await Rules.ReturnAsync(rule);
 
         // Assert
         result.ShouldBeFalse();
@@ -81,10 +83,10 @@ public class DomainRulesTests
     public void Return_NotSatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(false);
+        var rule = new StubRule(false);
 
         // Act
-        var result = DomainRules.Return(rule);
+        var result = Rules.Return(rule);
 
         // Assert
         result.ShouldBeFalse();
@@ -94,64 +96,64 @@ public class DomainRulesTests
     public void ApplyAsync_ThrowNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(false);
+        var rule = new StubRule(false);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(async () => await DomainRules.ApplyAsync(rule));
+        Should.Throw<RuleException>(async () => await Rules.ApplyAsync(rule));
     }
 
     [Fact]
     public void ApplyAsync_ThrowExceptionDueToFail()
     {
         // Arrange
-        var rule = new StubDomainRule(true, true);
+        var rule = new StubRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(async () => await DomainRules.ApplyAsync(rule));
+        Should.Throw<ApplicationException>(async () => await Rules.ApplyAsync(rule));
     }
 
     [Fact]
     public void Apply_ThrowNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule = new StubDomainRule(false);
+        var rule = new StubRule(false);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(() => DomainRules.Apply(rule));
+        Should.Throw<RuleException>(() => Rules.Apply(rule));
     }
 
     [Fact]
     public void Apply_ThrowExceptionDueToFail()
     {
         // Arrange
-        var rule = new StubDomainRule(true, true);
+        var rule = new StubRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(() => DomainRules.Apply(rule));
+        Should.Throw<ApplicationException>(() => Rules.Apply(rule));
     }
 
     [Fact]
     public void ApplyAsync_ThrowManySatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act & Assert
-        Task.Run(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
+        Task.Run(async () => await Rules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
     public async Task ApplyAsync_ThrowManySatisfiedDomainRuleApplyAction()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = await DomainRules.ApplyAsync([rule1, rule2, rule3], null, () => 1);
+        var result = await Rules.ApplyAsync([rule1, rule2, rule3], null, () => 1);
 
         // Assert
         result.ShouldBe(1);
@@ -161,24 +163,24 @@ public class DomainRulesTests
     public void Apply_ThrowManySatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act & Assert
-        DomainRules.Apply([rule1, rule2, rule3]);
+        Rules.Apply([rule1, rule2, rule3]);
     }
 
     [Fact]
     public void Apply_ThrowManySatisfiedDomainRuleApplyAction()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = DomainRules.Apply([rule1, rule2, rule3], null, () => 1);
+        var result = Rules.Apply([rule1, rule2, rule3], null, () => 1);
 
         // Assert
         // Assert
@@ -189,60 +191,60 @@ public class DomainRulesTests
     public void ApplyAsync_ThrowManyNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(false);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(false);
+        var rule3 = new StubRule(true);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
+        Should.Throw<RuleException>(async () => await Rules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
     public void ApplyAsync_ThrowManyExceptionDueToFail()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true, true);
-        var rule3 = new StubDomainRule(true, true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true, true);
+        var rule3 = new StubRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(async () => await DomainRules.ApplyAsync([rule1, rule2, rule3]));
+        Should.Throw<ApplicationException>(async () => await Rules.ApplyAsync([rule1, rule2, rule3]));
     }
 
     [Fact]
     public void Apply_ThrowManyNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(false);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(false);
+        var rule3 = new StubRule(true);
 
         // Act & Assert
-        Should.Throw<DomainRuleException>(() => DomainRules.Apply([rule1, rule2, rule3]));
+        Should.Throw<RuleException>(() => Rules.Apply([rule1, rule2, rule3]));
     }
 
     [Fact]
     public void Apply_ThrowManyExceptionDueToFail()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(true, true);
-        var rule3 = new StubDomainRule(true, true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(true, true);
+        var rule3 = new StubRule(true, true);
 
         // Act & Assert
-        Should.Throw<ApplicationException>(() => DomainRules.Apply([rule1, rule2, rule3]));
+        Should.Throw<ApplicationException>(() => Rules.Apply([rule1, rule2, rule3]));
     }
 
     [Fact]
     public async Task ReturnAsync_ManyNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(false);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(false);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = await DomainRules.ReturnAsync([rule1, rule2, rule3]);
+        var result = await Rules.ReturnAsync([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeFalse();
@@ -252,19 +254,19 @@ public class DomainRulesTests
     public void Return_ManyNotSatisfiedDomainRule()
     {
         // Arrange
-        var rule1 = new StubDomainRule(true);
-        var rule2 = new StubDomainRule(false);
-        var rule3 = new StubDomainRule(true);
+        var rule1 = new StubRule(true);
+        var rule2 = new StubRule(false);
+        var rule3 = new StubRule(true);
 
         // Act
-        var result = DomainRules.Return([rule1, rule2, rule3]);
+        var result = Rules.Return([rule1, rule2, rule3]);
 
         // Assert
         result.ShouldBeFalse();
     }
 }
 
-public class StubDomainRule(bool isSatisfied, bool fail = false) : IDomainRule
+public class StubRule(bool isSatisfied, bool fail = false) : IRule
 {
     private readonly bool isSatisfied = isSatisfied;
     private readonly bool fail = fail;

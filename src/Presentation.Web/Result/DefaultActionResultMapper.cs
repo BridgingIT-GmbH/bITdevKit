@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Net;
+using BridgingIT.DevKit.Domain;
 using Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -497,7 +498,7 @@ public class DefaultActionResultMapper : IActionResultMapper
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
             // return this.ValidationProblem(...)
         }
-        else if (result.HasError<DomainRuleError>(out errors))
+        else if (result.HasError<RuleError>(out errors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware

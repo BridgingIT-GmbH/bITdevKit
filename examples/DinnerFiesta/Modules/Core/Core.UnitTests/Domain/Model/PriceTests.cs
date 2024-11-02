@@ -38,6 +38,6 @@ public class PriceTests
         var action = () => Price.Create(amount, this.currency);
 
         // Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await Task.Run(action));
+        await Should.ThrowAsync<RuleException>(async () => await Task.Run(action));
     }
 }

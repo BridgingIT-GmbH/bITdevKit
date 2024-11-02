@@ -3,20 +3,21 @@
 // // Use of this source code is governed by an MIT-style license that can be
 // // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 //
+
 namespace BridgingIT.DevKit.Domain;
 
 /// <summary>
 /// Provides core methods for executing domain rules.
 /// </summary>
-public static class DomainRules
+public static class Rules
 {
     /// <summary>
     /// Creates an empty rule builder.
     /// </summary>
     /// <returns>A new empty rule builder instance.</returns>
-    public static DomainRulesBuilder For()
+    public static RulesBuilder For()
     {
-        return new DomainRulesBuilder();
+        return new RulesBuilder();
     }
 
     /// <summary>
@@ -24,9 +25,9 @@ public static class DomainRules
     /// </summary>
     /// <param name="rule">The initial rule.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static DomainRulesBuilder For(IDomainRule rule)
+    public static RulesBuilder For(IRule rule)
     {
-        return new DomainRulesBuilder().Add(rule);
+        return new RulesBuilder().Add(rule);
     }
 
     /// <summary>
@@ -34,10 +35,10 @@ public static class DomainRules
     /// </summary>
     /// <param name="rules">The initial rules.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static DomainRulesBuilder For(params IDomainRule[] rules)
+    public static RulesBuilder For(params IRule[] rules)
     {
-        var builder = new DomainRulesBuilder();
-        foreach(var rule in rules)
+        var builder = new RulesBuilder();
+        foreach (var rule in rules)
         {
             builder.Add(rule);
         }
@@ -50,7 +51,7 @@ public static class DomainRules
     /// </summary>
     /// <param name="rule">The rule to apply.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
-    public static Result Apply(IDomainRule rule)
+    public static Result Apply(IRule rule)
     {
         if (rule is null)
         {
@@ -59,7 +60,13 @@ public static class DomainRules
 
         try
         {
-            return rule.Apply();
+            var result = rule.Apply();
+            if (result.IsFailure && !result.HasError())
+            {
+                result.WithError(new RuleError(rule));
+            }
+
+            return result;
         }
         catch (OperationCanceledException)
         {
@@ -69,19 +76,19 @@ public static class DomainRules
         catch (Exception ex) when (ex is not AggregateException)
         {
             return Result.Failure()
-                .WithError(new DomainRuleError(rule.GetType().Name, ex.Message));
+                .WithError(new ExceptionError(ex, $"[{rule.GetType().Name}] {rule.Message}".Trim()));
         }
         catch (AggregateException ex)
         {
-            var innerException = ex.InnerExceptions.FirstOrDefault() ?? ex;
-            if (innerException is OperationCanceledException)
+            var innerEx = ex.InnerExceptions.FirstOrDefault() ?? ex;
+            if (innerEx is OperationCanceledException)
             {
                 return Result.Failure()
                     .WithError(new OperationCancelledError(rule.GetType().Name));
             }
 
             return Result.Failure()
-                .WithError(new DomainRuleError(rule.GetType().Name, innerException.Message));
+                .WithError(new ExceptionError(ex, $"[{rule.GetType().Name}] {rule.Message}".Trim()));
         }
     }
 
@@ -91,7 +98,7 @@ public static class DomainRules
     /// <param name="rule">The rule to apply.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task containing the <see cref="Result"/> indicating success or failure of the rule.</returns>
-    public static async Task<Result> ApplyAsync(IDomainRule rule, CancellationToken cancellationToken = default)
+    public static async Task<Result> ApplyAsync(IRule rule, CancellationToken cancellationToken = default)
     {
         if (rule is null)
         {
@@ -100,13 +107,22 @@ public static class DomainRules
 
         try
         {
-            if (rule is AsyncDomainRuleBase)
+            Result result = null;
+            if (rule is AsyncRuleBase)
             {
-                return await rule.ApplyAsync(cancellationToken).ConfigureAwait(false);
+                result = await rule.ApplyAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                result = rule.Apply();
             }
 
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            return rule.Apply();
+            if (result.IsFailure && !result.HasError())
+            {
+                result.WithError(new RuleError(rule));
+            }
+
+            return result;
         }
         catch (OperationCanceledException)
         {
@@ -116,19 +132,19 @@ public static class DomainRules
         catch (Exception ex) when (ex is not AggregateException)
         {
             return Result.Failure()
-                .WithError(new DomainRuleError(rule.GetType().Name, ex.Message));
+                .WithError(new ExceptionError(ex, $"[{rule.GetType().Name}] {rule.Message}".Trim()));
         }
         catch (AggregateException ex)
         {
-            var innerException = ex.InnerExceptions.FirstOrDefault() ?? ex;
-            if (innerException is OperationCanceledException)
+            var innerEx = ex.InnerExceptions.FirstOrDefault() ?? ex;
+            if (innerEx is OperationCanceledException)
             {
                 return Result.Failure()
                     .WithError(new OperationCancelledError(rule.GetType().Name));
             }
 
             return Result.Failure()
-                .WithError(new DomainRuleError(rule.GetType().Name, innerException.Message));
+                .WithError(new ExceptionError(ex, $"[{rule.GetType().Name}] {rule.Message}".Trim()));
         }
     }
 }

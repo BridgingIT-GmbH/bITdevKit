@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class CountryShouldBeKnownRule(string value) : DomainRuleBase
+public class CountryShouldBeKnownRule(string value) : RuleBase
 {
     private readonly string[] countries = ["NL", "DE", "FR", "ES", "IT", "USA"];
 
@@ -22,7 +22,7 @@ public class CountryShouldBeKnownRule(string value) : DomainRuleBase
 
 public static partial class DinnerRules
 {
-    public static IDomainRule CountryShouldBeKnown(string value)
+    public static IRule CountryShouldBeKnown(string value)
     {
         return new CountryShouldBeKnownRule(value);
     }

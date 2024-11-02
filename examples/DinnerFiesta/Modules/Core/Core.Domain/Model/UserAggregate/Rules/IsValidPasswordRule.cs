@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class IsValidPasswordRule(string password) : DomainRuleBase
+public class IsValidPasswordRule(string password) : RuleBase
 {
     private readonly string password = password;
 
@@ -22,7 +22,7 @@ public class IsValidPasswordRule(string password) : DomainRuleBase
 
 public static class UserRules
 {
-    public static IDomainRule IsValidPassword(string password)
+    public static IRule IsValidPassword(string password)
     {
         return new IsValidPasswordRule(password);
     }

@@ -10,18 +10,46 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Provides a fluent interface for building and executing collections of domain rules.
+/// <para>
+/// Usage example:
+/// <code>
+///     return DomaainRules.For()
+///         // Basic validation using ValueRules
+///         .Add(Rules.IsNotEmpty(product.Name))
+///         .Add(Rules.StringLength(product.Name, 3, 100))
+///         .Add(Rules.NumericRange(product.Price, 0.01m, 999.99m))
+///
+///         // Conditional validation with When
+///         .When(!product.IsDigital, builder => builder
+///             .Add(Rules.IsNotEmpty(product.ShippingAddress))
+///             .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+///
+///         // Using Unless (inverse of When)
+///         .Unless(product.IsDigital,
+///             Rules.GreaterThan(product.Price, 10m))
+///
+///         // Combining multiple conditions
+///         .WhenAll(new[]
+///         {
+///             product.Price > 100,
+///             !product.IsDigital,
+///             product.Categories?.Count > 2
+///         }, Rules.IsNotEmpty(product.ShippingAddress))
+///         .Apply();
+/// </code>
+/// </para>
 /// </summary>
-public class DomainRulesBuilder
+public class RulesBuilder
 {
-    private readonly List<IDomainRule> rules = [];
-    private bool aggregateErrors;
+    private readonly List<IRule> rules = [];
+    private bool continueOnFailure;
 
     /// <summary>
     /// Adds a rule to the builder.
     /// </summary>
     /// <param name="rule">The rule to add.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder Add(IDomainRule rule)
+    public RulesBuilder Add(IRule rule)
     {
         if (rule is not null)
         {
@@ -36,7 +64,7 @@ public class DomainRulesBuilder
     /// </summary>
     /// <param name="rules">The rules to add.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder Add(params IDomainRule[] rules)
+    public RulesBuilder Add(params IRule[] rules)
     {
         foreach (var rule in rules)
         {
@@ -50,9 +78,9 @@ public class DomainRulesBuilder
     /// Creates an empty rule builder.
     /// </summary>
     /// <returns>A new empty rule builder instance.</returns>
-    public static DomainRulesBuilder For()
+    public static RulesBuilder For()
     {
-        return new DomainRulesBuilder();
+        return new RulesBuilder();
     }
 
     /// <summary>
@@ -60,9 +88,9 @@ public class DomainRulesBuilder
     /// </summary>
     /// <param name="rule">The initial rule.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static DomainRulesBuilder For(IDomainRule rule)
+    public static RulesBuilder For(IRule rule)
     {
-        return new DomainRulesBuilder().Add(rule);
+        return new RulesBuilder().Add(rule);
     }
 
     /// <summary>
@@ -70,9 +98,9 @@ public class DomainRulesBuilder
     /// </summary>
     /// <param name="rules">The initial rules.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static DomainRulesBuilder For(params IDomainRule[] rules)
+    public static RulesBuilder For(params IRule[] rules)
     {
-        var builder = new DomainRulesBuilder();
+        var builder = new RulesBuilder();
         foreach (var rule in rules)
         {
             builder.Add(rule);
@@ -85,9 +113,9 @@ public class DomainRulesBuilder
     /// Enables error aggregation, collecting all rule failures instead of stopping at the first failure.
     /// </summary>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WithErrorAggregation()
+    public RulesBuilder ContinueOnFailure()
     {
-        this.aggregateErrors = true;
+        this.continueOnFailure = true;
 
         return this;
     }
@@ -98,7 +126,7 @@ public class DomainRulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="rule">The rule to add if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder When(bool condition, IDomainRule rule)
+    public RulesBuilder When(bool condition, IRule rule)
     {
         return condition ? this.Add(rule) : this;
     }
@@ -109,7 +137,7 @@ public class DomainRulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="addRules">Action to add rules if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder When(bool condition, Action<DomainRulesBuilder> addRules)
+    public RulesBuilder When(bool condition, Action<RulesBuilder> addRules)
     {
         if (condition)
         {
@@ -125,7 +153,7 @@ public class DomainRulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="rule">The rule to add if the condition is false.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder Unless(bool condition, IDomainRule rule)
+    public RulesBuilder Unless(bool condition, IRule rule)
     {
         return this.When(!condition, rule);
     }
@@ -136,7 +164,7 @@ public class DomainRulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="addRules">Action to add rules if the condition is false.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder Unless(bool condition, Action<DomainRulesBuilder> addRules)
+    public RulesBuilder Unless(bool condition, Action<RulesBuilder> addRules)
     {
         return this.When(!condition, addRules);
     }
@@ -147,7 +175,7 @@ public class DomainRulesBuilder
     /// <param name="condition">An async function that determines if the rule should be executed.</param>
     /// <param name="rule">The rule to execute if the condition is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, IDomainRule rule)
+    public RulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, IRule rule)
     {
         return this.Add(new AsyncConditionalRule(condition, rule));
     }
@@ -158,9 +186,9 @@ public class DomainRulesBuilder
     /// <param name="condition">An async function that determines if the rules should be executed.</param>
     /// <param name="addRules">Action to add rules if the condition is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Action<DomainRulesBuilder> addRules)
+    public RulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Action<RulesBuilder> addRules)
     {
-        var builder = new DomainRulesBuilder();
+        var builder = new RulesBuilder();
         addRules(builder);
 
         foreach (var rule in builder.rules)
@@ -177,7 +205,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if all conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAll(IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenAll(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.All(c => c), rule);
     }
@@ -188,7 +216,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="addRules">Action to add rules if all conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAll(IEnumerable<bool> conditions, Action<DomainRulesBuilder> addRules)
+    public RulesBuilder WhenAll(IEnumerable<bool> conditions, Action<RulesBuilder> addRules)
     {
         return this.When(conditions.All(c => c), addRules);
     }
@@ -199,7 +227,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if any condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAny(IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenAny(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Any(c => c), rule);
     }
@@ -210,7 +238,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="addRules">Action to add rules if any condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAny(IEnumerable<bool> conditions, Action<DomainRulesBuilder> addRules)
+    public RulesBuilder WhenAny(IEnumerable<bool> conditions, Action<RulesBuilder> addRules)
     {
         return this.When(conditions.Any(c => c), addRules);
     }
@@ -221,7 +249,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if no conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenNone(IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenNone(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(!conditions.Any(c => c), rule);
     }
@@ -233,7 +261,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the exact count matches.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenExactly(int count, IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenExactly(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) == count, rule);
     }
@@ -245,7 +273,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the minimum count is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) >= count, rule);
     }
@@ -257,7 +285,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the count doesn't exceed the maximum.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenAtMost(int count, IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenAtMost(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) <= count, rule);
     }
@@ -270,7 +298,7 @@ public class DomainRulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the count falls within range.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public DomainRulesBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, IDomainRule rule)
+    public RulesBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, IRule rule)
     {
         var trueCount = conditions.Count(c => c);
 
@@ -293,11 +321,11 @@ public class DomainRulesBuilder
             return Result.Success();
         }
 
-        if (!this.aggregateErrors)
+        if (!this.continueOnFailure)
         {
             foreach (var rule in this.rules) // Execute each rule in sequence, stopping at first failure
             {
-                var result = DomainRules.Apply(rule);  // catches exceptions
+                var result = Rules.Apply(rule);  // catches exceptions
                 if (result.IsFailure)
                 {
                     logger.LogWarning("{LogKey} domain rules - {DomainRule} result: {DomainRuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -316,7 +344,7 @@ public class DomainRulesBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = DomainRules.Apply(rule);  // catches exceptions
+            var result = Rules.Apply(rule);  // catches exceptions
             if (!result.IsFailure)
             {
                 logger.LogInformation("{LogKey} domain rules - {DomainRule} result: {DomainRuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -351,11 +379,11 @@ public class DomainRulesBuilder
             return Result.Success();
         }
 
-        if (!this.aggregateErrors)
+        if (!this.continueOnFailure)
         {
             foreach (var rule in this.rules) // Execute each rule in sequence, stopping at first failure
             {
-                var result = await DomainRules.ApplyAsync(rule, cancellationToken); // catches exceptions
+                var result = await Rules.ApplyAsync(rule, cancellationToken); // catches exceptions
                 if (result.IsFailure)
                 {
                     logger.LogWarning("{LogKey} domain rules - {DomainRule} result: {DomainRuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -374,7 +402,7 @@ public class DomainRulesBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = await DomainRules.ApplyAsync(rule, cancellationToken); // catches exceptions
+            var result = await Rules.ApplyAsync(rule, cancellationToken); // catches exceptions
             if (!result.IsFailure)
             {
                 logger.LogInformation("{LogKey} domain rules - {DomainRule} result: {DomainRuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());

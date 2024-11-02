@@ -8,25 +8,25 @@ namespace BridgingIT.DevKit.Domain;
 /// <summary>
 ///     The DomainRuleException is thrown when a domain rule is violated.
 /// </summary>
-public class DomainRuleException : Exception
+public class RuleException : Exception
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur due to domain rule violations.
     /// </summary>
-    public DomainRuleException() { }
+    public RuleException() { }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a domain rule is violated.
     /// </summary>
-    public DomainRuleException(string message)
+    public RuleException(string message)
         : base(message) { }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DomainRuleException" /> class.
+    ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a domain rule is violated.
     /// </summary>
-    public DomainRuleException(string message, Exception innerException)
+    public RuleException(string message, Exception innerException)
         : base(message, innerException) { }
 }

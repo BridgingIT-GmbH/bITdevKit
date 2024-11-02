@@ -29,7 +29,10 @@ public class EmailAddress : ValueObject
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        DomainRules.For(EmailAddressRules.IsValid(value)).Apply();
+        Rules.For(EmailAddressRules.IsValid(value)).Apply();
+
+        Rules.For(
+            EmailAddressRules.IsValid(value)).Apply();
 
         return new EmailAddress(value);
     }

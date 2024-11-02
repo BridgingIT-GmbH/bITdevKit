@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain;
 /// <summary>
 /// Base class for asynchronous domain rules that provides standard implementation and error handling.
 /// </summary>
-public abstract class AsyncDomainRuleBase : IDomainRule
+public abstract class AsyncRuleBase : IRule
 {
     /// <summary>
     /// Gets the default message for the rule. Override this property to provide a specific message.
@@ -55,26 +55,21 @@ public abstract class AsyncDomainRuleBase : IDomainRule
         }
         catch (OperationCanceledException)
         {
-            return Result.Failure()
-                .WithError(new OperationCancelledError(this.GetType().Name));
+            return Result.Failure().WithError(new OperationCancelledError(this.GetType().Name));
         }
         catch (Exception ex) when (ex is not AggregateException)
         {
-            return Result.Failure()
-                .WithError(new DomainRuleError(this.GetType().Name, ex.Message));
+            return Result.Failure().WithError(new ExceptionError(ex));
         }
         catch (AggregateException ex)
         {
-            var innerException = ex.InnerExceptions.FirstOrDefault() ?? ex;
-
-            if (innerException is OperationCanceledException)
+            var innerEx = ex.InnerExceptions.FirstOrDefault() ?? ex;
+            if (innerEx is OperationCanceledException)
             {
-                return Result.Failure()
-                    .WithError(new OperationCancelledError(this.GetType().Name));
+                return Result.Failure().WithError(new OperationCancelledError(this.GetType().Name));
             }
 
-            return Result.Failure()
-                .WithError(new DomainRuleError(this.GetType().Name, innerException.Message));
+            return Result.Failure().WithError(new ExceptionError(ex));
         }
     }
 }

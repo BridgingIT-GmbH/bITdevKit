@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class LongitudeShouldBeInRange : DomainRuleBase
+public class LongitudeShouldBeInRange : RuleBase
 {
     private readonly double? value;
 

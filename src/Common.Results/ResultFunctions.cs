@@ -109,13 +109,15 @@ public partial class Result
     /// <param name="message">An optional message for the exception.</param>
     /// <returns>The current Result if it indicates success.</returns>
     /// <exception cref="TException">Thrown if the result indicates a failure.</exception>
-    public Result ThrowIfFailed<TException>(string message = null)
+    public Result ThrowIfFailed<TException>()
         where TException : Exception
     {
         if (this.IsSuccess)
         {
             return this;
         }
+
+        var message = this.errors?.FirstOrDefault()?.Message;
 
         throw ((TException)Activator.CreateInstance(typeof(TException), message, this))!;
     }
@@ -1237,25 +1239,5 @@ public partial class Result
                 .WithError(new ExceptionError(ex))
                 .WithMessages(this.Messages);
         }
-    }
-}
-
-public class ResultException : Exception
-{
-    public IReadOnlyList<IResultError> Errors { get; }
-
-    public ResultException(Result result)
-    {
-        this.Errors = new List<IResultError> { result?.Errors };
-    }
-
-    public ResultException(IResultError error)
-    {
-        this.Errors = new List<IResultError> { error };
-    }
-
-    public ResultException(IReadOnlyList<IResultError> errors)
-    {
-        this.Errors = errors;
     }
 }

@@ -8,4 +8,7 @@ namespace BridgingIT.DevKit.Common;
 public class DomainRuleError(string rule, string message) : ResultErrorBase(message)
 {
     public string Rule { get; } = rule;
+
+    public DomainRuleError(string message)
+        : this(null, message) { }
 }

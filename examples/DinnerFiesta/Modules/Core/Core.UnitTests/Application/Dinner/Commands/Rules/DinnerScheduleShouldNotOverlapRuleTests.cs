@@ -30,7 +30,7 @@ public class DinnerScheduleShouldNotOverlapRuleTests
         var result = await rule.ApplyAsync();
 
         // Assert
-        result.ShouldBeTrue();
+        result.ShouldBeSuccess();
     }
 
     [Fact]
@@ -72,6 +72,6 @@ public class DinnerScheduleShouldNotOverlapRuleTests
         var result = await sut.ApplyAsync();
 
         // Assert
-        result.ShouldBeFalse();
+        result.ShouldBeFailure();
     }
 }

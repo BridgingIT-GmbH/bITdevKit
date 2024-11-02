@@ -31,10 +31,8 @@ public class RatingTests
         // Arrange
         var expectedValue = 0;
 
-        Rating.Create(expectedValue).shouldbef
-
         // Act/Assert
-        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
+        Should.Throw<ResultException>(() => Rating.Create(expectedValue));
     }
 
     [Fact]
@@ -44,7 +42,7 @@ public class RatingTests
         var expectedValue = -1;
 
         // Act/Assert
-        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
+        Should.Throw<ResultException>(() => Rating.Create(expectedValue));
     }
 
     [Fact]

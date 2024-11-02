@@ -142,7 +142,7 @@ public class ResultSerializationTests
     {
         // Arrange
         var result = Result.Failure()
-            .WithError(new DomainRuleError(new[] { "Rule1", "Rule2" }));
+            .WithError(new DomainRuleError("rule", "Rule1"));
 
         // Act
         var json = this.serializer.SerializeToString(result);
@@ -152,12 +152,7 @@ public class ResultSerializationTests
         var root = document.RootElement;
 
         var error = root.GetProperty("errors")[0];
-        var messages = error.GetProperty("messages").EnumerateArray()
-            .Select(e => e.GetString())
-            .ToArray();
-
-        messages.ShouldContain("Rule1");
-        messages.ShouldContain("Rule2");
+        error.GetProperty("message").GetString().ShouldBe("Rule1");
     }
 
     [Fact]
@@ -210,7 +205,7 @@ public class ResultSerializationTests
             .Ensure(p => p.Age >= 18, new ValidationError("age", "Must be 18 or older"))
             .WithMessage("Age validation")
             .Map(p => p.Age)
-            .WithError(new DomainRuleError(new[] { "Additional rule failed" }));
+            .WithError(new DomainRuleError("Additional rule failed"));
 
         // Act
         var json = this.serializer.SerializeToString(result);

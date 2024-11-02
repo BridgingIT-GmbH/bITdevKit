@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
+using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class LatitudeShouldBeInRange : IDomainRule
+public class LatitudeShouldBeInRange : DomainRuleBase
 {
     private readonly double? value;
 
@@ -21,15 +22,10 @@ public class LatitudeShouldBeInRange : IDomainRule
         this.value = value;
     }
 
-    public string Message => "Latitude should be between -90 and 90";
+    public override string Message => "Latitude should be between -90 and 90";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result ExecuteRule()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(this.value.HasValue && this.value >= -180 && this.value <= 180);
+        return Result.SuccessIf(this.value.HasValue && this.value >= -180 && this.value <= 180);
     }
 }

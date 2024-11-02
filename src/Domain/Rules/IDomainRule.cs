@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -6,56 +6,33 @@
 namespace BridgingIT.DevKit.Domain;
 
 /// <summary>
-///     Represents a rule within the domain.
+/// Represents a domain rule that can be applied synchronously or asynchronously.
 /// </summary>
 public interface IDomainRule
 {
     /// <summary>
-    ///     Gets the message associated with the domain rule, indicating why
-    ///     the rule is not satisfied. This is usually a user-friendly
-    ///     explanation that can be displayed in the UI or logged for further
-    ///     investigation.
+    /// Gets a message describing the purpose or validation of the rule.
     /// </summary>
     string Message { get; }
 
     /// <summary>
-    ///     Determines if the domain rule is enabled asynchronously.
+    /// Gets a value indicating whether the rule should be executed.
     /// </summary>
-    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
-    /// <returns>
-    ///     A task representing the asynchronous operation. The task result contains a boolean value indicating whether
-    ///     the domain rule is enabled.
-    /// </returns>
-    Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default);
+    /// <remarks>
+    /// By default, rules are enabled. Override this property to conditionally disable rules.
+    /// </remarks>
+    bool IsEnabled => true;
 
     /// <summary>
-    ///     Evaluates whether the domain rule is satisfied based on the given criteria.
+    /// Applies the rule synchronously and returns the result.
     /// </summary>
-    /// <param name="cancellationToken">
-    ///     A CancellationToken that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>
-    ///     A task representing the asynchronous operation, containing a boolean value indicating whether the rule is
-    ///     satisfied.
-    /// </returns>
-    Task<bool> ApplyAsync(CancellationToken cancellationToken = default);
-    // TODO: maybe refactor and use Result with success/failure and optional messages/errors
-}
+    /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
+    Result Apply();
 
-/// <summary>
-///     Defines a business rule interface that extends the <see cref="IDomainRule" /> interface.
-/// </summary>
-[Obsolete("Use IDomainRule from now on (incl IsSatisfiedAsync -> ApplyAsync)")]
-public interface IBusinessRule : IDomainRule
-{
     /// <summary>
-    ///     Determines if the business rule is satisfied asynchronously.
+    /// Applies the rule asynchronously and returns the result.
     /// </summary>
-    /// <param name="cancellationToken">Optional cancellation token to cancel the operation.</param>
-    /// <returns>
-    ///     A task that represents the asynchronous operation. The task result contains a boolean value indicating if the
-    ///     rule is satisfied.
-    /// </returns>
-    Task<bool> IsSatisfiedAsync(CancellationToken cancellationToken = default);
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
+    Task<Result> ApplyAsync(CancellationToken cancellationToken = default);
 }

@@ -28,7 +28,7 @@ public class DinnerSchedule : ValueObject
         DateTimeOffset startDateTime,
         DateTimeOffset endDateTime)
     {
-        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime)]);
+        DomainRules.For(DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime)).Apply();
 
         return new DinnerSchedule(startDateTime, endDateTime);
     }

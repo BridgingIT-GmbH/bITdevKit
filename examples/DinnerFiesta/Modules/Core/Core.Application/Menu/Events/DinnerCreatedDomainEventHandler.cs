@@ -30,7 +30,7 @@ public class DinnerCreatedDomainEventHandler(
 
         this.Logger.LogInformation($"checking Dinner: {@event.Name} with Menu: {menuId} for Host: {hostId}");
 
-        DomainRules.Apply([new MenuForHostMustExistRule(repository, hostId, menuId)]);
+        DomainRules.For(new MenuForHostMustExistRule(repository, hostId, menuId)).Apply();
 
         var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
         menu.AddDinnerId(dinnerId);

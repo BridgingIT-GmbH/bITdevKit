@@ -21,9 +21,10 @@ public class Rating : ValueObject
 
     public static Rating Create(int value)
     {
-        DomainRules.Apply([RatingRules.ShouldBeInRange(value)]);
-
-        return new Rating(value);
+        return DomainRules.For(
+                RatingRules.ShouldBeInRange(value)).Apply()
+            .ThrowIfFailed()
+            .Map(new Rating(value)).Value;
     }
 
     protected override IEnumerable<object> GetAtomicValues()

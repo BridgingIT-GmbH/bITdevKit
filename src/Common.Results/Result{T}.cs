@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Common;
 
 /// <summary>
-///     Represents a basic result indicating success or failure.
+/// Represents the result of an operation, encapsulating success status, associated messages, errors, and a value.
 /// </summary>
+/// <typeparam name="T">The type of value associated with the result.</typeparam>
 public partial class Result<T> : IResult<T>
 {
     protected readonly List<IResultError> errors = [];
@@ -36,6 +37,23 @@ public partial class Result<T> : IResult<T>
     /// </example>
     public static implicit operator bool(Result<T> result) => result.Match(true, false);
 
+    public static implicit operator Result<T>(T value)
+    {
+        if (value is not IResult<T> result)
+        {
+            return Success(value);
+        }
+
+        if (result.IsFailure)
+        {
+            return Failure(result.Value)
+                .WithMessages(result.Messages).WithErrors(result.Errors);
+        }
+
+        return Success(value)
+            .WithMessages(result.Messages).WithErrors(result.Errors);
+    }
+
     /// <summary>
     ///     Implicitly converts a Result{TValue} to a non-generic Result,
     ///     preserving the success state, messages, and errors. However losing it's value
@@ -55,7 +73,6 @@ public partial class Result<T> : IResult<T>
         result?.Match(
             () => Success().WithMessages(result.Messages).WithErrors(result.Errors),
             _ => Failure().WithMessages(result.Messages).WithErrors(result.Errors));
-
 
     /// <summary>
     ///     Gets a read-only list of messages associated with the result.
@@ -108,16 +125,42 @@ public partial class Result<T> : IResult<T>
     /// <summary>
     ///     Checks if the result contains any errors.
     /// </summary>
-    /// <param name="result">An output parameter that will contain all the errors found in the result if any exist.</param>
+    /// <param name="errors">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one or more errors of the specified type; otherwise, false.</returns>
-    public bool HasError<TError>(out IEnumerable<IResultError> result)
+    public bool HasError<TError>(out IEnumerable<IResultError> errors)
         where TError : IResultError
     {
         var errorType = typeof(TError);
-        result = this.errors.Where(e => e.GetType() == errorType);
+        errors = this.errors.Where(e => e.GetType() == errorType);
 
-        return result.Any();
+        return errors.Any();
+    }
+
+    /// <summary>
+    /// Retrieves the first error of the specified type from the list of errors.
+    /// </summary>
+    /// <typeparam name="TError">The type of error to retrieve. Must implement IResultError.</typeparam>
+    /// <returns>The first matching error of type TError, or null if no such error is found.</returns>
+    public IResultError GetError<TError>()
+        where TError : IResultError
+    {
+        var errorType = typeof(TError);
+
+        return this.errors.Find(e => e.GetType() == errorType);
+    }
+
+    /// <summary>
+    /// Retrieves all errors of the specified type from the result.
+    /// </summary>
+    /// <typeparam name="TError">The type of errors to retrieve, which implements the IResultError interface.</typeparam>
+    /// <returns>An enumerable collection of errors of the specified type.</returns>
+    public IEnumerable<IResultError> GetErrors<TError>()
+        where TError : IResultError
+    {
+        var errorType = typeof(TError);
+
+        return this.errors.Where(e => e.GetType() == errorType);
     }
 
     /// <summary>
@@ -155,6 +198,87 @@ public partial class Result<T> : IResult<T>
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
     public T Value { get; protected init; }
+
+    /// <summary>
+    /// Creates a <see cref="Result{T}"/> based on a success condition and an error.
+    /// </summary>
+    /// <param name="isSuccess">A boolean indicating whether the operation was successful.</param>
+    /// <param name="value">The value to be associated with the successful result.</param>
+    /// <param name="error">The error associated with the failure condition.</param>
+    /// <returns>
+    /// A successful <see cref="Result{T}"/> if <paramref name="isSuccess"/> is true;
+    /// otherwise, a failure <see cref="Result{T}"/> with the specified <paramref name="error"/>.
+    /// </returns>
+    public static Result<T> SuccessIf(bool isSuccess, T value, IResultError error = null)
+    {
+        return isSuccess ? Success(value) : Failure().WithError(error);
+    }
+
+    /// <summary>
+    /// Creates a Result{T} conditionally based on the given predicate.
+    /// </summary>
+    /// <param name="predicate">A function that takes a value of type T and returns a boolean indicating success or failure.</param>
+    /// <param name="value">The value to be evaluated by the predicate.</param>
+    /// <param name="error">An optional error to include if the predicate evaluation fails.</param>
+    /// <returns>
+    /// A successful Result{T} if the predicate returns true; otherwise, a failed Result{T} with the optional error.
+    /// </returns>
+    public static Result<T> SuccessIf(Func<T, bool> predicate, T value, IResultError error = null)
+    {
+        try
+        {
+            if (predicate == null)
+            {
+                return Success();
+            }
+
+            var isSuccess = predicate(value);
+
+            return SuccessIf(isSuccess, value, error);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Creates a result that represents either a success or a failure based on the given failure state and associated error.
+    /// </summary>
+    /// <param name="isFailure">Indicates whether the result should be a failure.</param>
+    /// <param name="value">The value to associate with the result if it is a success.</param>
+    /// <param name="error">The error to associate with the result if it is a failure.</param>
+    /// <returns>A failure result with the specified error if <paramref name="isFailure"/> is true; otherwise, a success result with the specified value.</returns>
+    public static Result<T> FailureIf(bool isFailure, T value, IResultError error = null)
+    {
+        return isFailure ? Failure().WithError(error) : Success(value);
+    }
+
+    /// <summary>
+    /// Returns a failure Result{T} if the specified predicate evaluates to true for the given value.
+    /// </summary>
+    /// <param name="predicate">The predicate function to evaluate the value.</param>
+    /// <param name="value">The value to be evaluated.</param>
+    /// <param name="error">An optional error object to associate with the failure.</param>
+    /// <returns>A failure Result{T} if the predicate evaluates to true; otherwise, a success Result{T}.</returns>
+    public static Result<T> FailureIf(Func<T, bool> predicate, T value, IResultError error = null)
+    {
+        try
+        {
+            if (predicate == null)
+            {
+                return Success(value);
+            }
+
+            var isFailure = predicate(value);
+
+            return FailureIf(isFailure, value, error);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
 
     /// <summary>
     ///     Creates a new instance of <see cref="Result{TValue}" /> with a failure status.
@@ -336,7 +460,7 @@ public partial class Result<T> : IResult<T>
     /// <returns>A result object containing the value and messages indicating success.</returns>
     public static Result<T> Success(T value, IEnumerable<string> messages)
     {
-        return new Result<T> { IsSuccess = true, Value = value}
+        return new Result<T> { IsSuccess = true, Value = value }
             .WithMessages(messages);
     }
 
@@ -425,6 +549,55 @@ public partial class Result<T> : IResult<T>
         this.success = false;
 
         return this;
+    }
+
+    /// <summary>
+    /// Executes a given operation and returns a successful Result{T} if the operation completes without exceptions.
+    /// If an exception is thrown, a failure Result{T} with the exception error is returned.
+    /// </summary>
+    /// <param name="operation">The function to execute that returns a value of type T.</param>
+    /// <returns>A Result{T} indicating success if the operation completes without exception; otherwise, a failure Result{T} with the exception error.</returns>
+    public static Result<T> For(Func<T> operation)
+    {
+        try
+        {
+            if (operation == null)
+            {
+                return Success();
+            }
+
+            var value = operation();
+
+            return Success(value);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Executes an asynchronous operation and returns a Result{T} based on the operation's outcome.
+    /// </summary>
+    /// <param name="operation">A function that provides the task representing the asynchronous operation.</param>
+    /// <returns>A successful Result{T} if the operation completes successfully; otherwise, a failed Result{T} containing the encountered exception.</returns>
+    public static async Task<Result<T>> ForAsync(Func<Task<T>> operation)
+    {
+        try
+        {
+            if (operation == null)
+            {
+                return Success();
+            }
+
+            var value = await operation();
+
+            return Success(value);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
     }
 
     /// <summary>

@@ -25,10 +25,12 @@ public static class DefaultSystemTextJsonSerializerOptions
                 new EnumConverter<OrderDirection>(),
                 new FilterCriteriaJsonConverter(),
                 new FilterSpecificationNodeConverter(),
-                new JsonStringEnumConverter()
+                new ResultJsonConverter(),
+                new ResultValueJsonConverterFactory(),
+                new PagedResultJsonConverterFactory(),
+                new JsonStringEnumConverter(),
             },
-            TypeInfoResolver =
-                new PrivateConstructorContractResolver() // allow deserialization of types with only private constructors
+            TypeInfoResolver = new PrivateConstructorContractResolver() // allow deserialization of types with only private constructors
             //IncludeFields = true,
             //PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate // TODO: .NET8 https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
         };

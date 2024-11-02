@@ -10,18 +10,13 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : IDomainRule
+public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : AsyncDomainRuleBase
 {
-    public string Message => "Name should be unique";
+    public override string Message => "Name should be unique";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteRuleAsync(CancellationToken cancellationToken)
     {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return !(await repository.FindAllAsync(DinnerSpecifications.ForName(name),
-            cancellationToken: cancellationToken)).SafeAny();
+        return Result.SuccessIf(!(await repository.FindAllAsync(DinnerSpecifications.ForName(name),
+            cancellationToken: cancellationToken)).SafeAny());
     }
 }

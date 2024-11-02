@@ -5,22 +5,17 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
+using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class CountryShouldBeKnown(string value) : IDomainRule
+public class CountryShouldBeKnown(string value) : DomainRuleBase
 {
     private readonly string[] countries = ["NL", "DE", "FR", "ES", "IT"];
-    private readonly string value = value;
 
-    public string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
+    public override string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result ExecuteRule()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(!string.IsNullOrEmpty(this.value) && this.countries.Contains(this.value));
+        return Result.SuccessIf(!string.IsNullOrEmpty(value) && this.countries.Contains(value));
     }
 }

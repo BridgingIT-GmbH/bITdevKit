@@ -10,7 +10,7 @@ using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 
-public class HostUserMustBeUniqueRule : IDomainRule
+public class HostUserMustBeUniqueRule : AsyncDomainRuleBase
 {
     private readonly IGenericRepository<Host> repository;
     private readonly UserId userId;
@@ -23,19 +23,13 @@ public class HostUserMustBeUniqueRule : IDomainRule
         this.userId = userId;
     }
 
-    public string Message => "Host UserId should be unique";
+    public override string Message => "Host UserId should be unique";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteRuleAsync(CancellationToken cancellationToken)
     {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        var spec = HostSpecifications.ForUser(this.userId);
-        return !(await this.repository.FindAllAsync(
-            spec,
-            cancellationToken: cancellationToken)).SafeAny();
+        return Result.SuccessIf(!(await this.repository.FindAllAsync(
+            HostSpecifications.ForUser(this.userId),
+            cancellationToken: cancellationToken)).SafeAny());
     }
 }
 

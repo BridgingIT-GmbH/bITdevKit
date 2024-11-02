@@ -1,28 +1,18 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
-namespace BridgingIT.DevKit.Common;
+﻿namespace BridgingIT.DevKit.Common;
 
 /// <summary>
-///     Represents a paged result containing a collection of values with pagination details.
+/// Represents a paged result containing a collection of values with pagination details.
 /// </summary>
-/// <typeparam name="TValue">The type of the values included in the paged result.</typeparam>
 public class PagedResult<TValue> : Result<IEnumerable<TValue>>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PagedResult{TValue}" /> class.
-    ///     Represents a paginated result with additional metadata for paging.
+    /// Initializes a new instance of the PagedResult class.
     /// </summary>
-    /// <typeparam name="TValue">The type of the values contained in the paginated result.</typeparam>
     public PagedResult() { } // needs to be public for mapster
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PagedResult{TValue}" /> class.
-    ///     Represents a paged result, extending the standard Result class with pagination capabilities.
+    /// Initializes a new instance of the PagedResult class with pagination details.
     /// </summary>
-    /// <typeparam name="TValue">The type of the elements in the paged result.</typeparam>
     private PagedResult(
         IEnumerable<TValue> values = default,
         long count = 0,
@@ -37,90 +27,38 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     }
 
     /// <summary>
-    ///     Gets the current page number in a paginated result set.
+    /// Gets the current page number.
     /// </summary>
     public int CurrentPage { get; }
 
     /// <summary>
-    ///     Gets the total number of pages available in the paged result.
-    ///     This property is calculated based on the total count of items divided by the page size.
+    /// Gets the total number of pages.
     /// </summary>
     public int TotalPages { get; }
 
     /// <summary>
-    ///     Gets the total count of items available before paging is applied.
+    /// Gets the total count of items across all pages.
     /// </summary>
     public long TotalCount { get; }
 
     /// <summary>
-    ///     Gets the number of items to be displayed in a single page of the paginated result.
+    /// Gets the number of items per page.
     /// </summary>
     public int PageSize { get; }
 
     /// <summary>
-    ///     Gets a value indicating whether there is a previous page of results available.
-    ///     Returns <c>true</c> if the current page number is greater than 1; otherwise, <c>false</c>.
+    /// Gets a value indicating whether there is a previous page available.
     /// </summary>
     public bool HasPreviousPage => this.CurrentPage > 1;
 
     /// <summary>
-    ///     Gets a value indicating whether there is a next page of results available.
+    /// Gets a value indicating whether there is a next page available.
     /// </summary>
     public bool HasNextPage => this.CurrentPage < this.TotalPages;
 
     /// <summary>
-    ///     Creates a new instance of <see cref="PagedResult{TValue}" /> with a failure status.
+    /// Creates a successful paged result.
     /// </summary>
-    /// <returns>A <see cref="PagedResult{TValue}" /> with its success property set to false.</returns>
-    public static new PagedResult<TValue> Failure()
-    {
-        return new PagedResult<TValue>(default) { success = false };
-    }
-
-    /// <summary>
-    ///     Creates a new instance of PagedResult with a failure state.
-    /// </summary>
-    /// <returns>A new PagedResult instance marked as a failure.</returns>
-    public static new PagedResult<TValue> Failure<TError>()
-        where TError : IResultError, new()
-    {
-        return new PagedResult<TValue>(default) { success = false }
-            .WithError<TError>();
-    }
-
-    /// <summary>
-    ///     Creates a failed result with a specified message and optional error.
-    /// </summary>
-    /// <param name="message">The message associated with the failure.</param>
-    /// <param name="error">The error related to the failure, if any.</param>
-    /// <returns>A new <see cref="PagedResult{TValue}" /> representing the failure.</returns>
-    public static new PagedResult<TValue> Failure(string message, IResultError error = null)
-    {
-        return new PagedResult<TValue>(default) { success = false }
-            .WithMessage(message).WithError(error);
-    }
-
-    /// <summary>
-    ///     Creates a PagedResult object representing a failure state.
-    /// </summary>
-    /// <param name="messages">A collection of error messages associated with the failure.</param>
-    /// <param name="errors">A collection of errors associated with the failure.</param>
-    /// <returns>A new instance of PagedResult with the provided error messages and errors.</returns>
-    public static new PagedResult<TValue> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors)
-    {
-        return new PagedResult<TValue>(default) { success = false }
-            .WithMessages(messages).WithErrors(errors);
-    }
-
-    /// <summary>
-    ///     Creates a successful PagedResult instance containing a collection of values.
-    /// </summary>
-    /// <typeparam name="TValue">The type of elements in the collection.</typeparam>
-    /// <param name="values">The collection of values.</param>
-    /// <param name="count"></param>
-    /// <param name="page">The current page number. Default is 1.</param>
-    /// <param name="pageSize">The number of items per page. Default is 10.</param>
-    /// <returns>A new instance of <see cref="PagedResult{TValue}" /> containing the provided values.</returns>
     public static PagedResult<TValue> Success(
         IEnumerable<TValue> values,
         long count = 0,
@@ -131,15 +69,8 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     }
 
     /// <summary>
-    ///     Creates a successful PagedResult with a single message.
+    /// Creates a successful paged result with a message.
     /// </summary>
-    /// <typeparam name="TValue">The type of the items in the paged result.</typeparam>
-    /// <param name="values">The items for the paged result.</param>
-    /// <param name="message">A message associated with the success.</param>
-    /// <param name="count"></param>
-    /// <param name="page">The current page number.</param>
-    /// <param name="pageSize">The number of items per page.</param>
-    /// <returns>A successful PagedResult containing the provided items and message.</returns>
     public static PagedResult<TValue> Success(
         IEnumerable<TValue> values,
         string message,
@@ -151,14 +82,8 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     }
 
     /// <summary>
-    ///     Creates a successful <see cref="PagedResult{TValue}" /> with the specified values and messages.
+    /// Creates a successful paged result with multiple messages.
     /// </summary>
-    /// <param name="values">The enumerable of values to be included in the result.</param>
-    /// <param name="messages">The collection of messages to be included in the result.</param>
-    /// <param name="count"></param>
-    /// <param name="page">The current page number.</param>
-    /// <param name="pageSize">The size of each page.</param>
-    /// <returns>A <see cref="PagedResult{TValue}" /> containing the provided values and messages.</returns>
     public static PagedResult<TValue> Success(
         IEnumerable<TValue> values,
         IEnumerable<string> messages,
@@ -170,10 +95,249 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     }
 
     /// <summary>
-    ///     Adds a message to the result.
+    /// Creates a PagedResult based on a success condition.
     /// </summary>
-    /// <param name="message">The message to add. If the message is null or whitespace, it will not be added.</param>
-    /// <returns>The current PagedResult instance with the added message.</returns>
+    public static PagedResult<TValue> SuccessIf(
+        bool isSuccess,
+        IEnumerable<TValue> values,
+        long count = 0,
+        int page = 1,
+        int pageSize = 10,
+        IResultError error = null)
+    {
+        return isSuccess
+            ? Success(values, count, page, pageSize)
+            : Failure().WithError(error);
+    }
+
+    /// <summary>
+    /// Creates a PagedResult based on a predicate.
+    /// </summary>
+    public static PagedResult<TValue> SuccessIf(
+        Func<IEnumerable<TValue>, bool> predicate,
+        IEnumerable<TValue> values,
+        long count = 0,
+        int page = 1,
+        int pageSize = 10,
+        IResultError error = null)
+    {
+        try
+        {
+            if (predicate == null)
+            {
+                return Success(values, count, page, pageSize);
+            }
+
+            var isSuccess = predicate(values);
+            return SuccessIf(isSuccess, values, count, page, pageSize, error);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Creates a failure result.
+    /// </summary>
+    public static new PagedResult<TValue> Failure()
+    {
+        return new PagedResult<TValue>(default) { success = false };
+    }
+
+    /// <summary>
+    /// Creates a failure result with a specific error type.
+    /// </summary>
+    public static new PagedResult<TValue> Failure<TError>()
+        where TError : IResultError, new()
+    {
+        return new PagedResult<TValue>(default) { success = false }
+            .WithError<TError>();
+    }
+
+    /// <summary>
+    /// Creates a failure result with a message and optional error.
+    /// </summary>
+    public static new PagedResult<TValue> Failure(string message, IResultError error = null)
+    {
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessage(message).WithError(error);
+    }
+
+    /// <summary>
+    /// Creates a failure result with messages and errors.
+    /// </summary>
+    public static new PagedResult<TValue> Failure(IEnumerable<string> messages, IEnumerable<IResultError> errors)
+    {
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessages(messages).WithErrors(errors);
+    }
+
+    /// <summary>
+    /// Creates a failure result with a specific error type and message.
+    /// </summary>
+    public static new PagedResult<TValue> Failure<TError>(string message)
+        where TError : IResultError, new()
+    {
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessage(message).WithError<TError>();
+    }
+
+    /// <summary>
+    /// Creates a failure result with a specific error type and messages.
+    /// </summary>
+    public static new PagedResult<TValue> Failure<TError>(IEnumerable<string> messages)
+        where TError : IResultError, new()
+    {
+        return new PagedResult<TValue>(default) { success = false }
+            .WithMessages(messages).WithError<TError>();
+    }
+
+    /// <summary>
+    /// Creates a PagedResult based on a failure condition.
+    /// </summary>
+    public static PagedResult<TValue> FailureIf(
+        bool isFailure,
+        IEnumerable<TValue> values,
+        long count = 0,
+        int page = 1,
+        int pageSize = 10,
+        IResultError error = null)
+    {
+        return isFailure
+            ? Failure().WithError(error)
+            : Success(values, count, page, pageSize);
+    }
+
+    /// <summary>
+    /// Creates a PagedResult based on a failure predicate.
+    /// </summary>
+    public static PagedResult<TValue> FailureIf(
+        Func<IEnumerable<TValue>, bool> predicate,
+        IEnumerable<TValue> values,
+        long count = 0,
+        int page = 1,
+        int pageSize = 10,
+        IResultError error = null)
+    {
+        try
+        {
+            if (predicate == null)
+            {
+                return Success(values, count, page, pageSize);
+            }
+
+            var isFailure = predicate(values);
+            return FailureIf(isFailure, values, count, page, pageSize, error);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Creates a PagedResult from an operation.
+    /// </summary>
+    public static PagedResult<TValue> For(
+        Func<(IEnumerable<TValue> Values, long Count)> operation,
+        int page = 1,
+        int pageSize = 10)
+    {
+        try
+        {
+            if (operation == null)
+            {
+                return Success(Array.Empty<TValue>());
+            }
+
+            var (values, count) = operation();
+            return Success(values, count, page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Creates a PagedResult from an async operation.
+    /// </summary>
+    public static async Task<PagedResult<TValue>> ForAsync(
+        Func<CancellationToken, Task<(IEnumerable<TValue> Values, long Count)>> operation,
+        int page = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (operation == null)
+            {
+                return Success(Array.Empty<TValue>());
+            }
+
+            var (values, count) = await operation(cancellationToken);
+            return Success(values, count, page, pageSize);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure().WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Failure().WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Converts to a regular Result.
+    /// </summary>
+    public new Result For()
+    {
+        return this.Match(
+            _ => Result.Success().WithMessages(this.Messages).WithErrors(this.Errors),
+            _ => Result.Failure().WithMessages(this.Messages).WithErrors(this.Errors));
+    }
+
+    /// <summary>
+    /// Converts to a different PagedResult type.
+    /// </summary>
+    public new PagedResult<TOutput> For<TOutput>()
+    {
+        return this.Match(
+            _ => PagedResult<TOutput>.Success(
+                    Array.Empty<TOutput>(),
+                    this.TotalCount,
+                    this.CurrentPage,
+                    this.PageSize)
+                .WithMessages(this.Messages)
+                .WithErrors(this.Errors),
+            _ => PagedResult<TOutput>.Failure()
+                .WithMessages(this.Messages)
+                .WithErrors(this.Errors));
+    }
+
+    /// <summary>
+    /// Converts to a different PagedResult type with provided values.
+    /// </summary>
+    public PagedResult<TOutput> For<TOutput>(IEnumerable<TOutput> values)
+    {
+        return this.Match(
+            _ => PagedResult<TOutput>.Success(
+                    values,
+                    this.TotalCount,
+                    this.CurrentPage,
+                    this.PageSize)
+                .WithMessages(this.Messages)
+                .WithErrors(this.Errors),
+            _ => PagedResult<TOutput>.Failure()
+                .WithMessages(this.Messages)
+                .WithErrors(this.Errors));
+    }
+
+    /// <summary>
+    /// Adds a message to the result.
+    /// </summary>
     public new PagedResult<TValue> WithMessage(string message)
     {
         if (string.IsNullOrWhiteSpace(message))
@@ -182,15 +346,12 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
         }
 
         this.messages.Add(message);
-
         return this;
     }
 
     /// <summary>
-    ///     Adds multiple messages to the result.
+    /// Adds multiple messages to the result.
     /// </summary>
-    /// <param name="messages">The collection of messages to add.</param>
-    /// <returns>The updated PagedResult instance with the added messages.</returns>
     public new PagedResult<TValue> WithMessages(IEnumerable<string> messages)
     {
         if (messages is null)
@@ -207,10 +368,8 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
     }
 
     /// <summary>
-    ///     Adds an error to the PagedResult and marks the result as unsuccessful.
+    /// Adds an error to the result.
     /// </summary>
-    /// <param name="error">The error to add. If null, the method will have no effect.</param>
-    /// <returns>The updated PagedResult with the added error.</returns>
     public new PagedResult<TValue> WithError(IResultError error)
     {
         if (error is null)
@@ -220,29 +379,23 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
 
         this.errors.Add(error);
         this.success = false;
-
         return this;
     }
 
     /// <summary>
-    ///     Adds a specific error to the current result and sets the success flag to false.
+    /// Adds a specific error type to the result.
     /// </summary>
-    /// <typeparam name="TError">The type of the error to be added. Must implement IResultError.</typeparam>
-    /// <returns>Returns the current instance of <see cref="PagedResult{TValue}" /> with the specified error added.</returns>
     public new PagedResult<TValue> WithError<TError>()
         where TError : IResultError, new()
     {
         this.WithError(Activator.CreateInstance<TError>());
         this.success = false;
-
         return this;
     }
 
     /// <summary>
-    ///     Adds multiple errors to the result and sets the success flag to false.
+    /// Adds multiple errors to the result.
     /// </summary>
-    /// <param name="errors">The collection of errors to add.</param>
-    /// <returns>The current instance of PagedResult with added errors.</returns>
     public new PagedResult<TValue> WithErrors(IEnumerable<IResultError> errors)
     {
         if (errors is null)
@@ -257,4 +410,30 @@ public class PagedResult<TValue> : Result<IEnumerable<TValue>>
 
         return this;
     }
+
+    /// <summary>
+    /// Converts PagedResult to boolean.
+    /// </summary>
+    public static implicit operator bool(PagedResult<TValue> result) =>
+        result?.Match(true, false) ?? false;
+
+    /// <summary>
+    /// Converts to base Result type.
+    /// </summary>
+    public static implicit operator Result(PagedResult<TValue> result) =>
+        result?.For() ?? Result.Failure();
+
+    // /// <summary>
+    // /// Converts to Result{IEnumerable{TValue}}.
+    // /// </summary>
+    // public static implicit operator Result<IEnumerable<TValue>>(PagedResult<TValue> result) =>
+    //     result?.Match(
+    //         _ => Result<IEnumerable<TValue>>.Success(result.Value)
+    //             .WithMessages(result.Messages)
+    //             .WithErrors(result.Errors),
+    //         _ => Result<IEnumerable<TValue>>.Failure()
+    //             .WithMessages(result.Messages)
+    //             .WithErrors(result.Errors))
+    //     ?? Result<IEnumerable<TValue>>.Failure();
+    //
 }

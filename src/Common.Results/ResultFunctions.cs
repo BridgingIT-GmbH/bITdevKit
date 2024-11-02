@@ -89,6 +89,108 @@ public partial class Result
     }
 
     /// <summary>
+    /// Throws a ResultException if the current Result indicates a failure.
+    /// </summary>
+    /// <returns>The current Result if it indicates success.</returns>
+    public Result ThrowIfFailed()
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw new ResultException(this);
+    }
+
+    /// <summary>
+    /// Throws a specified exception if the result indicates a failure.
+    /// </summary>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="message">An optional message for the exception.</param>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception cref="TException">Thrown if the result indicates a failure.</exception>
+    public Result ThrowIfFailed<TException>(string message = null)
+        where TException : Exception
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), message, this))!;
+    }
+
+    /// <summary>
+    ///     Maps a successful Result to a Result{T} using the provided mapping function.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="value">The value.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    /// var stringResult = result.Map("42"); // Result{string}.Success("42")
+    /// </code>
+    /// </example>
+    public Result<T> Map<T>(T value)
+    {
+        if (!this.IsSuccess)
+        {
+            return Result<T>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        try
+        {
+            return Result<T>.Success(value)
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Maps a successful Result to a Result{T} using the provided mapping function.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="mapper">The function to map the value.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    /// var stringResult = result.Map(x => x.ToString()); // Result{string}.Success("42")
+    /// </code>
+    /// </example>
+    public Result<T> Map<T>(Func<T> mapper)
+    {
+        if (!this.IsSuccess || mapper is null)
+        {
+            return Result<T>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        try
+        {
+            var value = mapper();
+
+            return Result<T>.Success(value)
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
+    }
+
+    /// <summary>
     ///     Ensures that a condition is met, converting to a failure if not.
     /// </summary>
     /// <param name="predicate">The condition that must be true.</param>
@@ -603,77 +705,77 @@ public partial class Result
     }
 
     /// <summary>
-///     Chains a new operation if the current Result is successful.
-/// </summary>
-/// <param name="operatoin">The operation to execute if successful.</param>
-/// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
-/// <example>
-/// <code>
-/// var result = Result.Success()
-///     .AndThen(() => ValidateUser(user))
-///     .AndThen(() => SaveUser(user));
-/// </code>
-/// </example>
-public Result AndThen(Func<Result> operatoin)
-{
-    if (!this.IsSuccess || operatoin is null)
+    ///     Chains a new operation if the current Result is successful.
+    /// </summary>
+    /// <param name="operation">The operation to execute if successful.</param>
+    /// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success()
+    ///     .AndThen(() => ValidateUser(user))
+    ///     .AndThen(() => SaveUser(user));
+    /// </code>
+    /// </example>
+    public Result AndThen(Func<Result> operation)
     {
-        return this;
+        if (!this.IsSuccess || operation is null)
+        {
+            return this;
+        }
+
+        try
+        {
+            return operation();
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
     }
 
-    try
+    /// <summary>
+    ///     Chains a new async operation if the current Result is successful.
+    /// </summary>
+    /// <param name="operation">The async operation to execute if successful.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.Success()
+    ///     .AndThenAsync(
+    ///         async (ct) => await ValidateUserAsync(user),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public async Task<Result> AndThenAsync(
+        Func<CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
     {
-        return operatoin();
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
+        if (!this.IsSuccess || operation is null)
+        {
+            return this;
+        }
 
-/// <summary>
-///     Chains a new async operation if the current Result is successful.
-/// </summary>
-/// <param name="operation">The async operation to execute if successful.</param>
-/// <param name="cancellationToken">Token to cancel the operation.</param>
-/// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
-/// <example>
-/// <code>
-/// var result = await Result.Success()
-///     .AndThenAsync(
-///         async (ct) => await ValidateUserAsync(user),
-///         cancellationToken
-///     );
-/// </code>
-/// </example>
-public async Task<Result> AndThenAsync(
-    Func<CancellationToken, Task<Result>> operation,
-    CancellationToken cancellationToken = default)
-{
-    if (!this.IsSuccess || operation is null)
-    {
-        return this;
+        try
+        {
+            return await operation(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
     }
-
-    try
-    {
-        return await operation(cancellationToken);
-    }
-    catch (OperationCanceledException)
-    {
-        return Failure()
-            .WithError(new OperationCancelledError())
-            .WithMessages(this.Messages);
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
 
     /// <summary>
     ///     Provides a fallback result in case of failure.
@@ -779,6 +881,7 @@ public async Task<Result> AndThenAsync(
         try
         {
             action();
+
             return this;
         }
         catch (Exception ex)
@@ -816,6 +919,7 @@ public async Task<Result> AndThenAsync(
         try
         {
             await action(cancellationToken);
+
             return this;
         }
         catch (OperationCanceledException)
@@ -1047,89 +1151,111 @@ public async Task<Result> AndThenAsync(
     }
 
     /// <summary>
-///     Executes an action only if a condition is met, without changing the Result.
-/// </summary>
-/// <param name="condition">The condition to check.</param>
-/// <param name="action">The action to execute if condition is met.</param>
-/// <returns>The original Result.</returns>
-/// <example>
-/// <code>
-/// var result = Result.Success()
-///     .Switch(
-///         () => user.IsAdmin,
-///         () => _logger.LogInfo($"Admin {user.Name} accessed the system")
-///     );
-/// </code>
-/// </example>
-public Result Switch(Func<bool> condition, Action action)
-{
-    if (!this.IsSuccess || condition is null || action is null)
+    ///     Executes an action only if a condition is met, without changing the Result.
+    /// </summary>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The action to execute if condition is met.</param>
+    /// <returns>The original Result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success()
+    ///     .Switch(
+    ///         () => user.IsAdmin,
+    ///         () => _logger.LogInfo($"Admin {user.Name} accessed the system")
+    ///     );
+    /// </code>
+    /// </example>
+    public Result Switch(Func<bool> condition, Action action)
     {
-        return this;
+        if (!this.IsSuccess || condition is null || action is null)
+        {
+            return this;
+        }
+
+        try
+        {
+            if (condition())
+            {
+                action();
+            }
+
+            return this;
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
     }
 
-    try
+    /// <summary>
+    ///     Executes an async action only if a condition is met, without changing the Result.
+    /// </summary>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The async action to execute if condition is met.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original Result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.Success()
+    ///     .SwitchAsync(
+    ///         () => user.IsAdmin,
+    ///         async (uct) => await NotifyAdminLoginAsync(user),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public async Task<Result> SwitchAsync(
+        Func<bool> condition,
+        Func<CancellationToken, Task> action,
+        CancellationToken cancellationToken = default)
     {
-        if (condition())
+        if (!this.IsSuccess || condition is null || action is null)
         {
-            action();
+            return this;
         }
-        return this;
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
+
+        try
+        {
+            if (condition())
+            {
+                await action(cancellationToken);
+            }
+
+            return this;
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessages(this.Messages);
+        }
     }
 }
 
-/// <summary>
-///     Executes an async action only if a condition is met, without changing the Result.
-/// </summary>
-/// <param name="condition">The condition to check.</param>
-/// <param name="action">The async action to execute if condition is met.</param>
-/// <param name="cancellationToken">Token to cancel the operation.</param>
-/// <returns>The original Result.</returns>
-/// <example>
-/// <code>
-/// var result = await Result.Success()
-///     .SwitchAsync(
-///         () => user.IsAdmin,
-///         async (uct) => await NotifyAdminLoginAsync(user),
-///         cancellationToken
-///     );
-/// </code>
-/// </example>
-public async Task<Result> SwitchAsync(
-    Func<bool> condition,
-    Func<CancellationToken, Task> action,
-    CancellationToken cancellationToken = default)
+public class ResultException : Exception
 {
-    if (!this.IsSuccess || condition is null || action is null)
+    public IReadOnlyList<IResultError> Errors { get; }
+
+    public ResultException(Result result)
     {
-        return this;
+        this.Errors = new List<IResultError> { result?.Errors };
     }
 
-    try
+    public ResultException(IResultError error)
     {
-        if (condition())
-        {
-            await action(cancellationToken);
-        }
-        return this;
+        this.Errors = new List<IResultError> { error };
     }
-    catch (OperationCanceledException)
+
+    public ResultException(IReadOnlyList<IResultError> errors)
     {
-        return Failure()
-            .WithError(new OperationCancelledError())
-            .WithMessages(this.Messages);
+        this.Errors = errors;
     }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
 }

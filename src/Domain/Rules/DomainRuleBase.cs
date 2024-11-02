@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -6,42 +6,56 @@
 namespace BridgingIT.DevKit.Domain;
 
 /// <summary>
-///     Represents the base class for domain rules.
+/// Base class for synchronous domain rules that provides standard implementation and error handling.
 /// </summary>
 public abstract class DomainRuleBase : IDomainRule
 {
     /// <summary>
-    ///     Gets the message associated with the domain rule.
+    /// Gets the default message for the rule. Override this property to provide a specific message.
     /// </summary>
-    /// <remarks>
-    ///     The message typically explains why the rule was not satisfied.
-    /// </remarks>
     public virtual string Message => "Rule not satisfied";
 
     /// <summary>
-    ///     Determines whether the current rule is enabled.
+    /// Gets a value indicating whether the rule should be executed.
+    /// Override this property to implement conditional rule execution.
     /// </summary>
-    /// <param name="cancellationToken">Optional. A cancellation token to observe while waiting for the task to complete.</param>
-    /// <returns>
-    ///     A task that represents the asynchronous operation. The task result contains true if the rule is enabled;
-    ///     otherwise, false.
-    /// </returns>
-    public virtual Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    public virtual bool IsEnabled => true;
+
+    /// <summary>
+    /// Implements the core validation logic for the rule.
+    /// </summary>
+    /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
+    protected abstract Result ExecuteRule();
+
+    /// <summary>
+    /// Applies the rule with proper error handling and disabled state checking.
+    /// </summary>
+    /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
+    public Result Apply()
     {
-        return Task.FromResult(true);
+        if (!this.IsEnabled)
+        {
+            return Result.Success();
+        }
+
+        try
+        {
+            return this.ExecuteRule();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new DomainRuleError(this.GetType().Name, ex.Message));
+        }
     }
 
     /// <summary>
-    ///     Asynchronously applies a domain rule.
+    /// Provides an async-compatible wrapper around the synchronous rule execution.
     /// </summary>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>
-    ///     A task that represents the asynchronous operation. The task result contains a boolean value indicating whether
-    ///     the rule was applied successfully.
-    /// </returns>
-    public abstract Task<bool> ApplyAsync(CancellationToken cancellationToken = default);
-    // TODO: maybe refactor and use Result with success/failure and optional messages/errors
+    /// <param name="cancellationToken">A token to cancel the operation (not used in sync rules).</param>
+    /// <returns>A task containing the result of the rule execution.</returns>
+    public Task<Result> ApplyAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(this.Apply());
+    }
 }

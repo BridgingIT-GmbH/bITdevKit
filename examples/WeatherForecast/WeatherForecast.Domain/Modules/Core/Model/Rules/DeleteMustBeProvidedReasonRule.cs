@@ -5,21 +5,15 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain;
 
+using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class DeleteMustBeProvidedReasonRule(string reason) : IDomainRule
+public class DeleteMustBeProvidedReasonRule(string reason) : DomainRuleBase
 {
-    private readonly string reason = reason;
+    public override string Message => "Reason of deleting a must be provided";
 
-    public string Message => "Reason of deleting a must be provided";
-
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result ExecuteRule()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(!string.IsNullOrEmpty(this.reason));
+        return Result.SuccessIf(!string.IsNullOrEmpty(reason));
     }
 }

@@ -31,6 +31,8 @@ public class RatingTests
         // Arrange
         var expectedValue = 0;
 
+        Rating.Create(expectedValue).shouldbef
+
         // Act/Assert
         Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
     }

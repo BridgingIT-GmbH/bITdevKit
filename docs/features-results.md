@@ -35,6 +35,7 @@
   * [Control Flow](#control-flow)
   * [Transformations](#transformations)
   * [Pattern Matching](#pattern-matching)
+* [Appendix C: Result Creation Methods](#appendix-c-result-creation-methods)
 
 <!-- TOC -->
 
@@ -1298,4 +1299,134 @@ var result = await Result<List>.Success(people)
         list => $"Successfully processed {list.Count} persons",
         errors => $"Processing failed: {string.Join(", ", errors)}"
     );
+```
+
+# Appendix C: Result Creation Methods
+
+> Guidance to creating and initializing Result<T> instances.
+
+## Success Creation
+
+```csharp
+// Basic success with value
+var result1 = Result<int>.Success(42);
+
+// Success with message
+var result2 = Result<User>.Success(user, "User created successfully");
+
+// Success with multiple messages
+var result3 = Result<Order>.Success(
+    order,
+    new[] { "Order validated", "Payment processed" });
+
+// Empty success (default value)
+var result4 = Result<List<string>>.Success();
+```
+
+## Failure Creation
+
+```csharp
+// Basic failure (default value)
+var result1 = Result<User>.Failure();
+
+// Failure with specific error type
+var result2 = Result<Order>.Failure<ValidationError>();
+
+// Failure with value
+var result3 = Result<int>.Failure(42);
+
+// Failure with message
+var result4 = Result<User>.Failure("User creation failed");
+
+// Failure with value and message
+var result5 = Result<User>.Failure(user, "Validation failed");
+
+// Failure with error instance
+var result6 = Result<Order>.Failure()
+    .WithError(new ValidationError("Invalid order"));
+
+// Failure with messages and errors
+var result7 = Result<Product>.Failure(
+    new[] { "Validation failed", "Invalid price" },
+    new IResultError[]
+    {
+        new ValidationError("price", "Must be positive"),
+        new DomainError("Invalid product state")
+    });
+```
+
+## Conditional Creation
+
+```csharp
+// Success if condition is met
+var result1 = Result<User>.SuccessIf(
+    user.Age >= 18,
+    user,
+    new ValidationError("Must be 18 or older"));
+
+// Success if predicate is satisfied
+var result2 = Result<Order>.SuccessIf(
+    order => order.Total > 0,
+    order,
+    new ValidationError("Order total must be positive"));
+
+// Failure if condition is met
+var result3 = Result<Product>.FailureIf(
+    product.Stock == 0,
+    product,
+    new OutOfStockError());
+
+// Failure if predicate is satisfied
+var result4 = Result<User>.FailureIf(
+    user => user.IsBlacklisted,
+    user,
+    new ValidationError("User is blacklisted"));
+```
+
+## Operation Wrapping
+
+```csharp
+// Wrap synchronous operation
+var result1 = Result<User>.For(() =>
+    userRepository.GetById(userId));
+
+// Wrap async operation
+var result2 = await Result<Order>.ForAsync(async () =>
+    await orderRepository.GetByIdAsync(orderId));
+
+// Wrap operation with error handling
+var result3 = Result<decimal>.For(() =>
+{
+    if (amount <= 0)
+        throw new ArgumentException("Amount must be positive");
+    return CalculateDiscount(amount);
+});
+
+// Wrap async operation with cancellation
+var result4 = await Result<List<Product>>.ForAsync(async ct =>
+    await productRepository.GetAllAsync(ct),
+    cancellationToken);
+```
+
+## Type Conversion
+
+```csharp
+// Convert to non-generic Result
+Result baseResult = Result<int>.Success(42);
+
+// Convert to different Result<T> type
+var result1 = userResult.For<UserDto>();
+
+// Convert with new value
+var result2 = orderResult.For(orderDto);
+
+// Implicit conversion to bool
+bool isSuccess = Result<User>.Success(user);
+
+// Implicit conversion from value
+Result<int> result3 = 42; // Creates successful result
+
+// Implicit conversion from IResult<T>
+IResult<User> interfaceResult = GetUser();
+Result<User> result4 = interfaceResult;
 ```

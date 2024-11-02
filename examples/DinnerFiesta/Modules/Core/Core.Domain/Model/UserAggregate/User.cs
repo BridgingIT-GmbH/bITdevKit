@@ -36,7 +36,7 @@ public class User : AuditableAggregateRoot<UserId, Guid>
         EnsureArg.IsNotNull(email, nameof(email));
         EnsureArg.IsNotNull(password, nameof(password));
 
-        DomainRules.Apply([UserRules.IsValidPassword(password)]);
+        DomainRules.For(UserRules.IsValidPassword(password)).Apply();
 
         var user = new User(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email), password);
 

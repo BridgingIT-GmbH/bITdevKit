@@ -62,9 +62,10 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        DomainRules.Apply([
-            new DeleteMustBeProvidedReasonRule(reason), new DeleteCannotBeDoneTwiceRule(this.IsDeleted)
-        ]);
+        DomainRules.For(
+                new DeleteMustBeProvidedReasonRule(reason),
+                new DeleteCannotBeDoneTwiceRule(this.IsDeleted))
+            .Apply();
 
         this.IsDeleted = true;
         this.DeletedDate = DateTime.UtcNow;

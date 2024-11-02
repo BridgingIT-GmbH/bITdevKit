@@ -6,9 +6,10 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
 using System.Text.RegularExpressions;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain;
 
-public class IsValidEmailAddressRule(string value) : IDomainRule
+public class IsValidEmailAddressRule(string value) : DomainRuleBase
 {
     private static readonly Regex Regex = new(
         @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
@@ -18,16 +19,12 @@ public class IsValidEmailAddressRule(string value) : IDomainRule
 
     private readonly string value = value?.ToLowerInvariant();
 
-    public string Message => "Not a valid email address";
+    public override string Message => "Not a valid email address";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result ExecuteRule()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(!string.IsNullOrEmpty(this.value) &&
+        return Result.SuccessIf(
+            !string.IsNullOrEmpty(this.value) &&
             this.value.Length <= 255 &&
             Regex.IsMatch(this.value));
     }

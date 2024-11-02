@@ -5,19 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class DomainRuleError : ResultErrorBase
+public class DomainRuleError(string rule, string message) : ResultErrorBase(message)
 {
-    public DomainRuleError() { }
-
-    public DomainRuleError(IEnumerable<string> messages = null)
-    {
-        this.Messages = messages;
-
-        if (messages is not null)
-        {
-            this.Message = string.Join(Environment.NewLine, messages);
-        }
-    }
-
-    public IEnumerable<string> Messages { get; }
+    public string Rule { get; } = rule;
 }

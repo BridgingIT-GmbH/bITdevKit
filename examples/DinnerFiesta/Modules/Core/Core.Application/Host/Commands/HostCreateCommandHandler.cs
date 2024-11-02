@@ -27,10 +27,9 @@ public class HostCreateCommandHandler(
             UserId.Create(command.UserId),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        await DomainRules.ApplyAsync([
-                HostRules.UserMustBeUnique(repository, host.UserId)
-            ],
-            cancellationToken);
+        await DomainRules.For(
+                HostRules.UserMustBeUnique(repository, host.UserId))
+            .ApplyAsync(cancellationToken: cancellationToken);
 
         await repository.InsertAsync(host, cancellationToken);
 

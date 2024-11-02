@@ -116,7 +116,9 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime)]);
+        DomainRules.For(
+            DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime))
+            .Apply();
 
         this.Schedule = schedule;
 
@@ -132,7 +134,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        DomainRules.Apply([]);
+        DomainRules.For().Apply();
 
         this.Status = status;
 

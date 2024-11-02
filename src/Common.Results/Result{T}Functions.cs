@@ -183,6 +183,39 @@ public partial class Result<T>
     }
 
     /// <summary>
+    /// Throws a <see cref="ResultException"/> if the current result is a failure.
+    /// </summary>
+    /// <returns>The current result if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
+    public Result ThrowIfFailed()
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw new ResultException(this);
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the result is a failure.
+    /// </summary>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="message">The optional message to pass to the exception constructor.</param>
+    /// <returns>The original Result if it is successful.</returns>
+    /// <exception cref="TException">Thrown if the result is a failure.</exception>
+    public Result ThrowIfFailed<TException>(string message = null)
+        where TException : Exception
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), message, this))!;
+    }
+
+    /// <summary>
     ///     Ensures that a condition is met for the contained value, converting to a failure if not.
     /// </summary>
     /// <param name="predicate">The condition that must be true for the contained value.</param>

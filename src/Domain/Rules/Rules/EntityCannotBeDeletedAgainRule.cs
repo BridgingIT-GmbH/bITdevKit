@@ -12,8 +12,14 @@ public class EntityCannotBeDeletedAgainRule<TEntity>(TEntity entity) : DomainRul
 
     public override string Message => "An already deleted entity cannot be deleted again.";
 
-    public override Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
+    protected override Result ExecuteRule()
     {
-        return Task.FromResult(this.deleted is null || this.deleted == false);
+        if (this.deleted is null or false)
+        {
+            return Result.Success();
+        }
+
+        return Result.Failure()
+            .WithError(new DomainRuleError(nameof(EntityCannotBeDeletedAgainRule<TEntity>), this.Message));
     }
 }

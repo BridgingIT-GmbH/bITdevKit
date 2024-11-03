@@ -209,9 +209,9 @@ public class ModifyContextPolicy : DomainPolicyBase<StubContext>
     }
 }
 
-public class TestError : IResultError
+public class TestError : ResultErrorBase
 {
-    public string Message => "Test error occurred";
+    public override string Message => "Test error occurred";
 }
 
 //public class PercentageDiscountPolicy : DomainPolicyBase<Order>

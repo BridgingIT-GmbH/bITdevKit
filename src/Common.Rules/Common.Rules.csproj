@@ -11,10 +11,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj"/>
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
+    <ProjectReference Include="..\Common.Results\Common.Results.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
 </Project>

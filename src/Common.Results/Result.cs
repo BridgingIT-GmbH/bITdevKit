@@ -5,9 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Diagnostics;
+
 /// <summary>
 /// Represents the result of an operation, which can be either a success or a failure.
 /// </summary>
+[DebuggerDisplay("IsSuccess={IsSuccess}")]
 public partial class Result : IResult
 {
     private readonly List<IResultError> errors = [];

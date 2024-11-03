@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
     <ProjectReference Include="..\Common.Options\Common.Options.csproj"/>
     <ProjectReference Include="..\Common.Results\Common.Results.csproj" />
+    <ProjectReference Include="..\Common.Rules\Common.Rules.csproj" />
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 

@@ -335,6 +335,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{60F2A5
 		docs\assets\bITDevKit_Logo_whiteblue.svg = docs\assets\bITDevKit_Logo_whiteblue.svg
 		docs\assets\bITDevKit_Text.svg = docs\assets\bITDevKit_Text.svg
 		docs\assets\bITDevKit_Text_variants.svg = docs\assets\bITDevKit_Text_variants.svg
+		docs\features-rules.md = docs\features-rules.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Rules", "src\Common.Rules\Common.Rules.csproj", "{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}"

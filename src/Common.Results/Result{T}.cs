@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Diagnostics;
+
 /// <summary>
 /// Represents the result of an operation, encapsulating success status, associated messages, errors, and a value.
 /// </summary>
 /// <typeparam name="T">The type of value associated with the result.</typeparam>
+[DebuggerDisplay("IsSuccess={IsSuccess}")]
 public partial class Result<T> : IResult<T>
 {
     protected readonly List<IResultError> errors = [];

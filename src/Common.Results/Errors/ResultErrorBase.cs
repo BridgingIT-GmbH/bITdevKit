@@ -5,9 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Diagnostics;
+
+[DebuggerDisplay("Message={Message}")]
 public abstract class ResultErrorBase(string message = null) : IResultError
 {
-    public string Message { get; protected init; } = message;
+    public virtual string Message { get; protected init; } = message;
 
     public virtual void Throw()
     {

@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 using System.Net;
-using Application.JobScheduling;
 using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

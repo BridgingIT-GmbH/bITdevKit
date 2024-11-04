@@ -34,7 +34,6 @@ public class DinnerFindAllForHostQueryHandlerTests
 
         // Assert
         response.ShouldNotBeNull();
-        response.Result.ShouldNotBeNull();
         response.Result.IsSuccess.ShouldBeTrue();
         response.Result.Value.ShouldBe(dinners);
     }

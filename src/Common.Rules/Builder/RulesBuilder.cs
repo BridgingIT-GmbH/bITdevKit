@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-
 /// <summary>
 /// Provides a fluent interface for building and executing collections of rules.
 /// <para>
@@ -326,7 +323,7 @@ public class RulesBuilder
     /// </example>
     public Result Apply(ILogger logger = null)
     {
-        logger ??= NullLogger.Instance;
+        logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
         if (!this.rules.Any())
         {
@@ -412,7 +409,7 @@ public class RulesBuilder
     /// </example>
     public async Task<Result> ApplyAsync(ILogger logger = null, CancellationToken cancellationToken = default)
     {
-        logger ??= NullLogger.Instance;
+        logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
         if (!this.rules.Any())
         {

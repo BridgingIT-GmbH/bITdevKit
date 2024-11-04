@@ -85,7 +85,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         if (result is CommandResponse<Result<EntityCreatedCommandResult>> commandResult &&
-            commandResult.Result?.IsSuccess == true)
+            commandResult.Result.IsSuccess)
         {
             var message = Factory.Create<IMessage>(typeof(EntityCreatedMessage<>),
                 instance.Entity.GetType(),
@@ -107,7 +107,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         if (result is CommandResponse<Result<EntityUpdatedCommandResult>> commandResult &&
-            commandResult.Result?.IsSuccess == true)
+            commandResult.Result.IsSuccess)
         {
             var message = Factory.Create<IMessage>(typeof(EntityUpdatedMessage<>),
                 instance.Entity.GetType(),
@@ -129,7 +129,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         if (result is CommandResponse<Result<EntityDeletedCommandResult>> commandResult &&
-            commandResult.Result?.IsSuccess == true)
+            commandResult.Result.IsSuccess)
         {
             var message = Factory.Create<IMessage>(typeof(EntityDeletedMessage<>),
                 instance.Entity.GetType(),

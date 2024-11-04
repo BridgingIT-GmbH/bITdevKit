@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application.Jobs;
 
-using Common;
 using DevKit.Application.JobScheduling;
 using DevKit.Application.Storage;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
 using Quartz;
 
 public class DinnerSnapshotExportJob(

@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation;
 using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using YamlDotNet.Serialization;
 using ISerializer = BridgingIT.DevKit.Common.ISerializer;
 
 public class FromQueryFilterModelBinder : IModelBinder

@@ -247,7 +247,6 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
 
         // Assert
         this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
-        results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();
@@ -290,7 +289,6 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
 
         // Assert
         this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
-        results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();

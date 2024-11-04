@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Applica
 
 using Core.Application;
 using Core.Domain;
-using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ReturnsExtensions;

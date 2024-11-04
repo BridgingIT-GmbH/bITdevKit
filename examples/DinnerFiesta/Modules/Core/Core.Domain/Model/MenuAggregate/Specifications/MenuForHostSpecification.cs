@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain;
-
 public class MenuForHostSpecification(HostId hostId) : Specification<Menu>
 {
     private readonly HostId hostId = hostId;

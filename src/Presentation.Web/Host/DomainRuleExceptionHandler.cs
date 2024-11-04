@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web.Host;
 
 using BridgingIT.DevKit.Common;
-using Domain;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

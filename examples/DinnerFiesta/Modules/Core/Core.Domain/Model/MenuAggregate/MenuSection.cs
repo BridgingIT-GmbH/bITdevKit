@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain.Model;
-
 public class MenuSection : Entity<MenuSectionId, Guid>
 {
     private readonly List<MenuSectionItem> items;

@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class DinnerCreatedDomainEventHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Menu> repository) // TODO: scoped repo cannot be injected somehow, see log

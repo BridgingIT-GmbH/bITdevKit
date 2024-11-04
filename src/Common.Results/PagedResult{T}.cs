@@ -30,7 +30,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
     private readonly bool success;
     private readonly ValueList<string> messages;
     private readonly ValueList<IResultError> errors;
-    private readonly IEnumerable<T> values;
+    private readonly IEnumerable<T> value;
     private readonly long totalCount;
     private readonly int currentPage;
     private readonly int pageSize;
@@ -39,7 +39,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
     /// Initializes a new instance of the PagedResult class with pagination details.
     /// </summary>
     private PagedResult(
-        IEnumerable<T> values,
+        IEnumerable<T> value,
         bool success,
         long count = 0,
         int page = 1,
@@ -47,7 +47,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
         ValueList<string> messages = default, ValueList<IResultError> errors = default)
     {
         this.success = success;
-        this.values = values;
+        this.value = value;
         this.totalCount = count;
         this.currentPage = page < 1 ? 1 : page;
         this.pageSize = pageSize < 1 ? 10 : pageSize;
@@ -122,7 +122,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
     /// <summary>
     /// Gets the collection of values for the current page.
     /// </summary>
-    public IEnumerable<T> Value => this.values ?? Array.Empty<T>();
+    public IEnumerable<T> Value => this.value ?? Array.Empty<T>();
 
     /// <summary>
     /// Gets the collection of messages associated with the result.
@@ -460,7 +460,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
         }
 
         return new PagedResult<T>(
-            this.values,
+            this.value,
             this.success,
             this.totalCount,
             this.currentPage,
@@ -485,7 +485,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
         }
 
         return new PagedResult<T>(
-                this.values,
+                this.value,
                 this.success,
                 this.totalCount,
                 this.currentPage,
@@ -509,7 +509,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
         }
 
         return new PagedResult<T>(
-            this.values,
+            this.value,
             false, // Set success to false when adding error
             this.totalCount,
             this.currentPage,
@@ -537,7 +537,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
         }
 
         return new PagedResult<T>(
-                this.values,
+                this.value,
                 false, // Set success to false when adding errors
                 this.totalCount,
                 this.currentPage,

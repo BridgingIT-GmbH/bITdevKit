@@ -251,7 +251,7 @@ public class PagedResultValueTests
     public void Failure_List_ShouldSetMessages()
     {
         // Arrange
-        var sut = PagedResult<PersonStub>.Failure(this.messages.ToList());
+        var sut = PagedResult<PersonStub>.Failure(this.messages);
 
         // Act & Assert
         sut.ShouldContainMessages();

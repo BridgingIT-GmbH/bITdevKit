@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using DevKit.Domain;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 public class Customer : AuditableAggregateRoot<CustomerId, Guid>

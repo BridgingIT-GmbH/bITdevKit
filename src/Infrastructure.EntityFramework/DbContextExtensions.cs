@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using NullLogger = Microsoft.Extensions.Logging.Abstractions.NullLogger;
+
 public static partial class DbContextExtensions
 {
     /// <summary>

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-
 public class UserCreatedDomainEvent : DomainEventBase
 {
     public UserCreatedDomainEvent() { } // needed for outbox deserialization

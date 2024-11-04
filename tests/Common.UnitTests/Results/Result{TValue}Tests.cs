@@ -135,7 +135,7 @@ public class ResultValueTests
         result.HasError<NotFoundError>().ShouldBeTrue();
         result.HasError<ValidationError>().ShouldBeFalse();
 
-        result.HasError<NotFoundError>(out var errors).ShouldBeTrue();
+        result.TryGetErrors<NotFoundError>(out var errors).ShouldBeTrue();
         errors.Count().ShouldBe(1);
     }
 

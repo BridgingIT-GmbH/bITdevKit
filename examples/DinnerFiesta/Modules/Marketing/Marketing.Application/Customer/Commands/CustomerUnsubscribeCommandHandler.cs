@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
 using Common;
 using DevKit.Application.Commands;
-using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 using Microsoft.Extensions.Logging;

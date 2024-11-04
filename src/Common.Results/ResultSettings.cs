@@ -5,31 +5,24 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Represents the settings used for logging results and handling exceptions in the application.
+/// </summary>
 public class ResultSettings
 {
+    /// <summary>
+    /// Gets or sets the Logger instance that will be used for logging operations.
+    /// Implements the IResultLogger interface.
+    /// </summary>
     public IResultLogger Logger { get; set; }
 
-    public Func<string, Exception, ExceptionError> ExceptionErrorFactory { get; set; }
-}
-
-public class ResultSettingsBuilder
-{
-    public IResultLogger Logger { get; set; }
-
-    public Func<string, Exception, ExceptionError> ExceptionErrorFactory { get; set; }
-
-    public ResultSettingsBuilder()
-    {
-        this.Logger = new NullLogger();
-        this.ExceptionErrorFactory = (message, exception) => new ExceptionError(exception, message);
-    }
-
-    public ResultSettings Build()
-    {
-        return new ResultSettings
-        {
-            Logger = this.Logger ?? new NullLogger(),
-            ExceptionErrorFactory = this.ExceptionErrorFactory
-        };
-    }
+    /// <summary>
+    /// Gets or sets the factory function used to create <see cref="ExceptionError"/> instances.
+    /// </summary>
+    /// <remarks>
+    /// The factory function accepts two parameters: a message of type <see cref="string"/> and an exception of type <see cref="Exception"/>.
+    /// It returns an <see cref="ExceptionError"/> object that encapsulates the provided exception with the given message.
+    /// This property allows customization of how exceptions are transformed into <see cref="IResultError"/> instances within the application.
+    /// </remarks>
+    public Func<Exception, ExceptionError> ExceptionErrorFactory { get; set; }
 }

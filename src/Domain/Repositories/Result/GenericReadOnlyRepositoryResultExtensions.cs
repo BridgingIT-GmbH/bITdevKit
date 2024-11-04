@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Data;
-using System.Data.Common;
-using System.Net.Sockets;
+using System.Collections;
 
 /// <summary>
 /// Provides extension methods for performing result-based queries on repositories.
@@ -251,7 +249,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         return await source.FindAllResultAsync(new Specification<TEntity>(expression), options, cancellationToken).AnyContext();
     }
 
-    public static async Task<PagedResult<TEntity>> FindAllResultAsync<TEntity>(
+    public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,
         IEnumerable<ISpecification<TEntity>> specifications = null,
@@ -264,18 +262,17 @@ public static class GenericReadOnlyRepositoryResultExtensions
             specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
             var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
 
-            var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
                     specifications,
                     findOptions,
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, filterModel.Page, filterModel.PageSize);
+            return Result<IEnumerable<TEntity>>.Success(entities);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TEntity>>.Failure(ex.Message, new ExceptionError(ex));
         }
     }
 

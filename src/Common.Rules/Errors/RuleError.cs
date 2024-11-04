@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Diagnostics;
-
 [DebuggerDisplay("Rule={Rule.GetType().Name}, Message={Message}")]
 public class RuleError(IRule rule) : ResultErrorBase(rule?.Message)
 {

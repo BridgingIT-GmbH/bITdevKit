@@ -5,12 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Queries;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class HostFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<Host> repository)
     : QueryHandlerBase<HostFindAllQuery, Result<IEnumerable<Host>>>(loggerFactory)
 {

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Mod
 
 using System.Net;
 using Application.Modules.Core;
-using BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Presentation.Web;

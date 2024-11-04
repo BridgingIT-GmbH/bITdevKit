@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Diagnostics;
-
 [DebuggerDisplay("Message={Message}")]
 public abstract class ResultErrorBase(string message = null) : IResultError
 {

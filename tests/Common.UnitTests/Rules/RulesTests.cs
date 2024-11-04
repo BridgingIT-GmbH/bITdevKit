@@ -23,7 +23,7 @@ public class RulesTests
         var result = Rules.Apply(null);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -38,7 +38,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         rule.Received(1).Apply();
     }
@@ -56,7 +56,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.HasError<RuleError>().ShouldBeTrue();
         var error = result.GetError<RuleError>();
@@ -92,7 +92,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.HasError<FluentValidationError>().ShouldBeTrue();
         var error = result.GetError<FluentValidationError>();
@@ -107,7 +107,7 @@ public class RulesTests
         var result = await Rules.ApplyAsync(null);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -122,7 +122,7 @@ public class RulesTests
         var result = await Rules.ApplyAsync(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         rule.Received(1).Apply();
     }
@@ -140,7 +140,7 @@ public class RulesTests
         var result = await Rules.ApplyAsync(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.HasError<RuleError>().ShouldBeTrue();
         var error = result.GetError<RuleError>();
@@ -158,7 +158,7 @@ public class RulesTests
         var result = await Rules.ApplyAsync(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -172,7 +172,7 @@ public class RulesTests
         var result = await Rules.ApplyAsync(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.HasError<RuleError>().ShouldBeTrue();
     }
@@ -200,7 +200,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(1);
         result.HasError<RuleError>().ShouldBeTrue();
@@ -226,7 +226,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(1);
         result.HasError<RuleError>().ShouldBeTrue();
@@ -252,7 +252,7 @@ public class RulesTests
         var result = Rules.Apply(rule);
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         result.Errors.Count.ShouldBe(0);
     }
@@ -264,8 +264,8 @@ public class RulesTests
         var person = new PersonStub(
             this.faker.Name.FirstName(),
             this.faker.Name.LastName(),
-            "invalid-email",  // Invalid email
-            16);  // Underage
+            "invalid-email", // Invalid email
+            16); // Underage
         var adultRule = new IsAdultRule(person);
         var emailRule = RuleSet.IsValidEmail(person.Email.Value);
 
@@ -275,7 +275,6 @@ public class RulesTests
         var combinedResult = Result.Combine(result, emailResult);
 
         // Assert
-        combinedResult.ShouldNotBeNull();
         combinedResult.ShouldBeFailure();
         combinedResult.Errors.Count.ShouldBe(2);
         combinedResult.Errors.Any(e => e.Message.Contains("18 years old")).ShouldBeTrue();
@@ -304,7 +303,6 @@ public class RulesTests
         var combinedResult = Result.Combine(result1, result2, result3, result4);
 
         // Assert
-        combinedResult.ShouldNotBeNull();
         combinedResult.ShouldBeSuccess();
         combinedResult.Errors.Count.ShouldBe(0);
     }
@@ -314,12 +312,12 @@ public class RulesTests
     {
         // Arrange
         var person = new PersonStub(
-            "",  // Empty name
-            "",  // Empty surname
-            "invalid-email",  // Invalid email
-            16);  // Underage
+            "", // Empty name
+            "", // Empty surname
+            "invalid-email", // Invalid email
+            16); // Underage
 
-        var rules = new IRule[]
+        var rules = new[]
         {
             new IsAdultRule(person),
             RuleSet.IsValidEmail(person.Email.Value),
@@ -333,7 +331,6 @@ public class RulesTests
         var combinedResult = Result.Combine(results);
 
         // Assert
-        combinedResult.ShouldNotBeNull();
         combinedResult.ShouldBeFailure();
         combinedResult.Errors.Count.ShouldBe(4);
         combinedResult.Errors.Any(e => e.Message.Contains("18 years old")).ShouldBeTrue();

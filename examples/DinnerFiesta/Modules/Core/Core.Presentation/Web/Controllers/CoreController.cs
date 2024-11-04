@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 
 using Application;
-using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Presentation.Web;
 using Domain;

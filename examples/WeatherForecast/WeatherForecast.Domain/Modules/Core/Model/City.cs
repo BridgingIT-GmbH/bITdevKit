@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
 using System.Diagnostics;
 using Common;
-using DevKit.Domain;
 using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, Name={Name} [{Country}]")]

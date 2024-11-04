@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using System.Linq.Expressions;
-using BridgingIT.DevKit.Domain;
-
 public class UserForEmailSpecification(EmailAddress email) : Specification<User>
 {
     private readonly EmailAddress email = email;

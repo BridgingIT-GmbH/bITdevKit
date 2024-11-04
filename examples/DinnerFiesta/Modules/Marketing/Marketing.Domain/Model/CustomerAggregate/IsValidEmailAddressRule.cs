@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
 using System.Text.RegularExpressions;
 using BridgingIT.DevKit.Common;
-using DevKit.Domain;
 
 public class IsValidEmailAddressRule(string value) : RuleBase
 {

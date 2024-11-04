@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common;
 
 using System;
-using System.Globalization;
 using System.Diagnostics;
 
 public static class DateTimeOffsetExtensions

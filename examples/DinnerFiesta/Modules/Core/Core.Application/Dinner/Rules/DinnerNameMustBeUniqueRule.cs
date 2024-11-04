@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
 public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : AsyncRuleBase
 {
     public override string Message => "Name should be unique";

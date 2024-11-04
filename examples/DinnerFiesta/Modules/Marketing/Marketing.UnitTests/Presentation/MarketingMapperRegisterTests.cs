@@ -40,11 +40,10 @@ public class MarketingMapperRegisterTests
     {
         // Arrange
         var entity = Stubs.Customers(DateTime.UtcNow.Ticks).First();
-        var source = new Faker<Result<Customer>>()
-            .RuleFor(u => u.IsSuccess, true)
-            .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity)
-            .Generate();
+        var source = new Faker<ResultWrapper<Customer>>()
+            .RuleFor(u => u.Result, f => Result<Customer>.Success(entity)
+                .WithMessages(f.Lorem.Sentences().Split('\n')))
+            .Generate().Result;;
 
         // Act
         var target = this.sut.Map<Result<Customer>, ResultOfCustomerResponseModel>(source);
@@ -81,11 +80,10 @@ public class MarketingMapperRegisterTests
     {
         // Arrange
         var entities = Stubs.Customers(DateTime.UtcNow.Ticks);
-        var source = new Faker<Result<IEnumerable<Customer>>>()
-            .RuleFor(u => u.IsSuccess, true)
-            .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, [entities.First(), entities.Last()])
-            .Generate();
+        var source = new Faker<ResultWrapper<IEnumerable<Customer>>>()
+            .RuleFor(u => u.Result, f => Result<IEnumerable<Customer>>.Success(
+                new List<Customer> { entities.First(), entities.Last() }).WithMessages(f.Lorem.Sentences().Split('\n')))
+            .Generate().Result;;
 
         // Act
         var target = this.sut.Map<Result<IEnumerable<Customer>>, ResultOfCustomersResponseModel>(source);

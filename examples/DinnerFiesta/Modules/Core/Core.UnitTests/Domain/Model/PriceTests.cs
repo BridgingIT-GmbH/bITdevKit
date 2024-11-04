@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain.Model;
 
 using Core.Domain;
-using DevKit.Domain;
 
 [UnitTest("Domain")]
 public class PriceTests

@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
 public class HostUserMustBeUniqueRule : AsyncRuleBase
 {
     private readonly IGenericRepository<Host> repository;

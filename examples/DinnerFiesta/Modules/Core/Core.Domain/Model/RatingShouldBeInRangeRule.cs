@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using BridgingIT.DevKit.Common;
-using DevKit.Domain;
-
 public class RatingShouldBeInRangeRule(int value) : RuleBase
 {
     private readonly double? value = value;

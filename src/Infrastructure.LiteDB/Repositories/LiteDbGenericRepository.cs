@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
 using Common;
-using Domain;
 using Domain.Model;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;

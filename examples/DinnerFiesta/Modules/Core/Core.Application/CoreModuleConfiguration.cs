@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Application.Modules.Core;
 
-using FluentValidation;
-
 public class CoreModuleConfiguration
 {
     public IReadOnlyDictionary<string, string> ConnectionStrings { get; set; }

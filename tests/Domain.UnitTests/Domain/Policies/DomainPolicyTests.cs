@@ -136,7 +136,6 @@ public class DomainPolicyTests
         exception.ShouldNotBeNull();
         exception.Message.ShouldNotBeNull();
         exception.Message.ShouldBe("FailingPolicy policy failed");
-        exception.Result.ShouldNotBeNull();
         exception.Result.IsFailure.ShouldBeTrue();
         exception.Result.Messages.Count.ShouldBe(2);
         exception.Result.Messages[0].ShouldBe("Always satisfied policy applied");

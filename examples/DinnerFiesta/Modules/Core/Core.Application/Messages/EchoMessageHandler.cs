@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
 using DevKit.Application.Messaging;
-using Microsoft.Extensions.Logging;
+using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
 
 public class EchoMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<EchoMessage>(loggerFactory),
     IRetryMessageHandler,

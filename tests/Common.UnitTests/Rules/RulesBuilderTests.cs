@@ -31,7 +31,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(1);
         result.Errors.First().Message.ShouldContain("Invalid email");
@@ -53,7 +53,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         result.Errors.Count.ShouldBe(0);
     }
@@ -74,7 +74,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         result.Errors.Count.ShouldBe(0);
     }
@@ -102,7 +102,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -129,7 +129,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(1);
     }
@@ -157,7 +157,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -184,7 +184,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -211,7 +211,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -238,7 +238,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -265,7 +265,7 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
     }
 
@@ -289,12 +289,12 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(4); // All rules should fail
     }
 
-     [Fact]
+    [Fact]
     public void Sync_Rule_Should_Pass_When_Predicate_Returns_True()
     {
         // Arrange
@@ -385,8 +385,9 @@ public class RulesBuilderTests
         // Act
         var result = Rules.For()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
-            .When(shouldValidateAge, builder =>
-                builder.Add(() => person.Age >= 18))
+            .When(shouldValidateAge,
+                builder =>
+                    builder.Add(() => person.Age >= 18))
             .Apply();
 
         // Assert
@@ -432,6 +433,7 @@ public class RulesBuilderTests
         async Task<bool> IsEmailUniqueAsync(string email, CancellationToken token)
         {
             await Task.Delay(1, token);
+
             return email.Contains("@");
         }
 
@@ -455,6 +457,7 @@ public class RulesBuilderTests
         async Task<bool> LongRunningCheckAsync(CancellationToken token)
         {
             await Task.Delay(1000, token);
+
             return true;
         }
 
@@ -543,12 +546,10 @@ public class RulesBuilderTests
             .Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(1); // Should stop at first error
     }
-
-
 
     [Fact]
     public void Apply_CompletePersonValidation_ShouldValidateAllRules()
@@ -582,22 +583,26 @@ public class RulesBuilderTests
             .Add(RuleSet.Equal(person.Nationality, "USA"))
             .Add(RuleSet.IsNotEmpty(person.Locations))
             // All locations must have address and city
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.AddressLine1)))
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.City)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.AddressLine1)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.City)))
             // At least one location must be in USA
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // No locations should have empty postal codes
-            .Add(RuleSet.None(person.Locations, location =>
-                RuleSet.IsEmpty(location.PostalCode)));
+            .Add(RuleSet.None(person.Locations,
+                location =>
+                    RuleSet.IsEmpty(location.PostalCode)));
 
         // Act
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         result.Errors.Count.ShouldBe(0);
     }
@@ -607,22 +612,22 @@ public class RulesBuilderTests
     {
         // Arrange
         var person = new PersonStub(
-            "",  // Empty first name
+            "", // Empty first name
             this.faker.Name.LastName(),
-            "invalid-email",  // Invalid email
+            "invalid-email", // Invalid email
             16); // Underage
         person.AddLocation(LocationStub.Create(
             "Home",
-            "",  // Empty address
+            "", // Empty address
             null,
-            "",  // Empty postal code
+            "", // Empty postal code
             this.faker.Address.City(),
             "Canada")); // Not USA
         person.AddLocation(LocationStub.Create(
             "Work",
             this.faker.Address.StreetAddress(),
             null,
-            "",  // Empty postal code
+            "", // Empty postal code
             this.faker.Address.City(),
             "UK")); // Not USA
 
@@ -633,21 +638,24 @@ public class RulesBuilderTests
             .Add(RuleSet.GreaterThanOrEqual(person.Age, 18))
             .Add(RuleSet.Equal(person.Nationality, "UNK"))
             // All locations must have addresses
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.AddressLine1)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.AddressLine1)))
             // At least one location must be in USA
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // No locations should have empty postal codes
-            .Add(RuleSet.None(person.Locations, location =>
-                RuleSet.IsEmpty(location.PostalCode)))
+            .Add(RuleSet.None(person.Locations,
+                location =>
+                    RuleSet.IsEmpty(location.PostalCode)))
             .ContinueOnFailure();
 
         // Act
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(7); // FirstName, Email, Age, Nationality, Address, USA location, Postal codes
         result.Errors.Any(e => e.Message.Contains("must not be empty")).ShouldBeTrue();
@@ -687,25 +695,30 @@ public class RulesBuilderTests
             .Add(RuleSet.IsNotEmpty(person.Locations))
             .Add(RuleSet.HasCollectionSize(person.Locations, 1, 5))
             // All locations must have required fields
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.AddressLine1)))
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.City)))
-            .Add(RuleSet.All(person.Locations, location =>
-                RuleSet.IsNotEmpty(location.PostalCode)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.AddressLine1)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.City)))
+            .Add(RuleSet.All(person.Locations,
+                location =>
+                    RuleSet.IsNotEmpty(location.PostalCode)))
             // At least one location must be in USA
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // No locations should have empty address fields
-            .Add(RuleSet.None(person.Locations, location =>
-                RuleSet.IsEmpty(location.AddressLine1)))
+            .Add(RuleSet.None(person.Locations,
+                location =>
+                    RuleSet.IsEmpty(location.AddressLine1)))
             .ContinueOnFailure();
 
         // Act
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.ShouldBeSuccess();
         result.Errors.Count.ShouldBe(0);
     }
@@ -715,10 +728,10 @@ public class RulesBuilderTests
     {
         // Arrange
         var person = new PersonStub(
-            "",  // Empty first name - fails domain rule
+            "", // Empty first name - fails domain rule
             this.faker.Name.LastName(),
             "invalid-email", // Invalid email - fails both fluent and domain rules
-            16);  // Underage - fails fluent validation rule
+            16); // Underage - fails fluent validation rule
         person.AddLocation(LocationStub.Create(
             "Home",
             this.faker.Address.StreetAddress(),
@@ -732,8 +745,9 @@ public class RulesBuilderTests
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
             .Add(RuleSet.Equal(person.Nationality, "UNK"))
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // FluentValidation rules (validates age >= 18 and email format)
             .Add(RuleSet.Validate(person, this.validator))
             .ContinueOnFailure();
@@ -742,7 +756,7 @@ public class RulesBuilderTests
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.IsFailure.ShouldBeTrue();
         result.Errors.Count.ShouldBe(5); // FirstName, Email (domain), USA location, Age (fluent), Email (fluent)
 
@@ -781,8 +795,9 @@ public class RulesBuilderTests
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
             .Add(RuleSet.Equal(person.Nationality, "USA"))
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // FluentValidation rules
             .Add(RuleSet.Validate(person, this.validator))
             .ContinueOnFailure();
@@ -791,7 +806,7 @@ public class RulesBuilderTests
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.IsSuccess.ShouldBeTrue();
         result.Errors.Count.ShouldBe(0);
         result.HasError<FluentValidationError>().ShouldBeFalse();
@@ -803,9 +818,9 @@ public class RulesBuilderTests
         // Arrange
         var person = new PersonStub(
             this.faker.Name.FirstName(), // Valid
-            this.faker.Name.LastName(),  // Valid
-            "invalid-email",             // Invalid - fails fluent validation
-            16);                         // Underage - fails fluent validation
+            this.faker.Name.LastName(), // Valid
+            "invalid-email", // Invalid - fails fluent validation
+            16); // Underage - fails fluent validation
         person.AddLocation(LocationStub.Create(
             "Home",
             this.faker.Address.StreetAddress(),
@@ -818,8 +833,9 @@ public class RulesBuilderTests
             // Rules - all should pass
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsNotEmpty(person.LastName))
-            .Add(RuleSet.Any(person.Locations, location =>
-                RuleSet.Equal(location.Country, "USA")))
+            .Add(RuleSet.Any(person.Locations,
+                location =>
+                    RuleSet.Equal(location.Country, "USA")))
             // FluentValidation rules - should fail
             .Add(RuleSet.Validate(person, this.validator))
             .ContinueOnFailure();
@@ -828,7 +844,7 @@ public class RulesBuilderTests
         var result = rules.Apply();
 
         // Assert
-        result.ShouldNotBeNull();
+
         result.IsFailure.ShouldBeTrue();
         result.HasError<FluentValidationError>().ShouldBeTrue();
         var fluentErrors = result.GetError<FluentValidationError>();

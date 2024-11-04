@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
 using Common;
-using DevKit.Domain;
 using DevKit.Domain.Model;
 
 public class AdAccount : ValueObject

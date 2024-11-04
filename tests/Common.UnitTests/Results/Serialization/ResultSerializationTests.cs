@@ -65,20 +65,6 @@ public class ResultSerializationTests
     }
 
     [Fact]
-    public void Serialize_NullResult_HandlesGracefully()
-    {
-        // Arrange
-        Result result = null;
-        using var stream = new MemoryStream();
-
-        // Act
-        this.serializer.Serialize(result, stream);
-
-        // Assert
-        stream.Length.ShouldBe(0);
-    }
-
-    [Fact]
     public void Serialize_NullStream_HandlesGracefully()
     {
         // Arrange

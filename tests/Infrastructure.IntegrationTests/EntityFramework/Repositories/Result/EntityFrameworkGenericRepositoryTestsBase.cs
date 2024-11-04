@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 using BridgingIT.DevKit.Domain;
 using Domain.Repositories;
 using Infrastructure.EntityFramework.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 public abstract class EntityFrameworkGenericRepositoryResultTestsBase
 {
@@ -155,7 +154,6 @@ public abstract class EntityFrameworkGenericRepositoryResultTestsBase
         var result = await sut.FindAllResultAsync();
 
         // Assert
-        result.ShouldNotBeNull();
         result.ShouldBeSuccess();
         result.Value.ShouldNotBeEmpty();
         result.Value.Select(e => e.Id).ShouldContain(entity1.Id);
@@ -710,7 +708,6 @@ public abstract class EntityFrameworkGenericRepositoryResultTestsBase
         var result = await sut.FindAllPagedResultAsync(filter);
 
         // Assert
-        result.ShouldNotBeNull();
         result.ShouldBeSuccess();
         result.Value.ShouldNotBeEmpty();
         result.Value.Select(e => e.Id).ShouldContain(entity1.Id);

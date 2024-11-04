@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Presentation;
 
+using System.Collections;
 using Core.Application;
 using Core.Domain;
 using Core.Presentation;
@@ -44,11 +45,10 @@ public class CoreMapperRegisterTests
         var entity = Stubs.Dinners(DateTime.UtcNow.Ticks)
             .First()
             .SetStatus(DinnerStatus.InProgress);
-        var source = new Faker<Result<Dinner>>()
-            .RuleFor(u => u.IsSuccess, true)
-            .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity)
-            .Generate();
+        var source = new Faker<ResultWrapper<Dinner>>()
+            .RuleFor(u => u.Result, f => Result<Dinner>.Success(entity)
+                .WithMessages(f.Lorem.Sentences().Split('\n')))
+            .Generate().Result;;
 
         // Act
         var target = this.sut.Map<Dinner, DinnerModel>(source.Value);
@@ -78,11 +78,10 @@ public class CoreMapperRegisterTests
         var entities = Stubs.Dinners(DateTime.UtcNow.Ticks)
             .ForEach(e =>
                 e.SetStatus(DinnerStatus.InProgress));
-        var source = new Faker<Result<IEnumerable<Dinner>>>()
-            .RuleFor(u => u.IsSuccess, true)
-            .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, [entities.First(), entities.Last()])
-            .Generate();
+        var source = new Faker<ResultWrapper<IEnumerable<Dinner>>>()
+            .RuleFor(u => u.Result, f => Result<IEnumerable<Dinner>>.Success([entities.First(), entities.Last()])
+                .WithMessages(f.Lorem.Sentences().Split('\n')))
+            .Generate().Result;;
 
         // Act
         var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerModel>>(source.Value);
@@ -166,11 +165,10 @@ public class CoreMapperRegisterTests
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks)
             .First()
             .AddRating(Rating.Create(3));
-        var source = new Faker<Result<Menu>>()
-            .RuleFor(u => u.IsSuccess, true)
-            .RuleFor(u => u.Messages, f => f.Lorem.Sentences().Split('\n'))
-            .RuleFor(u => u.Value, entity)
-            .Generate();
+        var source = new Faker<ResultWrapper<Menu>>()
+            .RuleFor(u => u.Result, f => Result<Menu>.Success(entity)
+                .WithMessages(f.Lorem.Sentences().Split('\n')))
+            .Generate().Result;;
 
         // Act
         var target = this.sut.Map<Menu, MenuModel>(source.Value);

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// Provides extension methods for logging the results of operations.
 /// </summary>
-public static class ResultLoggingExtensions
+public static class ResultLoggerExtensions
 {
     /// <summary>
     /// Logs a result with optional context and content at the specified log level.

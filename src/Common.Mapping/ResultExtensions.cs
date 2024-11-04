@@ -30,13 +30,13 @@ public static class ResultExtensions
     {
         EnsureArg.IsNotNull(mapper, nameof(mapper));
 
-        if (source?.IsFailure == true)
+        if (source.IsFailure == true)
         {
-            return Result<TResult>.Failure().WithMessages(source?.Messages).WithErrors(source?.Errors);
+            return Result<TResult>.Failure().WithMessages(source.Messages).WithErrors(source.Errors);
         }
 
-        return Result<TResult>.Success(source != null ? mapper.Map<TValue, TResult>(source.Value) : null)
-            .WithMessages(source?.Messages)
-            .WithErrors(source?.Errors);
+        return Result<TResult>.Success(mapper.Map<TValue, TResult>(source.Value))
+            .WithMessages(source.Messages)
+            .WithErrors(source.Errors);
     }
 }

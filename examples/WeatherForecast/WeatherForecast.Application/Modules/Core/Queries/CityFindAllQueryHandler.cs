@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
+using System.Globalization;
 using Common;
 using DevKit.Application.Queries;
 using DevKit.Domain.Repositories;
@@ -28,14 +29,17 @@ public class CityFindAllQueryHandler(
             cities.Select(c => CityQueryResponse.Create(c)));
     }
 
-    public async Task<QueryResponse<IEnumerable<CityQueryResponse>>> ProcessEntities(
+    public async Task<QueryResponse<PagedResult<CityQueryResponse>>> ProcessEntities(
         CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var cities = (await cityRepository.FindAllResultAsync( // repo takes care of the filter
-                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+        var cities = (await cityRepository.FindAllPagedResultAsync( // repo takes care of the filter
+                query.Filter,
+                [new CityIsNotDeletedSpecification()],
+                cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
-            .Map(e => e.Select(c => CityQueryResponse.Create(c))).Value;
+            //.TapAsync(async (e, ct) => await Task.Delay(1,ct), cancellationToken)
+            .Map(e => e.Select(c => CityQueryResponse.Create(c)));
 
         return QueryResponse.For(cities);
     }
@@ -44,10 +48,15 @@ public class CityFindAllQueryHandler(
         CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        return QueryResult.For(
-            (await cityRepository.FindAllResultAsync( // repo takes care of the filter
-                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+        var cities = await (await cityRepository.FindAllResultAsync( // repo takes care of the filter
+            query.Filter,
+            [new CityIsNotDeletedSpecification()],
+            cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
-            .Map(e => e.Select(c => CityQueryResponse.Create(c))));
+            .TapAsync(async (e, ct) => await Task.Delay(1,ct), cancellationToken)
+            .Map(e => e.Select(c => CityQueryResponse.Create(c)));
+
+
+        return QueryResponse.For(cities);
     }
 }

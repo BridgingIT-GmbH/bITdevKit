@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using DevKit.Domain;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 public class GeoLocation : ValueObject

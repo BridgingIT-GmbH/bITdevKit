@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 {
     private readonly List<DinnerReservation> reservations = [];

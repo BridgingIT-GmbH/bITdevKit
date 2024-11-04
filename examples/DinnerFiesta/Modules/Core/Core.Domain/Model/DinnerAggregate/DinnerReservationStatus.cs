@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain.Model;
-
 public class DinnerReservationStatus(int id, string name) : Enumeration(id, name)
 {
     public static DinnerReservationStatus PendingGuestApproval = new(1, nameof(PendingGuestApproval));

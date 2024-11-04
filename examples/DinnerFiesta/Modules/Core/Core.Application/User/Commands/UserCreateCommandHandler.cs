@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Commands;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class UserCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<User> repository)

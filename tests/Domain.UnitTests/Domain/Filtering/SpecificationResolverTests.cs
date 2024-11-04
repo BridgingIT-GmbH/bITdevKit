@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain;
 
 using System;
-using System.Linq.Expressions;
 using Xunit;
 
 public class SpecificationResolverTests

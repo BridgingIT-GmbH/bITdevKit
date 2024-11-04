@@ -1132,11 +1132,7 @@ public readonly partial struct PagedResult<T>
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.ErrorMessage,
-                            error.PropertyName,
-                            error.AttemptedValue)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 
@@ -1200,11 +1196,7 @@ public readonly partial struct PagedResult<T>
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.ErrorMessage,
-                            error.PropertyName,
-                            error.AttemptedValue)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 

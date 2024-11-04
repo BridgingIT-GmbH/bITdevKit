@@ -29,6 +29,6 @@ public class ValidationRule<T>(T instance, IValidator<T> validator) : RuleBase
 
         return validationResult.IsValid
             ? Result.Success()
-            : Result.Failure().WithError(new FluentValidationError(this, validationResult));
+            : Result.Failure().WithError(new FluentValidationError(validationResult));
     }
 }

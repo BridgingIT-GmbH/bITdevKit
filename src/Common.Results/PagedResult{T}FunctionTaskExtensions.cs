@@ -1037,11 +1037,7 @@ public static partial class PagedResultFunctionTaskExtensions
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.ErrorMessage,
-                            error.PropertyName,
-                            error.AttemptedValue)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 
@@ -1145,11 +1141,7 @@ public static partial class PagedResultFunctionTaskExtensions
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.ErrorMessage,
-                            error.PropertyName,
-                            error.AttemptedValue)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 

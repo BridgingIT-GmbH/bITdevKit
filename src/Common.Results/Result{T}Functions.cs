@@ -1426,11 +1426,7 @@ public readonly partial struct Result<T>
             }
 
             return Failure(this.Value)
-                .WithErrors(validationResult.Errors.Select(error =>
-                    new ValidationError(
-                        error.ErrorMessage,
-                        error.PropertyName,
-                        error.ErrorCode)))
+                .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
@@ -1495,11 +1491,7 @@ public readonly partial struct Result<T>
             }
 
             return Failure(this.Value)
-                .WithErrors(validationResult.Errors.Select(error =>
-                    new ValidationError(
-                        error.ErrorMessage,
-                        error.PropertyName,
-                        error.ErrorCode)))
+                .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)

@@ -29,26 +29,29 @@ public sealed class ResultValueJsonConverter<T> : JsonConverter<Result<T>>
     /// Writes the JSON representation of the specified Result{T} object.
     /// </summary>
     /// <param name="writer">The Utf8JsonWriter to write to.</param>
-    /// <param name="value">The Result{T} object value to convert.</param>
+    /// <param name="result">The Result{T} object value to convert.</param>
     /// <param name="options">An object that specifies options to control the behavior during writing.</param>
-    public override void Write(Utf8JsonWriter writer, Result<T> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Result<T> result, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
 
-        writer.WriteBoolean("isSuccess", value.IsSuccess);
+        writer.WriteBoolean("isSuccess", result.IsSuccess);
 
-        writer.WritePropertyName("value");
-        JsonSerializer.Serialize(writer, value.Value, typeof(T), options);
+        if (result.IsSuccess)
+        {
+            writer.WritePropertyName("value");
+            JsonSerializer.Serialize(writer, result.Value, typeof(T), options);
+        }
 
         writer.WriteStartArray("messages");
-        foreach (var message in value.Messages)
+        foreach (var message in result.Messages)
         {
             writer.WriteStringValue(message);
         }
         writer.WriteEndArray();
 
         writer.WriteStartArray("errors");
-        foreach (var error in value.Errors)
+        foreach (var error in result.Errors)
         {
             JsonSerializer.Serialize(writer, error, error.GetType(), options);
         }

@@ -70,20 +70,21 @@ public class ResultValueTests
         result3.ShouldContainMessage(message);
 
         result4.ShouldBeFailure();
-        result4.ShouldBeValue(value);
+        Should.Throw<InvalidOperationException>(() => result4.Value);
 
         result5.ShouldBeFailure();
-        result5.ShouldBeValue(value);
+        Should.Throw<InvalidOperationException>(() => result5.Value);
         result5.ShouldContainMessage(message);
         result5.ShouldContainError<Error>();
 
         result6.ShouldBeFailure();
-        result6.ShouldBeValue(value);
+        Should.Throw<InvalidOperationException>(() => result6.Value);
         result6.Messages.Count.ShouldBe(2);
 
         result7.ShouldBeFailure();
         result7.ShouldContainMessage(message);
         result7.ShouldContainError<NotFoundError>();
+        Should.Throw<InvalidOperationException>(() => result7.Value);
     }
 
     [Fact]
@@ -119,7 +120,7 @@ public class ResultValueTests
         genericFailureWithValue.ShouldBeFailure();
         genericFailureWithValue.ShouldContainMessage(message);
         genericFailureWithValue.ShouldContainError<Error>();
-        genericFailureWithValue.Value.ShouldBe("test");
+        Should.Throw<InvalidOperationException>(() => genericFailureWithValue.Value);
     }
 
     [Fact]
@@ -727,8 +728,8 @@ public class ResultValueTests
 
         // Assert
         validatedResult.ShouldBeFailure();
-        validatedResult.Errors.Count.ShouldBe(2);
-        validatedResult.Errors.ShouldAllBe(e => e is ValidationError);
+        validatedResult.Errors.Count.ShouldBe(1);
+        validatedResult.Errors.ShouldAllBe(e => e is FluentValidationError);
         validatedResult.Errors.Select(e => e.Message)
             .ShouldContain(e => e.Contains("Must be 18 or older"));
         validatedResult.Errors.Select(e => e.Message)

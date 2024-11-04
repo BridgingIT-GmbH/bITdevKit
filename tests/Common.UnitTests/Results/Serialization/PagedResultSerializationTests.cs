@@ -75,7 +75,7 @@ public class PagedResultSerializationTests
         var root = document.RootElement;
 
         root.GetProperty("isSuccess").GetBoolean().ShouldBeFalse();
-        root.GetProperty("value").ValueKind.ShouldBe(JsonValueKind.Null);
+        root.GetProperty("value").ValueKind.ShouldBe(JsonValueKind.Array);
 
         var errors = root.GetProperty("errors");
         errors.GetArrayLength().ShouldBe(2);

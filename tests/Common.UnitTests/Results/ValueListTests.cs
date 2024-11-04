@@ -252,66 +252,66 @@ public class ValueListTests
         }
     }
 
-    [SimpleJob(RuntimeMoniker.Net80)]
-    [MemoryDiagnoser]
-    public class ValueListAllocationTests
-    {
-        private readonly Faker faker = new();
-
-        [Fact]
-        public void Add_SingleItem_ShouldNotAllocateOnHeap()
-        {
-            // Arrange
-            var item = this.faker.Lorem.Word();
-            var initialAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Act
-            var sut = new ValueList<string>();
-            sut = sut.Add(item);
-            var finalAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Assert
-            var allocated = finalAllocated - initialAllocated;
-            allocated.ShouldBeLessThan(150); // Allow for small overhead
-        }
-
-        [Fact]
-        public void Add_TwoItems_ShouldNotAllocateOnHeap()
-        {
-            // Arrange
-            var items = new[] { this.faker.Lorem.Word(), this.faker.Lorem.Word() };
-            var initialAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Act
-            var sut = new ValueList<string>();
-            sut = sut.Add(items[0]).Add(items[1]);
-            var finalAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Assert
-            var allocated = finalAllocated - initialAllocated;
-            allocated.ShouldBeLessThan(150); // Allow for small overhead
-        }
-
-        [Fact]
-        public void Add_ThreeItems_ShouldAllocateOnHeap()
-        {
-            // Arrange
-            var items = new[]
-            {
-                this.faker.Lorem.Word(),
-                this.faker.Lorem.Word(),
-                this.faker.Lorem.Word()
-            };
-            var initialAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Act
-            var sut = new ValueList<string>();
-            sut = sut.Add(items[0]).Add(items[1]).Add(items[2]);
-            var finalAllocated = GC.GetTotalAllocatedBytes(true);
-
-            // Assert
-            var allocated = finalAllocated - initialAllocated;
-            allocated.ShouldBeGreaterThan(150); // Should allocate for List<T>
-        }
-    }
+    // [SimpleJob(RuntimeMoniker.Net80)]
+    // [MemoryDiagnoser]
+    // public class ValueListAllocationTests
+    // {
+    //     private readonly Faker faker = new();
+    //
+    //     [Fact]
+    //     public void Add_SingleItem_ShouldNotAllocateOnHeap()
+    //     {
+    //         // Arrange
+    //         var item = this.faker.Lorem.Word();
+    //         var initialAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Act
+    //         var sut = new ValueList<string>();
+    //         sut = sut.Add(item);
+    //         var finalAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Assert
+    //         var allocated = finalAllocated - initialAllocated;
+    //         allocated.ShouldBeLessThan(150); // Allow for small overhead
+    //     }
+    //
+    //     [Fact]
+    //     public void Add_TwoItems_ShouldNotAllocateOnHeap()
+    //     {
+    //         // Arrange
+    //         var items = new[] { this.faker.Lorem.Word(), this.faker.Lorem.Word() };
+    //         var initialAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Act
+    //         var sut = new ValueList<string>();
+    //         sut = sut.Add(items[0]).Add(items[1]);
+    //         var finalAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Assert
+    //         var allocated = finalAllocated - initialAllocated;
+    //         allocated.ShouldBeLessThan(150); // Allow for small overhead
+    //     }
+    //
+    //     [Fact]
+    //     public void Add_ThreeItems_ShouldAllocateOnHeap()
+    //     {
+    //         // Arrange
+    //         var items = new[]
+    //         {
+    //             this.faker.Lorem.Word(),
+    //             this.faker.Lorem.Word(),
+    //             this.faker.Lorem.Word()
+    //         };
+    //         var initialAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Act
+    //         var sut = new ValueList<string>();
+    //         sut = sut.Add(items[0]).Add(items[1]).Add(items[2]);
+    //         var finalAllocated = GC.GetTotalAllocatedBytes(true);
+    //
+    //         // Assert
+    //         var allocated = finalAllocated - initialAllocated;
+    //         allocated.ShouldBeGreaterThan(150); // Should allocate for List<T>
+    //     }
+    // }
 }

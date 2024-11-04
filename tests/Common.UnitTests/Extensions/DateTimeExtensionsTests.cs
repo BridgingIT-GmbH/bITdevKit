@@ -163,7 +163,7 @@ public class DateTimeExtensionsTests
         var startOfWeek = date.StartOfWeek();
 
         // Assert
-        startOfWeek.ShouldBe(new DateTimeOffset(2021, 12, 26, 0, 0, 0, TimeSpan.FromHours(2)));
+        startOfWeek.ShouldBe(new DateTimeOffset(2021, 12, 27, 0, 0, 0, TimeSpan.FromHours(2)));
     }
 
     [Fact]

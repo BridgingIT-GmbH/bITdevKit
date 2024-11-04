@@ -639,16 +639,13 @@ public class RulesBuilderTests
             .Add(RuleSet.Equal(person.Nationality, "UNK"))
             // All locations must have addresses
             .Add(RuleSet.All(person.Locations,
-                location =>
-                    RuleSet.IsNotEmpty(location.AddressLine1)))
+                location => RuleSet.IsNotEmpty(location.AddressLine1)))
             // At least one location must be in USA
             .Add(RuleSet.Any(person.Locations,
-                location =>
-                    RuleSet.Equal(location.Country, "USA")))
+                location => RuleSet.Equal(location.Country, "USA")))
             // No locations should have empty postal codes
             .Add(RuleSet.None(person.Locations,
-                location =>
-                    RuleSet.IsEmpty(location.PostalCode)))
+                location => RuleSet.IsEmpty(location.PostalCode)))
             .ContinueOnFailure();
 
         // Act

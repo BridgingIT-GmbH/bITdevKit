@@ -24,7 +24,7 @@ using System.Collections;
 ///     }
 /// }
 /// </example>
-[DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages}, Items: {Value?.Count() ?? 0} {FirstMessageOrError}")]
+[DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages} {FirstMessageOrError}")]
 public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
 {
     private readonly bool success;
@@ -531,7 +531,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
     /// </example>
     public PagedResult<T> WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors is null)
+        if (errors is null || !errors.Any())
         {
             return this;
         }

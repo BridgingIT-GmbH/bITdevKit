@@ -374,7 +374,7 @@ public readonly partial struct Result : IResult
     /// </example>
     public Result WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors is null)
+        if (errors is null || !errors.Any())
         {
             return this;
         }

@@ -47,7 +47,7 @@ public static partial class Rules
         var result = rule.Apply();
         if (result.IsFailure && !result.HasError())
         {
-            result.WithError(new RuleError(rule));
+            return result.WithError(new RuleError(rule));
         }
 
         return result;
@@ -106,7 +106,7 @@ public static partial class Rules
 
         if (result.IsFailure && !result.HasError())
         {
-            result.WithError(new RuleError(rule));
+            return result.WithError(new RuleError(rule));
         }
 
         return result;

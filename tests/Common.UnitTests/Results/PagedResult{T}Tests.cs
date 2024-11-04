@@ -3,7 +3,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
 [UnitTest("Common")]
-public class PagedResultValueTests
+public class PagedResultTests
 {
     private readonly IEnumerable<string> messages = ["message1", "message2"];
     private readonly long count = 100;
@@ -213,6 +213,7 @@ public class PagedResultValueTests
             async ct =>
             {
                 await Task.Delay(10, ct);
+
                 return (this.values, this.count);
             },
             this.page,
@@ -236,6 +237,7 @@ public class PagedResultValueTests
             async ct =>
             {
                 await Task.Delay(1000, ct);
+
                 return (this.values, this.count);
             },
             this.page,
@@ -266,7 +268,7 @@ public class PagedResultValueTests
         const string message = "message1";
 
         // Act
-        sut.WithMessage(message);
+        sut = sut.WithMessage(message);
 
         // Assert
         sut.ShouldContainMessages();
@@ -280,7 +282,7 @@ public class PagedResultValueTests
         var sut = PagedResult<PersonStub>.Success(this.values);
 
         // Act
-        sut.WithMessages(this.messages);
+        sut = sut.WithMessages(this.messages);
 
         // Assert
         sut.ShouldContainMessages();
@@ -294,7 +296,7 @@ public class PagedResultValueTests
         var sut = PagedResult<PersonStub>.Success(this.values);
 
         // Act
-        sut.WithError(new NotFoundError());
+        sut = sut.WithError(new NotFoundError());
 
         // Assert
         sut.ShouldContainError<NotFoundError>();
@@ -308,7 +310,7 @@ public class PagedResultValueTests
         var sut = PagedResult<PersonStub>.Success(this.values);
 
         // Act
-        sut.WithError<NotFoundError>();
+        sut = sut.WithError<NotFoundError>();
 
         // Assert
         sut.ShouldContainError<NotFoundError>();

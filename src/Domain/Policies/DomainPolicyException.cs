@@ -33,7 +33,7 @@ public class DomainPolicyException : Exception
     ///     Initializes a new instance of the <see cref="DomainPolicyException" /> class.
     ///     Represents an exception that is thrown when a domain policy is violated.
     /// </summary>
-    public DomainPolicyException(string message, Result result)
+    public DomainPolicyException(string message, IResult result)
         : base(message)
     {
         this.Result = result;
@@ -50,7 +50,7 @@ public class DomainPolicyException : Exception
     ///     Gets the result associated with the DomainPolicyException, which represents the outcome of an operation, including
     ///     any errors or messages.
     /// </summary>
-    public Result Result { get; }
+    public IResult Result { get; }
 
     /// <summary>
     ///     Returns a string that represents the current object, including its message,

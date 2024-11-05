@@ -125,7 +125,7 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// </remarks>
     public T Value => this.success
         ? this.value
-        : throw new InvalidOperationException("Cannot access Value of failed result");
+        : default; //throw new InvalidOperationException("Cannot access Value of failed result");
 
     /// <summary>
     /// Gets a read-only list of messages generated during the execution of policies.
@@ -315,7 +315,7 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// <returns>The updated DomainPolicyResult instance with the added errors.</returns>
     public DomainPolicyResult<T> WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors is null)
+        if (errors is null || !errors.Any())
         {
             return this;
         }

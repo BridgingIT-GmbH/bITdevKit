@@ -22,8 +22,10 @@ public class CityFindAllQueryHandler(
         CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var cities = await cityRepository.FindAllAsync(  // repo takes care of the filter
-                query.Filter, [new CityIsNotDeletedSpecification()], cancellationToken: cancellationToken);
+        var cities = await cityRepository.FindAllAsync( // repo takes care of the filter
+            query.Filter,
+            [new CityIsNotDeletedSpecification()],
+            cancellationToken: cancellationToken);
 
         return QueryResponse.For(
             cities.Select(c => CityQueryResponse.Create(c)));
@@ -33,12 +35,12 @@ public class CityFindAllQueryHandler(
         CityFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var cities = (await cityRepository.FindAllPagedResultAsync( // repo takes care of the filter
+        var cities = await (await cityRepository.FindAllPagedResultAsync( // repo takes care of the filter
                 query.Filter,
                 [new CityIsNotDeletedSpecification()],
                 cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
-            //.TapAsync(async (e, ct) => await Task.Delay(1,ct), cancellationToken)
+            .TapAsync(async (e, ct) => await Task.Delay(1, ct), cancellationToken)
             .Map(e => e.Select(c => CityQueryResponse.Create(c)));
 
         return QueryResponse.For(cities);
@@ -49,13 +51,12 @@ public class CityFindAllQueryHandler(
         CancellationToken cancellationToken)
     {
         var cities = await (await cityRepository.FindAllResultAsync( // repo takes care of the filter
-            query.Filter,
-            [new CityIsNotDeletedSpecification()],
-            cancellationToken: cancellationToken))
+                query.Filter,
+                [new CityIsNotDeletedSpecification()],
+                cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
-            .TapAsync(async (e, ct) => await Task.Delay(1,ct), cancellationToken)
+            .TapAsync(async (e, ct) => await Task.Delay(1, ct), cancellationToken)
             .Map(e => e.Select(c => CityQueryResponse.Create(c)));
-
 
         return QueryResponse.For(cities);
     }

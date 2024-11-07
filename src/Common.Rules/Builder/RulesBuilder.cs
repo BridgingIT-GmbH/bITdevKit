@@ -322,9 +322,9 @@ public class RulesBuilder
     ///     .Apply();
     /// </code>
     /// </example>
-    public Result Apply(bool throwOnFailure = false, ILogger logger = null) // TODO: setup the logger like Result (IResultLogger -> IRulesLogger)
+    public Result Apply(bool? throwOnFailure = null, ILogger logger = null) // TODO: setup the logger like Result (IResultLogger -> IRulesLogger)
     {
-        logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+        logger ??= NullLogger.Instance;
 
         if (!this.rules.Any())
         {
@@ -337,21 +337,15 @@ public class RulesBuilder
         {
             foreach (var rule in this.rules)
             {
-                var result = Rules.Apply(rule, false);
+                var result = Rules.Apply(rule, throwOnFailure);
                 if (result.IsFailure)
                 {
-                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
-                        Constants.LogKey,
-                        rule.GetType().Name,
-                        result.ToString());
+                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                     return result;
                 }
 
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
-                    Constants.LogKey,
-                    rule.GetType().Name,
-                    result.ToString());
+                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -362,21 +356,15 @@ public class RulesBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = Rules.Apply(rule, throwOnFailure);
+            var result = Rules.Apply(rule, false);
             if (!result.IsFailure)
             {
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
-                    Constants.LogKey,
-                    rule.GetType().Name,
-                    result.ToString());
+                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
-                Constants.LogKey,
-                rule.GetType().Name,
-                result.ToString());
+            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
             hasFailures = true;
             errors.AddRange(result.Errors);
@@ -412,7 +400,7 @@ public class RulesBuilder
     /// </example>
     public async Task<Result> ApplyAsync(bool throwOnFailure = false, ILogger logger = null, CancellationToken cancellationToken = default)
     {
-        logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+        logger ??= NullLogger.Instance;
 
         if (!this.rules.Any())
         {

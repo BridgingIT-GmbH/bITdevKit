@@ -560,12 +560,12 @@ public class DateTimeExtensionsTests
     public void TimeOnly_IsWithinRelativeRange_ShouldReturnTrueForFutureTime()
     {
         // Arrange
-        var sut = TimeOnly.FromDateTime(DateTime.Now);
-        var futureTime = sut.Add(TimeUnit.Minute, 30);
+        var now = TimeOnly.FromDateTime(DateTime.Now);
+        var future = now.Add(TimeUnit.Minute, 3);
 
         // Act & Assert
-        futureTime.IsInRelativeRange(TimeUnit.Minute, 30, DateTimeDirection.Future, inclusive: true).ShouldBeTrue();
-        futureTime.IsInRelativeRange(TimeUnit.Minute, 15, DateTimeDirection.Future, inclusive: true).ShouldBeFalse();
+        future.IsInRelativeRange(TimeUnit.Minute, 3, DateTimeDirection.Future, inclusive: true).ShouldBeTrue();
+        future.IsInRelativeRange(TimeUnit.Minute, 1, DateTimeDirection.Future, inclusive: true).ShouldBeFalse();
     }
 
     [Theory]

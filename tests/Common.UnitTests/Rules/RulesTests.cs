@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
+using System.Diagnostics.CodeAnalysis;
 using Common;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -12,6 +13,7 @@ using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]
+[SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
 public class RulesTests
 {
     private readonly Faker faker = new();
@@ -353,6 +355,66 @@ public class RulesTests
         // Act & Assert
         Should.Throw<OperationCanceledException>(async () =>
             await Rules.ApplyAsync(rule, true, cts.Token));
+    }
+
+    [Fact]
+    public void Apply_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Returns(Result.Failure());
+
+        // Act & Assert
+        Should.Throw<RuleException>(() => Rules.Apply(rule, true));
+        rule.Received(1).Apply();
+    }
+
+    [Fact]
+    public async Task ApplyAsync_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Returns(Result.Failure());
+
+        // Act & Assert
+        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        rule.Received(1).Apply();
+    }
+
+    [Fact]
+    public async Task ApplyAsync_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Throws<InvalidOperationException>();
+
+        // Act & Assert
+        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        rule.Received(1).Apply();
+    }
+
+    [Fact]
+    public async Task ApplyAsync_WithFailingAsyncRuleAndThrowOnRuleFailure_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<AsyncRuleBase>();
+        rule.ApplyAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Failure()));
+
+        // Act & Assert
+        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ApplyAsync_WithAsyncRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<AsyncRuleBase>();
+        rule.ApplyAsync(Arg.Any<CancellationToken>()).Throws<InvalidOperationException>();
+
+        // Act & Assert
+        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
     }
 }
 

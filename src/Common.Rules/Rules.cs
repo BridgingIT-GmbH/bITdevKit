@@ -55,35 +55,11 @@ public static partial class Rules
         try
         {
             var result = rule.Apply();
-            if (result.IsFailure)
-            {
-                if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
-                {
-                    var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule);
-
-                    throw ruleException(rule);
-                }
-
-                return result.WithError(new RuleError(rule));
-            }
-
-            return result;
+            return HandleResult(rule, result, throwOnRuleFailure);
         }
         catch (Exception ex)
         {
-            if (throwOnRuleFailure ?? Settings.ThrowOnRuleException)
-            {
-                var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule, ex);
-
-                throw ruleException(rule);
-            }
-
-            // return failure result with exception as error (IResultError)
-            var error = Settings.RuleExceptionErrorFactory ??= (rule, ex) => new RuleExceptionError(rule, ex);
-
-            return Result.Failure()
-                .WithMessage(ex.Message)
-                .WithError(error(rule, ex));
+            return HandleException(rule, ex, throwOnRuleFailure);
         }
     }
 
@@ -140,31 +116,43 @@ public static partial class Rules
                 result = rule.Apply();
             }
 
-            if (result.IsFailure)
-            {
-                if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
-                {
-                    var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule);
-                    throw ruleException(rule);
-                }
-
-                return result.WithError(new RuleError(rule));
-            }
-
-            return result;
+            return HandleResult(rule, result, throwOnRuleFailure);
         }
         catch (Exception ex)
         {
-            if (throwOnRuleFailure ?? Settings.ThrowOnRuleException)
+            return HandleException(rule, ex, throwOnRuleFailure);
+        }
+    }
+
+    private static Result HandleResult(IRule rule, Result result, bool? throwOnRuleFailure)
+    {
+        if (result.IsFailure)
+        {
+            if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
             {
-                var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule, ex);
+                var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r);
                 throw ruleException(rule);
             }
 
-            var error = Settings.RuleExceptionErrorFactory ??= (rule, ex) => new RuleExceptionError(rule, ex);
-            return Result.Failure()
-                .WithMessage(ex.Message)
-                .WithError(error(rule, ex));
+            return result.WithError(new RuleError(rule));
         }
+
+        return result;
+    }
+
+    private static Result HandleException(IRule rule, Exception exception, bool? throwOnRuleException)
+    {
+        if (throwOnRuleException ?? Settings.ThrowOnRuleException)
+        {
+            var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, exception);
+
+            throw ruleException(rule);
+        }
+
+        var error = Settings.RuleExceptionErrorFactory ??= (r, ex) => new RuleExceptionError(r, ex);
+
+        return Result.Failure()
+            .WithMessage(exception.Message)
+                .WithError(error(rule, exception));
     }
 }

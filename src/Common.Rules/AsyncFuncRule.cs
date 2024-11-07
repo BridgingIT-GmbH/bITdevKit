@@ -10,6 +10,6 @@ public class AsyncFuncRule(Func<CancellationToken, Task<bool>> predicate, string
 {
     public override string Message { get; } = message;
 
-    protected override async Task<Result> ExecuteRuleAsync(CancellationToken cancellationToken) =>
+    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken) =>
         Result.SuccessIf(await predicate(cancellationToken));
 }

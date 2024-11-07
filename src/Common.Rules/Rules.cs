@@ -6,6 +6,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Runtime.CompilerServices;
+
 /// <summary>
 /// Provides core methods for executing rules.
 /// </summary>
@@ -30,6 +32,11 @@ public static partial class Rules
         settings(builder);
 
         Settings = builder.Build();
+    }
+
+    public static Result Throw(IRule rule)
+    {
+        return Apply(rule, true);
     }
 
     /// <summary>
@@ -75,6 +82,11 @@ public static partial class Rules
         {
             return HandleException(rule, ex, throwOnRuleFailure);
         }
+    }
+
+    public async static Task<Result> ThrowAsync(IRule rule)
+    {
+        return await ApplyAsync(rule, true).AnyContext();
     }
 
     /// <summary>
@@ -123,7 +135,7 @@ public static partial class Rules
             Result result;
             if (rule is AsyncRuleBase)
             {
-                result = await rule.ApplyAsync(cancellationToken).ConfigureAwait(false);
+                result = await rule.ApplyAsync(cancellationToken).AnyContext();
             }
             else
             {

@@ -328,12 +328,12 @@ public class RulesBuilder
 
         if (!this.rules.Any())
         {
-            logger.LogInformation("{LogKey} rules - no rules defined", Constants.LogKey);
+            logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
 
             return Result.Success();
         }
 
-        if (!this.continueOnFailure) // never throws
+        if (!this.continueOnFailure)
         {
             foreach (var rule in this.rules)
             {
@@ -345,7 +345,7 @@ public class RulesBuilder
                     return result;
                 }
 
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -359,7 +359,7 @@ public class RulesBuilder
             var result = Rules.Apply(rule, false);
             if (!result.IsFailure)
             {
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
@@ -404,32 +404,26 @@ public class RulesBuilder
 
         if (!this.rules.Any())
         {
-            logger.LogInformation("{LogKey} rules - no rules defined", Constants.LogKey);
+            logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
 
             return Result.Success();
         }
 
-        if (!this.continueOnFailure) // never throws
+        if (!this.continueOnFailure)
         {
             foreach (var rule in this.rules)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken);
+                var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
-                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
-                        Constants.LogKey,
-                        rule.GetType().Name,
-                        result.ToString());
+                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                     return result;
                 }
 
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
-                    Constants.LogKey,
-                    rule.GetType().Name,
-                    result.ToString());
+                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -442,21 +436,15 @@ public class RulesBuilder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken);
+            var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken).AnyContext();
             if (!result.IsFailure)
             {
-                logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
-                    Constants.LogKey,
-                    rule.GetType().Name,
-                    result.ToString());
+                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
-                Constants.LogKey,
-                rule.GetType().Name,
-                result.ToString());
+            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             hasFailures = true;
             errors.AddRange(result.Errors);
         }
@@ -595,7 +583,7 @@ public class RulesBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = await Rules.ApplyAsync(rule, false, cancellationToken);
+                var result = await Rules.ApplyAsync(rule, false, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
                     return Result.Failure();

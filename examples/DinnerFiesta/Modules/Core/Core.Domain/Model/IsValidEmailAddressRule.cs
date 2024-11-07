@@ -19,7 +19,7 @@ public class IsValidEmailAddressRule(string value) : RuleBase
 
     public override string Message => "Not a valid email address";
 
-    protected override Result ExecuteRule()
+    protected override Result Execute()
     {
         return Result.SuccessIf(!string.IsNullOrEmpty(this.value) &&
             this.value.Length <= 255 &&

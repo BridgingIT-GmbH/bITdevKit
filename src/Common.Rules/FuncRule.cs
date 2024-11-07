@@ -9,6 +9,6 @@ public class FuncRule(Func<bool> predicate, string message = "Predicate rule not
 {
     public override string Message { get; } = message;
 
-    protected override Result ExecuteRule() =>
+    protected override Result Execute() =>
         Result.SuccessIf(predicate());
 }

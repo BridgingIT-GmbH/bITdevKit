@@ -12,6 +12,6 @@ public class IsFalseRule(bool value) : RuleBase
 {
     public override string Message => "Value must be false";
 
-    protected override Result ExecuteRule() =>
+    protected override Result Execute() =>
         Result.SuccessIf(!value);
 }

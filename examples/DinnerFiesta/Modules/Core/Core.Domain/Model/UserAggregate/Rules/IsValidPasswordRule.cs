@@ -11,7 +11,7 @@ public class IsValidPasswordRule(string password) : RuleBase
 
     public override string Message => "Not a valid password";
 
-    protected override Result ExecuteRule()
+    protected override Result Execute()
     {
         return Result.SuccessIf(!string.IsNullOrEmpty(this.password)); // TODO: implement
     }

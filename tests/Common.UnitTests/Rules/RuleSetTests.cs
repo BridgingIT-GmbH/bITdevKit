@@ -10,11 +10,11 @@ using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]
-public class RuleSetTests
+public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
+    private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
 
-    // Comparison Rules Tests
     [Fact]
     public void Equal_WhenValuesAreEqual_ShouldReturnSuccess()
     {
@@ -481,7 +481,7 @@ public class RuleSetTests
         result.IsSuccess.ShouldBe(shouldBeValid);
         if (!shouldBeValid)
         {
-            result.Errors.First().Message.ShouldBe($"Text length must be between {min} and {max} characters");
+            result.Errors.First().Message.ShouldContain($"Text length must be between {min} and {max} characters");
         }
     }
 

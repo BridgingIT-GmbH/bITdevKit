@@ -14,8 +14,9 @@ using Xunit;
 
 [UnitTest("Common")]
 [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
-public class RulesTests
+public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
+    private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
 
     [Fact]
@@ -427,5 +428,28 @@ public class TestAsyncRule(bool shouldSucceed) : AsyncRuleBase
         await Task.Delay(10, cancellationToken); // Simulate async work
 
         return shouldSucceed ? Result.Success() : Result.Failure();
+    }
+}
+
+public class RulesFixture : IDisposable
+{
+    public RulesFixture()
+    {
+        // Reset settings before each test class
+        this.ResetSettings();
+    }
+
+    public void Dispose()
+    {
+        // Reset settings after each test class
+        this.ResetSettings();
+    }
+
+    private void ResetSettings()
+    {
+        Rules.Setup(builder =>
+        {
+            /* Default settings */
+        });
     }
 }

@@ -21,5 +21,5 @@ public class NotInRule<T>(T value, IEnumerable<T> disallowedValues)
     /// </summary>
     /// <param name="rule">The rule to be executed.</param>
     /// <return>Returns true if the rule executes successfully; otherwise, false.</return>
-    protected override Result ExecuteRule() => Result.SuccessIf(!disallowedValues.Contains(value));
+    protected override Result Execute() => Result.SuccessIf(!disallowedValues.Contains(value));
 }

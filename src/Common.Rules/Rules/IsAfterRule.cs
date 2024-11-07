@@ -12,6 +12,6 @@ public class IsAfterRule(DateTime value, DateTime comparisonDate) : RuleBase
 {
     public override string Message => $"Value must be after {comparisonDate}";
 
-    protected override Result ExecuteRule() =>
+    protected override Result Execute() =>
         Result.SuccessIf(value > comparisonDate);
 }

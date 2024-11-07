@@ -10,8 +10,9 @@ using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]
-public class RulesBuilderTests
+public class RulesBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
+    private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
     private readonly TestValidator validator = new();
 
@@ -753,8 +754,7 @@ public class RulesBuilderTests
         var result = rules.Apply();
 
         // Assert
-
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.Count.ShouldBe(5); // FirstName, Email (domain), USA location, Age (fluent), Email (fluent)
 
         // Rule errors

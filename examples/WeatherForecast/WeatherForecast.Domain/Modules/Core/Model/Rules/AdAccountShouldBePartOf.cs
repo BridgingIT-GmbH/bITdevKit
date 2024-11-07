@@ -11,7 +11,7 @@ public class AdAccountShouldBePartOf(string value) : RuleBase
 {
     public override string Message => "AD Account should be part of a domain";
 
-    protected override Result ExecuteRule()
+    protected override Result Execute()
     {
         return Result.SuccessIf(value.Contains('\\'));
     }

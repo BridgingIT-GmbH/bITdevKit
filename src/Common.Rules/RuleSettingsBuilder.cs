@@ -49,7 +49,7 @@ public class RuleSettingsBuilder
     public RuleSettingsBuilder()
     {
         this.Logger = new NullRuleLogger();
-        this.RuleFailureExceptionFactory = rule => new RuleException(rule);
+        this.RuleFailureExceptionFactory = rule => new RuleException(rule, string.Empty);
         this.RuleExceptionErrorFactory = (rule, ex) => new RuleExceptionError(rule, ex);
     }
 

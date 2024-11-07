@@ -16,21 +16,22 @@ public class RuleException : Exception
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur due to rule violations.
     /// </summary>
-    public RuleException() { }
+    public RuleException(string message)
+        : base(message) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a rule is violated.
     /// </summary>
-    public RuleException(IRule rule)
-        : base($"[{rule.GetType().Name}] {rule.Message}".Trim()) { }
+    public RuleException(IRule rule, string message = null)
+        : base($"[{rule.GetType().Name}] {rule.Message} {message}".Trim()) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a rule is violated.
     /// </summary>
-    public RuleException(IRule rule, Exception innerException = null)
-        : base($"[{rule.GetType().Name}] {rule.Message}".Trim(), innerException)
+    public RuleException(IRule rule, string message = null, Exception innerException = null)
+        : base($"[{rule.GetType().Name}] {rule.Message} {message}".Trim(), innerException)
     {
         this.Rule = rule;
     }

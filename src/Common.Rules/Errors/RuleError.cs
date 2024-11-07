@@ -12,7 +12,7 @@ public class RuleError(IRule rule) : ResultErrorBase(rule?.Message)
 
     public override void Throw()
     {
-        throw new RuleException(this.Rule);
+        throw new RuleException(this.Rule, string.Empty);
     }
 }
 
@@ -25,6 +25,6 @@ public class RuleExceptionError(IRule rule, Exception exception) : ResultErrorBa
 
     public override void Throw()
     {
-        throw new RuleException(this.Rule);
+        throw new RuleException(this.Rule, string.Empty);
     }
 }

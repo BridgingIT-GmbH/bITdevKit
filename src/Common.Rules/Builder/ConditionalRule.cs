@@ -30,7 +30,7 @@ public class ConditionalRule : RuleBase
     /// with an error if an exception occurs.
     /// </summary>
     /// <returns>A result indicating the success or failure of the rule execution.</returns>
-    protected override Result ExecuteRule()
+    protected override Result Execute()
     {
         if (!this.condition())
         {

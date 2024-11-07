@@ -377,6 +377,7 @@ public class RulesBuilder
                 Constants.LogKey,
                 rule.GetType().Name,
                 result.ToString());
+
             hasFailures = true;
             errors.AddRange(result.Errors);
         }

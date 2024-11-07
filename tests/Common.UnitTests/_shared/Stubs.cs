@@ -198,7 +198,7 @@ public class IsAdultRule(PersonStub person) : RuleBase
 
     public override string Message => $"Person must be at least {AdultAge} years old";
 
-    protected override Result ExecuteRule()
+    protected override Result Execute()
     {
         return Result.SuccessIf(person?.Age >= AdultAge);
     }

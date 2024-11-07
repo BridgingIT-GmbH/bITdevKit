@@ -19,6 +19,20 @@ public static partial class Rules
     }
 
     /// <summary>
+    /// Configures the global settings for the <see cref="Rules"/> type.
+    /// </summary>
+    /// <param name="settings">A delegate to configure the <see cref="RuleSettingsBuilder"/>.</param>
+    public static void Setup(Action<RuleSettingsBuilder> settings)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+
+        var builder = new RuleSettingsBuilder();
+        settings(builder);
+
+        Settings = builder.Build();
+    }
+
+    /// <summary>
     /// Applies a single rule synchronously to validate a value or state.
     /// Returns a success result if the rule passes, or a failure result if it fails.
     /// </summary>
@@ -130,11 +144,11 @@ public static partial class Rules
         {
             if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
             {
-                var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r);
+                var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, result.Errors.ToString(", "));
                 throw ruleException(rule);
             }
 
-            return result.WithError(new RuleError(rule));
+            return result.HasError() ? result : result.WithError(new RuleError(rule));
         }
 
         return result;
@@ -144,7 +158,7 @@ public static partial class Rules
     {
         if (throwOnRuleException ?? Settings.ThrowOnRuleException)
         {
-            var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, exception);
+            var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, string.Empty, exception);
 
             throw ruleException(rule);
         }

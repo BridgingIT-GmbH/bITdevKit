@@ -86,7 +86,7 @@ public class ItemRule<T>(Func<T, IRule> ruleFactory) : RuleBase
         this.currentItem = item;
     }
 
-    protected override Result ExecuteRule() =>
+    protected override Result Execute() =>
         ruleFactory(this.currentItem).Apply();
 
     public override Task<Result> ApplyAsync(CancellationToken cancellationToken = default) =>

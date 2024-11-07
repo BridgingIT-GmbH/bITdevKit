@@ -415,7 +415,7 @@ public class RulesBuilder
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await Rules.ApplyAsync(rule, false, cancellationToken);
+                var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken);
                 if (result.IsFailure)
                 {
                     logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",

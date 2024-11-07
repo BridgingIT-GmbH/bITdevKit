@@ -10,6 +10,8 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class RuleException : Exception
 {
+    public IRule Rule { get; }
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur due to rule violations.
@@ -20,13 +22,23 @@ public class RuleException : Exception
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a rule is violated.
     /// </summary>
-    public RuleException(string message)
-        : base(message) { }
+    public RuleException(IRule rule)
+        : base($"[{rule.GetType().Name}] {rule.Message}".Trim()) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleException" /> class.
     ///     Represents errors that occur when a rule is violated.
     /// </summary>
-    public RuleException(string message, Exception innerException)
-        : base(message, innerException) { }
+    public RuleException(IRule rule, Exception innerException = null)
+        : base($"[{rule.GetType().Name}] {rule.Message}".Trim(), innerException)
+    {
+        this.Rule = rule;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RuleException" /> class.
+    ///     Represents errors that occur when a rule is violated.
+    /// </summary>
+    public RuleException(Exception innerException)
+        : base(innerException.Message, innerException) { }
 }

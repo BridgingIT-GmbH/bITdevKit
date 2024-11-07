@@ -307,6 +307,7 @@ public class RulesBuilder
     /// If continueOnFailure is disabled (default), stops at the first rule failure.
     /// If continueOnFailure is enabled, collects all rule failures.
     /// </summary>
+    /// <param name="throwOnFailure"></param>
     /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
@@ -321,7 +322,7 @@ public class RulesBuilder
     ///     .Apply();
     /// </code>
     /// </example>
-    public Result Apply(ILogger logger = null)
+    public Result Apply(bool throwOnFailure = false, ILogger logger = null) // TODO: setup the logger like Result (IResultLogger -> IRulesLogger)
     {
         logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
@@ -332,11 +333,11 @@ public class RulesBuilder
             return Result.Success();
         }
 
-        if (!this.continueOnFailure)
+        if (!this.continueOnFailure) // never throws
         {
             foreach (var rule in this.rules)
             {
-                var result = Rules.Apply(rule);
+                var result = Rules.Apply(rule, false);
                 if (result.IsFailure)
                 {
                     logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
@@ -361,7 +362,7 @@ public class RulesBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = Rules.Apply(rule);
+            var result = Rules.Apply(rule, throwOnFailure);
             if (!result.IsFailure)
             {
                 logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
@@ -391,6 +392,7 @@ public class RulesBuilder
     /// If continueOnFailure is enabled, collects all rule failures.
     /// Supports async conditions and rules.
     /// </summary>
+    /// <param name="throwOnFailure"></param>
     /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
@@ -407,7 +409,7 @@ public class RulesBuilder
     ///     .ApplyAsync(logger, cancellationToken);
     /// </code>
     /// </example>
-    public async Task<Result> ApplyAsync(ILogger logger = null, CancellationToken cancellationToken = default)
+    public async Task<Result> ApplyAsync(bool throwOnFailure = false, ILogger logger = null, CancellationToken cancellationToken = default)
     {
         logger ??= Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
@@ -418,13 +420,13 @@ public class RulesBuilder
             return Result.Success();
         }
 
-        if (!this.continueOnFailure)
+        if (!this.continueOnFailure) // never throws
         {
             foreach (var rule in this.rules)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await Rules.ApplyAsync(rule, cancellationToken);
+                var result = await Rules.ApplyAsync(rule, false, cancellationToken);
                 if (result.IsFailure)
                 {
                     logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}",
@@ -451,7 +453,7 @@ public class RulesBuilder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = await Rules.ApplyAsync(rule, cancellationToken);
+            var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken);
             if (!result.IsFailure)
             {
                 logger.LogInformation("{LogKey} rules - {Rule} result: {RuleResult}",
@@ -604,7 +606,7 @@ public class RulesBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = await Rules.ApplyAsync(rule, cancellationToken);
+                var result = await Rules.ApplyAsync(rule, false, cancellationToken);
                 if (result.IsFailure)
                 {
                     return Result.Failure();

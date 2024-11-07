@@ -12,11 +12,19 @@ public class RuleError(IRule rule) : ResultErrorBase(rule?.Message)
 
     public override void Throw()
     {
-        if (this.Rule is not null)
-        {
-            throw new RuleException($"[{this.Rule.GetType().Name}] {this.Rule.Message}".Trim());
-        }
+        throw new RuleException(this.Rule);
+    }
+}
 
-        throw new RuleException(this.Message);
+[DebuggerDisplay("Rule={Rule.GetType().Name}, Message={Message}")]
+public class RuleExceptionError(IRule rule, Exception exception) : ResultErrorBase(rule?.Message)
+{
+    public IRule Rule { get; } = rule;
+
+    public Exception Exception { get; } = exception;
+
+    public override void Throw()
+    {
+        throw new RuleException(this.Rule);
     }
 }

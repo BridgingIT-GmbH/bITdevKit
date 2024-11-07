@@ -27,6 +27,63 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
+    public async Task ExistsResultAsync_WhenEntityExists_ReturnsSuccessResultWithTrue()
+    {
+        // Arrange
+        var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
+        var id = Guid.NewGuid();
+        repository.ExistsResultAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+            .Returns(true);
+
+        // Act
+        var result = await repository.ExistsResultAsync(id);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBeTrue();
+        await repository.Received(1).ExistsAsync(
+            Arg.Is<object>(x => x.Equals(id)),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExistsResultAsync_WhenEntityDoesNotExist_ReturnsSuccessResultWithFalse()
+    {
+        // Arrange
+        var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
+        var id = Guid.NewGuid();
+        repository.ExistsResultAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+            .Returns(false);
+
+        // Act
+        var result = await repository.ExistsResultAsync(id);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBeFalse();
+        await repository.Received(1).ExistsAsync(
+            Arg.Is<object>(x => x.Equals(id)),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ExistsResultAsync_WhenExceptionThrown_ReturnsFailureResult()
+    {
+        // Arrange
+        var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
+        repository.ExistsResultAsync(Arg.Any<object>(), Arg.Any<CancellationToken>())
+            .Throws(new Exception("Test exception"));
+
+        // Act
+        var result = await repository.ExistsResultAsync(Guid.NewGuid());
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors.First().ShouldBeOfType<ExceptionError>();
+    }
+
+    [Fact]
     public async Task CountResultAsync_WhenSuccessful_ReturnsSuccessResult()
     {
         // Arrange

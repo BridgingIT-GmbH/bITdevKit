@@ -12,6 +12,24 @@ using System.Collections;
 /// </summary>
 public static class GenericReadOnlyRepositoryResultExtensions
 {
+    public static async Task<Result<bool>> ExistsResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        object id,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var exists = await source.ExistsAsync(id, cancellationToken).AnyContext();
+
+            return Result<bool>.Success(exists);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<bool>.Failure(ex.Message, new ExceptionError(ex));
+        }
+    }
+
     /// <summary>
     /// Asynchronously counts the total number of entities and returns the result as a Result object.
     /// </summary>

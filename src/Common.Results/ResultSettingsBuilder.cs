@@ -15,7 +15,7 @@ public class ResultSettingsBuilder
     /// </summary>
     /// <remarks>
     /// The logger must implement the <see cref="IResultLogger"/> interface. By default,
-    /// it is set to an instance of <see cref="NullLogger"/> if not specified.
+    /// it is set to an instance of <see cref="NullResultLogger"/> if not specified.
     /// </remarks>
     public IResultLogger Logger { get; set; }
 
@@ -35,7 +35,7 @@ public class ResultSettingsBuilder
     /// </summary>
     public ResultSettingsBuilder()
     {
-        this.Logger = new NullLogger();
+        this.Logger = new NullResultLogger();
         this.ExceptionErrorFactory = (exception) => new ExceptionError(exception);
     }
 
@@ -47,7 +47,7 @@ public class ResultSettingsBuilder
     {
         return new ResultSettings
         {
-            Logger = this.Logger ?? new NullLogger(),
+            Logger = this.Logger ?? new NullResultLogger(),
             ExceptionErrorFactory = this.ExceptionErrorFactory
         };
     }

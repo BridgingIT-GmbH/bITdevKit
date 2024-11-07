@@ -72,7 +72,7 @@ public class RulesTests
         rule.Apply().Throws<InvalidOperationException>();
 
         // Act & Assert
-        Should.Throw<InvalidOperationException>(() => Rules.Apply(rule));
+        Should.Throw<RuleException>(() => Rules.Apply(rule, true));
         rule.Received(1).Apply();
     }
 
@@ -187,7 +187,7 @@ public class RulesTests
 
         // Act & Assert
         await Should.ThrowAsync<OperationCanceledException>(() =>
-            Rules.ApplyAsync(rule, cts.Token));
+            Rules.ApplyAsync(rule, true, cts.Token));
     }
 
     [Fact]
@@ -326,8 +326,7 @@ public class RulesTests
         };
 
         // Act
-        var results = await Task.WhenAll(
-            rules.Select(rule => Rules.ApplyAsync(rule)));
+        var results = await Task.WhenAll(rules.Select(rule => Rules.ApplyAsync(rule)));
         var combinedResult = Result.Combine(results);
 
         // Assert
@@ -353,25 +352,18 @@ public class RulesTests
 
         // Act & Assert
         Should.Throw<OperationCanceledException>(async () =>
-            await Rules.ApplyAsync(rule, cts.Token));
+            await Rules.ApplyAsync(rule, true, cts.Token));
     }
 }
 
 // Helper class for testing async rules
-public class TestAsyncRule : AsyncRuleBase
+public class TestAsyncRule(bool shouldSucceed) : AsyncRuleBase
 {
-    private readonly bool shouldSucceed;
-
-    public TestAsyncRule(bool shouldSucceed)
-    {
-        this.shouldSucceed = shouldSucceed;
-    }
-
     protected override async Task<Result> ExecuteRuleAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         await Task.Delay(10, cancellationToken); // Simulate async work
 
-        return this.shouldSucceed ? Result.Success() : Result.Failure();
+        return shouldSucceed ? Result.Success() : Result.Failure();
     }
 }

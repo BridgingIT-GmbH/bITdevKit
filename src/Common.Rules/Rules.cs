@@ -11,11 +11,19 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public static partial class Rules
 {
+    public static RuleSettings Settings { get; private set; }
+
+    static Rules()
+    {
+        Settings = new RuleSettingsBuilder().Build();
+    }
+
     /// <summary>
     /// Applies a single rule synchronously to validate a value or state.
     /// Returns a success result if the rule passes, or a failure result if it fails.
     /// </summary>
     /// <param name="rule">The rule to apply.</param>
+    /// <param name="throwOnRuleFailure">Indicates whether to throw an exception if the rule fails.</param>
     /// <returns>A Result indicating success or failure of the rule.</returns>
     /// <example>
     /// <code>
@@ -37,20 +45,46 @@ public static partial class Rules
     /// }
     /// </code>
     /// </example>
-    public static Result Apply(IRule rule)
+    public static Result Apply(IRule rule, bool? throwOnRuleFailure = null)
     {
         if (rule is null)
         {
             return Result.Success();
         }
 
-        var result = rule.Apply();
-        if (result.IsFailure && !result.HasError())
+        try
         {
-            return result.WithError(new RuleError(rule));
-        }
+            var result = rule.Apply();
+            if (result.IsFailure)
+            {
+                if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
+                {
+                    var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule);
 
-        return result;
+                    throw ruleException(rule);
+                }
+
+                return result.WithError(new RuleError(rule));
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            if (throwOnRuleFailure ?? Settings.ThrowOnRuleException)
+            {
+                var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule, ex);
+
+                throw ruleException(rule);
+            }
+
+            // return failure result with exception as error (IResultError)
+            var error = Settings.RuleExceptionErrorFactory ??= (rule, ex) => new RuleExceptionError(rule, ex);
+
+            return Result.Failure()
+                .WithMessage(ex.Message)
+                .WithError(error(rule, ex));
+        }
     }
 
     /// <summary>
@@ -59,6 +93,7 @@ public static partial class Rules
     /// Supports both synchronous and asynchronous rules.
     /// </summary>
     /// <param name="rule">The rule to apply.</param>
+    /// <param name="throwOnRuleFailure">Indicates whether to throw an exception if the rule fails.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task containing the Result indicating success or failure of the rule.</returns>
     /// <example>
@@ -84,7 +119,7 @@ public static partial class Rules
     /// }
     /// </code>
     /// </example>
-    public static async Task<Result> ApplyAsync(IRule rule, CancellationToken cancellationToken = default)
+    public static async Task<Result> ApplyAsync(IRule rule, bool? throwOnRuleFailure = null, CancellationToken cancellationToken = default)
     {
         if (rule is null)
         {
@@ -93,22 +128,43 @@ public static partial class Rules
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        Result result;
-        if (rule is AsyncRuleBase)
+        try
         {
-            result = await rule.ApplyAsync(cancellationToken).ConfigureAwait(false);
-        }
-        else
-        {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            result = rule.Apply();
-        }
+            Result result;
+            if (rule is AsyncRuleBase)
+            {
+                result = await rule.ApplyAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                result = rule.Apply();
+            }
 
-        if (result.IsFailure && !result.HasError())
-        {
-            return result.WithError(new RuleError(rule));
-        }
+            if (result.IsFailure)
+            {
+                if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
+                {
+                    var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule);
+                    throw ruleException(rule);
+                }
 
-        return result;
+                return result.WithError(new RuleError(rule));
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            if (throwOnRuleFailure ?? Settings.ThrowOnRuleException)
+            {
+                var ruleException = Settings.RuleFailureExceptionFactory ??= rule => new RuleException(rule, ex);
+                throw ruleException(rule);
+            }
+
+            var error = Settings.RuleExceptionErrorFactory ??= (rule, ex) => new RuleExceptionError(rule, ex);
+            return Result.Failure()
+                .WithMessage(ex.Message)
+                .WithError(error(rule, ex));
+        }
     }
 }

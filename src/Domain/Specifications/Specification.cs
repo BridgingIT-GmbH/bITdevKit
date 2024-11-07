@@ -26,6 +26,8 @@ public class Specification<T> : ISpecification<T>
     /// <typeparam name="T">The type of entity to which the specification is applied.</typeparam>
     public Specification(Expression<Func<T, bool>> expression)
     {
+        ArgumentNullException.ThrowIfNull(expression);
+
         this.expression = expression;
     }
 
@@ -35,6 +37,8 @@ public class Specification<T> : ISpecification<T>
     /// <typeparam name="T">The type of entity that this specification will be applied to.</typeparam>
     public Specification(string dynamicExpression, params object[] dynamicExpressionValues)
     {
+        ArgumentException.ThrowIfNullOrEmpty(dynamicExpression);
+
         this.dynamicExpression = dynamicExpression;
         this.dynamicExpressionValues = dynamicExpressionValues;
     }

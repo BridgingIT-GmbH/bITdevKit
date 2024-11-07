@@ -46,6 +46,21 @@ public class CityFindAllQueryHandler(
         return QueryResponse.For(cities);
     }
 
+    public async Task<PagedResult<CityQueryResponse>> ProcessEntities2(
+            CityFindAllQuery query,
+            CancellationToken cancellationToken)
+        {
+            var cities = await (await cityRepository.FindAllPagedResultAsync( // repo takes care of the filter
+                    query.Filter,
+                    [new CityIsNotDeletedSpecification()],
+                    cancellationToken: cancellationToken))
+                .Ensure(e => e != null, new EntityNotFoundError())
+                .TapAsync(async (e, ct) => await Task.Delay(1, ct), cancellationToken)
+                .Map(e => e.Select(c => CityQueryResponse.Create(c)));
+
+            return cities;
+        }
+
     public async Task<QueryResponse<Result<IEnumerable<CityQueryResponse>>>> ProcessResult(
         CityFindAllQuery query,
         CancellationToken cancellationToken)

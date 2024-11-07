@@ -15,7 +15,7 @@ public static class SpecificationResolver
     /// <summary>
     /// Concurrent dictionary that stores the mapping of specification names to their respective types.
     /// </summary>
-    private static readonly ConcurrentDictionary<string, Type> SpecificationTypes = new ConcurrentDictionary<string, Type>();
+    private static readonly ConcurrentDictionary<string, Type> SpecificationTypes = new();
 
     /// <summary>
     /// Registers a specification for a given entity type with an optional name.

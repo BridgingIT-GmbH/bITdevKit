@@ -633,7 +633,7 @@ public class RuleBuilder
     /// </summary>
     /// <param name="count">The expected number of true conditions.</param>
     /// <param name="conditions">The conditions to evaluate.</param>
-    /// <param="rule">The rule to add if the exact count matches.</param>
+    /// <param name="rule">The rule to add if the exact count matches.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -702,8 +702,8 @@ public class RuleBuilder
     /// Adds a rule when at least the specified number of conditions are true.
     /// </summary>
     /// <param name="count">The minimum number of true conditions required.</param>
-    /// <param="conditions">The conditions to evaluate.</param>
-    /// <param="rule">The rule to add if the minimum count is met.</param>
+    /// <param name="conditions">The conditions to evaluate.</param>
+    /// <param name="rule">The rule to add if the minimum count is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -773,8 +773,8 @@ public class RuleBuilder
     /// Adds a rule when at most the specified number of conditions are true.
     /// </summary>
     /// <param name="count">The maximum number of true conditions allowed.</param>
-    /// <param="conditions">The conditions to evaluate.</param>
-    /// <param="rule">The rule to add if the count doesn't exceed the maximum.</param>
+    /// <param name="conditions">The conditions to evaluate.</param>
+    /// <param name="rule">The rule to add if the count doesn't exceed the maximum.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -844,8 +844,8 @@ public class RuleBuilder
     /// </summary>
     /// <param name="min">The minimum number of true conditions required.</param>
     /// <param name="max">The maximum number of true conditions allowed.</param>
-    /// <param="conditions">The conditions to evaluate.</param>
-    /// <param="rule">The rule to add if the count falls within range.</param>
+    /// <param name="conditions">The conditions to evaluate.</param>
+    /// <param name="rule">The rule to add if the count falls within range.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -1065,7 +1065,6 @@ public class RuleBuilder
     /// If continueOnFailure is disabled (default), stops at the first rule failure.
     /// If continueOnFailure is enabled, collects all rule failures.
     /// </summary>
-    /// <param name="throwOnRuleException"></param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
     /// <code>

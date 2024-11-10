@@ -110,9 +110,9 @@ public class RuleBuilder
     }
 
     /// <summary>
-    /// Adds multiple rules defined by boolean expressions to the builder.
+    /// Adds multiple rules defined by boolean predicates to the builder.
     /// </summary>
-    /// <param name="expressions">The boolean expressions to evaluate.</param>
+    /// <param name="predicates">The boolean predicates to evaluate.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -121,110 +121,14 @@ public class RuleBuilder
     ///     .Apply();
     /// </code>
     /// </example>
-    public RuleBuilder Add(params Func<bool>[] expressions)
+    public RuleBuilder Add(params Func<bool>[] predicates)
     {
-        foreach (var predicate in expressions)
+        foreach (var predicate in predicates)
         {
             this.Add(new FuncRule(predicate));
         }
 
         return this;
-    }
-
-    /// <summary>
-    /// Creates an empty rule builder.
-    /// </summary>
-    /// <returns>A new empty rule builder instance.</returns>
-    /// <example>
-    /// <code>
-    /// var builder = Rule
-    ///     .Add(Rules.IsNotEmpty(user.Name))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder For()
-    {
-        return new RuleBuilder();
-    }
-
-    /// <summary>
-    /// Creates a new rule builder starting with the specified rule.
-    /// </summary>
-    /// <param name="rule">The initial rule.</param>
-    /// <returns>A new rule builder instance.</returns>
-    /// <example>
-    /// <code>
-    /// var builder = Rule.For(Rules.IsNotEmpty(user.Email))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder For(IRule rule)
-    {
-        return new RuleBuilder().Add(rule);
-    }
-
-    /// <summary>
-    /// Creates a new rule builder starting with the specified rules.
-    /// </summary>
-    /// <param name="rules">The initial rules.</param>
-    /// <returns>A new rule builder instance.</returns>
-    /// <example>
-    /// <code>
-    /// var builder = Rule.For(
-    ///     Rules.IsNotEmpty(order.Id),
-    ///     Rules.NumericRange(order.Amount, 1, 1000))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder For(params IRule[] rules)
-    {
-        var builder = new RuleBuilder();
-        foreach (var rule in rules)
-        {
-            builder.Add(rule);
-        }
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Creates a new rule builder starting with the specified boolean predicate.
-    /// </summary>
-    /// <param name="predicate">The boolean predicate to evaluate.</param>
-    /// <param name="message"></param>
-    /// <returns>A new rule builder instance.</returns>
-    /// <example>
-    /// <code>
-    /// var builder = Rule.For(() => user.IsActive)
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder For(Func<bool> predicate, string message = null)
-    {
-        return new RuleBuilder().Add(new FuncRule(predicate, message));
-    }
-
-    /// <summary>
-    /// Creates a new rule builder starting with the specified boolean expressions.
-    /// </summary>
-    /// <param name="expressions">The boolean expressions to evaluate.</param>
-    /// <returns>A new rule builder instance.</returns>
-    /// <example>
-    /// <code>
-    /// var builder = Rule.For(
-    ///     () => user.IsActive,
-    ///     () => user.HasValidSubscription)
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder For(params Func<bool>[] expressions)
-    {
-        var builder = new RuleBuilder();
-        foreach (var predicate in expressions)
-        {
-            builder.Add(new FuncRule(predicate));
-        }
-        return builder;
     }
 
     /// <summary>

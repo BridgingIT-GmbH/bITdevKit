@@ -23,7 +23,8 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void Apply_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
-        var result = Rule.Apply(null);
+        FuncRule rule = null;
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -107,7 +108,8 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public async Task ApplyAsync_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
-        var result = await Rule.ApplyAsync(null);
+        FuncRule rule = null;
+        var result = await Rule.ApplyAsync(rule);
 
         // Assert
 

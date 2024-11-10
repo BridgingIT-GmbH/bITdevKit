@@ -20,7 +20,7 @@ public class ConditionalRule : RuleBase
     /// <param name="rule">The rule to execute if the condition is met.</param>
     public ConditionalRule(Func<bool> condition, IRule rule)
     {
-        this.condition = condition;
+        this.condition = condition ?? throw new ArgumentNullException(nameof(condition)); ;
         this.rule = rule;
     }
 

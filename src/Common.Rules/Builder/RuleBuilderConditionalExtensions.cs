@@ -280,7 +280,7 @@ public static class RuleBuilderConditionalExtensions
     /// <param name="builder">The RuleBuilder instance.</param>
     /// <param name="count">The maximum number of conditions that can be true.</param>
     /// <param name="conditions">The conditions to evaluate.</param>
-    /// <param="rule">The rule to add if at most the specified count of conditions are true.</param>
+    /// <param name="rule">The rule to add if at most the specified count of conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -401,11 +401,11 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
-    /// Adds multiple rules defined by boolean expressions when the specified condition is true.
+    /// Adds multiple rules defined by boolean predicates when the specified condition is true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
     /// <param name="condition">The boolean condition to evaluate.</param>
-    /// <param name="expressions">The boolean expressions to evaluate if the condition is true.</param>
+    /// <param name="predicates">The boolean predicates to evaluate if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
@@ -416,13 +416,13 @@ public static class RuleBuilderConditionalExtensions
     ///     .Apply();
     /// </code>
     /// </example>
-    public static RuleBuilder When(this RuleBuilder builder, bool condition, params Func<bool>[] expressions)
+    public static RuleBuilder When(this RuleBuilder builder, bool condition, params Func<bool>[] predicates)
     {
         if (condition)
         {
-            foreach (var expression in expressions)
+            foreach (var predicate in predicates)
             {
-                builder.Add(new FuncRule(expression));
+                builder.Add(new FuncRule(predicate));
             }
         }
         return builder;
@@ -501,26 +501,26 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
-    /// Adds multiple rules defined by boolean expressions when the specified condition is false.
+    /// Adds multiple rules defined by boolean predicates when the specified condition is false.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
     /// <param name="condition">The boolean condition to evaluate.</param>
-    /// <param name="expressions">The boolean expressions to evaluate if the condition is false.</param>
+    /// <param name="predicates">The boolean predicates to evaluate if the condition is false.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
     /// Rule.For()
     ///     .Unless(product.IsOnSale,
     ///         () => product.Discount >= 0.1m,
-    ///         () => product.Discount <= 0.5m)
+    ///         () => product.Discount == 0.5m)
     ///     .Apply();
     /// </code>
     /// </example>
-    public static RuleBuilder Unless(this RuleBuilder builder, bool condition, params Func<bool>[] expressions)
+    public static RuleBuilder Unless(this RuleBuilder builder, bool condition, params Func<bool>[] predicates)
     {
         if (!condition)
         {
-            foreach (var expr in expressions)
+            foreach (var expr in predicates)
             {
                 builder.Add(new FuncRule(expr));
             }

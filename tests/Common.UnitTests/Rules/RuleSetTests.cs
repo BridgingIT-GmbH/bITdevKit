@@ -23,7 +23,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Equal(value, value);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -38,7 +38,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Equal(value1, value2);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -54,7 +54,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.NotEqual(value1, value2);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -68,7 +68,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.NotEqual(value, value);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -86,7 +86,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.GreaterThan(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -102,7 +102,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.GreaterThan(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -119,7 +119,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.GreaterThanOrEqual(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -137,7 +137,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsValidEmail(email);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldBeValid);
@@ -157,7 +157,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Contains(value, substring, comparison);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldSucceed);
@@ -176,7 +176,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Any(numbers, num => RuleSet.GreaterThan(num, 3));
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -190,7 +190,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.All(numbers, num => RuleSet.LessThan(num, 4));
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -207,7 +207,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsInRange(now, start, end);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -222,7 +222,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsInRelativeRange(value, DateUnit.Day, 2, DateTimeDirection.Future);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -238,7 +238,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.MatchesPattern(value, pattern);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldMatch);
@@ -262,7 +262,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Validate(person, validator);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -283,7 +283,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.HasStringLength(value, min, max);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldBeValid);
@@ -305,7 +305,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.HasCollectionSize(collection, minSize, maxSize);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldBeValid);
@@ -326,7 +326,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.LessThan(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -342,7 +342,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.LessThan(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -359,7 +359,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.LessThanOrEqual(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -375,7 +375,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.LessThanOrEqual(value, other);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -392,7 +392,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsBefore(now, future);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -407,7 +407,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsBefore(now, past);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -423,7 +423,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsAfter(now, past);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -438,7 +438,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.IsAfter(now, future);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -455,7 +455,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.MatchesPattern(value, pattern);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldMatch);
@@ -475,7 +475,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.HasStringLength(value, min, max);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
         result.IsSuccess.ShouldBe(shouldBeValid);
@@ -493,7 +493,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void GreaterThanOrEqual_BoundaryTest(int value, int other, bool shouldSucceed)
     {
         var rule = RuleSet.GreaterThanOrEqual(value, other);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBe(shouldSucceed);
     }
@@ -507,8 +507,8 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var ruleStart = RuleSet.IsInRange(start, start, end);
         var ruleEnd = RuleSet.IsInRange(end, start, end);
 
-        Rules.Apply(ruleStart).IsSuccess.ShouldBeTrue();
-        Rules.Apply(ruleEnd).IsSuccess.ShouldBeTrue();
+        Rule.Apply(ruleStart).IsSuccess.ShouldBeTrue();
+        Rule.Apply(ruleEnd).IsSuccess.ShouldBeTrue();
     }
 
 // String Validation - Null or Empty
@@ -519,7 +519,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void IsNullOrEmpty_ShouldValidateNullOrEmptyStrings(string value, bool shouldSucceed)
     {
         var rule = RuleSet.IsEmpty(value);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBe(shouldSucceed);
     }
@@ -529,7 +529,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void IsNull_WhenValueIsNull_ShouldReturnSuccess()
     {
         var rule = RuleSet.IsNull<PersonStub>(null);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }
@@ -538,7 +538,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void IsNotNull_WhenValueIsNotNull_ShouldReturnSuccess()
     {
         var rule = RuleSet.IsNotNull("non-null");
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }
@@ -549,7 +549,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     {
         var emptyCollection = new List<int>();
         var rule = RuleSet.IsEmpty(emptyCollection);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }
@@ -559,7 +559,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     {
         var nonEmptyCollection = new List<int> { 1 };
         var rule = RuleSet.IsNotEmpty(nonEmptyCollection);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }
@@ -569,7 +569,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void IsTrue_WhenValueIsTrue_ShouldReturnSuccess()
     {
         var rule = RuleSet.IsTrue(true);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }
@@ -578,7 +578,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void IsFalse_WhenValueIsFalse_ShouldReturnSuccess()
     {
         var rule = RuleSet.IsFalse(false);
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         result.IsSuccess.ShouldBeTrue();
     }

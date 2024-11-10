@@ -18,7 +18,7 @@ public static class RuleBuilderExtensions
     /// <param name="builder">The rule builder.</param>
     /// <param name="rule">The rule to add.</param>
     /// <returns>The rule builder for method chaining.</returns>
-    public static RulesBuilder And(this RulesBuilder builder, IRule rule)
+    public static RuleBuilder And(this RuleBuilder builder, IRule rule)
     {
         return builder.Add(rule);
     }
@@ -29,7 +29,7 @@ public static class RuleBuilderExtensions
     /// <param name="builder">The rule builder.</param>
     /// <param name="rules">The rules to add.</param>
     /// <returns>The rule builder for method chaining.</returns>
-    public static RulesBuilder And(this RulesBuilder builder, params IRule[] rules)
+    public static RuleBuilder And(this RuleBuilder builder, params IRule[] rules)
     {
         foreach (var rule in rules)
         {
@@ -44,34 +44,34 @@ public static class RuleBuilderExtensions
     /// </summary>
     /// <param name="builder">The rule builder.</param>
     /// <param name="rule">The rule to add.</param>
-    public static void Add(this RulesBuilder builder, IRule rule)
+    public static void Add(this RuleBuilder builder, IRule rule)
     {
         builder.Add(rule);
     }
 
-    public static RulesBuilder Add(this RulesBuilder builder, Func<bool> predicate, string message = null)
+    public static RuleBuilder Add(this RuleBuilder builder, Func<bool> predicate, string message = null)
     {
         return builder.Add(new FuncRule(predicate, message));
     }
 
     // Overload for expression-based messages
-    public static RulesBuilder Add(this RulesBuilder builder, Func<bool> predicate, Expression<Func<bool>> expression)
+    public static RuleBuilder Add(this RuleBuilder builder, Func<bool> predicate, Expression<Func<bool>> expression)
     {
         var message = expression.ToString();
         return builder.Add(new FuncRule(predicate, message));
     }
 
-    public static RulesBuilder Add(this RulesBuilder builder, Func<CancellationToken, Task<bool>> predicate, string message = null)
+    public static RuleBuilder Add(this RuleBuilder builder, Func<CancellationToken, Task<bool>> predicate, string message = null)
     {
         return builder.Add(new AsyncFuncRule(predicate, message));
     }
 
-    public static RulesBuilder Add<T>(this RulesBuilder builder, Func<T, IRule> ruleFactory)
+    public static RuleBuilder Add<T>(this RuleBuilder builder, Func<T, IRule> ruleFactory)
     {
         return builder.Add(new ItemRule<T>(ruleFactory));
     }
 
-    public static RulesBuilder And<T>(this RulesBuilder builder, Func<T, IRule> ruleFactory)
+    public static RuleBuilder And<T>(this RuleBuilder builder, Func<T, IRule> ruleFactory)
     {
         return builder.Add(ruleFactory);
     }

@@ -14,7 +14,7 @@ using Xunit;
 
 [UnitTest("Common")]
 [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
-public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
+public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
     private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
@@ -23,7 +23,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public void Apply_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
-        var result = Rules.Apply(null);
+        var result = Rule.Apply(null);
 
         // Assert
 
@@ -38,7 +38,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Success());
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -56,7 +56,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Failure());
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -75,7 +75,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Throws<InvalidOperationException>();
 
         // Act & Assert
-        Should.Throw<RuleException>(() => Rules.Apply(rule, true));
+        Should.Throw<RuleException>(() => Rule.Apply(rule, true, true));
         rule.Received(1).Apply();
     }
 
@@ -92,7 +92,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Validate(person, validator);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -107,7 +107,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     public async Task ApplyAsync_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
-        var result = await Rules.ApplyAsync(null);
+        var result = await Rule.ApplyAsync(null);
 
         // Assert
 
@@ -122,7 +122,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Success());
 
         // Act
-        var result = await Rules.ApplyAsync(rule);
+        var result = await Rule.ApplyAsync(rule);
 
         // Assert
 
@@ -140,7 +140,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Failure());
 
         // Act
-        var result = await Rules.ApplyAsync(rule);
+        var result = await Rule.ApplyAsync(rule);
 
         // Assert
 
@@ -158,7 +158,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new TestAsyncRule(true);
 
         // Act
-        var result = await Rules.ApplyAsync(rule);
+        var result = await Rule.ApplyAsync(rule);
 
         // Assert
 
@@ -172,7 +172,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new TestAsyncRule(false);
 
         // Act
-        var result = await Rules.ApplyAsync(rule);
+        var result = await Rule.ApplyAsync(rule);
 
         // Assert
 
@@ -190,7 +190,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 
         // Act & Assert
         await Should.ThrowAsync<OperationCanceledException>(() =>
-            Rules.ApplyAsync(rule, true, cts.Token));
+            Rule.ApplyAsync(rule, true, true, cts.Token));
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new IsAdultRule(null);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -226,7 +226,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new IsAdultRule(person);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -252,7 +252,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new IsAdultRule(person);
 
         // Act
-        var result = Rules.Apply(rule);
+        var result = Rule.Apply(rule);
 
         // Assert
 
@@ -273,8 +273,8 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var emailRule = RuleSet.IsValidEmail(person.Email.Value);
 
         // Act
-        var result = await Rules.ApplyAsync(adultRule);
-        var emailResult = await Rules.ApplyAsync(emailRule);
+        var result = await Rule.ApplyAsync(adultRule);
+        var emailResult = await Rule.ApplyAsync(emailRule);
         var combinedResult = Result.Combine(result, emailResult);
 
         // Assert
@@ -299,10 +299,10 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var lastNameRule = RuleSet.IsNotEmpty(person.LastName);
 
         // Act
-        var result1 = Rules.Apply(adultRule);
-        var result2 = Rules.Apply(emailRule);
-        var result3 = Rules.Apply(firstNameRule);
-        var result4 = Rules.Apply(lastNameRule);
+        var result1 = Rule.Apply(adultRule);
+        var result2 = Rule.Apply(emailRule);
+        var result3 = Rule.Apply(firstNameRule);
+        var result4 = Rule.Apply(lastNameRule);
         var combinedResult = Result.Combine(result1, result2, result3, result4);
 
         // Assert
@@ -329,7 +329,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         };
 
         // Act
-        var results = await Task.WhenAll(rules.Select(rule => Rules.ApplyAsync(rule)));
+        var results = await Task.WhenAll(rules.Select(rule => Rule.ApplyAsync(rule)));
         var combinedResult = Result.Combine(results);
 
         // Assert
@@ -355,7 +355,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 
         // Act & Assert
         Should.Throw<OperationCanceledException>(async () =>
-            await Rules.ApplyAsync(rule, true, cts.Token));
+            await Rule.ApplyAsync(rule, true, true, cts.Token));
     }
 
     [Fact]
@@ -366,7 +366,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Failure());
 
         // Act & Assert
-        Should.Throw<RuleException>(() => Rules.Apply(rule, true));
+        Should.Throw<RuleException>(() => Rule.Apply(rule, true));
         rule.Received(1).Apply();
     }
 
@@ -378,7 +378,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Returns(Result.Failure());
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true));
         rule.Received(1).Apply();
     }
 
@@ -390,7 +390,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.Apply().Throws<InvalidOperationException>();
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true, true));
         rule.Received(1).Apply();
     }
 
@@ -402,7 +402,7 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.ApplyAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Failure()));
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true));
         await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
     }
 
@@ -414,8 +414,44 @@ public class RulesTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         rule.ApplyAsync(Arg.Any<CancellationToken>()).Throws<InvalidOperationException>();
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rules.ApplyAsync(rule, true));
+        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true, true));
         await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public void Throw_WithFailingRule_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Returns(Result.Failure());
+
+        // Act & Assert
+        Should.Throw<RuleException>(() => Rule.Throw(rule));
+        rule.Received(1).Apply();
+    }
+
+    [Fact]
+    public async Task ThrowAsync_WithFailingRule_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Returns(Result.Failure());
+
+        // Act & Assert
+        await Should.ThrowAsync<RuleException>(() => Rule.ThrowAsync(rule));
+        rule.Received(1).Apply();
+    }
+
+    [Fact]
+    public void Apply_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    {
+        // Arrange
+        var rule = Substitute.For<IRule>();
+        rule.Apply().Throws<InvalidOperationException>();
+
+        // Act & Assert
+        Should.Throw<RuleException>(() => Rule.Apply(rule, true, true));
+        rule.Received(1).Apply();
     }
 }
 
@@ -447,7 +483,7 @@ public class RulesFixture : IDisposable
 
     private void ResetSettings()
     {
-        Rules.Setup(builder =>
+        Rule.Setup(builder =>
         {
             /* Default settings */
         });

@@ -35,6 +35,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 using ModuleExtensions = Microsoft.Extensions.DependencyInjection.ModuleExtensions;
 
 // ===============================================================================================
@@ -83,7 +84,8 @@ builder.Services.AddQueries()
 builder.Services.PrintMediatRRegistrations(builder.Environment.IsDevelopment());
 
 builder.Services.AddJobScheduling(o => o
-        .StartupDelay("00:00:15"), builder.Configuration)
+            .StartupDelay("00:00:15"),
+        builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
@@ -166,6 +168,9 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseRuleLogger();
+app.UseResultLogger();
 
 app.UseProblemDetails();
 //app.UseExceptionHandler();

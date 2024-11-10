@@ -67,6 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4
 		docs\features-domain-repositories.md = docs\features-domain-repositories.md
 		docs\features-results.md = docs\features-results.md
 		README.md = README.md
+		docs\features-rules.md = docs\features-rules.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing.SqlServer", "src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj", "{F8BD56DD-C6F9-4853-9E09-F761F3CD2051}"
@@ -335,7 +336,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{60F2A5
 		docs\assets\bITDevKit_Logo_whiteblue.svg = docs\assets\bITDevKit_Logo_whiteblue.svg
 		docs\assets\bITDevKit_Text.svg = docs\assets\bITDevKit_Text.svg
 		docs\assets\bITDevKit_Text_variants.svg = docs\assets\bITDevKit_Text_variants.svg
-		docs\features-rules.md = docs\features-rules.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Rules", "src\Common.Rules\Common.Rules.csproj", "{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}"

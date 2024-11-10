@@ -6,22 +6,20 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Runtime.CompilerServices;
-
 /// <summary>
 /// Provides core methods for executing rules.
 /// </summary>
-public static partial class Rules
+public static partial class Rule
 {
     public static RuleSettings Settings { get; private set; }
 
-    static Rules()
+    static Rule()
     {
         Settings = new RuleSettingsBuilder().Build();
     }
 
     /// <summary>
-    /// Configures the global settings for the <see cref="Rules"/> type.
+    /// Configures the global settings for the <see cref="Rule"/> type.
     /// </summary>
     /// <param name="settings">A delegate to configure the <see cref="RuleSettingsBuilder"/>.</param>
     public static void Setup(Action<RuleSettingsBuilder> settings)
@@ -36,7 +34,7 @@ public static partial class Rules
 
     public static Result Throw(IRule rule)
     {
-        return Apply(rule, true);
+        return Apply(rule, true, true);
     }
 
     /// <summary>
@@ -45,20 +43,12 @@ public static partial class Rules
     /// </summary>
     /// <param name="rule">The rule to apply.</param>
     /// <param name="throwOnRuleFailure">Indicates whether to throw an exception if the rule fails.</param>
+    /// <param name="throwOnRuleException">Indicates whether to throw an exception if the rule throws an exception.</param>
     /// <returns>A Result indicating success or failure of the rule.</returns>
     /// <example>
     /// <code>
-    /// // Single rule validation
     /// var nameRule = RuleSet.IsNotEmpty(user.Name);
     /// var result = Rules.Apply(nameRule);
-    ///
-    /// // Multiple rules with builder
-    /// var result = Rules.For()
-    ///     .Add(RuleSet.IsNotEmpty(user.Name))
-    ///     .Add(RuleSet.IsValidEmail(user.Email))
-    ///     .When(user.IsEmployee, builder => builder
-    ///         .Add(RuleSet.HasStringLength(user.EmployeeId, 5, 10)))
-    ///     .Apply();
     ///
     /// if (result.IsSuccess)
     /// {
@@ -66,27 +56,32 @@ public static partial class Rules
     /// }
     /// </code>
     /// </example>
-    public static Result Apply(IRule rule, bool? throwOnRuleFailure = null)
+    public static Result Apply(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)
     {
         if (rule is null)
         {
             return Result.Success();
         }
 
+        throwOnRuleFailure ??= Settings.ThrowOnRuleFailure;
+        throwOnRuleException ??= Settings.ThrowOnRuleException;
+
         try
         {
             var result = rule.Apply();
+            //Settings.Logger?.Log(string.Empty, "applied", rule, result, LogLevel.Debug);
+
             return HandleResult(rule, result, throwOnRuleFailure);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is RuleException))
         {
-            return HandleException(rule, ex, throwOnRuleFailure);
+            return HandleException(rule, ex, throwOnRuleException);
         }
     }
 
     public async static Task<Result> ThrowAsync(IRule rule)
     {
-        return await ApplyAsync(rule, true).AnyContext();
+        return await ApplyAsync(rule, true, true).AnyContext();
     }
 
     /// <summary>
@@ -96,24 +91,13 @@ public static partial class Rules
     /// </summary>
     /// <param name="rule">The rule to apply.</param>
     /// <param name="throwOnRuleFailure">Indicates whether to throw an exception if the rule fails.</param>
+    /// <param name="throwOnRuleException">Indicates whether to throw an exception if the rule throws an exception.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task containing the Result indicating success or failure of the rule.</returns>
     /// <example>
     /// <code>
-    /// // Single async rule validation
     /// var userExistsRule = new UserExistsRule(userId);
     /// var result = await Rules.ApplyAsync(userExistsRule, cancellationToken);
-    ///
-    /// // Multiple rules with async conditions
-    /// var result = await Rules.For()
-    ///     .Add(RuleSet.IsNotEmpty(order.CustomerId))
-    ///     .WhenAsync(
-    ///         async (token) => await IsCustomerActive(order.CustomerId, token),
-    ///         builder => builder
-    ///             .Add(RuleSet.IsNotNull(order.ShippingAddress))
-    ///             .Add(RuleSet.All(order.Items, item =>
-    ///                 RuleSet.GreaterThan(item.Quantity, 0))))
-    ///     .ApplyAsync(cancellationToken);
     ///
     /// if (result.IsSuccess)
     /// {
@@ -121,7 +105,7 @@ public static partial class Rules
     /// }
     /// </code>
     /// </example>
-    public static async Task<Result> ApplyAsync(IRule rule, bool? throwOnRuleFailure = null, CancellationToken cancellationToken = default)
+    public static async Task<Result> ApplyAsync(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)
     {
         if (rule is null)
         {
@@ -129,6 +113,8 @@ public static partial class Rules
         }
 
         cancellationToken.ThrowIfCancellationRequested();
+        throwOnRuleFailure ??= Settings.ThrowOnRuleFailure;
+        throwOnRuleException ??= Settings.ThrowOnRuleException;
 
         try
         {
@@ -141,12 +127,13 @@ public static partial class Rules
             {
                 result = rule.Apply();
             }
+            //Settings.Logger?.Log(string.Empty, "applied", rule, result, LogLevel.Debug);
 
             return HandleResult(rule, result, throwOnRuleFailure);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is RuleException))
         {
-            return HandleException(rule, ex, throwOnRuleFailure);
+            return HandleException(rule, ex, throwOnRuleException);
         }
     }
 
@@ -154,21 +141,24 @@ public static partial class Rules
     {
         if (result.IsFailure)
         {
-            if (throwOnRuleFailure ?? Settings.ThrowOnRuleFailure)
+            if (throwOnRuleFailure == true)
             {
                 var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, result.Errors.ToString(", "));
+
                 throw ruleException(rule);
             }
 
-            return result.HasError() ? result : result.WithError(new RuleError(rule));
+            result = result.HasError() ? result : result.WithError(new RuleError(rule));
         }
+
+        Settings.Logger?.Log(string.Empty, "applied", rule, result, LogLevel.Debug);
 
         return result;
     }
 
     private static Result HandleException(IRule rule, Exception exception, bool? throwOnRuleException)
     {
-        if (throwOnRuleException ?? Settings.ThrowOnRuleException)
+        if (throwOnRuleException == true)
         {
             var ruleException = Settings.RuleFailureExceptionFactory ??= r => new RuleException(r, string.Empty, exception);
 
@@ -177,8 +167,12 @@ public static partial class Rules
 
         var error = Settings.RuleExceptionErrorFactory ??= (r, ex) => new RuleExceptionError(r, ex);
 
-        return Result.Failure()
+        var result = Result.Failure()
             .WithMessage(exception.Message)
-                .WithError(error(rule, exception));
+            .WithError(error(rule, exception));
+
+        Settings.Logger?.Log(string.Empty, "exception", rule, result, LogLevel.Debug);
+
+        return result;
     }
 }

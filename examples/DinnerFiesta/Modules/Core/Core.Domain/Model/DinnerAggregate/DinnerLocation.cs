@@ -60,7 +60,7 @@ public class DinnerLocation : ValueObject
         double? latitude = null,
         double? longitude = null)
     {
-        Rules.For(
+        Rule.For(
             DinnerRules.CountryShouldBeKnown(country),
             DinnerRules.LongitudeShouldBeInRange(longitude),
             DinnerRules.LatitudeShouldBeInRange(latitude)

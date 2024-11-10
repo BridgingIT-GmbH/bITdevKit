@@ -34,12 +34,12 @@ public class RuleLogger(ILogger<RuleLogger> logger) : IRuleLogger
         context = context.IsNullOrEmpty() ? string.Empty :  $"<{context}>";
 
         this.logger.Log(logLevel,
-            "{LogKey} rule {Rule}  result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
+            "{LogKey} rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
             "RES",
             rule.GetType().Name,
+            content,
             result.IsSuccess ? "Success" : "Failure",
             $"{result.Messages.Concat(errors).ToString(", ")}",
-            content,
             context);
     }
 
@@ -56,12 +56,12 @@ public class RuleLogger(ILogger<RuleLogger> logger) : IRuleLogger
         var errors = result.Errors.Select(e => $"[{e.GetType().Namespace}] {e.Message}");
 
         this.logger.Log(logLevel,
-            "{LogKey} rule {Rule} result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
+            "{LogKey} rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
             "RES",
             rule.GetType().Name,
+            content,
             result.IsSuccess ? "Success" : "Failure",
             $"{result.Messages.Concat(errors).ToString(", ")}",
-            content,
             typeof(TContext).Name);
     }
 }

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 /// This class is used as a default no-op logger when no other logger is provided.
 /// Methods in this class do not perform any actions and are intended to be used as placeholders.
 /// </remarks>
-public class NullRuleLogger : IRuleLogger
+public class RuleNullLogger : IRuleLogger
 {
     /// <summary>
     /// Logs the given context, content, and result using the specified log level.

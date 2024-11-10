@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
-using Rules = BridgingIT.DevKit.Common.Rules;
-
 [UnitTest("Common")]
 public class RulesSettingsTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
@@ -24,14 +22,14 @@ public class RulesSettingsTests(RulesFixture fixture) : IClassFixture<RulesFixtu
         };
 
         // Act
-        Rules.Setup(builder =>
+        Rule.Setup(builder =>
         {
             builder.ThrowOnRuleFailure = settingsBuilder.ThrowOnRuleFailure;
             builder.ThrowOnRuleException = settingsBuilder.ThrowOnRuleException;
         });
 
         // Assert
-        Rules.Settings.ThrowOnRuleFailure.ShouldBeTrue();
-        Rules.Settings.ThrowOnRuleException.ShouldBeFalse();
+        Rule.Settings.ThrowOnRuleFailure.ShouldBeTrue();
+        Rule.Settings.ThrowOnRuleException.ShouldBeFalse();
     }
 }

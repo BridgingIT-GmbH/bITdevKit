@@ -5,12 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.ComponentModel;
+
 /// <summary>
 /// Provides a fluent interface for building and executing collections of rules.
 /// <para>
 /// Usage example:
 /// <code>
-///     return DomaainRules.For()
+///     return Rule.For()
 ///         // Basic validation using ValueRules
 ///         .Add(Rules.IsNotEmpty(product.Name))
 ///         .Add(Rules.StringLength(product.Name, 3, 100))
@@ -36,17 +38,18 @@ namespace BridgingIT.DevKit.Common;
 /// </code>
 /// </para>
 /// </summary>
-public class RulesBuilder
+public class RuleBuilder
 {
     private readonly List<IRule> rules = [];
-    private bool continueOnFailure;
+    private bool continueOnRuleFailure = Rule.Settings.ContinueOnRuleFailure;
+    private bool throwOnRuleFailure = Rule.Settings.ThrowOnRuleFailure;
 
     /// <summary>
     /// Adds a rule to the builder.
     /// </summary>
     /// <param name="rule">The rule to add.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder Add(IRule rule)
+    public RuleBuilder Add(IRule rule)
     {
         if (rule is not null)
         {
@@ -61,7 +64,7 @@ public class RulesBuilder
     /// </summary>
     /// <param name="rules">The rules to add.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder Add(params IRule[] rules)
+    public RuleBuilder Add(params IRule[] rules)
     {
         foreach (var rule in rules)
         {
@@ -75,9 +78,9 @@ public class RulesBuilder
     /// Creates an empty rule builder.
     /// </summary>
     /// <returns>A new empty rule builder instance.</returns>
-    public static RulesBuilder For()
+    public static RuleBuilder For()
     {
-        return new RulesBuilder();
+        return new RuleBuilder();
     }
 
     /// <summary>
@@ -85,9 +88,9 @@ public class RulesBuilder
     /// </summary>
     /// <param name="rule">The initial rule.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static RulesBuilder For(IRule rule)
+    public static RuleBuilder For(IRule rule)
     {
-        return new RulesBuilder().Add(rule);
+        return new RuleBuilder().Add(rule);
     }
 
     /// <summary>
@@ -95,9 +98,9 @@ public class RulesBuilder
     /// </summary>
     /// <param name="rules">The initial rules.</param>
     /// <returns>A new rule builder instance.</returns>
-    public static RulesBuilder For(params IRule[] rules)
+    public static RuleBuilder For(params IRule[] rules)
     {
-        var builder = new RulesBuilder();
+        var builder = new RuleBuilder();
         foreach (var rule in rules)
         {
             builder.Add(rule);
@@ -110,9 +113,16 @@ public class RulesBuilder
     /// Enables error aggregation, collecting all rule failures instead of stopping at the first failure.
     /// </summary>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder ContinueOnFailure()
+    public RuleBuilder ContinueOnFailure()
     {
-        this.continueOnFailure = true;
+        this.continueOnRuleFailure = true;
+
+        return this;
+    }
+
+    public RuleBuilder ThrowOnFailure() // TODO: not used yet
+    {
+        this.throwOnRuleFailure = true;
 
         return this;
     }
@@ -123,7 +133,7 @@ public class RulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="rule">The rule to add if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder When(bool condition, IRule rule)
+    public RuleBuilder When(bool condition, IRule rule)
     {
         return condition ? this.Add(rule) : this;
     }
@@ -134,7 +144,7 @@ public class RulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="addRules">Action to add rules if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder When(bool condition, Action<RulesBuilder> addRules)
+    public RuleBuilder When(bool condition, Action<RuleBuilder> addRules)
     {
         if (condition)
         {
@@ -150,7 +160,7 @@ public class RulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="rule">The rule to add if the condition is false.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder Unless(bool condition, IRule rule)
+    public RuleBuilder Unless(bool condition, IRule rule)
     {
         return this.When(!condition, rule);
     }
@@ -161,7 +171,7 @@ public class RulesBuilder
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="addRules">Action to add rules if the condition is false.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder Unless(bool condition, Action<RulesBuilder> addRules)
+    public RuleBuilder Unless(bool condition, Action<RuleBuilder> addRules)
     {
         return this.When(!condition, addRules);
     }
@@ -172,7 +182,7 @@ public class RulesBuilder
     /// <param name="condition">An async function that determines if the rule should be executed.</param>
     /// <param name="rule">The rule to execute if the condition is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, IRule rule)
+    public RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, IRule rule)
     {
         return this.Add(new AsyncConditionalRule(condition, rule));
     }
@@ -183,9 +193,9 @@ public class RulesBuilder
     /// <param name="condition">An async function that determines if the rules should be executed.</param>
     /// <param name="addRules">Action to add rules if the condition is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Action<RulesBuilder> addRules)
+    public RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Action<RuleBuilder> addRules)
     {
-        var builder = new RulesBuilder();
+        var builder = new RuleBuilder();
         addRules(builder);
 
         foreach (var rule in builder.rules)
@@ -202,7 +212,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if all conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAll(IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenAll(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.All(c => c), rule);
     }
@@ -213,7 +223,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="addRules">Action to add rules if all conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAll(IEnumerable<bool> conditions, Action<RulesBuilder> addRules)
+    public RuleBuilder WhenAll(IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
         return this.When(conditions.All(c => c), addRules);
     }
@@ -224,7 +234,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if any condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAny(IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenAny(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Any(c => c), rule);
     }
@@ -235,7 +245,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="addRules">Action to add rules if any condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAny(IEnumerable<bool> conditions, Action<RulesBuilder> addRules)
+    public RuleBuilder WhenAny(IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
         return this.When(conditions.Any(c => c), addRules);
     }
@@ -246,7 +256,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if no conditions are true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenNone(IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenNone(IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(!conditions.Any(c => c), rule);
     }
@@ -258,7 +268,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the exact count matches.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenExactly(int count, IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenExactly(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) == count, rule);
     }
@@ -270,7 +280,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the minimum count is met.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) >= count, rule);
     }
@@ -282,7 +292,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the count doesn't exceed the maximum.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenAtMost(int count, IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenAtMost(int count, IEnumerable<bool> conditions, IRule rule)
     {
         return this.When(conditions.Count(c => c) <= count, rule);
     }
@@ -295,7 +305,7 @@ public class RulesBuilder
     /// <param name="conditions">The conditions to evaluate.</param>
     /// <param name="rule">The rule to add if the count falls within range.</param>
     /// <returns>The current builder instance for method chaining.</returns>
-    public RulesBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, IRule rule)
+    public RuleBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, IRule rule)
     {
         var trueCount = conditions.Count(c => c);
 
@@ -308,7 +318,6 @@ public class RulesBuilder
     /// If continueOnFailure is enabled, collects all rule failures.
     /// </summary>
     /// <param name="throwOnFailure"></param>
-    /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
     /// <code>
@@ -322,30 +331,28 @@ public class RulesBuilder
     ///     .Apply();
     /// </code>
     /// </example>
-    public Result Apply(bool? throwOnFailure = null, ILogger logger = null) // TODO: setup the logger like Result (IResultLogger -> IRulesLogger)
+    public Result Apply(bool? throwOnFailure = null)
     {
-        logger ??= NullLogger.Instance;
-
         if (!this.rules.Any())
         {
-            logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
+            //logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
 
             return Result.Success();
         }
 
-        if (!this.continueOnFailure)
+        if (!this.continueOnRuleFailure)
         {
             foreach (var rule in this.rules)
             {
-                var result = Rules.Apply(rule, throwOnFailure);
+                var result = Rule.Apply(rule, throwOnFailure);
                 if (result.IsFailure)
                 {
-                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                    //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                     return result;
                 }
 
-                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                //logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -356,15 +363,15 @@ public class RulesBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = Rules.Apply(rule, false);
+            var result = Rule.Apply(rule, false);
             if (!result.IsFailure)
             {
-                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                //logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+            //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
             hasFailures = true;
             errors.AddRange(result.Errors);
@@ -382,7 +389,7 @@ public class RulesBuilder
     /// Supports async conditions and rules.
     /// </summary>
     /// <param name="throwOnFailure"></param>
-    /// <param name="logger">Optional logger to use for logging rule execution outcomes.</param>
+    /// <param name="throwOnRuleException"></param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
@@ -395,35 +402,33 @@ public class RulesBuilder
     ///         async (token) => await IsCustomerActive(order.CustomerId, token),
     ///         RuleSet.IsNotNull(order.ShippingAddress))
     ///     .ContinueOnFailure()
-    ///     .ApplyAsync(logger, cancellationToken);
+    ///     .ApplyAsync(cancellationToken);
     /// </code>
     /// </example>
-    public async Task<Result> ApplyAsync(bool throwOnFailure = false, ILogger logger = null, CancellationToken cancellationToken = default)
+    public async Task<Result> ApplyAsync(bool throwOnFailure = false, bool throwOnRuleException = false, CancellationToken cancellationToken = default)
     {
-        logger ??= NullLogger.Instance;
-
         if (!this.rules.Any())
         {
-            logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
+            // logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
 
             return Result.Success();
         }
 
-        if (!this.continueOnFailure)
+        if (!this.continueOnRuleFailure)
         {
             foreach (var rule in this.rules)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken).AnyContext();
+                var result = await Rule.ApplyAsync(rule, throwOnFailure, throwOnRuleException, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
-                    logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                    // logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                     return result;
                 }
 
-                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                // logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -436,15 +441,15 @@ public class RulesBuilder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = await Rules.ApplyAsync(rule, throwOnFailure, cancellationToken).AnyContext();
+            var result = await Rule.ApplyAsync(rule, throwOnFailure, throwOnRuleException, cancellationToken).AnyContext();
             if (!result.IsFailure)
             {
-                logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                // logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+            // logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             hasFailures = true;
             errors.AddRange(result.Errors);
         }
@@ -460,7 +465,6 @@ public class RulesBuilder
     /// </summary>
     /// <typeparam name="T">The type of items to filter.</typeparam>
     /// <param name="items">The collection of items to filter.</param>
-    /// <param name="logger">Optional logger instance.</param>
     /// <returns>A Result containing the filtered collection.</returns>
     /// <example>
     /// <code>
@@ -473,8 +477,7 @@ public class RulesBuilder
     /// </code>
     /// </example>
     public Result<IEnumerable<T>> Filter<T>(
-        IEnumerable<T> items,
-        ILogger logger = null)
+        IEnumerable<T> items)
     {
         if (!this.rules.Any())
         {
@@ -510,7 +513,7 @@ public class RulesBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = Rules.Apply(rule);
+                var result = Rule.Apply(rule);
                 if (result.IsFailure)
                 {
                     return Result.Failure();
@@ -527,7 +530,6 @@ public class RulesBuilder
     /// </summary>
     /// <typeparam name="T">The type of items to filter.</typeparam>
     /// <param name="items">The collection of items to filter.</param>
-    /// <param name="logger">Optional logger instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A Result containing the filtered collection.</returns>
     /// <example>
@@ -537,12 +539,11 @@ public class RulesBuilder
     ///     .Add(User u => RuleSet.IsValidEmail(u.Email))
     ///     .When(isActive, builder => builder
     ///         .Add(User u => RuleSet.IsNotNull(u.LastLoginDate)))
-    ///     .FilterAsync(users, logger, cancellationToken);
+    ///     .FilterAsync(users, cancellationToken);
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<T>>> FilterAsync<T>(
         IEnumerable<T> items,
-        ILogger logger = null,
         CancellationToken cancellationToken = default)
     {
         if (!this.rules.Any())
@@ -583,7 +584,7 @@ public class RulesBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = await Rules.ApplyAsync(rule, false, cancellationToken).AnyContext();
+                var result = await Rule.ApplyAsync(rule, false, false, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
                     return Result.Failure();

@@ -26,7 +26,7 @@ public class CustomerCreateCommandHandler(
             command.LastName,
             command.Email);
 
-        Rule.For().Apply();
+        Rule.Add().Apply();
 
         var existingCustomer = (await repository.FindAllAsync(
                 new CustomerForEmailSpecification(customer.Email),

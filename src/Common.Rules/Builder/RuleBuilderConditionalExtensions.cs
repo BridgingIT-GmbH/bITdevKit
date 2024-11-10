@@ -19,7 +19,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(() => product.IsDigital, Rules.IsNotEmpty(product.DownloadUrl))
     ///     .Apply();
     /// </code>
@@ -41,7 +41,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(() => product.IsDigital, Rules.IsNotEmpty(product.DownloadUrl), Rules.StringLength(product.DownloadUrl, 5, 100))
     ///     .Apply();
     /// </code>
@@ -68,7 +68,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(() => !product.IsDigital, builder => builder
     ///         .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///         .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
@@ -97,7 +97,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(product.IsDigital, Rules.ApplyDigitalRules())
     ///     .Apply();
     /// </code>
@@ -121,7 +121,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(!product.IsDigital, builder => builder
     ///         .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///         .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
@@ -148,7 +148,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(product.HasDiscount, () => product.Price > 0, "Price must be greater than 0 when discounted.")
     ///     .Apply();
     /// </code>
@@ -172,7 +172,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .When(product.HasSubscription,
     ///         () => product.SubscriptionLevel > 0,
     ///         () => product.SubscriptionValid)
@@ -201,7 +201,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .Unless(product.IsDigital, Rules.GreaterThan(product.Price, 10m))
     ///     .Apply();
     /// </code>
@@ -225,7 +225,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .Unless(product.IsDigital, builder => builder
     ///         .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///         .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
@@ -252,7 +252,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .Unless(user.IsActive, () => user.IsVerified, "User must be verified if not active.")
     ///     .Apply();
     /// </code>
@@ -276,7 +276,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .Unless(product.IsOnSale,
     ///         () => product.Discount >= 0.1m,
     ///         () => product.Discount == 0.5m)
@@ -305,7 +305,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
     ///         Rules.IsNotEmpty(product.DownloadUrl),
     ///         Rules.StringLength(product.DownloadUrl, 5, 100))
@@ -335,7 +335,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
     ///         () => product.Price > 0,
     ///         "Price must be greater than 0 for available products")
@@ -360,7 +360,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///         builder => builder
     ///             .Add(Rules.IsNotEmpty(product.ShippingAddress))
@@ -395,7 +395,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///         Rules.IsNotEmpty(product.ShippingAddress))
     ///     .Apply();
@@ -420,7 +420,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///         Rules.IsNotEmpty(product.ShippingAddress),
     ///         Rules.StringLength(product.ShippingAddress, 10, 200))
@@ -452,7 +452,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///         () => product.Price > 0,
     ///         "Price must be greater than 0 for non-digital products")
@@ -479,7 +479,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token), Rules.ApplyAsyncRule())
     ///     .Apply();
     /// </code>
@@ -498,7 +498,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token), builder => builder
     ///         .Add(Rules.ApplyAsyncRule())
     ///         .Add(Rules.AnotherRule()))
@@ -527,7 +527,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
     ///     .Apply();
     /// </code>
@@ -549,7 +549,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///         .Add(Rules.IsNotEmpty(product.DownloadUrl))
     ///         .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
@@ -573,7 +573,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///         Rules.IsNotEmpty(product.DownloadUrl),
     ///         Rules.StringLength(product.DownloadUrl, 5, 100))
@@ -597,7 +597,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
     ///     .Apply();
     /// </code>
@@ -619,7 +619,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///         .Add(Rules.IsNotEmpty(product.DownloadUrl))
     ///         .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
@@ -643,7 +643,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///         Rules.IsNotEmpty(product.DownloadUrl),
     ///         Rules.StringLength(product.DownloadUrl, 5, 100))
@@ -667,7 +667,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenNone(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.GreaterThan(product.Price, 10m))
     ///     .Apply();
     /// </code>
@@ -700,7 +700,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenNone(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///         Rules.GreaterThan(product.Price, 10m),
     ///         Rules.IsNotEmpty(product.ShippingAddress))
@@ -725,7 +725,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenExactly(2, new[] { () => product.HasSubscription, () => product.IsDigital, () => product.IsOnSale }, Rules.ApplySpecialDiscount())
     ///     .Apply();
     /// </code>
@@ -749,7 +749,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenExactly(2, new[] { () => product.HasSubscription, () => product.IsDigital, () => product.IsOnSale }, builder => builder
     ///         .Add(Rules.ApplySpecialDiscount())
     ///         .Add(Rules.RequireDownloadUrl()))
@@ -775,7 +775,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenExactly(2, new[]
     ///     {
     ///         () => product.IsDigital,
@@ -806,7 +806,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     /// ///     .WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.SendNotification())
     ///     .Apply();
     /// </code>
@@ -830,7 +830,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///         .Add(Rules.SendNotification())
     ///         .Add(Rules.ApplyDiscount()))
@@ -856,7 +856,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription },
     ///         Rules.SendNotification(),
     ///         Rules.ApplyDiscount())
@@ -882,7 +882,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtMost(1, new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.ApplyStandardPrice())
     ///     .Apply();
     /// </code>
@@ -918,7 +918,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtMost(1, new[] { () => product.IsDigital, () => product.HasSubscription },
     ///         Rules.ApplyStandardPrice(),
     ///         Rules.RequireShippingAddress())
@@ -945,7 +945,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenBetween(1, 2, new[] { () => product.IsDigital, () => product.HasSubscription, () => product.IsOnSale }, Rules.ApplyFlexibleDiscount())
     ///     .Apply();
     /// </code>
@@ -996,7 +996,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenBetween(1, 2, new[]
     ///     {
     ///         () => product.IsDigital,
@@ -1033,7 +1033,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAll(new[] { true, true, true }, Rules.ApplyAllTrueRule())
     ///     .Apply();
     /// </code>
@@ -1052,7 +1052,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAll(new[] { true, true, true }, builder => builder
     ///         .Add(Rules.ApplyAllTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1073,7 +1073,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAny(new[] { true, false, false }, Rules.ApplyAnyTrueRule())
     ///     .Apply();
     /// </code>
@@ -1092,7 +1092,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAny(new[] { true, false, false }, builder => builder
     ///         .Add(Rules.ApplyAnyTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1113,7 +1113,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenNone(new[] { false, false, false }, Rules.ApplyNoneTrueRule())
     ///     .Apply();
     /// </code>
@@ -1132,7 +1132,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenNone(new[] { false, false, false }, builder => builder
     ///         .Add(Rules.ApplyNoneTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1154,7 +1154,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenExactly(2, new[] { true, true, false }, Rules.ApplyExactTrueRule())
     ///     .Apply();
     /// </code>
@@ -1174,7 +1174,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenExactly(2, new[] { true, true, false }, builder => builder
     ///         .Add(Rules.ApplyExactTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1196,7 +1196,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtLeast(1, new[] { true, false, false }, Rules.ApplyAtLeastTrueRule())
     ///     .Apply();
     /// </code>
@@ -1216,7 +1216,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtLeast(1, new[] { true, false, false }, builder => builder
     ///         .Add(Rules.ApplyAtLeastTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1238,7 +1238,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtMost(1, new[] { true, false, false }, Rules.ApplyAtMostTrueRule())
     ///     .Apply();
     /// </code>
@@ -1258,7 +1258,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenAtMost(1, new[] { true, false, false }, builder => builder
     ///         .Add(Rules.ApplyAtMostTrueRule())
     ///         .Add(Rules.AnotherRule()))
@@ -1281,7 +1281,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenBetween(1, 2, new[] { true, true, false }, Rules.ApplyBetweenTrueRule())
     ///     .Apply();
     /// </code>
@@ -1304,7 +1304,7 @@ public static class RuleBuilderConditionalExtensions
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// Rule.For()
+    /// Rule
     ///     .WhenBetween(1, 2, new[] { true, true, false }, builder => builder
     ///         .Add(Rules.ApplyBetweenTrueRule())
     ///         .Add(Rules.AnotherRule()))

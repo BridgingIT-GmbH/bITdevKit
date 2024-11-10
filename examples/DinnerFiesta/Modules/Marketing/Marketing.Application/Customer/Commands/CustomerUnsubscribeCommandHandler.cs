@@ -21,7 +21,7 @@ public class CustomerUnsubscribeCommandHandler(
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        Rule.For().Apply();
+        Rule.Add().Apply();
 
         var customer = await repository
             .FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken)

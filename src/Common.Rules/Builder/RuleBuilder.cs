@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// <para>
 /// Usage example:
 /// <code>
-///     return Rule.For()
+///     return Rule
 ///         // Basic validation using ValueRules
 ///         .Add(Rules.IsNotEmpty(product.Name))
 ///         .Add(Rules.StringLength(product.Name, 3, 100))
@@ -53,7 +53,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var builder = Rule.For()
+    /// var builder = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .Add(Rules.NumericRange(product.Price, 0.01m, 999.99m))
     ///     .Apply();
@@ -76,7 +76,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var builder = Rule.For()
+    /// var builder = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name), Rules.NumericRange(product.Price, 0.01m, 999.99m))
     ///     .Apply();
     /// </code>
@@ -99,7 +99,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var builder = Rule.For()
+    /// var builder = Rule
     ///     .Add(() => user.IsActive)
     ///     .Apply();
     /// </code>
@@ -116,7 +116,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var builder = Rule.For()
+    /// var builder = Rule
     ///     .Add(() => user.IsActive, () => user.HasValidSubscription)
     ///     .Apply();
     /// </code>
@@ -137,7 +137,7 @@ public class RuleBuilder
     /// <returns>A new empty rule builder instance.</returns>
     /// <example>
     /// <code>
-    /// var builder = Rule.For()
+    /// var builder = Rule
     ///     .Add(Rules.IsNotEmpty(user.Name))
     ///     .Apply();
     /// </code>
@@ -233,7 +233,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var result = Rule.For()
+    /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ContinueOnFailure()
     ///     .Apply();
@@ -253,7 +253,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var result = Rule.For()
+    /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ThrowOnFailure(true)
     ///     .Apply();
@@ -273,7 +273,7 @@ public class RuleBuilder
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
-    /// var result = Rule.For()
+    /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ThrowOnException(true)
     ///     .Apply();
@@ -294,7 +294,7 @@ public class RuleBuilder
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
     /// <code>
-    /// var result = Rules.For()
+    /// var result = Rules
     ///     .Add(RuleSet.IsNotEmpty(product.Name))
     ///     .Add(RuleSet.NumericRange(product.Price, 0.01m, 999.99m))
     ///     .When(!product.IsDigital, builder => builder
@@ -365,7 +365,7 @@ public class RuleBuilder
     /// <returns>A Result object indicating the success or failure of applying the rules.</returns>
     /// <example>
     /// <code>
-    /// var result = await Rules.For()
+    /// var result = await Rules
     ///     .Add(RuleSet.IsNotEmpty(order.CustomerId))
     ///     .Add(RuleSet.All(order.Items, item =>
     ///         RuleSet.GreaterThan(item.Quantity, 0)))
@@ -439,7 +439,7 @@ public class RuleBuilder
     /// <returns>A Result containing the filtered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Rules.For()
+    /// var result = Rules
     ///     .Add(Product p => RuleSet.IsNotEmpty(p.Name))
     ///     .Add(Product p => RuleSet.NumericRange(p.Price, 0.01m, 999.99m))
     ///     .When(!isDigital, builder => builder
@@ -504,7 +504,7 @@ public class RuleBuilder
     /// <returns>A Result containing the filtered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = await Rules.For()
+    /// var result = await Rules
     ///     .Add(User u => RuleSet.IsNotEmpty(u.Email))
     ///     .Add(User u => RuleSet.IsValidEmail(u.Email))
     ///     .When(isActive, builder => builder
@@ -574,7 +574,7 @@ public class RuleBuilder
     /// <exception cref="RuleException">When rule execution throws an error</exception>
     /// <example>
     /// <code>
-    /// var result = Rule.For()
+    /// var result = Rule
     ///     .Add(RuleSet.IsNotEmpty(product.Name))
     ///     .Add(RuleSet.NumericRange(product.Price, 0.01m, 999.99m))
     ///     .When(!product.IsDigital, builder => builder
@@ -599,7 +599,7 @@ public class RuleBuilder
     /// <exception cref="RuleException">When rule execution throws an error</exception>
     /// <example>
     /// <code>
-    /// var result = await Rule.For()
+    /// var result = await Rule
     ///     .Add(RuleSet.IsNotEmpty(order.CustomerId))
     ///     .Add(RuleSet.All(order.Items, item =>
     ///         RuleSet.GreaterThan(item.Quantity, 0)))

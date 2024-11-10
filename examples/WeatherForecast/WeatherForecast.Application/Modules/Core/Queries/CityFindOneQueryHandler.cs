@@ -44,7 +44,7 @@ public class CityFindOneQueryHandler(
         }
         else
         {
-            Rule.For(
+            Rule.Add(
                 new LongitudeShouldBeInRange(query.Longitude),
                 new LatitudeShouldBeInRange(query.Latitude)
             ).Apply();

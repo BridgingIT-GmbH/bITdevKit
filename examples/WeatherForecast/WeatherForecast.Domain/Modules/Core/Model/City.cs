@@ -61,7 +61,7 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        Rule.For(
+        Rule.Add(
                 new DeleteMustBeProvidedReasonRule(reason),
                 new DeleteCannotBeDoneTwiceRule(this.IsDeleted))
             .Apply();

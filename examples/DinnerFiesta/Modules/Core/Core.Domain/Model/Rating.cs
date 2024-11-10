@@ -18,7 +18,7 @@ public class Rating : ValueObject
 
     public static Rating Create(int value)
     {
-        return Rule.For(
+        return Rule.Add(
                 RatingRules.ShouldBeInRange(value)).Apply()
             .ThrowIfFailed()
             .Map(new Rating(value)).Value;

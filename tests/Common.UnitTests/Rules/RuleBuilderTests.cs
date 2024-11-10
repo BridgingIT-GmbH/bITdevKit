@@ -27,7 +27,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             20);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .When(person.Age >= 18, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -49,7 +49,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             15);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .When(person.Age >= 18, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -70,7 +70,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             15);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Unless(person.Age < 18, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -98,7 +98,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenAll(conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -125,7 +125,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenAny(conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -153,7 +153,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenNone(conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -180,7 +180,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenExactly(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -207,7 +207,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenAtLeast(2, conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -234,7 +234,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenAtMost(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -261,7 +261,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         };
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .WhenBetween(1, 2, conditions, RuleSet.IsValidEmail(person.Email.Value))
             .Apply();
 
@@ -281,7 +281,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             16); // Underage
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsNotEmpty(person.LastName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -302,7 +302,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", "john@example.com", 25);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Apply();
 
@@ -317,7 +317,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub(string.Empty, "Doe", "john@example.com", 25);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Apply();
 
@@ -333,7 +333,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var message = "First name is required";
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName), message)
             .Apply();
 
@@ -349,7 +349,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", "john@example.com", 25);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Add(() => person.Age >= 18)
             .Add(() => person.Email.Value.Contains("@"))
@@ -366,7 +366,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", "john@example.com", 15);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Add(() => person.Age >= 18)
             .Add(() => person.Email.Value.Contains("@"))
@@ -384,7 +384,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var shouldValidateAge = false;
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .When(shouldValidateAge,
                 builder =>
@@ -402,7 +402,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", "john@example.com", 25);
 
         // Act
-        var result = await Rule.For()
+        var result = await Rule.Add()
             .Add(async _ => await Task.FromResult(!string.IsNullOrEmpty(person.Email.Value)))
             .ApplyAsync();
 
@@ -417,7 +417,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", string.Empty, 25);
 
         // Act
-        var result = await Rule.For()
+        var result = await Rule.Add()
             .Add(async _ => await Task.FromResult(!string.IsNullOrEmpty(person.Email.Value)))
             .ApplyAsync();
 
@@ -439,7 +439,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         }
 
         // Act
-        var result = await Rule.For()
+        var result = await Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Add(async (token) => await IsEmailUniqueAsync(person.Email.Value, token))
             .ApplyAsync();
@@ -466,7 +466,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         await cts.CancelAsync();
         await Should.ThrowAsync<OperationCanceledException>(async () =>
         {
-            await Rule.For()
+            await Rule.Add()
                 .Add(async (token) => await LongRunningCheckAsync(token))
                 .ApplyAsync(cancellationToken: cts.Token);
         });
@@ -479,7 +479,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub(string.Empty, string.Empty, "invalid-email", 15);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName), "First name required")
             .Add(() => !string.IsNullOrEmpty(person.LastName), "Last name required")
             .Add(() => person.Age >= 18, "Must be adult")
@@ -501,7 +501,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         person.AddLocation(location);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => person.Locations.Any())
             .Add(() => person.Locations.All(l => !string.IsNullOrEmpty(l.City)))
             .Apply();
@@ -517,7 +517,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var person = new PersonStub("John", "Doe", "john@example.com", 25);
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName) && !string.IsNullOrEmpty(person.LastName))
             .Add(() => person.Age >= 18 && person.Age < 100)
             .Add(() => person.Email.Value.Contains("@") && !person.Email.Value.Contains(" "))
@@ -539,7 +539,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             16); // Underage
 
         // Act
-        var result = Rule.For()
+        var result = Rule.Add()
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsNotEmpty(person.LastName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -576,7 +576,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "Canada"));
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsNotEmpty(person.LastName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -632,7 +632,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "UK")); // Not USA
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             .Add(() => !person.LastName.IsNullOrEmpty())
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -689,7 +689,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "Canada"));
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             .Add(RuleSet.IsNotEmpty(person.Locations))
             .Add(RuleSet.HasCollectionSize(person.Locations, 1, 5))
             // All locations must have required fields
@@ -738,7 +738,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "Canada")); // Not USA - fails domain rule
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             // Rules
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -787,7 +787,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "USA"));
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             // Rules
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
@@ -826,7 +826,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             this.faker.Address.City(),
             "USA"));
 
-        var rules = Rule.For()
+        var rules = Rule.Add()
             // Rules - all should pass
             .Add(RuleSet.IsNotEmpty(person.FirstName))
             .Add(RuleSet.IsNotEmpty(person.LastName))

@@ -210,33 +210,33 @@ public class RuleBuilder
     /// </example>
     public Result Check()
     {
-        if (!this.rules.Any())
+        if (this.rules.Count == 0)
         {
-            //logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
-
             return Result.Success();
         }
 
+        var messages = new List<string>();
+        var errors = new List<IResultError>();
+        var hasFailures = false;
+
         if (!this.continueOnRuleFailure)
         {
+
             foreach (var rule in this.rules)
             {
                 var result = Rule.Check(rule, this.throwOnFailure, this.throwOnException);
                 if (result.IsFailure)
                 {
-                    //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
-
                     return result;
                 }
 
-                //logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                messages.AddRange(result.Messages);
+                errors.AddRange(result.Errors);
             }
 
-            return Result.Success();
+            return Result.Success()
+                .WithMessages(messages).WithErrors(errors) ;
         }
-
-        var errors = new List<IResultError>();
-        var hasFailures = false;
 
         foreach (var rule in this.rules)
         {
@@ -251,12 +251,13 @@ public class RuleBuilder
             //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
             hasFailures = true;
+            messages.AddRange(result.Messages);
             errors.AddRange(result.Errors);
         }
 
         return hasFailures
-            ? Result.Failure().WithErrors(errors)
-            : Result.Success();
+            ? Result.Failure().WithMessages(messages).WithErrors(errors)
+            : Result.Success().WithMessages(messages).WithErrors(errors);
     }
 
     /// <summary>
@@ -282,7 +283,7 @@ public class RuleBuilder
     /// </example>
     public async Task<Result> CheckAsync(CancellationToken cancellationToken = default)
     {
-        if (!this.rules.Any())
+        if (this.rules.Count == 0)
         {
             // logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
 
@@ -353,7 +354,7 @@ public class RuleBuilder
     /// </example>
     public Result<IEnumerable<T>> Filter<T>(IEnumerable<T> items)
     {
-        if (!this.rules.Any())
+        if (this.rules.Count == 0)
         {
             return HandleEmptyInput();
         }
@@ -418,7 +419,7 @@ public class RuleBuilder
     /// </example>
     public async Task<Result<IEnumerable<T>>> FilterAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken = default)
     {
-        if (!this.rules.Any())
+        if (this.rules.Count == 0)
         {
             return HandleEmptyInput();
         }

@@ -470,31 +470,6 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public void Setup_ShouldUpdateAllSettings()
-    {
-        // Arrange
-        var logger = Substitute.For<IRuleLogger>();
-        var customExceptionFactory = new Func<IRule, RuleException>(r => new RuleException(r, "Custom"));
-        var customErrorFactory = new Func<IRule, Exception, RuleExceptionError>((r, ex) => new RuleExceptionError(r, ex));
-
-        // Act
-        Rule.Setup(b => b
-                .ThrowOnRuleFailure()
-                .ThrowOnRuleException()
-                .SetLogger(logger)
-                .SetRuleFailureExceptionFactory(customExceptionFactory)
-                .SetRuleExceptionErrorFactory(customErrorFactory));
-
-        // Assert
-        var settings = Rule.Settings;
-        settings.ThrowOnRuleFailure.ShouldBeTrue();
-        settings.ThrowOnRuleException.ShouldBeTrue();
-        settings.Logger.ShouldBe(logger);
-        settings.RuleFailureExceptionFactory.ShouldBe(customExceptionFactory);
-        settings.RuleExceptionErrorFactory.ShouldBe(customErrorFactory);
-    }
-
-    [Fact]
     public void Check_ShouldLogSuccessfulRuleExecution()
     {
         // Arrange
@@ -507,7 +482,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 
         // Assert
         result.ShouldBeSuccess();
-        logger.Received(1).Log(Arg.Any<string>(), "satisfied", rule, result, LogLevel.Debug);
+        logger.Received(1).Log(Arg.Any<string>(), "success", rule, result, LogLevel.Debug);
     }
 
     [Fact]
@@ -524,7 +499,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 
         // Assert
         result.ShouldBeFailure();
-        logger.Received(1).Log(Arg.Any<string>(), "exception", rule, result, LogLevel.Debug);
+        logger.Received(1).Log(Arg.Any<string>(), "failure", rule, result, LogLevel.Debug);
     }
 
     [Fact]

@@ -295,7 +295,7 @@ public static partial class Rule
             result = result.HasError() ? result : result.WithError(new RuleError(rule));
         }
 
-        Settings.Logger?.Log(string.Empty, "satisfied", rule, result, LogLevel.Debug);
+        Settings.Logger?.Log(string.Empty, result.IsSuccess ? "success" : "failure", rule, result, LogLevel.Debug);
 
         return result;
     }
@@ -315,7 +315,7 @@ public static partial class Rule
             .WithMessage(exception.Message)
             .WithError(error(rule, exception));
 
-        Settings.Logger?.Log(string.Empty, "exception", rule, result, LogLevel.Debug);
+        Settings.Logger?.Log(string.Empty, "failure", rule, result, LogLevel.Debug);
 
         return result;
     }

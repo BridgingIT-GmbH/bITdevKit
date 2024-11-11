@@ -10,6 +10,7 @@ using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]
+[Collection(nameof(RuleBuilderCollectionDefinition))] // prevents parellel execution with RuleTests (which modify the global Rule Settings)
 public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
     private readonly RulesFixture fixture = fixture;

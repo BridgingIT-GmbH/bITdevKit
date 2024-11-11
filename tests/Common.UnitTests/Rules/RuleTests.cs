@@ -478,14 +478,12 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
         var customErrorFactory = new Func<IRule, Exception, RuleExceptionError>((r, ex) => new RuleExceptionError(r, ex));
 
         // Act
-        Rule.Setup(builder =>
-        {
-            builder.ThrowOnRuleFailure = true;
-            builder.ThrowOnRuleException = true;
-            builder.Logger = logger;
-            builder.RuleFailureExceptionFactory = customExceptionFactory;
-            builder.RuleExceptionErrorFactory = customErrorFactory;
-        });
+        Rule.Setup(b => b
+                .ThrowOnRuleFailure()
+                .ThrowOnRuleException()
+                .SetLogger(logger)
+                .SetRuleFailureExceptionFactory(customExceptionFactory)
+                .SetRuleExceptionErrorFactory(customErrorFactory));
 
         // Assert
         var settings = Rule.Settings;
@@ -501,7 +499,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
     {
         // Arrange
         var logger = Substitute.For<IRuleLogger>();
-        Rule.Setup(builder => builder.Logger = logger);
+        Rule.Setup(builder => builder.SetLogger(logger));
         var rule = new IsAdultRule(new PersonStub(this.faker.Name.FirstName(), this.faker.Name.LastName(), this.faker.Internet.Email(), 21));
 
         // Act
@@ -517,7 +515,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
     {
         // Arrange
         var logger = Substitute.For<IRuleLogger>();
-        Rule.Setup(builder => builder.Logger = logger);
+        Rule.Setup(builder => builder.SetLogger(logger));
         var rule = Substitute.For<IRule>();
         rule.IsSatisfied().Throws<InvalidOperationException>();
 
@@ -535,7 +533,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
         // Arrange
         var customMessage = "Custom exception message";
         Rule.Setup(builder => builder
-            .RuleFailureExceptionFactory = r => new RuleException(r, customMessage));
+            .SetRuleFailureExceptionFactory(r => new RuleException(r, customMessage)));
 
         var rule = Substitute.For<IRule>();
         rule.IsSatisfied().Returns(Result.Failure());

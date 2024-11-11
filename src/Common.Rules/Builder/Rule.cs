@@ -91,7 +91,6 @@ public static partial class Rule
     /// </code>
     /// </example>
     public static RuleBuilder Add(params IRule[] rules)
-
     {
         var builder = new RuleBuilder();
         foreach (var rule in rules)

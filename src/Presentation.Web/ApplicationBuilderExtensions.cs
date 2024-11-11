@@ -36,7 +36,7 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseRuleLogger(this IApplicationBuilder app)
     {
         var logger = app.ApplicationServices.GetService<ILogger<RuleLogger>>();
-        Rule.Setup(s => s.Logger = new RuleLogger(logger));
+        Rule.Setup(s => s.SetLogger(new RuleLogger(logger)));
 
         return app;
     }

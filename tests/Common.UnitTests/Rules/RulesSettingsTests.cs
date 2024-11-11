@@ -15,18 +15,10 @@ public class RulesSettingsTests(RulesFixture fixture) : IClassFixture<RulesFixtu
     public void Setup_ShouldConfigureGlobalSettings()
     {
         // Arrange
-        var settingsBuilder = new RuleSettingsBuilder
-        {
-            ThrowOnRuleFailure = true,
-            ThrowOnRuleException = false
-        };
-
         // Act
-        Rule.Setup(builder =>
-        {
-            builder.ThrowOnRuleFailure = settingsBuilder.ThrowOnRuleFailure;
-            builder.ThrowOnRuleException = settingsBuilder.ThrowOnRuleException;
-        });
+        Rule.Setup(b => b
+            .ThrowOnRuleFailure()
+            .ThrowOnRuleException(false));
 
         // Assert
         Rule.Settings.ThrowOnRuleFailure.ShouldBeTrue();

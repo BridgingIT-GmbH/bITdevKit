@@ -31,7 +31,7 @@ public class JobWrapper(
         var jobId = context.JobDetail.JobDataMap.GetString(JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;
 
-        using (logger.BeginScope(new Dictionary<string, object>
+        using (logger?.BeginScope(new Dictionary<string, object>
                {
                    [CorrelationKey] = correlationId,
                    [FlowKey] = flowId,
@@ -57,7 +57,7 @@ public class JobWrapper(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,
+                logger?.LogError(ex,
                     "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}",
                     Constants.LogKey,
                     jobTypeName,

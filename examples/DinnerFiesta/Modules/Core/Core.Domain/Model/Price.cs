@@ -22,7 +22,7 @@ public class Price : ValueObject // TODO: or use Money?
     public static Price Create(decimal amount, string currency)
     {
         Rule.Add(PriceRules.ShouldBeInRange(amount))
-            .ThrowOnFailure().Apply();
+            .ThrowOnFailure().Check();
 
         return new Price(amount, currency);
     }

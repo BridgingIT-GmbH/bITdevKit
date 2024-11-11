@@ -10,6 +10,7 @@ using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]
+[Collection(nameof(RuleBuilderCollectionDefinition))] // prevents parellel execution with RuleTests (which modify the global Rule Settings)
 public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
     private readonly RulesFixture fixture = fixture;
@@ -29,7 +30,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .When(person.Age >= 18, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -51,7 +52,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .When(person.Age >= 18, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -72,7 +73,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .Unless(person.Age < 18, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -100,7 +101,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenAll(conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -127,7 +128,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenAny(conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -155,7 +156,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenNone(conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -182,7 +183,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenExactly(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -209,7 +210,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenAtLeast(2, conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -236,7 +237,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenAtMost(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -263,7 +264,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .WhenBetween(1, 2, conditions, RuleSet.IsValidEmail(person.Email.Value))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -287,7 +288,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .Add(RuleSet.IsValidEmail(person.Email.Value))
             .Add(RuleSet.GreaterThanOrEqual(person.Age, 18))
             .ContinueOnFailure()
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -304,7 +305,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeSuccess();
@@ -319,7 +320,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeFailure();
@@ -335,7 +336,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName), message)
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeFailure();
@@ -353,7 +354,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Add(() => person.Age >= 18)
             .Add(() => person.Email.Value.Contains("@"))
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeSuccess();
@@ -369,8 +370,8 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
             .Add(() => person.Age >= 18)
-            .Add(() => person.Email.Value.Contains("@"))
-            .Apply();
+            .Add(() => person.Email.Value.Contains('@'))
+            .Check();
 
         // Assert
         result.ShouldBeFailure();
@@ -386,10 +387,11 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = Rule.Add()
             .Add(() => !string.IsNullOrEmpty(person.FirstName))
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             .When(shouldValidateAge,
                 builder =>
                     builder.Add(() => person.Age >= 18))
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeSuccess();
@@ -404,7 +406,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = await Rule.Add()
             .Add(async _ => await Task.FromResult(!string.IsNullOrEmpty(person.Email.Value)))
-            .ApplyAsync();
+            .CheckAsync();
 
         // Assert
         result.ShouldBeSuccess();
@@ -419,7 +421,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Act
         var result = await Rule.Add()
             .Add(async _ => await Task.FromResult(!string.IsNullOrEmpty(person.Email.Value)))
-            .ApplyAsync();
+            .CheckAsync();
 
         // Assert
         result.ShouldBeFailure();
@@ -431,21 +433,23 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         // Arrange
         var person = new PersonStub("John", "Doe", "john@example.com", 25);
 
+        // Act
+        var result = await Rule.Add()
+            .Add(() => !string.IsNullOrEmpty(person.FirstName))
+            .Add(async token => await IsEmailUniqueAsync(person.Email.Value, token))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeSuccess();
+
+        return;
+
         async Task<bool> IsEmailUniqueAsync(string email, CancellationToken token)
         {
             await Task.Delay(1, token);
 
             return email.Contains("@");
         }
-
-        // Act
-        var result = await Rule.Add()
-            .Add(() => !string.IsNullOrEmpty(person.FirstName))
-            .Add(async (token) => await IsEmailUniqueAsync(person.Email.Value, token))
-            .ApplyAsync();
-
-        // Assert
-        result.ShouldBeSuccess();
     }
 
     [Fact]
@@ -453,7 +457,17 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     {
         // Arrange
         using var cts = new CancellationTokenSource();
-        var person = new PersonStub("John", "Doe", "john@example.com", 25);
+
+        // Act & Assert
+        await cts.CancelAsync();
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await Rule.Add()
+                .Add(async token => await LongRunningCheckAsync(token))
+                .CheckAsync(cancellationToken: cts.Token);
+        });
+
+        return;
 
         async Task<bool> LongRunningCheckAsync(CancellationToken token)
         {
@@ -461,15 +475,6 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
 
             return true;
         }
-
-        // Act & Assert
-        await cts.CancelAsync();
-        await Should.ThrowAsync<OperationCanceledException>(async () =>
-        {
-            await Rule.Add()
-                .Add(async (token) => await LongRunningCheckAsync(token))
-                .ApplyAsync(cancellationToken: cts.Token);
-        });
     }
 
     [Fact]
@@ -485,7 +490,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .Add(() => person.Age >= 18, "Must be adult")
             .Add(() => person.Email.Value.Contains("@"), "Invalid email")
             .ContinueOnFailure()
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeFailure();
@@ -504,7 +509,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         var result = Rule.Add()
             .Add(() => person.Locations.Any())
             .Add(() => person.Locations.All(l => !string.IsNullOrEmpty(l.City)))
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeSuccess();
@@ -522,7 +527,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .Add(() => person.Age >= 18 && person.Age < 100)
             .Add(() => person.Email.Value.Contains("@") && !person.Email.Value.Contains(" "))
             .Add(() => person.Nationality == "USA")
-            .Apply();
+            .Check();
 
         // Assert
         result.ShouldBeSuccess();
@@ -544,7 +549,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .Add(RuleSet.IsNotEmpty(person.LastName))
             .Add(RuleSet.IsValidEmail(person.Email.Value))
             .Add(RuleSet.GreaterThanOrEqual(person.Age, 18))
-            .Apply();
+            .Check();
 
         // Assert
 
@@ -553,7 +558,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_CompletePersonValidation_ShouldValidateAllRules()
+    public void Check_CompletePersonValidation_ShouldValidateAllRules()
     {
         // Arrange
         var person = new PersonStub(
@@ -600,7 +605,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
                     RuleSet.IsEmpty(location.PostalCode)));
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
 
@@ -609,7 +614,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_PersonValidationWithFailures_ShouldCollectAllErrors()
+    public void Check_PersonValidationWithFailures_ShouldCollectAllErrors()
     {
         // Arrange
         var person = new PersonStub(
@@ -650,7 +655,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .ContinueOnFailure();
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
 
@@ -664,7 +669,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_LocationValidationOnly_ShouldValidateAllLocations()
+    public void Check_LocationValidationOnly_ShouldValidateAllLocations()
     {
         // Arrange
         var person = new PersonStub(
@@ -713,7 +718,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .ContinueOnFailure();
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
 
@@ -722,7 +727,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_WithFluentValidationAndRules_ShouldValidateCorrectly()
+    public void Check_WithFluentValidationAndRules_ShouldValidateCorrectly()
     {
         // Arrange
         var person = new PersonStub(
@@ -736,7 +741,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             null,
             this.faker.Address.ZipCode(),
             this.faker.Address.City(),
-            "Canada")); // Not USA - fails domain rule
+            "Canada")); // Not USA
 
         var rules = Rule.Add()
             // Rules
@@ -751,7 +756,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .ContinueOnFailure();
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
         result.ShouldBeFailure();
@@ -771,7 +776,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_WithValidPersonData_ShouldPassAllValidations()
+    public void Check_WithValidPersonData_ShouldPassAllValidations()
     {
         // Arrange
         var person = new PersonStub(
@@ -800,7 +805,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .ContinueOnFailure();
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
 
@@ -810,7 +815,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     }
 
     [Fact]
-    public void Apply_WithOnlyFluentValidationFailures_ShouldCollectFluentErrors()
+    public void Check_WithOnlyFluentValidationFailures_ShouldCollectFluentErrors()
     {
         // Arrange
         var person = new PersonStub(
@@ -838,7 +843,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             .ContinueOnFailure();
 
         // Act
-        var result = rules.Apply();
+        var result = rules.Check();
 
         // Assert
 
@@ -849,4 +854,724 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
         fluentErrors.Message.ShouldContain("Invalid email");
         result.Errors.Count.ShouldBe(1); // Only the FluentValidation error group
     }
+
+    [Fact]
+    public void When_WithFuncCondition_ShouldExecuteRuleWhenTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "Doe", "invalid-email", 20);
+
+        // Act
+        var result = Rule.Add()
+            .When(() => person.Age >= 18, RuleSet.IsNotEmpty(person.FirstName))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void When_WithMultipleRules_ShouldExecuteAllWhenConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = Rule.Add()
+            .When(() => person.Age >= 18,
+                RuleSet.IsNotEmpty(person.FirstName),
+                RuleSet.IsNotEmpty(person.LastName))
+            .ContinueOnFailure()
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void When_WithBuilderAction_ShouldExecuteAllRulesWhenConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = Rule.Add()
+            .When(() => person.Age >= 18,
+                builder => builder
+                    .Add(RuleSet.IsNotEmpty(person.FirstName))
+                    .Add(RuleSet.IsNotEmpty(person.LastName)))
+            .ContinueOnFailure()
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithSingleRule_ShouldExecuteWhenConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "Doe", "invalid-email", 20);
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(RuleSet.IsNotEmpty(person.FirstName))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithMultipleRules_ShouldExecuteAllWhenConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(RuleSet.IsNotEmpty(person.FirstName)),
+                    async _ => await Task.FromResult(RuleSet.IsNotEmpty(person.LastName))))
+            .ContinueOnFailure()
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithBuilderAction_ShouldExecuteAllRulesWhenConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = await Rule.Add()
+            .WhenAsync(
+                async _ => await Task.FromResult(person.Age >= 18),
+                builder => builder
+                    .Add(RuleSet.IsNotEmpty(person.FirstName))
+                    .Add(RuleSet.IsNotEmpty(person.LastName)))
+            .ContinueOnFailure()
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task WhenAllAsync_WithSingleRule_ShouldExecuteWhenAllConditionsAreTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAllAsync(conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAll_WithPredicates_ShouldExecuteWhenAllTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAll(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAny_WithPredicates_ShouldExecuteWhenAnyTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "", "invalid-email", 15);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAny(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAnyAsync_WithSingleRule_ShouldExecuteWhenAnyConditionIsTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "", "invalid-email", 20);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAnyAsync(conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .ContinueOnFailure()
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenNone_WithPredicates_ShouldExecuteWhenNoneTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 25);
+        var conditions = new[]
+        {
+            () => person.Age < 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenNone(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenNoneAsync_WithSingleRule_ShouldExecuteWhenNoConditionsAreTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 25);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age < 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenNoneAsync(conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAll_WithBooleanConditions_ShouldExecuteWhenAllTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAll(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAny_WithBooleanConditions_ShouldExecuteWhenAnyTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 20);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAny(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .ContinueOnFailure()
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenNone_WithBooleanConditions_ShouldExecuteWhenNoneTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 25);
+        var conditions = new[]
+        {
+            person.Age < 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenNone(conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenExactlyAsync_WithSingleRule_ShouldExecuteWhenExactNumberTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "", "invalid-email", 15);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenExactlyAsync(1,
+                    conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenExactly_WithBooleanConditions_ShouldExecuteWhenExactNumberTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "", "invalid-email", 15);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenExactly(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenExactly_WithPredicates_ShouldExecuteWhenExactNumberTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "", "invalid-email", 15);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenExactly(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAtLeastAsync_WithSingleRule_ShouldExecuteWhenMinimumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAtLeastAsync(2,
+                    conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAtLeast_WithBooleanConditions_ShouldExecuteWhenMinimumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAtLeast(2, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAtLeast_WithPredicates_ShouldExecuteWhenMinimumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAtLeast(2, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAtMostAsync_WithSingleRule_ShouldExecuteWhenMaximumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 15);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAtMostAsync(1,
+                    conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAtMost_WithBooleanConditions_ShouldExecuteWhenMaximumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 15);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAtMost(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenAtMost_WithPredicates_ShouldExecuteWhenMaximumTrue()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 15);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenAtMost(1, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenBetweenAsync_WithSingleRule_ShouldExecuteWhenCountInRange()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new Func<CancellationToken, Task<bool>>[]
+        {
+            async _ => await Task.FromResult(person.Age >= 18),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.FirstName)),
+            async _ => await Task.FromResult(string.IsNullOrEmpty(person.LastName))
+        };
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenBetweenAsync(2,
+                    3,
+                    conditions,
+                    async _ => await Task.FromResult(RuleSet.IsValidEmail(person.Email.Value))))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenBetween_WithPredicates_ShouldExecuteWhenCountInRange()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            () => person.Age >= 18,
+            () => string.IsNullOrEmpty(person.FirstName),
+            () => string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenBetween(2, 3, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithAsyncPredicate_ShouldExecuteRuleWhenTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.FirstName)),
+                    "First name required"))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task UnlessAsync_WithAsyncPredicate_ShouldExecuteRuleWhenFalse()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 15);
+
+        // Act
+        var result = await (await Rule.Add()
+                .UnlessAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.FirstName)),
+                    "First name required"))
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithMultipleAsyncPredicates_ShouldExecuteAllWhenConditionTrue()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+
+        // Act
+        var result = await (await Rule.Add()
+                .WhenAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.FirstName)),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.LastName))))
+            .ContinueOnFailure()
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task UnlessAsync_WithMultipleAsyncPredicates_ShouldExecuteAllWhenConditionFalse()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 15);
+
+        // Act
+        var result = await (await Rule.Add()
+                .UnlessAsync(
+                    async _ => await Task.FromResult(person.Age >= 18),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.FirstName)),
+                    async _ => await Task.FromResult(!string.IsNullOrEmpty(person.LastName))))
+            .ContinueOnFailure()
+            .CheckAsync();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(2);
+    }
+
+    [Fact]
+    public void WhenBetween_WithBooleanConditions_ShouldExecuteWhenCountInRange()
+    {
+        // Arrange
+        var person = new PersonStub("", "", "invalid-email", 20);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenBetween(2, 3, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public void WhenBetween_WithBooleanConditions_ShouldSkipWhenCountOutOfRange()
+    {
+        // Arrange
+        var person = new PersonStub("John", "Doe", "invalid-email", 15);
+        var conditions = new[]
+        {
+            person.Age >= 18,
+            string.IsNullOrEmpty(person.FirstName),
+            string.IsNullOrEmpty(person.LastName)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .WhenBetween(2, 3, conditions, RuleSet.IsValidEmail(person.Email.Value))
+            .Check();
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Errors.Count.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task Should_Support_Multiple_Async_Rules_With_Cancellation()
+    {
+        // Arrange
+        using var cts = new CancellationTokenSource();
+
+        // Act & Assert
+        await cts.CancelAsync();
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await (await Rule.Add()
+                    .WhenAsync(
+                        async token => await DelayedCheckAsync(token),
+                        async token => await DelayedCheckAsync(token)))
+                .CheckAsync(cancellationToken: cts.Token);
+        });
+
+        return;
+
+        async Task<bool> DelayedCheckAsync(CancellationToken token)
+        {
+            await Task.Delay(100, token);
+
+            return true;
+        }
+    }
 }
+
+[CollectionDefinition(nameof(RuleBuilderCollectionDefinition), DisableParallelization = true)]
+public class RuleBuilderCollectionDefinition { }

@@ -21,7 +21,7 @@ namespace BridgingIT.DevKit.Common;
 ///     .ThrowOnRuleException(true))
 ///     .UseLogger(logger)
 ///
-/// var result = await Rule.Apply(new MinimumAgeRule(person));
+/// var result = await Rule.Check(new MinimumAgeRule(person));
 /// var result = await Rule.Throw(new MinimumAgeRule(person));
 /// </code>
 /// </example>
@@ -59,7 +59,7 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var nameRule = RuleSet.IsNotEmpty(user.Name);
-    /// var result = Rules.Apply(nameRule);
+    /// var result = Rules.Check(nameRule);
     ///
     /// if (result.IsSuccess)
     /// {
@@ -67,7 +67,7 @@ public static partial class Rule
     /// }
     /// </code>
     /// </example>
-    public static Result Apply(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)
+    public static Result Check(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)
     {
         if (rule is null)
         {
@@ -80,7 +80,7 @@ public static partial class Rule
 
         try
         {
-            var result = rule.Apply();
+            var result = rule.IsSatisfied();
             //Settings.Logger?.Log(string.Empty, "applied", rule, result, LogLevel.Debug);
 
             return HandleResult(rule, result, shouldThrowOnFailure);
@@ -104,17 +104,16 @@ public static partial class Rule
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
     /// <example>
     /// <code>
-    /// var result = Rule.Apply(() => user.Age > 18);
+    /// var result = Rule.Check(() => user.Age > 18);
     /// if (result.IsSuccess)
     /// {
     ///     // Validation passed
     /// }
     /// </code>
     /// </example>
-    public static Result Apply(Func<bool> expression, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)
+    public static Result Check(Func<bool> expression, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)
     {
-        var rule = new FuncRule(expression);
-        return Apply(rule, throwOnRuleFailure, throwOnRuleException);
+        return expression is null ? Result.Success() : Check(new FuncRule(expression), throwOnRuleFailure, throwOnRuleException);
     }
 
     /// <summary>
@@ -122,7 +121,7 @@ public static partial class Rule
     /// Returns a success result if the rule passes, or a failure result if it fails.
     /// Supports both synchronous and asynchronous rules.
     /// </summary>
-    /// <param name="rule">The rule to apply.</param>
+    /// <param name="rule">The rule to check.</param>
     /// <param name="throwOnRuleFailure">Indicates whether to throw an exception if the rule fails.</param>
     /// <param name="throwOnRuleException">Indicates whether to throw an exception if the rule throws an exception.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
@@ -130,7 +129,7 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var userExistsRule = new UserExistsRule(userId);
-    /// var result = await Rules.ApplyAsync(userExistsRule, cancellationToken);
+    /// var result = await Rules.CheckAsync(userExistsRule, cancellationToken);
     ///
     /// if (result.IsSuccess)
     /// {
@@ -138,7 +137,7 @@ public static partial class Rule
     /// }
     /// </code>
     /// </example>
-    public static async Task<Result> ApplyAsync(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)
+    public static async Task<Result> CheckAsync(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)
     {
         if (rule is null)
         {
@@ -155,8 +154,8 @@ public static partial class Rule
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = rule is AsyncRuleBase asyncRule
-                ? await asyncRule.ApplyAsync(cancellationToken).AnyContext()
-                : rule.Apply();
+                ? await asyncRule.IsSatisfiedAsync(cancellationToken).AnyContext()
+                : rule.IsSatisfied();
 
             return HandleResult(rule, result, shouldThrowOnFailure);
         }
@@ -184,17 +183,24 @@ public static partial class Rule
     /// <returns>A task containing the <see cref="Result"/> indicating success or failure of the rule.</returns>
     /// <example>
     /// <code>
-    /// var result = await Rule.ApplyAsync(() => CheckUserPermissions(userId));
+    /// var result = await Rule.CheckAsync(() => CheckUserPermissions(userId));
     /// if (result.IsSuccess)
     /// {
     ///     // Validation passed
     /// }
     /// </code>
     /// </example>
-    public static async Task<Result> ApplyAsync(Func<bool> expression, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)
+    public static async Task<Result> CheckAsync(
+        Func<bool> expression,
+        bool? throwOnRuleFailure = null,
+        bool? throwOnRuleException = null,
+        CancellationToken cancellationToken = default)
     {
-        var rule = new FuncRule(expression);
-        return await ApplyAsync(rule, throwOnRuleFailure, throwOnRuleException, cancellationToken).AnyContext();
+        return await CheckAsync(
+            new FuncRule(expression),
+            throwOnRuleFailure,
+            throwOnRuleException,
+            cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -212,7 +218,7 @@ public static partial class Rule
     /// </example>
     public static Result Throw(IRule rule, bool throwOnRuleFailure = true)
     {
-        return Apply(rule, throwOnRuleFailure, true);
+        return Check(rule, throwOnRuleFailure, true);
     }
 
     /// <summary>
@@ -230,8 +236,7 @@ public static partial class Rule
     /// </example>
     public static Result Throw(Func<bool> expression, bool throwOnRuleFailure = true)
     {
-        var rule = new FuncRule(expression);
-        return Throw(rule, throwOnRuleFailure);
+        return Throw(new FuncRule(expression), throwOnRuleFailure);
     }
 
     /// <summary>
@@ -254,7 +259,7 @@ public static partial class Rule
     /// </example>
     public async static Task<Result> ThrowAsync(IRule rule, bool throwOnRuleFailure = true, CancellationToken cancellationToken = default)
     {
-        return await ApplyAsync(rule, throwOnRuleFailure, true, cancellationToken).AnyContext();
+        return await CheckAsync(rule, throwOnRuleFailure, true, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -273,8 +278,7 @@ public static partial class Rule
     /// </example>
     public static async Task<Result> ThrowAsync(Func<bool> expression, bool throwOnRuleFailure = true, CancellationToken cancellationToken = default)
     {
-        var rule = new FuncRule(expression);
-        return await ThrowAsync(rule, throwOnRuleFailure, cancellationToken).AnyContext();
+        return await ThrowAsync(new FuncRule(expression), throwOnRuleFailure, cancellationToken).AnyContext();
     }
 
     private static Result HandleResult(IRule rule, Result result, bool throwOnRuleFailure)
@@ -291,7 +295,7 @@ public static partial class Rule
             result = result.HasError() ? result : result.WithError(new RuleError(rule));
         }
 
-        Settings.Logger?.Log(string.Empty, "applied", rule, result, LogLevel.Debug);
+        Settings.Logger?.Log(string.Empty, "satisfied", rule, result, LogLevel.Debug);
 
         return result;
     }

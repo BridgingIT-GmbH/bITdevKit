@@ -25,7 +25,7 @@ public class DinnerNameMustBeUniqueRuleTests
         var sut = new DinnerNameMustBeUniqueRule(repository, name);
 
         // Act
-        var result = await sut.ApplyAsync();
+        var result = await sut.IsSatisfiedAsync();
 
         // Assert
         result.ShouldBeSuccess();

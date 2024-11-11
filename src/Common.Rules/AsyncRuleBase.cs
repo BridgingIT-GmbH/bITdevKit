@@ -32,7 +32,7 @@ public abstract class AsyncRuleBase : IRule
     /// Throws NotSupportedException as async rules must be executed asynchronously.
     /// </summary>
     /// <exception cref="NotSupportedException">Always thrown as async rules don't support synchronous execution.</exception>
-    public virtual Result Apply()
+    public virtual Result IsSatisfied()
     {
         throw new NotSupportedException("This rule only supports async execution");
     }
@@ -42,7 +42,7 @@ public abstract class AsyncRuleBase : IRule
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task containing the Result indicating success or failure of the rule.</returns>
-    public virtual async Task<Result> ApplyAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<Result> IsSatisfiedAsync(CancellationToken cancellationToken = default)
     {
         if (!this.IsEnabled)
         {

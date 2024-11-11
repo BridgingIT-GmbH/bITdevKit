@@ -32,7 +32,7 @@ namespace BridgingIT.DevKit.Common;
 ///             product.IsDigital,
 ///             product.Categories?.Count > 2
 ///         }, Rules.IsNotEmpty(product.ShippingAddress))
-///         .Apply();
+///         .Check();
 /// </code>
 /// </para>
 /// </summary>
@@ -56,7 +56,7 @@ public class RuleBuilder
     /// var builder = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .Add(Rules.NumericRange(product.Price, 0.01m, 999.99m))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder Add(IRule rule)
@@ -78,7 +78,7 @@ public class RuleBuilder
     /// <code>
     /// var builder = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name), Rules.NumericRange(product.Price, 0.01m, 999.99m))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder Add(params IRule[] rules)
@@ -101,7 +101,7 @@ public class RuleBuilder
     /// <code>
     /// var builder = Rule
     ///     .Add(() => user.IsActive)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder Add(Func<bool> predicate, string message = null)
@@ -118,7 +118,7 @@ public class RuleBuilder
     /// <code>
     /// var builder = Rule
     ///     .Add(() => user.IsActive, () => user.HasValidSubscription)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder Add(params Func<bool>[] predicates)
@@ -140,7 +140,7 @@ public class RuleBuilder
     /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ContinueOnFailure()
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder ContinueOnFailure()
@@ -160,7 +160,7 @@ public class RuleBuilder
     /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ThrowOnFailure(true)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder ThrowOnFailure(bool throwOnRuleFailure = true)
@@ -180,7 +180,7 @@ public class RuleBuilder
     /// var result = Rule
     ///     .Add(Rules.IsNotEmpty(product.Name))
     ///     .ThrowOnException(true)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public RuleBuilder ThrowOnException(bool throwOnRuleException = true)
@@ -205,10 +205,10 @@ public class RuleBuilder
     ///         .Add(RuleSet.IsNotEmpty(product.ShippingAddress))
     ///         .Add(RuleSet.HasStringLength(product.ShippingAddress, 10, 200)))
     ///     .ContinueOnFailure()
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
-    public Result Apply()
+    public Result Check()
     {
         if (!this.rules.Any())
         {
@@ -221,7 +221,7 @@ public class RuleBuilder
         {
             foreach (var rule in this.rules)
             {
-                var result = Rule.Apply(rule, this.throwOnFailure, this.throwOnException);
+                var result = Rule.Check(rule, this.throwOnFailure, this.throwOnException);
                 if (result.IsFailure)
                 {
                     //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -240,7 +240,7 @@ public class RuleBuilder
 
         foreach (var rule in this.rules)
         {
-            var result = Rule.Apply(rule, false);
+            var result = Rule.Check(rule, false);
             if (!result.IsFailure)
             {
                 //logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -277,10 +277,10 @@ public class RuleBuilder
     ///         async (token) => await IsCustomerActive(order.CustomerId, token),
     ///         RuleSet.IsNotNull(order.ShippingAddress))
     ///     .ContinueOnFailure()
-    ///     .ApplyAsync(cancellationToken);
+    ///     .CheckAsync(cancellationToken);
     /// </code>
     /// </example>
-    public async Task<Result> ApplyAsync(CancellationToken cancellationToken = default)
+    public async Task<Result> CheckAsync(CancellationToken cancellationToken = default)
     {
         if (!this.rules.Any())
         {
@@ -295,7 +295,7 @@ public class RuleBuilder
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var result = await Rule.ApplyAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
+                var result = await Rule.CheckAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
                     // logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -316,7 +316,7 @@ public class RuleBuilder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = await Rule.ApplyAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
+            var result = await Rule.CheckAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
             if (!result.IsFailure)
             {
                 // logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
@@ -387,7 +387,7 @@ public class RuleBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = Rule.Apply(rule);
+                var result = Rule.Check(rule);
                 if (result.IsFailure)
                 {
                     return Result.Failure();
@@ -456,7 +456,7 @@ public class RuleBuilder
                     itemRule.SetItem(item);
                 }
 
-                var result = await Rule.ApplyAsync(rule, false, false, cancellationToken).AnyContext();
+                var result = await Rule.CheckAsync(rule, false, false, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
                     return Result.Failure();
@@ -491,7 +491,7 @@ public class RuleBuilder
         return this
             .ThrowOnFailure(throwOnRuleFailure)
             .ThrowOnException()
-            .Apply();
+            .Check();
     }
 
     /// <summary>
@@ -518,6 +518,6 @@ public class RuleBuilder
         return await this
             .ThrowOnFailure(throwOnRuleFailure)
             .ThrowOnException()
-            .ApplyAsync().AnyContext();
+            .CheckAsync().AnyContext();
     }
 }

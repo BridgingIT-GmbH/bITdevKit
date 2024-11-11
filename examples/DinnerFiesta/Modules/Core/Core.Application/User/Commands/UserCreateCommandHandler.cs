@@ -21,7 +21,7 @@ public class UserCreateCommandHandler(
             command.Email,
             command.Password);
 
-        Rule.Add(UserRules.EmailMustBeUnique(repository, user)).Apply();
+        Rule.Add(UserRules.EmailMustBeUnique(repository, user)).Check();
 
         await repository.InsertAsync(user, cancellationToken);
 

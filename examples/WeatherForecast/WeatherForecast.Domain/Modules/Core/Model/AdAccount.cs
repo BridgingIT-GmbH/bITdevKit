@@ -27,7 +27,7 @@ public class AdAccount : ValueObject
     {
         EnsureArg.IsNotNullOrEmpty(value, nameof(value));
 
-        Rule.Apply(new AdAccountShouldBePartOf(value));
+        Rule.Check(new AdAccountShouldBePartOf(value));
 
         return new AdAccount(value.SliceTill("\\"), value.SliceFrom("\\"));
     }

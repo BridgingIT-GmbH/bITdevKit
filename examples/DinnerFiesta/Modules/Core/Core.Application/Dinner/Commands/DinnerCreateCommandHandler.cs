@@ -38,7 +38,7 @@ public class DinnerCreateCommandHandler(
         await Rule.Add(
                 new DinnerNameMustBeUniqueRule(repository, dinner.Name),
                 new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule))
-            .ApplyAsync(cancellationToken: cancellationToken);
+            .CheckAsync(cancellationToken: cancellationToken);
 
         await repository.InsertAsync(dinner, cancellationToken);
 

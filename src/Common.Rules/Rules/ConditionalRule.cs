@@ -37,6 +37,6 @@ public class ConditionalRule : RuleBase
             return Result.Success();
         }
 
-        return this.rule.Apply();
+        return this.rule.IsSatisfied();
     }
 }

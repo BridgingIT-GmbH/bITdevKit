@@ -19,7 +19,7 @@ public class Rating : ValueObject
     public static Rating Create(int value)
     {
         return Rule.Add(
-                RatingRules.ShouldBeInRange(value)).Apply()
+                RatingRules.ShouldBeInRange(value)).Check()
             .ThrowIfFailed()
             .Map(new Rating(value)).Value;
     }

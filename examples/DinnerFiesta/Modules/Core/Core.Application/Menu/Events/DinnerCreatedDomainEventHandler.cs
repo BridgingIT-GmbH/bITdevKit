@@ -26,7 +26,7 @@ public class DinnerCreatedDomainEventHandler(
         this.Logger.LogInformation($"checking Dinner: {@event.Name} with Menu: {menuId} for Host: {hostId}");
 
         await Rule.Add(new MenuForHostMustExistRule(repository, hostId, menuId))
-            .ThrowOnFailure().ApplyAsync(cancellationToken: cancellationToken);
+            .ThrowOnFailure().CheckAsync(cancellationToken: cancellationToken);
 
         var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
         menu.AddDinnerId(dinnerId);

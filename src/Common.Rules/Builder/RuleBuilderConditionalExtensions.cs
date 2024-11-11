@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public static class RuleBuilderConditionalExtensions
 {
+    // Basic When methods
     /// <summary>
     /// Adds a rule with a sync condition using a lambda expression.
     /// </summary>
@@ -30,6 +31,35 @@ public static class RuleBuilderConditionalExtensions
         IRule rule)
     {
         return builder.Add(new ConditionalRule(condition, rule));
+    }
+
+    /// <summary>
+    /// Adds a rule with an asynchronous condition.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="rule">The rule to add if the condition is true.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
+    ///         async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var result = await condition(CancellationToken.None);
+        if (result)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
     }
 
     /// <summary>
@@ -54,6 +84,171 @@ public static class RuleBuilderConditionalExtensions
         foreach (var rule in rules)
         {
             builder.Add(new ConditionalRule(condition, rule));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules with an asynchronous condition.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="rules">The async rules to add if the condition is true.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
+    ///         async (token) => await Rules.GetAsyncRule1(),
+    ///         async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var result = await condition(CancellationToken.None);
+        if (result)
+        {
+            foreach (var rule in rules)
+            {
+                builder.Add(await rule(CancellationToken.None));
+            }
+        }
+
+        return builder;
+    }
+
+    // When with predicates
+    /// <summary>
+    /// Adds a rule defined by a boolean predicate when the specified condition is true.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The boolean condition to evaluate.</param>
+    /// <param name="predicate">The boolean predicate to evaluate if the condition is true.</param>
+    /// <param name="message">Optional custom message for rule failure.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// Rule
+    ///     .When(product.HasDiscount, () => product.Price > 0, "Price must be greater than 0 when discounted.")
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static RuleBuilder When(this RuleBuilder builder, bool condition, Func<bool> predicate, string message = null)
+    {
+        if (condition)
+        {
+            builder.Add(new FuncRule(predicate, message));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules defined by async predicates when the specified condition is true.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAsync(async (token) => await product.HasSubscriptionAsync(token),
+    ///         async (token) => await product.IsSubscriptionLevelValidAsync(token),
+    ///         async (token) => await product.IsSubscriptionActiveAsync(token))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        Func<CancellationToken, Task<bool>> predicate,
+        string message = null)
+    {
+        var result = await condition(CancellationToken.None);
+        if (result)
+        {
+            builder.Add(new AsyncFuncRule(predicate, message));
+        }
+
+        return builder;
+    }
+
+    // Unless methods
+    /// <summary>
+    /// Adds a rule when the specified condition is false.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The boolean condition to evaluate.</param>
+    /// <param name="rule">The rule to add if the condition is false.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// Rule
+    ///     .Unless(product.IsDigital, Rules.GreaterThan(product.Price, 10m))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static RuleBuilder Unless(this RuleBuilder builder, bool condition, IRule rule)
+    {
+        if (!condition)
+        {
+            builder.Add(rule);
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds a rule asynchronously when the specified condition is false.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="rule">The rule to add if the condition is false.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// Rule
+    ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
+    ///         Rules.IsNotEmpty(product.ShippingAddress))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static RuleBuilder UnlessAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        IRule rule)
+    {
+        return builder.Add(new AsyncConditionalRule(
+            async (token) => !(await condition(token)),
+            rule));
+    }
+
+    /// <summary>
+    /// Adds multiple rules with an async condition using a lambda expression.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="rules">The rules to add if the condition is true.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// Rule
+    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
+    ///         Rules.IsNotEmpty(product.DownloadUrl),
+    ///         Rules.StringLength(product.DownloadUrl, 5, 100))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static RuleBuilder WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        params IRule[] rules)
+    {
+        foreach (var rule in rules)
+        {
+            builder.Add(new AsyncConditionalRule(condition, rule));
         }
 
         return builder;
@@ -89,24 +284,55 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
-    /// Adds a rule when the specified condition is true.
+    /// Adds rules with an asynchronous condition using multiple rules.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The boolean condition to evaluate.</param>
-    /// <param name="rule">The rule to add if the condition is true.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="predicate">The predicate to evaluate if the condition is true.</param>
+    /// <param name="message">Optional custom message for rule failure.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
     /// Rule
-    ///     .When(product.IsDigital, Rules.ApplyDigitalRules())
+    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
+    ///         () => product.Price > 0,
+    ///         "Price must be greater than 0 for available products")
     ///     .Apply();
     /// </code>
     /// </example>
-    public static RuleBuilder When(this RuleBuilder builder, bool condition, IRule rule)
+    public static RuleBuilder WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        Func<bool> predicate,
+        string message = null)
     {
-        if (condition)
+        return builder.Add(new AsyncConditionalRule(condition, new FuncRule(predicate, message)));
+    }
+
+    /// <summary>
+    /// Adds rules with an asynchronous condition using multiple rules.
+    /// </summary>
+    /// <param name="builder">The RuleBuilder instance.</param>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="addRules">Action to add rules if the condition is true.</param>
+    /// <returns>The current builder instance for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// Rule
+    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token), builder => builder
+    ///         .Add(Rules.ApplyAsyncRule())
+    ///         .Add(Rules.AnotherRule()))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static RuleBuilder WhenAsync(this RuleBuilder builder, Func<CancellationToken, Task<bool>> condition, Action<RuleBuilder> addRules)
+    {
+        var innerBuilder = new RuleBuilder();
+        addRules(innerBuilder);
+
+        foreach (var rule in innerBuilder.Rules)
         {
-            builder.Add(rule);
+            builder.Add(new AsyncConditionalRule(condition, rule));
         }
 
         return builder;
@@ -139,25 +365,24 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
-    /// Adds a rule defined by a boolean predicate when the specified condition is true.
+    /// Adds multiple rules when the specified condition is true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
     /// <param name="condition">The boolean condition to evaluate.</param>
-    /// <param name="predicate">The boolean predicate to evaluate if the condition is true.</param>
-    /// <param name="message">Optional custom message for rule failure.</param>
+    /// <param name="rule">The rule to add rules if the condition is true.</param>
     /// <returns>The current builder instance for method chaining.</returns>
     /// <example>
     /// <code>
     /// Rule
-    ///     .When(product.HasDiscount, () => product.Price > 0, "Price must be greater than 0 when discounted.")
+    ///     .When(!product.IsDigital, builder, Rules.IsNotEmpty(product.ShippingAddress))
     ///     .Apply();
     /// </code>
     /// </example>
-    public static RuleBuilder When(this RuleBuilder builder, bool condition, Func<bool> predicate, string message = null)
+    public static RuleBuilder When(this RuleBuilder builder, bool condition, IRule rule)
     {
         if (condition)
         {
-            builder.Add(new FuncRule(predicate, message));
+            builder.Add(rule);
         }
 
         return builder;
@@ -181,36 +406,14 @@ public static class RuleBuilderConditionalExtensions
     /// </example>
     public static RuleBuilder When(this RuleBuilder builder, bool condition, params Func<bool>[] predicates)
     {
-        if (condition)
-        {
-            foreach (var predicate in predicates)
-            {
-                builder.Add(new FuncRule(predicate));
-            }
-        }
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Adds a rule when the specified condition is false.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The boolean condition to evaluate.</param>
-    /// <param name="rule">The rule to add if the condition is false.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .Unless(product.IsDigital, Rules.GreaterThan(product.Price, 10m))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder Unless(this RuleBuilder builder, bool condition, IRule rule)
-    {
         if (!condition)
         {
-            builder.Add(rule);
+            return builder;
+        }
+
+        foreach (var predicate in predicates)
+        {
+            builder.Add(new FuncRule(predicate));
         }
 
         return builder;
@@ -297,61 +500,6 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
-    /// Adds multiple rules with an async condition using a lambda expression.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The asynchronous condition to evaluate.</param>
-    /// <param name="rules">The rules to add if the condition is true.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
-    ///         Rules.IsNotEmpty(product.DownloadUrl),
-    ///         Rules.StringLength(product.DownloadUrl, 5, 100))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder WhenAsync(
-        this RuleBuilder builder,
-        Func<CancellationToken, Task<bool>> condition,
-        params IRule[] rules)
-    {
-        foreach (var rule in rules)
-        {
-            builder.Add(new AsyncConditionalRule(condition, rule));
-        }
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Adds rules with an asynchronous condition using multiple rules.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The asynchronous condition to evaluate.</param>
-    /// <param name="predicate">The predicate to evaluate if the condition is true.</param>
-    /// <param name="message">Optional custom message for rule failure.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token),
-    ///         () => product.Price > 0,
-    ///         "Price must be greater than 0 for available products")
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder WhenAsync(
-        this RuleBuilder builder,
-        Func<CancellationToken, Task<bool>> condition,
-        Func<bool> predicate,
-        string message = null)
-    {
-        return builder.Add(new AsyncConditionalRule(condition, new FuncRule(predicate, message)));
-    }
-
-    /// <summary>
     /// Adds rules asynchronously when the specified condition is false.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
@@ -384,31 +532,6 @@ public static class RuleBuilderConditionalExtensions
         }
 
         return builder;
-    }
-
-    /// <summary>
-    /// Adds a rule asynchronously when the specified condition is false.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The asynchronous condition to evaluate.</param>
-    /// <param name="rule">The rule to add if the condition is false.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .UnlessAsync(async (token) => await product.IsDigitalAsync(token),
-    ///         Rules.IsNotEmpty(product.ShippingAddress))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder UnlessAsync(
-        this RuleBuilder builder,
-        Func<CancellationToken, Task<bool>> condition,
-        IRule rule)
-    {
-        return builder.Add(new AsyncConditionalRule(
-            async (token) => !(await condition(token)),
-            rule));
     }
 
     /// <summary>
@@ -468,54 +591,6 @@ public static class RuleBuilderConditionalExtensions
         return builder.Add(new AsyncConditionalRule(
             async (token) => !(await condition(token)),
             new FuncRule(predicate, message)));
-    }
-
-    /// <summary>
-    /// Adds a rule with an asynchronous condition.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The asynchronous condition to evaluate.</param>
-    /// <param name="rule">The rule to add if the condition is true.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token), Rules.ApplyAsyncRule())
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder WhenAsync(this RuleBuilder builder, Func<CancellationToken, Task<bool>> condition, IRule rule)
-    {
-        return builder.Add(new AsyncConditionalRule(condition, rule));
-    }
-
-    /// <summary>
-    /// Adds multiple rules with an asynchronous condition.
-    /// </summary>
-    /// <param name="builder">The RuleBuilder instance.</param>
-    /// <param name="condition">The asynchronous condition to evaluate.</param>
-    /// <param name="addRules">Action to add rules if the condition is true.</param>
-    /// <returns>The current builder instance for method chaining.</returns>
-    /// <example>
-    /// <code>
-    /// Rule
-    ///     .WhenAsync(async (token) => await product.IsAvailableAsync(token), builder => builder
-    ///         .Add(Rules.ApplyAsyncRule())
-    ///         .Add(Rules.AnotherRule()))
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static RuleBuilder WhenAsync(this RuleBuilder builder, Func<CancellationToken, Task<bool>> condition, Action<RuleBuilder> addRules)
-    {
-        var innerBuilder = new RuleBuilder();
-        addRules(innerBuilder);
-
-        foreach (var rule in innerBuilder.Rules)
-        {
-            builder.Add(new AsyncConditionalRule(condition, rule));
-        }
-
-        return builder;
     }
 
     /// <summary>
@@ -589,6 +664,66 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
+    /// Adds a rule when any of the conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAnyAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAnyAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var result = await Task.WhenAny(conditions.Select(c => c(CancellationToken.None)));
+        if (await result)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when any of the conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAnyAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAnyAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var result = await Task.WhenAny(conditions.Select(c => c(CancellationToken.None)));
+        if (await result)
+        {
+            foreach (var rule in rules)
+            {
+                builder.Add(await rule(CancellationToken.None));
+            }
+        }
+
+        return builder;
+    }
+
+    /// <summary>
     /// Adds a rule when all conditions are true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
@@ -659,6 +794,66 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
+    /// Adds rules when all conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAllAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAllAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.All(r => r))
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when all conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAllAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAllAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.All(r => r))
+        {
+            foreach (var rule in rules)
+            {
+                builder.Add(await rule(CancellationToken.None));
+            }
+        }
+
+        return builder;
+    }
+
+    /// <summary>
     /// Adds a rule when none of the conditions are true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
@@ -713,6 +908,66 @@ public static class RuleBuilderConditionalExtensions
         params IRule[] rules)
     {
         return builder.When(() => !conditions.Any(c => c()), rules);
+    }
+
+    /// <summary>
+    /// Adds rules when none of the conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenNoneAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenNoneAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.All(r => !r))
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when none of the conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenNoneAsync(new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenNoneAsync(
+        this RuleBuilder builder,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.All(r => !r))
+        {
+            foreach (var rule in rules)
+            {
+                builder.Add(await rule(CancellationToken.None));
+            }
+        }
+
+        return builder;
     }
 
     /// <summary>
@@ -797,6 +1052,70 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
+    /// Adds rules when exactly the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenExactlyAsync(2, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenExactlyAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) == count)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when exactly the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenExactlyAsync(2, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenExactlyAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) != count)
+        {
+            return builder;
+        }
+
+        foreach (var rule in rules)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
     /// Adds a rule when at least the specified number of conditions are true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
@@ -873,6 +1192,70 @@ public static class RuleBuilderConditionalExtensions
     }
 
     /// <summary>
+    /// Adds rules when at least the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAtLeastAsync(1, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAtLeastAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) >= count)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when at least the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAtLeastAsync(1, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAtLeastAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) < count)
+        {
+            return builder;
+        }
+
+        foreach (var rule in rules)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
     /// Adds a rule when at most the specified number of conditions are true.
     /// </summary>
     /// <param name="builder">The RuleBuilder instance.</param>
@@ -932,6 +1315,70 @@ public static class RuleBuilderConditionalExtensions
         params IRule[] rules)
     {
         return builder.When(() => conditions.Count(c => c()) <= count, rules);
+    }
+
+    /// <summary>
+    /// Adds rules when at most the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAtMostAsync(1, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAtMostAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) <= count)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when at most the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAtMostAsync(1, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAtMostAsync(
+        this RuleBuilder builder,
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        if (results.Count(r => r) > count)
+        {
+            return builder;
+        }
+
+        foreach (var rule in rules)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
     }
 
     /// <summary>
@@ -1022,6 +1469,74 @@ public static class RuleBuilderConditionalExtensions
                 return trueCount >= min && trueCount <= max;
             },
             rules);
+    }
+
+    /// <summary>
+    /// Adds rules when the number of true conditions falls within the specified range asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenBetweenAsync(1, 2, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenBetweenAsync(
+        this RuleBuilder builder,
+        int min,
+        int max,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        var trueCount = results.Count(r => r);
+        if (trueCount >= min && trueCount <= max)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules when the number of true conditions falls within the specified range asynchronously.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenBetweenAsync(1, 2, new[] {
+    ///         async (token) => await product.IsDigitalAsync(token),
+    ///         async (token) => await product.HasSubscriptionAsync(token)
+    ///     },
+    ///     async (token) => await Rules.GetAsyncRule1(),
+    ///     async (token) => await Rules.GetAsyncRule2())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenBetweenAsync(
+        this RuleBuilder builder,
+        int min,
+        int max,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        var results = await Task.WhenAll(conditions.Select(c => c(CancellationToken.None)));
+        var trueCount = results.Count(r => r);
+        if (trueCount < min || trueCount > max)
+        {
+            return builder;
+        }
+
+        foreach (var rule in rules)
+        {
+            builder.Add(await rule(CancellationToken.None));
+        }
+
+        return builder;
     }
 
     /// <summary>
@@ -1316,5 +1831,94 @@ public static class RuleBuilderConditionalExtensions
         var trueCount = conditions.Count(c => c);
 
         return builder.When(trueCount >= min && trueCount <= max, addRules);
+    }
+
+    /// <summary>
+    /// Adds multiple rules defined by async predicates when the specified condition is true.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .WhenAsync(async (token) => await product.HasSubscriptionAsync(token),
+    ///         async (token) => await product.IsSubscriptionLevelValidAsync(token),
+    ///         async (token) => await product.IsSubscriptionActiveAsync(token))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> WhenAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        params Func<CancellationToken, Task<bool>>[] predicates)
+    {
+        var result = await condition(CancellationToken.None);
+        if (!result)
+        {
+            return builder;
+        }
+
+        foreach (var predicate in predicates)
+        {
+            builder.Add(new AsyncFuncRule(predicate));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds a rule defined by an async predicate when the specified condition is false.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .UnlessAsync(async (token) => await user.IsActiveAsync(token),
+    ///         async (token) => await user.IsVerifiedAsync(token),
+    ///         "User must be verified if not active.")
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> UnlessAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        Func<CancellationToken, Task<bool>> predicate,
+        string message = null)
+    {
+        var result = await condition(CancellationToken.None);
+        if (!result)
+        {
+            builder.Add(new AsyncFuncRule(predicate, message));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds multiple rules defined by async predicates when the specified condition is false.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await Rule
+    ///     .UnlessAsync(async (token) => await product.IsOnSaleAsync(token),
+    ///         async (token) => await product.IsDiscountValidAsync(token),
+    ///         async (token) => await product.IsPriceValidAsync(token))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public static async Task<RuleBuilder> UnlessAsync(
+        this RuleBuilder builder,
+        Func<CancellationToken, Task<bool>> condition,
+        params Func<CancellationToken, Task<bool>>[] predicates)
+    {
+        var result = await condition(CancellationToken.None);
+        if (result)
+        {
+            return builder;
+        }
+
+        foreach (var predicate in predicates)
+        {
+            builder.Add(new AsyncFuncRule(predicate));
+        }
+
+        return builder;
     }
 }

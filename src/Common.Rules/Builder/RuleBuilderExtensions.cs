@@ -38,8 +38,8 @@ public class ItemRule<T>(Func<T, IRule> ruleFactory) : RuleBase
     }
 
     protected override Result Execute() =>
-        ruleFactory(this.item).Apply();
+        ruleFactory(this.item).IsSatisfied();
 
-    public override Task<Result> ApplyAsync(CancellationToken cancellationToken = default) =>
-        ruleFactory(this.item).ApplyAsync(cancellationToken);
+    public override Task<Result> IsSatisfiedAsync(CancellationToken cancellationToken = default) =>
+        ruleFactory(this.item).IsSatisfiedAsync(cancellationToken);
 }

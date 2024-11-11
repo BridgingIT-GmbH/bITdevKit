@@ -27,7 +27,7 @@ public class GeoLocation : ValueObject
         Rule.Add(
                 new LongitudeShouldBeInRange(longitude),
                 new LatitudeShouldBeInRange(latitude))
-            .Apply();
+            .Check();
 
         return new GeoLocation { Longitude = longitude, Latitude = latitude };
     }

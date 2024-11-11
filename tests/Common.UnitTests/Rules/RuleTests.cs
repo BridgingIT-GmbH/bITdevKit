@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
 using System.Diagnostics.CodeAnalysis;
 using Common;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Shouldly;
@@ -14,17 +15,17 @@ using Xunit;
 
 [UnitTest("Common")]
 [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
-public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
+public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 {
-    private readonly RulesFixture fixture = fixture;
+    // private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
 
     [Fact]
-    public void Apply_WithNullRule_ShouldReturnSuccess()
+    public void Check_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
         FuncRule rule = null;
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -32,32 +33,32 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public void Apply_WithSuccessfulRule_ShouldReturnSuccess()
+    public void Check_WithSuccessfulRule_ShouldReturnSuccess()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Success());
+        rule.IsSatisfied().Returns(Result.Success());
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
         result.ShouldBeSuccess();
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public void Apply_WithFailingRule_ShouldReturnFailureWithRuleError()
+    public void Check_WithFailingRule_ShouldReturnFailureWithRuleError()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
         var errorMessage = this.faker.Random.Words();
         rule.Message.Returns(errorMessage);
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -65,23 +66,23 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.HasError<RuleError>().ShouldBeTrue();
         var error = result.GetError<RuleError>();
         error.Message.ShouldBe(errorMessage);
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public void Apply_WithRuleThrowingException_ShouldPropagateException()
+    public void Check_WithRuleThrowingException_ShouldPropagateException()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Throws<InvalidOperationException>();
+        rule.IsSatisfied().Throws<InvalidOperationException>();
 
         // Act & Assert
-        Should.Throw<RuleException>(() => Rule.Apply(rule, true, true));
-        rule.Received(1).Apply();
+        Should.Throw<RuleException>(() => Rule.Check(rule, true, true));
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public void Apply_WithValidationRule_ShouldValidateCorrectly()
+    public void Check_WithValidationRule_ShouldValidateCorrectly()
     {
         // Arrange
         var person = new PersonStub(
@@ -93,7 +94,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = RuleSet.Validate(person, validator);
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -105,11 +106,11 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task ApplyAsync_WithNullRule_ShouldReturnSuccess()
+    public async Task CheckAsync_WithNullRule_ShouldReturnSuccess()
     {
         // Arrange & Act
         FuncRule rule = null;
-        var result = await Rule.ApplyAsync(rule);
+        var result = await Rule.CheckAsync(rule);
 
         // Assert
 
@@ -117,32 +118,32 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task ApplyAsync_WithSuccessfulSyncRule_ShouldReturnSuccess()
+    public async Task CheckAsync_WithSuccessfulSyncRule_ShouldReturnSuccess()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Success());
+        rule.IsSatisfied().Returns(Result.Success());
 
         // Act
-        var result = await Rule.ApplyAsync(rule);
+        var result = await Rule.CheckAsync(rule);
 
         // Assert
 
         result.ShouldBeSuccess();
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public async Task ApplyAsync_WithFailingSyncRule_ShouldReturnFailureWithRuleError()
+    public async Task CheckAsync_WithFailingSyncRule_ShouldReturnFailureWithRuleError()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
         var errorMessage = this.faker.Random.Words();
         rule.Message.Returns(errorMessage);
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act
-        var result = await Rule.ApplyAsync(rule);
+        var result = await Rule.CheckAsync(rule);
 
         // Assert
 
@@ -150,17 +151,17 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.HasError<RuleError>().ShouldBeTrue();
         var error = result.GetError<RuleError>();
         error.Message.ShouldBe(errorMessage);
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public async Task ApplyAsync_WithSuccessfulAsyncRule_ShouldReturnSuccess()
+    public async Task CheckAsync_WithSuccessfulAsyncRule_ShouldReturnSuccess()
     {
         // Arrange
         var rule = new TestAsyncRule(true);
 
         // Act
-        var result = await Rule.ApplyAsync(rule);
+        var result = await Rule.CheckAsync(rule);
 
         // Assert
 
@@ -168,13 +169,13 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task ApplyAsync_WithFailingAsyncRule_ShouldReturnFailureWithRuleError()
+    public async Task CheckAsync_WithFailingAsyncRule_ShouldReturnFailureWithRuleError()
     {
         // Arrange
         var rule = new TestAsyncRule(false);
 
         // Act
-        var result = await Rule.ApplyAsync(rule);
+        var result = await Rule.CheckAsync(rule);
 
         // Assert
 
@@ -183,7 +184,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task ApplyAsync_WithCancellation_ShouldRespectCancellationToken()
+    public async Task CheckAsync_WithCancellation_ShouldRespectCancellationToken()
     {
         // Arrange
         var rule = new TestAsyncRule(true);
@@ -192,17 +193,17 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 
         // Act & Assert
         await Should.ThrowAsync<OperationCanceledException>(() =>
-            Rule.ApplyAsync(rule, true, true, cts.Token));
+            Rule.CheckAsync(rule, true, true, cts.Token));
     }
 
     [Fact]
-    public void Apply_WithNullPerson_ShouldReturnFailure()
+    public void Check_WithNullPerson_ShouldReturnFailure()
     {
         // Arrange
         var rule = new IsAdultRule(null);
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -217,7 +218,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [InlineData(17)]
     [InlineData(0)]
     [InlineData(-1)]
-    public void Apply_WithUnderagePersons_ShouldReturnFailure(int age)
+    public void Check_WithUnderagePersons_ShouldReturnFailure(int age)
     {
         // Arrange
         var person = new PersonStub(
@@ -228,7 +229,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new IsAdultRule(person);
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -243,7 +244,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [InlineData(18)]
     [InlineData(21)]
     [InlineData(99)]
-    public void Apply_WithAdultPersons_ShouldReturnSuccess(int age)
+    public void Check_WithAdultPersons_ShouldReturnSuccess(int age)
     {
         // Arrange
         var person = new PersonStub(
@@ -254,7 +255,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var rule = new IsAdultRule(person);
 
         // Act
-        var result = Rule.Apply(rule);
+        var result = Rule.Check(rule);
 
         // Assert
 
@@ -263,7 +264,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task Apply_WithMultipleRules_ShouldCombineValidations()
+    public async Task Check_WithMultipleRules_ShouldCombineValidations()
     {
         // Arrange
         var person = new PersonStub(
@@ -275,8 +276,8 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var emailRule = RuleSet.IsValidEmail(person.Email.Value);
 
         // Act
-        var result = await Rule.ApplyAsync(adultRule);
-        var emailResult = await Rule.ApplyAsync(emailRule);
+        var result = await Rule.CheckAsync(adultRule);
+        var emailResult = await Rule.CheckAsync(emailRule);
         var combinedResult = Result.Combine(result, emailResult);
 
         // Assert
@@ -287,7 +288,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public void Apply_WithValidPersonData_ShouldPassAllRules()
+    public void Check_WithValidPersonData_ShouldPassAllRules()
     {
         // Arrange
         var person = new PersonStub(
@@ -301,10 +302,10 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         var lastNameRule = RuleSet.IsNotEmpty(person.LastName);
 
         // Act
-        var result1 = Rule.Apply(adultRule);
-        var result2 = Rule.Apply(emailRule);
-        var result3 = Rule.Apply(firstNameRule);
-        var result4 = Rule.Apply(lastNameRule);
+        var result1 = Rule.Check(adultRule);
+        var result2 = Rule.Check(emailRule);
+        var result3 = Rule.Check(firstNameRule);
+        var result4 = Rule.Check(lastNameRule);
         var combinedResult = Result.Combine(result1, result2, result3, result4);
 
         // Assert
@@ -313,7 +314,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public async Task Apply_AsyncValidation_ShouldHandleMultipleRules()
+    public async Task Check_AsyncValidation_ShouldHandleMultipleRules()
     {
         // Arrange
         var person = new PersonStub(
@@ -331,7 +332,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         };
 
         // Act
-        var results = await Task.WhenAll(rules.Select(rule => Rule.ApplyAsync(rule)));
+        var results = await Task.WhenAll(rules.Select(rule => Rule.CheckAsync(rule)));
         var combinedResult = Result.Combine(results);
 
         // Assert
@@ -343,7 +344,7 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     }
 
     [Fact]
-    public void Apply_WithCancellation_ShouldRespectCancellationToken()
+    public void Check_WithCancellation_ShouldRespectCancellationToken()
     {
         // Arrange
         var person = new PersonStub(
@@ -357,67 +358,67 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 
         // Act & Assert
         Should.Throw<OperationCanceledException>(async () =>
-            await Rule.ApplyAsync(rule, true, true, cts.Token));
+            await Rule.CheckAsync(rule, true, true, cts.Token));
     }
 
     [Fact]
-    public void Apply_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
+    public void Check_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act & Assert
-        Should.Throw<RuleException>(() => Rule.Apply(rule, true));
-        rule.Received(1).Apply();
+        Should.Throw<RuleException>(() => Rule.Check(rule, true));
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public async Task ApplyAsync_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
+    public async Task CheckAsync_WithFailingRuleAndThrowOnRuleFailure_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true));
-        rule.Received(1).Apply();
+        await Should.ThrowAsync<RuleException>(() => Rule.CheckAsync(rule, true));
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public async Task ApplyAsync_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    public async Task CheckAsync_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Throws<InvalidOperationException>();
+        rule.IsSatisfied().Throws<InvalidOperationException>();
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true, true));
-        rule.Received(1).Apply();
+        await Should.ThrowAsync<RuleException>(() => Rule.CheckAsync(rule, true, true));
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public async Task ApplyAsync_WithFailingAsyncRuleAndThrowOnRuleFailure_ShouldThrowException()
+    public async Task CheckAsync_WithFailingAsyncRuleAndThrowOnRuleFailure_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<AsyncRuleBase>();
-        rule.ApplyAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Failure()));
+        rule.IsSatisfiedAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(Result.Failure()));
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true));
-        await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
+        await Should.ThrowAsync<RuleException>(() => Rule.CheckAsync(rule, true));
+        await rule.Received(1).IsSatisfiedAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
-    public async Task ApplyAsync_WithAsyncRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    public async Task CheckAsync_WithAsyncRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<AsyncRuleBase>();
-        rule.ApplyAsync(Arg.Any<CancellationToken>()).Throws<InvalidOperationException>();
+        rule.IsSatisfiedAsync(Arg.Any<CancellationToken>()).Throws<InvalidOperationException>();
 
         // Act & Assert
-        await Should.ThrowAsync<RuleException>(() => Rule.ApplyAsync(rule, true, true));
-        await rule.Received(1).ApplyAsync(Arg.Any<CancellationToken>());
+        await Should.ThrowAsync<RuleException>(() => Rule.CheckAsync(rule, true, true));
+        await rule.Received(1).IsSatisfiedAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -425,11 +426,11 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act & Assert
         Should.Throw<RuleException>(() => Rule.Throw(rule));
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
@@ -437,23 +438,143 @@ public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Returns(Result.Failure());
+        rule.IsSatisfied().Returns(Result.Failure());
 
         // Act & Assert
         await Should.ThrowAsync<RuleException>(() => Rule.ThrowAsync(rule));
-        rule.Received(1).Apply();
+        rule.Received(1).IsSatisfied();
     }
 
     [Fact]
-    public void Apply_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
+    public void Check_WithRuleThrowingExceptionAndThrowOnRuleException_ShouldThrowException()
     {
         // Arrange
         var rule = Substitute.For<IRule>();
-        rule.Apply().Throws<InvalidOperationException>();
+        rule.IsSatisfied().Throws<InvalidOperationException>();
 
         // Act & Assert
-        Should.Throw<RuleException>(() => Rule.Apply(rule, true, true));
-        rule.Received(1).Apply();
+        Should.Throw<RuleException>(() => Rule.Check(rule, true, true));
+        rule.Received(1).IsSatisfied();
+    }
+
+    [Fact]
+    public void Setup_ShouldInitializeDefaultSettings()
+    {
+        // Act - Settings are initialized in static constructor
+        var settings = Rule.Settings;
+
+        // Assert
+        settings.ShouldNotBeNull();
+        settings.ThrowOnRuleFailure.ShouldBeFalse();
+        settings.ThrowOnRuleException.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Setup_ShouldUpdateAllSettings()
+    {
+        // Arrange
+        var logger = Substitute.For<IRuleLogger>();
+        var customExceptionFactory = new Func<IRule, RuleException>(r => new RuleException(r, "Custom"));
+        var customErrorFactory = new Func<IRule, Exception, RuleExceptionError>((r, ex) => new RuleExceptionError(r, ex));
+
+        // Act
+        Rule.Setup(builder =>
+        {
+            builder.ThrowOnRuleFailure = true;
+            builder.ThrowOnRuleException = true;
+            builder.Logger = logger;
+            builder.RuleFailureExceptionFactory = customExceptionFactory;
+            builder.RuleExceptionErrorFactory = customErrorFactory;
+        });
+
+        // Assert
+        var settings = Rule.Settings;
+        settings.ThrowOnRuleFailure.ShouldBeTrue();
+        settings.ThrowOnRuleException.ShouldBeTrue();
+        settings.Logger.ShouldBe(logger);
+        settings.RuleFailureExceptionFactory.ShouldBe(customExceptionFactory);
+        settings.RuleExceptionErrorFactory.ShouldBe(customErrorFactory);
+    }
+
+    [Fact]
+    public void Check_ShouldLogSuccessfulRuleExecution()
+    {
+        // Arrange
+        var logger = Substitute.For<IRuleLogger>();
+        Rule.Setup(builder => builder.Logger = logger);
+        var rule = new IsAdultRule(new PersonStub(this.faker.Name.FirstName(), this.faker.Name.LastName(), this.faker.Internet.Email(), 21));
+
+        // Act
+        var result = Rule.Check(rule);
+
+        // Assert
+        result.ShouldBeSuccess();
+        logger.Received(1).Log(Arg.Any<string>(), "satisfied", rule, result, LogLevel.Debug);
+    }
+
+    [Fact]
+    public void Check_ShouldLogRuleException()
+    {
+        // Arrange
+        var logger = Substitute.For<IRuleLogger>();
+        Rule.Setup(builder => builder.Logger = logger);
+        var rule = Substitute.For<IRule>();
+        rule.IsSatisfied().Throws<InvalidOperationException>();
+
+        // Act
+        var result = Rule.Check(rule, throwOnRuleException: false);
+
+        // Assert
+        result.ShouldBeFailure();
+        logger.Received(1).Log(Arg.Any<string>(), "exception", rule, result, LogLevel.Debug);
+    }
+
+    [Fact]
+    public void Check_WithCustomExceptionFactory_ShouldUseCustomException()
+    {
+        // Arrange
+        var customMessage = "Custom exception message";
+        Rule.Setup(builder => builder
+            .RuleFailureExceptionFactory = r => new RuleException(r, customMessage));
+
+        var rule = Substitute.For<IRule>();
+        rule.IsSatisfied().Returns(Result.Failure());
+
+        // Act & Assert
+        var exception = Should.Throw<RuleException>(() => Rule.Check(rule, true));
+        exception.Message.ShouldContain(customMessage);
+    }
+
+    [Fact]
+    public void Setup_WithNullAction_ShouldThrowArgumentNullException()
+    {
+        Should.Throw<ArgumentNullException>(() => Rule.Setup(null));
+    }
+
+    [Fact]
+    public async Task CheckAsync_WithCanceledToken_ShouldThrowOperationCanceledException()
+    {
+        // Arrange
+        var rule = new TestAsyncRule(true);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        // Act & Assert
+        await Should.ThrowAsync<OperationCanceledException>(() =>
+            Rule.CheckAsync(rule, cancellationToken: cts.Token));
+    }
+
+    [Fact]
+    public void Check_WithNullExpression_ShouldReturnSuccess()
+    {
+        // Arrange
+        Func<bool> expression = null;
+
+        // Act
+        var result = Rule.Check(expression);
+
+        // Assert
+        result.ShouldBeSuccess();
     }
 }
 
@@ -466,28 +587,5 @@ public class TestAsyncRule(bool shouldSucceed) : AsyncRuleBase
         await Task.Delay(10, cancellationToken); // Simulate async work
 
         return shouldSucceed ? Result.Success() : Result.Failure();
-    }
-}
-
-public class RulesFixture : IDisposable
-{
-    public RulesFixture()
-    {
-        // Reset settings before each test class
-        this.ResetSettings();
-    }
-
-    public void Dispose()
-    {
-        // Reset settings after each test class
-        this.ResetSettings();
-    }
-
-    private void ResetSettings()
-    {
-        Rule.Setup(builder =>
-        {
-            /* Default settings */
-        });
     }
 }

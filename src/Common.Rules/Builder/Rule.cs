@@ -37,7 +37,7 @@ public static partial class Rule
     ///             product.IsDigital,
     ///             product.Categories?.Count > 2
     ///         }, Rules.IsNotEmpty(product.ShippingAddress))
-    ///         .Apply();
+    ///         .Check();
     /// </code>
     /// </example>
     public static RuleBuilder Add()
@@ -57,7 +57,7 @@ public static partial class Rule
     ///     .Add(RuleSet.IsValidEmail(user.Email))
     ///     .When(user.IsEmployee, builder => builder
     ///         .Add(RuleSet.HasStringLength(user.EmployeeId, 5, 10)))
-    ///     .Apply();
+    ///     .Check();
     ///
     /// if (result.IsSuccess)
     /// {
@@ -82,7 +82,7 @@ public static partial class Rule
     ///     .Add(RuleSet.IsValidEmail(user.Email))
     ///     .When(user.IsEmployee, builder => builder
     ///         .Add(RuleSet.HasStringLength(user.EmployeeId, 5, 10)))
-    ///     .Apply();
+    ///     .Check();
     ///
     /// if (result.IsSuccess)
     /// {
@@ -111,12 +111,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.When(() => product.IsDigital, Rules.IsNotEmpty(product.DownloadUrl))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(Func<bool> condition, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, rule);
+        return Add().When(condition, rule);
     }
 
     /// <summary>
@@ -130,12 +130,12 @@ public static partial class Rule
     /// var builder = Rule.When(() => product.IsDigital,
     ///     Rules.IsNotEmpty(product.DownloadUrl),
     ///     Rules.StringLength(product.DownloadUrl, 5, 100))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(Func<bool> condition, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, rules);
+        return Add().When(condition, rules);
     }
 
     /// <summary>
@@ -149,12 +149,12 @@ public static partial class Rule
     /// var builder = Rule.When(() => !product.IsDigital, builder => builder
     ///     .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///     .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(Func<bool> condition, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, addRules);
+        return Add().When(condition, addRules);
     }
 
     /// <summary>
@@ -166,12 +166,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.When(product.IsDigital, Rules.ApplyDigitalRules())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(bool condition, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, rule);
+        return Add().When(condition, rule);
     }
 
     /// <summary>
@@ -185,12 +185,12 @@ public static partial class Rule
     /// var builder = Rule.When(!product.IsDigital, builder => builder
     ///     .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///     .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(bool condition, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, addRules);
+        return Add().When(condition, addRules);
     }
 
     /// <summary>
@@ -203,12 +203,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.When(product.HasDiscount, () => product.Price > 0, "Price must be greater than 0 when discounted.")
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(bool condition, Func<bool> predicate, string message = null)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, predicate, message);
+        return Add().When(condition, predicate, message);
     }
 
     /// <summary>
@@ -222,12 +222,12 @@ public static partial class Rule
     /// var builder = Rule.When(product.HasSubscription,
     ///     () => product.SubscriptionLevel > 0,
     ///     () => product.SubscriptionValid)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder When(bool condition, params Func<bool>[] predicates)
     {
-        return RuleBuilderConditionalExtensions.When(Add(), condition, predicates);
+        return Add().When(condition, predicates);
     }
 
     /// <summary>
@@ -241,12 +241,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAsync(async (token) => await product.IsAvailableAsync(token),
     ///     Rules.IsNotEmpty(product.DownloadUrl),
     ///     Rules.StringLength(product.DownloadUrl, 5, 100))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenAsync(Add(), condition, rules);
+        return Add().WhenAsync(condition, rules);
     }
 
     /// <summary>
@@ -261,12 +261,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAsync(async (token) => await product.IsAvailableAsync(token),
     ///     () => product.Price > 0,
     ///     "Price must be greater than 0 for available products")
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Func<bool> predicate, string message = null)
     {
-        return RuleBuilderConditionalExtensions.WhenAsync(Add(), condition, predicate, message);
+        return Add().WhenAsync(condition, predicate, message);
     }
 
     /// <summary>
@@ -281,12 +281,12 @@ public static partial class Rule
     ///     builder => builder
     ///         .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///         .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder UnlessAsync(Func<CancellationToken, Task<bool>> condition, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.UnlessAsync(Add(), condition, addRules);
+        return Add().UnlessAsync(condition, addRules);
     }
 
     /// <summary>
@@ -299,12 +299,12 @@ public static partial class Rule
     /// <code>
     /// var builder = Rule.UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///     Rules.IsNotEmpty(product.ShippingAddress))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder UnlessAsync(Func<CancellationToken, Task<bool>> condition, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.UnlessAsync(Add(), condition, rule);
+        return Add().UnlessAsync(condition, rule);
     }
 
     /// <summary>
@@ -318,12 +318,12 @@ public static partial class Rule
     /// var builder = Rule.UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///     Rules.IsNotEmpty(product.ShippingAddress),
     ///     Rules.StringLength(product.ShippingAddress, 10, 200))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder UnlessAsync(Func<CancellationToken, Task<bool>> condition, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.UnlessAsync(Add(), condition, rules);
+        return Add().UnlessAsync(condition, rules);
     }
 
     /// <summary>
@@ -338,12 +338,12 @@ public static partial class Rule
     /// var builder = Rule.UnlessAsync(async (token) => await product.IsDigitalAsync(token),
     ///     () => product.Price > 0,
     ///     "Price must be greater than 0 for non-digital products")
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder UnlessAsync(Func<CancellationToken, Task<bool>> condition, Func<bool> predicate, string message = null)
     {
-        return RuleBuilderConditionalExtensions.UnlessAsync(Add(), condition, predicate, message);
+        return Add().UnlessAsync(condition, predicate, message);
     }
 
     /// <summary>
@@ -355,12 +355,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAsync(async (token) => await product.IsAvailableAsync(token), Rules.ApplyAsyncRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAsync(Add(), condition, rule);
+        return Add().WhenAsync(condition, rule);
     }
 
     /// <summary>
@@ -374,12 +374,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAsync(async (token) => await product.IsAvailableAsync(token), builder => builder
     ///     .Add(Rules.ApplyAsyncRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAsync(Func<CancellationToken, Task<bool>> condition, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAsync(Add(), condition, addRules);
+        return Add().WhenAsync(condition, addRules);
     }
 
     /// <summary>
@@ -391,12 +391,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAny(IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAny(Add(), conditions, rule);
+        return Add().WhenAny(conditions, rule);
     }
 
     /// <summary>
@@ -410,12 +410,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///     .Add(Rules.IsNotEmpty(product.DownloadUrl))
     ///     .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAny(IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAny(Add(), conditions, addRules);
+        return Add().WhenAny(conditions, addRules);
     }
 
     /// <summary>
@@ -429,12 +429,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAny(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///     Rules.IsNotEmpty(product.DownloadUrl),
     ///     Rules.StringLength(product.DownloadUrl, 5, 100))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAny(IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenAny(Add(), conditions, rules);
+        return Add().WhenAny(conditions, rules);
     }
 
     /// <summary>
@@ -446,12 +446,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAll(IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAll(Add(), conditions, rule);
+        return Add().WhenAll(conditions, rule);
     }
 
     /// <summary>
@@ -465,12 +465,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///     .Add(Rules.IsNotEmpty(product.DownloadUrl))
     ///     .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAll(IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAll(Add(), conditions, addRules);
+        return Add().WhenAll(conditions, addRules);
     }
 
     /// <summary>
@@ -484,12 +484,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAll(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///     Rules.IsNotEmpty(product.DownloadUrl),
     ///     Rules.StringLength(product.DownloadUrl, 5, 100))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAll(IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenAll(Add(), conditions, rules);
+        return Add().WhenAll(conditions, rules);
     }
 
     /// <summary>
@@ -501,12 +501,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenNone(new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.GreaterThan(product.Price, 10m))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenNone(IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenNone(Add(), conditions, rule);
+        return Add().WhenNone(conditions, rule);
     }
 
     /// <summary>
@@ -520,12 +520,12 @@ public static partial class Rule
     /// var builder = Rule.WhenNone(new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///     .Add(Rules.GreaterThan(product.Price, 10m))
     ///     .Add(Rules.IsNotEmpty(product.ShippingAddress)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenNone(IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenNone(Add(), conditions, addRules);
+        return Add().WhenNone(conditions, addRules);
     }
 
     /// <summary>
@@ -539,12 +539,12 @@ public static partial class Rule
     /// var builder = Rule.WhenNone(new[] { () => product.IsDigital, () => product.HasSubscription },
     ///     Rules.GreaterThan(product.Price, 10m),
     ///     Rules.IsNotEmpty(product.ShippingAddress))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenNone(IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenNone(Add(), conditions, rules);
+        return Add().WhenNone(conditions, rules);
     }
 
     /// <summary>
@@ -557,12 +557,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenExactly(2, new[] { () => product.HasSubscription, () => product.IsDigital, () => product.IsOnSale }, Rules.ApplySpecialDiscount())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenExactly(int count, IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenExactly(Add(), count, conditions, rule);
+        return Add().WhenExactly(count, conditions, rule);
     }
 
     /// <summary>
@@ -577,12 +577,12 @@ public static partial class Rule
     /// var builder = Rule.WhenExactly(2, new[] { () => product.HasSubscription, () => product.IsDigital, () => product.IsOnSale }, builder => builder
     ///     .Add(Rules.ApplySpecialDiscount())
     ///     .Add(Rules.RequireDownloadUrl()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenExactly(int count, IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenExactly(Add(), count, conditions, addRules);
+        return Add().WhenExactly(count, conditions, addRules);
     }
 
     /// <summary>
@@ -602,12 +602,12 @@ public static partial class Rule
     /// },
     /// Rules.ApplyDigitalPricing(),
     /// Rules.RequireDownloadUrl())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenExactly(int count, IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenExactly(Add(), count, conditions, rules);
+        return Add().WhenExactly(count, conditions, rules);
     }
 
     /// <summary>
@@ -620,12 +620,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.SendNotification())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtLeast(int count, IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAtLeast(Add(), count, conditions, rule);
+        return Add().WhenAtLeast(count, conditions, rule);
     }
 
     /// <summary>
@@ -640,12 +640,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///     .Add(Rules.SendNotification())
     ///     .Add(Rules.ApplyDiscount()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtLeast(int count, IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtLeast(Add(), count, conditions, addRules);
+        return Add().WhenAtLeast(count, conditions, addRules);
     }
 
     /// <summary>
@@ -660,12 +660,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtLeast(1, new[] { () => product.IsDigital, () => product.HasSubscription },
     ///     Rules.SendNotification(),
     ///     Rules.ApplyDiscount())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtLeast(int count, IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtLeast(Add(), count, conditions, rules);
+        return Add().WhenAtLeast(count, conditions, rules);
     }
 
     /// <summary>
@@ -678,12 +678,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAtMost(1, new[] { () => product.IsDigital, () => product.HasSubscription }, Rules.ApplyStandardPrice())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtMost(int count, IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAtMost(Add(), count, conditions, rule);
+        return Add().WhenAtMost(count, conditions, rule);
     }
 
     /// <summary>
@@ -698,12 +698,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtMost(1, new[] { () => product.IsDigital, () => product.HasSubscription }, builder => builder
     ///     .Add(Rules.ApplyStandardPrice())
     ///     .Add(Rules.RequireShippingAddress()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtMost(int count, IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtMost(Add(), count, conditions, addRules);
+        return Add().WhenAtMost(count, conditions, addRules);
     }
 
     /// <summary>
@@ -718,12 +718,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtMost(1, new[] { () => product.IsDigital, () => product.HasSubscription },
     ///     Rules.ApplyStandardPrice(),
     ///     Rules.RequireShippingAddress())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtMost(int count, IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtMost(Add(), count, conditions, rules);
+        return Add().WhenAtMost(count, conditions, rules);
     }
 
     /// <summary>
@@ -737,12 +737,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenBetween(1, 2, new[] { () => product.IsDigital, () => product.HasSubscription, () => product.IsOnSale }, Rules.ApplyFlexibleDiscount())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenBetween(int min, int max, IEnumerable<Func<bool>> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenBetween(Add(), min, max, conditions, rule);
+        return Add().WhenBetween(min, max, conditions, rule);
     }
 
     /// <summary>
@@ -758,12 +758,12 @@ public static partial class Rule
     /// var builder = Rule.WhenBetween(1, 2, new[] { () => product.IsDigital, () => product.HasSubscription, () => product.IsOnSale }, builder => builder
     ///     .Add(Rules.ApplyFlexibleDiscount())
     ///     .Add(Rules.RequireDownloadUrl()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenBetween(int min, int max, IEnumerable<Func<bool>> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenBetween(Add(), min, max, conditions, addRules);
+        return Add().WhenBetween(min, max, conditions, addRules);
     }
 
     /// <summary>
@@ -784,12 +784,12 @@ public static partial class Rule
     /// },
     /// Rules.ApplyFlexibleDiscount(),
     /// Rules.RequireDownloadUrl())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenBetween(int min, int max, IEnumerable<Func<bool>> conditions, params IRule[] rules)
     {
-        return RuleBuilderConditionalExtensions.WhenBetween(Add(), min, max, conditions, rules);
+        return Add().WhenBetween(min, max, conditions, rules);
     }
 
     /// <summary>
@@ -801,12 +801,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.Unless(product.IsDigital, Rules.GreaterThan(product.Price, 10m))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder Unless(bool condition, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.Unless(Add(), condition, rule);
+        return Add().Unless(condition, rule);
     }
 
     /// <summary>
@@ -820,12 +820,12 @@ public static partial class Rule
     /// var builder = Rule.Unless(product.IsDigital, builder => builder
     ///     .Add(Rules.IsNotEmpty(product.ShippingAddress))
     ///     .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder Unless(bool condition, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.Unless(Add(), condition, addRules);
+        return Add().Unless(condition, addRules);
     }
 
     /// <summary>
@@ -838,12 +838,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.Unless(user.IsActive, () => user.IsVerified, "User must be verified if not active.")
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder Unless(bool condition, Func<bool> predicate, string message = null)
     {
-        return RuleBuilderConditionalExtensions.Unless(Add(), condition, predicate, message);
+        return Add().Unless(condition, predicate, message);
     }
 
     /// <summary>
@@ -857,12 +857,12 @@ public static partial class Rule
     /// var builder = Rule.Unless(product.IsOnSale,
     ///     () => product.Discount >= 0.1m,
     ///     () => product.Discount == 0.5m)
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder Unless(bool condition, params Func<bool>[] predicates)
     {
-        return RuleBuilderConditionalExtensions.Unless(Add(), condition, predicates);
+        return Add().Unless(condition, predicates);
     }
 
     /// <summary>
@@ -874,12 +874,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAll(new[] { true, true, true }, Rules.ApplyAllTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAll(IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAll(Add(), conditions, rule);
+        return Add().WhenAll(conditions, rule);
     }
 
     /// <summary>
@@ -893,12 +893,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAll(new[] { true, true, true }, builder => builder
     ///     .Add(Rules.ApplyAllTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAll(IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAll(Add(), conditions, addRules);
+        return Add().WhenAll(conditions, addRules);
     }
 
     /// <summary>
@@ -910,12 +910,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAny(new[] { true, false, false }, Rules.ApplyAnyTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAny(IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAny(Add(), conditions, rule);
+        return Add().WhenAny(conditions, rule);
     }
 
     /// <summary>
@@ -929,12 +929,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAny(new[] { true, false, false }, builder => builder
     ///     .Add(Rules.ApplyAnyTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAny(IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAny(Add(), conditions, addRules);
+        return Add().WhenAny(conditions, addRules);
     }
 
     /// <summary>
@@ -946,12 +946,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenNone(new[] { false, false, false }, Rules.ApplyNoneTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenNone(IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenNone(Add(), conditions, rule);
+        return Add().WhenNone(conditions, rule);
     }
 
     /// <summary>
@@ -965,12 +965,12 @@ public static partial class Rule
     /// var builder = Rule.WhenNone(new[] { false, false, false }, builder => builder
     ///     .Add(Rules.ApplyNoneTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenNone(IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenNone(Add(), conditions, addRules);
+        return Add().WhenNone(conditions, addRules);
     }
 
     /// <summary>
@@ -983,12 +983,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenExactly(2, new[] { true, true, false }, Rules.ApplyExactTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenExactly(int count, IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenExactly(Add(), count, conditions, rule);
+        return Add().WhenExactly(count, conditions, rule);
     }
 
     /// <summary>
@@ -1003,12 +1003,12 @@ public static partial class Rule
     /// var builder = Rule.WhenExactly(2, new[] { true, true, false }, builder => builder
     ///     .Add(Rules.ApplyExactTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenExactly(int count, IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenExactly(Add(), count, conditions, addRules);
+        return Add().WhenExactly(count, conditions, addRules);
     }
 
     /// <summary>
@@ -1021,12 +1021,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAtLeast(1, new[] { true, false, false }, Rules.ApplyAtLeastTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAtLeast(Add(), count, conditions, rule);
+        return Add().WhenAtLeast(count, conditions, rule);
     }
 
     /// <summary>
@@ -1041,12 +1041,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtLeast(1, new[] { true, false, false }, builder => builder
     ///     .Add(Rules.ApplyAtLeastTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtLeast(int count, IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtLeast(Add(), count, conditions, addRules);
+        return Add().WhenAtLeast(count, conditions, addRules);
     }
 
     /// <summary>
@@ -1059,12 +1059,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenAtMost(1, new[] { true, false, false }, Rules.ApplyAtMostTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtMost(int count, IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenAtMost(Add(), count, conditions, rule);
+        return Add().WhenAtMost(count, conditions, rule);
     }
 
     /// <summary>
@@ -1079,12 +1079,12 @@ public static partial class Rule
     /// var builder = Rule.WhenAtMost(1, new[] { true, false, false }, builder => builder
     ///     .Add(Rules.ApplyAtMostTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenAtMost(int count, IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenAtMost(Add(), count, conditions, addRules);
+        return Add().WhenAtMost(count, conditions, addRules);
     }
 
     /// <summary>
@@ -1098,12 +1098,12 @@ public static partial class Rule
     /// <example>
     /// <code>
     /// var builder = Rule.WhenBetween(1, 2, new[] { true, true, false }, Rules.ApplyBetweenTrueRule())
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, IRule rule)
     {
-        return RuleBuilderConditionalExtensions.WhenBetween(Add(), min, max, conditions, rule);
+        return Add().WhenBetween(min, max, conditions, rule);
     }
 
     /// <summary>
@@ -1119,11 +1119,332 @@ public static partial class Rule
     /// var builder = Rule.WhenBetween(1, 2, new[] { true, true, false }, builder => builder
     ///     .Add(Rules.ApplyBetweenTrueRule())
     ///     .Add(Rules.AnotherRule()))
-    ///     .Apply();
+    ///     .Check();
     /// </code>
     /// </example>
     public static RuleBuilder WhenBetween(int min, int max, IEnumerable<bool> conditions, Action<RuleBuilder> addRules)
     {
-        return RuleBuilderConditionalExtensions.WhenBetween(Add(), min, max, conditions, addRules);
+        return Add().WhenBetween(min, max, conditions, addRules);
+    }
+
+    /// <summary>
+    /// Adds multiple rules defined by async predicates when the specified condition is true.
+    /// </summary>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="predicates">The async predicates to evaluate if the condition is true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAsync(async token => await product.HasSubscriptionAsync(token),
+    ///     async token => await product.IsSubscriptionLevelValidAsync(token),
+    ///     async token => await product.IsSubscriptionActiveAsync(token))
+    ///     .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAsync(
+        Func<CancellationToken, Task<bool>> condition,
+        params Func<CancellationToken, Task<bool>>[] predicates)
+    {
+        return Add().WhenAsync(condition, predicates);
+    }
+
+    /// <summary>
+    /// Adds a rule defined by an async predicate when the specified condition is false.
+    /// </summary>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="predicate">The async predicate to evaluate if the condition is false.</param>
+    /// <param name="message">Optional custom message for rule failure.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.UnlessAsync(async token => await user.IsActiveAsync(token),
+    ///     async token => await user.IsVerifiedAsync(token),
+    ///     "User must be verified if not active.")
+    ///     .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> UnlessAsync(
+        Func<CancellationToken, Task<bool>> condition,
+        Func<CancellationToken, Task<bool>> predicate,
+        string message = null)
+    {
+        return Add().UnlessAsync(condition, predicate, message);
+    }
+
+    /// <summary>
+    /// Adds multiple rules defined by async predicates when the specified condition is false.
+    /// </summary>
+    /// <param name="condition">The asynchronous condition to evaluate.</param>
+    /// <param name="predicates">The async predicates to evaluate if the condition is false.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.UnlessAsync(async token => await product.IsOnSaleAsync(token),
+    ///     async token => await product.IsDiscountValidAsync(token),
+    ///     async token => await product.IsPriceValidAsync(token))
+    ///     .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> UnlessAsync(
+        Func<CancellationToken, Task<bool>> condition,
+        params Func<CancellationToken, Task<bool>>[] predicates)
+    {
+        return Add().UnlessAsync(condition, predicates);
+    }
+
+    /// <summary>
+    /// Adds multiple rules when exactly the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The exact number of conditions that must be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rules">The async rules to add if the exact count of conditions is true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenExactlyAsync(2, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token),
+    ///     async token => await product.IsOnSaleAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule1(),
+    /// async token => await Rules.GetAsyncRule2())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenExactlyAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        return Add().WhenExactlyAsync(count, conditions, rules);
+    }
+
+    /// <summary>
+    /// Adds a rule when exactly the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The exact number of conditions that must be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rule">The async rule to add if the exact count of conditions is true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenExactlyAsync(2, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenExactlyAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        return Add().WhenExactlyAsync(count, conditions, rule);
+    }
+
+    /// <summary>
+    /// Adds a rule when at least the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The minimum number of conditions that must be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rule">The async rule to add if at least the specified count of conditions are true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAtLeastAsync(1, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAtLeastAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        return Add().WhenAtLeastAsync(count, conditions, rule);
+    }
+
+    /// <summary>
+    /// Adds multiple rules when at least the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The minimum number of conditions that must be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rules">The async rules to add if at least the specified count of conditions are true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAtLeastAsync(1, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule1(),
+    /// async token => await Rules.GetAsyncRule2())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAtLeastAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        return Add().WhenAtLeastAsync(count, conditions, rules);
+    }
+
+    /// <summary>
+    /// Adds a rule when at most the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The maximum number of conditions that can be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rule">The async rule to add if at most the specified count of conditions are true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAtMostAsync(1, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAtMostAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        return Add().WhenAtMostAsync(count, conditions, rule);
+    }
+
+    /// <summary>
+    /// Adds multiple rules when at most the specified number of conditions are true asynchronously.
+    /// </summary>
+    /// <param name="count">The maximum number of conditions that can be true.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rules">The async rules to add if at most the specified count of conditions are true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAtMostAsync(1, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule1(),
+    /// async token => await Rules.GetAsyncRule2())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAtMostAsync(
+        int count,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        return Add().WhenAtMostAsync(count, conditions, rules);
+    }
+
+    /// <summary>
+    /// Adds a rule when the number of true conditions falls within the specified range asynchronously.
+    /// </summary>
+    /// <param name="min">The minimum number of true conditions.</param>
+    /// <param name="max">The maximum number of true conditions.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rule">The async rule to add if the true condition count is within the range.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenBetweenAsync(1, 2, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token),
+    ///     async token => await product.IsOnSaleAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenBetweenAsync(
+        int min,
+        int max,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        return Add().WhenBetweenAsync(min, max, conditions, rule);
+    }
+
+    /// <summary>
+    /// Adds multiple rules when the number of true conditions falls within the specified range asynchronously.
+    /// </summary>
+    /// <param name="min">The minimum number of true conditions.</param>
+    /// <param name="max">The maximum number of true conditions.</param>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rules">The async rules to add if the true condition count is within the range.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenBetweenAsync(1, 2, new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token),
+    ///     async token => await product.IsOnSaleAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule1(),
+    /// async token => await Rules.GetAsyncRule2())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenBetweenAsync(
+        int min,
+        int max,
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        return Add().WhenBetweenAsync(min, max, conditions, rules);
+    }
+
+    /// <summary>
+    /// Adds a rule when any of the conditions are true asynchronously.
+    /// </summary>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rule">The async rule to add if any condition is true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    /// <example>
+    /// <code>
+    /// await Rule.WhenAnyAsync(new[]
+    /// {
+    ///     async token => await product.IsDigitalAsync(token),
+    ///     async token => await product.HasSubscriptionAsync(token)
+    /// },
+    /// async token => await Rules.GetAsyncRule())
+    /// .Check();
+    /// </code>
+    /// </example>
+    public static Task<RuleBuilder> WhenAnyAsync(
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        Func<CancellationToken, Task<IRule>> rule)
+    {
+        return Add().WhenAnyAsync(conditions, rule);
+    }
+
+    /// <summary>
+    /// Adds multiple rules when any of the conditions are true asynchronously.
+    /// </summary>
+    /// <param name="conditions">The async conditions to evaluate.</param>
+    /// <param name="rules">The async rules to add if any condition is true.</param>
+    /// <returns>A Task containing the RuleBuilder instance.</returns>
+    public static Task<RuleBuilder> WhenAnyAsync(
+        IEnumerable<Func<CancellationToken, Task<bool>>> conditions,
+        params Func<CancellationToken, Task<IRule>>[] rules)
+    {
+        return Add().WhenAnyAsync(conditions, rules);
     }
 }

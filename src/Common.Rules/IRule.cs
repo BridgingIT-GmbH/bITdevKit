@@ -27,12 +27,12 @@ public interface IRule
     /// Applies the rule synchronously and returns the result.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
-    Result Apply();
+    Result IsSatisfied();
 
     /// <summary>
     /// Applies the rule asynchronously and returns the result.
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
-    Task<Result> ApplyAsync(CancellationToken cancellationToken = default);
+    Task<Result> IsSatisfiedAsync(CancellationToken cancellationToken = default);
 }

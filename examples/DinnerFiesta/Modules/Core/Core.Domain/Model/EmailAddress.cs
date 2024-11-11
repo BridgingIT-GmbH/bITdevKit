@@ -27,10 +27,10 @@ public class EmailAddress : ValueObject
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        Rule.Add(EmailAddressRules.IsValid(value)).Apply();
+        Rule.Add(EmailAddressRules.IsValid(value)).Check();
 
         Rule.Add(
-            EmailAddressRules.IsValid(value)).Apply();
+            EmailAddressRules.IsValid(value)).Check();
 
         return new EmailAddress(value);
     }

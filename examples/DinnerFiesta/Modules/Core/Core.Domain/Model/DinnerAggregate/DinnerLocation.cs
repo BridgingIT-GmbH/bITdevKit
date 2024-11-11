@@ -64,7 +64,7 @@ public class DinnerLocation : ValueObject
             DinnerRules.CountryShouldBeKnown(country),
             DinnerRules.LongitudeShouldBeInRange(longitude),
             DinnerRules.LatitudeShouldBeInRange(latitude)
-        ).Apply();
+        ).Check();
 
         return new DinnerLocation(name,
             addressLine1,

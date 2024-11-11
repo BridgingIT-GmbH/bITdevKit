@@ -33,6 +33,6 @@ public class NoneRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
             return Result.Success();
         }
 
-        return Result.SuccessIf(collection.All(item => !ruleFactory(item).Apply().IsSuccess));
+        return Result.SuccessIf(collection.All(item => !ruleFactory(item).IsSatisfied().IsSuccess));
     }
 }

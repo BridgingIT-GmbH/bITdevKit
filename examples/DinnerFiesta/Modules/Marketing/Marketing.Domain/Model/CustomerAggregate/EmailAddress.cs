@@ -28,7 +28,7 @@ public class EmailAddress : ValueObject
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        Rule.Add(new IsValidEmailAddressRule(value)).Apply();
+        Rule.Add(new IsValidEmailAddressRule(value)).Check();
 
         return new EmailAddress(value);
     }

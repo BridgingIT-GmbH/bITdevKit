@@ -22,7 +22,7 @@ public class HostCreateCommandHandler(
 
         await Rule.Add(
                 HostRules.UserMustBeUnique(repository, host.UserId))
-            .ApplyAsync(cancellationToken: cancellationToken);
+            .CheckAsync(cancellationToken: cancellationToken);
 
         await repository.InsertAsync(host, cancellationToken);
 

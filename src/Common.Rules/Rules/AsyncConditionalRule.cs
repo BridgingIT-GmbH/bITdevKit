@@ -38,8 +38,8 @@ public class AsyncConditionalRule : AsyncRuleBase
 
         return this.rule switch
         {
-            AsyncRuleBase => await this.rule.ApplyAsync(cancellationToken).ConfigureAwait(false),
-            _ => this.rule.Apply()
+            AsyncRuleBase => await this.rule.IsSatisfiedAsync(cancellationToken).ConfigureAwait(false),
+            _ => this.rule.IsSatisfied()
         };
     }
 }

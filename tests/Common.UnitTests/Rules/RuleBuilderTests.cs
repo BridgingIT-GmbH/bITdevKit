@@ -1571,6 +1571,288 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
             return true;
         }
     }
+
+    [Fact]
+    public void Filter_WithNoRules_ShouldReturnAllItems()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "Doe", "jane@example.com", 30)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .Filter(items);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Count().ShouldBe(2);
+    }
+
+    [Fact]
+    public void Filter_WithRules_ShouldReturnMatchingItems()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "", "invalid-email", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 35)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .Add<PersonStub>(p => !string.IsNullOrEmpty(p.LastName))
+            .Add<PersonStub>(p => RuleSet.Contains(p.Email.Value, "@"))
+            .Add<PersonStub>(p => p.Age >= 18)
+            .Filter(items);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Count().ShouldBe(2);
+        result.Value.All(p => !string.IsNullOrEmpty(p.LastName) &&
+                             p.Email.Value.Contains("@") &&
+                             p.Age >= 18).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task FilterAsync_WithRules_ShouldReturnMatchingItems()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "", "invalid-email", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 35)
+        };
+
+        // Act
+        var result = await Rule.Add()
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(!string.IsNullOrEmpty(p.LastName)))
+            .Add<PersonStub>((p, _) => RuleSet.Contains(p.Email.Value, "@"))
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(p.Age >= 18))
+            .FilterAsync(items);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Count().ShouldBe(2);
+        result.Value.All(p => !string.IsNullOrEmpty(p.LastName) &&
+                             p.Email.Value.Contains("@") &&
+                             p.Age >= 18).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Switch_WithNoRules_ShouldProcessAllItemsWithMatchHandler()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "Doe", "jane@example.com", 30)
+        };
+        var matchCount = 0;
+        var unmatchCount = 0;
+
+        // Act
+        var result = Rule.Add()
+            .Switch(items,
+                matched =>
+                {
+                    matchCount = matched.Count();
+                    return Result.Success();
+                },
+                unmatched =>
+                {
+                    unmatchCount = unmatched.Count();
+                    return Result.Success();
+                });
+
+        // Assert
+        result.ShouldBeSuccess();
+        matchCount.ShouldBe(2);
+        unmatchCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public void Switch_WithRules_ShouldSplitItemsCorrectly()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "", "invalid-email", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 35)
+        };
+        var validCount = 0;
+        var invalidCount = 0;
+
+        // Act
+        var result = Rule.Add()
+            .Add<PersonStub>(p => !string.IsNullOrEmpty(p.LastName))
+            .Add<PersonStub>(p => p.Email.Value.Contains("@"))
+            .Add<PersonStub>(p => p.Age >= 18)
+            .Switch(items,
+                valid =>
+                {
+                    validCount = valid.Count();
+                    return Result.Success();
+                },
+                invalid =>
+                {
+                    invalidCount = invalid.Count();
+                    return Result.Success();
+                });
+
+        // Assert
+        result.ShouldBeSuccess();
+        validCount.ShouldBe(2);
+        invalidCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task SwitchAsync_WithRules_ShouldSplitItemsCorrectly()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "", "invalid-email", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 35)
+        };
+        var validCount = 0;
+        var invalidCount = 0;
+
+        // Act
+        var result = await Rule.Add()
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(!string.IsNullOrEmpty(p.LastName)))
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(p.Email.Value.Contains("@")))
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(p.Age >= 18))
+            .SwitchAsync(items,
+                async valid =>
+                {
+                    validCount = valid.Count();
+                    return await Task.FromResult(Result.Success());
+                },
+                async invalid =>
+                {
+                    invalidCount = invalid.Count();
+                    return await Task.FromResult(Result.Success());
+                });
+
+        // Assert
+        result.ShouldBeSuccess();
+        validCount.ShouldBe(2);
+        invalidCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task Switch_WithHandlerErrors_ShouldReturnCombinedFailure()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("Jane", "", "invalid-email", 15)
+        };
+
+        // Act
+        var result = await Rule.Add()
+            //.Add(RuleSet.IsValidEmail(p => p.Email.Value))
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(p.Email.Value.Contains("@")))
+            .SwitchAsync(items,
+                _ => Result.Success("Valid handler error"),
+                _ => Result.Failure("Invalid handler error")
+                    .WithError(new ValidationError("incorrect email")));
+
+        // Assert
+        result.ShouldBeFailure();
+        result.Errors.Count.ShouldBe(1);
+        result.ShouldContainMessage("Invalid handler error");
+        // result.Errors.Select(e => e.Message)
+        //     .ShouldContain(new[] { "Valid handler error", "Invalid handler error" });
+    }
+
+    [Fact]
+    public async Task SwitchAsync_WithCancellation_ShouldThrowOperationCanceledException()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25)
+        };
+        using var cts = new CancellationTokenSource();
+
+        // Act & Assert
+        await cts.CancelAsync();
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await Rule.Add()
+                .Add(async token => { await Task.Delay(1000, token); return Result.Success(); })
+                .SwitchAsync(items,
+                    async _ => await Task.FromResult(Result.Success()),
+                    async _ => await Task.FromResult(Result.Success()),
+                    cts.Token);
+        });
+    }
+
+    [Fact]
+    public void Filter_WithRuleSetRule_ShouldReturnMatchingItems()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "", "john@example.com", 25),
+            new PersonStub("Jane", "Doe", "invalid-email", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 35)
+        };
+
+        // Act
+        var result = Rule.Add()
+            .Add<PersonStub>(p => RuleSet.IsValidEmail(p.Email.Value))
+            .Add<PersonStub>(p => RuleSet.GreaterThanOrEqual(p.Age, 18))
+            .Add<PersonStub>(p => RuleSet.IsNotEmpty(p.LastName))
+            .Filter(items);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Count().ShouldBe(1); // Only Bob Smith matches all criteria
+        var match = result.Value.First();
+        match.LastName.ShouldBe("Smith");
+        match.Email.Value.ShouldBe("bob@example.com");
+        match.Age.ShouldBe(35);
+    }
+
+    [Fact]
+    public async Task FilterAsync_WithMixedRuleTypes_ShouldReturnMatchingItems()
+    {
+        // Arrange
+        var items = new[]
+        {
+            new PersonStub("John", "Doe", "john@example.com", 25),
+            new PersonStub("", "", "invalid", 15),
+            new PersonStub("Bob", "Smith", "bob@example.com", 20)
+        };
+
+        // Act
+        var result = await Rule.Add()
+            .Add<PersonStub>((p, _) => RuleSet.IsValidEmail(p.Email.Value))
+            .Add<PersonStub>(async (p, _) => await Task.FromResult(RuleSet.IsNotEmpty(p.FirstName)))
+            .Add<PersonStub>((p, _) => RuleSet.IsNotEmpty(p.LastName))
+            .Add<PersonStub>((p, _) => RuleSet.NumericRange(p.Age, 20, 30))
+            .FilterAsync(items);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Count().ShouldBe(2); // John Doe and Bob Smith match
+        result.Value.All(p =>
+            !string.IsNullOrEmpty(p.FirstName) &&
+            !string.IsNullOrEmpty(p.LastName) &&
+            p.Email.Value.Contains("@") &&
+            p.Age >= 20 && p.Age <= 30
+        ).ShouldBeTrue();
+    }
 }
 
 [CollectionDefinition(nameof(RuleBuilderCollectionDefinition), DisableParallelization = true)]

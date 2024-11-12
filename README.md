@@ -100,4 +100,4 @@ Join us in advancing the world of software development with the bITDevKit!
 ## Collaboration
 
 Simply create a pull request with your ideas or contact us.
-Please refer to the [CONTRIBUTING](./CONTRIBUTING.md) guidelines for more information.
+Please refer to the [CONTRIBUTING](./CONTRIBUTION.md) guidelines for more information.

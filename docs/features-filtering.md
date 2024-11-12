@@ -1622,8 +1622,7 @@ filterModel.PageSize.ShouldBe((int)PageSize.Large);
 # Appendix D: Disclaimer
 
 > This Filtering feature described here is designed to provide a pragmatic, flexible filtering
-> solution for
-> REST APIs.
+> solution for REST APIs and Repositories.
 
 It is not intended to replace or compete with comprehensive query technologies like:
 
@@ -1632,7 +1631,7 @@ It is not intended to replace or compete with comprehensive query technologies l
 - **OData**: A standardized protocol for building and consuming RESTful APIs with rich query
   capabilities
 
-The Filtering feature is best suited for:
+## When to Use the Filtering Feature
 
 - When already using the DevKit ecosystem, providing seamless integration with its repository
   and specification patterns
@@ -1645,3 +1644,7 @@ If the application requires complex schema definitions, introspection, or full q
 capabilities, consider using GraphQL or OData instead. The Filtering feature focuses on providing a
 straightforward, typed approach to common filtering scenarios while maintaining REST principles and
 leveraging DevKit features.
+
+Remember: Choose the simplest tool that meets your requirements. The feature provides a
+lightweight, code-based approach to handle filtering, while staying consistent with
+the DevKit's philosophy of simple, effective solutions to common development problems.

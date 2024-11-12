@@ -221,7 +221,6 @@ public class RuleBuilder
 
         if (!this.continueOnRuleFailure)
         {
-
             foreach (var rule in this.rules)
             {
                 var result = Rule.Check(rule, this.throwOnFailure, this.throwOnException);
@@ -235,7 +234,7 @@ public class RuleBuilder
             }
 
             return Result.Success()
-                .WithMessages(messages).WithErrors(errors) ;
+                .WithMessages(messages).WithErrors(errors);
         }
 
         foreach (var rule in this.rules)
@@ -335,137 +334,364 @@ public class RuleBuilder
             : Result.Success();
     }
 
+    // /// <summary>
+    // /// Filters a collection of items based on the defined rules synchronously.
+    // /// Items are excluded from the result if they fail any rule validation.
+    // /// </summary>
+    // /// <typeparam name="T">The type of items to filter.</typeparam>
+    // /// <param name="items">The collection of items to filter.</param>
+    // /// <returns>A Result containing the filtered collection.</returns>
+    // /// <example>
+    // /// <code>
+    // /// var result = Rules
+    // ///     .Add(Product p => RuleSet.IsNotEmpty(p.Name))
+    // ///     .Add(Product p => RuleSet.NumericRange(p.Price, 0.01m, 999.99m))
+    // ///     .When(!isDigital, builder => builder
+    // ///         .Add(Product p => RuleSet.IsNotEmpty(p.ShippingAddress)))
+    // ///     .Filter(products);
+    // /// </code>
+    // /// </example>
+    // public Result<IEnumerable<T>> Filter<T>(IEnumerable<T> items)
+    // {
+    //     if (this.rules.Count == 0)
+    //     {
+    //         return HandleEmptyInput();
+    //     }
+    //
+    //     var filteredItems = new List<T>();
+    //
+    //     foreach (var item in items)
+    //     {
+    //         var result = EvaluateRules(item);
+    //         if (result.IsSuccess)
+    //         {
+    //             filteredItems.Add(item);
+    //         }
+    //     }
+    //
+    //     return Result<IEnumerable<T>>.Success(filteredItems);
+    //
+    //     Result<IEnumerable<T>> HandleEmptyInput()
+    //     {
+    //         return items is null
+    //             ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
+    //             : Result<IEnumerable<T>>.Success(items);
+    //     }
+    //
+    //     Result EvaluateRules(T item)
+    //     {
+    //         foreach (var rule in this.rules)
+    //         {
+    //             if (rule is IItemRule<T> itemRule)
+    //             {
+    //                 itemRule.SetItem(item);
+    //             }
+    //
+    //             var result = Rule.Check(rule);
+    //             if (result.IsFailure)
+    //             {
+    //                 return Result.Failure();
+    //             }
+    //         }
+    //
+    //         return Result.Success();
+    //     }
+    // }
+    //
+    // /// <summary>
+    // /// Filters a collection of items based on the defined rules asynchronously.
+    // /// Items are excluded from the result if they fail any rule validation.
+    // /// </summary>
+    // /// <typeparam name="T">The type of items to filter.</typeparam>
+    // /// <param name="items">The collection of items to filter.</param>
+    // /// <param name="cancellationToken">A token to cancel the operation.</param>
+    // /// <returns>A Result containing the filtered collection.</returns>
+    // /// <example>
+    // /// <code>
+    // /// var result = await Rules
+    // ///     .Add(User u => RuleSet.IsNotEmpty(u.Email))
+    // ///     .Add(User u => RuleSet.IsValidEmail(u.Email))
+    // ///     .When(isActive, builder => builder
+    // ///         .Add(User u => RuleSet.IsNotNull(u.LastLoginDate)))
+    // ///     .FilterAsync(users, cancellationToken);
+    // /// </code>
+    // /// </example>
+    // public async Task<Result<IEnumerable<T>>> FilterAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken = default)
+    // {
+    //     if (this.rules.Count == 0)
+    //     {
+    //         return HandleEmptyInput();
+    //     }
+    //
+    //     var filteredItems = new List<T>();
+    //
+    //     foreach (var item in items)
+    //     {
+    //         cancellationToken.ThrowIfCancellationRequested();
+    //
+    //         var result = await EvaluateRules(item);
+    //         if (result.IsSuccess)
+    //         {
+    //             filteredItems.Add(item);
+    //         }
+    //     }
+    //
+    //     return Result<IEnumerable<T>>.Success(filteredItems);
+    //
+    //     Result<IEnumerable<T>> HandleEmptyInput()
+    //     {
+    //         return items is null
+    //             ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
+    //             : Result<IEnumerable<T>>.Success(items);
+    //     }
+    //
+    //     async Task<Result> EvaluateRules(T item)
+    //     {
+    //         foreach (var rule in this.rules)
+    //         {
+    //             cancellationToken.ThrowIfCancellationRequested();
+    //
+    //             if (rule is IItemRule<T> itemRule)
+    //             {
+    //                 itemRule.SetItem(item);
+    //             }
+    //
+    //             var result = await Rule.CheckAsync(rule, false, false, cancellationToken).AnyContext();
+    //             if (result.IsFailure)
+    //             {
+    //                 return Result.Failure();
+    //             }
+    //         }
+    //
+    //         return Result.Success();
+    //     }
+    // }
+
     /// <summary>
-    /// Filters a collection of items based on the defined rules synchronously.
-    /// Items are excluded from the result if they fail any rule validation.
+    /// Splits the items into two groups based on the defined rules and processes them with separate handlers.
+    /// </summary>
+    /// <typeparam name="T">The type of items to process.</typeparam>
+    /// <param name="items">The collection of items to filter.</param>
+    /// <param name="matchHandler">Handler for items that match all rules.</param>
+    /// <param name="unmatchHandler">Handler for items that fail any rule.</param>
+    /// <returns>A Result indicating success of both handlers or failure with combined errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Rule
+    ///     .Add&lt;Product&gt;(p => RuleSet.GreaterThan(p.Price, 10))
+    ///     .Add&lt;Product&gt;(p => RuleSet.IsNotEmpty(p.Name))
+    ///     .Switch(products,
+    ///         validProducts => ProcessValidProducts(validProducts),
+    ///         invalidProducts => ProcessInvalidProducts(invalidProducts));
+    /// </code>
+    /// </example>
+    public Result Switch<T>(
+        IEnumerable<T> items,
+        Func<IEnumerable<T>, Result> matchHandler,
+        Func<IEnumerable<T>, Result> unmatchHandler)
+    {
+        var (matchedItems, unmachedItems) = this.Classify(items);
+
+        var matchResult = matchHandler(matchedItems);
+        var unmatchResult = unmatchHandler(unmachedItems);
+
+        return Result.Combine(matchResult, unmatchResult);
+    }
+
+    /// <summary>
+    /// Asynchronously splits the items into two groups based on the defined rules and processes them with separate handlers.
+    /// </summary>
+    /// <typeparam name="T">The type of items to process.</typeparam>
+    /// <param name="items">The collection of items to filter.</param>
+    /// <param name="matchHandler">Async handler for items that match all rules.</param>
+    /// <param name="unmatchHandler">Async handler for items that fail any rule.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A task containing a Result indicating success of both handlers or failure with combined errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Rule
+    ///     .Add&lt;Product&gt;(p => RuleSet.GreaterThan(p.Price, 10))
+    ///     .Add&lt;Product&gt;(p => RuleSet.IsNotEmpty(p.Name))
+    ///     .SwitchAsync(products,
+    ///         async validProducts => await ProcessValidProductsAsync(validProducts),
+    ///         async invalidProducts => await ProcessInvalidProductsAsync(invalidProducts));
+    /// </code>
+    /// </example>
+    public async Task<Result> SwitchAsync<T>(
+        IEnumerable<T> items,
+        Func<IEnumerable<T>, Task<Result>> matchHandler,
+        Func<IEnumerable<T>, Task<Result>> unmatchHandler,
+        CancellationToken cancellationToken = default)
+    {
+        var (matchedItems, unMatchedItems) = await this.ClassifyAsync(items, cancellationToken);
+
+        var matchResult = await matchHandler(matchedItems);
+        var unmatchResult = await unmatchHandler(unMatchedItems);
+
+        return Result.Combine(matchResult, unmatchResult);
+    }
+
+    public async Task<Result> SwitchAsync<T>(
+        IEnumerable<T> items,
+        Func<IEnumerable<T>, Result> matchHandler,
+        Func<IEnumerable<T>, Result> unmatchHandler,
+        CancellationToken cancellationToken = default)
+    {
+        var (matchedItems, unMatchedItems) = await this.ClassifyAsync(items, cancellationToken);
+
+        var matchResult = matchHandler(matchedItems);
+        var unmatchResult = unmatchHandler(unMatchedItems);
+
+        return Result.Combine(matchResult, unmatchResult);
+    }
+
+    /// <summary>
+    /// Filters a collection of items based on the defined rules.
     /// </summary>
     /// <typeparam name="T">The type of items to filter.</typeparam>
     /// <param name="items">The collection of items to filter.</param>
     /// <returns>A Result containing the filtered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Rules
-    ///     .Add(Product p => RuleSet.IsNotEmpty(p.Name))
-    ///     .Add(Product p => RuleSet.NumericRange(p.Price, 0.01m, 999.99m))
-    ///     .When(!isDigital, builder => builder
-    ///         .Add(Product p => RuleSet.IsNotEmpty(p.ShippingAddress)))
+    /// var result = Rule
+    ///     .Add&lt;Product&gt;(p => RuleSet.GreaterThan(p.Price, 10))
+    ///     .Add&lt;Product&gt;(p => RuleSet.IsNotEmpty(p.Name))
     ///     .Filter(products);
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     var validProducts = result.Value;
+    ///     // Process valid products...
+    /// }
     /// </code>
     /// </example>
     public Result<IEnumerable<T>> Filter<T>(IEnumerable<T> items)
     {
-        if (this.rules.Count == 0)
-        {
-            return HandleEmptyInput();
-        }
+        var (matchedItems, _) = this.Classify(items);
 
-        var filteredItems = new List<T>();
-
-        foreach (var item in items)
-        {
-            var result = EvaluateRules(item);
-            if (result.IsSuccess)
-            {
-                filteredItems.Add(item);
-            }
-        }
-
-        return Result<IEnumerable<T>>.Success(filteredItems);
-
-        Result<IEnumerable<T>> HandleEmptyInput()
-        {
-            return items is null
-                ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
-                : Result<IEnumerable<T>>.Success(items);
-        }
-
-        Result EvaluateRules(T item)
-        {
-            foreach (var rule in this.rules)
-            {
-                if (rule is ItemRule<T> itemRule)
-                {
-                    itemRule.SetItem(item);
-                }
-
-                var result = Rule.Check(rule);
-                if (result.IsFailure)
-                {
-                    return Result.Failure();
-                }
-            }
-
-            return Result.Success();
-        }
+        return Result<IEnumerable<T>>.Success(matchedItems);
     }
 
     /// <summary>
-    /// Filters a collection of items based on the defined rules asynchronously.
-    /// Items are excluded from the result if they fail any rule validation.
+    /// Asynchronously filters a collection of items based on the defined rules.
     /// </summary>
     /// <typeparam name="T">The type of items to filter.</typeparam>
     /// <param name="items">The collection of items to filter.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A Result containing the filtered collection.</returns>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <returns>A task containing the Result with the filtered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = await Rules
-    ///     .Add(User u => RuleSet.IsNotEmpty(u.Email))
-    ///     .Add(User u => RuleSet.IsValidEmail(u.Email))
-    ///     .When(isActive, builder => builder
-    ///         .Add(User u => RuleSet.IsNotNull(u.LastLoginDate)))
-    ///     .FilterAsync(users, cancellationToken);
+    /// var result = await Rule
+    ///     .Add&lt;Product&gt;(p => RuleSet.GreaterThan(p.Price, 10))
+    ///     .Add&lt;Product&gt;(p => RuleSet.IsNotEmpty(p.Name))
+    ///     .FilterAsync(products);
+    ///
+    /// if (result.IsSuccess)
+    /// {
+    ///     var validProducts = result.Value;
+    ///     // Process valid products...
+    /// }
     /// </code>
     /// </example>
-    public async Task<Result<IEnumerable<T>>> FilterAsync<T>(IEnumerable<T> items, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<T>>> FilterAsync<T>(
+        IEnumerable<T> items,
+        CancellationToken cancellationToken = default)
+    {
+        var (matchedItems, _) = await this.ClassifyAsync(items, cancellationToken);
+
+        return Result<IEnumerable<T>>.Success(matchedItems);
+    }
+
+    private (IEnumerable<T> ValidItems, IEnumerable<T> InvalidItems) Classify<T>(IEnumerable<T> items)
     {
         if (this.rules.Count == 0)
         {
-            return HandleEmptyInput();
+            return (new List<T>(items ?? Array.Empty<T>()), new List<T>());
         }
 
-        var filteredItems = new List<T>();
+        var matchedItems = new List<T>();
+        var unMatchedItems = new List<T>();
 
-        foreach (var item in items)
+        foreach (var item in items ?? Array.Empty<T>())
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var result = await EvaluateRules(item);
-            if (result.IsSuccess)
-            {
-                filteredItems.Add(item);
-            }
-        }
-
-        return Result<IEnumerable<T>>.Success(filteredItems);
-
-        Result<IEnumerable<T>> HandleEmptyInput()
-        {
-            return items is null
-                ? Result<IEnumerable<T>>.Success(Array.Empty<T>())
-                : Result<IEnumerable<T>>.Success(items);
-        }
-
-        async Task<Result> EvaluateRules(T item)
-        {
+            var isValid = true;
             foreach (var rule in this.rules)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (rule is ItemRule<T> itemRule)
+                if (rule is IItemRule<T> itemRule)
                 {
                     itemRule.SetItem(item);
                 }
 
-                var result = await Rule.CheckAsync(rule, false, false, cancellationToken).AnyContext();
+                var result = rule.IsSatisfied();
                 if (result.IsFailure)
                 {
-                    return Result.Failure();
+                    isValid = false;
+
+                    break;
                 }
             }
 
-            return Result.Success();
+            if (isValid)
+            {
+                matchedItems.Add(item);
+            }
+            else
+            {
+                unMatchedItems.Add(item);
+            }
         }
+
+        return (matchedItems, unMatchedItems);
+    }
+
+    private async Task<(List<T> ValidItems, List<T> InvalidItems)> ClassifyAsync<T>(
+        IEnumerable<T> items,
+        CancellationToken cancellationToken)
+    {
+        if (this.rules.Count == 0)
+        {
+            return ([..items ?? Array.Empty<T>()], []);
+        }
+
+        var matchedItems = new List<T>();
+        var unMatchedItems = new List<T>();
+
+        foreach (var item in items ?? Array.Empty<T>())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var isValid = true;
+            foreach (var rule in this.rules)
+            {
+                if (rule is IItemRule<T> itemRule)
+                {
+                    itemRule.SetItem(item);
+                }
+
+                var result = rule is AsyncRuleBase asyncRule
+                    ? await asyncRule.IsSatisfiedAsync(cancellationToken)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    : rule.IsSatisfied();
+
+                if (result.IsFailure)
+                {
+                    isValid = false;
+
+                    break;
+                }
+            }
+
+            if (isValid)
+            {
+                matchedItems.Add(item);
+            }
+            else
+            {
+                unMatchedItems.Add(item);
+            }
+        }
+
+        return (matchedItems, unMatchedItems);
     }
 
     /// <summary>

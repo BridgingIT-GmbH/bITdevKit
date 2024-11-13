@@ -1011,8 +1011,7 @@ public async Task<Result<Order>> ProcessOrderAsync(Order order)
         .FindOneResultAsync(order.ProductId);
 
     if (inventoryResult.IsFailure)
-        return Result<Order>.Failure()
-            .WithErrors(inventoryResult.Errors);
+        return inventoryResult.For<Order>(); // convert to Order result
 
     // Insert order
     var orderResult = await _orderRepository

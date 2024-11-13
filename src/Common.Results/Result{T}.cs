@@ -258,6 +258,32 @@ public readonly partial struct Result<T> : IResult<T>
             () => Success().WithMessages(result.Messages).WithErrors(result.Errors),
             _ => Failure().WithMessages(result.Messages).WithErrors(result.Errors));
 
+    // /// <summary>
+    // /// Implicitly converts a Result{T} to a Result{TOutput}.
+    // /// </summary>
+    // /// <typeparam name="TOutput">The target type of the conversion.</typeparam>
+    // /// <param name="result">The Result{T} to convert.</param>
+    // /// <returns>A new Result{TOutput} with the same success state, messages, and errors.</returns>
+    // /// <example>
+    // /// <code>
+    // /// var intResult = Result{int}.Failure()
+    // ///     .WithMessage("Processing failed")
+    // ///     .WithError(new ValidationError("Invalid value"));
+    // ///
+    // /// Result{string} strResult = intResult; // Implicit conversion
+    // /// </code>
+    // /// </example>
+    // public static implicit operator Result<TOutput>(Result<T> result)
+    // {
+    //     return result.Match(
+    //         _ => Result<TOutput>.Success()
+    //             .WithMessages(result.Messages)
+    //             .WithErrors(result.Errors),
+    //         _ => Result<TOutput>.Failure()
+    //             .WithMessages(result.Messages)
+    //             .WithErrors(result.Errors));
+    // }
+
     /// <summary>
     /// Creates a successful Result{T} with a specified value.
     /// </summary>

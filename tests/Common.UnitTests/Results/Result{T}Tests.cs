@@ -87,6 +87,19 @@ public class ResultValueTests
         Should.Throw<InvalidOperationException>(() => result7.Value);
     }
 
+    public Result<string> For_ConversionBetweenTypes1()
+    {
+        // Arrange
+        var value = this.faker.Random.Int(1, 100);
+        var message = this.faker.Lorem.Sentence();
+        var error = new Error("Test error");
+
+        var successResult = Result<int>.Success(value).WithMessage(message);
+        var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
+
+        return failureResult.For<string>(); //explicit  conversion
+    }
+
     [Fact]
     public void For_ConversionBetweenTypes_MaintainsStateAndMessages()
     {
@@ -915,5 +928,107 @@ public class ResultValueTests
         Task SavePersonAsync(PersonStub person, CancellationToken ct);
 
         Task<bool> PersonExistsAsync(EmailAddressStub email, CancellationToken ct);
+    }
+
+    [Fact]
+    public void ImplicitConversion_ValueToResult_WorksCorrectly()
+    {
+        // Arrange
+        var value = this.faker.Random.Int(1, 100);
+
+        // Act
+        Result<int> result = value;
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldBeValue(value);
+    }
+
+    [Fact]
+    public void ImplicitConversion_TaskToResult_WorksCorrectly()
+    {
+        // Arrange
+        var value = this.faker.Random.Int(1, 100);
+        var task = Task.FromResult(value);
+
+        // Act
+        Result<int> result = task;
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldBeValue(value);
+    }
+
+    [Fact]
+    public void ImplicitConversion_ResultToBool_WorksCorrectly()
+    {
+        // Arrange
+        var successResult = Result<int>.Success(42);
+        var failureResult = Result<int>.Failure();
+
+        // Act
+        bool successBool = successResult;
+        bool failureBool = failureResult;
+
+        // Assert
+        successBool.ShouldBeTrue();
+        failureBool.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ImplicitConversion_ResultToNonGenericResult_WorksCorrectly()
+    {
+        // Arrange
+        var successResult = Result<int>.Success(42);
+        var failureResult = Result<int>.Failure();
+
+        // Act
+        Result nonGenericSuccess = successResult;
+        Result nonGenericFailure = failureResult;
+
+        // Assert
+        nonGenericSuccess.ShouldBeSuccess();
+        nonGenericFailure.ShouldBeFailure();
+    }
+
+    [Fact]
+    public void ImplicitConversion_NonGenericResultToResult_WorksCorrectly()
+    {
+        // Arrange
+        var nonGenericSuccess = Result.Success().WithMessage("Success");
+        var nonGenericFailure = Result.Failure().WithMessage("Failure");
+
+        // Act
+        Result<int> successResult = nonGenericSuccess;
+        Result<int> failureResult = nonGenericFailure;
+
+        // Assert
+        successResult.ShouldBeSuccess();
+        successResult.ShouldContainMessage("Success");
+
+        failureResult.ShouldBeFailure();
+        failureResult.ShouldContainMessage("Failure");
+    }
+
+    [Fact]
+    public void ForConversion_ResultToResultOfDifferentType_WorksCorrectly()
+    {
+        // Arrange
+        var successResult = Result<int>.Success(42).WithMessage("Success");
+        var failureResult = Result<int>.Failure().WithMessage("Failure").WithError(new Error("Test error"));
+
+        // Act
+        // ReSharper disable once SuggestVarOrType_Elsewhere
+        Result<string> convertedSuccessResult = successResult.For<string>();
+        // ReSharper disable once SuggestVarOrType_Elsewhere
+        Result<string> convertedFailureResult = failureResult.For<string>();
+
+        // Assert
+        convertedSuccessResult.ShouldBeSuccess();
+        convertedSuccessResult.ShouldContainMessage("Success");
+
+        convertedFailureResult.ShouldBeFailure();
+        convertedFailureResult.ShouldContainMessage("Failure");
+        convertedFailureResult.ShouldContainError<Error>();
     }
 }

@@ -87,7 +87,7 @@ public class ResultValueTests
         Should.Throw<InvalidOperationException>(() => result7.Value);
     }
 
-    public Result<string> For_ConversionBetweenTypes1()
+    public Result<string> To_ConversionBetweenTypes1()
     {
         // Arrange
         var value = this.faker.Random.Int(1, 100);
@@ -97,11 +97,11 @@ public class ResultValueTests
         var successResult = Result<int>.Success(value).WithMessage(message);
         var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
 
-        return failureResult.For<string>(); //explicit  conversion
+        return failureResult.ToResult<string>(); //explicit  conversion
     }
 
     [Fact]
-    public void For_ConversionBetweenTypes_MaintainsStateAndMessages()
+    public void To_ConversionBetweenTypes_MaintainsStateAndMessages()
     {
         // Arrange
         var value = this.faker.Random.Int(1, 100);
@@ -112,11 +112,11 @@ public class ResultValueTests
         var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
 
         // Act
-        var nonGenericSuccess = successResult.For();
-        var nonGenericFailure = failureResult.For();
+        var nonGenericSuccess = successResult.ToResult();
+        var nonGenericFailure = failureResult.ToResult();
 
-        var genericSuccess = successResult.For<string>();
-        var genericFailureWithValue = failureResult.For("test");
+        var genericSuccess = successResult.ToResult<string>();
+        var genericFailureWithValue = failureResult.ToResult("test");
 
         // Assert
         nonGenericSuccess.ShouldBeSuccess();
@@ -1019,9 +1019,9 @@ public class ResultValueTests
 
         // Act
         // ReSharper disable once SuggestVarOrType_Elsewhere
-        Result<string> convertedSuccessResult = successResult.For<string>();
+        Result<string> convertedSuccessResult = successResult.ToResult<string>();
         // ReSharper disable once SuggestVarOrType_Elsewhere
-        Result<string> convertedFailureResult = failureResult.For<string>();
+        Result<string> convertedFailureResult = failureResult.ToResult<string>();
 
         // Assert
         convertedSuccessResult.ShouldBeSuccess();

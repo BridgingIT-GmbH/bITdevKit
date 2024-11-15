@@ -62,7 +62,7 @@ namespace BridgingIT.DevKit.Common;
 /// var user = new User { Id = 1, Name = "John" };
 /// var userResult = Result.Success()
 ///     .WithMessage("User created")
-///     .For(user);
+///     .To(user);
 ///
 /// // Pattern matching
 /// var message = result.Match(
@@ -762,9 +762,9 @@ public readonly partial struct Result : IResult
     /// </summary>
     /// <example>
     /// var result = Result.Success().WithMessage("Valid");
-    /// var typedResult = result.For{User}(); // Creates Result{User} keeping messages/erros
+    /// var typedResult = result.ToResult{User}(); // Creates Result{User} keeping messages/erros
     /// </example>
-    public Result<TValue> For<TValue>()
+    public Result<TValue> ToResult<TValue>()
     {
         return this.Match(
             Result<TValue>.Success().WithMessages(this.Messages).WithErrors(this.Errors),
@@ -778,13 +778,13 @@ public readonly partial struct Result : IResult
     /// var user = new User { Id = 1, Name = "John" };
     /// var result = Result.Success()
     ///     .WithMessage("User created")
-    ///     .For(user);
+    ///     .ToResult(user);
     /// if(result.IsSuccess)
     /// {
     ///     Console.WriteLine($"Created: {result.Value.Name}");
     /// }
     /// </example>
-    public Result<TValue> For<TValue>(TValue value)
+    public Result<TValue> ToResult<TValue>(TValue value)
     {
         return this.Match(
             Result<TValue>.Success(value)
@@ -799,9 +799,9 @@ public readonly partial struct Result : IResult
     /// Creates a new Result instance.
     /// </summary>
     /// <example>
-    /// var result = Result.For(); // Same as Result.Success()
+    /// var result = Result.ToResult(); // Same as Result.Success()
     /// </example>
-    public static Result For() => SuccessResult;
+    public static Result ToResult() => SuccessResult;
 
     /// <summary>
     /// Combines multiple Results into a single Result.
@@ -866,7 +866,7 @@ public readonly partial struct Result : IResult
     /// <example>
     /// var result = Result.Success("Operation completed")
     ///     .WithError(new ValidationError("Invalid input"));
-    /// Console.WriteLine(result.ToString());
+    /// Console.WriteLine(result.ToResultString());
     /// // Output:
     /// // Success: False
     /// // Messages:

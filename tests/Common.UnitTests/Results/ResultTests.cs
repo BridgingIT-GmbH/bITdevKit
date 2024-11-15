@@ -242,11 +242,11 @@ public class ResultTests
     }
 
     [Fact]
-    public void For_WithNoValue_CreatesNewResult()
+    public void To_WithNoValue_CreatesNewResult()
     {
         // Arrange
         // Act
-        var result = Result.For();
+        var result = Result.ToResult();
 
         // Assert
         result.ShouldBeSuccess();
@@ -254,14 +254,14 @@ public class ResultTests
     }
 
     [Fact]
-    public void For_String_CreatesResult()
+    public void To_String_CreatesResult()
     {
         // Arrange
         var message = this.faker.Random.Words();
         var sut = Result.Success(message);
 
         // Act
-        var result = sut.For<string>();
+        var result = sut.ToResult<string>();
 
         // Assert
         result.ShouldBeSuccess();
@@ -270,7 +270,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void For_WithValue_CreatesResultWithValue()
+    public void To_WithValue_CreatesResultWithValue()
     {
         // Arrange
         var message = this.faker.Random.Words();
@@ -278,7 +278,7 @@ public class ResultTests
         var sut = Result.Success(message);
 
         // Act
-        var result = sut.For(value);
+        var result = sut.ToResult(value);
 
         // Assert
         result.ShouldBeSuccess();
@@ -388,7 +388,7 @@ public class ResultTests
     {
         // Arrange
         var operationExecuted = false;
-        Func<CancellationToken, Task> operation = ct =>
+        Func<CancellationToken, Task> operation = _ =>
         {
             operationExecuted = true;
             return Task.CompletedTask;

@@ -1135,11 +1135,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// var userResult = Result{User}.Success(user)
     ///     .WithMessage("User created");
     ///
-    /// Result result = userResult.For(); // Converts to non-generic Result
+    /// Result result = userResult.ToResult(); // Converts to non-generic Result
     /// Console.WriteLine(result.IsSuccess); // Still maintains success state
     /// </code>
     /// </example>
-    public Result For()
+    public Result ToResult()
     {
         return this; // Uses implicit operator
     }
@@ -1155,12 +1155,12 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .WithMessage("User validated");
     ///
     /// // Convert to different type
-    /// Result{UserDto} dtoResult = userResult.For{UserDto}();
+    /// Result{UserDto} dtoResult = userResult.ToResult{UserDto}();
     /// </code>
     /// </example>
-    public Result<TOutput> For<TOutput>()
+    public Result<TOutput> ToResult<TOutput>()
     {
-        return this.For<TOutput>(default);
+        return this.ToResult<TOutput>(default);
     }
 
     /// <summary>
@@ -1175,15 +1175,15 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .WithMessage("User validated");
     ///
     /// var dto = new UserDto { Id = user.Id, Name = user.Name };
-    /// var dtoResult = userResult.For(dto); // Creates Result{UserDto}
+    /// var dtoResult = userResult.ToResult(dto); // Creates Result{UserDto}
     ///
     /// // Also useful for type conversion in chains
     /// var result = await GetUserAsync()
     ///     .Map(user => new UserDto(user))
-    ///     .For(dto => new ApiResponse(dto));
+    ///     .To(dto => new ApiResponse(dto));
     /// </code>
     /// </example>
-    public Result<TOutput> For<TOutput>(TOutput value)
+    public Result<TOutput> ToResult<TOutput>(TOutput value)
     {
         var result = this; // struct cannot access this in lambda
 

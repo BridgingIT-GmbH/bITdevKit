@@ -9,6 +9,7 @@ using Common;
 using DevKit.Application.Messaging;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
 
 public class UserCreatedMessageHandler(
     ILoggerFactory loggerFactory,

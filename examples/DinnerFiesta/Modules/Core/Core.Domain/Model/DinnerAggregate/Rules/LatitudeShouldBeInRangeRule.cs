@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-
-public class LatitudeShouldBeInRangeRule : IDomainRule
+public class LatitudeShouldBeInRangeRule : RuleBase
 {
     private readonly double? value;
 
@@ -21,22 +19,17 @@ public class LatitudeShouldBeInRangeRule : IDomainRule
         this.value = value;
     }
 
-    public string Message => "Latitude should be between -90 and 90";
+    public override string Message => "Latitude should be between -90 and 90";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result Execute()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(this.value is null || (this.value >= -180 && this.value <= 180));
+        return Result.SuccessIf(this.value is null || (this.value >= -180 && this.value <= 180));
     }
 }
 
 public static partial class DinnerRules
 {
-    public static IDomainRule LatitudeShouldBeInRange(double? value)
+    public static IRule LatitudeShouldBeInRange(double? value)
     {
         return new LatitudeShouldBeInRangeRule(value);
     }

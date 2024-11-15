@@ -44,9 +44,10 @@ public class CityFindOneQueryHandler(
         }
         else
         {
-            DomainRules.Apply([
-                new LongitudeShouldBeInRange(query.Longitude), new LatitudeShouldBeInRange(query.Latitude)
-            ]);
+            Rule.Add(
+                new LongitudeShouldBeInRange(query.Longitude),
+                new LatitudeShouldBeInRange(query.Latitude)
+            ).Check();
 
             var city = await cityRepository
                     .FindOneAsync(new CityHasLocationSpecification(query.Longitude, query.Latitude),

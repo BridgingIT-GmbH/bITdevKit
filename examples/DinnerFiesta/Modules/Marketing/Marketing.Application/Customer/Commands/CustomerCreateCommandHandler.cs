@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
 using Common;
 using DevKit.Application.Commands;
-using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,7 @@ public class CustomerCreateCommandHandler(
             command.LastName,
             command.Email);
 
-        DomainRules.Apply([]);
+        Rule.Add().Check();
 
         var existingCustomer = (await repository.FindAllAsync(
                 new CustomerForEmailSpecification(customer.Email),

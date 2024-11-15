@@ -13,4 +13,9 @@ public class OperationCancelledError(string message = null) : ResultErrorBase(me
     public OperationCancelledError() : this(null)
     {
     }
+
+    public override void Throw()
+    {
+        throw new OperationCanceledException(this.Message);
+    }
 }

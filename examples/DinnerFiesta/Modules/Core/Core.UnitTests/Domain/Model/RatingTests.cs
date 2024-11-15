@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain;
 
 using Core.Domain;
-using DevKit.Domain;
 
 [UnitTest("Domain")]
 public class RatingTests
@@ -32,7 +31,7 @@ public class RatingTests
         var expectedValue = 0;
 
         // Act/Assert
-        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
+        Should.Throw<RuleException>(() => Rating.Create(expectedValue)); // due to ThrowIfFailed (domainruleerror -> domainruleexception)
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class RatingTests
         var expectedValue = -1;
 
         // Act/Assert
-        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
+        Should.Throw<RuleException>(() => Rating.Create(expectedValue)); // due to ThrowIfFailed (domainruleerror -> domainruleexception)
     }
 
     [Fact]
@@ -52,6 +51,6 @@ public class RatingTests
         var expectedValue = 9;
 
         // Act/Assert
-        Should.Throw<DomainRuleException>(() => Rating.Create(expectedValue));
+        Should.Throw<RuleException>(() => Rating.Create(expectedValue));
     }
 }

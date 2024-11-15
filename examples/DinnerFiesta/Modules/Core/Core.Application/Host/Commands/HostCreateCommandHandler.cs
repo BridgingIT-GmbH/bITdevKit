@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Commands;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class HostCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Host> repository) : CommandHandlerBase<HostCreateCommand, Result<Host>>(loggerFactory)
@@ -27,10 +20,9 @@ public class HostCreateCommandHandler(
             UserId.Create(command.UserId),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        await DomainRules.ApplyAsync([
-                HostRules.UserMustBeUnique(repository, host.UserId)
-            ],
-            cancellationToken);
+        await Rule.Add(
+                HostRules.UserMustBeUnique(repository, host.UserId))
+            .CheckAsync(cancellationToken: cancellationToken);
 
         await repository.InsertAsync(host, cancellationToken);
 

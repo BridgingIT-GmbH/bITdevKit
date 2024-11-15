@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
 using System.Diagnostics;
 using Common;
-using DevKit.Domain;
 using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, Name={Name} [{Country}]")]
@@ -33,7 +32,7 @@ public class City : AggregateRoot<Guid>
 
     public static City Create(string name, string country, double longitude, double latitude)
     {
-        DomainRules.Apply(new CountryShouldBeKnown(country));
+        Rule.Check(new CountryShouldBeKnown(country));
 
         var entity = new City
         {
@@ -52,7 +51,7 @@ public class City : AggregateRoot<Guid>
 
     public void Update(string name, string country, double longitude, double latitude)
     {
-        DomainRules.Apply(new CountryShouldBeKnown(country));
+        Rule.Check(new CountryShouldBeKnown(country));
 
         this.Name = name;
         this.Country = country;
@@ -62,9 +61,10 @@ public class City : AggregateRoot<Guid>
 
     public void Delete(string reason)
     {
-        DomainRules.Apply([
-            new DeleteMustBeProvidedReasonRule(reason), new DeleteCannotBeDoneTwiceRule(this.IsDeleted)
-        ]);
+        Rule.Add(
+                new DeleteMustBeProvidedReasonRule(reason),
+                new DeleteCannotBeDoneTwiceRule(this.IsDeleted))
+            .Check();
 
         this.IsDeleted = true;
         this.DeletedDate = DateTime.UtcNow;

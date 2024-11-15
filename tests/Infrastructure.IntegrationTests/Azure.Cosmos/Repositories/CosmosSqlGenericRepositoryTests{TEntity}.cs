@@ -292,7 +292,6 @@ public class CosmosSqlGenericRepositoryTests
 
         // Assert
         //this.GetContext().Persons.AsNoTracking().ToList().Count.ShouldBeGreaterThanOrEqualTo(6);
-        results.ShouldNotBeNull();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();
         results.TotalCount.ShouldBe(6);

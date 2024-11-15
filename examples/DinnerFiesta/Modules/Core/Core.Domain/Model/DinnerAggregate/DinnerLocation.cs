@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class DinnerLocation : ValueObject
 {
     private DinnerLocation() { }
@@ -63,10 +60,11 @@ public class DinnerLocation : ValueObject
         double? latitude = null,
         double? longitude = null)
     {
-        DomainRules.Apply([
-            DinnerRules.CountryShouldBeKnown(country), DinnerRules.LongitudeShouldBeInRange(longitude),
+        Rule.Add(
+            DinnerRules.CountryShouldBeKnown(country),
+            DinnerRules.LongitudeShouldBeInRange(longitude),
             DinnerRules.LatitudeShouldBeInRange(latitude)
-        ]);
+        ).Check();
 
         return new DinnerLocation(name,
             addressLine1,

@@ -5,23 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
-public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : IDomainRule
+public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostId hostId, MenuId menuId) : AsyncRuleBase
 {
-    public string Message => "Menu for host must exist";
+    public override string Message => "Menu for host must exist";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
 
-        return menu?.HostId == hostId;
+        return Result.SuccessIf(menu?.HostId == hostId);
     }
 }

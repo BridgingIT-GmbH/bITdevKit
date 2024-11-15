@@ -3,38 +3,12 @@
 <!-- TOC -->
 
 * [Overview](#overview)
-  * [Challenges](#challenges)
-  * [Solution](#solution)
-  * [Architecture](#architecture)
-  * [Use Cases](#use-cases)
-* [Usage](#usage)
-  * [Basic Result Operations](#basic-result-operations)
-  * [Result with Values](#result-with-values)
-  * [Error Handling](#error-handling)
-  * [Working with Messages](#working-with-messages)
-  * [Paged Results](#paged-results)
-  * [Custom Error Types](#custom-error-types)
-  * [Exception Handling](#exception-handling)
-  * [Best Practices](#best-practices)
+* [Basic Usage](#basic-usage)
 * [Examples](#examples)
-  * [Repository Pattern Example](#repository-pattern-example)
-  * [Service Layer Example](#service-layer-example)
-  * [API Controller Example](#api-controller-example)
-  * [Complex Workflow Example](#complex-workflow-example)
 * [Appendix A: Repository Extensions](#appendix-a-repository-extensions)
-  * [Available Extensions](#available-extensions)
-  * [Usage Examples](#usage-examples)
-    * [Basic CRUD Operations](#basic-crud-operations)
-    * [Query Operations](#query-operations)
-    * [Advanced Queries](#advanced-queries)
-    * [Error Handling](#error-handling-1)
-  * [Best Practices](#best-practices-1)
 * [Appendix B: Functional Extensions](#appendix-b-functional-extensions)
-  * [Core Operations](#core-operations)
-  * [Side Effects](#side-effects)
-  * [Control Flow](#control-flow)
-  * [Transformations](#transformations)
-  * [Pattern Matching](#pattern-matching)
+* [Appendix C: Result Creation Methods](#appendix-c-result-creation-methods)
+* [Appendix D: Either Type](#appendix-d-either-type)
 
 <!-- TOC -->
 
@@ -192,9 +166,9 @@ The Result pattern is particularly useful in the following scenarios:
 - Handling conditional operations
 - Aggregating errors from multiple sources
 
-## Usage
+## Basic Usage
 
-### Basic Result Operations
+### Result Operations
 
 ```csharp
 // Creating success results
@@ -1010,8 +984,7 @@ public async Task<Result<Order>> ProcessOrderAsync(Order order)
         .FindOneResultAsync(order.ProductId);
 
     if (inventoryResult.IsFailure)
-        return Result<Order>.Failure()
-            .WithErrors(inventoryResult.Errors);
+        return inventoryResult.For<Order>(); // convert to Order result
 
     // Insert order
     var orderResult = await _orderRepository
@@ -1299,3 +1272,349 @@ var result = await Result<List>.Success(people)
         errors => $"Processing failed: {string.Join(", ", errors)}"
     );
 ```
+
+# Appendix C: Result Creation Methods
+
+> Guidance to creating and initializing Result<T> instances.
+
+## Success Creation
+
+```csharp
+// Basic success with value
+var result1 = Result<int>.Success(42);
+
+// Success with message
+var result2 = Result<User>.Success(user, "User created successfully");
+
+// Success with multiple messages
+var result3 = Result<Order>.Success(
+    order,
+    new[] { "Order validated", "Payment processed" });
+
+// Empty success (default value)
+var result4 = Result<List<string>>.Success();
+```
+
+## Failure Creation
+
+```csharp
+// Basic failure (default value)
+var result1 = Result<User>.Failure();
+
+// Failure with specific error type
+var result2 = Result<Order>.Failure<ValidationError>();
+
+// Failure with value
+var result3 = Result<int>.Failure(42);
+
+// Failure with message
+var result4 = Result<User>.Failure("User creation failed");
+
+// Failure with value and message
+var result5 = Result<User>.Failure(user, "Validation failed");
+
+// Failure with error instance
+var result6 = Result<Order>.Failure()
+    .WithError(new ValidationError("Invalid order"));
+
+// Failure with messages and errors
+var result7 = Result<Product>.Failure(
+    new[] { "Validation failed", "Invalid price" },
+    new IResultError[]
+    {
+        new ValidationError("price", "Must be positive"),
+        new DomainError("Invalid product state")
+    });
+```
+
+## Conditional Creation
+
+```csharp
+// Success if condition is met
+var result1 = Result<User>.SuccessIf(
+    user.Age >= 18,
+    user,
+    new ValidationError("Must be 18 or older"));
+
+// Success if predicate is satisfied
+var result2 = Result<Order>.SuccessIf(
+    order => order.Total > 0,
+    order,
+    new ValidationError("Order total must be positive"));
+
+// Failure if condition is met
+var result3 = Result<Product>.FailureIf(
+    product.Stock == 0,
+    product,
+    new OutOfStockError());
+
+// Failure if predicate is satisfied
+var result4 = Result<User>.FailureIf(
+    user => user.IsBlacklisted,
+    user,
+    new ValidationError("User is blacklisted"));
+```
+
+## Operation Wrapping
+
+```csharp
+// Wrap synchronous operation
+var result1 = Result<User>.For(() =>
+    userRepository.GetById(userId));
+
+// Wrap async operation
+var result2 = await Result<Order>.ForAsync(async () =>
+    await orderRepository.GetByIdAsync(orderId));
+
+// Wrap operation with error handling
+var result3 = Result<decimal>.For(() =>
+{
+    if (amount <= 0)
+        throw new ArgumentException("Amount must be positive");
+    return CalculateDiscount(amount);
+});
+
+// Wrap async operation with cancellation
+var result4 = await Result<List<Product>>.ForAsync(async ct =>
+    await productRepository.GetAllAsync(ct),
+    cancellationToken);
+```
+
+## Type Conversion
+
+```csharp
+// Convert to non-generic Result
+Result baseResult = Result<int>.Success(42);
+
+// Convert to different Result<T> type
+var result1 = userResult.For<UserDto>();
+
+// Convert with new value
+var result2 = orderResult.For(orderDto);
+
+// Implicit conversion to bool
+bool isSuccess = Result<User>.Success(user);
+
+// Implicit conversion from value
+Result<int> result3 = 42; // Creates successful result
+
+// Implicit conversion from IResult<T>
+IResult<User> interfaceResult = GetUser();
+Result<User> result4 = interfaceResult;
+```
+
+# Appendix D: Either Type
+
+## Overview
+
+The Either type represents a value that can be one of two different types. Unlike Result, which specifically handles success and failure states, Either provides a more general mechanism for working with two distinct types. This makes it particularly valuable in scenarios where an operation might produce different but equally valid outcomes.
+
+The type brings several advantages to your codebase. It enforces type safety by eliminating the need for type casting and null checks. It follows functional programming principles, offering immutable value semantics and composable operations. Furthermore, it integrates seamlessly with the Result type when you need to transition between different error handling approaches.
+
+## When to Use Either
+
+Either shines in scenarios where an operation can produce two different but valid result types. For instance, when parsing data that could be either numeric or textual, or when an API might return different response types based on certain conditions. It's particularly useful when you need type-safe handling of alternatives and want to avoid the pitfalls of null checking or type casting.
+
+However, Either isn't always the right choice. When you're primarily concerned with success and failure scenarios, the Result type is more appropriate. Similarly, if one of your types represents an error state, Result provides better semantics for that use case. Either also isn't suitable when you need to handle more than two types or when a simple null check would suffice.
+
+## Basic Usage
+
+The Either type provides multiple ways to create and handle values:
+
+### Direct Creation
+
+
+```csharp
+// Create Either from first type
+Either<int, string> numericCase = 42;
+Either<int, string> firstCase = Either<int, string>.FromFirst(42);
+
+// Create Either from second type
+Either<int, string> textCase = "Hello";
+Either<int, string> secondCase = Either<int, string>.FromSecond("Hello");
+
+// Check which type is contained
+if (result.IsFirst) { }
+if (result.IsSecond) { }
+
+// Safe access to values
+int number = result.FirstValue;  // Throws if not first type
+string text = result.SecondValue;  // Throws if not second type
+```
+
+## Pattern Matching
+
+The Either type provides comprehensive pattern matching capabilities through Match and Switch operations. These methods ensure type-safe handling of both possible values:
+
+### Synchronous Pattern Matching
+
+```csharp
+// Basic matching
+string result = either.Match(
+    firstValue => $"Number: {firstValue}",
+    secondValue => $"Text: {secondValue}");
+
+// Async matching
+await either.MatchAsync(
+    async (number, ct) => await ProcessNumberAsync(number),
+    async (text, ct) => await ProcessTextAsync(text));
+
+// Action matching with Switch
+either.Switch(
+    number => Console.WriteLine($"Got number: {number}"),
+    text => Console.WriteLine($"Got text: {text}"));
+
+// Match with transformations
+var numericEither = Either<int, string>.FromFirst(42);
+var result = numericEither.Match(
+    num => num * 2,
+    text => int.Parse(text));
+
+// Switch for side effects
+var executed = false;
+numericEither.Switch(
+    num => executed = true,
+    _ => throw new Exception("Should not execute"));
+```
+
+### Asynchronous Pattern Matching
+
+```csharp
+// Async match operations
+await either.MatchAsync(
+    async (number, ct) => await ProcessNumberAsync(number),
+    async (text, ct) => await ProcessTextAsync(text));
+
+// Async switch with cancellation
+await either.SwitchAsync(
+    async (num, ct) => {
+        await Task.Delay(100, ct);
+        return ProcessNumber(num);
+    },
+    async (text, ct) => {
+        await Task.Delay(100, ct);
+        return ProcessText(text);
+    });
+```
+
+
+## Error Handling and Try Operations
+
+Either provides built-in support for handling operations that might fail:
+
+```csharp
+// Basic try operation
+var parsed = Either<int, Exception>.Try(() => int.Parse("42"));
+
+// Async try with potential failure
+var result = await Either<Data, Exception>.TryAsync(
+    async () => await FetchDataAsync());
+
+// Filter operations
+var filtered = either.Filter(
+    num => num > 0,
+    "Number must be positive");
+```
+
+## Integration with Result
+
+Either integrates naturally with the Result type, allowing you to transition between the two approaches when needed:
+
+```csharp
+// Converting Either to Result
+Result<int> result = either.ToResult(
+    firstMatch: num => num,
+    secondMatch: text => int.Parse(text),
+    error => new ValidationError(error));
+
+// Using Try operations
+Either<int, Exception> parsed = Either<int, Exception>
+    .Try(() => int.Parse("42"));
+
+// Async operations
+var result = await Either<int, Exception>
+    .TryAsync(async () => await GetValueAsync());
+
+// Convert to Result with custom error
+var resultWithError = either.ToResult(
+    firstMatch: num => num.ToString(),
+    secondMatch: err => "0",
+    errorFactory: err => new CustomError(err));
+
+// Convert with simple error message
+var simpleResult = either.ToResult(
+    firstMatch: num => num,
+    errorMessage: "Conversion failed");
+```
+
+
+## Real World Examples
+
+Here's how Either can be used in practical scenarios:
+
+### API Response Handling
+
+The Either type provides elegant handling of different API response types:
+
+```csharp
+public class ApiExample
+{
+    public Either<SuccessResponse, ErrorDetails> CallApi()
+    {
+        try
+        {
+            var response = api.Call();
+            return response.IsSuccess
+                ? new SuccessResponse(response)
+                : new ErrorDetails(response.Error);
+        }
+        catch (Exception ex)
+        {
+            return new ErrorDetails(ex);
+        }
+    }
+
+    public async Task ProcessApiCall()
+    {
+        var result = await CallApi()
+            .MatchAsync(
+                async success => await ProcessSuccess(success),
+                async error => await HandleError(error));
+    }
+}
+```
+
+### Data Processing
+
+Either can elegantly handle different outcomes in data processing scenarios:
+
+```csharp
+public class DataProcessor
+{
+    public Either<ParsedData, ValidationErrors> ProcessInput(string input)
+    {
+        return ValidateInput(input)
+            .Match(
+                valid => ParsedData.Create(valid),
+                errors => new ValidationErrors(errors));
+    }
+
+    public void HandleData(string input)
+    {
+        ProcessInput(input)
+            .Switch(
+                parsed => SaveToDatabase(parsed),
+                errors => LogValidationErrors(errors));
+    }
+}
+```
+
+## Best Practices
+
+When working with Either, focus on using it for truly bifurcated scenarios where both types represent valid outcomes. Always handle both cases through pattern matching to ensure type-safe operations. Consider async operations when dealing with I/O or time-consuming processes.
+
+Avoid using Either for simple boolean conditions or null checks, as these scenarios are better served by simpler constructs. Don't use Either when you need to handle more than two types, and avoid throwing exceptions in Either handlers as this defeats its purpose of type-safe handling.
+
+## Technical Considerations
+
+Either is implemented as a value type, providing thread-safety and immutability by design. It's memory-efficient and supports both synchronous and asynchronous operations. The implementation ensures that you can't accidentally access the wrong type without explicitly handling both cases, providing robust type safety at compile time.

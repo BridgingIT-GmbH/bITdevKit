@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
 using DevKit.Application.JobScheduling;
 using DevKit.Application.Messaging;
 using DinnerFiesta.Application.Modules.Core;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quartz;
 

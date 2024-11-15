@@ -5,23 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
-public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : IDomainRule
+public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, string name) : AsyncRuleBase
 {
-    public string Message => "Name should be unique";
+    public override string Message => "Name should be unique";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return !(await repository.FindAllAsync(DinnerSpecifications.ForName(name),
-            cancellationToken: cancellationToken)).SafeAny();
+        return Result.SuccessIf(!(await repository.FindAllAsync(DinnerSpecifications.ForName(name),
+            cancellationToken: cancellationToken)).SafeAny());
     }
 }

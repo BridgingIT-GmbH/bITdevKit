@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class Rating : ValueObject
 {
     private Rating() { }
@@ -21,9 +18,10 @@ public class Rating : ValueObject
 
     public static Rating Create(int value)
     {
-        DomainRules.Apply([RatingRules.ShouldBeInRange(value)]);
-
-        return new Rating(value);
+        return Rule.Add(
+                RatingRules.ShouldBeInRange(value)).Check()
+            .ThrowIfFailed()
+            .Map(new Rating(value)).Value;
     }
 
     protected override IEnumerable<object> GetAtomicValues()

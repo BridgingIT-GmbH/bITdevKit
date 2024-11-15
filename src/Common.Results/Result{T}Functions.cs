@@ -12,7 +12,7 @@ using FluentValidation.Internal;
 /// Represents the result of an operation, which can either be a success or a failure.
 /// Contains functional methods to better work with success and failure results and their values, as well as construct results from actions or tasks.
 /// </summary>
-public partial class Result<T>
+public readonly partial struct Result<T>
 {
     /// <summary>
     ///     Maps a successful Result{T} to a Result{TNew} using the provided mapping function.
@@ -45,7 +45,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -93,7 +93,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -130,7 +130,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -177,9 +177,43 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
+    }
+
+    /// <summary>
+    /// Throws a <see cref="ResultException"/> if the current result is a failure.
+    /// </summary>
+    /// <returns>The current result if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
+    public Result<T> ThrowIfFailed()
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw new ResultException(this);
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the result is a failure.
+    /// </summary>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception>Thrown if the result indicates a failure.
+    ///     <cref>TException</cref>
+    /// </exception>
+    public Result<T> ThrowIfFailed<TException>()
+        where TException : Exception
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), this.Errors.FirstOrDefault()?.Message, this))!;
     }
 
     /// <summary>
@@ -221,7 +255,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -277,7 +311,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -309,7 +343,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -353,7 +387,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -387,7 +421,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -431,7 +465,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -475,7 +509,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -532,7 +566,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -572,7 +606,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -624,7 +658,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -665,7 +699,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -717,7 +751,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -751,7 +785,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -796,7 +830,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
 
@@ -831,7 +865,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -876,7 +910,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -909,7 +943,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -953,7 +987,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -995,7 +1029,7 @@ public partial class Result<T>
             catch (Exception ex)
             {
                 return Result<TNew>.Failure()
-                    .WithError(new ExceptionError(ex))
+                    .WithError(Result.Settings.ExceptionErrorFactory(ex))
                     .WithMessages(this.Messages);
             }
         }
@@ -1016,7 +1050,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -1057,7 +1091,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -1110,7 +1144,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -1167,7 +1201,7 @@ public partial class Result<T>
             }
             catch (Exception ex)
             {
-                errors.Add(new ExceptionError(ex));
+                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
             }
         }
 
@@ -1243,7 +1277,7 @@ public partial class Result<T>
             }
             catch (Exception ex)
             {
-                errors.Add(new ExceptionError(ex));
+                errors.Add(Result.Settings.ExceptionErrorFactory(ex));
             }
         }
 
@@ -1253,182 +1287,6 @@ public partial class Result<T>
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results)
                 .WithMessages(messages);
-    }
-
-    /// <summary>
-    ///     Executes different functions based on the Result's success state.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Function to execute if the Result is successful, receiving the value.</param>
-    /// <param name="onFailure">Function to execute if the Result failed, receiving the error list.</param>
-    /// <returns>The result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var message = Result{User}.Success(user)
-    ///     .Match(
-    ///         onSuccess: user => $"Found user: {user.Name}",
-    ///         onFailure: errors => $"Failed to find user"
-    ///     );
-    /// </code>
-    /// </example>
-    public TResult Match<TResult>(
-        Func<T, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
-
-        return this.IsSuccess
-            ? onSuccess(this.Value)
-            : onFailure(this.Errors);
-    }
-
-    /// <summary>
-    ///     Returns different values based on the Result's success state.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="success">Value to return if the Result is successful.</param>
-    /// <param name="failure">Value to return if the Result failed.</param>
-    /// <returns>The success or failure value based on the Result's state.</returns>
-    /// <example>
-    /// <code>
-    /// var status = Result{User}.Success(user)
-    ///     .Match(
-    ///         success: "User is valid",
-    ///         failure: "User is invalid"
-    ///     );
-    /// </code>
-    /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        return this.IsSuccess ? success : failure;
-    }
-
-    /// <summary>
-    ///     Asynchronously executes different functions based on the Result's success state.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the value.</param>
-    /// <param name="onFailure">Async function to execute if the Result failed, receiving the error list.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var message = await Result{User}.Success(user)
-    ///     .MatchAsync(
-    ///         async (user, ct) => {
-    ///             await UpdateLastLoginAsync(user, ct);
-    ///             return $"Updated user: {user.Name}";
-    ///         },
-    ///         async (errors, ct) => {
-    ///             await LogErrorsAsync(errors, ct);
-    ///             return "Failed to update user";
-    ///         },
-    ///         cancellationToken
-    ///     );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
-
-        return this.IsSuccess
-            ? await onSuccess(this.Value, cancellationToken)
-            : await onFailure(this.Errors, cancellationToken);
-    }
-
-    /// <summary>
-    ///     Asynchronously executes a success function with a synchronous failure handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Async function to execute if the Result is successful.</param>
-    /// <param name="onFailure">Synchronous function to execute if the Result failed.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var result = await Result{User}.Success(user)
-    ///     .MatchAsync(
-    ///         async (user, ct) => await ProcessUserAsync(user, ct),
-    ///         errors => "Failed to process user",
-    ///         cancellationToken
-    ///     );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
-
-        return this.IsSuccess
-            ? await onSuccess(this.Value, cancellationToken)
-            : onFailure(this.Errors);
-    }
-
-    /// <summary>
-    ///     Asynchronously executes a failure function with a synchronous success handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Synchronous function to execute if the Result is successful.</param>
-    /// <param name="onFailure">Async function to execute if the Result failed.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var result = await Result{User}.Success(user)
-    ///     .MatchAsync(
-    ///         user => $"Processing user: {user.Name}",
-    ///         async (errors, ct) => await HandleErrorsAsync(errors, ct),
-    ///         cancellationToken
-    ///     );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
-
-        return this.IsSuccess
-            ? onSuccess(this.Value)
-            : await onFailure(this.Errors, cancellationToken);
     }
 
     /// <summary>
@@ -1453,6 +1311,7 @@ public partial class Result<T>
             return this;
         }
 
+
         try
         {
             if (condition(this.Value))
@@ -1465,7 +1324,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -1515,7 +1374,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -1568,17 +1427,13 @@ public partial class Result<T>
             }
 
             return Failure(this.Value)
-                .WithErrors(validationResult.Errors.Select(error =>
-                    new ValidationError(
-                        error.ErrorMessage,
-                        error.PropertyName,
-                        error.ErrorCode)))
+                .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
                 .WithMessages(this.Messages);
         }
@@ -1637,11 +1492,7 @@ public partial class Result<T>
             }
 
             return Failure(this.Value)
-                .WithErrors(validationResult.Errors.Select(error =>
-                    new ValidationError(
-                        error.ErrorMessage,
-                        error.PropertyName,
-                        error.ErrorCode)))
+                .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
@@ -1653,7 +1504,7 @@ public partial class Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
-                .WithError(new ExceptionError(ex))
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
                 .WithMessages(this.Messages);
         }

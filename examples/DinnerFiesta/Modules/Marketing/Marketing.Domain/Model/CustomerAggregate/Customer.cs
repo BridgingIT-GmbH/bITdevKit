@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using DevKit.Domain;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 public class Customer : AuditableAggregateRoot<CustomerId, Guid>
@@ -34,7 +34,7 @@ public class Customer : AuditableAggregateRoot<CustomerId, Guid>
         EnsureArg.IsNotNull(lastName, nameof(lastName));
         EnsureArg.IsNotNull(email, nameof(email));
 
-        DomainRules.Apply([]);
+        Rule.Add().Check();
 
         var customer = new Customer(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email));
 

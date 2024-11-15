@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Host;
 
-using Domain;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ public class DomainRuleExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
-        if (exception is not DomainRuleException ex)
+        if (exception is not RuleException ex)
         {
             return false;
         }

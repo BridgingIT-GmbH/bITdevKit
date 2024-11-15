@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
 using Common;
-using DevKit.Domain;
 using DevKit.Domain.Model;
 
 public class AdAccount : ValueObject
@@ -28,7 +27,7 @@ public class AdAccount : ValueObject
     {
         EnsureArg.IsNotNullOrEmpty(value, nameof(value));
 
-        DomainRules.Apply(new AdAccountShouldBePartOfDomain(value));
+        Rule.Check(new AdAccountShouldBePartOf(value));
 
         return new AdAccount(value.SliceTill("\\"), value.SliceFrom("\\"));
     }

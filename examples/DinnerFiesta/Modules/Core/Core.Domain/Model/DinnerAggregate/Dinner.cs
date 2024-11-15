@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
 {
     private readonly List<DinnerReservation> reservations = [];
@@ -116,7 +113,9 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime)]);
+        Rule.Add(
+            DinnerRules.ScheduleShouldBeValid(schedule.StartDateTime, schedule.EndDateTime))
+            .Check();
 
         this.Schedule = schedule;
 
@@ -132,7 +131,7 @@ public class Dinner : AuditableAggregateRoot<DinnerId, Guid>
             return this;
         }
 
-        DomainRules.Apply([]);
+        Rule.Add().Check();
 
         this.Status = status;
 

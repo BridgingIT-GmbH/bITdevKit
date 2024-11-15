@@ -39,7 +39,7 @@ public static partial class Extensions
             // attempt to match enum by name.
             if (EnumExtensions.TryEnumIsDefined(targetType, value.ToString()))
             {
-                var parsedValue = Enum.Parse(targetType, value.ToString(), false);
+                var parsedValue = Enum.Parse(targetType, value.ToString() ?? string.Empty, false);
 
                 return (T)parsedValue;
             }
@@ -60,7 +60,7 @@ public static partial class Extensions
             return (T)convertedValue;
         }
 
-        if (!(value is IConvertible))
+        if (value is not IConvertible)
         {
             throw new ArgumentException(
                 $"An incompatible value specified. Target Type: {targetType.FullName} Value Type: {value.GetType().FullName}",

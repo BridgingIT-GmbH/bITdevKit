@@ -2,6 +2,7 @@
 =====================================
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bridgingIT/bITdevKit/github-actions.yml?style=flat)](https://github.com/bridgingIT/bITdevKit/actions/workflows/github-actions.yml)
 [![NuGet](https://img.shields.io/nuget/v/BridgingIT.DevKit.Common.Utilities?style=flat-square&label=nuget%20packages)](https://www.nuget.org/packages?q=bitdevkit)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bitdevkit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bitdevkit)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 > Empowering developers with modular components for modern application development, centered around
@@ -46,7 +47,19 @@ Join us in advancing the world of software development with the bITDevKit!
 - Domain EventSourcing
 - [Modules](./docs/features-modules.md)
 - [Filtering](./docs/features-filtering.md)
+
+  Addresses the challenges of data querying in modern applications by providing a unified,
+  type-safe, and flexible solution for filtering, sorting, and pagination through API requests.
 - [Results](./docs/features-results.md)
+
+  Tackles the challenges of inconsistent error handling and outcome management in applications. It
+  introduces a standardized, type-safe Result pattern for explicit success/failure handling and
+  streamlining outcomes with functional extensions.
+- [Rules](./docs/features-rules.md)
+
+  Provides a flexible and extensible way to define and enforce business rules in your application at
+  several layers. It allows to encapsulate and manage rules in a single place, making them easy to
+  maintain, test and apply across your domain.
 - [Messaging](./docs/features-messaging.md)
 - Queuing (TODO)
 - [JobScheduling](./docs/features-jobscheduling.md)
@@ -87,4 +100,4 @@ Join us in advancing the world of software development with the bITDevKit!
 ## Collaboration
 
 Simply create a pull request with your ideas or contact us.
-Please refer to the [CONTRIBUTING](./CONTRIBUTING.md) guidelines for more information.
+Please refer to the [CONTRIBUTING](./CONTRIBUTION.md) guidelines for more information.

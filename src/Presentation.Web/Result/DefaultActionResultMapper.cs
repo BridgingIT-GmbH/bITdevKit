@@ -481,28 +481,28 @@ public class DefaultActionResultMapper : IActionResultMapper
 
     private static ActionResult MapError(IResult result)
     {
-        if (result.HasError<NotFoundError>(out var errors))
+        if (result.TryGetErrors<NotFoundError>(out var errors))
         {
             return new NotFoundResult();
         }
 
-        if (result.HasError<EntityNotFoundError>(out errors))
+        if (result.TryGetErrors<EntityNotFoundError>(out errors))
         {
             return new NotFoundResult();
         }
 
-        if (result.HasError<ValidationError>(out errors))
+        if (result.TryGetErrors<ValidationError>(out errors))
         {
             // TODO: not yet handled
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
             // return this.ValidationProblem(...)
         }
-        else if (result.HasError<DomainRuleError>(out errors))
+        else if (result.TryGetErrors<RuleError>(out errors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
-        else if (result.HasError<DomainPolicyError>(out errors))
+        else if (result.TryGetErrors<DomainPolicyError>(out errors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware

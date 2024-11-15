@@ -1451,11 +1451,7 @@ public static partial class ResultFunctionTaskExtensions
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.PropertyName,
-                            error.ErrorMessage,
-                            error.ErrorCode)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 
@@ -1529,11 +1525,7 @@ public static partial class ResultFunctionTaskExtensions
 
                 if (!validationResult.IsValid)
                 {
-                    errors.AddRange(validationResult.Errors.Select(error =>
-                        new ValidationError(
-                            error.PropertyName,
-                            error.ErrorMessage,
-                            error.ErrorCode)));
+                    errors.Add(new FluentValidationError(validationResult));
                 }
             }
 

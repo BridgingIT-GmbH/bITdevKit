@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class Price : ValueObject // TODO: or use Money?
 {
     private Price() { }
@@ -24,7 +21,8 @@ public class Price : ValueObject // TODO: or use Money?
 
     public static Price Create(decimal amount, string currency)
     {
-        DomainRules.Apply([PriceRules.ShouldBeInRange(amount)]);
+        Rule.Add(PriceRules.ShouldBeInRange(amount))
+            .ThrowOnFailure().Check();
 
         return new Price(amount, currency);
     }

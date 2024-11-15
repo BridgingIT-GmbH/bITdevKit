@@ -162,7 +162,7 @@ public class ResultTests
             .WithError<NotFoundError>();
 
         // Act
-        var hasError = sut.HasError<NotFoundError>(out var errors);
+        var hasError = sut.TryGetErrors<NotFoundError>(out var errors);
 
         // Assert
         hasError.ShouldBeTrue();

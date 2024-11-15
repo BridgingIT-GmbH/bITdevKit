@@ -7,6 +7,7 @@ namespace Microsoft.EntityFrameworkCore.Database.Command;
 
 using System.Data.Common;
 using Diagnostics;
+using Constants = BridgingIT.DevKit.Infrastructure.EntityFramework.Constants;
 
 public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : DbCommandInterceptor
 {

@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 using System.Net;
-using Application.JobScheduling;
 using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Quartz;
 using Quartz.Impl.Matchers;
+using Constants = BridgingIT.DevKit.Application.JobScheduling.Constants;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public class JobSchedulingEndpoints(

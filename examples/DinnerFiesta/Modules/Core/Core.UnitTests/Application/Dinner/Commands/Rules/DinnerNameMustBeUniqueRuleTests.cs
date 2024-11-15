@@ -22,12 +22,12 @@ public class DinnerNameMustBeUniqueRuleTests
                 Arg.Any<IFindOptions<Dinner>>(),
                 Arg.Any<CancellationToken>())
             .Returns([]);
-        var rule = new DinnerNameMustBeUniqueRule(repository, name);
+        var sut = new DinnerNameMustBeUniqueRule(repository, name);
 
         // Act
-        var result = await rule.ApplyAsync();
+        var result = await sut.IsSatisfiedAsync();
 
         // Assert
-        result.ShouldBeTrue();
+        result.ShouldBeSuccess();
     }
 }

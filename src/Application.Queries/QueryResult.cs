@@ -217,7 +217,8 @@ public static class QueryResult
     {
         return new QueryResponse<Result<TValue>>
         {
-            Result = Result<TValue>.Failure<TError>(value, message).WithError(error)
+            Result = Result<TValue>.Failure(value)
+                .WithMessage(message).WithError(error)
         };
     }
 }

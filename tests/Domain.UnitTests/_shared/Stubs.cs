@@ -81,7 +81,7 @@ public class AddressStub : ValueObject
         var address = new AddressStub(name, line1, line2, postalCode, city, country);
         if (!IsValid(address))
         {
-            throw new DomainRuleException("Invalid address");
+            throw new ValidationException("Invalid address");
         }
 
         return address;
@@ -97,13 +97,13 @@ public class AddressStub : ValueObject
         yield return this.Country;
     }
 
-    private static bool IsValid(AddressStub address)
+    private static Result IsValid(AddressStub address)
     {
-        return !string.IsNullOrEmpty(address.Name) &&
+        return Result.SuccessIf(() => !string.IsNullOrEmpty(address.Name) &&
             !string.IsNullOrEmpty(address.Line1) &&
             !string.IsNullOrEmpty(address.PostalCode) &&
             !string.IsNullOrEmpty(address.Country) &&
-            !string.IsNullOrEmpty(address.Country);
+            !string.IsNullOrEmpty(address.Country));
     }
 }
 

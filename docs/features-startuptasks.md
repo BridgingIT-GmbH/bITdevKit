@@ -15,4 +15,4 @@
 
 ### Use Cases
 
-## Usage~~~~
+## Usage

@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Domain.Model;
 
 using Core.Domain;
-using DevKit.Domain;
 
 [UnitTest("Domain")]
 public class PriceTests
@@ -38,6 +37,6 @@ public class PriceTests
         var action = () => Price.Create(amount, this.currency);
 
         // Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await Task.Run(action));
+        await Should.ThrowAsync<RuleException>(async () => await Task.Run(action));
     }
 }

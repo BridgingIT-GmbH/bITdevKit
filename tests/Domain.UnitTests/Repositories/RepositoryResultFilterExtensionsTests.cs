@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests;
 
-using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain.Repositories;
 
 public class RepositoryResultFilterExtensionsTests
@@ -37,7 +36,6 @@ public class RepositoryResultFilterExtensionsTests
         var result = await this.repository.FindAllPagedResultAsync(filter);
 
         // Assert
-        result.ShouldNotBeNull();
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(2);
@@ -95,7 +93,6 @@ public class RepositoryResultFilterExtensionsTests
         var result = await this.repository.FindAllPagedResultAsync(filter);
 
         // Assert
-        result.ShouldNotBeNull();
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(2);
@@ -160,7 +157,6 @@ public class RepositoryResultFilterExtensionsTests
         var result = await this.repository.FindAllPagedResultAsync(filter);
 
         // Assert
-        result.ShouldNotBeNull();
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(expectedPersons);
         result.TotalCount.ShouldBe(2);

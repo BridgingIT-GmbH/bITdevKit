@@ -37,7 +37,6 @@ public class DinnerCreateCommandHandlerTests
 
         // Assert
         response.ShouldNotBeNull();
-        response.Result.ShouldNotBeNull();
         response.Result.IsSuccess.ShouldBeTrue();
         response.Result.Value.ShouldNotBeNull();
         response.Result.Value.Name.ShouldBe(dinner.Name);

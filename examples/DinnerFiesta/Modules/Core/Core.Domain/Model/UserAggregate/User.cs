@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class User : AuditableAggregateRoot<UserId, Guid>
 {
     private User() { }
@@ -36,7 +33,7 @@ public class User : AuditableAggregateRoot<UserId, Guid>
         EnsureArg.IsNotNull(email, nameof(email));
         EnsureArg.IsNotNull(password, nameof(password));
 
-        DomainRules.Apply([UserRules.IsValidPassword(password)]);
+        Rule.Add(UserRules.IsValidPassword(password)).Check();
 
         var user = new User(firstName.Trim(), lastName.Trim(), EmailAddress.Create(email), password);
 

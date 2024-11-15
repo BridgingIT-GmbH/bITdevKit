@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
 using Common;
-using Domain;
 using Domain.Model;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using Constants = BridgingIT.DevKit.Domain.Constants;
 
 public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     : LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>

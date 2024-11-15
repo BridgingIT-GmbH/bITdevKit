@@ -5,29 +5,19 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-
-public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime) : IDomainRule
+public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOffset endDateTime) : RuleBase
 {
-    private readonly DateTimeOffset startDateTime = startDateTime;
-    private readonly DateTimeOffset endDateTime = endDateTime;
+    public override string Message => "StartDate should be earlier than the EndDate";
 
-    public string Message => "StartDate should be earlier than the EndDate";
-
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result Execute()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(this.startDateTime < this.endDateTime);
+        return Result.SuccessIf(startDateTime < endDateTime);
     }
 }
 
 public static partial class DinnerRules
 {
-    public static IDomainRule ScheduleShouldBeValid(DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+    public static IRule ScheduleShouldBeValid(DateTimeOffset startDateTime, DateTimeOffset endDateTime)
     {
         return new ScheduleShouldBeValidRule(startDateTime, endDateTime);
     }

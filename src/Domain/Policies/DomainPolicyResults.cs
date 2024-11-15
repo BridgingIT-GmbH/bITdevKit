@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Domain;
 ///     This class allows adding, retrieving, and managing policy results by their type.
 /// </summary>
 /// <typeparam name="TContext">The type of the context associated with the domain policies.</typeparam>
-public class DomainPolicyResults<TContext>
+public class DomainPolicyResults<TContext> // TODO: use struct here? as in the result class
 {
     /// <summary>
     ///     Stores the results of domain policies against various policy types.

@@ -5,11 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class DinnerCreatedDomainEventHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Menu> repository) // TODO: scoped repo cannot be injected somehow, see log
@@ -30,7 +25,8 @@ public class DinnerCreatedDomainEventHandler(
 
         this.Logger.LogInformation($"checking Dinner: {@event.Name} with Menu: {menuId} for Host: {hostId}");
 
-        DomainRules.Apply([new MenuForHostMustExistRule(repository, hostId, menuId)]);
+        await Rule.Add(new MenuForHostMustExistRule(repository, hostId, menuId))
+            .ThrowOnFailure().CheckAsync(cancellationToken: cancellationToken);
 
         var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
         menu.AddDinnerId(dinnerId);

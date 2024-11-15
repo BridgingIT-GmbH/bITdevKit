@@ -43,6 +43,7 @@
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj"/>
     <ProjectReference Include="..\..\src\Common.Mapping\Common.Mapping.csproj"/>
     <ProjectReference Include="..\..\src\Common.Options\Common.Options.csproj"/>
+    <ProjectReference Include="..\..\src\Common.Rules\Common.Rules.csproj" />
     <ProjectReference Include="..\..\src\Common.Serialization\Common.Serialization.csproj"/>
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj"/>
     <ProjectReference Include="..\..\src\Common.Utilities.Tracing\Common.Utilities.Tracing.csproj"/>

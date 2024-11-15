@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Common;
 /// Represents the result of an operation, which can either be a success or a failure.
 /// Contains functional methods to better work with success and failure results, as well as construct results from actions or tasks.
 /// </summary>
-public partial class Result
+public readonly partial struct Result
 {
     /// <summary>
     ///     Creates a Result from an async operation, handling any exceptions that occur.
@@ -39,7 +39,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -83,8 +83,116 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if the result indicates failure.
+    /// </summary>
+    /// <returns>The original result if it represents a success; otherwise, throws an exception.</returns>
+    public Result ThrowIfFailed()
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        if (this.HasError())
+        {
+            this.Errors.FirstOrDefault()?.Throw();
+        }
+
+        throw new ResultException(this);
+    }
+
+    /// <summary>
+    /// Throws a specified exception if the result indicates a failure.
+    /// </summary>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception>Thrown if the result indicates a failure.
+    ///     <cref>TException</cref>
+    /// </exception>
+    public Result ThrowIfFailed<TException>()
+        where TException : Exception
+    {
+        if (this.IsSuccess)
+        {
+            return this;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), this.Errors.FirstOrDefault()?.Message, this))!;
+    }
+
+    /// <summary>
+    ///     Maps a successful Result to a Result{T} using the provided mapping function.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="value">The value.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    /// var stringResult = result.Map("42"); // Result{string}.Success("42")
+    /// </code>
+    /// </example>
+    public Result<T> Map<T>(T value)
+    {
+        if (!this.IsSuccess)
+        {
+            return Result<T>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        try
+        {
+            return Result<T>.Success(value)
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Maps a successful Result to a Result{T} using the provided mapping function.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="mapper">The function to map the value.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    /// var stringResult = result.Map(x => x.ToString()); // Result{string}.Success("42")
+    /// </code>
+    /// </example>
+    public Result<T> Map<T>(Func<T> mapper)
+    {
+        if (!this.IsSuccess || mapper is null)
+        {
+            return Result<T>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        try
+        {
+            var value = mapper();
+
+            return Result<T>.Success(value)
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
         }
     }
 
@@ -125,7 +233,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -181,7 +289,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -213,7 +321,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -257,7 +365,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -290,7 +398,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -334,7 +442,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -374,7 +482,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -429,7 +537,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -464,7 +572,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -513,7 +621,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -548,7 +656,7 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -597,83 +705,83 @@ public partial class Result
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
 
     /// <summary>
-///     Chains a new operation if the current Result is successful.
-/// </summary>
-/// <param name="operatoin">The operation to execute if successful.</param>
-/// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
-/// <example>
-/// <code>
-/// var result = Result.Success()
-///     .AndThen(() => ValidateUser(user))
-///     .AndThen(() => SaveUser(user));
-/// </code>
-/// </example>
-public Result AndThen(Func<Result> operatoin)
-{
-    if (!this.IsSuccess || operatoin is null)
+    ///     Chains a new operation if the current Result is successful.
+    /// </summary>
+    /// <param name="operation">The operation to execute if successful.</param>
+    /// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success()
+    ///     .AndThen(() => ValidateUser(user))
+    ///     .AndThen(() => SaveUser(user));
+    /// </code>
+    /// </example>
+    public Result AndThen(Func<Result> operation)
     {
-        return this;
+        if (!this.IsSuccess || operation is null)
+        {
+            return this;
+        }
+
+        try
+        {
+            return operation();
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
+        }
     }
 
-    try
+    /// <summary>
+    ///     Chains a new async operation if the current Result is successful.
+    /// </summary>
+    /// <param name="operation">The async operation to execute if successful.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.Success()
+    ///     .AndThenAsync(
+    ///         async (ct) => await ValidateUserAsync(user),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public async Task<Result> AndThenAsync(
+        Func<CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
     {
-        return operatoin();
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
+        if (!this.IsSuccess || operation is null)
+        {
+            return this;
+        }
 
-/// <summary>
-///     Chains a new async operation if the current Result is successful.
-/// </summary>
-/// <param name="operation">The async operation to execute if successful.</param>
-/// <param name="cancellationToken">Token to cancel the operation.</param>
-/// <returns>The result of the next operation if successful; otherwise, a failure.</returns>
-/// <example>
-/// <code>
-/// var result = await Result.Success()
-///     .AndThenAsync(
-///         async (ct) => await ValidateUserAsync(user),
-///         cancellationToken
-///     );
-/// </code>
-/// </example>
-public async Task<Result> AndThenAsync(
-    Func<CancellationToken, Task<Result>> operation,
-    CancellationToken cancellationToken = default)
-{
-    if (!this.IsSuccess || operation is null)
-    {
-        return this;
+        try
+        {
+            return await operation(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessages(this.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
+        }
     }
-
-    try
-    {
-        return await operation(cancellationToken);
-    }
-    catch (OperationCanceledException)
-    {
-        return Failure()
-            .WithError(new OperationCancelledError())
-            .WithMessages(this.Messages);
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
 
     /// <summary>
     ///     Provides a fallback result in case of failure.
@@ -697,15 +805,13 @@ public async Task<Result> AndThenAsync(
         {
             var fallbackResult = fallback();
 
-            return fallbackResult ??
-                Failure()
-                    .WithError(new Error("Fallback returned null"))
-                    .WithMessages(this.Messages);
+            return fallbackResult
+                .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -738,10 +844,8 @@ public async Task<Result> AndThenAsync(
         {
             var fallbackResult = await fallback(cancellationToken);
 
-            return fallbackResult ??
-                Failure()
-                    .WithError(new Error("Fallback returned null"))
-                    .WithMessages(this.Messages);
+            return fallbackResult
+                .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
@@ -752,7 +856,7 @@ public async Task<Result> AndThenAsync(
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -779,12 +883,13 @@ public async Task<Result> AndThenAsync(
         try
         {
             action();
+
             return this;
         }
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
@@ -816,6 +921,7 @@ public async Task<Result> AndThenAsync(
         try
         {
             await action(cancellationToken);
+
             return this;
         }
         catch (OperationCanceledException)
@@ -827,309 +933,97 @@ public async Task<Result> AndThenAsync(
         catch (Exception ex)
         {
             return Failure()
-                .WithError(new ExceptionError(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
     }
 
     /// <summary>
-    ///     Executes different functions based on the Result's success state.
+    ///     Executes an action only if a condition is met, without changing the Result.
     /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Function to execute if the Result is successful.</param>
-    /// <param name="onFailure">Function to execute if the Result failed.</param>
-    /// <returns>The result of either the success or failure function.</returns>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The action to execute if condition is met.</param>
+    /// <returns>The original Result.</returns>
     /// <example>
     /// <code>
-    /// var message = Result.Success()
-    ///     .Match(
-    ///         onSuccess: () => "Operation succeeded",
-    ///         onFailure: errors => "Operation failed"
+    /// var result = Result.Success()
+    ///     .Switch(
+    ///         () => user.IsAdmin,
+    ///         () => _logger.LogInfo($"Admin {user.Name} accessed the system")
     ///     );
     /// </code>
     /// </example>
-    public TResult Match<TResult>(
-        Func<TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure)
+    public Result Switch(Func<bool> condition, Action action)
     {
-        if (onSuccess is null)
+        if (!this.IsSuccess || condition is null || action is null)
         {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
+            return this;
         }
 
         try
         {
-            return this.IsSuccess
-                ? onSuccess()
-                : onFailure(this.Errors);
+            if (condition())
+            {
+                action();
+            }
+
+            return this;
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Error during pattern matching", ex);
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
         }
     }
 
     /// <summary>
-    ///     Returns different values based on the Result's success state.
+    ///     Executes an async action only if a condition is met, without changing the Result.
     /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="success">Value to return if successful.</param>
-    /// <param name="failure">Value to return if failed.</param>
-    /// <returns>Either the success or failure value.</returns>
-    /// <example>
-    /// <code>
-    /// var status = Result.Success()
-    ///     .Match(
-    ///         success: "System operational",
-    ///         failure: "System error"
-    ///     );
-    /// </code>
-    /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        try
-        {
-            return this.IsSuccess ? success : failure;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("Error during pattern matching", ex);
-        }
-    }
-
-    /// <summary>
-    ///     Asynchronously executes different functions based on the Result's success state.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Async function to execute if successful.</param>
-    /// <param name="onFailure">Async function to execute if failed.</param>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The async action to execute if condition is met.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <returns>The original Result.</returns>
     /// <example>
     /// <code>
-    /// var message = await Result.Success()
-    ///     .MatchAsync(
-    ///         async ct => await GenerateSuccessReportAsync(ct),
-    ///         async (errors, ct) => await GenerateErrorReportAsync(errors, ct),
+    /// var result = await Result.Success()
+    ///     .SwitchAsync(
+    ///         () => user.IsAdmin,
+    ///         async (uct) => await NotifyAdminLoginAsync(user),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+    public async Task<Result> SwitchAsync(
+        Func<bool> condition,
+        Func<CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
-        if (onSuccess is null)
+        if (!this.IsSuccess || condition is null || action is null)
         {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
+            return this;
         }
 
         try
         {
-            return this.IsSuccess
-                ? await onSuccess(cancellationToken)
-                : await onFailure(this.Errors, cancellationToken);
+            if (condition())
+            {
+                await action(cancellationToken);
+            }
+
+            return this;
         }
         catch (OperationCanceledException)
         {
-            throw; // Propagate cancellation
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Error during pattern matching", ex);
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.Messages);
         }
     }
-
-    /// <summary>
-    ///     Executes an async success function with a synchronous failure handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Async function to execute if successful.</param>
-    /// <param name="onFailure">Synchronous function to execute if failed.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var message = await Result.Success()
-    ///     .MatchAsync(
-    ///         async ct => await GenerateSuccessReportAsync(ct),
-    ///         errors => "Failed to generate report",
-    ///         cancellationToken
-    ///     );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
-
-        try
-        {
-            return this.IsSuccess
-                ? await onSuccess(cancellationToken)
-                : onFailure(this.Errors);
-        }
-        catch (OperationCanceledException)
-        {
-            throw; // Propagate cancellation
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("Error during pattern matching", ex);
-        }
-    }
-
-    /// <summary>
-    ///     Executes a synchronous success function with an async failure handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the result to return.</typeparam>
-    /// <param name="onSuccess">Synchronous function to execute if successful.</param>
-    /// <param name="onFailure">Async function to execute if failed.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <example>
-    /// <code>
-    /// var message = await Result.Success()
-    ///     .MatchAsync(
-    ///         () => "Operation successful",
-    ///         async (errors, ct) => await FormatErrorsAsync(errors, ct),
-    ///         cancellationToken
-    ///     );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
-
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        try
-        {
-            return this.IsSuccess
-                ? onSuccess()
-                : await onFailure(this.Errors, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            throw; // Propagate cancellation
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("Error during pattern matching", ex);
-        }
-    }
-
-    /// <summary>
-///     Executes an action only if a condition is met, without changing the Result.
-/// </summary>
-/// <param name="condition">The condition to check.</param>
-/// <param name="action">The action to execute if condition is met.</param>
-/// <returns>The original Result.</returns>
-/// <example>
-/// <code>
-/// var result = Result.Success()
-///     .Switch(
-///         () => user.IsAdmin,
-///         () => _logger.LogInfo($"Admin {user.Name} accessed the system")
-///     );
-/// </code>
-/// </example>
-public Result Switch(Func<bool> condition, Action action)
-{
-    if (!this.IsSuccess || condition is null || action is null)
-    {
-        return this;
-    }
-
-    try
-    {
-        if (condition())
-        {
-            action();
-        }
-        return this;
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
-
-/// <summary>
-///     Executes an async action only if a condition is met, without changing the Result.
-/// </summary>
-/// <param name="condition">The condition to check.</param>
-/// <param name="action">The async action to execute if condition is met.</param>
-/// <param name="cancellationToken">Token to cancel the operation.</param>
-/// <returns>The original Result.</returns>
-/// <example>
-/// <code>
-/// var result = await Result.Success()
-///     .SwitchAsync(
-///         () => user.IsAdmin,
-///         async (uct) => await NotifyAdminLoginAsync(user),
-///         cancellationToken
-///     );
-/// </code>
-/// </example>
-public async Task<Result> SwitchAsync(
-    Func<bool> condition,
-    Func<CancellationToken, Task> action,
-    CancellationToken cancellationToken = default)
-{
-    if (!this.IsSuccess || condition is null || action is null)
-    {
-        return this;
-    }
-
-    try
-    {
-        if (condition())
-        {
-            await action(cancellationToken);
-        }
-        return this;
-    }
-    catch (OperationCanceledException)
-    {
-        return Failure()
-            .WithError(new OperationCancelledError())
-            .WithMessages(this.Messages);
-    }
-    catch (Exception ex)
-    {
-        return Failure()
-            .WithError(new ExceptionError(ex))
-            .WithMessages(this.Messages);
-    }
-}
 }

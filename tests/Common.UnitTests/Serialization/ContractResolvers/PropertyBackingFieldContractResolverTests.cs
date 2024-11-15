@@ -12,12 +12,7 @@ using Newtonsoft.Json;
 [UnitTest("Common")]
 public class PropertyBackingFieldContractResolverTests
 {
-    private readonly JsonSerializerSettings serializerSettings;
-
-    public PropertyBackingFieldContractResolverTests()
-    {
-        this.serializerSettings = new JsonSerializerSettings { ContractResolver = new PropertyBackingFieldContractResolver() };
-    }
+    private readonly JsonSerializerSettings serializerSettings = new() { ContractResolver = new PropertyBackingFieldContractResolver() };
 
     [Fact]
     public void CreateProperty_ObjectWithBackedCollection_DeserializesTheCollection()

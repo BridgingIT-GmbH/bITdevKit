@@ -164,6 +164,9 @@ else
     app.UseHsts();
 }
 
+app.UseRuleLogger();
+app.UseResultLogger();
+
 //app.UseResponseCompression();
 app.UseHttpsRedirection();
 

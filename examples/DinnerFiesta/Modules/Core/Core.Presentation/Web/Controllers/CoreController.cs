@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 
 using Application;
-using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Presentation.Web;
 using Domain;
@@ -89,8 +88,8 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
         string dinnerId,
         CancellationToken cancellationToken)
     {
-        var result = (await this.mediator.Send(new DinnerFindOneForHostQuery(hostId, dinnerId), cancellationToken))
-            .Result;
+        var result = (await this.mediator.Send(
+            new DinnerFindOneForHostQuery(hostId, dinnerId), cancellationToken)).Result;
 
         return result.ToOkActionResult<Dinner, DinnerModel>(this.mapper);
     }

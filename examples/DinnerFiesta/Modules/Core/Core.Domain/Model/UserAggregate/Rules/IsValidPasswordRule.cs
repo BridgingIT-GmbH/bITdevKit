@@ -5,28 +5,21 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-
-public class IsValidPasswordRule(string password) : IDomainRule
+public class IsValidPasswordRule(string password) : RuleBase
 {
     private readonly string password = password;
 
-    public string Message => "Not a valid password";
+    public override string Message => "Not a valid password";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override Result Execute()
     {
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(!string.IsNullOrEmpty(this.password)); // TODO: implement
+        return Result.SuccessIf(!string.IsNullOrEmpty(this.password)); // TODO: implement
     }
 }
 
 public static class UserRules
 {
-    public static IDomainRule IsValidPassword(string password)
+    public static IRule IsValidPassword(string password)
     {
         return new IsValidPasswordRule(password);
     }

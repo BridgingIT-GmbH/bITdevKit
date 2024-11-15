@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using DevKit.Domain;
-using DevKit.Domain.Model;
-
 public class DinnerSchedule : ValueObject
 {
     private DinnerSchedule() { }
@@ -28,7 +25,7 @@ public class DinnerSchedule : ValueObject
         DateTimeOffset startDateTime,
         DateTimeOffset endDateTime)
     {
-        DomainRules.Apply([DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime)]);
+        Rule.Add(DinnerRules.ScheduleShouldBeValid(startDateTime, endDateTime)).Check();
 
         return new DinnerSchedule(startDateTime, endDateTime);
     }

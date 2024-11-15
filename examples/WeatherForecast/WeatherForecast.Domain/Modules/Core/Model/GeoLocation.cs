@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Domain.Model;
 
-using DevKit.Domain;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 public class GeoLocation : ValueObject
@@ -24,7 +24,10 @@ public class GeoLocation : ValueObject
 
     public static GeoLocation Create(double longitude, double latitude)
     {
-        DomainRules.Apply([new LongitudeShouldBeInRange(longitude), new LatitudeShouldBeInRange(latitude)]);
+        Rule.Add(
+                new LongitudeShouldBeInRange(longitude),
+                new LatitudeShouldBeInRange(latitude))
+            .Check();
 
         return new GeoLocation { Longitude = longitude, Latitude = latitude };
     }

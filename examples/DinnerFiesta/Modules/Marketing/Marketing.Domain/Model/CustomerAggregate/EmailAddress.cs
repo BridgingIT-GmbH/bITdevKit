@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain;
 
-using DevKit.Domain;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 public class EmailAddress : ValueObject
@@ -28,7 +28,7 @@ public class EmailAddress : ValueObject
     {
         value = value?.Trim()?.ToLowerInvariant();
 
-        DomainRules.Apply([new IsValidEmailAddressRule(value)]);
+        Rule.Add(new IsValidEmailAddressRule(value)).Check();
 
         return new EmailAddress(value);
     }

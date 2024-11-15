@@ -87,12 +87,7 @@ public class ExpressionExtensionsGetMemberNameTests
 
 public class ExpressionExtensionsToExpressionStringTests
 {
-    private readonly Faker faker;
-
-    public ExpressionExtensionsToExpressionStringTests()
-    {
-        this.faker = new Faker();
-    }
+    private readonly Faker faker = new();
 
     private class TestClass
     {

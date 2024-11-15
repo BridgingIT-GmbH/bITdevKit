@@ -191,3 +191,15 @@ public class TestValidator : AbstractValidator<PersonStub>
         this.RuleFor(x => x.Email.Value).NotEmpty().EmailAddress().WithMessage("Invalid email");
     }
 }
+
+public class IsAdultRule(PersonStub person) : RuleBase
+{
+    private const int AdultAge = 18;
+
+    public override string Message => $"Person must be at least {AdultAge} years old";
+
+    protected override Result Execute()
+    {
+        return Result.SuccessIf(person?.Age >= AdultAge);
+    }
+}

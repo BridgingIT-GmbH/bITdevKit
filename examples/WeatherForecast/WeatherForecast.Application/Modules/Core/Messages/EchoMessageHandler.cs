@@ -10,6 +10,7 @@ using DevKit.Application.Messaging;
 using DevKit.Domain.Repositories;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
+using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
 
 public class EchoMessageHandler
     : MessageHandlerBase<EchoMessage>,

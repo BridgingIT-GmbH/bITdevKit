@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Commands;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class UserCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<User> repository)
@@ -28,7 +21,7 @@ public class UserCreateCommandHandler(
             command.Email,
             command.Password);
 
-        DomainRules.Apply([UserRules.EmailMustBeUnique(repository, user)]);
+        Rule.Add(UserRules.EmailMustBeUnique(repository, user)).Check();
 
         await repository.InsertAsync(user, cancellationToken);
 

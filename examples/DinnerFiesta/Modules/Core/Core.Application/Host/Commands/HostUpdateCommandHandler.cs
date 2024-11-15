@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Commands;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class HostUpdateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Host> repository)
@@ -30,7 +23,7 @@ public class HostUpdateCommandHandler(
 
         this.Logger.LogInformation("entity retrieved");
 
-        await DomainRules.ApplyAsync([ /* add some rules*/], cancellationToken);
+        await Rule.Add().CheckAsync(cancellationToken: cancellationToken);
 
         host.ChangeName(command.FirstName, command.LastName)
             .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
@@ -48,8 +41,8 @@ public class HostUpdateCommandHandler(
             (await repository.FindOneResultAsync(HostId.Create(command.Id), cancellationToken: cancellationToken))
             .Ensure(e => e != null, new EntityNotFoundError())
             .Tap(_ => this.Logger.LogInformation("entity retrieved"))
-            .AndThen(e => DomainRules.Apply([ /* add some rules*/]))
-            .AndThenAsync(async (e,ct) => await DomainRules.ApplyAsync([ /* add some rules*/], ct), cancellationToken)
+            .AndThen(e => Rule.Add().Check())
+            .AndThenAsync(async (e,ct) => await Rule.Add().CheckAsync(cancellationToken: ct), cancellationToken)
             .BindAsync(async (e, ct) =>
                 {
                    //await DomainRules.ApplyAsync([ /* add some rules*/], ct);

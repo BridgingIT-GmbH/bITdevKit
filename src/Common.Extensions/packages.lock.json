@@ -10,7 +10,7 @@
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
+        "requested": "[8.0.0, 9.0.0)",
         "resolved": "8.0.0",
         "contentHash": "3lE/iLSutpgX1CC0NOW70FJoGARRHbyKmG7dc0klnUZ9Dd9hS6N/POPWhKhMLCEuNN5nXEY5agmlFtH562vqhQ==",
         "dependencies": {
@@ -19,13 +19,13 @@
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Direct",
-        "requested": "[8.0.2, )",
+        "requested": "[8.0.2, 9.0.0)",
         "resolved": "8.0.2",
         "contentHash": "3iE7UF7MQkCv1cxzCahz+Y/guQbTqieyxyaWKhrRO91itI9cOKO76OHeQDahqG4MmW5umr3CcCvGmK92lWNlbg=="
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
+        "requested": "[8.0.0, 9.0.0)",
         "resolved": "8.0.0",
         "contentHash": "bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g=="
       },
@@ -37,9 +37,9 @@
       },
       "System.Threading.Tasks.Extensions": {
         "type": "Direct",
-        "requested": "[4.5.4, )",
-        "resolved": "4.5.4",
-        "contentHash": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg=="
+        "requested": "[4.6.0, )",
+        "resolved": "4.6.0",
+        "contentHash": "I5G6Y8jb0xRtGUC9Lahy7FUvlYlnGMMkbuKAQBy8Jb7Y6Yn8OlBEiUOY0PqZ0hy6Ua8poVA1ui1tAIiXNxGdsg=="
       }
     }
   }

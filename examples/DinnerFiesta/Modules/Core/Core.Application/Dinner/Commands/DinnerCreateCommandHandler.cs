@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Application.Commands;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-using Microsoft.Extensions.Logging;
-
 public class DinnerCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Dinner> repository) : CommandHandlerBase<DinnerCreateCommand, Result<Dinner>>(loggerFactory)
@@ -42,11 +35,10 @@ public class DinnerCreateCommandHandler(
             Price.Create(command.Price.Amount, command.Price.Currency),
             command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);
 
-        await DomainRules.ApplyAsync([
+        await Rule.Add(
                 new DinnerNameMustBeUniqueRule(repository, dinner.Name),
-                new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule)
-            ],
-            cancellationToken);
+                new DinnerScheduleMustNotOverlapRule(repository, dinner.HostId, dinner.Schedule))
+            .CheckAsync(cancellationToken: cancellationToken);
 
         await repository.InsertAsync(dinner, cancellationToken);
 

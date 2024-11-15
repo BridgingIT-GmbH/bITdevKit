@@ -48,7 +48,7 @@ public interface IResult
     bool HasError();
 
     /// <summary>
-    ///     Determines if the current <see cref="Result" /> contains any errors.
+    ///     Determines whether the result contains any specific errors.
     /// </summary>
     /// <returns>
     ///     A boolean value indicating whether any errors are present in the result.
@@ -57,12 +57,21 @@ public interface IResult
         where TError : IResultError;
 
     /// <summary>
-    ///     Checks if the result contains any errors.
+    ///     Checks if the result contains any specific error.
     /// </summary>
-    /// <param name="result">An output parameter that will contain all the errors found in the result if any exist.</param>
+    /// <param name="error">An output parameter that will contain all the errors found in the result if any exist.</param>
+    /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
+    /// <returns>True if the result contains one error of the specified type; otherwise, false.</returns>
+    bool TryGetError<TError>(out IResultError error)
+        where TError : IResultError;
+
+    /// <summary>
+    ///     Checks if the result contains any specific errors.
+    /// </summary>
+    /// <param name="errors">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one or more errors of the specified type; otherwise, false.</returns>
-    bool HasError<TError>(out IEnumerable<IResultError> result)
+    bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
         where TError : IResultError;
 }
 

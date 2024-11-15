@@ -35,8 +35,8 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Ok(result, result.Value)
-            : new DefaultActionResultMapper().Ok(result, result.Value);
+            ? actionResultMapper.Ok(result, result.IsSuccess ? result.Value : default)
+            : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : default);
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
@@ -56,7 +56,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, model)
@@ -69,8 +69,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Ok(result, result.Value)
-            : new DefaultActionResultMapper().Ok(result, result.Value);
+            ? actionResultMapper.Ok(result, result.IsSuccess ? result.Value : default)
+            : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : default);
     }
 
     public static ActionResult<ICollection<TModel>> ToOkActionResult<TSource, TModel>(
@@ -79,7 +79,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(mapper.Map<TSource, TModel>);
+        var models = result.IsSuccess ? result.Value.Select(mapper.Map<TSource, TModel>) : default;
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, models)
@@ -102,9 +102,8 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(mapper.Map<TSource, TModel>);
         var pagedResult = result.IsSuccess
-            ? PagedResult<TModel>.Success(models, result.CurrentPage, result.PageSize)
+            ? PagedResult<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
             : PagedResult<TModel>.Failure()
                 .WithMessages(result.Messages);
@@ -138,8 +137,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Created(result, result.Value, routeName, routeValues)
-            : new DefaultActionResultMapper().Created(result, result.Value, routeName, routeValues);
+            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
+            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
@@ -150,7 +149,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, routeName, routeValues)
@@ -192,8 +191,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Created(result, result.Value, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Created(result, result.Value, actionName, controllerName, routeValues);
+            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
@@ -205,7 +204,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Created(result, model, actionName, controllerName, routeValues)
@@ -248,8 +247,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Updated(result, result.Value, routeName, routeValues)
-            : new DefaultActionResultMapper().Updated(result, result.Value, routeName, routeValues);
+            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
+            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
@@ -260,7 +259,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, routeName, routeValues)
@@ -302,8 +301,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Updated(result, result.Value, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Updated(result, result.Value, actionName, controllerName, routeValues);
+            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
@@ -315,7 +314,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Updated(result, model, actionName, controllerName, routeValues)
@@ -358,8 +357,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Accepted(result, result.Value, routeName, routeValues)
-            : new DefaultActionResultMapper().Accepted(result, result.Value, routeName, routeValues);
+            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
+            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
@@ -370,7 +369,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, routeName, routeValues)
@@ -412,8 +411,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Accepted(result, result.Value, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Accepted(result, result.Value, actionName, controllerName, routeValues);
+            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
@@ -425,7 +424,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Accepted(result, model, actionName, controllerName, routeValues)
@@ -494,8 +493,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.Value, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.Value, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
     public static ActionResult<TModel> ToObjectActionResult<TModel>(
@@ -517,7 +516,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var model = mapper.Map<TSource, TModel>(result.Value);
+        var model = mapper.Map<TSource, TModel>(result.IsSuccess ? result.Value : default);
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, model, statusCode)
@@ -531,8 +530,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.Value, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.Value, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel, TSource>(
@@ -542,7 +541,7 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(mapper.Map<TSource, TModel>);
+        var models = result.IsSuccess ? result.Value.Select(mapper.Map<TSource, TModel>) : default;
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, models, statusCode)
@@ -556,8 +555,8 @@ public static class ResultExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.Value, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.Value, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
     public static ActionResult<PagedResult<TModel>> ToObjectActionResult<TModel, TSource>(
@@ -567,9 +566,8 @@ public static class ResultExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.Value.Select(mapper.Map<TSource, TModel>);
         var pagedResult = result.IsSuccess
-            ? PagedResult<TModel>.Success(models, result.CurrentPage, result.PageSize)
+            ? PagedResult<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
             : PagedResult<TModel>.Failure()
                 .WithMessages(result.Messages);

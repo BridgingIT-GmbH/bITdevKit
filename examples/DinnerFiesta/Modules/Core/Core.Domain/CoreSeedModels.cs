@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Domain;
 
-using Common;
-
 public static class CoreSeedModels
 {
     public static IEnumerable<User> Users(long ticks)

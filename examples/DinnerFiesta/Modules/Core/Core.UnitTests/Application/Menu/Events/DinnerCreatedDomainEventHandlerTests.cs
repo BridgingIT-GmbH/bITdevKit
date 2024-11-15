@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Applica
 
 using Core.Application;
 using Core.Domain;
-using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ReturnsExtensions;
@@ -51,7 +50,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<RuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class DinnerCreatedDomainEventHandlerTests
         var sut = new DinnerCreatedDomainEventHandler(Substitute.For<ILoggerFactory>(), repository);
 
         // Act & Assert
-        await Should.ThrowAsync<DomainRuleException>(async () => await sut.Process(@event, cancellationToken));
+        await Should.ThrowAsync<RuleException>(async () => await sut.Process(@event, cancellationToken));
     }
 
     [Fact]

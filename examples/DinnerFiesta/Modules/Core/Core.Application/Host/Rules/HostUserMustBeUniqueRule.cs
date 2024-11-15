@@ -5,12 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
-public class HostUserMustBeUniqueRule : IDomainRule
+public class HostUserMustBeUniqueRule : AsyncRuleBase
 {
     private readonly IGenericRepository<Host> repository;
     private readonly UserId userId;
@@ -23,25 +18,19 @@ public class HostUserMustBeUniqueRule : IDomainRule
         this.userId = userId;
     }
 
-    public string Message => "Host UserId should be unique";
+    public override string Message => "Host UserId should be unique";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
-    {
-        var spec = HostSpecifications.ForUser(this.userId);
-        return !(await this.repository.FindAllAsync(
-            spec,
-            cancellationToken: cancellationToken)).SafeAny();
+        return Result.SuccessIf(!(await this.repository.FindAllAsync(
+            HostSpecifications.ForUser(this.userId),
+            cancellationToken: cancellationToken)).SafeAny());
     }
 }
 
 public static class HostRules
 {
-    public static IDomainRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId)
+    public static IRule UserMustBeUnique(IGenericRepository<Host> repository, UserId userId)
     {
         return new HostUserMustBeUniqueRule(repository, userId);
     }

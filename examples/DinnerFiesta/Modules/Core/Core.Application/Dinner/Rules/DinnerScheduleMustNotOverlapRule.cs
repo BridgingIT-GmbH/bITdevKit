@@ -5,28 +5,18 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
-using Common;
-using DevKit.Domain;
-using DevKit.Domain.Repositories;
-using Domain;
-
 public class DinnerScheduleMustNotOverlapRule(
     IGenericRepository<Dinner> repository,
     HostId hostId,
-    DinnerSchedule schedule) : IDomainRule
+    DinnerSchedule schedule) : AsyncRuleBase
 {
-    public string Message => "Dinners for same host cannot overlap";
+    public override string Message => "Dinners for same host cannot overlap";
 
-    public Task<bool> IsEnabledAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult(true);
-    }
-
-    public async Task<bool> ApplyAsync(CancellationToken cancellationToken = default)
+    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var dinners = await repository.FindAllAsync(DinnerSpecifications.ForSchedule(hostId, schedule),
             cancellationToken: cancellationToken);
 
-        return !dinners.SafeAny();
+        return Result.SuccessIf(!dinners.SafeAny());
     }
 }

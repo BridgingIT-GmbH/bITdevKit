@@ -249,7 +249,6 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
             .Blogs.AsNoTracking()
             .ToList()
             .Count.ShouldBeGreaterThanOrEqualTo(6);
-        results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();
@@ -294,7 +293,6 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
             .Blogs.AsNoTracking()
             .ToList()
             .Count.ShouldBeGreaterThanOrEqualTo(6);
-        results.ShouldNotBeNull();
         results.ShouldBeSuccess();
         results.Value.ShouldNotBeNull();
         results.Value.ShouldNotBeEmpty();

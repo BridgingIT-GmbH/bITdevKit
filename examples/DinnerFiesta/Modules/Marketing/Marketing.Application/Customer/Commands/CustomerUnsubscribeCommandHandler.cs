@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Application;
 
 using Common;
 using DevKit.Application.Commands;
-using DevKit.Domain;
 using DevKit.Domain.Repositories;
 using Domain;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,7 @@ public class CustomerUnsubscribeCommandHandler(
     {
         EnsureArg.IsNotNull(command, nameof(command));
 
-        DomainRules.Apply([]);
+        Rule.Add().Check();
 
         var customer = await repository
             .FindOneAsync(CustomerId.Create(command.CustomerId), cancellationToken: cancellationToken)

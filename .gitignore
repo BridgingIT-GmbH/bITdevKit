@@ -427,3 +427,4 @@ FodyWeavers.xsd
 /examples/**/wwwroot/openapi/*.yaml
 /src/**/*.db
 /docs/structurizr/.structurizr
+/src/**/CombinedSource.md

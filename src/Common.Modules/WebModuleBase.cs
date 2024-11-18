@@ -39,11 +39,8 @@ public abstract class WebModuleBase : ModuleBase, IWebModule
     /// <param name="configuration">Optional configuration settings.</param>
     /// <param name="environment">Optional web hosting environment settings.</param>
     /// <returns>The IEndpointRouteBuilder instance with the mapped routes.</returns>
-    public virtual IEndpointRouteBuilder Map(
+    public abstract IEndpointRouteBuilder Map(
         IEndpointRouteBuilder app,
         IConfiguration configuration = null,
-        IWebHostEnvironment environment = null)
-    {
-        return app;
-    }
+        IWebHostEnvironment environment = null);
 }

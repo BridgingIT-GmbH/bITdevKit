@@ -30,19 +30,13 @@ public abstract class ModuleBase : IModule
 
     public bool IsRegistered { get; set; }
 
-    public virtual IServiceCollection Register(
+    public abstract IServiceCollection Register(
         IServiceCollection services,
         IConfiguration configuration = null,
-        IWebHostEnvironment environment = null)
-    {
-        return services;
-    }
+        IWebHostEnvironment environment = null);
 
-    public virtual IApplicationBuilder Use(
+    public abstract IApplicationBuilder Use(
         IApplicationBuilder app,
         IConfiguration configuration = null,
-        IWebHostEnvironment environment = null)
-    {
-        return app;
-    }
+        IWebHostEnvironment environment = null);
 }

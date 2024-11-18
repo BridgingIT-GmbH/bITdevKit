@@ -2022,14 +2022,14 @@
           "Microsoft.ApplicationInsights.AspNetCore": "[2.22.0, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[8.0.11, )",
           "MudBlazor": "[7.15.0, )",
-          "OpenTelemetry.Exporter.Console": "[1.9.0, 1.10.0)",
+          "OpenTelemetry.Exporter.Console": "[1.9.0, )",
           "OpenTelemetry.Exporter.Jaeger": "[1.5.1, )",
-          "OpenTelemetry.Exporter.Prometheus.AspNetCore": "[1.9.0-beta.2, 1.10.0-beta)",
-          "OpenTelemetry.Extensions.Hosting": "[1.9.0, 1.10.0)",
-          "OpenTelemetry.Instrumentation.AspNetCore": "[1.9.0, 1.10.0)",
-          "OpenTelemetry.Instrumentation.Http": "[1.9.0, 1.10.0)",
-          "OpenTelemetry.Instrumentation.Runtime": "[1.9.0, 1.10.0)",
-          "OpenTelemetry.Instrumentation.SqlClient": "[1.9.0-beta.1, 1.10.0-beta)",
+          "OpenTelemetry.Exporter.Prometheus.AspNetCore": "[1.9.0-beta.2, )",
+          "OpenTelemetry.Extensions.Hosting": "[1.9.0, )",
+          "OpenTelemetry.Instrumentation.AspNetCore": "[1.9.0, )",
+          "OpenTelemetry.Instrumentation.Http": "[1.9.0, )",
+          "OpenTelemetry.Instrumentation.Runtime": "[1.9.0, )",
+          "OpenTelemetry.Instrumentation.SqlClient": "[1.9.0-beta.1, )",
           "Serilog.AspNetCore": "[8.0.3, )",
           "Serilog.Enrichers.Environment": "[3.0.1, )",
           "Serilog.Enrichers.ShortTypeName": "[1.1.0, )",
@@ -2749,7 +2749,7 @@
       },
       "OpenTelemetry": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "7scS6BUhwYeSXEDGhCxMSezmvyCoDU5kFQbmfyW9iVvVTcWhec+1KIN33/LOCdBXRkzt2y7+g03mkdAB0XZ9Fw==",
         "dependencies": {
@@ -2760,7 +2760,7 @@
       },
       "OpenTelemetry.Exporter.Console": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "TbScDLSc6kcji+/wZYIf8/HBV2SnttzN7PNxr3TYczlmGlU4K2ugujp6seSktEO4OaAvKRd7Y3CG3SKNj0C+1Q==",
         "dependencies": {
@@ -2779,7 +2779,7 @@
       },
       "OpenTelemetry.Exporter.Prometheus.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0-beta.2, 1.10.0-beta)",
+        "requested": "[1.9.0-beta.2, )",
         "resolved": "1.9.0-beta.2",
         "contentHash": "JZXcHp2MkV/as8aLyJDapWkSNLhaQUWNnG1u2oOssq8Sg8217cX8D782sNJSzb7UfhzscR8pbzv6RZTsmPcHVw==",
         "dependencies": {
@@ -2788,7 +2788,7 @@
       },
       "OpenTelemetry.Extensions.Hosting": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "QBQPrKDVCXxTBE+r8tgjmFNKKHi4sKyczmip2XGUcjy8kk3quUNhttnjiMqC4sU50Hemmn4i5752Co26pnKe3A==",
         "dependencies": {
@@ -2798,7 +2798,7 @@
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "x4HuWBw1rbWZUh5j8/GpXz3xa7JnrTuKne+ACmBqvcoO/rNGkG7HayRruwoQ7gf52xpMtRGr4gxlhLW8eU0EiQ==",
         "dependencies": {
@@ -2807,7 +2807,7 @@
       },
       "OpenTelemetry.Instrumentation.Http": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "+ZXppf8Qxz3OdC803T8fB6i8iSscc8PsxMnM/JizSOYmkz+8vGiScEiaBBBFNZtMh2KpA0q+qxwnSwQUkbvzog==",
         "dependencies": {
@@ -2818,7 +2818,7 @@
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0, 1.10.0)",
+        "requested": "[1.9.0, )",
         "resolved": "1.9.0",
         "contentHash": "6raJb9Pvi1CaBB59SX86Mr9NQiQbiv9ialO+cQKFRGCq3Bl2WC8cTTcbfGtaRX0quqWnZC/dK7xrXuOuYcwANA==",
         "dependencies": {
@@ -2827,7 +2827,7 @@
       },
       "OpenTelemetry.Instrumentation.SqlClient": {
         "type": "CentralTransitive",
-        "requested": "[1.9.0-beta.1, 1.10.0-beta)",
+        "requested": "[1.9.0-beta.1, )",
         "resolved": "1.9.0-beta.1",
         "contentHash": "eoSCWdnVQ/MGt8f60kfhq9UF57lS37ZnlImbO1FMmtSTwaFfpbAS7yHI29J46N1nU6Bgk5DIH2xkkIrvonl7Tw==",
         "dependencies": {

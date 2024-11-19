@@ -71,36 +71,11 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
         if (isNew)
         {
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
-
-            if (entity is IConcurrent concurrentEntity) // Set initial version before attaching
-            {
-                concurrentEntity.Version = GuidGenerator.CreateSequential();
-            }
-
-            this.Options.DbContext.Set<TEntity>().Add(entity);
+            AddEntity();
         }
         else
         {
-            var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
-            if (!isTracked) // only re-attach (+update) if not tracked already
-            {
-                if (entity is IConcurrent concurrentEntity) // Set new version before attaching
-                {
-                    var originalVersion = concurrentEntity.Version; // Store original for concurrency check
-                    concurrentEntity.Version = GuidGenerator.CreateSequential();
-
-                    this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
-
-                    // Set the original version for concurrency check
-                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
-                }
-                else
-                {
-                    this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
-                }
-            }
+            UpdateEntity();
         }
 
         if (this.Options.Autosave)
@@ -114,6 +89,46 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         }
 
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
+
+        void AddEntity()
+        {
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
+
+            if (entity is IConcurrent concurrentEntity) // Set initial version before attaching
+            {
+                concurrentEntity.Version = GuidGenerator.CreateSequential();
+            }
+
+            this.Options.DbContext.Set<TEntity>().Add(entity);
+        }
+
+        void UpdateEntity()
+        {
+            var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
+
+            if (isTracked) // only re-attach (+update) if not tracked already
+            {
+                return;
+            }
+
+            if (entity is IConcurrent concurrentEntity) // Set new version before attaching
+            {
+                var originalVersion = concurrentEntity.Version; // Store original for concurrency check
+                concurrentEntity.Version = GuidGenerator.CreateSequential();
+
+                this.Options.DbContext
+                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+
+                // Set the original version for concurrency check
+                this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+            }
+            else
+            {
+                this.Options.DbContext
+                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+            }
+        }
     }
 
     public virtual async Task<RepositoryActionResult> DeleteAsync(
@@ -155,25 +170,10 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Debug,
-            "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
-        public static partial void LogUpsert(
-            ILogger logger,
-            string logKey,
-            string entityUpsertType,
-            string entityType,
-            object entityId,
-            bool entityTracked);
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
+        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string entityType, object entityId, bool entityTracked);
 
-        [LoggerMessage(2,
-            LogLevel.Trace,
-            "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
-        public static partial void LogEntityState(
-            ILogger logger,
-            string logKey,
-            string entityType,
-            bool entityKeySet,
-            EntityState entityEntryState);
+        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }
 }

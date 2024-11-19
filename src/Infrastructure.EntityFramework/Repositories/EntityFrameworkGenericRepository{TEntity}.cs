@@ -107,26 +107,26 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
 
-            if (isTracked) // only re-attach (+update) if not tracked already
+            if (entity is IConcurrent concurrentEntity)
             {
-                return;
-            }
-
-            if (entity is IConcurrent concurrentEntity) // Set new version before attaching
-            {
-                var originalVersion = concurrentEntity.Version; // Store original for concurrency check
+                var originalVersion = concurrentEntity.Version;
                 concurrentEntity.Version = GuidGenerator.CreateSequential();
 
-                this.Options.DbContext
-                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
-
-                // Set the original version for concurrency check
-                this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                if (isTracked)
+                {
+                    // For tracked entities, get the entry and set original version
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                }
+                else
+                {
+                    // For untracked entities, attach and set original version
+                    this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                }
             }
-            else
+            else if (!isTracked)
             {
-                this.Options.DbContext
-                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+                this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
             }
         }
     }

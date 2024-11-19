@@ -10,16 +10,14 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class ExceptionError : IResultError
 {
-    private readonly Exception exception;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ExceptionError"/> class.
     /// </summary>
     /// <param name="exception">The exception to encapsulate.</param>
     public ExceptionError(Exception exception)
     {
-        this.exception = exception ?? throw new ArgumentNullException(nameof(exception));
-        this.Message = exception.Message;
+        this.Exception = exception; // ?? throw new ArgumentNullException(nameof(exception));
+        this.Message = exception.GetFullMessage();
     }
 
     /// <summary>
@@ -29,8 +27,8 @@ public class ExceptionError : IResultError
     /// <param name="message"></param>
     public ExceptionError(Exception exception, string message)
     {
-        this.exception = exception ?? throw new ArgumentNullException(nameof(exception));
-        this.Message = message ?? exception.Message;
+        this.Exception = exception;// ?? throw new ArgumentNullException(nameof(exception));
+        this.Message = message ?? exception.GetFullMessage();
     }
 
     /// <summary>
@@ -40,21 +38,21 @@ public class ExceptionError : IResultError
 
     public void Throw()
     {
-        throw this.exception;
+        throw this.Exception;
     }
 
     /// <summary>
     /// Gets the type of the encapsulated exception.
     /// </summary>
-    public string ExceptionType => this.exception.GetType().FullName;
+    public string ExceptionType => this.Exception?.GetType()?.FullName;
 
     /// <summary>
     /// Gets the stack trace of the encapsulated exception.
     /// </summary>
-    public string StackTrace => this.exception.StackTrace;
+    public string StackTrace => this.Exception?.StackTrace;
 
     /// <summary>
     /// Gets the original exception that was encapsulated.
     /// </summary>
-    public Exception OriginalException => this.exception;
+    public Exception Exception { get; }
 }

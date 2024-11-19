@@ -302,11 +302,11 @@ public static class ResultResilientExtensions
                 // If the result has errors that are retryable exceptions, handle them
                 if (!result.IsSuccess &&
                     result.Errors.OfType<ExceptionError>()
-                        .Any(e => policy.ShouldRetry(e.OriginalException)))
+                        .Any(e => policy.ShouldRetry(e.Exception)))
                 {
                     exceptions.AddRange(result.Errors
                         .OfType<ExceptionError>()
-                        .Select(e => e.OriginalException));
+                        .Select(e => e.Exception));
 
                     throw new AggregateException(exceptions);
                 }
@@ -390,11 +390,11 @@ public static class ResultResilientExtensions
                 // If the result has errors that are retryable exceptions, handle them
                 if (!result.IsSuccess &&
                     result.Errors.OfType<ExceptionError>()
-                        .Any(e => policy.ShouldRetry(e.OriginalException)))
+                        .Any(e => policy.ShouldRetry(e.Exception)))
                 {
                     exceptions.AddRange(result.Errors
                         .OfType<ExceptionError>()
-                        .Select(e => e.OriginalException));
+                        .Select(e => e.Exception));
 
                     throw new AggregateException(exceptions);
                 }

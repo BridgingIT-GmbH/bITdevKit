@@ -160,7 +160,7 @@ public class PagedResultSerializationTests
         root.GetProperty("messages")[0].GetString().ShouldBe("Failed to retrieve page");
 
         var error = root.GetProperty("errors")[0];
-        error.GetProperty("message").GetString().ShouldBe("Database error");
+        error.GetProperty("message").GetString().ShouldBe("[InvalidOperationException] Database error");
         error.GetProperty("exceptionType").GetString().ShouldContain("InvalidOperationException");
     }
 

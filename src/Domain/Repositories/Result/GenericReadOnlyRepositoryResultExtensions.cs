@@ -26,7 +26,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<bool>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -50,7 +50,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<long>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -93,7 +93,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<long>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -119,7 +119,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<long>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -141,11 +141,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(id, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -187,11 +187,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(specification, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -215,11 +215,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(specifications, options, cancellationToken).AnyContext();
 
-            return entity is null ? Result<TEntity>.Failure<EntityNotFoundError>() : Result<TEntity>.Success(entity);
+            return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -244,7 +244,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TEntity>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -290,7 +290,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TEntity>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -319,7 +319,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TEntity>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -346,7 +346,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TEntity>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -372,7 +372,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TId>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -421,7 +421,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TId>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -449,7 +449,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<IEnumerable<TId>>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<IEnumerable<TId>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -493,7 +493,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -539,7 +539,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -620,7 +620,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -685,7 +685,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -734,7 +734,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -783,7 +783,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -832,7 +832,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

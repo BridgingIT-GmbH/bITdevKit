@@ -36,7 +36,7 @@ public static class GenericRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -61,7 +61,7 @@ public static class GenericRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<TEntity>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -86,7 +86,7 @@ public static class GenericRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<(TEntity, RepositoryActionResult)>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<(TEntity, RepositoryActionResult)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -111,7 +111,7 @@ public static class GenericRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<RepositoryActionResult>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<RepositoryActionResult>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -136,7 +136,7 @@ public static class GenericRepositoryResultExtensions
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<RepositoryActionResult>.Failure(ex.Message, new ExceptionError(ex));
+            return Result<RepositoryActionResult>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

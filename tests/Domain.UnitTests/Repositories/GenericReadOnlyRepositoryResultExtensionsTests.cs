@@ -360,7 +360,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
 
         // Assert
         result.ShouldBeFailure();
-        result.ShouldContainError<EntityNotFoundError>();
+        result.ShouldContainError<NotFoundError>();
     }
 
     [Fact]
@@ -394,7 +394,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
 
         // Assert
         result.ShouldBeFailure();
-        result.ShouldContainError<EntityNotFoundError>();
+        result.ShouldContainError<NotFoundError>();
     }
 
     [Fact]
@@ -430,7 +430,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
 
         // Assert
         result.ShouldBeFailure();
-        result.ShouldContainError<EntityNotFoundError>();
+        result.ShouldContainError<NotFoundError>();
     }
 
     [Fact]
@@ -474,7 +474,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
 
         // Assert
         result.ShouldBeFailure();
-        result.ShouldContainError<EntityNotFoundError>();
+        result.ShouldContainError<NotFoundError>();
     }
 
     [Fact]

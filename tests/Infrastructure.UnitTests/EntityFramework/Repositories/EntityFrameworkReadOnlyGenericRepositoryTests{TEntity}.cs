@@ -192,7 +192,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
 
         // Assert
         result.IsFailure.ShouldBeTrue();
-        result.Errors[0].ShouldBeOfType<EntityNotFoundError>();
+        result.Errors[0].ShouldBeOfType<NotFoundError>();
     }
 
     [Fact]

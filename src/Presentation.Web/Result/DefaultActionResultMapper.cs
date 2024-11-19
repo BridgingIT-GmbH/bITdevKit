@@ -491,6 +491,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             return new NotFoundResult();
         }
 
+        if (result.TryGetErrors<NotFoundError>(out errors))
+        {
+            return new NotFoundResult();
+        }
+
         if (result.TryGetErrors<ValidationError>(out errors))
         {
             // TODO: not yet handled

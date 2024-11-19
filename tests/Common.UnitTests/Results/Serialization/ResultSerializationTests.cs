@@ -119,7 +119,7 @@ public class ResultSerializationTests
         // root.GetProperty("value").GetInt32().ShouldBe(42);
 
         var error = root.GetProperty("errors")[0];
-        error.GetProperty("message").GetString().ShouldBe("Test exception");
+        error.GetProperty("message").GetString().ShouldBe("[InvalidOperationException] Test exception");
         error.GetProperty("exceptionType").GetString().ShouldContain("InvalidOperationException");
     }
 

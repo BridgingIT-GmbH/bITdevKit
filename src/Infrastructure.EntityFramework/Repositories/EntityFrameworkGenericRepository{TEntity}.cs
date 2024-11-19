@@ -72,6 +72,12 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         if (isNew)
         {
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
+
+            if (entity is IConcurrent concurrentEntity) // Set initial version before attaching
+            {
+                concurrentEntity.Version = GuidGenerator.CreateSequential();
+            }
+
             this.Options.DbContext.Set<TEntity>().Add(entity);
         }
         else
@@ -80,8 +86,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
             if (!isTracked) // only re-attach (+update) if not tracked already
             {
-                // Update version before attaching
-                if (entity is IConcurrent concurrentEntity)
+                if (entity is IConcurrent concurrentEntity) // Set new version before attaching
                 {
                     var originalVersion = concurrentEntity.Version; // Store original for concurrency check
                     concurrentEntity.Version = GuidGenerator.CreateSequential();

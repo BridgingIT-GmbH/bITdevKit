@@ -66,23 +66,35 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         var isNew = entity.Id == default;
         var existingEntity = isNew
             ? null
-            : await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken)
-                .AnyContext(); // prevent the entity from being tracked (which find() does
+            : await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext(); // prevent the entity from being tracked (which find() does
         isNew = isNew || existingEntity is null;
 
         if (isNew)
         {
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id);
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
             this.Options.DbContext.Set<TEntity>().Add(entity);
         }
         else
         {
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id);
-            if (!this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id)))
+            var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
+            if (!isTracked) // only re-attach (+update) if not tracked already
             {
-                // only re-attach (+update) if not tracked already
-                this.Options.DbContext
-                    .Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+                // Update version before attaching
+                if (entity is IConcurrent concurrentEntity)
+                {
+                    var originalVersion = concurrentEntity.Version; // Store original for concurrency check
+                    concurrentEntity.Version = GuidGenerator.CreateSequential();
+
+                    this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+
+                    // Set the original version for concurrency check
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                }
+                else
+                {
+                    this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
+                }
             }
         }
 
@@ -90,11 +102,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         {
             foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
             {
-                TypedLogger.LogEntityState(this.Logger,
-                    Constants.LogKey,
-                    entry.Entity.GetType().Name,
-                    entry.IsKeySet,
-                    entry.State);
+                TypedLogger.LogEntityState(this.Logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
             }
 
             await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
@@ -144,13 +152,14 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     {
         [LoggerMessage(0,
             LogLevel.Debug,
-            "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId})")]
+            "{LogKey} repository: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
         public static partial void LogUpsert(
             ILogger logger,
             string logKey,
             string entityUpsertType,
             string entityType,
-            object entityId);
+            object entityId,
+            bool entityTracked);
 
         [LoggerMessage(2,
             LogLevel.Trace,

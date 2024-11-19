@@ -77,10 +77,7 @@ public class
 
         if (isNew)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})",
-                Constants.LogKey,
-                typeof(TEntity).Name,
-                entity.Id);
+            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
             var dbEntity = this.Options.Mapper.Map<TDatabaseEntity>(entity);
             this.Options.DbContext.Set<TDatabaseEntity>().Add(dbEntity);
 
@@ -92,23 +89,14 @@ public class
         }
         else
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})",
-                Constants.LogKey,
-                typeof(TEntity).Name,
-                entity.Id);
-            this.Options.DbContext.Entry(existingEntity)
-                .CurrentValues.SetValues(this.Options.Mapper.Map<TDatabaseEntity>(entity));
+            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Options.DbContext.Entry(existingEntity).CurrentValues.SetValues(this.Options.Mapper.Map<TDatabaseEntity>(entity));
 
             if (this.Options.Autosave)
             {
                 foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
                 {
-                    this.Logger.LogTrace(
-                        "{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}",
-                        Constants.LogKey,
-                        entry.Entity.GetType().Name,
-                        entry.IsKeySet,
-                        entry.State);
+                    this.Logger.LogTrace("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
                 }
 
                 await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();

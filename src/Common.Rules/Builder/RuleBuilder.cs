@@ -725,6 +725,7 @@ public class RuleBuilder
     /// Asynchronously applies the rules with configurable failure handling.
     /// </summary>
     /// <param name="throwOnRuleFailure">When true, failures throw exceptions. When false, failures return Result.Failure</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A Task containing a Result indicating success or failure</returns>
     /// <exception>When validation fails and throwOnRuleFailure is true</exception>
     /// <exception cref="RuleException">When rule execution throws an error</exception>
@@ -740,11 +741,11 @@ public class RuleBuilder
     ///     .ThrowAsync(); // Throws if validation fails
     /// </code>
     /// </example>
-    public async Task<Result> ThrowAsync(bool throwOnRuleFailure = true)
+    public async Task<Result> ThrowAsync(bool throwOnRuleFailure = true, CancellationToken cancellationToken = default)
     {
         return await this
             .ThrowOnFailure(throwOnRuleFailure)
             .ThrowOnException()
-            .CheckAsync().AnyContext();
+            .CheckAsync(cancellationToken).AnyContext();
     }
 }

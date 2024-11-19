@@ -98,7 +98,7 @@ public static class GenericRepositoryResultExtensions
     /// <param name="id">The id of the entity to delete.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the deletion action result.</returns>
-    public static async Task<Result<RepositoryActionResult>> DeleteByIdResultAsync<TEntity>(
+    public static async Task<Result<RepositoryActionResult>> DeleteResultAsync<TEntity>(
         this IGenericRepository<TEntity> source,
         object id,
         CancellationToken cancellationToken = default)

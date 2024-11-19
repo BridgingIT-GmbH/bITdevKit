@@ -38,7 +38,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllAsync_WithoutSpecifications_ReturnsAllEntities()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(5);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -58,7 +58,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllAsync_WithSpecification_ReturnsFilteredEntities()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(10);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -81,7 +81,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindOneAsync_WithExistingId_ReturnsEntity()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entity = this.faker.Generate();
         await context.Persons.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -100,7 +100,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindOneAsync_WithNonExistingId_ReturnsNull()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var sut = new EntityFrameworkReadOnlyGenericRepository<PersonStub>(this.loggerFactory, context);
 
         // Act
@@ -114,7 +114,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task ExistsAsync_WithExistingId_ReturnsTrue()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entity = this.faker.Generate();
         await context.Persons.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -132,7 +132,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task ExistsAsync_WithNonExistingId_ReturnsFalse()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var sut = new EntityFrameworkReadOnlyGenericRepository<PersonStub>(this.loggerFactory, context);
 
         // Act
@@ -146,7 +146,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task CountAsync_WithoutSpecifications_ReturnsCorrectCount()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(7);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -164,7 +164,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindOneResultAsync_WithExistingId_ReturnsSuccessResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entity = this.faker.Generate();
         await context.Persons.AddAsync(entity);
         await context.SaveChangesAsync();
@@ -184,7 +184,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindOneResultAsync_WithNonExistingId_ReturnsFailureResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var sut = new EntityFrameworkReadOnlyGenericRepository<PersonStub>(this.loggerFactory, context);
 
         // Act
@@ -199,7 +199,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllResultAsync_ReturnsSuccessResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(5);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -220,7 +220,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllResultAsync_WithSpecification_ReturnsFilteredSuccessResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(10);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -244,7 +244,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllPagedResultAsync_ReturnsPagedResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(20);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -269,7 +269,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllPagedResultAsync_WithSpecification_ReturnsFilteredPagedResult()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(20);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -295,7 +295,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllIdsAsync_ReturnsAllIds()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(5);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -316,7 +316,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllIdsAsync_WithSpecification_ReturnsFilteredIds()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(10);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -339,7 +339,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllIdsAsync_WithMultipleSpecifications_ReturnsFilteredIds()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(20);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();
@@ -368,7 +368,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     public async Task FindAllIdsAsync_WithOptions_ReturnsLimitedIds()
     {
         // Arrange
-        using var context = new TestPersonDbContext(this.dbContextOptions);
+        await using var context = new TestPersonDbContext(this.dbContextOptions);
         var entities = this.faker.Generate(10);
         await context.Persons.AddRangeAsync(entities);
         await context.SaveChangesAsync();

@@ -53,7 +53,7 @@
   <ItemGroup>
     <PackageReference Include="Ensure.That"/>
     <PackageReference Include="MinVer" PrivateAssets="All"/>
-    <!--    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>-->
+    <!--<PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>-->
 
   </ItemGroup>
 

@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Domain.Model;
 ///     It is used to address issues related to concurrency in data operations by incorporating
 ///     a version attribute that can be used for optimistic locking mechanisms.
 /// </summary>
-public interface IConcurrent
+public interface IConcurrency
 {
     /// <summary>
     ///     Gets or sets the version identifier for the entity.

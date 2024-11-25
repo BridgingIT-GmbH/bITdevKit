@@ -72,25 +72,54 @@ public class
             ? null
             : await this.Options.DbContext.Set<TDatabaseEntity>()
                 .FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken)
-                .AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+                .AnyContext();
+
         isNew = isNew || existingEntity is null;
 
         if (isNew)
         {
+            return await HandleInsert(entity, cancellationToken);
+        }
+
+        return await HandleUpdate(entity, existingEntity, cancellationToken);
+
+        async Task<(TEntity entity, RepositoryActionResult action)> HandleInsert(TEntity entity, CancellationToken cancellationToken)
+        {
             this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+
+            if (entity is IConcurrency concurrencyEntity)
+            {
+                concurrencyEntity.Version = GuidGenerator.CreateSequential();
+            }
+
             var dbEntity = this.Options.Mapper.Map<TDatabaseEntity>(entity);
             this.Options.DbContext.Set<TDatabaseEntity>().Add(dbEntity);
 
             if (this.Options.Autosave)
             {
                 await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
-                this.Options.Mapper.Map(dbEntity, entity); // map the db generated Id back to the (domain) entity.
+                this.Options.Mapper.Map(dbEntity, entity);
             }
+
+            return (entity, RepositoryActionResult.Inserted);
         }
-        else
+
+        async Task<(TEntity entity, RepositoryActionResult action)> HandleUpdate(TEntity entity, TDatabaseEntity existingEntity, CancellationToken cancellationToken)
         {
             this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
-            this.Options.DbContext.Entry(existingEntity).CurrentValues.SetValues(this.Options.Mapper.Map<TDatabaseEntity>(entity));
+
+            if (entity is IConcurrency concurrencyEntity && existingEntity is IConcurrency existingConcurrencyEntity)
+            {
+                var originalVersion = concurrencyEntity.Version;
+                concurrencyEntity.Version = GuidGenerator.CreateSequential();
+
+                this.Options.DbContext.Entry(existingEntity) // Set the original version for concurrency check
+                    .Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
+            }
+
+            // Update values including the new version
+            this.Options.DbContext.Entry(existingEntity).CurrentValues
+                .SetValues(this.Options.Mapper.Map<TDatabaseEntity>(entity));
 
             if (this.Options.Autosave)
             {
@@ -101,9 +130,9 @@ public class
 
                 await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
             }
-        }
 
-        return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
+            return (entity, RepositoryActionResult.Updated);
+        }
     }
 
     public virtual async Task<RepositoryActionResult> DeleteAsync(

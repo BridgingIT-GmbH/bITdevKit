@@ -71,11 +71,11 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
         if (isNew)
         {
-            AddEntity();
+            HandleInsert();
         }
         else
         {
-            UpdateEntity();
+            HandleUpdate();
         }
 
         if (this.Options.Autosave)
@@ -90,24 +90,24 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
 
-        void AddEntity()
+        void HandleInsert()
         {
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
 
-            if (entity is IConcurrent concurrentEntity) // Set initial version before attaching
+            if (entity is IConcurrency concurrencyEntity) // Set initial version before attaching
             {
-                concurrentEntity.Version = GuidGenerator.CreateSequential();
+                concurrencyEntity.Version = GuidGenerator.CreateSequential();
             }
 
             this.Options.DbContext.Set<TEntity>().Add(entity);
         }
 
-        void UpdateEntity()
+        void HandleUpdate()
         {
             var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
 
-            if (entity is IConcurrent concurrentEntity)
+            if (entity is IConcurrency concurrentEntity)
             {
                 var originalVersion = concurrentEntity.Version;
                 concurrentEntity.Version = GuidGenerator.CreateSequential();
@@ -115,13 +115,13 @@ public partial class EntityFrameworkGenericRepository<TEntity>
                 if (isTracked)
                 {
                     // For tracked entities, get the entry and set original version
-                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
                 }
                 else
                 {
                     // For untracked entities, attach and set original version
                     this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
-                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrent.Version)).OriginalValue = originalVersion;
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
                 }
             }
             else if (!isTracked)

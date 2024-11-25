@@ -53,11 +53,6 @@ public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> Ã
         {
             entity.SetDeleted();
 
-            if (entity is IConcurrent concurrentEntity)
-            {
-                concurrentEntity.Version = GuidGenerator.CreateSequential();
-            }
-
             var result = (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
             if (result == RepositoryActionResult.Updated)
             {

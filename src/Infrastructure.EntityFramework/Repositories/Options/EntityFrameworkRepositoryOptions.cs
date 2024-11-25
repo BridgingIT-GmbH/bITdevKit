@@ -27,5 +27,7 @@ public class EntityFrameworkRepositoryOptions : OptionsBase
 
     public virtual IEntityMapper Mapper { get; set; }
 
+    public virtual Func<Guid> VersionGenerator { get; set; } = GuidGenerator.CreateSequential;
+
     public virtual bool Autosave { get; set; } = true;
 }

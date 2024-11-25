@@ -96,7 +96,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
             if (entity is IConcurrency concurrencyEntity) // Set initial version before attaching
             {
-                concurrencyEntity.Version = GuidGenerator.CreateSequential();
+                concurrencyEntity.Version = this.Options.VersionGenerator();
             }
 
             this.Options.DbContext.Set<TEntity>().Add(entity);
@@ -110,7 +110,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             if (entity is IConcurrency concurrentEntity)
             {
                 var originalVersion = concurrentEntity.Version;
-                concurrentEntity.Version = GuidGenerator.CreateSequential();
+                concurrentEntity.Version = this.Options.VersionGenerator();
 
                 if (isTracked)
                 {

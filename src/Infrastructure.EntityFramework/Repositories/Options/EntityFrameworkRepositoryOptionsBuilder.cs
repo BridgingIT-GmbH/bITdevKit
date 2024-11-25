@@ -21,4 +21,11 @@ public class EntityFrameworkRepositoryOptionsBuilder
 
         return this;
     }
+
+    public EntityFrameworkRepositoryOptionsBuilder VersionGenerator(Func<Guid> generator)
+    {
+        this.Target.VersionGenerator = generator;
+
+        return this;
+    }
 }

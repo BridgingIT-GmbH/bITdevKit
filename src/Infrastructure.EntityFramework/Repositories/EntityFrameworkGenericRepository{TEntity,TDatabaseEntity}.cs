@@ -89,7 +89,7 @@ public class
 
             if (entity is IConcurrency concurrencyEntity)
             {
-                concurrencyEntity.Version = GuidGenerator.CreateSequential();
+                concurrencyEntity.Version = this.Options.VersionGenerator();
             }
 
             var dbEntity = this.Options.Mapper.Map<TDatabaseEntity>(entity);
@@ -111,7 +111,7 @@ public class
             if (entity is IConcurrency concurrencyEntity && existingEntity is IConcurrency existingConcurrencyEntity)
             {
                 var originalVersion = concurrencyEntity.Version;
-                concurrencyEntity.Version = GuidGenerator.CreateSequential();
+                concurrencyEntity.Version = this.Options.VersionGenerator();
 
                 this.Options.DbContext.Entry(existingEntity) // Set the original version for concurrency check
                     .Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;

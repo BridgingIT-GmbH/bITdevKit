@@ -29,8 +29,7 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
             return RepositoryActionResult.None;
         }
 
-        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
-            .AnyContext();
+        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
         if (entity is not null)
         {
             return await this.DeleteAsync(entity, cancellationToken).AnyContext();

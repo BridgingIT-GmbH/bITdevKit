@@ -51,4 +51,21 @@ public class CosmosSqlProviderOptions<T> : OptionsBase
     public Func<T, double> PartitionKeyDoubleExpression { get; set; }
 
     public Func<T, Guid> PartitionKeyGuidExpression { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether optimistic concurrency control is enabled.
+    /// When enabled, updates will check the Version property for concurrency conflicts.
+    /// </summary>
+    public bool EnableOptimisticConcurrency { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets whether concurrency conflicts should throw exceptions.
+    /// When false, conflicts will be logged but the operation will proceed.
+    /// </summary>
+    public bool ThrowOnConcurrencyConflict { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the strategy for generating new version identifiers.
+    /// </summary>
+    public Func<Guid> VersionGenerator { get; set; } = GuidGenerator.CreateSequential;
 }

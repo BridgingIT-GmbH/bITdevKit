@@ -15,4 +15,15 @@ public class InMemoryRepositoryOptions<TEntity> : OptionsBase
     public bool PublishEvents { get; set; } = true;
 
     public IEntityIdGenerator<TEntity> IdGenerator { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether optimistic concurrency control is enabled.
+    /// When enabled, updates will check the Version property for concurrency conflicts.
+    /// </summary>
+    public bool EnableOptimisticConcurrency { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the strategy for generating new version identifiers.
+    /// </summary>
+    public Func<Guid> VersionGenerator { get; set; } = GuidGenerator.CreateSequential;
 }

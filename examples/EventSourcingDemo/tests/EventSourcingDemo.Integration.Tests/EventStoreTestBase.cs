@@ -25,6 +25,7 @@ using Domain.Repositories;
 using Infrastructure.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Presentation.Web;
 
 public class EventstoreTestBase : TestsBase

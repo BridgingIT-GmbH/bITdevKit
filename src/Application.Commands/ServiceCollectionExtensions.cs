@@ -12,8 +12,6 @@ using Scrutor;
 
 public static class ServiceCollectionExtensions
 {
-    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
-
     public static CommandBuilderContext AddCommands(
         this IServiceCollection services,
         IEnumerable<string> assemblyExcludePatterns = null,
@@ -26,7 +24,7 @@ public static class ServiceCollectionExtensions
 
             services.Scan(scan => scan
                 .FromApplicationDependencies(a =>
-                    !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                    !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
                     .Where(c => !c.IsAbstract &&
                         !c.IsGenericTypeDefinition &&
@@ -37,7 +35,7 @@ public static class ServiceCollectionExtensions
 
             services.Scan(scan => scan
                 .FromApplicationDependencies(a =>
-                    !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                    !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
                     .Where(c => !c.IsAbstract &&
                         !c.IsGenericTypeDefinition &&

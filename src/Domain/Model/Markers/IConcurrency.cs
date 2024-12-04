@@ -21,5 +21,5 @@ public interface IConcurrency
     ///     A new version identifier is usually generated each time the entity is inserted, updated,
     ///     or marked as deleted. The version identifier is commonly represented as a GUID.
     /// </remarks>
-    Guid Version { get; set; }
+    Guid ConcurrencyVersion { get; set; }
 }

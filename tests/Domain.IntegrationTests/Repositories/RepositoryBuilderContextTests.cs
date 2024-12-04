@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
 using Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
@@ -13,7 +14,8 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
     {
         s.AddMediatR();
 
-        s.AddInMemoryRepository(new InMemoryContext<StubEntity>(new[] { new StubEntity { FirstName = "John" }, new StubEntity { FirstName = "Mary" } }))
+        s.AddInMemoryRepository(
+                new InMemoryContext<StubEntity>([new StubEntity { Id = "id-1-john", FirstName = "John" }, new StubEntity { Id = "id-2-mary", FirstName = "Mary" }]))
             .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
             .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
             .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()

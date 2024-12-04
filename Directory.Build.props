@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <!--package-->
     <Authors>BridgingIT GmbH</Authors>

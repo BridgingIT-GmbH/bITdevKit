@@ -5,6 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+/// <summary>
+/// Provides a repository wrapper implementation using Entity Framework for CRUD operations on entities.
+/// </summary>
+/// <typeparam name="TEntity">The type of the domain entity.</typeparam>
+/// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
+/// <typeparam name="TContext">The type of the database context.</typeparam>
 public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
     ILoggerFactory loggerFactory,
     TContext context,
@@ -13,27 +19,48 @@ public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext
     where TDatabaseEntity : class
     where TContext : DbContext { }
 
+/// <summary>
+/// Provides a generic repository implementation using Entity Framework.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
 public class
     EntityFrameworkGenericRepository<TEntity, TDatabaseEntity> // TODO: rename to EntityFrameworkRepository + Obsolete
     : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
+    /// <summary>
+    /// Provides generic repository functionalities for entities in an Entity Framework context.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
+    /// <summary>
+    /// Provides a generic repository for entities using Entity Framework.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     protected EntityFrameworkGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
+    /// <summary>
+    /// Represents a generic repository implementation using Entity Framework for read/write operations.
+    /// </summary>
+    /// <typeparam name="TEntity">The type representing the domain entity.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The type representing the database entity.</typeparam>
     protected EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
 
     /// <summary>
-    ///     Inserts the provided entity.
+    /// Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous insert operation. The task result contains the inserted entity.</returns>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -42,10 +69,17 @@ public class
     }
 
     /// <summary>
-    ///     Updates the provided entity.
+    /// Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
     /// <param name="cancellationToken"></param>
+    /// <returns>The updated entity.</returns>
+    /// <example>
+    /// Example usage:
+    /// <code>
+    /// var updatedEntity = await repository.UpdateAsync(entity, cancellationToken);
+    /// </code>
+    /// </example>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -54,10 +88,14 @@ public class
     }
 
     /// <summary>
-    ///     Insert or updates the provided entity.
+    /// Inserts or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task representing the asynchronous operation, with a tuple containing the updated or inserted entity and the action performed.</returns>
+    /// <example>
+    /// var result = await repository.UpsertAsync(myEntity);
+    /// </example>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -89,7 +127,7 @@ public class
 
             if (entity is IConcurrency concurrencyEntity)
             {
-                concurrencyEntity.Version = this.Options.VersionGenerator();
+                concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
             }
 
             var dbEntity = this.Options.Mapper.Map<TDatabaseEntity>(entity);
@@ -108,13 +146,13 @@ public class
         {
             this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
 
-            if (entity is IConcurrency concurrencyEntity && existingEntity is IConcurrency existingConcurrencyEntity)
+            if (entity is IConcurrency concurrencyEntity && existingEntity is IConcurrency existingConcurrencyEntity && this.Options.EnableOptimisticConcurrency)
             {
-                var originalVersion = concurrencyEntity.Version;
-                concurrencyEntity.Version = this.Options.VersionGenerator();
+                var originalVersion = concurrencyEntity.ConcurrencyVersion;
+                concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
 
                 this.Options.DbContext.Entry(existingEntity) // Set the original version for concurrency check
-                    .Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
+                    .Property(nameof(IConcurrency.ConcurrencyVersion)).OriginalValue = originalVersion;
             }
 
             // Update values including the new version
@@ -135,6 +173,13 @@ public class
         }
     }
 
+    /// <summary>
+    /// Deletes the entity with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier of the entity to delete.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>A result indicating the outcome of the delete operation.</returns>
+    /// <example>await repository.DeleteAsync(entityId, cancellationToken);</example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         object id,
         CancellationToken cancellationToken = default)
@@ -162,6 +207,16 @@ public class
         return RepositoryActionResult.None;
     }
 
+    /// <summary>
+    /// Deletes the provided entity.
+    /// </summary>
+    /// <param name="entity">The entity to delete.</param>
+    /// <param name="cancellationToken">Optional. The CancellationToken to observe while waiting for the task to complete.</param>
+    /// <returns>A task representing the asynchronous delete operation. The task result contains the action result status.</returns>
+    /// <example>
+    /// var repository = new EntityFrameworkGenericRepository<SomeEntity, SomeDatabaseEntity>(options);
+    /// var result = await repository.DeleteAsync(entityToDelete, cancellationToken);
+    /// </example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

@@ -28,7 +28,7 @@ public static partial class Extensions
     }
 
     [DebuggerStepThrough]
-    public static bool IsNullOrEmpty(this Guid source)
+    public static bool IsEmpty(this Guid source)
     {
         return source == Guid.Empty;
     }

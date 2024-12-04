@@ -9,7 +9,7 @@ using Domain.Repositories;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(TestEnvironmentCollection2))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkCosmosGenericRepositoryTypedIdTests : EntityFrameworkGenericRepositoryTypedIdTestsBase
 {
     private readonly TestEnvironmentFixture fixture;

@@ -5,31 +5,62 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+/// <summary>
+/// EntityFrameworkRepositoryWrapper is a repository implementation using Entity Framework Core.
+/// It provides a wrapper around the generic repository to handle CRUD operations for a specific entity type.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TContext">The type of the DbContext.</typeparam>
 public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext { }
 
+/// <summary>
+/// EntityFrameworkGenericRepository is a generic repository for Entity Framework,
+/// providing essential CRUD operations for entity types.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
 public partial class EntityFrameworkGenericRepository<TEntity>
     : // TODO: rename to EntityFrameworkRepository + Obsolete
         EntityFrameworkReadOnlyGenericRepository<TEntity>, IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// A generic repository class for Entity Framework, providing basic CRUD operations on entities.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of entity.</typeparam>
     protected EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
+    /// <summary>
+    /// Specifies an Entity Framework repository to manage entities of type <typeparamref name="TEntity"/>.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of entity.</typeparam>
     public EntityFrameworkGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
+    /// <summary>
+    /// A generic repository for performing CRUD operations on an entity using Entity Framework.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context)) { }
 
     /// <summary>
-    ///     Inserts the provided entity.
+    /// Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous insert operation. The task result contains the inserted entity.</returns>
+    /// <example>
+    /// <code>
+    /// var entity = new YourEntity();
+    /// var repository = new EntityFrameworkGenericRepository(context);
+    /// var insertedEntity = await repository.InsertAsync(entity);
+    /// </code>
+    /// </example>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -38,10 +69,14 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     }
 
     /// <summary>
-    ///     Updates the provided entity.
+    /// Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The updated entity.</returns>
+    /// <example>
+    /// var updatedEntity = await repository.UpdateAsync(entity);
+    /// </example>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -50,10 +85,13 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     }
 
     /// <summary>
-    ///     Insert or updates the provided entity.
+    /// Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
     /// <param name="cancellationToken"></param>
+    /// <returns>
+    /// A tuple containing the entity and the result of the action (Inserted or Updated).
+    /// </returns>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -96,7 +134,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
             if (entity is IConcurrency concurrencyEntity) // Set initial version before attaching
             {
-                concurrencyEntity.Version = this.Options.VersionGenerator();
+                concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
             }
 
             this.Options.DbContext.Set<TEntity>().Add(entity);
@@ -107,21 +145,21 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
             TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
 
-            if (entity is IConcurrency concurrentEntity)
+            if (entity is IConcurrency concurrencyEntity && this.Options.EnableOptimisticConcurrency)
             {
-                var originalVersion = concurrentEntity.Version;
-                concurrentEntity.Version = this.Options.VersionGenerator();
+                var originalVersion = concurrencyEntity.ConcurrencyVersion;
+                concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
 
                 if (isTracked)
                 {
                     // For tracked entities, get the entry and set original version
-                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.ConcurrencyVersion)).OriginalValue = originalVersion;
                 }
                 else
                 {
                     // For untracked entities, attach and set original version
                     this.Options.DbContext.Update(entity); // right way to update disconnected entities https://docs.microsoft.com/en-us/ef/core/saving/disconnected-entities#working-with-graphs
-                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.Version)).OriginalValue = originalVersion;
+                    this.Options.DbContext.Entry(entity).Property(nameof(IConcurrency.ConcurrencyVersion)).OriginalValue = originalVersion;
                 }
             }
             else if (!isTracked)
@@ -131,6 +169,19 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         }
     }
 
+    /// <summary>
+    /// Deletes the entity with the provided identifier.
+    /// </summary>
+    /// <param name="id">The identifier of the entity to delete.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>A <see cref="RepositoryActionResult"/> indicating the result of the delete operation.</returns>
+    /// <example>
+    /// var result = await repository.DeleteAsync(entityId);
+    /// if (result == RepositoryActionResult.Deleted)
+    /// {
+    /// Console.WriteLine("Entity was successfully deleted.");
+    /// }
+    /// </example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         object id,
         CancellationToken cancellationToken = default)
@@ -156,6 +207,26 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         return RepositoryActionResult.None;
     }
 
+    /// <summary>
+    /// Deletes the specified entity.
+    /// </summary>
+    /// <param name="entity">The entity to delete.</param>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+    /// <returns>A <see cref="RepositoryActionResult"/> representing the result of the delete operation.</returns>
+    /// <example>
+    /// Here's how you can use the DeleteAsync method:
+    /// <code>
+    /// var result = await repository.DeleteAsync(entity);
+    /// if (result == RepositoryActionResult.Deleted)
+    /// {
+    /// // Entity was successfully deleted.
+    /// }
+    /// else
+    /// {
+    /// // Handle the case where the entity was not deleted.
+    /// }
+    /// </code>
+    /// </example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

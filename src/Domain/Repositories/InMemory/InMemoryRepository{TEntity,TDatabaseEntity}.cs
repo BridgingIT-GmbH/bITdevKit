@@ -16,14 +16,9 @@ public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
     where TContext : InMemoryContext<TEntity>
     where TDatabaseEntity : class { }
 
-/// <summary>
-///     Represents an InMemoryRepository.
-/// </summary>
-/// <typeparam name="TEntity">The type of the domain entity.</typeparam>
-/// <typeparam name="TDatabaseEntity">The type of the destination/remote dto.</typeparam>
-/// <seealso cref="Domain.InMemoryRepository{T}" />
 public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<TEntity>
     where TEntity : class, IEntity
+    where TDatabaseEntity : class
 {
     private readonly Func<TDatabaseEntity, object> idSelector;
 
@@ -31,8 +26,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         : base(options)
     {
         EnsureArg.IsNotNull(idSelector, nameof(idSelector));
-
-        this.idSelector = idSelector; // TODO: really needed?
+        this.idSelector = idSelector;
     }
 
     public InMemoryRepository(
@@ -46,34 +40,22 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         Func<TDatabaseEntity, object> idSelector)
         : this(o => o.LoggerFactory(loggerFactory).Context(context), idSelector) { }
 
-    /// <summary>
-    ///     Finds all asynchronous.
-    /// </summary>
-    /// <param name="specifications">The specifications.</param>
-    /// <param name="options">The options.</param>
-    /// <param name="cancellationToken">The cancellationToken.</param>
     public override async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
         var result = this.Options.Context.Entities.SafeNull()
-            .Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e)); // work on destination objects
+            .Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e));
 
         foreach (var specification in specifications.SafeNull())
         {
-            result = result.Where(
-                this.EnsurePredicate(specification)); // translate specification to destination predicate
+            result = result.Where(this.EnsurePredicate(specification));
         }
 
         return await Task.FromResult(this.FindAll(result, options)).AnyContext();
     }
 
-    /// <summary>
-    ///     Finds the by identifier asynchronous.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <exception cref="ArgumentOutOfRangeException">id.</exception>
     public override async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -85,11 +67,8 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         }
 
         var result = this.Options.Context.Entities.SafeNull()
-            .Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e)) // work on destination objects
-            .SingleOrDefault(e =>
-                this.idSelector(e)
-                    .Equals(id)); // TODO: use HasIdSpecification + MapExpression (makes idSelector obsolete)
-        // return (await this.FindAllAsync(new HasIdSpecification<TEntity>(id))).FirstOrDefault();
+            .Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e))
+            .SingleOrDefault(e => this.idSelector(e).Equals(id));
 
         if (this.Options.Mapper is not null && result is not null)
         {
@@ -99,7 +78,19 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         return default;
     }
 
-    protected new Func<TDatabaseEntity, bool> EnsurePredicate(ISpecification<TEntity> specification)
+    public override async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
+    {
+        if (id == default)
+        {
+            return false;
+        }
+
+        return await Task.FromResult(this.Options.Context.Entities.SafeNull()
+            .Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e))
+            .Any(e => this.idSelector(e).Equals(id))).AnyContext();
+    }
+
+    private new Func<TDatabaseEntity, bool> EnsurePredicate(ISpecification<TEntity> specification)
     {
         return this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(specification).Compile();
     }
@@ -127,7 +118,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         }
 
         IOrderedEnumerable<TDatabaseEntity> orderedResult = null;
-        foreach (var order in (options?.Orders ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
+        foreach (var order in (options?.Orders ?? []).Insert(options?.Order))
         {
             orderedResult = orderedResult is null
                 ? order.Direction == OrderDirection.Ascending
@@ -137,8 +128,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
                     : result.OrderByDescending(this.Options.Mapper
                         .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
                         .Compile())
-                : order.Direction ==
-                OrderDirection.Ascending // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                : order.Direction == OrderDirection.Ascending
                     ? orderedResult.ThenBy(this.Options.Mapper
                         .MapExpression<Expression<Func<TDatabaseEntity, object>>>(order.Expression)
                         .Compile())

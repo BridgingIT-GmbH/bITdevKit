@@ -531,7 +531,7 @@ public readonly partial struct PagedResult<T> : IResult<IEnumerable<T>>
     /// </example>
     public PagedResult<T> WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors is null || !errors.Any())
+        if (errors?.Any() != true)
         {
             return this;
         }

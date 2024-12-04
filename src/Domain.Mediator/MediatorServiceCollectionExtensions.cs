@@ -14,15 +14,13 @@ using MediatR.Registration;
 /// </summary>
 public static class MediatorServiceCollectionExtensions
 {
-    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
-
     public static IServiceCollection AddMediatR(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Transient,
         IEnumerable<string> assemblyExcludePatterns = null)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+            .Where(a => !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .SafeGetTypes(
                 typeof(INotificationHandler<>), typeof(IRequestHandler<,>), typeof(IRequestHandler<>), typeof(IStreamRequestHandler<,>),
                 typeof(IRequestExceptionHandler<,,>), typeof(IRequestExceptionAction<,>))
@@ -98,7 +96,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -106,7 +104,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -114,7 +112,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -122,7 +120,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IStreamRequestHandler<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -130,7 +128,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestExceptionHandler<,,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
@@ -138,7 +136,7 @@ public static class MediatorServiceCollectionExtensions
 
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestExceptionAction<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()

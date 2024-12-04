@@ -211,4 +211,18 @@ public class CosmosSqlProviderOptionsBuilder<T>
 
         return this;
     }
+
+    public CosmosSqlProviderOptionsBuilder<T> EnableOptimisticConcurrency(bool value = true)
+    {
+        this.Target.EnableOptimisticConcurrency = value;
+
+        return this;
+    }
+
+    public CosmosSqlProviderOptionsBuilder<T> ThrowOnConcurrencyConflict(bool value = true)
+    {
+        this.Target.ThrowOnConcurrencyConflict = value;
+
+        return this;
+    }
 }

@@ -9,6 +9,7 @@ using DevKit.Domain.EventSourcing.Store;
 using Domain.Model;
 using Domain.Model.Events;
 using Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))]

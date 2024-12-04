@@ -100,8 +100,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
 
         if (this.options.AutoSave)
         {
-            await context.SaveChangesAsync<OutboxMessage>(this.Logger, cancellationToken)
-                .AnyContext(); // only save changes in this scoped context
+            await context.SaveChangesAsync<OutboxMessage>(this.Logger, cancellationToken).AnyContext(); // only save changes in this scoped context
         }
 
         if (this.options.ProcessingMode == OutboxMessageProcessingMode.Immediate)

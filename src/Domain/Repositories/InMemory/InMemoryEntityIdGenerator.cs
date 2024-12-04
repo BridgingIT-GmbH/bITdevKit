@@ -12,14 +12,11 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
 
     public bool IsNew(object id)
     {
-        if (id is null)
-        {
-            return true;
-        }
-
         return id switch
         {
+            null => true,
             int e => e == 0,
+            long e => e == 0,
             string e => e.IsNullOrEmpty(),
             Guid e => e == Guid.Empty,
             _ => throw new NotSupportedException($"entity id type {id.GetType().Name} not supported")
@@ -32,9 +29,10 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
 
         entity.Id = entity switch
         {
-            IEntity<int> e => this.context.Entities.Count + 1,
-            IEntity<string> e => GuidGenerator.CreateSequential().ToString(),
-            IEntity<Guid> e => GuidGenerator.CreateSequential(),
+            IEntity<int> => this.context.Entities.Count + 1,
+            IEntity<long> => this.context.Entities.Count + 1,
+            IEntity<string> => GuidGenerator.CreateSequential().ToString(),
+            IEntity<Guid> => GuidGenerator.CreateSequential(),
             _ => throw new NotSupportedException($"entity id type {entity.Id.GetType().Name} not supported")
         };
     }

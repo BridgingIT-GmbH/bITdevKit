@@ -40,7 +40,7 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        entity.Version = GuidGenerator.CreateSequential();
+        entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
@@ -132,14 +132,14 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        entity.Version = GuidGenerator.CreateSequential();
+        entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        entity.Version = GuidGenerator.CreateSequential();
+        entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
 
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
@@ -148,7 +148,7 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        entity.Version = GuidGenerator.CreateSequential();
+        entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
 
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }

@@ -55,8 +55,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         var existingEntity = await this.Inner
-            .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken)
-            .AnyContext();
+            .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext();
         if (existingEntity is null || existingEntity.Id == default)
         {
             return RepositoryActionResult.None;
@@ -69,8 +68,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var result = await this.Inner.DeleteAsync(entity, cancellationToken)
-            .AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
+        var result = await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
         await this.StoreDomainEvents(entity, cancellationToken);
 
@@ -161,8 +159,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var result = await this.Inner.InsertAsync(entity, cancellationToken)
-            .AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
+        var result = await this.Inner.InsertAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
         await this.StoreDomainEvents(entity, cancellationToken);
 
@@ -175,8 +172,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var result = await this.Inner.UpdateAsync(entity, cancellationToken)
-            .AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
+        var result = await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
         await this.StoreDomainEvents(entity, cancellationToken);
 
@@ -191,8 +187,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var result = await this.Inner.UpsertAsync(entity, cancellationToken)
-            .AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
+        var result = await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext(); // calls savechanges, acts as a transaction for all inserts that are part of the set.
 
         await this.StoreDomainEvents(entity, cancellationToken);
 
@@ -240,13 +235,11 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 #if DEBUG
                     //this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", outboxEvent);
 #endif
-                },
-                cancellationToken);
+                }, cancellationToken);
 
         if (this.options.AutoSave)
         {
-            await this.Context.SaveChangesAsync<OutboxDomainEvent>(this.Logger, cancellationToken)
-                .AnyContext(); // only save changes in this scoped context
+            await this.Context.SaveChangesAsync<OutboxDomainEvent>(this.Logger, cancellationToken).AnyContext(); // only save changes in this scoped context
         }
 
         if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
@@ -286,13 +279,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
-        public static partial void LogDomainEvent(
-            ILogger logger,
-            string logKey,
-            Guid domainEventId,
-            string domainEventType);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
+        public static partial void LogDomainEvent(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
     }
 }

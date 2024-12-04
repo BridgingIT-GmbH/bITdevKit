@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 public class PersonStub : AggregateRoot<Guid>
 {
-    private readonly List<LocationStub> locations = [];
+    private List<LocationStub> locations = [];
 
     public PersonStub() { }
 
@@ -40,7 +40,11 @@ public class PersonStub : AggregateRoot<Guid>
 
     public Status Status { get; set; } = Status.Inactive;
 
-    public IReadOnlyList<LocationStub> Locations => this.locations.AsReadOnly();
+    public IReadOnlyList<LocationStub> Locations
+    {
+        get => this.locations.AsReadOnly();
+        protected set => this.locations = value?.ToList() ?? [];
+    }
 
     public int Age { get; set; }
 
@@ -82,14 +86,14 @@ public class Status(int id, string value, string code, string description) : Enu
 
 public class EmailAddressStub : ValueObject
 {
-    private EmailAddressStub() { }
+    protected EmailAddressStub() { } // Required for cosmos deserialization
 
     private EmailAddressStub(string value)
     {
         this.Value = value;
     }
 
-    public string Value { get; }
+    public string Value { get; protected set; }
 
     public static implicit operator string(EmailAddressStub email)
     {
@@ -112,7 +116,7 @@ public class EmailAddressStub : ValueObject
 
 public class LocationStub : Entity<Guid>
 {
-    private LocationStub() { }
+    protected LocationStub() { } // Required for cosmos deserialization
 
     private LocationStub(
         string name,
@@ -130,17 +134,17 @@ public class LocationStub : Entity<Guid>
         this.Country = country;
     }
 
-    public string Name { get; }
+    public string Name { get; protected set; }
 
-    public string AddressLine1 { get; }
+    public string AddressLine1 { get; protected set; }
 
-    public string AddressLine2 { get; }
+    public string AddressLine2 { get; protected set; }
 
-    public string PostalCode { get; }
+    public string PostalCode { get; protected set; }
 
-    public string City { get; }
+    public string City { get; protected set; }
 
-    public string Country { get; }
+    public string Country { get; protected set; }
 
     public static LocationStub Create(
         string name,
@@ -235,8 +239,7 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(this.GetType()
-            .Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
     }
 }
 
@@ -248,7 +251,7 @@ public class OutboxDomainEventTypeConfiguration : IEntityTypeConfiguration<Outbo
         //builder.HasManualThroughput(600); // cosmos
         //builder.HasAutoscaleThroughput(1000); // cosmos
 
-        builder.Ignore(u => u.RowVersion); // needs to be ignored as the provider cannot handle the string/byte[] casting
+        //builder.Ignore(u => u.RowVersion); // needs to be ignored as the provider cannot handle the string/byte[] casting
         //builder.Property(u => u.RowVersion)
         //    .IsETagConcurrency()
         //    .HasConversion(new BytesToStringConverter())
@@ -264,7 +267,7 @@ public class OutboxMessageTypeConfiguration : IEntityTypeConfiguration<OutboxMes
         //builder.HasManualThroughput(600); // cosmos
         //builder.HasAutoscaleThroughput(1000); // cosmos
 
-        builder.Ignore(u => u.RowVersion);
+        //builder.Ignore(u => u.RowVersion);
         //builder.Property(u => u.RowVersion)
         //    .IsETagConcurrency()
         //    .HasConversion(new BytesToStringConverter())

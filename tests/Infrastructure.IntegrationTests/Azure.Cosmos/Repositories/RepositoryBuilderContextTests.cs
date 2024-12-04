@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure;
 using Domain.Repositories;
 using Infrastructure.Azure;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,

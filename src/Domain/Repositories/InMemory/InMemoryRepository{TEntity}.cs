@@ -16,7 +16,6 @@ public class InMemoryRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerF
 ///     Represents an InMemoryRepository.
 /// </summary>
 /// <typeparam name="TEntity">The type of the domain entity.</typeparam>
-/// <seealso cref="Domain.IRepository{T, TId}" />
 public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
@@ -43,43 +42,23 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
 
     protected ILogger<IGenericRepository<TEntity>> Logger { get; set; }
 
-    /// <summary>
-    ///     Finds all asynchronous.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    /// <param name="cancellationToken">The cancellationToken.</param>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(specifications: null, options: options, cancellationToken: cancellationToken)
-            .AnyContext();
+        return await this.FindAllAsync(specifications: null, options, cancellationToken).AnyContext();
     }
 
-    /// <summary>
-    ///     Finds all asynchronous.
-    /// </summary>
-    /// <param name="specification">The specification.</param>
-    /// <param name="options">The options.</param>
-    /// ///
-    /// <param name="cancellationToken">The cancellationToken.</param>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
         return specification is null
-            ? await this.FindAllAsync(specifications: null, options: options, cancellationToken).AnyContext()
+            ? await this.FindAllAsync(specifications: null, options, cancellationToken).AnyContext()
             : await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
-    /// <summary>
-    ///     Finds all asynchronous.
-    /// </summary>
-    /// <param name="specifications">The specifications.</param>
-    /// <param name="options">The options.</param>
-    /// ///
-    /// <param name="cancellationToken">The cancellationToken.</param>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -95,43 +74,6 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await Task.FromResult(this.FindAll(result, options, cancellationToken).ToList()).AnyContext();
     }
 
-    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-        Expression<Func<TEntity, TProjection>> projection,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        return await this
-            .ProjectAllAsync(specifications: null, projection, options, cancellationToken: cancellationToken)
-            .AnyContext();
-    }
-
-    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-        ISpecification<TEntity> specification,
-        Expression<Func<TEntity, TProjection>> projection,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        return specification is null
-            ? await this.ProjectAllAsync(specifications: null, projection, options: options, cancellationToken)
-                .AnyContext()
-            : await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
-    }
-
-    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
-        IEnumerable<ISpecification<TEntity>> specifications,
-        Expression<Func<TEntity, TProjection>> projection,
-        IFindOptions<TEntity> options = null,
-        CancellationToken cancellationToken = default)
-    {
-        return (await this.FindAllAsync(specifications, options, cancellationToken).AnyContext()).Select(e =>
-            projection.Compile().Invoke(e));
-    }
-
-    /// <summary>
-    ///     Finds the by identifier asynchronous.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <exception cref="ArgumentOutOfRangeException">id.</exception>
     public virtual async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -145,14 +87,14 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         this.@lock.EnterReadLock();
         try
         {
-            var result = this.Options.Context.Entities.FirstOrDefault(x => x.Id.Equals(id));
+            this.Options.Context.TryGet(id, out var entity);
 
-            if (this.Options.Mapper is not null && result is not null)
+            if (this.Options.Mapper is not null && entity is not null)
             {
-                return this.Options.Mapper.Map<TEntity>(result);
+                return this.Options.Mapper.Map<TEntity>(entity);
             }
 
-            return await Task.FromResult(result).AnyContext();
+            return await Task.FromResult(entity).AnyContext();
         }
         finally
         {
@@ -183,24 +125,56 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await Task.FromResult(this.FindAll(result, options, cancellationToken).FirstOrDefault()).AnyContext();
     }
 
-    /// <summary>
-    ///     Asynchronous checks if element exists.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this
+            .ProjectAllAsync(specifications: null, projection, options, cancellationToken: cancellationToken)
+            .AnyContext();
+    }
+
+    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
+        ISpecification<TEntity> specification,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return specification is null
+            ? await this.ProjectAllAsync(specifications: null, projection, options: options, cancellationToken).AnyContext()
+            : await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
+    }
+
+    public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        var result = this.Options.Context.Entities.AsEnumerable();
+
+        foreach (var specification in specifications.SafeNull())
+        {
+            result = result.Where(this.EnsurePredicate(specification));
+        }
+
+        return await Task.FromResult(
+                this.FindAll(result, options, cancellationToken)
+                    .Select(e => projection.Compile().Invoke(e)))
+            .AnyContext();
+    }
+
+    public virtual Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
-            return false;
+            return Task.FromResult(false);
         }
 
-        return await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext() is not null;
+        return Task.FromResult(this.Options.Context.TryGet(id, out _));
     }
 
-    /// <summary>
-    ///     Inserts the provided entity.
-    /// </summary>
-    /// <param name="entity">The entity to insert.</param>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -208,10 +182,6 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return result.entity;
     }
 
-    /// <summary>
-    ///     Updates the provided entity.
-    /// </summary>
-    /// <param name="entity">The entity to update.</param>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -219,10 +189,6 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return result.entity;
     }
 
-    /// <summary>
-    ///     Insert or updates the entity.
-    /// </summary>
-    /// <param name="entity">The entity to insert or update.</param>
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -232,7 +198,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             return (default, RepositoryActionResult.None);
         }
 
-        var isNew = false;
+        bool isNew;
         if (this.Options.IdGenerator.IsNew(entity.Id))
         {
             this.Options.IdGenerator.SetNew(entity);
@@ -246,12 +212,32 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         this.@lock.EnterWriteLock();
         try
         {
-            if (this.Options.Context.Entities.Contains(entity))
+            if (!isNew)
             {
-                this.Options.Context.Entities.Remove(entity);
+                this.Options.Context.TryGet(entity.Id, out var existingEntity);
+
+                if (existingEntity is IConcurrency existingConcurrency && entity is IConcurrency entityConcurrency && this.Options.EnableOptimisticConcurrency)
+                {
+                    if (!existingConcurrency.ConcurrencyVersion.IsEmpty() && existingConcurrency.ConcurrencyVersion != entityConcurrency.ConcurrencyVersion)
+                    {
+                        throw new ConcurrencyException($"Concurrency conflict detected for entity {typeof(TEntity).Name} with Id {entity.Id}")
+                        {
+                            EntityId = entity.Id.ToString(),
+                            ExpectedVersion = entityConcurrency.ConcurrencyVersion,
+                            ActualVersion = existingConcurrency.ConcurrencyVersion
+                        };
+                    }
+                }
+
+                this.Options.Context.TryRemove(entity.Id, out _);
             }
 
-            this.Options.Context.Entities.Add(entity);
+            if (entity is IConcurrency concurrencyEntity)
+            {
+                concurrencyEntity.ConcurrencyVersion = GuidGenerator.CreateSequential();
+            }
+
+            this.Options.Context.TryAdd(entity);
         }
         finally
         {
@@ -261,46 +247,29 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
     }
 
-    /// <summary>
-    ///     Deletes asynchronous.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <exception cref="ArgumentOutOfRangeException">id.</exception>
-    public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
+    public Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
-            return RepositoryActionResult.None;
+            return Task.FromResult(RepositoryActionResult.None);
         }
 
-        return await Task.Run(() =>
+        this.@lock.EnterWriteLock();
+        try
+        {
+            if (this.Options.Context.TryRemove(id, out _))
             {
-                var entity = this.Options.Context.Entities.FirstOrDefault(x => x.Id.Equals(id));
-                if (entity is not null)
-                {
-                    this.@lock.EnterWriteLock();
-                    try
-                    {
-                        this.Options.Context.Entities.Remove(entity);
-                    }
-                    finally
-                    {
-                        this.@lock.ExitWriteLock();
-                    }
+                return Task.FromResult(RepositoryActionResult.Deleted);
+            }
 
-                    return RepositoryActionResult.Deleted;
-                }
-
-                return RepositoryActionResult.None;
-            })
-            .AnyContext();
+            return Task.FromResult(RepositoryActionResult.None);
+        }
+        finally
+        {
+            this.@lock.ExitWriteLock();
+        }
     }
 
-    /// <summary>
-    ///     Deletes asynchronous.
-    /// </summary>
-    /// <param name="entity">The entity.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Id.</exception>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity?.Id == default)
@@ -309,6 +278,18 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    public async Task<long> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return await this.CountAsync([], cancellationToken).AnyContext();
+    }
+
+    public async Task<long> CountAsync(
+        ISpecification<TEntity> specification,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
@@ -322,21 +303,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             result = result.Where(this.EnsurePredicate(specification));
         }
 
-        var count = result.Count();
-
-        return await Task.FromResult(count).AnyContext();
-    }
-
-    public async Task<long> CountAsync(
-        ISpecification<TEntity> specification,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.CountAsync([specification], cancellationToken).AnyContext();
-    }
-
-    public async Task<long> CountAsync(CancellationToken cancellationToken = default)
-    {
-        return await this.CountAsync([], cancellationToken).AnyContext();
+        return await Task.FromResult(result.Count()).AnyContext();
     }
 
     protected virtual Func<TEntity, bool> EnsurePredicate(ISpecification<TEntity> specification)
@@ -377,16 +344,14 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             else if (options?.Distinct is not null && options.Distinct.Expression is not null)
             {
                 result = result.GroupBy(options.Distinct.Expression.Compile())
-                    .Select(g => g.FirstOrDefault())
-                    .AsQueryable();
+                    .Select(g => g.FirstOrDefault());
             }
 
             IOrderedEnumerable<TEntity> orderedResult = null;
-            foreach (var order in (options?.Orders ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
+            foreach (var order in (options?.Orders ?? []).Insert(options?.Order))
             {
                 orderedResult = orderedResult is null ? order.Direction == OrderDirection.Ascending
-                        ? result.OrderBy(order.Expression
-                            .Compile()) // replace wit CompileFast()? https://github.com/dadhi/FastExpressionCompiler
+                        ? result.OrderBy(order.Expression.Compile())
                         : result.OrderByDescending(order.Expression.Compile()) :
                     order.Direction == OrderDirection.Ascending ? orderedResult.ThenBy(order.Expression.Compile()) :
                     orderedResult.ThenByDescending(order.Expression.Compile());

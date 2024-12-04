@@ -349,7 +349,7 @@ public static class DateTimeExtensions
         // Use default non-working days if none specified
         if (nonWorkingDays == null || nonWorkingDays.Length == 0)
         {
-            nonWorkingDays = new[] { DayOfWeek.Saturday, DayOfWeek.Sunday };
+            nonWorkingDays = [DayOfWeek.Saturday, DayOfWeek.Sunday];
         }
 
         var result = dateTime;

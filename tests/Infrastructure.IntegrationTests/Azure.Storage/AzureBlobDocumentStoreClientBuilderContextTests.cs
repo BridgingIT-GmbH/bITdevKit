@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using Application.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 [IntegrationTest("Infrastructure")]

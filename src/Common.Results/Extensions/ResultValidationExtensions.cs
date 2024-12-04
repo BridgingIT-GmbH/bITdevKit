@@ -134,7 +134,7 @@ public static class ResultValidationExtensions
         IEnumerable<IValidator<T>> validators)
     {
         var validatorsList = validators?.ToList();
-        if (validatorsList is null || !validatorsList.Any())
+        if (validatorsList?.Any() != true)
         {
             return Result<IEnumerable<T>>.Failure()
                 .WithError(new ValidationError("No validators provided"));

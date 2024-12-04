@@ -91,11 +91,11 @@ namespace {namespaceName}
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class {className} : EntityId<{typeName}>
     {{
-        private {className}()
+        protected {className}()
         {{
         }}
 
-        private {className}({typeName} value)
+        protected {className}({typeName} value)
         {{
             this.Value = value;
         }}

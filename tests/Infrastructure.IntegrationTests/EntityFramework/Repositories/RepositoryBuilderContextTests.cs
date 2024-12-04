@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using Domain.Repositories;
 using Infrastructure.EntityFramework;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,

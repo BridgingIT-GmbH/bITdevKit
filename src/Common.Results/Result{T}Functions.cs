@@ -761,7 +761,6 @@ public readonly partial struct Result<T>
     /// <summary>
     ///     Chains a new operation if the current Result is successful, providing access to the previous Result's value.
     /// </summary>
-    /// <typeparam name="T">The type of the previous result's value.</typeparam>
     /// <param name="operation">The operation to execute if successful, with access to the previous value.</param>
     /// <returns>The original Result if successful.</returns>
     /// <example>
@@ -795,7 +794,6 @@ public readonly partial struct Result<T>
     /// <summary>
     ///     Chains a new async operation if the current Result is successful, providing access to the previous Result's value.
     /// </summary>
-    /// <typeparam name="T">The type of the previous result's value.</typeparam>
     /// <param name="operation">The async operation to execute if successful, with access to the previous value.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The original Result if successful.</returns>
@@ -1310,7 +1308,6 @@ public readonly partial struct Result<T>
         {
             return this;
         }
-
 
         try
         {

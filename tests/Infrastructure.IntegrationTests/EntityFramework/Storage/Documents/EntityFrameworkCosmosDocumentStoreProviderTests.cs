@@ -9,7 +9,7 @@ using DotNet.Testcontainers.Containers;
 using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(TestEnvironmentCollection3))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);

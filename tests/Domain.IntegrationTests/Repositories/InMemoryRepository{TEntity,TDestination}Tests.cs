@@ -5,256 +5,211 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
+using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Infrastructure.Mapping;
-using FizzWare.NBuilder;
+using Bogus;
+using Shouldly;
 
 [IntegrationTest("Domain")]
 public class InMemoryRepositoryDbTests
 {
+    private readonly Faker faker;
     private readonly IEnumerable<StubEntity> entities;
+    private readonly AutoMapperEntityMapper mapper;
 
     public InMemoryRepositoryDbTests()
     {
-        this.entities = Builder<StubEntity>
-            .CreateListOfSize(20)
-            .All()
-            .With(x => x.FirstName, "John")
-            .With(x => x.LastName, this.GenerateRandomString(5))
-            .With(x => x.Country, "USA")
-            .Build()
-            .Concat(
-            [
-                new StubEntity
-                {
-                    Id = "Id99",
-                    FirstName = "John",
-                    LastName = "Doe",
-                    Age = 38,
-                    Country = "USA"
-                }
-            ]);
-    }
+        this.faker = new Faker();
 
-    public string GenerateRandomString(int length = 5)
-    {
-        var chars = Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 8);
+        var basicEntities = Enumerable.Range(1, 20).Select(i => new StubEntity
+        {
+            Id = $"Id{i}",
+            FirstName = "John",
+            LastName = this.faker.Name.LastName(),
+            Country = "USA",
+            Age = this.faker.Random.Int(18, 80)
+        }).ToList();
 
-        return new string(chars.SelectMany(str => str)
-            .OrderBy(c => Guid.NewGuid())
-            .Take(length)
-            .ToArray());
+        var specialEntity = new StubEntity
+        {
+            Id = "Id99",
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 38,
+            Country = "USA"
+        };
+
+        this.entities = basicEntities.Concat([specialEntity]);
+        this.mapper = new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create());
     }
 
     [Fact]
-    public async Task DeleteEntity_Test()
+    public async Task DeleteAsync_ValidEntity_ShouldRemoveEntity()
     {
         // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
+            e => e.Identifier);
+        var entityToDelete = (await sut.FindAllAsync().AnyContext()).First();
+
+        // Act
+        await sut.DeleteAsync(entityToDelete).AnyContext();
+        var result = await sut.FindOneAsync(entityToDelete.Id).AnyContext();
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task DeleteByIdAsync_ValidId_ShouldRemoveEntity()
+    {
+        // Arrange
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
+            e => e.Identifier);
+        var idToDelete = this.entities.First().Id;
+
+        // Act
+        await sut.DeleteAsync(idToDelete).AnyContext();
+        var result = await sut.FindOneAsync(idToDelete).AnyContext();
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FindAllAsync_NoSpecification_ShouldReturnAllValidEntities()
+    {
+        // Arrange
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
             e => e.Identifier);
 
         // Act
-        var entity = (await sut.FindAllAsync()
-            .AnyContext()).FirstOrDefault();
-        await sut.DeleteAsync(entity)
-            .AnyContext();
-        entity = await sut.FindOneAsync(entity.Id)
-            .AnyContext();
+        var result = await sut.FindAllAsync().AnyContext();
 
         // Assert
-        Assert.Null(entity);
+        result.ShouldNotBeNull();
+        result.All(e => !e.Id.IsNullOrEmpty() &&
+                       !e.FirstName.IsNullOrEmpty() &&
+                       !e.LastName.IsNullOrEmpty())
+              .ShouldBeTrue();
+        result.ShouldContain(e => e.FirstName == "John" && e.LastName == "Doe");
     }
 
     [Fact]
-    public async Task DeleteEntityById_Test()
+    public async Task FindAllAsync_WithSpecificationBehavior_ShouldApplyDefaultSpecification()
     {
         // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
+        var repository = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
+            e => e.Identifier);
+        var sut = new RepositorySpecificationBehavior<StubEntity>(
+            new Specification<StubEntity>(t => t.Country == "USA"),
+            repository);
+
+        // Act
+        var result = await sut.FindAllAsync().AnyContext();
+
+        // Assert
+        result.ShouldNotBeEmpty();
+        result.Count().ShouldBe(21);
+        result.ShouldContain(e => e.Id == "Id99");
+    }
+
+    [Fact]
+    public async Task FindAllAsync_WithNameSpecification_ShouldReturnMatchingEntities()
+    {
+        // Arrange
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
             e => e.Identifier);
 
         // Act
-        var id = this.entities.First()
-            .Id;
-        await sut.DeleteAsync(id)
-            .AnyContext();
-        var entity = await sut.FindOneAsync(id)
-            .AnyContext();
+        var result = await sut.FindAllAsync(
+            new StubHasNameSpecification("John", "Doe"),
+            new FindOptions<StubEntity>(orderExpression: e => e.Country)
+        ).AnyContext();
 
         // Assert
-        Assert.Null(entity);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(1);
+        var firstEntity = result.FirstOrDefault();
+        firstEntity.ShouldNotBeNull();
+        firstEntity.Id.ShouldNotBeNullOrEmpty();
+        firstEntity.FirstName.ShouldBe("John");
+        firstEntity.LastName.ShouldBe("Doe");
     }
 
     [Fact]
-    public async Task FindAllEntities_Test()
+    public async Task FindOneAsync_ExistingId_ShouldReturnCorrectEntity()
     {
         // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
             e => e.Identifier);
 
         // Act
-        var result = await sut.FindAllAsync()
-            .AnyContext();
+        var result = await sut.FindOneAsync("Id99").AnyContext();
 
         // Assert
-        Assert.NotNull(result);
-        Assert.True(result.All(e =>
-            !e.Id.IsNullOrEmpty() && !e.FirstName.IsNullOrEmpty() && !e.LastName.IsNullOrEmpty()));
-        Assert.NotNull(result.FirstOrDefault(e => e.FirstName == "John" && e.LastName == "Doe"));
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe("Id99");
+        result.FirstName.ShouldBe("John");
+        result.LastName.ShouldBe("Doe");
     }
 
     [Fact]
-    public async Task FindAllTenantEntities_Test() // TODO: move to own test class + mocks
+    public async Task UpsertAsync_ExistingEntity_ShouldUpdateEntity()
     {
         // Arrange
-        var sut = new RepositorySpecificationBehavior<StubEntity>(new Specification<StubEntity>(t => t.Country == "USA"), // add a default specification
-            new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                    .Context(new InMemoryContext<StubEntity>(this.entities))
-                    .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-                e => e.Identifier));
-
-        // Act
-        var result = await sut.FindAllAsync()
-            .AnyContext();
-
-        // Assert
-        Assert.False(result.IsNullOrEmpty());
-        Assert.Equal(21, result.Count());
-        Assert.NotNull(result.FirstOrDefault(e => e.Id == "Id99"));
-    }
-
-    [Fact]
-    public async Task FindAllTenantEntities2_Test() // TODO: move to own test class + mocks
-    {
-        // Arrange
-        var sut = new RepositorySpecificationBehavior<StubEntity>(new Specification<StubEntity>(t => t.Country == "USA"), // add a default specification
-            new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                    .Context(new InMemoryContext<StubEntity>(this.entities))
-                    .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-                e => e.Identifier));
-
-        // Act
-        var result = await sut.FindAllAsync()
-            .AnyContext();
-
-        // Assert
-        Assert.False(result.IsNullOrEmpty());
-        Assert.Equal(21, result.Count());
-    }
-
-    [Fact]
-    public async Task FindMappedEntitiesWithSpecification_Test()
-    {
-        // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
+        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(
+            o => o.Context(new InMemoryContext<StubEntity>(this.entities))
+                 .Mapper(this.mapper),
             e => e.Identifier);
+        var updatedEntity = new StubEntity
+        {
+            Id = "Id1",
+            FirstName = this.faker.Name.FirstName(),
+            LastName = this.faker.Name.LastName()
+        };
 
         // Act
-        var result = await sut.FindAllAsync(new StubHasNameSpecification("John", "Doe"),
-                new FindOptions<StubEntity>(orderExpression: e => e.Country))
-            .AnyContext(); // domain layer
-        //var result = await sut.FindAllAsync(
-        //    new StubHasIdSpecification("Id99")).AnyContext(); // domain layer
+        var result = await sut.UpsertAsync(updatedEntity).AnyContext();
+        var findResult = await sut.FindOneAsync("Id1").AnyContext();
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Single(result);
-        Assert.NotNull(result.FirstOrDefault()
-            ?.Id);
-        Assert.NotNull(result.FirstOrDefault(e => !e.FirstName.IsNullOrEmpty() && !e.LastName.IsNullOrEmpty()));
+        result.action.ShouldBe(RepositoryActionResult.Updated);
+        result.entity.ShouldNotBeNull();
+        result.entity.Id.ShouldNotBeNullOrEmpty();
+        result.entity.Id.ShouldBe("Id1");
+        findResult.ShouldNotBeNull();
+        findResult.Id.ShouldBe(result.entity.Id);
+        findResult.FirstName.ShouldBe(updatedEntity.FirstName);
     }
 
-    [Fact]
-    public async Task FindMappedEntityOne_Test()
+    private class StubHasNameSpecification : Specification<StubEntity>
     {
-        // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-            e => e.Identifier);
+        private readonly string firstName;
+        private readonly string lastName;
 
-        // Act
-        var result = await sut.FindOneAsync("Id99")
-            .AnyContext();
+        public StubHasNameSpecification(string firstName, string lastName)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.True(!result.Id.IsNullOrEmpty() &&
-            !result.FirstName.IsNullOrEmpty() &&
-            !result.LastName.IsNullOrEmpty());
-        Assert.True(result.Id == "Id99" && result.FirstName == "John" && result.LastName == "Doe");
-    }
-
-    [Fact]
-    public async Task FindOneEntity_Test()
-    {
-        // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-            e => e.Identifier);
-
-        // Act
-        var result = await sut.FindOneAsync("Id99")
-            .AnyContext();
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.True(result.Id == "Id99");
-    }
-
-    [Fact]
-    public async Task FindOneTenantEntity_Test()
-    {
-        // Arrange
-        var sut = new RepositorySpecificationBehavior<StubEntity>(new Specification<StubEntity>(t => t.Country == "USA"), // add a default specification
-            new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                    .Context(new InMemoryContext<StubEntity>(this.entities))
-                    .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-                e => e.Identifier));
-
-        // Act
-        var result = await sut.FindOneAsync("Id99")
-            .AnyContext();
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.True(result.Id == "Id99");
-    }
-
-    [Fact]
-    public async Task UpsertExistingEntityWithId_EntityIsUpdated()
-    {
-        // Arrange
-        var sut = new InMemoryRepository<StubEntity, StubDbEntity>(o => o
-                .Context(new InMemoryContext<StubEntity>(this.entities))
-                .Mapper(new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create())),
-            e => e.Identifier);
-
-        // Act
-        var result = await sut.UpsertAsync(new StubEntity { Id = "Id1", FirstName = "FirstName77", LastName = "LastName77" })
-            .AnyContext();
-
-        var findResult = await sut.FindOneAsync("Id1")
-            .AnyContext();
-
-        // Assert
-        Assert.Equal(RepositoryActionResult.Updated, result.action);
-        Assert.NotNull(result.entity);
-        Assert.False(result.entity.Id.IsNullOrEmpty());
-        Assert.False(result.entity.Id == default);
-        Assert.Equal("Id1", result.entity.Id);
-        Assert.NotNull(findResult);
-        Assert.Equal(findResult.Id, result.entity.Id);
-        Assert.Equal("FirstName77", findResult.FirstName);
+        public override Expression<Func<StubEntity, bool>> ToExpression()
+        {
+            return e => e.FirstName == this.firstName && e.LastName == this.lastName;
+        }
     }
 }

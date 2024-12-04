@@ -28,6 +28,15 @@ public class StubEntity : AggregateRoot<string>
     public int Age { get; set; }
 }
 
+public class VersionedStubEntity : AggregateRoot<string>, IConcurrency
+{
+    public string Country { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public int Age { get; set; }
+    public Guid ConcurrencyVersion { get; set; }
+}
+
 public class StubDbEntity
 {
     public string Nation { get; set; }

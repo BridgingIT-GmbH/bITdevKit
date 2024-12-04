@@ -395,7 +395,7 @@ public readonly partial struct Result : IResult
     /// </example>
     public Result WithErrors(IEnumerable<IResultError> errors)
     {
-        if (errors is null || !errors.Any())
+        if (errors?.Any() != true)
         {
             return this;
         }

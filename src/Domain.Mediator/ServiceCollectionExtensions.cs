@@ -13,8 +13,6 @@ using MediatR.Registration;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    private static readonly string[] sourceArray = ["Microsoft*", "System*", "Scrutor*", "HealthChecks*"];
-
     /// <summary>
     ///     Adds domain event handlers from application dependencies to the service collection.
     /// </summary>
@@ -34,7 +32,7 @@ public static class ServiceCollectionExtensions
         {
             services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(sourceArray.Add(assemblyExcludePatterns)))
+                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&

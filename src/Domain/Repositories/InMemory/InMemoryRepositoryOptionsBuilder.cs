@@ -36,4 +36,18 @@ public class InMemoryRepositoryOptionsBuilder<TEntity>
 
         return this;
     }
+
+    public InMemoryRepositoryOptionsBuilder<TEntity> EnableOptimisticConcurrency(bool value = true)
+    {
+        this.Target.EnableOptimisticConcurrency = value;
+
+        return this;
+    }
+
+    public InMemoryRepositoryOptionsBuilder<TEntity> VersionGenerator(Func<Guid> generator)
+    {
+        this.Target.VersionGenerator = generator;
+
+        return this;
+    }
 }

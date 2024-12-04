@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Events;
 
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Domain")]
 public class DomainEventHandlerTests : TestsBase

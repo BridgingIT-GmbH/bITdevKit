@@ -37,10 +37,8 @@ public class User : IEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult()
-            .Results.Single();
-        var generatedCode = result.GeneratedSources.Single()
-            .SourceText.ToString();
+        var result = driver.GetRunResult().Results.Single();
+        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
         Assert.NotEmpty(result.GeneratedSources);
 
         Assert.Contains("public partial class UserId : EntityId<Guid>", generatedCode);
@@ -78,10 +76,8 @@ public class Order : IEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult()
-            .Results.Single();
-        var generatedCode = result.GeneratedSources.Single()
-            .SourceText.ToString();
+        var result = driver.GetRunResult().Results.Single();
+        var generatedCode = result.GeneratedSources.Single()            .SourceText.ToString();
 
         Assert.NotEmpty(result.GeneratedSources);
         Assert.Contains("public partial class OrderId : EntityId<Int32>", generatedCode);
@@ -148,10 +144,8 @@ public class Product : BaseEntity
         driver = driver.RunGenerators(compilation);
 
         // Assert
-        var result = driver.GetRunResult()
-            .Results.Single();
-        var generatedCode = result.GeneratedSources.Single()
-            .SourceText.ToString();
+        var result = driver.GetRunResult().Results.Single();
+        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
 
         Assert.Contains("public partial class ProductId : EntityId<Guid>", generatedCode);
         Assert.Contains("public static ProductId Create()", generatedCode);

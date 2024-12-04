@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.IntegrationT
 using DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Domain;
 using Domain.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Infrastructure")]

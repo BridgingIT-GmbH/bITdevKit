@@ -21,7 +21,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.ExpressionMapping"/>
     <PackageReference Include="Bogus"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk"/>
     <PackageReference Include="NSubstitute"/>

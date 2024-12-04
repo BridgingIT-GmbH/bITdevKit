@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
     <Using Include="Bogus"/>
     <Using Include="BridgingIT.DevKit.Common"/>
     <Using Include="FluentAssertions"/>

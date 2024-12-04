@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.IntegrationTests.Messaging;
 
 using Application.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture

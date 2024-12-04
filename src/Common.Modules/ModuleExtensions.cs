@@ -219,9 +219,7 @@ public static class ModuleExtensions
 
         if (modules is null)
         {
-            Log.Logger.Information("{LogKey} module discovery (type={ModuleType}) ",
-                ModuleConstants.LogKey,
-                typeof(IModule).Name);
+            Log.Logger.Information("{LogKey} module discovery (type={ModuleType}) ", ModuleConstants.LogKey, typeof(IModule).Name);
             logResult = true;
         }
 
@@ -231,21 +229,17 @@ public static class ModuleExtensions
         }
 
         modules ??= ReflectionHelper
-            .FindTypes(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract,
-                assemblies?.Distinct()?.ToArray())
+            .FindTypes(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract, assemblies?.Distinct()?.ToArray())
             ?.Select(t => Factory.Create(t))
             ?.Cast<IModule>()
-            ?.OrderBy(m => m.Priority)
-            .ThenBy(m => m.Name)
+            ?.OrderBy(m => m.Priority).ThenBy(m => m.Name)
             ?.ToList();
 
         if (logResult)
         {
             foreach (var module in modules.SafeNull())
             {
-                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ",
-                    ModuleConstants.LogKey,
-                    module.Name);
+                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ", ModuleConstants.LogKey, module.Name);
             }
         }
 

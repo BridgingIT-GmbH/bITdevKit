@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 using Common;
 using Cosmos.Repositories;
 using Humanizer;
@@ -16,6 +19,10 @@ using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Provides methods to perform CRUD operations on Cosmos DB using SQL-like queries.
+/// </summary>
+/// <typeparam name="TItem">The type of item stored in the Cosmos DB container.</typeparam>
 public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     where TItem : class
 //where T : IHaveDiscriminator // needed? each type T is persisted in own collection
@@ -32,14 +39,10 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNull(options.Client, nameof(options.Client));
         EnsureArg.IsNotNullOrEmpty(options.PartitionKey, nameof(options.PartitionKey));
-        EnsureArg.IsTrue(
-            typeof(TItem).GetProperties().Any(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)),
-            nameof(TItem),
-            o => o.WithMessage($"Item type {typeof(TItem).Name} has to have a mandatory 'Id' property"));
+        EnsureArg.IsTrue(typeof(TItem).GetProperties().Any(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)), nameof(TItem), o => o.WithMessage($"Item type {typeof(TItem).Name} has to have a mandatory 'Id' property"));
 
         this.options = options;
-        this.logger = this.options.LoggerFactory?.CreateLogger<CosmosSqlProvider<TItem>>() ??
-            NullLoggerFactory.Instance.CreateLogger<CosmosSqlProvider<TItem>>();
+        this.logger = this.options.LoggerFactory?.CreateLogger<CosmosSqlProvider<TItem>>() ?? NullLoggerFactory.Instance.CreateLogger<CosmosSqlProvider<TItem>>();
         this.idProperty = typeof(TItem).GetProperty("Id") ?? typeof(TItem).GetProperty("id");
     }
 
@@ -47,7 +50,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         Builder<CosmosSqlProviderOptionsBuilder<TItem>, CosmosSqlProviderOptions<TItem>> optionsBuilder)
         : this(optionsBuilder(new CosmosSqlProviderOptionsBuilder<TItem>()).Build()) { }
 
-    public async Task<TItem> ReadItemAsync(
+    public virtual async Task<TItem> ReadItemAsync(
         string id,
         object partitionKeyValue = null,
         CancellationToken cancellationToken = default)
@@ -59,56 +62,144 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
-        var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue, id);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, id);
 
-        if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
+        try
         {
-            var iterator = this.container.GetItemQueryIterator<TItem>(
-                new QueryDefinition($"select * from {this.containerName} c where c.id = @id").WithParameter("@id", id),
-                requestOptions: requestOptions);
-
-            while (iterator.HasMoreResults)
+            if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
             {
-                var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
-                this.LogRequestCharge(response.RequestCharge, response.ActivityId);
+                var iterator = this.container.GetItemQueryIterator<TItem>(
+                    new QueryDefinition($"select * from {this.containerName} c where c.id = @id").WithParameter("@id", id),
+                    requestOptions: requestOptions);
 
-                foreach (var result in response.Resource)
+                while (iterator.HasMoreResults)
                 {
-                    this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                        "IFR",
-                        watch.GetElapsedMilliseconds());
+                    var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
+                    this.LogRequestCharge(response.RequestCharge, response.ActivityId);
 
-                    return result;
+                    var result = response.Resource.FirstOrDefault();
+                    if (result is not null)
+                    {
+                        if (result is IConcurrency concurrencyItem && response.ETag is not null)
+                        {
+                            var etag = response.ETag.Trim('"');
+                            if (Guid.TryParse(etag, out var version))
+                            {
+                                concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
+                            }
+                        }
+
+                        this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+
+                        return result;
+                    }
                 }
             }
-        }
-        else
-        {
-            try
+            else
             {
-                var response = await this.container.ReadItemAsync<TItem>(id,
-                        requestOptions.PartitionKey.Value,
-                        cancellationToken: cancellationToken)
-                    .AnyContext();
+                var response = await this.container.ReadItemAsync<TItem>(id, requestOptions.PartitionKey.Value, cancellationToken: cancellationToken).AnyContext();
+
                 this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-                this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                    "IFR",
-                    watch.GetElapsedMilliseconds());
+
+                if (response.Resource is IConcurrency concurrencyItem && response.ETag is not null)
+                {
+                    var etag = response.ETag.Trim('"');
+                    if (Guid.TryParse(etag, out var version))
+                    {
+                        concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
+                    }
+                }
+
+                this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
                 return response.Resource;
             }
-            catch (CosmosException ex)
-            {
-                if (ex.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return default;
-                }
-
-                throw;
-            }
+        }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return default;
         }
 
         return default;
+    }
+
+    public virtual async Task<IEnumerable<TItem>> ReadItemsAsync(
+    IEnumerable<Expression<Func<TItem, bool>>> expressions = null,
+    int? skip = null,
+    int? take = null,
+    Expression<Func<TItem, object>> orderExpression = null,
+    bool orderDescending = false,
+    object partitionKeyValue = null,
+    CancellationToken cancellationToken = default)
+{
+    await this.InitializeAsync(this.options);
+    var watch = ValueStopwatch.StartNew();
+    var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue);
+
+    double requestCharge = 0;
+    var result = new List<TItem>();
+
+    var iterator = this.container.GetItemLinqQueryable<TItem>(
+            requestOptions: requestOptions,
+            linqSerializerOptions: new CosmosLinqSerializerOptions
+            {
+                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+            })
+        .WhereIf(expressions)
+        .OrderByIf(orderExpression, orderDescending)
+        .SkipIf(skip)
+        .TakeIf(take)
+        .ToFeedIterator();
+
+    while (iterator.HasMoreResults)
+    {
+        var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
+        requestCharge += response.RequestCharge;
+
+        // Get ETags from response headers
+        var responseDiagnostics = response.Diagnostics.ToString();
+        var etagsMatch = Regex.Matches(responseDiagnostics, "\"etag\":\"([^\"]*)\"");
+        var etags = etagsMatch.Select(m => m.Groups[1].Value).ToList();
+
+        var items = response.Resource.ToList();
+
+        for (var i = 0; i < items.Count; i++) // Match ETags with items based on position
+        {
+            var item = items[i];
+            if (item is IConcurrency concurrencyItem && i < etags.Count)
+            {
+                if (Guid.TryParse(etags[i].Trim('"'), out var version))
+                {
+                    concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
+                }
+            }
+            result.Add(item);
+        }
+    }
+
+    this.LogRequestCharge(requestCharge);
+    this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+
+    return result;
+}
+
+    public virtual async Task<IEnumerable<TItem>> ReadItemsAsync(
+        Expression<Func<TItem, bool>> expression,
+        int? skip = null,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.ReadItemsAsync(
+            expression != null ? new[] { expression } : null,
+            skip,
+            take,
+            orderExpression,
+            orderDescending,
+            partitionKeyValue,
+            cancellationToken).AnyContext();
     }
 
     public async Task<TItem> CreateItemAsync(
@@ -117,36 +208,35 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(item, nameof(item));
-        EnsureArg.IsTrue(this.ValidateItemId(item),
-            this.idProperty.Name,
-            o => o.WithMessage($"Item property '{this.idProperty.Name}' has to have a mandatory value."));
+        EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Item property '{this.idProperty.Name}' has to have a mandatory value."));
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
-        var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue, item);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
+
+        if (item is IConcurrency concurrencyItem)
+        {
+            concurrencyItem.ConcurrencyVersion = this.options.VersionGenerator();
+        }
 
         if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
         {
             // Partition key value will be populated by extracting from {T}
-            var response = await this.container.CreateItemAsync(item, cancellationToken: cancellationToken)
-                .AnyContext();
+            var response = await this.container.CreateItemAsync(item, cancellationToken: cancellationToken).AnyContext();
+            this.UpdateItemVersion(item, response);
+
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
         else
         {
-            var response = await this.container.CreateItemAsync(item,
-                    requestOptions.PartitionKey.Value,
-                    cancellationToken: cancellationToken)
-                .AnyContext();
+            var response = await this.container.CreateItemAsync(item, requestOptions.PartitionKey.Value, cancellationToken: cancellationToken).AnyContext();
+            this.UpdateItemVersion(item, response);
+
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -158,123 +248,51 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(item, nameof(item));
-        EnsureArg.IsTrue(this.ValidateItemId(item),
-            this.idProperty.Name,
-            o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
+        EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
-        var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue, item);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
 
-        if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
+        try
         {
-            var response = await this.container.UpsertItemAsync(item, cancellationToken: cancellationToken)
-                .AnyContext();
+            var concurrencyOptions = this.CreateConcurrencyRequestOptions(item);
+            // var expectedVersion = item is IConcurrency c ? c.Version : Guid.Empty;
+
+            if (item is IConcurrency concurrencyItem && concurrencyItem.ConcurrencyVersion == Guid.Empty)
+            {
+                concurrencyItem.ConcurrencyVersion = this.options.VersionGenerator(); // new item: generate initial version
+            }
+
+            ItemResponse<TItem> response;
+            if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
+            {
+                response = await this.container.UpsertItemAsync(item, requestOptions: concurrencyOptions, cancellationToken: cancellationToken).AnyContext();
+            }
+            else
+            {
+                response = await this.container.UpsertItemAsync(item, requestOptions.PartitionKey.Value, concurrencyOptions, cancellationToken).AnyContext();
+            }
+
+            this.UpdateItemVersion(item, response);
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+
+            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
-        else
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed) // 412
         {
-            var response = await this.container.UpsertItemAsync(item,
-                    requestOptions.PartitionKey.Value,
-                    cancellationToken: cancellationToken)
-                .AnyContext();
-            this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+            var expectedVersion = item is IConcurrency c ? c.ConcurrencyVersion : Guid.Empty;
+            this.HandleConcurrencyConflict(ex, item, expectedVersion);
 
-            return response.Resource;
+            throw;
         }
     }
 
-    public async Task<IEnumerable<TItem>> ReadItemsAsync(
-        Expression<Func<TItem, bool>> expression,
-        int? skip = null,
-        int? take = null,
-        Expression<Func<TItem, object>> orderExpression = null,
-        bool orderDescending = false,
-        object partitionKeyValue = null,
-        CancellationToken cancellationToken = default)
-    {
-        await this.InitializeAsync(this.options);
-        var watch = ValueStopwatch.StartNew();
-        var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue);
-
-        double requestCharge = 0;
-        var result = new List<TItem>();
-        var iterator = this.container.GetItemLinqQueryable<TItem>(requestOptions: requestOptions,
-                linqSerializerOptions: new CosmosLinqSerializerOptions
-                {
-                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                })
-            .WhereIf(expression)
-            .OrderByIf(orderExpression, orderDescending)
-            .SkipIf(skip)
-            .TakeIf(take)
-            .ToFeedIterator(); // https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.getitemlinqqueryable?view=azure-dotnet
-
-        while (iterator.HasMoreResults)
-        {
-            var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
-            requestCharge += response.RequestCharge;
-            result.AddRange(response.Resource);
-        }
-
-        this.LogRequestCharge(requestCharge);
-        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms",
-            "IFR",
-            watch.GetElapsedMilliseconds());
-
-        return result; // TODO: replace with IAsyncEnumerable (netstandard 2.1)
-    }
-
-    public async Task<IEnumerable<TItem>> ReadItemsAsync(
-        IEnumerable<Expression<Func<TItem, bool>>> expressions = null,
-        int? skip = null,
-        int? take = null,
-        Expression<Func<TItem, object>> orderExpression = null,
-        bool orderDescending = false,
-        object partitionKeyValue = null,
-        CancellationToken cancellationToken = default)
-    {
-        await this.InitializeAsync(this.options);
-        var watch = ValueStopwatch.StartNew();
-        var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue);
-
-        double requestCharge = 0;
-        var result = new List<TItem>();
-        var iterator = this.container.GetItemLinqQueryable<TItem>(requestOptions: requestOptions,
-                linqSerializerOptions: new CosmosLinqSerializerOptions
-                {
-                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                })
-            .WhereIf(expressions)
-            .OrderByIf(orderExpression, orderDescending)
-            .SkipIf(skip)
-            .TakeIf(take)
-            .ToFeedIterator(); // https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.container.getitemlinqqueryable?view=azure-dotnet
-
-        while (iterator.HasMoreResults)
-        {
-            var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
-            requestCharge += response.RequestCharge;
-            result.AddRange(response.Resource);
-        }
-
-        this.LogRequestCharge(requestCharge);
-        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms",
-            "IFR",
-            watch.GetElapsedMilliseconds());
-
-        return result; // TODO: replace with IAsyncEnumerable (netstandard 2.1)
-    }
-
-    public async Task<bool> DeleteItemAsync(
+    /// <summary>
+    /// Asynchronously deletes an item identified by
+    public virtual async Task<bool> DeleteItemAsync(
         string id,
         object partitionKeyValue = null,
         CancellationToken cancellationToken = default)
@@ -286,7 +304,8 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         await this.InitializeAsync(this.options);
         var watch = ValueStopwatch.StartNew();
-        var item = await this.ReadItemAsync(id, partitionKeyValue, cancellationToken).AnyContext();
+
+        var item = await this.ReadItemAsync(id, partitionKeyValue, cancellationToken).AnyContext(); // Read current item to get its version
         if (item is null)
         {
             return false;
@@ -294,26 +313,26 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         try
         {
-            var requestOptions = this.EnsureQueryRequestOptions(partitionKeyValue, item);
-            var response = await this.container.DeleteItemAsync<TItem>(id,
-                    requestOptions.PartitionKey.Value,
-                    cancellationToken: cancellationToken)
-                .AnyContext();
+            var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
+            var concurrencyOptions = this.CreateConcurrencyRequestOptions(item);
+
+            var response = await this.container.DeleteItemAsync<TItem>(id, requestOptions.PartitionKey.Value, concurrencyOptions, cancellationToken).AnyContext();
+
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.StatusCode == HttpStatusCode.NoContent;
         }
-        catch (CosmosException ex)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
         {
-            if (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
+            var expectedVersion = item is IConcurrency c ? c.ConcurrencyVersion : Guid.Empty;
+            this.HandleConcurrencyConflict(ex, item, expectedVersion);
 
-            throw;
+            return false; // Only reached if ThrowOnConcurrencyConflict is false
+        }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
         }
     }
 
@@ -322,7 +341,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         //this.client?.Dispose(); don't dispose instances which were injected (ctor)
     }
 
-    private QueryRequestOptions EnsureQueryRequestOptions(object partitionKeyValue, string id = null)
+    private QueryRequestOptions CreateQueryRequestOptions(object partitionKeyValue, string id = null)
     {
         var requestOptions = new QueryRequestOptions();
         if (partitionKeyValue is not null)
@@ -342,13 +361,13 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             this.options.PartitionKey.SafeEquals(CosmosSqlProviderOptions<TItem>.DefaultPartitionKey) &&
             !id.IsNullOrEmpty())
         {
-            return this.EnsureQueryRequestOptions(id);
+            return this.CreateQueryRequestOptions(id);
         }
 
         return requestOptions;
     }
 
-    private QueryRequestOptions EnsureQueryRequestOptions(object partitionKeyValue, TItem item)
+    private QueryRequestOptions CreateQueryRequestOptions(object partitionKeyValue, TItem item)
     {
         var requestOptions = new QueryRequestOptions();
 
@@ -360,8 +379,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 bool b => new PartitionKey(b),
                 double d => new PartitionKey(d),
                 Guid g => new PartitionKey(g.ToString()),
-                _ => throw new ArgumentException("Unsupported partition key value type (string, bool, double, guid)",
-                    nameof(partitionKeyValue))
+                _ => throw new ArgumentException("Unsupported partition key value type (string, bool, double, guid)", nameof(partitionKeyValue))
             };
         }
 
@@ -369,22 +387,22 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         {
             if (this.options.PartitionKeyStringExpression is not null)
             {
-                return this.EnsureQueryRequestOptions(this.options.PartitionKeyStringExpression.Invoke(item));
+                return this.CreateQueryRequestOptions(this.options.PartitionKeyStringExpression.Invoke(item));
             }
 
             if (this.options.PartitionKeyBoolExpression is not null)
             {
-                return this.EnsureQueryRequestOptions(this.options.PartitionKeyBoolExpression.Invoke(item));
+                return this.CreateQueryRequestOptions(this.options.PartitionKeyBoolExpression.Invoke(item));
             }
 
             if (this.options.PartitionKeyDoubleExpression is not null)
             {
-                return this.EnsureQueryRequestOptions(this.options.PartitionKeyDoubleExpression.Invoke(item));
+                return this.CreateQueryRequestOptions(this.options.PartitionKeyDoubleExpression.Invoke(item));
             }
 
             if (this.options.PartitionKeyGuidExpression is not null)
             {
-                return this.EnsureQueryRequestOptions(this.options.PartitionKeyGuidExpression.Invoke(item));
+                return this.CreateQueryRequestOptions(this.options.PartitionKeyGuidExpression.Invoke(item));
             }
         }
 
@@ -408,9 +426,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 throughputProperties = ThroughputProperties.CreateManualThroughput(options.DatabaseThroughPut);
             }
 
-            var databaseResponse =
-                await options.Client.CreateDatabaseIfNotExistsAsync(options.Database.EmptyToNull() ?? "master",
-                    throughputProperties);
+            var databaseResponse = await options.Client.CreateDatabaseIfNotExistsAsync(options.Database.EmptyToNull() ?? "master", throughputProperties);
             this.database = databaseResponse.Database;
 
             // replace the throughput on an already existing database, if the value has been configured differently
@@ -422,20 +438,18 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             }
 
             await this.InitializeContainerAsync(options);
-            this.logger.LogDebug("{LogKey} InitializeAsync finished -> took {TimeElapsed:0.0000} ms",
-                "IFR",
-                watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("{LogKey} InitializeAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
         }
     }
 
+    /// <summary>
+    /// Initializes
     private async Task InitializeContainerAsync(CosmosSqlProviderOptions<TItem> options)
     {
         this.containerName = options.Container.EmptyToNull() ?? typeof(TItem).Name.Pluralize();
         if (!options.ContainerPrefix.IsNullOrEmpty())
         {
-            this.containerName =
-                $"{this.options.ContainerPrefix}{this.options.ContainerPrefixSeperator}{this.containerName}"
-                    .ToLowerInvariant();
+            this.containerName = $"{this.options.ContainerPrefix}{this.options.ContainerPrefixSeperator}{this.containerName}".ToLowerInvariant();
         }
         else
         {
@@ -471,6 +485,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
     }
 
+    /// <summary>
+    /// Validates the ID property of an item, ensuring it has a mandatory value.
+    /// </
     private bool ValidateItemId(TItem item) // cosmos v3 needs an id for inserts/updates
     {
         if (this.idProperty?.PropertyType == typeof(string) &&
@@ -492,10 +509,70 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     {
         if (this.options.LogRequestCharges)
         {
-            this.logger?.LogTrace(
-                $"cosmos request charge: {requestCharge} (instance={this.database.Id}.{this.container.Id}, activityId={activityId})");
+            this.logger?.LogTrace($"cosmos request charge: {requestCharge} (instance={this.database.Id}.{this.container.Id}, activityId={activityId})");
         }
     }
+
+    private void UpdateItemVersion(TItem item, ItemResponse<TItem> response)
+    {
+        if (item is IConcurrency concurrencyItem)
+        {
+            var etag = response.ETag.Trim('"'); // Extract version from ETag
+
+            if (Guid.TryParse(etag, out var version))
+            {
+                concurrencyItem.ConcurrencyVersion = version;
+            }
+        }
+    }
+
+    private ItemRequestOptions CreateConcurrencyRequestOptions(TItem item)
+    {
+        if (!this.options.EnableOptimisticConcurrency)
+        {
+            return null;
+        }
+
+        if (item is IConcurrency concurrencyItem)
+        {
+            // https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/database-transactions-optimistic-concurrency#implementing-optimistic-concurrency-control-using-etag-and-http-headers
+            return new ItemRequestOptions
+            {
+                IfMatchEtag = $"\"{concurrencyItem.ConcurrencyVersion}\"" // Cosmos requires quotes around ETag
+            };
+        }
+
+        return null;
+    }
+
+    private void HandleConcurrencyConflict(CosmosException ex, TItem item, Guid expectedVersion)
+    {
+        var message =
+            $"Concurrency conflict detected for item {this.idProperty.GetValue(item)} of type {typeof(TItem).Name}. Expected version: {expectedVersion}, Current version: {(item is IConcurrency concurrencyItem ? concurrencyItem.ConcurrencyVersion : Guid.Empty)}";
+
+        if (!this.options.ThrowOnConcurrencyConflict)
+        {
+            this.logger.LogWarning(message);
+            return;
+        }
+
+        throw new ConcurrencyException(message, ex)
+        {
+            EntityId = this.idProperty.GetValue(item)?.ToString(),
+            ExpectedVersion = expectedVersion,
+            ActualVersion = item is IConcurrency c ? c.ConcurrencyVersion : Guid.Empty,
+        };
+    }
+
+    // private void LogVersionChange(string operation, object itemId, Guid? oldVersion, Guid newVersion)
+    // {
+    //     this.logger.LogDebug("{LogKey} Version change in {Operation}: Item {ItemId} version changed from {OldVersion} to {NewVersion}",
+    //         "IFR",
+    //         operation,
+    //         itemId,
+    //         oldVersion?.ToString() ?? "null",
+    //         newVersion);
+    // }
 
     //private void LogRequestCharge(IEnumerable<double> requestCharges, IEnumerable<string> activityIds)
     //{

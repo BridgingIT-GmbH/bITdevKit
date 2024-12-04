@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Commands;
 
 using Application.Commands;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Application")]
 //[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture

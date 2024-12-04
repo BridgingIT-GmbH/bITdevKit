@@ -9,7 +9,7 @@ using Domain.Repositories;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(TestEnvironmentCollection4))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGenericRepositoryTestsBase
 {
     private readonly TestEnvironmentFixture fixture;
@@ -257,6 +257,6 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)
     {
-        return this.fixture.EnsureCosmosDbContext(this.output);
+        return this.fixture.EnsureCosmosDbContext(this.output, null, true);
     }
 }

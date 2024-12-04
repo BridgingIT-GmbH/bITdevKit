@@ -12,7 +12,7 @@
     <Using Include="BridgingIT.DevKit.Common"/>
     <Using Include="Bogus"/>
     <Using Include="Bogus.DataSets"/>
-    <Using Include="Microsoft.Extensions.DependencyInjection"/>
+    <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
     <Using Include="NSubstitute"/>
     <Using Include="Shouldly"/>
     <Using Include="Xunit"/>

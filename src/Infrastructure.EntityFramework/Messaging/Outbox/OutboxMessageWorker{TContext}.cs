@@ -41,8 +41,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
     {
         // TODO: use a lock here, because ProcessAsync can also be triggered through the OutboxMessageQueue, not just the backgroundservice with it's timer
         using var scope = this.serviceProvider.CreateScope();
-        var context =
-            scope.ServiceProvider.GetRequiredService<TContext>(); // TODO: use using here? for correct disposal?
+        var context = scope.ServiceProvider.GetRequiredService<TContext>(); // TODO: use using here? for correct disposal?
         var count = 0;
         TypedLogger.LogProcessing(this.logger, "MSG", this.contextTypeName, messageId);
 #if DEBUG
@@ -50,8 +49,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 #endif
 
         await (await context.OutboxMessages.Where(e => e.ProcessedDate == null)
-                .WhereExpressionIf(e => e.MessageId == messageId,
-                    !string.IsNullOrEmpty(messageId)) // OutboxDomainEventProcessMode.Immediate
+                .WhereExpressionIf(e => e.MessageId == messageId, !string.IsNullOrEmpty(messageId)) // OutboxDomainEventProcessMode.Immediate
                 .OrderBy(e => e.CreatedDate)
                 .Take(this.options.ProcessingCount)
                 .ToListAsync(cancellationToken)).SafeNull()
@@ -76,8 +74,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         {
             if (processedOnly)
             {
-                await context.OutboxMessages
-                    .Where(e => e.ProcessedDate != null)
+                await context.OutboxMessages.Where(e => e.ProcessedDate != null)
                     .ExecuteDeleteAsync(cancellationToken);
             }
             else
@@ -97,19 +94,10 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         TContext context,
         CancellationToken cancellationToken)
     {
-        var attempts = (outboxMessage.Properties?.GetValue(OutboxMessagePropertyConstants.ProcessAttemptsKey)
-                ?.ToString()
-                .To<int>() ??
-            0) +
-            1;
+        var attempts = (outboxMessage.Properties?.GetValue(OutboxMessagePropertyConstants.ProcessAttemptsKey)?.ToString().To<int>() ?? 0) + 1;
         if (attempts > this.options.RetryCount)
         {
-            this.logger.LogWarning(
-                "{LogKey} outbox message processing skipped: max attempts reached (messageId={MessageId}, messageType={MessageType}, attempts={MessageAttempts})",
-                Constants.LogKey,
-                outboxMessage.MessageId,
-                outboxMessage.Type.Split(',')[0],
-                attempts - 1);
+            this.logger.LogWarning("{LogKey} outbox message processing skipped: max attempts reached (messageId={MessageId}, messageType={MessageType}, attempts={MessageAttempts})", Constants.LogKey, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], attempts - 1);
 
             try
             {
@@ -118,20 +106,13 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                     ?.ToString();
                 outboxMessage.ProcessedDate ??= DateTime.UtcNow; // all attempts used, don't process again
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Failure");
-                outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey,
-                    $"max attempts reached (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]}, attempts={attempts - 1}) {existingMessage}");
+                outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, $"max attempts reached (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]}, attempts={attempts - 1}) {existingMessage}");
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessAttemptsKey, attempts - 1);
-                await context.SaveChangesAsync(cancellationToken)
-                    .AnyContext(); // only save changes in this scoped context
+                await context.SaveChangesAsync(cancellationToken).AnyContext(); // only save changes in this scoped context
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex,
-                    "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType})",
-                    Constants.LogKey,
-                    ex.Message,
-                    outboxMessage.MessageId,
-                    outboxMessage.Type.Split(',')[0]);
+                this.logger.LogError(ex, "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType})", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0]);
             }
 
             return;
@@ -156,8 +137,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                 {
                     outboxMessage.ProcessedDate ??= DateTime.UtcNow; // unrecoverable error, don't process again
                     outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Failure");
-                    outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey,
-                        $"event type could not be resolved (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]})");
+                    outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, $"event type could not be resolved (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]})");
                     outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessAttemptsKey, attempts);
                     await context.SaveChangesAsync(cancellationToken)
                         .AnyContext(); // only save changes in this scoped context
@@ -180,8 +160,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                 // dehydrate the correlationid/flowid/activity properties
                 var correlationId = message.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
                 var flowId = message.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
-                message.Properties.AddOrUpdate(outboxMessage
-                    .Properties); // propagate outbox message properties to message
+                message.Properties.AddOrUpdate(outboxMessage.Properties); // propagate outbox message properties to message
 
                 using (this.logger.BeginScope(new Dictionary<string, object>
                        {
@@ -197,11 +176,9 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
                     outboxMessage.ProcessedDate ??= DateTime.UtcNow;
                     outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Success");
-                    outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey,
-                        string.Empty);
+                    outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, string.Empty);
                     outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessAttemptsKey, attempts);
-                    await context.SaveChangesAsync<OutboxMessage>(cancellationToken)
-                        .AnyContext(); // only save changes in this scoped context
+                    await context.SaveChangesAsync<OutboxMessage>(cancellationToken).AnyContext(); // only save changes in this scoped context
                 }
             }
         }
@@ -218,21 +195,13 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
             {
                 //outboxMessage.ProcessedDate ??= DateTime.UtcNow; // unrecoverable error, don't process again
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Failure");
-                outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey,
-                    $"[{ex.GetType().Name}] {ex.Message}");
+                outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, $"[{ex.GetType().Name}] {ex.Message}");
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessAttemptsKey, attempts);
-                await context.SaveChangesAsync(cancellationToken)
-                    .AnyContext(); // only save changes in this scoped context
+                await context.SaveChangesAsync(cancellationToken).AnyContext(); // only save changes in this scoped context
             }
             catch (Exception saveEx)
             {
-                this.logger.LogError(ex,
-                    "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType}) {ErrorMessage}",
-                    Constants.LogKey,
-                    ex.Message,
-                    outboxMessage.MessageId,
-                    outboxMessage.Type.Split(',')[0],
-                    saveEx.Message);
+                this.logger.LogError(ex, "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType}) {ErrorMessage}", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], saveEx.Message);
             }
         }
     }
@@ -244,25 +213,13 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
             "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string messageId);
 
-        [LoggerMessage(1,
-            LogLevel.Information,
-            "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
-        public static partial void LogProcessed(
-            ILogger logger,
-            string logKey,
-            string dbContextType,
-            int outboxMessageProcessedCount);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxMessageProcessedCount);
 
         [LoggerMessage(2, LogLevel.Information, "{LogKey} outbox messages purging (context={DbContextType})")]
         public static partial void LogPurging(ILogger logger, string logKey, string dbContextType);
 
-        [LoggerMessage(3,
-            LogLevel.Error,
-            "{LogKey} outbox message type could not be resolved (eventId={MessageId}, eventType={MessageType})")]
-        public static partial void LogMessageTypeNotResolved(
-            ILogger logger,
-            string logKey,
-            string messageId,
-            string messageType);
+        [LoggerMessage(3, LogLevel.Error, "{LogKey} outbox message type could not be resolved (eventId={MessageId}, eventType={MessageType})")]
+        public static partial void LogMessageTypeNotResolved(ILogger logger, string logKey, string messageId, string messageType);
     }
 }

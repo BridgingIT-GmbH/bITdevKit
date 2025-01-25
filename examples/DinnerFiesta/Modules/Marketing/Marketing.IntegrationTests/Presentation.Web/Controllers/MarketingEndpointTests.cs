@@ -22,8 +22,7 @@ public class MarketingEndpointTests(ITestOutputHelper output, CustomWebApplicati
         // Arrang/Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
         var response = await this.fixture.CreateClient()
-            .GetAsync(route)
-            .AnyContext();
+            .GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert

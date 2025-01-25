@@ -8,11 +8,13 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 public class EntityFrameworkTransactionWrapper<TEntity, TContext>(TContext context)
     : EntityFrameworkTransaction<TEntity>(context)
     where TEntity : class, IEntity
-    where TContext : DbContext { }
+    where TContext : DbContext
+{ }
 
 [Obsolete("Use EntityFrameworkTransaction instead")]
 public class GenericRepositoryTransaction<TEntity>(DbContext context) : EntityFrameworkTransaction<TEntity>(context)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 public class EntityFrameworkTransaction<TEntity> : IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity

@@ -27,8 +27,8 @@ public static class DefaultJsonNetSerializerSettings
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             //DateParseHandling = DateParseHandling.DateTimeOffset,
             //DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-            Converters = new List<JsonConverter>
-            {
+            Converters =
+            [
                 //new GuidConverter(),
                 new EnumConverter(),
                 new FilterCriteriaConverter(),
@@ -37,7 +37,7 @@ public static class DefaultJsonNetSerializerSettings
                 {
                     DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fffffffZ" // utc, no timezone offset (+0:00)
                 }
-            }
+            ]
         };
     }
 }

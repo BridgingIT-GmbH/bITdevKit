@@ -1,0 +1,82 @@
+@baseUrl = https://localhost:5001
+@authority = {{baseUrl}}/api/_system/identity/connect
+@client_id = blazor-wasm
+
+### Test Users
+@username = luke.skywalker@starwars.com
+@password = starwars
+
+#############################################
+### 1. Discovery Endpoint - OpenID Configuration
+GET {{authority}}/.well-known/openid-configuration
+Content-Type: application/json
+
+#############################################
+### 2. Resource Owner Password Flow
+# @name sign_in
+@access_token = {{sign_in.response.body.access_token}}
+@refresh_token = {{sign_in.response.body.refresh_token}}
+
+POST {{authority}}/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id={{client_id}}
+&username={{username}}
+&password={{password}}
+&scope=openid profile email roles
+
+########################### ##################
+### 3. Get User Info using Access Token
+GET {{authority}}/userinfo
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+#############################################
+### 4. Refresh Access Token
+# @name refresh
+POST {{authority}}/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token
+&client_id={{client_id}}
+&refresh_token={{refresh_token}}
+
+#############################################
+### 5. Authorization Code Flow
+### 5.1 Get Authorization Code (Browser Required)
+### Copy this URL to browser:
+### https://localhost:5001/api/_system/identity/connect/authorize?response_type=code&client_id=blazor-wasm&scope=openid%20profile%20email%20roles&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauthentication%2Flogin-callback&state=random123
+GET {{authority}}/authorize
+    ?response_type=code
+    &client_id={{client_id}}
+    &scope=openid profile email roles
+    &redirect_uri={{baseUrl}}/authenticatio/login-callback
+    &state=random123
+
+### 5.2 Exchange Code for Token
+POST {{authority}}/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code
+&client_id={{client_id}}
+&code=[AUTH_CODE] # Copy from browser redirect URL (5.1 step)
+&redirect_uri={{baseUrl}}
+
+#############################################
+### 6. Client Credentials Flow
+# @name client_credentials
+POST {{authority}}/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={{client_id}}
+&scope=api
+
+#############################################
+### 7. Logout
+GET {{authority}}/logout
+Content-Type: application/x-www-form-urlencoded
+
+post_logout_redirect_uri={{baseUrl}}
+&state=random123

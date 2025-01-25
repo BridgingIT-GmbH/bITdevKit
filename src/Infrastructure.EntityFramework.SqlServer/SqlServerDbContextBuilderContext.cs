@@ -15,4 +15,5 @@ public class SqlServerDbContextBuilderContext<TContext>(
     string connectionString = null,
     Provider provider = Provider.SqlServer)
     : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
-    where TContext : DbContext { }
+    where TContext : DbContext
+{ }

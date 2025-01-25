@@ -14,4 +14,5 @@ using Models;
 public class PersonOverviewRepository(
     Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
     : EntityFrameworkGenericRepository<PersonOverview, PersonDatabaseEntity>(optionsBuilder),
-        IPersonOverviewRepository { }
+        IPersonOverviewRepository
+{ }

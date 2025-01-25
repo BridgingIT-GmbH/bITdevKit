@@ -13,4 +13,5 @@ public class InMemoryRepositoryBuilderContext<TEntity, TContext>(
     ServiceLifetime lifetime = ServiceLifetime.Scoped,
     IConfiguration configuration = null) : RepositoryBuilderContext<TEntity>(services, lifetime, configuration)
     where TEntity : class, IEntity
-    where TContext : InMemoryContext<TEntity> { }
+    where TContext : InMemoryContext<TEntity>
+{ }

@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 /// <summary>
@@ -27,4 +31,43 @@ public abstract class EndpointsBase : IEndpoints
     /// </summary>
     /// <param name="app">The <see cref="IEndpointRouteBuilder" /> to map the endpoint to.</param>
     public abstract void Map(IEndpointRouteBuilder app);
+
+    /// <summary>
+    ///    Maps a group of endpoints to the specified <see cref="IEndpointRouteBuilder" />.
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="options"></param>
+    public RouteGroupBuilder MapGroup(IEndpointRouteBuilder app, EndpointsOptionsBase options)
+    {
+        var group = app.MapGroup(options.GroupPath)
+            .WithTags(options.GroupTag);
+
+        if (options.ExcludeFromDescription)
+        {
+            group.ExcludeFromDescription();
+        }
+
+        if (options.RequireAuthorization)
+        {
+            if (options.RequireRoles.SafeAny())
+            {
+                group.RequireAuthorization(
+                    new AuthorizeAttribute
+                    {
+                        Roles = string.Join(",", options.RequireRoles.Where(g => !g.IsNullOrEmpty()))
+                    });
+            }
+            else if (!options.RequirePolicy.IsNullOrEmpty())
+            {
+                group.RequireAuthorization(
+                    new AuthorizeAttribute(options.RequirePolicy));
+            }
+            else
+            {
+                group.RequireAuthorization();
+            }
+        }
+
+        return group;
+    }
 }

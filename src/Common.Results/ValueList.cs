@@ -88,9 +88,7 @@ public readonly struct ValueList<T>
     private ValueList(List<T> existing, T newItem)
     {
         // Create a new list with space for the additional item
-        this.overflow = new List<T>(existing.Count + 1);
-        this.overflow.AddRange(existing);
-        this.overflow.Add(newItem);
+        this.overflow = [.. existing, newItem];
         this.item1 = default;
         this.item2 = default;
         this.count = (byte)this.overflow.Count;

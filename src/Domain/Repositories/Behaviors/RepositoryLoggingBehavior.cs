@@ -11,7 +11,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 [Obsolete("Use GenericRepositoryLoggingBehavior instead")]
 public class GenericRepositoryLoggingDecorator<TEntity>(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
     : RepositoryLoggingBehavior<TEntity>(loggerFactory, inner)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

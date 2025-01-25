@@ -25,7 +25,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <typeparam name="TItem">The type of item stored in the Cosmos DB container.</typeparam>
 public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     where TItem : class
-//where T : IHaveDiscriminator // needed? each type T is persisted in own collection
+    //where T : IHaveDiscriminator // needed? each type T is persisted in own collection
 {
     private readonly ILogger<CosmosSqlProvider<TItem>> logger;
     private readonly CosmosSqlProviderOptions<TItem> options;
@@ -131,57 +131,57 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     bool orderDescending = false,
     object partitionKeyValue = null,
     CancellationToken cancellationToken = default)
-{
-    await this.InitializeAsync(this.options);
-    var watch = ValueStopwatch.StartNew();
-    var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue);
-
-    double requestCharge = 0;
-    var result = new List<TItem>();
-
-    var iterator = this.container.GetItemLinqQueryable<TItem>(
-            requestOptions: requestOptions,
-            linqSerializerOptions: new CosmosLinqSerializerOptions
-            {
-                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-            })
-        .WhereIf(expressions)
-        .OrderByIf(orderExpression, orderDescending)
-        .SkipIf(skip)
-        .TakeIf(take)
-        .ToFeedIterator();
-
-    while (iterator.HasMoreResults)
     {
-        var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
-        requestCharge += response.RequestCharge;
+        await this.InitializeAsync(this.options);
+        var watch = ValueStopwatch.StartNew();
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue);
 
-        // Get ETags from response headers
-        var responseDiagnostics = response.Diagnostics.ToString();
-        var etagsMatch = Regex.Matches(responseDiagnostics, "\"etag\":\"([^\"]*)\"");
-        var etags = etagsMatch.Select(m => m.Groups[1].Value).ToList();
+        double requestCharge = 0;
+        var result = new List<TItem>();
 
-        var items = response.Resource.ToList();
-
-        for (var i = 0; i < items.Count; i++) // Match ETags with items based on position
-        {
-            var item = items[i];
-            if (item is IConcurrency concurrencyItem && i < etags.Count)
-            {
-                if (Guid.TryParse(etags[i].Trim('"'), out var version))
+        var iterator = this.container.GetItemLinqQueryable<TItem>(
+                requestOptions: requestOptions,
+                linqSerializerOptions: new CosmosLinqSerializerOptions
                 {
-                    concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
+            .WhereIf(expressions)
+            .OrderByIf(orderExpression, orderDescending)
+            .SkipIf(skip)
+            .TakeIf(take)
+            .ToFeedIterator();
+
+        while (iterator.HasMoreResults)
+        {
+            var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
+            requestCharge += response.RequestCharge;
+
+            // Get ETags from response headers
+            var responseDiagnostics = response.Diagnostics.ToString();
+            var etagsMatch = Regex.Matches(responseDiagnostics, "\"etag\":\"([^\"]*)\"");
+            var etags = etagsMatch.Select(m => m.Groups[1].Value).ToList();
+
+            var items = response.Resource.ToList();
+
+            for (var i = 0; i < items.Count; i++) // Match ETags with items based on position
+            {
+                var item = items[i];
+                if (item is IConcurrency concurrencyItem && i < etags.Count)
+                {
+                    if (Guid.TryParse(etags[i].Trim('"'), out var version))
+                    {
+                        concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
+                    }
                 }
+                result.Add(item);
             }
-            result.Add(item);
         }
+
+        this.LogRequestCharge(requestCharge);
+        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+
+        return result;
     }
-
-    this.LogRequestCharge(requestCharge);
-    this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
-
-    return result;
-}
 
     public virtual async Task<IEnumerable<TItem>> ReadItemsAsync(
         Expression<Func<TItem, bool>> expression,

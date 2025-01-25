@@ -33,8 +33,7 @@ public class ForecastUpdateCommandHandler(
                     .AnyContext(); // find a specific type (AAA)
 
                 // retrieve forecasts from external system, anti corruption is implemented by using an adapter
-                await foreach (var forecast in dataAdapter.ToForecastAsync(command.City)
-                                   .WithCancellation(cancellationToken))
+                await foreach (var forecast in dataAdapter.ToForecastAsync(command.City).WithCancellation(cancellationToken))
                 {
                     forecast.TypeId = type.Id;
                     await forecastRepository.UpsertAsync(forecast, cancellationToken).AnyContext();

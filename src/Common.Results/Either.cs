@@ -37,7 +37,7 @@ public class Either<T1, T2>
     protected T2 Value2 { get; init; }
 
     protected Either()
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Either{T1,T2}"/> class with a first value.
@@ -916,7 +916,7 @@ public class StringOrNumber : Either<string, int>
 }
 
 public struct None
-{}
+{ }
 
 public class InstanceOrNone<T> : Either<T, None>
 {

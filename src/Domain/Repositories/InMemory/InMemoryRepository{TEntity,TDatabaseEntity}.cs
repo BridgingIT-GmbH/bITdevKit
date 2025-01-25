@@ -14,7 +14,8 @@ public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
     : InMemoryRepository<TEntity, TDatabaseEntity>(loggerFactory, context, idSelector)
     where TEntity : class, IEntity
     where TContext : InMemoryContext<TEntity>
-    where TDatabaseEntity : class { }
+    where TDatabaseEntity : class
+{ }
 
 public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<TEntity>
     where TEntity : class, IEntity

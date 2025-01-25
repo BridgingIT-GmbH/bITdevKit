@@ -24,7 +24,8 @@ public class ForecastFindAllDescriptionsQueryHandler(
         var descriptions = await forecastRepository.ProjectAllAsync(e => e.Description, // projection
                 new FindOptions<Forecast>
                 {
-                    Order = new OrderOption<Forecast>(e => e.Description), Distinct = new DistinctOption<Forecast>()
+                    Order = new OrderOption<Forecast>(e => e.Description),
+                    Distinct = new DistinctOption<Forecast>()
                 },
                 cancellationToken)
             .AnyContext();

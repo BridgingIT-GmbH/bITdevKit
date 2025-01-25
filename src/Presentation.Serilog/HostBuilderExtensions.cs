@@ -6,7 +6,6 @@
 namespace Microsoft.Extensions.Hosting;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
@@ -118,11 +117,11 @@ public static class HostBuilderExtensions
                     // https://stackoverflow.com/a/78419578/1758814
                     var (otelResourceAttribute, otelResourceAttributeValue) = configuration["OTEL_RESOURCE_ATTRIBUTES"]
                             ?.Split('=') switch
-                        {
-                            [string k, string v] => (k, v),
-                            _ => throw new Exception(
-                                $"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
-                        };
+                    {
+                        [string k, string v] => (k, v),
+                        _ => throw new Exception(
+                            $"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
+                    };
 
                     options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
                 });

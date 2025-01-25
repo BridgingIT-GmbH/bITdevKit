@@ -79,7 +79,9 @@ public class PersonService : IPersonService
 
         return query.Select(p => new PersonOverviewViewModel
         {
-            Firstname = p.Firstname, Lastname = p.Lastname, Id = p.Id
+            Firstname = p.Firstname,
+            Lastname = p.Lastname,
+            Id = p.Id
         });
     }
 

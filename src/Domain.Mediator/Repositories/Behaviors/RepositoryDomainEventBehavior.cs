@@ -11,7 +11,8 @@ using System.Linq.Expressions;
 public class GenericRepositoryDomainEventDecorator<TEntity>(
     ILoggerFactory loggerFactory,
     IGenericRepository<TEntity> inner) : RepositoryDomainEventBehavior<TEntity>(loggerFactory, inner)
-    where TEntity : class, IEntity, IAggregateRoot { }
+    where TEntity : class, IEntity, IAggregateRoot
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

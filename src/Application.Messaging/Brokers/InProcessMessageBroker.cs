@@ -44,7 +44,9 @@ public class InProcessMessageBroker : MessageBrokerBase
             },
             new ExecutionDataflowBlockOptions
             {
-                CancellationToken = CancellationToken.None, MaxDegreeOfParallelism = 1, EnsureOrdered = true
+                CancellationToken = CancellationToken.None,
+                MaxDegreeOfParallelism = 1,
+                EnsureOrdered = true
             });
 
         this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",

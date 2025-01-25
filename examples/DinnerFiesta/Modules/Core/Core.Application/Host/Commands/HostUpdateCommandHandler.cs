@@ -42,11 +42,10 @@ public class HostUpdateCommandHandler(
             .Ensure(e => e != null, new EntityNotFoundError())
             .Tap(_ => this.Logger.LogInformation("entity retrieved"))
             .AndThen(e => Rule.Add().Check())
-            .AndThenAsync(async (e,ct) => await Rule.Add().CheckAsync(cancellationToken: ct), cancellationToken)
+            .AndThenAsync(async (e, ct) => await Rule.Add().CheckAsync(cancellationToken: ct), cancellationToken)
             .BindAsync(async (e, ct) =>
                 {
-                   //await DomainRules.ApplyAsync([ /* add some rules*/], ct);
-
+                    //await DomainRules.ApplyAsync([ /* add some rules*/], ct);
                     e // update the domain entity
                         .ChangeName(command.FirstName, command.LastName)
                         .ChangeProfileImage(command.ImageUrl is not null ? new Uri(command.ImageUrl) : null);

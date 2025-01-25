@@ -109,6 +109,14 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     public IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
 
     /// <summary>
+    ///     Gets or sets the inclusion option for related child entities.
+    /// </summary>
+    /// <value>
+    ///     The hierarchy option used to specify which related entities to include in the query results.
+    /// </value>
+    public HierarchyOption<TEntity> Hierarchy { get; set; }
+
+    /// <summary>
     ///     Determines whether this instance has orders.
     /// </summary>
     /// <returns>
@@ -128,5 +136,10 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     public bool HasIncludes()
     {
         return this.Include is not null || this.Includes.SafeAny();
+    }
+
+    public bool HasHierarchy()
+    {
+        return this.Hierarchy is not null;
     }
 }

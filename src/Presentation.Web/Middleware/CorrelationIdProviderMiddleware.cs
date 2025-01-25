@@ -50,8 +50,7 @@ public class CorrelationIdProviderMiddleware
 
         if (string.IsNullOrWhiteSpace(correlationId))
         {
-            correlationId = GuidGenerator.CreateSequential()
-                .ToString("N"); // TODO: or generate a shorter id? https://nima-ara-blog.azurewebsites.net/generating-ids-in-csharp/
+            correlationId = GuidGenerator.CreateSequential().ToString("N"); // TODO: or generate a shorter id? https://nima-ara-blog.azurewebsites.net/generating-ids-in-csharp/
         }
 
         httpContext.Response.Headers.AddOrUpdate(CorrelationKey, correlationId);
@@ -60,8 +59,7 @@ public class CorrelationIdProviderMiddleware
         var flowId = GuidGenerator.Create(httpContext.Features.Get<IEndpointFeature>()
                 ?.Endpoint?.Metadata?.GetMetadata<ControllerActionDescriptor>()
                 ?.AttributeRouteInfo?.Template)
-            .ToString("N");
-        // TODO: is the ControllerActionDescriptor also available when using .net60 minimal apis? if not the flowId will be 00000000000000000000000000000000
+            .ToString("N"); // TODO: is the ControllerActionDescriptor also available when using .net60 minimal apis? if not the flowId will be 00000000000000000000000000000000
         flowId = flowId != "00000000000000000000000000000000"
             ? flowId
             : GuidGenerator.Create(httpContext.Request.Path).ToString("N");
@@ -80,11 +78,11 @@ public class CorrelationIdProviderMiddleware
         //metricsFeature?.Tags.Add(new KeyValuePair<string, object>(FlowKey, flowId));
 
         using (this.logger.BeginScope(new Dictionary<string, object>
-               {
-                   [TraceKey] = activity?.TraceId.ToString(),
-                   [CorrelationKey] = correlationId.ToString(),
-                   [FlowKey] = flowId
-               }))
+        {
+            [TraceKey] = activity?.TraceId.ToString(),
+            [CorrelationKey] = correlationId.ToString(),
+            [FlowKey] = flowId
+        }))
         {
             activity?.SetBaggage(ActivityConstants.CorrelationIdTagKey, correlationId);
             activity?.SetBaggage(ActivityConstants.FlowIdTagKey, flowId);

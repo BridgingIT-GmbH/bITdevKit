@@ -10,7 +10,8 @@ using Microsoft.Extensions.Logging;
 [Obsolete("Use GenericRepositoryNoTrackingBehavior instead")]
 public class GenericRepositoryNoTrackingDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryNoTrackingBehavior<TEntity>(inner)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

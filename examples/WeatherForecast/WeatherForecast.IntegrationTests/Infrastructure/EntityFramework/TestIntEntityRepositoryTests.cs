@@ -94,7 +94,8 @@ public class
             entity.MyProperty2 = "Jane " + ticks;
             entity.Children.Add(new TestIntChildEntity
             {
-                MyProperty1 = "val new " + ticks, MyProperty2 = "val new " + ticks
+                MyProperty1 = "val new " + ticks,
+                MyProperty2 = "val new " + ticks
             });
 
             await scopedSut.UpsertAsync(entity).AnyContext();
@@ -443,9 +444,11 @@ public class
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestIntEntity>>();
         var result = await scopedSut.FindAllAsync(new FindOptions<TestIntEntity>
-            {
-                Skip = 5, Take = 5, Include = new IncludeOption<TestIntEntity>(e => e.Children)
-            })
+        {
+            Skip = 5,
+            Take = 5,
+            Include = new IncludeOption<TestIntEntity>(e => e.Children)
+        })
             .AnyContext();
 
         result.ShouldNotBeNull();

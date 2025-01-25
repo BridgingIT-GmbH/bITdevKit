@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
 
 [UnitTest("Common")]
 public class ValueListTests

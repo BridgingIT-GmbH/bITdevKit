@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,16 +67,7 @@ public class CustomWebApplicationFactory<TEntryPoint>(
 
             if (this.fakeAuthenticationEnabled)
             {
-                services.AddAuthentication(options => // add a fake authentication handler
-                    {
-                        options.DefaultAuthenticateScheme =
-                            FakeAuthenticationHandler
-                                .SchemeName; // use the fake handler instead of the jwt handler (Startup)
-                        options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
-                    })
-                    .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(
-                        FakeAuthenticationHandler.SchemeName,
-                        null);
+                services.AddFakeAuthentication(Fakes.Users);
             }
         });
 

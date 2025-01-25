@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
+[DisallowConcurrentExecution]
 public class ForecastImportJob
     : JobBase,
         IRetryJobScheduling,

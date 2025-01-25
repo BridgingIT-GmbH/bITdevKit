@@ -49,7 +49,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         var count = 0;
         TypedLogger.LogProcessing(this.logger, Constants.LogKey, this.contextTypeName, eventId);
 #if DEBUG
-       // this.logger.LogDebug("++++ OUTBOX: READ DOMAINEVENTS (eventId={EventId})", eventId);
+        // this.logger.LogDebug("++++ OUTBOX: READ DOMAINEVENTS (eventId={EventId})", eventId);
 #endif
 
         await (await context.OutboxDomainEvents.Where(e => e.ProcessedDate == null)
@@ -162,18 +162,18 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                 var parentId = outboxEvent.Properties?.GetValue(ModuleConstants.ActivityParentIdKey)?.ToString();
 
                 using (this.logger.BeginScope(new Dictionary<string, object>
-                       {
-                           [ModuleConstants.ModuleNameKey] = moduleName,
-                           [Constants.CorrelationIdKey] = correlationId,
-                           [Constants.FlowIdKey] = flowId
-                       }))
+                {
+                    [ModuleConstants.ModuleNameKey] = moduleName,
+                    [Constants.CorrelationIdKey] = correlationId,
+                    [Constants.FlowIdKey] = flowId
+                }))
                 {
                     await this.activitySources.Find(moduleName)
                         .StartActvity($"OUTBOX_PROCESS {eventType}",
                             async (a, c) =>
                             {
 #if DEBUG
-                               // this.logger.LogDebug("++++ WORKER: PROCESS STORED DOMAINEVENT {@DomainEvent}", @event);
+                                // this.logger.LogDebug("++++ WORKER: PROCESS STORED DOMAINEVENT {@DomainEvent}", @event);
 #endif
                                 await publisher.Send(@event, cancellationToken).AnyContext(); // publish the actual domain event
 
@@ -187,7 +187,8 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                             parentId,
                             new Dictionary<string, string>
                             {
-                                ["domain.event_id"] = @event.EventId.ToString(), ["domain.event_type"] = eventType
+                                ["domain.event_id"] = @event.EventId.ToString(),
+                                ["domain.event_type"] = eventType
                             },
                             new Dictionary<string, string>
                             {

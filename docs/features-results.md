@@ -50,7 +50,7 @@ The Result pattern implementation provides a comprehensive solution by:
 
 The Result pattern consists of three primary classes in hierarchy: `Result` provides base
 success/failure tracking with message and error collections, `ResultT` adds generic type support for
-strongly-typed value handling, and `PagedResultT` extends this for collection scenarios with
+strongly-typed value handling, and `ResultPagedT` extends this for collection scenarios with
 pagination metadata. Each maintains a fluent interface with factory methods (`Success()`,
 `Failure()`). Error handling is supported through `IResultError`, enabling custom error types across
 the hierarchy.
@@ -116,25 +116,25 @@ classDiagram
         +static ResultT Failure()
     }
 
-    class PagedResultT {
+    class ResultPagedT {
         +int CurrentPage
         +int TotalPages
         +long TotalCount
         +int PageSize
         +bool HasPreviousPage
         +bool HasNextPage
-        +static PagedResultT Success(IEnumerable, long, int, int)
-        +static PagedResultT Failure()
+        +static ResultPagedT Success(IEnumerable, long, int, int)
+        +static ResultPagedT Failure()
     }
 
     IResultError <|.. ResultErrorBase
     IResult <|-- IResultT
     IResult <|.. Result
     IResultT <|.. ResultT
-    ResultT <|-- PagedResultT
+    ResultT <|-- ResultPagedT
     Result ..> IResultError : uses
     ResultT ..> IResultError : uses
-    PagedResultT ..> IResultError : uses
+    ResultPagedT ..> IResultError : uses
     IResult ..> IResultError : contains
 ```
 
@@ -197,7 +197,7 @@ if (failure.HasError<ValidationError>())
 }
 
 // Paged result
-var pagedResult = PagedResultT<Item>.Success(
+var resultPaged = ResultPagedT<Item>.Success(
     items, totalCount: 100, page: 1, pageSize: 10
 );
 ```
@@ -318,14 +318,14 @@ public class ProductService
         this.logger = logger;
     }
 
-    public async Task<PagedResult<Product>> GetProductsAsync(int page = 1, int pageSize = 10)
+    public async Task<ResultPaged<Product>> GetProductsAsync(int page = 1, int pageSize = 10)
     {
         try
         {
             var totalCount = await this.repository.CountAsync();
             var products = await this.repository.GetPageAsync(page, pageSize);
 
-            return PagedResult<Product>.Success(
+            return ResultPaged<Product>.Success(
                 products,
                 totalCount,
                 page,
@@ -334,7 +334,7 @@ public class ProductService
         catch (Exception ex)
         {
             this.logger.LogError(ex, "Failed to get products");
-            return PagedResult<Product>.Failure()
+            return ResultPaged<Product>.Failure()
                 .WithError(new ExceptionError(ex));
         }
     }
@@ -884,11 +884,11 @@ public class ProductService
     }
 
     // Find All Paged with Result
-    public async Task<PagedResult<Product>> GetProductsPagedAsync(
+    public async Task<ResultPaged<Product>> GetProductsPagedAsync(
         int page = 1,
         int pageSize = 10)
     {
-        return await _repository.FindAllPagedResultAsync(
+        return await _repository.FindAllResultPagedAsync(
             ordering: "Name ascending",
             page: page,
             pageSize: pageSize);
@@ -904,11 +904,11 @@ public class OrderService
     private readonly IGenericReadOnlyRepository<Order> _repository;
 
     // Complex query with specifications
-    public async Task<PagedResult<Order>> GetOrdersAsync(
+    public async Task<ResultPaged<Order>> GetOrdersAsync(
         FilterModel filterModel,
         IEnumerable<ISpecification<Order>> additionalSpecs = null)
     {
-        return await _repository.FindAllPagedResultAsync(
+        return await _repository.FindAllResultPagedAsync(
             filterModel,
             additionalSpecs);
     }
@@ -997,28 +997,28 @@ public async Task<Result<Order>> ProcessOrderAsync(Order order)
 3. **Paged Queries with Specifications**:
 
 ```csharp
-public async Task<PagedResult<Product>> SearchProductsAsync(
+public async Task<ResultPaged<Product>> SearchProductsAsync(
     string searchTerm,
     int page = 1,
     int pageSize = 10)
 {
     var specification = new Specification<Product>(p => p.Name.Contains(searchTerm));
 
-    return await _repository.FindAllPagedResultAsync(specification);
+    return await _repository.FindAllResultPagedAsync(specification);
 }
 ```
 
 4. **Filtering with model**:
 
 ```csharp
-public async Task<PagedResult<Order>> GetOrdersAsync(FilterModel filterModel)
+public async Task<ResultPaged<Order>> GetOrdersAsync(FilterModel filterModel)
 {
     var specifications = new List<ISpecification<Order>>
     {
         new Specification<Order>(o => o.Status == OrderStatus.Active)
     };
 
-    return await _repository.FindAllPagedResultAsync(filterModel, specifications);
+    return await _repository.FindAllResultPagedAsync(filterModel, specifications);
 }
 ```
 

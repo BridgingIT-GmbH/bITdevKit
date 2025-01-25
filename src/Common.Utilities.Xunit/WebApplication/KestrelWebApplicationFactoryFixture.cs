@@ -138,11 +138,13 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFa
         this.host?.Dispose();
     }
 
+    /// <summary>
     /// Ensures that the Kestrel server is initialized and running.
     /// This method checks if the server has already been created and started.
     /// If the server is not yet initialized, it forces the WebApplicationFactory
     /// to bootstrap the server by creating a default client. This is necessary
     /// to properly set up the server environment for tests.
+    /// </summary>
     private void EnsureServer()
     {
         if (this.host is null)

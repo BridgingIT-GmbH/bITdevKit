@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,25 +6,36 @@
     <RootNamespace>BridgingIT.DevKit.Presentation.Web</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hellang.Middleware.ProblemDetails"/>
-    <PackageReference Include="NSwag.AspNetCore"/>
-    <PackageReference Include="Serilog.Extensions.Hosting"/>
+    <PackageReference Include="Hellang.Middleware.ProblemDetails" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="NSwag.AspNetCore" />
+    <PackageReference Include="RazorSlices" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Queries\Application.Queries.csproj"/>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj"/>
-    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
-    <ProjectReference Include="..\Domain\Domain.csproj"/>
-    <ProjectReference Include="..\Presentation\Presentation.csproj"/>
+    <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
+    <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj" />
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Presentation\Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\" />
   </ItemGroup>
 
 </Project>

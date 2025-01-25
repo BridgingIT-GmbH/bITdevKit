@@ -21,6 +21,8 @@ public class PersonStub : AggregateRoot<Guid>
     public string LastName { get; set; }
 
     public int Age { get; set; }
+
+    public Guid ManagerId { get; set; }
 }
 
 public class PersonDtoStub //: AggregateRoot<string>
@@ -46,16 +48,20 @@ public class StubMessage : MessageBase
     public string LastName { get; set; }
 }
 
-public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext
+public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext
 {
     public StubDbContext() { }
 
     public StubDbContext(DbContextOptions options)
         : base(options) { }
 
+    public DbSet<PersonStub> Persons { get; set; }
+
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    public DbSet<EntityPermission> EntityPermissions { get; set; }
 }
 
 public sealed class StubDbContextFixture : IDisposable

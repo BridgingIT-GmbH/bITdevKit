@@ -21,7 +21,8 @@ public class JobSchedulingSqliteSeederStartupTask : IStartupTask, IRetryStartupT
     public JobSchedulingSqliteSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
         : this(loggerFactory,
             configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-            configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"]) { }
+            configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"])
+    { }
 
     public JobSchedulingSqliteSeederStartupTask(
         ILoggerFactory loggerFactory,

@@ -10,7 +10,7 @@ public abstract class EntityFindAllQueryBase<TEntity>(
     int pageSize = int.MaxValue,
     string searchString = null,
     string orderBy = null,
-    string include = null) : QueryRequestBase<PagedResult<TEntity>>, IEntityFindAllQuery<TEntity>
+    string include = null) : QueryRequestBase<ResultPaged<TEntity>>, IEntityFindAllQuery<TEntity>
     where TEntity : class, IEntity
 {
     private List<AbstractValidator<EntityFindAllQueryBase<TEntity>>> validators;

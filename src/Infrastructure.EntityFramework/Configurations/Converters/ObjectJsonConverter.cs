@@ -15,5 +15,6 @@ public class ObjectJsonConverter<TObject> : ValueConverter<TObject, string>
     public ObjectJsonConverter()
         : base(v => JsonSerializer.Serialize(v,
                 new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }),
-            v => JsonSerializer.Deserialize<TObject>(v, (JsonSerializerOptions)null)) { }
+            v => JsonSerializer.Deserialize<TObject>(v, (JsonSerializerOptions)null))
+    { }
 }

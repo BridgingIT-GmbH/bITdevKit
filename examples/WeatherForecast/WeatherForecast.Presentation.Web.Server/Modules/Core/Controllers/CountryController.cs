@@ -9,8 +9,10 @@ using System.Net;
 using Application.Modules.Core;
 using Common;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 [Route("api/core/countries")]
 [ApiController]
 public class CountryController : ControllerBase

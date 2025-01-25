@@ -31,8 +31,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route.Replace("{hostId}", menu.HostId) + $"/{menu.Id}")
-            .AnyContext();
+            .GetAsync(route.Replace("{hostId}", menu.HostId) + $"/{menu.Id}").AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -55,8 +54,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()) + $"/{Guid.NewGuid()}")
-            .AnyContext();
+            .GetAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()) + $"/{Guid.NewGuid()}").AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -72,7 +70,9 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
         var model = new MenuModel
         {
-            HostId = entity.HostId.ToString(), Name = entity.Name, Description = entity.Description
+            HostId = entity.HostId.ToString(),
+            Name = entity.Name,
+            Description = entity.Description
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
@@ -81,8 +81,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
-            .AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -110,8 +109,7 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
-            .AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -126,15 +124,16 @@ public class MenuEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
         var model = new MenuModel
         {
-            HostId = entity.HostId.ToString(), Name = entity.Name, Description = entity.Description
+            HostId = entity.HostId.ToString(),
+            Name = entity.Name,
+            Description = entity.Description
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
-            .AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
         return await HttpContentExtensions.ReadAsAsync<MenuModel>(response.Content);

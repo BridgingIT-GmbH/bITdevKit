@@ -10,7 +10,7 @@ using Domain;
 using Microsoft.EntityFrameworkCore;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options)
-    : ModuleDbContextBase(options), IDocumentStoreContext, IOutboxDomainEventContext, IOutboxMessageContext
+    : ModuleDbContextBase(options), IDocumentStoreContext, IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext
 {
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Host> Hosts { get; set; }
@@ -32,4 +32,6 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options)
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    public DbSet<EntityPermission> EntityPermissions { get; set; }
 }

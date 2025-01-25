@@ -14,7 +14,8 @@ using System.Text.Json.Serialization;
 /// <typeparam name="TEnumeration">The enumeration type to be converted.</typeparam>
 public class EnumerationSystemTextJsonConverter<TEnumeration>
     : EnumerationSystemTextJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration { }
+    where TEnumeration : IEnumeration
+{ }
 
 /// <summary>
 ///     Custom JSON converter for enumerations that implements the System.Text.Json.Serialization.JsonConverter
@@ -25,7 +26,8 @@ public class EnumerationSystemTextJsonConverter<TEnumeration>
 public class EnumerationSystemTextJsonConverter<TEnumeration, TValue>
     : EnumerationSystemTextJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable { }
+    where TValue : IComparable
+{ }
 
 /// <summary>
 ///     Converts enumeration types to and from JSON using System.Text.Json. This converter can handle cases

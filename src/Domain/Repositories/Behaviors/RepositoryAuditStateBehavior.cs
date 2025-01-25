@@ -20,16 +20,16 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAuditable
 {
-    private readonly AuditStateByType byType;
+    private readonly RepositoryAuditStateBehaviorOptions options;
     private readonly ICurrentUserAccessor currentUserAccessor;
 
     public RepositoryAuditStateBehavior(
         IGenericRepository<TEntity> ínner,
-        AuditStateByType byType = AuditStateByType.ByUserName,
+        RepositoryAuditStateBehaviorOptions options = null,
         ICurrentUserAccessor currentUserAccessor = null)
         : this(ínner)
     {
-        this.byType = byType;
+        this.options = options ?? new RepositoryAuditStateBehaviorOptions();
         this.currentUserAccessor = currentUserAccessor ?? new NullCurrentUserAccessor();
     }
 
@@ -49,27 +49,41 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
             return RepositoryActionResult.None;
         }
 
-        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
-            .AnyContext();
-        if (entity is not null)
+        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
+        if (entity is not null && this.options.SoftDeleteEnabled)
         {
-            return await this.DeleteAsync(entity, cancellationToken).AnyContext();
+            entity.AuditState ??= new AuditState();
+            entity.AuditState.SetDeleted(this.GetByValue());
+
+            return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
         }
 
-        return RepositoryActionResult.None;
+        return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        entity.AuditState ??= new AuditState();
-        entity.AuditState.SetDeleted(this.GetByValue());
+        if (entity is not null && this.options.SoftDeleteEnabled)
+        {
+            entity.AuditState ??= new AuditState();
+            entity.AuditState.SetDeleted(this.GetByValue());
+
+            return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
+        }
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
     }
 
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
+        var entity = await this.Inner.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
+        if (entity is not null && this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            return notDeletedSpecification.IsSatisfiedBy(entity);
+        }
+
+        return entity is not null;
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -84,10 +98,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]),
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]), options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -95,6 +106,12 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
+        if (this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            specifications = specifications.SafeNull().Concat([notDeletedSpecification]);
+        }
+
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
     }
 
@@ -112,11 +129,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>([specification]),
-                projection,
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>([specification]), projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -125,6 +138,12 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
+        if (this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            specifications = specifications.SafeNull().Concat([notDeletedSpecification]);
+        }
+
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
 
@@ -133,7 +152,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
+        return await this.FindOneAsync([], options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -141,7 +160,7 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
+        return await this.FindOneAsync(new List<ISpecification<TEntity>>([specification]), options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -149,6 +168,12 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
+        if (this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            specifications = specifications.SafeNull().Concat([notDeletedSpecification]);
+        }
+
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
@@ -180,26 +205,32 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
 
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(cancellationToken).AnyContext();
+        return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(specification, cancellationToken).AnyContext();
+        return await this.CountAsync(new List<ISpecification<TEntity>>([specification]), cancellationToken).AnyContext();
     }
 
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
+        if (this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            specifications = specifications.SafeNull().Concat([notDeletedSpecification]);
+        }
+
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
     }
 
     private string GetByValue()
     {
-        switch (this.byType)
+        switch (this.options.ByType)
         {
             case AuditStateByType.ByUserName:
                 return this.currentUserAccessor.UserName;

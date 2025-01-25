@@ -32,8 +32,7 @@ public class CoreModule : WebModuleBase
         IWebHostEnvironment environment = null)
     {
         //var moduleConfiguration = services.Configure<CoreModuleConfiguration>(configuration, this); // = configuration.Get<CoreModuleConfiguration>(this);
-        var moduleConfiguration =
-            this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
+        var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
         var moduleConfiguration2 = this.Configure<CoreModuleConfiguration>(services,
             configuration,
             options =>
@@ -65,8 +64,7 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling()
             .WithScopedJob<ForecastImportJob>(CronExpressions.Every30Minutes)
-            .WithScopedJob<
-                EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
         // messaging
         services.AddMessaging(configuration)
@@ -79,6 +77,24 @@ public class CoreModule : WebModuleBase
                 .UseSimpleLogger())
             .WithHealthChecks()
             .WithDatabaseMigratorService();
+
+        services.AddIdentity(o => // rename .AddAuthorization
+        {
+            o.WithEntityPermissions<CoreDbContext>(o =>
+            {
+                // Register entities that need permission checks + auth policies
+                o.AddEntity<City>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
+                    .AddDefaultPermissions<City>(Permission.Read/*, Permission.Write*/, Permission.List) // default permissions if user/group has no grants
+                    .UseDefaultPermissionProvider<City>();
+
+                o.AddEntity<Forecast>(Permission.Read, Permission.Write, Permission.List) // allowed permissions -> auth policies
+                    .AddDefaultPermissions<Forecast>(Permission.Read, Permission.List) // default permissions if user/group has no grants
+                    .UseDefaultPermissionProvider<Forecast>();
+            });
+
+            o.EnableEvaluationEndpoints();
+            o.EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
+        });
 
         // City repository
         services.AddInMemoryRepository(new InMemoryContext<City>(new[]
@@ -159,9 +175,10 @@ public class CoreModule : WebModuleBase
 
         // Weather data adapter (= anti corruption)
         services.AddScoped<IWeatherDataAdapter>(sp =>
-                new OpenWeatherDataAdapter(sp.GetRequiredService<ILoggerFactory>(),
-                    sp.GetRequiredService<IHttpClientFactory>(),
-                    moduleConfiguration.OpenWeatherApiKey))
+                new DummyOpenWeatherDataAdapter(sp.GetRequiredService<ILoggerFactory>()))
+            //new OpenWeatherDataAdapter(sp.GetRequiredService<ILoggerFactory>(),
+            //    sp.GetRequiredService<IHttpClientFactory>(),
+            //    moduleConfiguration.OpenWeatherApiKey))
             .AddHttpClient("OpenWeatherClient",
                 c =>
                 {

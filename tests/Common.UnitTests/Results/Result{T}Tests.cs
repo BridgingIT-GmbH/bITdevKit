@@ -842,7 +842,7 @@ public class ResultValueTests
                     }
                 },
                 CancellationToken.None)
-            .TeeMap(persons => persons,  persons => // ---------------------------------Map to DTOs and save
+            .TeeMap(persons => persons, persons => // ---------------------------------Map to DTOs and save
                 {
                     foreach (var person in persons)
                     {
@@ -1019,9 +1019,11 @@ public class ResultValueTests
 
         // Act
         // ReSharper disable once SuggestVarOrType_Elsewhere
+#pragma warning disable IDE0007 // Use implicit type
         Result<string> convertedSuccessResult = successResult.ToResult<string>();
         // ReSharper disable once SuggestVarOrType_Elsewhere
         Result<string> convertedFailureResult = failureResult.ToResult<string>();
+#pragma warning restore IDE0007 // Use implicit type
 
         // Assert
         convertedSuccessResult.ShouldBeSuccess();

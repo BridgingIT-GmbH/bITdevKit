@@ -234,7 +234,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         var sut = this.CreateRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllPagedResultAsync(new Specification<PersonStub>(e =>
+        var results = await sut.FindAllResultPagedAsync(new Specification<PersonStub>(e =>
                 e.FirstName == entity1.FirstName ||
                 e.FirstName == entity2.FirstName ||
                 e.FirstName == entity3.FirstName ||

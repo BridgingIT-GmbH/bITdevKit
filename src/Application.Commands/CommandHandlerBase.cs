@@ -39,10 +39,10 @@ public abstract partial class CommandHandlerBase<TCommand>
         var handlerType = this.GetType().PrettyName();
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [CommandIdKey] = command.RequestId.ToString("N"),
-                   [CommandTypeKey] = requestType
-               }))
+        {
+            [CommandIdKey] = command.RequestId.ToString("N"),
+            [CommandTypeKey] = requestType
+        }))
         {
             try
             {
@@ -164,10 +164,10 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
         var handlerType = this.GetType().Name;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [CommandIdKey] = command.RequestId.ToString("N"),
-                   [CommandTypeKey] = requestType
-               }))
+        {
+            [CommandIdKey] = command.RequestId.ToString("N"),
+            [CommandTypeKey] = requestType
+        }))
         {
             try
             {
@@ -244,7 +244,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
         }
     }
 
-    protected CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string messages = null , string errorMessage = null)
+    protected CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string messages = null, string errorMessage = null)
     {
         return CommandResult.Failure(value);
     }

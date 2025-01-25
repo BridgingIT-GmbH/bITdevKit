@@ -438,7 +438,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.Errors.First().Message.ShouldBe($"Value must be less than or equal to {other}");
     }
 
-// Additional DateTime Rules Tests
+    // Additional DateTime Rules Tests
     [Fact]
     public void IsBefore_WhenDateTimeIsBefore_ShouldReturnSuccess()
     {
@@ -501,7 +501,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.Errors.First().Message.ShouldBe($"Value must be after {future}");
     }
 
-// Additional Pattern Matching Rules Tests
+    // Additional Pattern Matching Rules Tests
     [Theory]
     [InlineData("ABC123", @"[A-Z]{3}\d{3}", true)]
     [InlineData("abc123", @"[A-Z]{3}\d{3}", false)]
@@ -555,7 +555,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.IsSuccess.ShouldBe(shouldSucceed);
     }
 
-// Date Range - Boundary Tests
+    // Date Range - Boundary Tests
     [Fact]
     public void IsInRange_WhenDateExactlyAtStartOrEnd_ShouldReturnSuccess()
     {
@@ -568,7 +568,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         Rule.Check(ruleEnd).ShouldBeSuccess();
     }
 
-// String Validation - Null or Empty
+    // String Validation - Null or Empty
     [Theory]
     [InlineData("", true)]
     [InlineData(null, true)]
@@ -581,7 +581,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.IsSuccess.ShouldBe(shouldSucceed);
     }
 
-// Null Checks
+    // Null Checks
     [Fact]
     public void IsNull_WhenValueIsNull_ShouldReturnSuccess()
     {
@@ -609,7 +609,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.ShouldBeFailure();
     }
 
-// Collection - IsEmpty and IsNotEmpty
+    // Collection - IsEmpty and IsNotEmpty
     [Fact]
     public void IsEmpty_WhenCollectionIsEmpty_ShouldReturnSuccess()
     {
@@ -649,7 +649,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.ShouldBeFailure();
     }
 
-// Boolean Rules
+    // Boolean Rules
     [Fact]
     public void IsTrue_WhenValueIsTrue_ShouldReturnSuccess()
     {
@@ -832,15 +832,15 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
         result.ShouldBeFailure();
     }
 
-// Add this at class level if not already present
-private enum TestEnum
-{
-    Value1,
-    Value2,
-    Value3
-}
+    // Add this at class level if not already present
+    private enum TestEnum
+    {
+        Value1,
+        Value2,
+        Value3
+    }
 
-// Additional String Tests
+    // Additional String Tests
     [Theory]
     [InlineData("Hello World", "Earth", StringComparison.Ordinal, true)]
     [InlineData("Hello World", "hello", StringComparison.OrdinalIgnoreCase, false)]

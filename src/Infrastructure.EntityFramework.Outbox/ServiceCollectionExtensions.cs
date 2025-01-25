@@ -19,10 +19,12 @@ public static class ServiceCollectionExtensions
         return services.AddTransient<IOutboxMessageWriterRepository>(sp =>
                 new OutboxMessageWriterRepository(new EntityFrameworkRepositoryOptions(
                     sp.GetRequiredService<TContext>(),
-                    sp.GetRequiredService<IEntityMapper>()) { Autosave = true }))
+                    sp.GetRequiredService<IEntityMapper>())
+                { Autosave = true }))
             .AddTransient<IOutboxMessageWorkerRepository>(sp =>
                 new OutboxMessageWorkerRepository(new EntityFrameworkRepositoryOptions(
                     sp.GetRequiredService<TContext>(),
-                    sp.GetRequiredService<IEntityMapper>()) { Autosave = true }));
+                    sp.GetRequiredService<IEntityMapper>())
+                { Autosave = true }));
     }
 }

@@ -30,7 +30,7 @@ public class ResultLogger(ILogger<ResultLogger> logger) : IResultLogger
     {
 
         var errors = result.Errors.Select(e => $"[{e.GetType().Namespace}] {e.Message}");
-        context = context.IsNullOrEmpty() ? string.Empty :  $"<{context}>";
+        context = context.IsNullOrEmpty() ? string.Empty : $"<{context}>";
 
         this.logger.Log(logLevel,
             "{LogKey} result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",

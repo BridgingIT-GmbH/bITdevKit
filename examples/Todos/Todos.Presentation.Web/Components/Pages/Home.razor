@@ -1,0 +1,179 @@
+﻿@page "/"
+
+<MudText Typo="Typo.h4" Class="mb-4">Components</MudText>
+
+<MudTabs Elevation="0" ApplyEffectsToContainer="false">
+    <!-- Layout Components Tab -->
+    <MudTabPanel Text="Layout">
+        <MudGrid>
+            <!-- Cards -->
+            <MudItem xs="12" md="4">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Card Title</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText>Card content goes here.</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary">Action</MudButton>
+                        <MudSpacer />
+                        <MudButton Href="https://mudblazor.com/" Target="_blank" Variant="Variant.Filled" EndIcon="@Icons.Custom.Brands.MudBlazor"
+                                   Color="Color.Tertiary">
+                            MudBlazor
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <!-- Expansion Panels -->
+            <MudItem xs="12" md="8">
+                <MudExpansionPanels>
+                    <MudExpansionPanel Text="Panel 1">
+                        Content for Panel 1
+                    </MudExpansionPanel>
+                    <MudExpansionPanel Text="Panel 2">
+                        Content for Panel 2
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+    <!-- Basic Controls Tab -->
+    <MudTabPanel Text="Basic Controls">
+        <MudGrid>
+            <!-- Buttons Section -->
+            <MudItem xs="12" Class="mb-6">
+                <MudText Typo="Typo.h5" Class="mb-4">Buttons</MudText>
+                <MudPaper Class="pa-4 d-flex gap-4 flex-wrap">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save</MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" EndIcon="@Icons.Material.Filled.Send">Send</MudButton>
+                    <MudButton Variant="Variant.Text" Color="Color.Default">Text</MudButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" />
+                    <MudFab StartIcon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
+                    <MudFab Label="Create" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Icons Section -->
+            <MudItem xs="12" Class="mb-6">
+                <MudText Typo="Typo.h5" Class="mb-4">Icons</MudText>
+                <MudPaper Class="pa-4 d-flex gap-4 flex-wrap align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Favorite" Color="Color.Error" />
+                    <MudIcon Icon="@Icons.Material.Filled.Home" Color="Color.Primary" />
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Secondary" />
+                    <MudIcon Icon="@Icons.Material.Filled.Delete" Color="Color.Warning" />
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                </MudPaper>
+            </MudItem>
+
+            <!-- Badges Section -->
+            <MudItem xs="12" Class="mb-6">
+                <MudText Typo="Typo.h5" Class="mb-4">Badges</MudText>
+                <MudPaper Class="pa-4 d-flex gap-4 flex-wrap">
+                    <MudBadge Content="3" Color="Color.Primary">
+                        <MudIcon Icon="@Icons.Material.Filled.Mail" />
+                    </MudBadge>
+                    <MudBadge Content="99" Color="Color.Secondary" Max="99">
+                        <MudIcon Icon="@Icons.Material.Filled.Notifications" />
+                    </MudBadge>
+                    <MudBadge Content="1" Color="Color.Error">
+                        <MudIcon Icon="@Icons.Material.Filled.Message" />
+                    </MudBadge>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+    <!-- Form Controls Tab -->
+    <MudTabPanel Text="Form Controls">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudCard Class="mb-6">
+                    <MudCardContent>
+                        <MudTextField T="string" Label="Text Field" Variant="Variant.Outlined" Class="mb-4" />
+                        <MudTextField T="string" Label="With Helper" HelperText="Helper Text" Variant="Variant.Outlined" Class="mb-4" />
+                        <MudNumericField T="decimal" Label="Numeric Field" Variant="Variant.Outlined" Class="mb-4" />
+                        <MudSelect T="string" Label="Select" Variant="Variant.Outlined" Class="mb-4">
+                            <MudSelectItem Value="@("Option 1")">Option 1</MudSelectItem>
+                            <MudSelectItem Value="@("Option 2")">Option 2</MudSelectItem>
+                        </MudSelect>
+                        <MudDatePicker Label="Date Picker" Variant="Variant.Outlined" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudCard>
+                    <MudCardContent>
+                        <MudCheckBox T="bool" Label="Checkbox" Color="Color.Primary" Class="mb-4" />
+                        <MudRadioGroup T="string" Class="mb-4">
+                            <MudRadio T="string" Color="Color.Primary">Option 1</MudRadio>
+                            <MudRadio T="string" Color="Color.Primary">Option 2</MudRadio>
+                        </MudRadioGroup>
+                        <MudSwitch T="bool" Label="Switch" Color="Color.Primary" Class="mb-4" />
+                        <MudSlider T="double" Value="35" />
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+    <!-- Navigation Tab -->
+    <MudTabPanel Text="Navigation">
+        <MudGrid>
+            <!-- Menu -->
+            <MudItem xs="12" md="6" Class="mb-6">
+                <MudMenu Label="Menu" Variant="Variant.Filled" Color="Color.Primary" Class="mb-4">
+                    <MudMenuItem>Item 1</MudMenuItem>
+                    <MudMenuItem>Item 2</MudMenuItem>
+                    <MudDivider />
+                    <MudMenuItem>Item 3</MudMenuItem>
+                </MudMenu>
+            </MudItem>
+
+            <!-- TreeView -->
+            <MudItem xs="12" md="6">
+                <MudTreeView T="string">
+                    <MudTreeViewItem Text="Root">
+                        <MudTreeViewItem Text="Item 1" />
+                        <MudTreeViewItem Text="Item 2">
+                            <MudTreeViewItem Text="Subitem 1" />
+                            <MudTreeViewItem Text="Subitem 2" />
+                        </MudTreeViewItem>
+                    </MudTreeViewItem>
+                </MudTreeView>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+
+    <!-- Feedback Tab -->
+    <MudTabPanel Text="Feedback">
+        <MudGrid>
+            <!-- Alerts -->
+            <MudItem xs="12" Class="mb-6">
+                <MudAlert Severity="Severity.Normal" Class="mb-2">Normal Alert</MudAlert>
+                <MudAlert Severity="Severity.Info" Class="mb-2">Info Alert</MudAlert>
+                <MudAlert Severity="Severity.Success" Class="mb-2">Success Alert</MudAlert>
+                <MudAlert Severity="Severity.Warning" Class="mb-2">Warning Alert</MudAlert>
+                <MudAlert Severity="Severity.Error">Error Alert</MudAlert>
+            </MudItem>
+
+            <!-- Progress Indicators -->
+            <MudItem xs="12">
+                <MudProgressLinear Color="Color.Primary" Value="75" Class="my-4" />
+                <MudProgressCircular Color="Color.Secondary" Value="75" Size="Size.Large" />
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    [Inject] IDialogService DialogService { get; set; }
+}

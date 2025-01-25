@@ -650,7 +650,7 @@ public class RuleBuilder
     {
         if (this.rules.Count == 0)
         {
-            return ([..items ?? Array.Empty<T>()], []);
+            return ([.. items ?? Array.Empty<T>()], []);
         }
 
         var matchedItems = new List<T>();

@@ -57,8 +57,7 @@ public static class ApplicationBuilderExtensions
     {
         EnsureArg.IsNotNull(app, nameof(app));
 
-        var options = app.ApplicationServices.GetService<IOptions<RequestLoggingOptions>>()?.Value ??
-            new RequestLoggingOptions();
+        var options = app.ApplicationServices.GetService<IOptions<RequestLoggingOptions>>()?.Value ?? new RequestLoggingOptions();
         configureOptions?.Invoke(options);
 
         if (options.MessageTemplateStarted is null)
@@ -77,5 +76,18 @@ public static class ApplicationBuilderExtensions
         }
 
         return app.UseMiddleware<RequestLoggingMiddleware>(options);
+    }
+
+    /// <summary>
+    ///    Adds middleware for providing the current user id to each HTTP request.
+    /// </summary>
+    /// <param name="app"></param>
+    public static IApplicationBuilder UseCurrentUserLogging(this IApplicationBuilder app)
+    {
+        EnsureArg.IsNotNull(app, nameof(app));
+
+        app.UseMiddleware<CurrentUserLoggingMiddleware>();
+
+        return app;
     }
 }

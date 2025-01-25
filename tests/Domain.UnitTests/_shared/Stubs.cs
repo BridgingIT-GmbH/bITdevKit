@@ -107,7 +107,6 @@ public class AddressStub : ValueObject
     }
 }
 
-
 public class PersonDtoStub : AggregateRoot<string>
 {
     public Guid Identifier { get; set; }

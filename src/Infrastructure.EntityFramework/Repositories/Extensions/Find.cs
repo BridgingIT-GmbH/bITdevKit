@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Reflection;
 
@@ -103,6 +103,7 @@ public static partial class Extensions
 
     public static PropertyInfo[] GetKeyProperties<T>(this DbContext source)
     {
-        return source.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties.Select(p => p.PropertyInfo).ToArray();
+        return [.. source.Model?.FindEntityType(typeof(T))?
+            .FindPrimaryKey()?.Properties?.Select(p => p.PropertyInfo).SafeNull()];
     }
 }

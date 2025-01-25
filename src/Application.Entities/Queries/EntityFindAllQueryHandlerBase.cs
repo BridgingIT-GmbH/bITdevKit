@@ -9,7 +9,7 @@ using Constants = BridgingIT.DevKit.Application.Queries.Constants;
 
 public abstract class
     EntityFindAllQueryHandlerBase<TQuery, TEntity>
-    : QueryHandlerBase<TQuery, PagedResult<TEntity>> // TODO: move to FRAMEWORK Application.Queries
+    : QueryHandlerBase<TQuery, ResultPaged<TEntity>> // TODO: move to FRAMEWORK Application.Queries
     where TQuery : EntityFindAllQueryBase<TEntity>
     where TEntity : class, IEntity
 {
@@ -52,7 +52,7 @@ public abstract class
         return [];
     }
 
-    public override async Task<QueryResponse<PagedResult<TEntity>>> Process(
+    public override async Task<QueryResponse<ResultPaged<TEntity>>> Process(
         TQuery query,
         CancellationToken cancellationToken)
     {
@@ -68,13 +68,13 @@ public abstract class
                 Constants.LogKey);
         }
 
-        var result = await this.repository.FindAllPagedResultAsync(specifications,
+        var result = await this.repository.FindAllResultPagedAsync(specifications,
             query.OrderBy,
             query.PageNumber,
             query.PageSize,
             includePath: query.Include,
             cancellationToken: cancellationToken);
 
-        return new QueryResponse<PagedResult<TEntity>> { Result = result };
+        return new QueryResponse<ResultPaged<TEntity>> { Result = result };
     }
 }

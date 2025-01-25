@@ -16,7 +16,22 @@
 <Routes @rendermode="new InteractiveWebAssemblyRenderMode(false)"/>
 @* <Routes @rendermode="InteractiveWebAssembly" /> *@
 <script src="_framework/blazor.web.js"></script>
+<script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js?v=7.13.0"></script>
+<script>
+    const _oldInit = AuthenticationService.init;
+    AuthenticationService.init = function (settings, logger) {
+        // When using certain IDPs, an attempt to use an embedded IFrame is blocked due to 'X-Frame-Options' and
+        // takes, by default, 10 seconds to timeout. The Blazor Authentication library does not provide a way to
+        // customize this.
+        // With our current IDP configuration, we know the attempt to load an IFrame will fail, so we are overriding
+        // the timeout below so the authorization workflow can continue.
+        // See: https://stackoverflow.com/a/76357231
+        //      https://stackoverflow.com/a/79145800/1758814
+        settings.silentRequestTimeout = 300;
+        _oldInit(settings, logger);
+    };
+</script>
 </body>
 
 </html>

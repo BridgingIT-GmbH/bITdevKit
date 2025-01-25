@@ -8,7 +8,8 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 [Obsolete("Use GenericRepositoryTracingBehavior instead")]
 public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryTracingBehavior<TEntity>(inner)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

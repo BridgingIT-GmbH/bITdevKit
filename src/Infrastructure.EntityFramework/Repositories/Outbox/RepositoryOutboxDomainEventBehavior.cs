@@ -18,7 +18,8 @@ public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(
     OutboxDomainEventOptions options = null)
     : RepositoryOutboxDomainEventBehavior<TEntity, TContext>(loggerFactory, context, inner, eventQueue, options)
     where TEntity : class, IEntity, IAggregateRoot
-    where TContext : DbContext, IOutboxDomainEventContext { }
+    where TContext : DbContext, IOutboxDomainEventContext
+{ }
 
 public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAggregateRoot

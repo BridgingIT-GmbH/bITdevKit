@@ -9,7 +9,7 @@ public class SystemEndpointsOptions : EndpointsOptionsBase
 {
     public SystemEndpointsOptions()
     {
-        this.GroupPrefix = "/api/_system";
+        this.GroupPath = "/api/_system";
         this.GroupTag = "_system";
     }
 
@@ -18,4 +18,6 @@ public class SystemEndpointsOptions : EndpointsOptionsBase
     public bool InfoEnabled { get; set; } = true;
 
     public bool ModulesEnabled { get; set; } = true;
+
+    public bool HideSensitiveInformation { get; set; }
 }

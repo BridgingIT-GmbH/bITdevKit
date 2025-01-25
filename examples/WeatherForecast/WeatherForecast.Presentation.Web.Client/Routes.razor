@@ -1,7 +1,26 @@
 ﻿@using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client.Layout
-<Router AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-    </Found>
-</Router>
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" /> *@
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    @* <p>Determining session state, please wait...</p> *@
+                </Authorizing>
+                <NotAuthorized>
+                    <h1>Sorry</h1>
+                    <p>You are not authorized to view this page</p>
+                    <RedirectToLogin />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex justify-center mt-4">
+                    <MudAlert Severity="Severity.Error">Sorry, there's nothing at this address.</MudAlert>
+                </MudContainer>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

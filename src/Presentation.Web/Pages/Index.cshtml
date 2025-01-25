@@ -1,0 +1,12 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Pages
+@inherits RazorSliceHttpResult
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Pages._Layout, LayoutModel>
+
+@* <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Index</h1>
+</div> *@
+
+@functions {
+    public LayoutModel LayoutModel => new() { Title = "Signin", HideSideBar = false };
+}

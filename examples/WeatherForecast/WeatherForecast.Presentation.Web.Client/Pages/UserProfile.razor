@@ -1,0 +1,238 @@
+﻿@page "/user-profile"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.IdentityModel.Tokens.Jwt
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAccessTokenProvider TokenProvider
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<MudContainer Class="mt-4">
+    <MudGrid>
+        <MudItem xs="12" sm="2">
+            @if (!string.IsNullOrEmpty(userAvatar))
+            {
+                <MudAvatar Size="Size.Large" Color="Color.Secondary">
+                    @((MarkupString)userAvatar)
+                </MudAvatar>
+            }
+            else
+            {
+                <MudAvatar Size="Size.Large" Color="Color.Secondary">
+                    @(userName?.FirstOrDefault() ?? '?')
+                </MudAvatar>
+            }
+        </MudItem>
+        <MudItem xs="12" sm="8">
+            <MudText Typo="Typo.h5">@userName</MudText>
+            <MudText Typo="Typo.body2">@userEmail</MudText>
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-4" />
+
+    <MudText Typo="Typo.h6" Class="mb-2">Roles</MudText>
+    <MudChipSet T="string">
+        @foreach (var role in userRoles)
+        {
+            <MudChip Color="Color.Primary">@role</MudChip>
+        }
+    </MudChipSet>
+
+    <MudDivider Class="my-4" />
+
+    <MudText Typo="Typo.h6" Class="mb-2">Scopes</MudText>
+    <MudChipSet T="string">
+        @foreach (var scope in scopes)
+        {
+            <MudChip Color="Color.Secondary">@scope</MudChip>
+        }
+    </MudChipSet>
+
+    <MudDivider Class="my-4" />
+
+    <MudText Typo="Typo.h6" Class="mb-2">ID Token Claims (oidc)</MudText>
+    <MudList Dense="true" T="Claim">
+        @foreach (var claim in idTokenClaims.Where(c => !SkipClaims.Contains(c.Type)))
+        {
+            <MudListItem>
+                <MudText><strong>@GetFriendlyClaimType(claim.Type):</strong> @claim.Value</MudText>
+            </MudListItem>
+        }
+    </MudList>
+
+    <MudDivider Class="my-4" />
+
+    <MudText Typo="Typo.h6" Class="mb-2">Access Token Claims (oauth2)</MudText>
+    <MudList Dense="true" T="Claim">
+        @foreach (var claim in accessTokenClaims.Where(c => !SkipClaims.Contains(c.Type)))
+        {
+            <MudListItem>
+                <MudText><strong>@GetFriendlyClaimType(claim.Type):</strong> @claim.Value</MudText>
+            </MudListItem>
+        }
+    </MudList>
+
+    <MudDivider Class="my-4" />
+
+    <MudText Typo="Typo.h6" Class="mb-2">Tokens</MudText>
+    <MudButton OnClick="RefreshToken" Color="Color.Primary" Variant="Variant.Filled">
+        Refresh Token
+    </MudButton>
+
+    <MudExpansionPanels Dense="true">
+        <MudExpansionPanel Text="Access Token">
+            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@accessToken</MudText>
+            <div class="d-flex gap-2 mt-2">
+                <MudLink Href="@($"https://jwt.io/#debugger-io?token={accessToken}")" Target="_blank">
+                    <MudButton Color="Color.Primary" Variant="Variant.Text">
+                        <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Class="ml-2" />
+                    </MudButton>
+                </MudLink>
+                <MudButton Color="Color.Secondary"
+                           Variant="Variant.Text"
+                           OnClick="@(() => CopyToClipboard(accessToken))">
+                    <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Class="ml-2" />
+                </MudButton>
+            </div>
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="ID Token">
+            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@idToken</MudText>
+            <div class="d-flex gap-2 mt-2">
+                <MudLink Href="@($"https://jwt.io/#debugger-io?token={idToken}")" Target="_blank">
+                    <MudButton Color="Color.Primary" Variant="Variant.Text">
+                        <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Class="ml-2" />
+                    </MudButton>
+                </MudLink>
+                <MudButton Color="Color.Secondary"
+                           Variant="Variant.Text"
+                           OnClick="@(() => CopyToClipboard(idToken))">
+                    <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Class="ml-2" />
+                </MudButton>
+            </div>
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Refresh Token">
+            <MudText Typo="Typo.body2" Style="word-wrap: break-word;">@refreshToken</MudText>
+            <div class="d-flex gap-2 mt-2">
+                <MudLink Href="@($"https://jwt.io/#debugger-io?token={refreshToken}")" Target="_blank">
+                    <MudButton Color="Color.Primary" Variant="Variant.Text">
+                        <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Class="ml-2" />
+                    </MudButton>
+                </MudLink>
+                <MudButton Color="Color.Secondary"
+                           Variant="Variant.Text"
+                           OnClick="@(() => CopyToClipboard(refreshToken))">
+                    <MudIcon Icon="@Icons.Material.Filled.ContentCopy" Class="ml-2" />
+                </MudButton>
+            </div>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</MudContainer>
+
+@code {
+    private string userAvatar;
+    private string userName;
+    private string userEmail;
+    private IEnumerable<string> userRoles = Array.Empty<string>();
+    private IEnumerable<Claim> idTokenClaims = Array.Empty<Claim>();
+    private IEnumerable<Claim> accessTokenClaims = Array.Empty<Claim>();
+    private IEnumerable<string> scopes = Array.Empty<string>();
+    private string accessToken = string.Empty;
+    private string idToken = string.Empty;
+    private string refreshToken = string.Empty;
+
+    // Claims to skip in the detailed view as they're shown elsewhere
+    private static readonly string[] SkipClaims =
+    {
+       "name",
+       "email",
+       "roles"
+   };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get ID token claims from authentication state
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            idTokenClaims = user.Claims;
+            userName = user.FindFirst("name")?.Value;
+            userEmail = user.FindFirst("email")?.Value;
+            userAvatar = user.FindFirst("avatar")?.Value;
+
+            var rolesValue = user.Claims.FirstOrDefault(c => c.Type == "roles")?.Value;
+            userRoles = !string.IsNullOrEmpty(rolesValue)
+                ? JsonSerializer.Deserialize<IEnumerable<string>>(rolesValue)
+                : Array.Empty<string>();
+        }
+
+        // Get access token and its claims
+        var tokenResult = await TokenProvider.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            accessToken = token.Value;
+
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(accessToken);
+
+            accessTokenClaims = jwt.Claims;
+
+            // Get scopes from access token
+            var scopeClaim = jwt.Claims.FirstOrDefault(c => c.Type == "scope")?.Value;
+            scopes = scopeClaim?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+        }
+
+        // Read all tokens from session storage
+        try
+        {
+            var storageKey = $"oidc.user:https://localhost:5001:blazor-wasm"; // TODO: get from configuration
+            var tokenStorage = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", storageKey);
+
+            if (!string.IsNullOrEmpty(tokenStorage))
+            {
+                var tokenInfo = JsonSerializer.Deserialize<JsonElement>(tokenStorage);
+                accessToken = accessToken.EmptyToNull() ?? tokenInfo.GetProperty("access_token").GetString() ?? string.Empty;
+                idToken = tokenInfo.GetProperty("id_token").GetString() ?? string.Empty;
+                refreshToken = tokenInfo.GetProperty("refresh_token").GetString() ?? string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading tokens: {ex.Message}");
+        }
+    }
+
+    private async Task RefreshToken()
+    {
+        var result = await TokenProvider.RequestAccessToken();
+        Console.WriteLine("++++ RequestAccessToken: " + result.Status);
+
+        if (result.TryGetToken(out var token))
+        {
+            Console.WriteLine($"Token refreshed successfully: {token.Value}");
+        }
+        else
+        {
+            Console.WriteLine($"Token refresh failed: {JsonSerializer.Serialize(result)}");
+            //Navigation.NavigateTo("authentication/login");
+        }
+    }
+
+    private string GetFriendlyClaimType(string claimType)
+    {
+        return claimType.Split('/', '\\').Last()
+            .Split('.')
+            .Last()
+            .Replace("nameidentifier", "User ID");
+    }
+
+    private async Task CopyToClipboard(string text)
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+}

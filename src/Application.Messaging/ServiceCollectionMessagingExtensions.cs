@@ -61,7 +61,7 @@ public static class ServiceCollectionMessagingExtensions
 
         services.Scan(scan =>
             scan // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container/
-                //.FromExecutingAssembly()
+                 //.FromExecutingAssembly()
                 .FromApplicationDependencies(a =>
                     !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies))
                 .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));

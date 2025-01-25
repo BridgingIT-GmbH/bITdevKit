@@ -146,7 +146,7 @@ public class SubscriptionPlans(string id, StubSubscriptionPlanDetails value)
 }
 
 public class StubSubscriptionPlanDetails(string name, decimal pricePerMonth, int storageInGb, int maxUsers)
-    //: IEquatable<StubSubscriptionPlanDetails>
+//: IEquatable<StubSubscriptionPlanDetails>
 {
     public string Name { get; set; } = name;
 

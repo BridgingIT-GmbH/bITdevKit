@@ -35,7 +35,9 @@ public class DinnerSnapshotExportJob(
                 Description = dinner.Description,
                 Menu = new MenuSnapshotDocument
                 {
-                    Id = menu?.Id?.ToString(), Name = menu?.Name, Description = menu?.Description
+                    Id = menu?.Id?.ToString(),
+                    Name = menu?.Name,
+                    Description = menu?.Description
                 }
             };
             // TODO: map everything incl. the menus to the snapshot

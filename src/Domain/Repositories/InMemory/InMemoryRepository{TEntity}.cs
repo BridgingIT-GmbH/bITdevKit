@@ -10,7 +10,8 @@ using Microsoft.Extensions.Logging;
 public class InMemoryRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : InMemoryRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
-    where TContext : InMemoryContext<TEntity> { }
+    where TContext : InMemoryContext<TEntity>
+{ }
 
 /// <summary>
 ///     Represents an InMemoryRepository.

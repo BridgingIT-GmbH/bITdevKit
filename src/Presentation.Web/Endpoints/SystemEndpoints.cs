@@ -29,12 +29,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
             return;
         }
 
-        var group = app.MapGroup(this.options.GroupPrefix).WithTags(this.options.GroupTag);
-
-        if (this.options.RequireAuthorization)
-        {
-            group.RequireAuthorization();
-        }
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetSystem)
             //.AllowAnonymous()
@@ -72,17 +67,17 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         var host = $"{httpContext.Request.Scheme}://{httpContext.Request.Host.Value.Trim('/')}";
         if (this.options.EchoEnabled)
         {
-            result.Add("echo", $"{host}/{this.options.GroupPrefix.Trim('/')}/echo");
+            result.Add("echo", $"{host}/{this.options.GroupPath.Trim('/')}/echo");
         }
 
         if (this.options.InfoEnabled)
         {
-            result.Add("info", $"{host}/{this.options.GroupPrefix.Trim('/')}/info");
+            result.Add("info", $"{host}/{this.options.GroupPath.Trim('/')}/info");
         }
 
         if (this.options.ModulesEnabled)
         {
-            result.Add("modules", $"{host}/{this.options.GroupPrefix.Trim('/')}/modules");
+            result.Add("modules", $"{host}/{this.options.GroupPath.Trim('/')}/modules");
         }
 
         return Results.Ok(result);
@@ -102,35 +97,25 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
             Request =
                 new Dictionary<string, object>
                 {
-                    ["isLocal"] = IsLocal(httpContext?.Request),
-                    ["host"] = Dns.GetHostName(),
-                    ["ip"] =
-                        (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken))
-                        .Select(i => i.ToString())
-                        .Where(i => i.Contains('.'))
+                    ["isLocal"] = !this.options.HideSensitiveInformation ? IsLocal(httpContext?.Request) : string.Empty,
+                    ["host"] = !this.options.HideSensitiveInformation ? Dns.GetHostName() : string.Empty,
+                    ["ip"] = !this.options.HideSensitiveInformation ? (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)).Select(i => i.ToString()).Where(i => i.Contains('.')) : string.Empty
                 },
             Runtime = new Dictionary<string, string>
             {
                 ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                 ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 ["version"] = Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                ["versionInformation"] =
-                    Assembly.GetEntryAssembly()
-                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                        .InformationalVersion,
+                ["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
                 ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
-                ["processName"] =
-                    Process.GetCurrentProcess()
-                        .ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase)
-                        ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)"
-                        : Process.GetCurrentProcess().ProcessName,
-                ["process64Bits"] = Environment.Is64BitProcess.ToString(),
-                ["framework"] = RuntimeInformation.FrameworkDescription,
-                ["runtime"] = RuntimeInformation.RuntimeIdentifier,
-                ["machineName"] = Environment.MachineName,
-                ["processorCount"] = Environment.ProcessorCount.ToString(),
-                ["osDescription"] = RuntimeInformation.OSDescription,
-                ["osArchitecture"] = RuntimeInformation.OSArchitecture.ToString()
+                ["processName"] = !this.options.HideSensitiveInformation ? Process.GetCurrentProcess().ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)" : Process.GetCurrentProcess().ProcessName : string.Empty,
+                ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,
+                ["framework"] = !this.options.HideSensitiveInformation ? RuntimeInformation.FrameworkDescription : string.Empty,
+                ["runtime"] = !this.options.HideSensitiveInformation ? RuntimeInformation.RuntimeIdentifier : string.Empty,
+                ["machineName"] = !this.options.HideSensitiveInformation ? Environment.MachineName : string.Empty,
+                ["processorCount"] = !this.options.HideSensitiveInformation ? Environment.ProcessorCount.ToString() : string.Empty,
+                ["osDescription"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSDescription : string.Empty,
+                ["osArchitecture"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSArchitecture.ToString() : string.Empty
             }
         };
 

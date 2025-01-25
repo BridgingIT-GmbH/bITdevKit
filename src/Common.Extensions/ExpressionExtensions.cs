@@ -154,7 +154,7 @@ public static class ExpressionExtensions
             }
             else
             {
-                replacementParams = new Dictionary<ParameterExpression, Expression>(this.replacementParams);
+                replacementParams = [.. this.replacementParams];
             }
 
             try
@@ -198,7 +198,7 @@ public static class ExpressionExtensions
                 }
                 else
                 {
-                    replacementParams = new Dictionary<ParameterExpression, Expression>(this.replacementParams);
+                    replacementParams = [.. this.replacementParams];
                 }
 
                 try

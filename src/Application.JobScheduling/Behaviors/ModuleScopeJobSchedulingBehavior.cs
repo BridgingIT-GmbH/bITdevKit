@@ -19,10 +19,10 @@ public class ModuleScopeJobSchedulingBehavior(
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [ModuleConstants.ModuleNameKey] = moduleName,
-                   // correlatioid/flowid added earlier in the job execution pipeline (jobwrapper)
-               }))
+        {
+            [ModuleConstants.ModuleNameKey] = moduleName,
+            // correlatioid/flowid added earlier in the job execution pipeline (jobwrapper)
+        }))
         {
             if (module is not null && !module.Enabled)
             {
@@ -39,16 +39,17 @@ public class ModuleScopeJobSchedulingBehavior(
                     async (a, c) =>
                     {
                         using (this.Logger.BeginScope(new Dictionary<string, object>
-                               {
-                                   [Constants.TraceIdKey] = a.TraceId.ToString()
-                               }))
+                        {
+                            [Constants.TraceIdKey] = a.TraceId.ToString()
+                        }))
                         {
                             await Activity.Current.StartActvity($"JOB_EXECUTE {jobTypeName} [{moduleName}]",
                                     async (a, c) => await next().AnyContext(),
                                     ActivityKind.Producer,
                                     tags: new Dictionary<string, string>
                                     {
-                                        ["job.id"] = jobId, ["job.type"] = jobTypeName
+                                        ["job.id"] = jobId,
+                                        ["job.type"] = jobTypeName
                                     },
                                     cancellationToken: c).AnyContext();
                         }

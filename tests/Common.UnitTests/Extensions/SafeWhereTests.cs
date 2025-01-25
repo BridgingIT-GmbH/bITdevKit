@@ -34,7 +34,7 @@ public class SafeWhereTests
         var result = source.SafeWhere(predicate);
 
         // Assert
-        result.ShouldBe(new List<int> { 3, 4 });
+        result.ShouldBe([3, 4]);
     }
 
     // Test for SafeWhere with ICollection
@@ -63,7 +63,7 @@ public class SafeWhereTests
         var result = source.SafeWhere(predicate);
 
         // Assert
-        result.ShouldBe(new List<int> { 3, 4 });
+        result.ShouldBe([3, 4]);
     }
 
     // Test for SafeWhere with IDictionary

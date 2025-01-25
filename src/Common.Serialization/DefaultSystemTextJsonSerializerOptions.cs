@@ -27,7 +27,7 @@ public static class DefaultSystemTextJsonSerializerOptions
                 new FilterSpecificationNodeConverter(),
                 new ResultJsonConverter(),
                 new ResultValueJsonConverterFactory(),
-                new PagedResultJsonConverterFactory(),
+                new ResultPagedJsonConverterFactory(),
                 new JsonStringEnumConverter(),
             },
             TypeInfoResolver = new PrivateConstructorContractResolver() // allow deserialization of types with only private constructors

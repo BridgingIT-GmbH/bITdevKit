@@ -19,7 +19,6 @@ using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation;
 using BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
@@ -35,7 +34,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using ModuleExtensions = Microsoft.Extensions.DependencyInjection.ModuleExtensions;
 
 // ===============================================================================================
@@ -55,6 +53,7 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
         c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 
 builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
+builder.Services.AddHttpContextAccessor();
 
 // ===============================================================================================
 // Configure the services
@@ -129,6 +128,9 @@ builder.Services.AddMessaging(builder.Configuration,
 
 ConfigureHealth(builder.Services);
 
+builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
+//builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());
+
 builder.Services
     .AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
 builder.Services.Configure<ApiBehaviorOptions>(ConfigureApiBehavior);
@@ -141,6 +143,7 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
+//builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpointsApiExplorer();
@@ -183,6 +186,9 @@ app.UseRequestLogging();
 app.UseOpenApi();
 app.UseSwaggerUi(ConfigureSwaggerUi);
 
+//app.UseAuthentication();
+//app.UseAuthorization();
+
 //app.UseResponseCompression();
 app.UseHttpsRedirection();
 
@@ -204,8 +210,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseModules();
 
-app.UseAuthentication(); // TODO: move to IdentityModule
-app.UseAuthorization(); // TODO: move to IdentityModule
+app.UseCurrentUserLogging();
 
 if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
 {

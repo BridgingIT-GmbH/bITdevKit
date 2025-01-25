@@ -31,8 +31,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route + $"/{model.Id}")
-            .AnyContext();
+            .GetAsync(route + $"/{model.Id}").AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -54,8 +53,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route)
-            .AnyContext();
+            .GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -76,8 +74,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .GetAsync(route + $"/{Guid.NewGuid()}")
-            .AnyContext();
+            .GetAsync(route + $"/{Guid.NewGuid()}").AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -93,7 +90,9 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
         var model = new HostModel
         {
-            FirstName = entity.FirstName, LastName = entity.LastName, UserId = Guid.NewGuid().ToString()
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            UserId = Guid.NewGuid().ToString("N")
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
@@ -102,8 +101,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route, content)
-            .AnyContext();
+            .PostAsync(route, content).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -132,8 +130,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PutAsync(route + $"/{model.Id}", content)
-            .AnyContext();
+            .PutAsync(route + $"/{model.Id}", content).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -155,7 +152,9 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
         var model = new HostModel
         {
-            FirstName = string.Empty, LastName = string.Empty, UserId = entity.UserId.ToString()
+            FirstName = string.Empty,
+            LastName = string.Empty,
+            UserId = entity.UserId.ToString()
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
@@ -164,8 +163,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
 
         // Act
         var response = await this.fixture.CreateClient()
-            .PostAsync(route, content)
-            .AnyContext();
+            .PostAsync(route, content).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // Assert
@@ -180,15 +178,16 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         var entity = Stubs.Hosts(DateTime.UtcNow.Ticks).First();
         var model = new HostModel
         {
-            FirstName = entity.FirstName, LastName = entity.LastName, UserId = entity.UserId.ToString()
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            UserId = entity.UserId.ToString()
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
-            .PostAsync(route, content)
-            .AnyContext();
+            .PostAsync(route, content).AnyContext();
         response.EnsureSuccessStatusCode();
 
         return await HttpContentExtensions.ReadAsAsync<HostModel>(response.Content);

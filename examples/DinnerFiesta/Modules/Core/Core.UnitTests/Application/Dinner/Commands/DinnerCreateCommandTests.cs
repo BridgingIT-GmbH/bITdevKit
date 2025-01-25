@@ -20,7 +20,8 @@ public class DinnerCreateCommandTests
             Schedule =
                 new DinnerCreateCommand.DinnerSchedule
                 {
-                    StartDateTime = DateTimeOffset.Now.AddDays(1), EndDateTime = DateTimeOffset.Now.AddDays(2)
+                    StartDateTime = DateTimeOffset.Now.AddDays(1),
+                    EndDateTime = DateTimeOffset.Now.AddDays(2)
                 },
             IsPublic = true,
             MaxGuests = 10,
@@ -60,7 +61,8 @@ public class DinnerCreateCommandTests
             Schedule =
                 new DinnerCreateCommand.DinnerSchedule
                 {
-                    StartDateTime = DateTimeOffset.Now.AddDays(1), EndDateTime = DateTimeOffset.Now.AddDays(2)
+                    StartDateTime = DateTimeOffset.Now.AddDays(1),
+                    EndDateTime = DateTimeOffset.Now.AddDays(2)
                 },
             IsPublic = true,
             MaxGuests = 10,

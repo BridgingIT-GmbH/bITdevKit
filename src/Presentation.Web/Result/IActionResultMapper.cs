@@ -19,7 +19,7 @@ public interface IActionResultMapper
 
     ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models);
 
-    ActionResult<PagedResult<TModel>> Ok<TModel>(PagedResult<TModel> result);
+    ActionResult<ResultPaged<TModel>> Ok<TModel>(ResultPaged<TModel> result);
 
     ActionResult<TModel> Created<TModel>(
         IResult result,
@@ -117,5 +117,5 @@ public interface IActionResultMapper
 
     ActionResult<ICollection<TModel>> Object<TModel>(IResult result, IEnumerable<TModel> models, int statusCode);
 
-    ActionResult<PagedResult<TModel>> Object<TModel>(PagedResult<TModel> result, int statusCode);
+    ActionResult<ResultPaged<TModel>> Object<TModel>(ResultPaged<TModel> result, int statusCode);
 }

@@ -23,7 +23,8 @@ public class CountryFindAllQueryHandler(
         var countries = await cityRepository.ProjectAllAsync(e => e.Country,
                 new FindOptions<City>
                 {
-                    Order = new OrderOption<City>(e => e.Country), Distinct = new DistinctOption<City>()
+                    Order = new OrderOption<City>(e => e.Country),
+                    Distinct = new DistinctOption<City>()
                 },
                 cancellationToken)
             .AnyContext();

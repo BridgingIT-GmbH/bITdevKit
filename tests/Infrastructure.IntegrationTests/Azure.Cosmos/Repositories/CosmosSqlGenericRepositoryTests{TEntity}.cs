@@ -278,7 +278,7 @@ public class CosmosSqlGenericRepositoryTests
         var entity6 = await this.InsertEntityAsync(19); // second page
 
         // Act
-        var results = await this.sut.FindAllPagedResultAsync(new Specification<PersonStub>(e =>
+        var results = await this.sut.FindAllResultPagedAsync(new Specification<PersonStub>(e =>
                 e.FirstName == entity1.FirstName ||
                 e.FirstName == entity2.FirstName ||
                 e.FirstName == entity3.FirstName ||

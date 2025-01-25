@@ -9,7 +9,8 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 public class GenericRepositorySpecificationDecorator<TEntity>(
     ISpecification<TEntity> specification,
     IGenericRepository<TEntity> inner) : RepositorySpecificationBehavior<TEntity>(specification, inner)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
@@ -65,10 +66,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]),
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]), options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -76,10 +74,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.Inner.FindAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -87,8 +82,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(), projection, options, cancellationToken)
-            .AnyContext();
+        return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(), projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
@@ -110,11 +104,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.ProjectAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
-                projection,
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.Inner.ProjectAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), projection, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -132,8 +122,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(this.Specification.And(specification), options, cancellationToken)
-            .AnyContext();
+        return await this.Inner.FindOneAsync(this.Specification.And(specification), options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -141,10 +130,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.FindOneAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
-                options,
-                cancellationToken)
-            .AnyContext();
+        return await this.Inner.FindOneAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -157,9 +143,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
-    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
@@ -169,9 +153,7 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
-    public async Task<long> CountAsync(
-        ISpecification<TEntity> specification,
-        CancellationToken cancellationToken = default)
+    public async Task<long> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
@@ -180,8 +162,6 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        return await this.Inner.CountAsync(new[] { this.Specification }.Concat(specifications.SafeNull()),
-                cancellationToken)
-            .AnyContext();
+        return await this.Inner.CountAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), cancellationToken).AnyContext();
     }
 }

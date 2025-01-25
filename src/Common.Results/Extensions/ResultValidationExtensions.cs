@@ -76,7 +76,7 @@ public static class ResultValidationExtensions
                 .WithError(new ValidationError("Validator cannot be null"));
         }
 
-        var valuesList = values?.ToList() ?? new List<T>();
+        var valuesList = values?.ToList() ?? [];
         if (!valuesList.Any())
         {
             return Result<IEnumerable<T>>.Success(valuesList);
@@ -140,7 +140,7 @@ public static class ResultValidationExtensions
                 .WithError(new ValidationError("No validators provided"));
         }
 
-        var valuesList = values?.ToList() ?? new List<T>();
+        var valuesList = values?.ToList() ?? [];
         if (!valuesList.Any())
         {
             return Result<IEnumerable<T>>.Success(valuesList);

@@ -5,7 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.IntegrationTests;
 
+using System.Net.Http.Headers;
+using BridgingIT.DevKit.Presentation.Web;
 using DevKit.Presentation;
+using Microsoft.Extensions.DependencyInjection;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Presentation")]
@@ -21,9 +24,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     {
         // arrang/act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
-        var response = await this.fixture.CreateClient()
-            .GetAsync(route)
-            .AnyContext();
+        var response = await (await this.CreateClient()).GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
@@ -37,9 +38,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     {
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
-        var response = await this.fixture.CreateClient()
-            .GetAsync(route)
-            .AnyContext();
+        var response = await (await this.CreateClient()).GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
@@ -61,12 +60,37 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     {
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
-        var response = await this.fixture.CreateClient()
-            .GetAsync(route)
-            .AnyContext();
+        var response = await (await this.CreateClient(Fakes.Users[0])).GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
         response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
+    }
+
+    [Theory]
+    [InlineData("api/core/forecasts/auth")]
+    public async Task ForecastGetAllWithAuthTest(string route)
+    {
+        // Arrange & Act
+        this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
+        var response = await (await this.CreateClient(Fakes.Users[0])).GetAsync(route).AnyContext();
+        this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
+
+        // asert
+        response.Should().Be200Ok(); // https://github.com/adrianiftode/FluentAssertions.Web
+    }
+
+    private async Task<HttpClient> CreateClient(FakeUser user = null)
+    {
+        var client = this.fixture.CreateClient();
+
+        if (user != null)
+        {
+            var provider = this.fixture.Services.GetRequiredService<IFakeIdentityProvider>();
+            var response = await provider.HandlePasswordGrantAsync(null, user.Email, user.Password, null);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.AccessToken);
+        }
+
+        return client;
     }
 }

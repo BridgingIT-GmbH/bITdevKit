@@ -51,11 +51,17 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot
 public abstract class AggregateRoot<TId, TIdType> : AggregateRoot<TId>, IEntity
     where TId : AggregateRootId<TIdType>
 {
-    public new AggregateRootId<TIdType> Id { get; set; }
+    private TId id;
+
+    public new TId Id
+    {
+        get => this.id;
+        set => this.id = value;
+    }
 
     object IEntity.Id
     {
-        get => this.Id;
-        set => this.Id = (TId)value;
+        get => this.id;
+        set => this.id = (TId)value;
     }
 }

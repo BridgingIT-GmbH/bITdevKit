@@ -32,12 +32,12 @@ public class JobWrapper(
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger?.BeginScope(new Dictionary<string, object>
-               {
-                   [CorrelationKey] = correlationId,
-                   [FlowKey] = flowId,
-                   [JobIdKey] = jobId,
-                   [JobTypeKey] = jobTypeName
-               }))
+        {
+            [CorrelationKey] = correlationId,
+            [FlowKey] = flowId,
+            [JobIdKey] = jobId,
+            [JobTypeKey] = jobTypeName
+        }))
         {
             try
             {

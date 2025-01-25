@@ -686,7 +686,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithStringOrdering_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_WithStringOrdering_ReturnsResultPaged()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -697,7 +697,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             .Returns(expectedPersons);
 
         // Act
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             ordering: "Age ascending",
             page: 1,
             pageSize: 3);
@@ -717,7 +717,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithExpressionOrdering_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_WithExpressionOrdering_ReturnsResultPaged()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -728,7 +728,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             .Returns(expectedPersons);
 
         // Act
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             orderingExpression: p => p.Age,
             page: 2,
             pageSize: 3,
@@ -749,7 +749,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithExpression_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_WithExpression_ReturnsResultPaged()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -760,7 +760,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             .Returns(expectedPersons);
 
         // Act
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             p => p.Age > 30,
             ordering: "LastName descending",
             page: 1,
@@ -782,7 +782,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithSpecification_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_WithSpecification_ReturnsResultPaged()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -794,7 +794,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
 
         // Act
         var specification = Substitute.For<ISpecification<PersonStub>>();
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             specification,
             ordering: "FirstName ascending",
             page: 2,
@@ -816,7 +816,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithSpecifications_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_WithSpecifications_ReturnsResultPaged()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -832,7 +832,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             Substitute.For<ISpecification<PersonStub>>(),
             Substitute.For<ISpecification<PersonStub>>()
         };
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             specifications,
             ordering: "Age ascending",
             page: 3,
@@ -854,7 +854,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithIncludePath_AppliesInclude()
+    public async Task FindAllResultPagedAsync_WithIncludePath_AppliesInclude()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -865,7 +865,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             .Returns(expectedPersons);
 
         // Act
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             ordering: "Age ascending",
             page: 1,
             pageSize: 3,
@@ -881,7 +881,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WhenExceptionThrown_ReturnsFailureResult()
+    public async Task FindAllResultPagedAsync_WhenExceptionThrown_ReturnsFailureResult()
     {
         // Arrange
         var repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
@@ -889,7 +889,7 @@ public class GenericReadOnlyRepositoryResultExtensionsTests
             .Throws(new Exception("Test exception"));
 
         // Act
-        var result = await repository.FindAllPagedResultAsync(
+        var result = await repository.FindAllResultPagedAsync(
             ordering: "Age ascending",
             page: 1,
             pageSize: 3);

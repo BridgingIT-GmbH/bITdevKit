@@ -36,9 +36,7 @@ public class City : AggregateRoot<Guid>
 
         var entity = new City
         {
-            Id =
-                GuidGenerator.Create(
-                    $"{country}-{name}"), // create repeatable id auf basis country-name (=upsert friendly)
+            Id = GuidGenerator.Create($"{country}-{name}"), // create repeatable id auf basis country-name (=upsert friendly)
             Name = name,
             Country = country,
             Location = GeoLocation.Create(longitude, latitude),

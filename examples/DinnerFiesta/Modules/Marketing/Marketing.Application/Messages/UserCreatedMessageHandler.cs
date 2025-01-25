@@ -37,7 +37,9 @@ public class UserCreatedMessageHandler(
         {
             var command = new CustomerCreateCommand
             {
-                FirstName = message.FirstName, LastName = message.LastName, Email = message.Email
+                FirstName = message.FirstName,
+                LastName = message.LastName,
+                Email = message.Email
             };
             await mediator.Send(command, cancellationToken).AnyContext();
 

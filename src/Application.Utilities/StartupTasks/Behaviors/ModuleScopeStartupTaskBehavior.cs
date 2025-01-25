@@ -24,12 +24,12 @@ public class ModuleScopeStartupTaskBehavior(
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [ModuleConstants.ModuleNameKey] = moduleName,
-                   [Constants.CorrelationIdKey] = correlationId,
-                   [Constants.FlowIdKey] = flowId,
-                   [Constants.StartupTaskKey] = taskName
-               }))
+        {
+            [ModuleConstants.ModuleNameKey] = moduleName,
+            [Constants.CorrelationIdKey] = correlationId,
+            [Constants.FlowIdKey] = flowId,
+            [Constants.StartupTaskKey] = taskName
+        }))
         {
             if (module?.Enabled == false)
             {
@@ -41,9 +41,9 @@ public class ModuleScopeStartupTaskBehavior(
                     async (a, c) =>
                     {
                         using (this.Logger.BeginScope(new Dictionary<string, object>
-                               {
-                                   [Constants.TraceIdKey] = a.TraceId.ToString()
-                               }))
+                        {
+                            [Constants.TraceIdKey] = a.TraceId.ToString()
+                        }))
                         {
                             await Activity.Current
                                 .StartActvity($"STARTUPTASK_EXECUTE {taskName} [{moduleName}]",

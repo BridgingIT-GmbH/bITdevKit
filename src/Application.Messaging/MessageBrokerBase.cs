@@ -146,9 +146,10 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         var result = true;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [Constants.CorrelationIdKey] = correlationId, [Constants.FlowIdKey] = flowId
-               }))
+        {
+            [Constants.CorrelationIdKey] = correlationId,
+            [Constants.FlowIdKey] = flowId
+        }))
         {
             if (this.Subscriptions.Exists(messageType))
             {

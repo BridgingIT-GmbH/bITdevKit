@@ -610,7 +610,7 @@ public class DateTimeExtensionsTests
         result.ShouldBe(5);
     }
 
-// Alternative version using a fixed date for more stability
+    // Alternative version using a fixed date for more stability
     [Fact]
     public void DaysUntil_ReturnsCorrectNumberOfDays_WithFixedDates()
     {

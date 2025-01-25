@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public static partial class Extensions
 {
@@ -16,6 +16,13 @@ public static partial class Extensions
         }
 
         return source;
+    }
+
+    public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(
+        this IQueryable<TEntity> source,
+        bool condition) where TEntity : class, IEntity
+    {
+        return condition ? source.AsNoTracking() : source;
     }
 
     public static IQueryable<TDatabaseEntity> AsNoTrackingIf<TEntity, TDatabaseEntity>(

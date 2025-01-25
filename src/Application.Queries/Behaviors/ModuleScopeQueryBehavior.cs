@@ -30,9 +30,9 @@ public class ModuleScopeQueryBehavior<TRequest, TResponse>(
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [ModuleConstants.ModuleNameKey] = moduleName
-               }))
+        {
+            [ModuleConstants.ModuleNameKey] = moduleName
+        }))
         {
             if (module is not null && !module.Enabled)
             {

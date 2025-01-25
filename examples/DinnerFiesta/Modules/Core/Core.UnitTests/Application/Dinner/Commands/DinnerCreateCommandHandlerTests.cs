@@ -88,7 +88,8 @@ public class DinnerCreateCommandHandlerTests
             Schedule =
                 new DinnerCreateCommand.DinnerSchedule
                 {
-                    StartDateTime = dinner.Schedule.StartDateTime, EndDateTime = dinner.Schedule.EndDateTime
+                    StartDateTime = dinner.Schedule.StartDateTime,
+                    EndDateTime = dinner.Schedule.EndDateTime
                 },
             IsPublic = true,
             MaxGuests = 5,

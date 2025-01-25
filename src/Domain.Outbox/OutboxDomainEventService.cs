@@ -16,7 +16,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
     private readonly IOutboxDomainEventWorker worker;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly OutboxDomainEventOptions options;
-    private Timer processTimer;
+    private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
     public OutboxDomainEventService(
@@ -37,7 +37,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.processTimer?.Change(Timeout.Infinite, 0);
+        this.logger.LogInformation("{LogKey} outbox domain event service stopped", Constants.LogKey);
 
         await base.StopAsync(cancellationToken);
     }
@@ -50,77 +50,68 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         base.Dispose();
     }
 
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
-        {
-            return;
-        }
+            return Task.CompletedTask;
 
-        // Wait "indefinitely", until ApplicationStarted is triggered
-        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
-            .ContinueWith(_ =>
+        var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
+        {
+            if (this.options.StartupDelay.TotalMilliseconds > 0)
+            {
+                this.logger.LogDebug("{LogKey} outbox domain event service startup delayed", Constants.LogKey);
+                await Task.Delay(this.options.StartupDelay, cancellationToken);
+            }
+
+            if (this.options.PurgeProcessedOnStartup)
+            {
+                await this.worker.PurgeAsync(true, cancellationToken);
+            }
+            else if (this.options.PurgeOnStartup)
+            {
+                await this.worker.PurgeAsync(false, cancellationToken);
+            }
+
+            this.semaphore = new SemaphoreSlim(1);
+            this.logger.LogInformation("{LogKey} outbox domain event service started", Constants.LogKey);
+
+            this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
+
+            try
+            {
+                while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
                 {
-                    this.logger.LogDebug("{LogKey} outbox domain event service - application started", Constants.LogKey);
-                },
-                TaskContinuationOptions.OnlyOnCanceled)
-            .ConfigureAwait(false);
+                    await this.ProcessWorkAsync(cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                this.logger.LogInformation("{LogKey} outbox domain event service stopped", Constants.LogKey);
+            }
+        });
 
-        if (this.options.StartupDelay.TotalMilliseconds > 0)
-        {
-            this.logger.LogDebug("{LogKey} outbox domain event service startup delayed (type={ProcessorType})",
-                Constants.LogKey,
-                typeof(OutboxDomainEventService).Name);
-
-            await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
-        }
-
-        if (this.options.PurgeProcessedOnStartup)
-        {
-            await this.worker.PurgeAsync(true, cancellationToken);
-        }
-        else if (this.options.PurgeOnStartup)
-        {
-            await this.worker.PurgeAsync(false, cancellationToken);
-        }
-
-        await Task.Delay(1, cancellationToken);
-        this.semaphore = new SemaphoreSlim(1);
-
-        this.logger.LogInformation("{LogKey} outbox domain event service started (type={ProcessorType})",
-            Constants.LogKey,
-            typeof(OutboxDomainEventService).Name);
-        // TODO: .NET8 use new PeriodicTimer https://bartwullems.blogspot.com/2023/10/create-aspnet-core-backgroundservice.html
-        this.processTimer = new Timer(this.ProcessAsync,
-            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken).Token,
-            0,
-            (int)this.options.ProcessingInterval.TotalMilliseconds);
+        return Task.CompletedTask;
     }
 
-    private async void ProcessAsync(object state)
+    private async Task ProcessWorkAsync(CancellationToken cancellationToken)
     {
-        var cancellationToken = state is not null ? (CancellationToken)state : CancellationToken.None;
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return;
-        }
-
         try
         {
-            await this.semaphore.WaitAsync(cancellationToken); // Wait for semaphore availability
+            if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
+            {
+                this.logger.LogWarning("{LogKey} outbox domain event service timed out waiting for semaphore", Constants.LogKey);
+                return;
+            }
+
             await this.worker.ProcessAsync(cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex,
-                "{LogKey} outbox domain event service failed: {ErrorMessage} (type={ProcessorType})",
-                Constants.LogKey,
-                ex.Message,
-                typeof(OutboxDomainEventService).Name);
+            this.logger.LogError(ex, "{LogKey} outbox domain event service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
         finally
         {
-            this.semaphore.Release(); // Release the semaphore
+            this.semaphore?.Release();
         }
     }
 }

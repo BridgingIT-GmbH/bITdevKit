@@ -22,7 +22,8 @@ public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TDatabaseEntity, 
     TContext context) : EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context)
     where TEntity : class, IEntity
     where TContext : DbContext
-    where TDatabaseEntity : class { }
+    where TDatabaseEntity : class
+{ }
 
 /// <summary>
 /// Provides a read-only generic repository for Entity Framework.
@@ -160,7 +161,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull()
             .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
@@ -169,6 +170,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
             return (await this.Options.DbContext.Set<TDatabaseEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options, this.Options.Mapper)
+                .HierarchyIf(options, this.Options.Mapper)
                 .WhereExpressions(expressions)
                 .OrderByIf(options, this.Options.Mapper)
                 .DistinctByIf(options, this.Options.Mapper)
@@ -181,6 +183,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         return (await this.Options.DbContext.Set<TDatabaseEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options, this.Options.Mapper)
+                .HierarchyIf(options, this.Options.Mapper)
                 .WhereExpressions(expressions)
                 .DistinctByIf(options, this.Options.Mapper)
                 .SkipIf(options?.Skip)
@@ -260,7 +263,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.SafeNull().ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications.SafeNull()];
         var expressions = specificationsArray.SafeNull()
             .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
@@ -344,7 +347,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull()
             .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s));
 
@@ -426,7 +429,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull()
             .Select(s => this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(s)).ToList();
 

@@ -16,7 +16,7 @@ public class SubscriptionMap : ISubscriptionMap
     public SubscriptionMap()
     {
         this.map = new Dictionary<string, List<SubscriptionDetails>>();
-        this.messageTypes = new List<Type>();
+        this.messageTypes = [];
     }
 
     /// <summary>

@@ -21,7 +21,9 @@ public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
             this.eventIds = new ActionBlock<string>(action,
                 new ExecutionDataflowBlockOptions
                 {
-                    CancellationToken = CancellationToken.None, MaxDegreeOfParallelism = 1, EnsureOrdered = true
+                    CancellationToken = CancellationToken.None,
+                    MaxDegreeOfParallelism = 1,
+                    EnsureOrdered = true
                 });
         }
     }

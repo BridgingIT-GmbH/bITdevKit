@@ -75,7 +75,7 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
-    public virtual ActionResult<PagedResult<TModel>> Ok<TModel>(PagedResult<TModel> result)
+    public virtual ActionResult<ResultPaged<TModel>> Ok<TModel>(ResultPaged<TModel> result)
     {
         if (!result.HasError())
         {
@@ -469,7 +469,7 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
-    public virtual ActionResult<PagedResult<TModel>> Object<TModel>(PagedResult<TModel> result, int statusCode)
+    public virtual ActionResult<ResultPaged<TModel>> Object<TModel>(ResultPaged<TModel> result, int statusCode)
     {
         if (!result.HasError())
         {
@@ -525,6 +525,7 @@ public class DefaultActionResultMapper : IActionResultMapper
                 ["Messages"] = string.Join(Environment.NewLine, result.Messages)
             },
             Type = "https://httpstatuses.com/500"
-        }) { StatusCode = 500 }; // unhandled
+        })
+        { StatusCode = 500 }; // unhandled
     }
 }

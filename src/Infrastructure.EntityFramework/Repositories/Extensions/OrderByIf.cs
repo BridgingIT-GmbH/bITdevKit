@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Linq.Dynamic.Core;
 
@@ -21,7 +21,7 @@ public static partial class Extensions
         }
 
         IOrderedQueryable<TEntity> result = null;
-        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order)
                  ?.Where(o => o.Expression is not null))
         {
             result = result is null ? order.Direction == OrderDirection.Ascending
@@ -32,7 +32,7 @@ public static partial class Extensions
                 result.ThenByDescending(order.Expression);
         }
 
-        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order)
                  ?.Where(o => !o.Ordering.IsNullOrEmpty()))
         {
             result = result is null
@@ -56,7 +56,7 @@ public static partial class Extensions
         }
 
         IOrderedQueryable<TDatabaseEntity> result = null;
-        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order))
         {
             result = result is null
                 ? order.Direction == OrderDirection.Ascending

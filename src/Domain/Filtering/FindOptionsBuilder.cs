@@ -24,15 +24,14 @@ public static class FindOptionsBuilder
             return new FindOptions<TEntity>();
         }
 
-        var options = new FindOptions<TEntity>
+        return new FindOptions<TEntity>
         {
             Orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings),
             Includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes),
+            Hierarchy = HierarchyOptionBuilder.Build<TEntity>(filterModel.Hierarchy, filterModel.HierarchyMaxDepth),
             Skip = filterModel.PageSize * (filterModel.Page - 1),
             Take = filterModel.PageSize,
         };
-
-        return options;
     }
 
     /// <summary>

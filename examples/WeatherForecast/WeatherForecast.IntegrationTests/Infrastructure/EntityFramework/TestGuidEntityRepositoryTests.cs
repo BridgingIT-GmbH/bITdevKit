@@ -94,7 +94,8 @@ public class
             entity.MyProperty2 = "Jane " + ticks;
             entity.Children.Add(new TestGuidChildEntity
             {
-                MyProperty1 = "val new " + ticks, MyProperty2 = "val new " + ticks
+                MyProperty1 = "val new " + ticks,
+                MyProperty2 = "val new " + ticks
             });
 
             await scopedSut.UpsertAsync(entity).AnyContext();
@@ -447,9 +448,11 @@ public class
         using var scope = this.fixture.Services.CreateScope();
         var scopedSut = scope.ServiceProvider.GetRequiredService<IGenericRepository<TestGuidEntity>>();
         var result = await scopedSut.FindAllAsync(new FindOptions<TestGuidEntity>
-            {
-                Skip = 5, Take = 5, Include = new IncludeOption<TestGuidEntity>(e => e.Children)
-            })
+        {
+            Skip = 5,
+            Take = 5,
+            Include = new IncludeOption<TestGuidEntity>(e => e.Children)
+        })
             .AnyContext();
 
         result.ShouldNotBeNull();

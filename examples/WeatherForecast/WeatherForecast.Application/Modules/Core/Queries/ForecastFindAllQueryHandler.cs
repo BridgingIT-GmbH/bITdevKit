@@ -33,12 +33,12 @@ public class ForecastFindAllQueryHandler(
 public class ForecastFindAllPagedQueryHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<Forecast> forecastRepository)
-    : QueryHandlerBase<ForecastFindAllPagedQuery, PagedResult<Forecast>>(loggerFactory)
+    : QueryHandlerBase<ForecastFindAllPagedQuery, ResultPaged<Forecast>>(loggerFactory)
 {
-    public override async Task<QueryResponse<PagedResult<Forecast>>> Process(
+    public override async Task<QueryResponse<ResultPaged<Forecast>>> Process(
         ForecastFindAllPagedQuery query, CancellationToken cancellationToken)
     {
-        var result = await forecastRepository.FindAllPagedResultAsync( // repo takes care of the filter and paging
+        var result = await forecastRepository.FindAllResultPagedAsync( // repo takes care of the filter and paging
                 query.Filter, cancellationToken: cancellationToken);
 
         return QueryResponse.For(result); // new result to response syntax (use For)

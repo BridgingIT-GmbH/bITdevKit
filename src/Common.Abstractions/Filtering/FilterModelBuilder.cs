@@ -240,6 +240,22 @@ public static class FilterModelBuilder
         }
 
         /// <summary>
+        /// Adds an hierarchy criterion to the filter model, specifying the children to include.
+        /// </summary>
+        /// <param name="hierarchySelector">An expression selecting the property that contains the children.</param>
+        /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
+        /// <example>
+        /// builder.AddHierarchy(manager => manager.Employees);
+        /// </example>
+        public Builder<T> AddHierarchy(Expression<Func<T, object>> hierarchySelector, int maxDepth = 5)
+        {
+            this.filterModel.Hierarchy = GetMemberName(hierarchySelector);
+            this.filterModel.HierarchyMaxDepth = maxDepth;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a custom filter to the filter model, which allows for specialized filtering logic.
         /// </summary>
         /// <param name="customType">The type of the custom filter to add.</param>
@@ -253,7 +269,7 @@ public static class FilterModelBuilder
             var customFilter = new FilterCriteria
             {
                 CustomType = customType,
-                CustomParameters = new Dictionary<string, object>()
+                CustomParameters = []
             };
 
             this.filterModel.Filters.Add(customFilter);

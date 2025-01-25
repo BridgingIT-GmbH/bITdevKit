@@ -15,10 +15,10 @@
     <PackageVersion Include="AspNetcore.HealthChecks.Publisher.Seq" Version="8.0.1" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="AutoMapper.Extensions.ExpressionMapping" Version="7.0.2" />
-    <PackageVersion Include="Azure.Data.Tables" Version="12.9.1" />
-    <PackageVersion Include="Azure.Identity" Version="1.13.1" />
+    <PackageVersion Include="Azure.Data.Tables" Version="12.10.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.13.2" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
-    <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
+    <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.18.3" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.3.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.23.0" />
     <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="DotPulsar" Version="3.5.0" />
     <PackageVersion Include="Dumpify" Version="0.6.6" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
-    <PackageVersion Include="FluentAssertions.Web" Version="1.7.0" />
+    <PackageVersion Include="FluentAssertions.Web" Version="1.8.0" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageVersion Include="Humanizer.Core" Version="2.14.1" />
@@ -37,44 +37,49 @@
     <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
-    <PackageVersion Include="MessagePack" Version="2.5.192" />
+    <PackageVersion Include="MessagePack" Version="3.1.1" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.12" />
     <PackageVersion Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.46.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.46.1" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="8.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Localization" Version="8.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Localization" Version="8.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.3.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.49.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.49.0" />
@@ -96,14 +101,15 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.9.0-beta.1" />
-    <PackageVersion Include="Polly" Version="8.5.0" />
+    <PackageVersion Include="Polly" Version="8.5.1" />
     <PackageVersion Include="Polly.Contrib.Simmy" Version="0.3.0" />
     <PackageVersion Include="Quartz" Version="3.13.1" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.13.1" />
     <PackageVersion Include="Quartz.Serialization.Json" Version="3.13.1" />
     <PackageVersion Include="RabbitMQ.Client" Version="[6.8.1,7.0.0)" />
+    <PackageVersion Include="RazorSlices" Version="0.9.1" />
     <PackageVersion Include="Scrutor" Version="[4.2.2,5.0.0)" />
-    <PackageVersion Include="Serilog" Version="4.1.0" />
+    <PackageVersion Include="Serilog" Version="4.2.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageVersion Include="Serilog.Enrichers.ShortTypeName" Version="1.1.0" />
@@ -116,25 +122,32 @@
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.1.1" />
     <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0" />
-    <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.5" />
-    <PackageVersion Include="Shouldly" Version="4.2.1" />
+    <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.19" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Data.SQLite" Version="1.0.119" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
-    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.4.9" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.5.1" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
-    <PackageVersion Include="Testcontainers.Azurite" Version="4.0.0" />
-    <PackageVersion Include="Testcontainers.CosmosDb" Version="4.0.0" />
-    <PackageVersion Include="Testcontainers.MsSql" Version="4.0.0" />
-    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.0.0" />
+    <PackageVersion Include="Testcontainers.Azurite" Version="4.1.0" />
+    <PackageVersion Include="Testcontainers.CosmosDb" Version="4.1.0" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
+    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.1.0" />
     <PackageVersion Include="Xunit.SkippableFact" Version="1.5.23" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.abstractions" Version="2.0.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
+    <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="8.0.1" />
+  </ItemGroup>
+  <ItemGroup Label="set the compiler toolset to a specific version">
+    <PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
   </ItemGroup>
   <ItemGroup Label="upgrade some packages due to transitive vulnerabilities">
     <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management#transitive-pinning -->
@@ -142,8 +155,8 @@
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="System.Runtime.Caching" Version="8.0.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.1" />
     <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>

@@ -3,6 +3,7 @@
 ###################################################################################
 ### API [GET] City FindAll                                                        #
 GET {{baseUrl}}/api/core/cities HTTP/1.1
+Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJhdWQiOiJibGF6b3Itd2FzbSIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEiLCJzdWIiOiI3NDllY2JjNTBjMjM2NGFkZDBjYWE0MGY5YWZjMmJiZiIsImVtYWlsIjoibHVrZS5za3l3YWxrZXJAc3RhcndhcnMuY29tIiwibmFtZSI6Ikx1a2UgU2t5d2Fsa2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoibHVrZS5za3l3YWxrZXJAc3RhcndhcnMuY29tIiwianRpIjoiNWY5NjJmYmMzYzdlNDcxNjg4N2Q3MTIxMzBjMzA2NTciLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXV0aF90aW1lIjoxNzM3MDQ4ODU5LCJleHAiOjE3MzcwNDkxNTksImlhdCI6MTczNzA0ODg1OSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCByb2xlcyBvZmZsaW5lX2FjY2VzcyIsImdpdmVuX25hbWUiOiJMdWtlIiwiZmFtaWx5X25hbWUiOiJTa3l3YWxrZXIiLCJyb2xlIjpbIkFkbWluaXN0cmF0b3JzIiwiVXNlcnMiLCJSZWFkZXJzIiwiV3JpdGVycyIsIkNvbnRyaWJ1dG9ycyJdLCJuYmYiOjE3MzcwNDg4NTl9.
 
 ###################################################################################
 ### API [GET] City FindOne ByName                                                 #
@@ -95,11 +96,14 @@ Accept: application/json
 GET {{baseUrl}}/api/core/cities?filter=%20%7B%0A%22page%22%3A%201%2C%0A%22pageSize%22%3A%2010%2C%0A%22filters%22%3A%20%5B%0A%7B%20%22field%22%3A%20%22Name%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22Berlin%22%20%7D%0A%5D%0A%7D HTTP/1.1
 Content-Type: application/json
 
+###################################################################################
+### API [GET] Cities FindAll                                                      #
+GET {{baseUrl}}/api/core/cities HTTP/1.1
+Content-Type: application/json
 
 ###################################################################################
 ### API [GET] Forecast FindAll    FILTER                                          #
 GET {{baseUrl}}/api/core/forecasts?filter={"page":1,"pageSize":10,"filters":[{"field":"type.name","operator":"isnotnull"},{"field":"type.name","operator":"eq","value":"AAA" },{"field":"temperatureMin","operator":"gte","value":16.1 },{ "field":"timestamp","operator": "gte","value":"2024-10-24T10:00:00"}]} HTTP/1.1
-Content-Type: application/json
 
 ###################################################################################
 ### API [POST] Forecast Search    FILTER                                          #
@@ -162,4 +166,7 @@ Content-Type: application/json
 ###################################################################################
 ### API [GET] Forecast FindAll    FILTER                                          #
 GET {{baseUrl}}/api/core/forecasts?filter=%7B%0A%22page%22%3A%200%2C%0A%22pageSize%22%3A%200%2C%0A%22filters%22%3A%20%5B%0A%7B%20%22field%22%3A%20%22type.name%22%2C%20%22operator%22%3A%20%22isnotnull%22%20%7D%2C%0A%7B%20%22field%22%3A%20%22type.name%22%2C%20%22operator%22%3A%20%22eq%22%2C%20%22value%22%3A%20%22AAA%22%20%7D%2C%0A%7B%20%22field%22%3A%20%22temperatureMin%22%2C%20%22operator%22%3A%20%22gte%22%2C%20%22value%22%3A%2016.1%20%7D%2C%0A%7B%20%22field%22%3A%20%22timestamp%22%2C%20%22operator%22%3A%20%22gte%22%2C%20%22value%22%3A%20%222024-10-24T10%3A00%3A00%2B00%3A00%22%20%7D%0A%5D%0A%7D HTTP/1.1
-Content-Type: application/json
+
+###################################################################################
+### API [GET] Forecast FindAll                                                    #
+GET {{baseUrl}}/api/core/forecasts HTTP/1.1

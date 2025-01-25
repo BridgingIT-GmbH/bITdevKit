@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public static partial class Extensions
 {
@@ -21,7 +21,7 @@ public static partial class Extensions
             ? source.Distinct()
             : source
                 .AsEnumerable() // client evaluation, needed by groupby https://docs.microsoft.com/en-us/ef/core/querying/client-eval
-                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
+                                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
                 .GroupBy(options.Distinct.Expression.Compile())
                 .Select(g => g.FirstOrDefault())
                 .AsQueryable();
@@ -47,7 +47,7 @@ public static partial class Extensions
             ? source.Distinct()
             : source
                 .AsEnumerable() // client evaluation, needed by groupby https://docs.microsoft.com/en-us/ef/core/querying/client-eval
-                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
+                                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
                 .GroupBy(mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Distinct.Expression)
                     ?.Compile())
                 .Select(g => g.FirstOrDefault())
@@ -71,7 +71,7 @@ public static partial class Extensions
             ? source.Distinct()
             : source
                 .AsEnumerable() // client evaluation, needed by groupby https://docs.microsoft.com/en-us/ef/core/querying/client-eval
-                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
+                                // (net6.0) better db support for groupby/distinct is planned for ef core 6.0, this would remove the need for the current client side evaluation (AsEnumerable)
                 .GroupBy(mapper.MapExpression<Expression<Func<TProjection, object>>>(options.Distinct.Expression)
                     ?.Compile())
                 //.GroupBy(options.Distinct.Expression.Compile())

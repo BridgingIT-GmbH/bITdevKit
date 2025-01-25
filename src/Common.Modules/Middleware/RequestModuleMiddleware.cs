@@ -86,9 +86,9 @@ public class RequestModuleMiddleware
             httpContext.Items.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
 
             using (this.logger.BeginScope(new Dictionary<string, object>
-                   {
-                       [ModuleConstants.ModuleNameKey] = module.Name
-                   }))
+            {
+                [ModuleConstants.ModuleNameKey] = module.Name
+            }))
             {
                 if (module.Enabled)
                 {

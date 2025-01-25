@@ -20,7 +20,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 public class EntityFrameworkReadOnlyRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : EntityFrameworkReadOnlyGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
-    where TContext : DbContext { }
+    where TContext : DbContext
+{ }
 
 /// <summary>
 /// Provides a read-only repository implementation for Entity Framework that supports
@@ -67,7 +68,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// Utilizes the <see cref="ILogger"/> interface to log informational, warning, and error messages.
     /// The logger is typically configured during the initialization of the repository.
     /// </remarks>
-
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
 
     /// <summary>
@@ -132,14 +132,15 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression());
 
         if (options?.HasOrders() == true)
         {
             return await this.Options.DbContext.Set<TEntity>()
-                .AsNoTrackingIf(options, this.Options.Mapper)
+                .AsNoTrackingIf(options) // , this.Options.Mapper
                 .IncludeIf(options)
+                .HierarchyIf(options)
                 .WhereExpressions(expressions)
                 .OrderByIf(options)
                 .DistinctIf(options)
@@ -150,8 +151,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         }
 
         return await this.Options.DbContext.Set<TEntity>()
-            .AsNoTrackingIf(options, this.Options.Mapper)
+            .AsNoTrackingIf(options) // , this.Options.Mapper
             .IncludeIf(options)
+            .HierarchyIf(options)
             .WhereExpressions(expressions)
             .DistinctIf(options)
             .SkipIf(options?.Skip)
@@ -223,7 +225,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.SafeNull().ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications.SafeNull()];
         var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression());
 
         if (options?.HasOrders() == true)
@@ -314,7 +316,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression());
 
         return await this.Options.DbContext.Set<TEntity>()
@@ -397,7 +399,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
     {
-        var specificationsArray = specifications as ISpecification<TEntity>[] ?? specifications.ToArray();
+        var specificationsArray = specifications as ISpecification<TEntity>[] ?? [.. specifications];
         var expressions = specificationsArray.SafeNull().Select(s => s.ToExpression());
 
         return await this.Options.DbContext.Set<TEntity>()

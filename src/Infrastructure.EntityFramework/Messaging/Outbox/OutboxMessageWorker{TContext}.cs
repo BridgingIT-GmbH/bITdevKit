@@ -163,9 +163,10 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                 message.Properties.AddOrUpdate(outboxMessage.Properties); // propagate outbox message properties to message
 
                 using (this.logger.BeginScope(new Dictionary<string, object>
-                       {
-                           [Constants.CorrelationIdKey] = correlationId, [Constants.FlowIdKey] = flowId
-                       }))
+                {
+                    [Constants.CorrelationIdKey] = correlationId,
+                    [Constants.FlowIdKey] = flowId
+                }))
                 {
 #if DEBUG
                     //this.logger.LogDebug("++++ WORKER: PROCESS STORED MESSAGE {@Message}", message);

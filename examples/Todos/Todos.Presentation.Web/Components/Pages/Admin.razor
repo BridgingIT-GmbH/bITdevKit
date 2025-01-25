@@ -1,0 +1,198 @@
+﻿@page "/admin"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<MudText Typo="Typo.h4" Class="mb-4">Konfiguration</MudText>
+
+<MudTabs Elevation="0" ApplyEffectsToContainer="false">
+    <MudTabPanel Text="Dienstleister">
+        <MudToolBar>
+            <MudTextField @bind-Value="searchString" Placeholder="Suche" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Small" Class="mt-0" />
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="OpenAddDialog">
+                Anlegen
+            </MudButton>
+            <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" Size="Size.Small" Color="Color.Default" />
+        </MudToolBar>
+
+        <MudTable Items="@_items" Dense="true" Hover="true"
+                  Bordered="true" Striped="true" Filter="QuickFilter"
+                  RowsPerPage="10" Style="margin-top: 24px;">
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="@(new Func<ServiceProviderModel, object>(x=>x.ServiceProvider))">Dienstleister</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="@(new Func<ServiceProviderModel, object>(x=>x.ResponsiblePerson))">Zuständige Person</MudTableSortLabel></MudTh>
+                <MudTh>Passwort</MudTh>
+                <MudTh>Aktionen</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.ServiceProvider</MudTd>
+                <MudTd>@context.ResponsiblePerson</MudTd>
+                <MudTd>********</MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Size="Size.Small" Color="Color.Default" OnClick="@(() => OpenEditDialog(context))" />
+                    <MudIconButton Icon="@Icons.Material.Outlined.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OpenDeleteDialog(context))" />
+                    <MudIconButton Icon="@Icons.Material.Outlined.MoreVert" Size="Size.Small" Color="Color.Default" />
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Zeilen pro Seite:"
+                               InfoFormat="{first_item}-{last_item} von {all_items}"
+                               PageSizeOptions="new int[] { 10, 25, 50 }" />
+            </PagerContent>
+        </MudTable>
+    </MudTabPanel>
+    <MudTabPanel Text="Zuständige Person">
+    </MudTabPanel>
+</MudTabs>
+
+<MudDialog @bind-Visible="addEditDialogVisible" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @(selectedItem?.ServiceProvider == null ? "Neuer Dienstleister" : "Dienstleister bearbeiten")
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="selectedItem.ServiceProvider" Label="Dienstleister" Variant="Variant.Outlined" Required="true" />
+        <MudTextField @bind-Value="selectedItem.ResponsiblePerson" Label="Zuständige Person" Variant="Variant.Outlined" Class="mt-3" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CancelAddEdit">Abbrechen</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveAddEdit">Speichern</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="deleteDialogVisible" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Dienstleister löschen</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>Sind Sie sicher, dass Sie den Dienstleister "@selectedItem?.ServiceProvider" löschen möchten?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CancelDelete">Abbrechen</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConfirmDelete">Löschen</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    private string searchString = string.Empty;
+    private ServiceProviderModel selectedItem;
+    private bool addEditDialogVisible;
+    private bool deleteDialogVisible;
+    private DialogOptions dialogOptions = new() { MaxWidth = MaxWidth.Small };
+    private List<ServiceProviderModel> _items = new();
+
+    protected override void OnInitialized()
+    {
+        _items = new()
+        {
+            new() { ServiceProvider = "DAVASO", ResponsiblePerson = "Max Mustermann" },
+            new() { ServiceProvider = "GWQ", ResponsiblePerson = "Erika Mustermann" },
+            new() { ServiceProvider = "SpectrumK", ResponsiblePerson = "Max Mustermann" },
+            new() { ServiceProvider = "Platzhalter", ResponsiblePerson = "Erika Mustermann" },
+            new() { ServiceProvider = "Platzhalter", ResponsiblePerson = "Max Mustermann" },
+            new() { ServiceProvider = "Platzhalter", ResponsiblePerson = "Erika Mustermann" },
+            new() { ServiceProvider = "Platzhalter", ResponsiblePerson = "Max Mustermann" },
+            new() { ServiceProvider = "Platzhalter", ResponsiblePerson = "Erika Mustermann" }
+        };
+    }
+
+    private Func<ServiceProviderModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+
+        return x.ServiceProvider.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || x.ResponsiblePerson.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+    };
+
+    private void OpenAddDialog()
+    {
+        selectedItem = new ServiceProviderModel();
+        addEditDialogVisible = true;
+    }
+
+    private void OpenEditDialog(ServiceProviderModel item)
+    {
+
+        selectedItem = item;
+        addEditDialogVisible = true;
+    }
+
+
+    private void SaveAddEdit()
+    {
+        var existingItem = _items.FirstOrDefault(x => x.ServiceProvider == selectedItem.ServiceProvider);
+        if (existingItem != null)
+        {
+            existingItem.ServiceProvider = selectedItem.ServiceProvider;
+            existingItem.ResponsiblePerson = selectedItem.ResponsiblePerson;
+        }
+        else
+        {
+            _items.Add(selectedItem);
+        }
+        addEditDialogVisible = false;
+    }
+
+    private void CancelAddEdit()
+    {
+        addEditDialogVisible = false;
+    }
+
+    private void OpenDeleteDialog(ServiceProviderModel item)
+    {
+        selectedItem = item;
+        deleteDialogVisible = true;
+    }
+
+    private void ConfirmDelete()
+    {
+        _items.Remove(selectedItem);
+        deleteDialogVisible = false;
+    }
+
+    private void CancelDelete()
+    {
+        deleteDialogVisible = false;
+    }
+
+    private void SaveItem(ServiceProviderModel item)
+    {
+        if (item != null)
+        {
+            var existingItem = _items.FirstOrDefault(x => x.ServiceProvider == item.ServiceProvider);
+            if (existingItem != null)
+            {
+                existingItem.ServiceProvider = item.ServiceProvider;
+                existingItem.ResponsiblePerson = item.ResponsiblePerson;
+            }
+            else
+            {
+                _items.Add(item);
+            }
+        }
+        addEditDialogVisible = false;
+        selectedItem = null;  // Clear selection
+    }
+
+    private void DeleteItem()
+    {
+        if (selectedItem != null)
+        {
+            _items.Remove(selectedItem);
+        }
+        deleteDialogVisible = false;
+        selectedItem = null;  // Clear selection
+    }
+
+    public class ServiceProviderModel
+    {
+        //public Guid Id { get; set; } = Guid.NewGuid();
+
+        public string ServiceProvider { get; set; }
+
+        public string ResponsiblePerson { get; set; }
+    }
+}

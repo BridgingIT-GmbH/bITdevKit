@@ -26,9 +26,9 @@ public class ModuleScopeMessagePublisherBehavior(
         }
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [ModuleConstants.ModuleNameKey] = moduleName
-               }))
+        {
+            [ModuleConstants.ModuleNameKey] = moduleName
+        }))
         {
             if (module?.Enabled == false)
             {

@@ -38,17 +38,17 @@ public class OutboxMessageCommandHandler : CommandHandlerBase<OutboxMessageComma
         }
 
         await this.repository.InsertAsync(new OutboxMessage
-                {
-                    MessageId = request.MessageId,
-                    AggregateId = request.AggregateId,
-                    Aggregate = request.Aggregate,
-                    AggregateEvent = request.AggregateEvent,
-                    AggregateType = request.AggregateType,
-                    EventType = request.EventType,
-                    IsProcessed = false,
-                    RetryAttempt = 0,
-                    TimeStamp = DateTime.Now
-                },
+        {
+            MessageId = request.MessageId,
+            AggregateId = request.AggregateId,
+            Aggregate = request.Aggregate,
+            AggregateEvent = request.AggregateEvent,
+            AggregateType = request.AggregateType,
+            EventType = request.EventType,
+            IsProcessed = false,
+            RetryAttempt = 0,
+            TimeStamp = DateTime.Now
+        },
                 cancellationToken)
             .AnyContext();
 

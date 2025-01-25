@@ -94,6 +94,33 @@ public class CoreModule : WebModuleBase
                 .StartupDelay("00:00:15")
                 .PurgeOnStartup());
 
+        services.AddIdentity(o => // rename .AddAuthorization
+        {
+            o.WithEntityPermissions<CoreDbContext>(e =>
+            {
+                // Register entities that need permission checks + auth policies
+                e.AddEntity<Host>(Permission.Read, Permission.Write, Permission.List) // allowed permissions
+                    .AddDefaultPermissions<Host>(Permission.Read, Permission.List) // default permissions if user has none
+                    .UseDefaultPermissionProvider<Host>();
+                //.AddDefaultPermissionProvider<Host, HostDefaultPermissionProvider>();
+
+                e.AddEntity<Dinner>(Permission.Read, Permission.Write, Permission.List) // allowed permissions
+                    .AddDefaultPermissions<Dinner>(Permission.Read, Permission.List) // default permissions if user has none
+                    .UseDefaultPermissionProvider<Dinner>();
+                //.AddDefaultPermissionProvider<Dinner, DinnerDefaultPermissionProvider>();
+
+                //e.AddHierarchicalEntity<Asset>(e => e.ParentId)
+                //    .AddDefaultPermissions<Asset>(EntityPermissions.Read, EntityPermissions.List);
+                //    .UseDefaultPermissionProvider<Asset>();
+
+                e.EnableCaching(false)
+                 .WithCacheLifetime(TimeSpan.FromMinutes(15));
+            });
+
+            o.EnableEvaluationEndpoints();
+            o.EnableManagementEndpoints();
+        });
+
         //services.AddCosmosClient(o => o // WARN: register this once/global in the Program.cs
         //    .UseConnectionString())
         //    .WithHealthChecks();
@@ -236,3 +263,24 @@ public class CoreModule : WebModuleBase
         return app;
     }
 }
+
+//public class DinnerDefaultPermissionProvider : IDefaultEntityPermissionProvider<Dinner>
+//{
+//    public HashSet<string> GetDefaultPermissions()
+//    {
+//        return
+//        [
+//            EntityPermissions.Read,
+//        ];
+//    }
+//}
+
+//public class MenuDefaultPermissionProvider : IDefaultEntityPermissionProvider<Menu>
+//{
+//    public HashSet<string> GetDefaultPermissions()
+//    {
+//        return [
+//            EntityPermissions.Read,
+//        ];
+//    }
+//}

@@ -5,44 +5,28 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using System.Security.Cryptography;
 using Common;
 
 public class FakeCurrentUserAccessor : ICurrentUserAccessor
 {
-    private static readonly List<User> Users =
-    [
-#pragma warning disable SA1010 // Opening square brackets should be spaced correctly
-        new("john.doe@example.com", "John Doe", ["Admin"]), new("mary.jane@example.com", "Mary Jane", ["User"]),
-        new("eva.woods@example.com", "Eva Woods", ["User"]),
-        new("david.daniels@example.com", "David Daniels", ["Admin"]),
-        new("frank.hill@example.com", "Frank Hill", ["User"]), new("grace.lee@example.com", "Grace Lee", ["User"]),
-        new("hannah.miller@example.com", "Hannah Miller", ["User"]),
-        new("ivy.johnson@example.com", "Ivy Johnson", ["Admin"]), new("jack.smith@example.com", "Jack Smith", ["User"])
-#pragma warning restore SA1010 // Opening square brackets should be spaced correctly
-    ];
-
-    private static readonly Dictionary<string, User> UserStore = [];
+    private static readonly Dictionary<string, FakeUser> UserStore = [];
     private static readonly Random Random = new();
 
     static FakeCurrentUserAccessor()
     {
-        foreach (var user in Users)
+        foreach (var user in Fakes.Users)
         {
-            var userId = GenerateDeterministicGuid(user.Email).ToString();
-
-            user.Id = userId; // Assign ID to user
-            UserStore[userId] = user;
+            UserStore[user.Id] = user;
         }
     }
 
-    public FakeCurrentUserAccessor()
+    public FakeCurrentUserAccessor(string userId = null)
     {
-        var user = GetRandomUser();
-        this.UserId = user.Key;
-        this.UserName = user.Value.Name;
-        this.Email = user.Value.Email;
-        this.Roles = user.Value.Roles;
+        var user = GetUser(userId);
+        this.UserId = user.Id;
+        this.UserName = user.Name;
+        this.Email = user.Email;
+        this.Roles = user.Roles;
     }
 
     public string UserId { get; }
@@ -53,26 +37,22 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
 
     public string[] Roles { get; }
 
-    private static KeyValuePair<string, User> GetRandomUser()
+    private static FakeUser GetUser(string userId = null)
     {
-        var index = Random.Next(UserStore.Count);
+        if (!userId.IsNullOrEmpty() && UserStore.TryGetValue(userId, out var value)) // try to find by id
+        {
+            return value;
+        }
 
-        return UserStore.ElementAt(index);
-    }
+        if (!userId.IsNullOrEmpty()) // try to find by email
+        {
+            var user = UserStore.FirstOrDefault(e => e.Value.Email.SafeEquals(userId)).Value;
+            if (user != null)
+            {
+                return user;
+            }
+        }
 
-    private static Guid GenerateDeterministicGuid(string input)
-    {
-        return new Guid(MD5.HashData(Encoding.UTF8.GetBytes(input)));
-    }
-
-    public class User(string email, string name, string[] roles)
-    {
-        public string Id { get; set; }
-
-        public string Email { get; } = email;
-
-        public string Name { get; } = name;
-
-        public string[] Roles { get; } = roles;
+        return UserStore.FirstOrDefault(e => e.Value.IsDefault).Value; // return default user if no match
     }
 }

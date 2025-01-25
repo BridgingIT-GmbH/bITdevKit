@@ -238,7 +238,7 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         var sut = this.CreateBlogRepository(this.GetContext());
 
         // Act
-        var results = await sut.FindAllPagedResultAsync(new Specification<Blog>(e =>
+        var results = await sut.FindAllResultPagedAsync(new Specification<Blog>(e =>
                 e.Name == entity1.Name || e.Name == entity2.Name || e.Name == entity3.Name || e.Name == entity4.Name || e.Name == entity5.Name || e.Name == entity6.Name),
             nameof(Blog.Name),
             1,

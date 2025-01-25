@@ -81,7 +81,8 @@ public class RequestLoggingMiddleware
                 // Never caught, because `LogFinished()` returns false. This ensures e.g. the developer exception page is still
                 // shown, does also mean we see a duplicate "unhandled exception" event from ASP.NET Core.
 #pragma warning disable SA1501
-                when (this.LogFinished(httpContext, collector, 500, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex)) { }
+                when (this.LogFinished(httpContext, collector, 500, GetElapsedMilliseconds(start, Stopwatch.GetTimestamp()), ex))
+            { }
 #pragma warning restore SA1501
             finally
             {

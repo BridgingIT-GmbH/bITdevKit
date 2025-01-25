@@ -1,0 +1,176 @@
+﻿@page "/userprofile"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<MudText Typo="Typo.h4" Class="mb-4">User Profile</MudText>
+
+<MudGrid>
+    <!-- Left Side - User Info Card -->
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="3" Class="pb-4">
+                @* <MudCardMedia Style="height: 250px; background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-primary-darken) 100%);"
+                             Class="d-flex align-center justify-center">
+                    <MudAvatar Style="width: 120px; height: 120px; font-size: 3rem; background: var(--mud-palette-surface);">
+                        @GetUserInitials()
+                    </MudAvatar>
+                </MudCardMedia> *@
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">@user?.FindFirst("Name")?.Value</MudText>
+                    <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary">
+                        @user?.FindFirst(ClaimTypes.Email)?.Value
+                    </MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudDivider Class="mb-4" />
+                <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="mb-2">Roles</MudText>
+                <div Class="d-flex flex-wrap gap-2">
+                    @foreach (var role in GetUserRoles())
+                    {
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">@role</MudChip>
+                    }
+                </div>
+            </MudCardContent>
+            <div class="d-flex justify-center">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Error"
+                           OnClick="HandleLogout"
+                           StartIcon="@Icons.Material.Filled.Logout">
+                    Logout
+                </MudButton>
+            </div>
+        </MudCard>
+    </MudItem>
+
+    <!-- Right Side - Details Cards -->
+    <MudItem xs="12" md="6">
+        <!-- Session Info -->
+        <MudCard Elevation="3" Class="mb-4">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudIcon Icon="@Icons.Material.Filled.Timer" Color="Color.Primary" />
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Session Information</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTimeline>
+                    <MudTimelineItem Color="Color.Success">
+                        <ItemContent>
+                            <MudText Color="Color.Success">Authentication Time</MudText>
+                            <MudText Typo="Typo.body2">@GetAuthTime()</MudText>
+                        </ItemContent>
+                    </MudTimelineItem>
+                    <MudTimelineItem Color="Color.Info">
+                        <ItemContent>
+                            <MudText Color="Color.Info">Last Activity</MudText>
+                            <MudText Typo="Typo.body2">@DateTime.Now.ToString("g")</MudText>
+                        </ItemContent>
+                    </MudTimelineItem>
+                </MudTimeline>
+            </MudCardContent>
+        </MudCard>
+
+        <!-- Claims Info -->
+    </MudItem>
+    <MudItem xs="12" md="12">
+        <MudCard Elevation="3">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Primary" />
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">Identity Claims</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTable Items="@GetFilteredClaims()" Dense="true" Hover="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Value</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>
+                            <MudTooltip Text="@context.Type">
+                                <MudChip Size="Size.Small" T="string"
+                                         Color="@GetClaimColor(context.Type)">
+                                    @FormatClaimType(context.Type)
+                                </MudChip>
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd>@context.Value</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private ClaimsPrincipal user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+    }
+
+    private Task HandleLogout()
+    {
+        Navigation.NavigateTo("/logout", forceLoad: true);
+        return Task.CompletedTask;
+    }
+
+    private string GetUserInitials()
+    {
+        var name = user?.FindFirst(ClaimTypes.Name)?.Value ?? "User";
+        return string.Join("", name.Split(' ').Take(2).Select(n => n[0]));
+    }
+
+    private IEnumerable<string> GetUserRoles()
+    {
+        return user?.FindAll(ClaimTypes.Role).Select(r => r.Value) ?? Array.Empty<string>();
+    }
+
+    private IEnumerable<Claim> GetFilteredClaims()
+    {
+        if (user == null) return Array.Empty<Claim>();
+
+        return user.Claims.Where(c =>
+            !c.Type.Contains("role", StringComparison.OrdinalIgnoreCase) &&
+            !c.Type.Contains("amr", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string FormatClaimType(string claimType)
+    {
+        var lastPart = claimType.Split('/', '\\').Last();
+        return lastPart.Split('.').Last().ToUpperInvariant();
+    }
+
+    private Color GetClaimColor(string claimType)
+    {
+        return claimType switch
+        {
+            // ClaimTypes.Name => Color.Primary,
+            // ClaimTypes.Email => Color.Secondary,
+            // ClaimTypes.NameIdentifier => Color.Success,
+            _ => Color.Default
+        };
+    }
+
+    private string GetAuthTime()
+    {
+        var authTime = user?.FindFirst("auth_time")?.Value;
+        if (authTime != null && long.TryParse(authTime, out long timestamp))
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(timestamp).LocalDateTime.ToString("g");
+        }
+        return DateTime.Now.ToString("g");
+    }
+}

@@ -34,5 +34,5 @@ public class RuleNullLogger : IRuleLogger
     /// <param name="rule">The rule object containing additional error or success information.</param>
     /// <param name="result"></param>
     /// <param name="logLevel">The level of the log (e.g., Information, Warning, Error).</param>
-    public void  Log<TContext>(string content, IRule rule, IResult result, LogLevel logLevel) { }
+    public void Log<TContext>(string content, IRule rule, IResult result, LogLevel logLevel) { }
 }

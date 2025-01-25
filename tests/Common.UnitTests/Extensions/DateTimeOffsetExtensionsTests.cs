@@ -52,9 +52,9 @@ public class DateTimeOffsetExtensionsTests
     [InlineData("2024-03-15 14:30:45", -5, DayOfWeek.Sunday, "2024-03-10 00:00:00")]   // Friday -> Sunday
     [InlineData("2024-03-15 14:30:45", 0, DayOfWeek.Saturday, "2024-03-09 00:00:00")]  // Friday -> Saturday
     public void StartOfWeek_WithCustomFirstDay_ReturnsCorrectStartOfWeek(
-        string dateTimeString, 
-        int offsetHours, 
-        DayOfWeek firstDayOfWeek, 
+        string dateTimeString,
+        int offsetHours,
+        DayOfWeek firstDayOfWeek,
         string expectedDateString)
     {
         // Arrange
@@ -119,10 +119,10 @@ public class DateTimeOffsetExtensionsTests
     [InlineData(0, 2024, 3, 15, 31)]  // 31-day month UTC
     [InlineData(2, 2024, 4, 15, 30)]  // 30-day month UTC+2
     public void EndOfMonth_GivenDateTimeOffset_ReturnsEndOfMonth(
-        int offsetHours, 
-        int year, 
-        int month, 
-        int day, 
+        int offsetHours,
+        int year,
+        int month,
+        int day,
         int expectedLastDay)
     {
         // Arrange

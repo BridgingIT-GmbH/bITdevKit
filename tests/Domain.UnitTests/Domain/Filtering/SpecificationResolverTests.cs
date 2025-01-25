@@ -10,7 +10,7 @@ using Xunit;
 
 public class SpecificationResolverTests
 {
-     [Fact]
+    [Fact]
     public void RegisterSpecification_WithValidInputAndGenerics_RegistersSuccessfully()
     {
         // Arrange & Act

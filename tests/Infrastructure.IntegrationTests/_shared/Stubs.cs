@@ -208,7 +208,7 @@ public class PersonStubDocument
     public int Age { get; set; }
 }
 
-public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext
+public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, IEntityPermissionContext
 {
     public StubDbContext() { }
 
@@ -222,6 +222,8 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+    public DbSet<EntityPermission> EntityPermissions { get; set; }
 
     public DbSet<Blog> Blogs { get; set; } // typedids
 

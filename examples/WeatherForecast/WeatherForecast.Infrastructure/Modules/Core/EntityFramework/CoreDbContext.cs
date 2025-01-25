@@ -11,7 +11,7 @@ using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOutboxMessageContext
+    IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext
 {
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Forecast> Forecasts { get; set; }
@@ -27,6 +27,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbCo
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    public DbSet<EntityPermission> EntityPermissions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

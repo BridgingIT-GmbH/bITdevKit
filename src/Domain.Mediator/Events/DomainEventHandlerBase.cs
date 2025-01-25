@@ -50,10 +50,10 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
     public virtual async Task Handle(TEvent @event, CancellationToken cancellationToken)
     {
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   ["DomainEventId"] = @event.EventId.ToString("N"),
-                   ["DomainEventType"] = @event.GetType().Name
-               }))
+        {
+            ["DomainEventId"] = @event.EventId.ToString("N"),
+            ["DomainEventType"] = @event.GetType().Name
+        }))
         {
             try
             {

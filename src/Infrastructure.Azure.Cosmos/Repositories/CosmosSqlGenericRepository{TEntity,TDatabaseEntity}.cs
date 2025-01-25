@@ -18,7 +18,8 @@ public class CosmosSqlRepositoryWrapper<TEntity, TProvider, TDatabaseEntity>(
     IEntityMapper mapper) : CosmosSqlGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, provider, mapper)
     where TEntity : class, IEntity
     where TProvider : ICosmosSqlProvider<TDatabaseEntity>
-    where TDatabaseEntity : class { }
+    where TDatabaseEntity : class
+{ }
 
 public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity

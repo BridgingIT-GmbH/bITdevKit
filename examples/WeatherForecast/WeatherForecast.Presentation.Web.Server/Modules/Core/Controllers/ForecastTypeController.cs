@@ -10,8 +10,10 @@ using Application.Modules.Core;
 using Common;
 using Domain.Model;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 [Route("api/core/forecasttypes")]
 [ApiController]
 public class ForecastTypeController : ControllerBase

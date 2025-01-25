@@ -61,7 +61,6 @@ public interface IGenericReadOnlyRepository<TEntity> : IRepository
     /// <summary>
     ///     Asynchronously finds a single entity by its identifier.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="id">The identifier of the entity.</param>
     /// <param name="options">Optional query options for finding the entity.</param>
     /// <param name="cancellationToken">Optional token to cancel the asynchronous operation.</param>

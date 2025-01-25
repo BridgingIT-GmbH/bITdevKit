@@ -152,9 +152,9 @@ public class EntityFrameworkSqlServerGenericRepositoryResultTests(ITestOutputHel
     // }
 
     [Fact]
-    public override async Task FindAllPagedResultAsync_AnyEntityWithFilter_EntitiesFound()
+    public override async Task FindAllResultPagedAsync_AnyEntityWithFilter_EntitiesFound()
     {
-        await base.FindAllPagedResultAsync_AnyEntityWithFilter_EntitiesFound();
+        await base.FindAllResultPagedAsync_AnyEntityWithFilter_EntitiesFound();
     }
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)

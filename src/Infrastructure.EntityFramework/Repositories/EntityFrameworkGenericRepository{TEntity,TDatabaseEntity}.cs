@@ -17,7 +17,8 @@ public class EntityFrameworkRepositoryWrapper<TEntity, TDatabaseEntity, TContext
     IEntityMapper mapper) : EntityFrameworkGenericRepository<TEntity, TDatabaseEntity>(loggerFactory, context, mapper)
     where TEntity : class, IEntity
     where TDatabaseEntity : class
-    where TContext : DbContext { }
+    where TContext : DbContext
+{ }
 
 /// <summary>
 /// Provides a generic repository implementation using Entity Framework.

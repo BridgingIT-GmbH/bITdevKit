@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +23,7 @@ public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.ne
     : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
+    private readonly List<FakeUser> users = [];
     private string environment = "Development";
     private bool fakeAuthenticationEnabled;
     private Action<IServiceCollection> services;
@@ -72,11 +72,25 @@ public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.ne
     /// <summary>
     /// Enables or disables fake authentication for integration tests.
     /// </summary>
-    /// <param name="enabled">A boolean value indicating whether fake authentication should be enabled.</param>
+    /// <param name="user">The user.</param>
     /// <returns>The updated instance of CustomWebApplicationFactoryFixture with the specified fake authentication setting.</returns>
-    public CustomWebApplicationFactoryFixture<TEntryPoint> WithFakeAuthentication(bool enabled)
+    public CustomWebApplicationFactoryFixture<TEntryPoint> WithFakeAuthentication(FakeUser user)
     {
-        this.fakeAuthenticationEnabled = enabled;
+        this.fakeAuthenticationEnabled = true;
+        this.users.Add(user);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Enables or disables fake authentication for integration tests.
+    /// </summary>
+    /// <param name="users">The user.</param>
+    /// <returns>The updated instance of CustomWebApplicationFactoryFixture with the specified fake authentication setting.</returns>
+    public CustomWebApplicationFactoryFixture<TEntryPoint> WithFakeAuthentication(FakeUser[] users)
+    {
+        this.fakeAuthenticationEnabled = true;
+        this.users.AddRange(users);
 
         return this;
     }
@@ -125,16 +139,7 @@ public class CustomWebApplicationFactoryFixture<TEntryPoint> // https://xunit.ne
 
             if (this.fakeAuthenticationEnabled)
             {
-                services.AddAuthentication(options => // add a fake authentication handler
-                    {
-                        options.DefaultAuthenticateScheme =
-                            FakeAuthenticationHandler
-                                .SchemeName; // use the fake handler instead of the jwt handler (Startup)
-                        options.DefaultScheme = FakeAuthenticationHandler.SchemeName;
-                    })
-                    .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>(
-                        FakeAuthenticationHandler.SchemeName,
-                        null);
+                services.AddFakeAuthentication(this.users);
             }
         });
 

@@ -6,14 +6,16 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Presentation.Web.Controllers;
 
 using Application;
+using BridgingIT.DevKit.Application.Identity;
 using Common;
 using DevKit.Presentation.Web;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-public class CoreController(IMapper mapper, IMediator mediator) : CoreControllerBase
+public class CoreController(IMapper mapper, IMediator mediator, IAuthorizationService authorizationService) : CoreControllerBase
 {
     private readonly IMapper mapper = mapper;
     private readonly IMediator mediator = mediator;
@@ -30,15 +32,31 @@ public class CoreController(IMapper mapper, IMediator mediator) : CoreController
     // Guest =======================================================================================
 
     // Host ========================================================================================
+    //[EntityPermissionRequirement(typeof(Host), nameof(Permission.Read))]
     public override async Task<ActionResult<HostModel>> HostFindOne(string hostId, CancellationToken cancellationToken)
     {
+        var authResult = await authorizationService.AuthorizeAsync(
+            this.User, typeof(Host), new EntityPermissionRequirement(Permission.Read));
+        if (!authResult.Succeeded)
+        {
+            return this.Forbid();
+        }
+
         var result = (await this.mediator.Send(new HostFindOneQuery(hostId), cancellationToken)).Result;
 
         return result.ToOkActionResult<Host, HostModel>(this.mapper);
     }
 
+    //[EntityPermissionRequirement(typeof(Host), nameof(Permission.List))]
     public override async Task<ActionResult<ICollection<HostModel>>> HostFindAll(CancellationToken cancellationToken)
     {
+        var authResult = await authorizationService.AuthorizeAsync(
+            this.User, typeof(Host), new EntityPermissionRequirement(Permission.List));
+        if (!authResult.Succeeded)
+        {
+            return this.Forbid();
+        }
+
         var result = (await this.mediator.Send(new HostFindAllQuery(), cancellationToken)).Result;
 
         return result.ToOkActionResult<Host, HostModel>(this.mapper);

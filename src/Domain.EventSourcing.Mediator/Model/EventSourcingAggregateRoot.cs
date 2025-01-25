@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggregateRootWithGuid, IAggregateRootCommitting
 {
-    private readonly IList<IAggregateEvent> unsavedEvents = new List<IAggregateEvent>();
+    private readonly IList<IAggregateEvent> unsavedEvents = [];
 
     [JsonConstructor] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     protected EventSourcingAggregateRoot(IAggregateEvent @event)

@@ -32,11 +32,11 @@ public class ModuleScopeMessageHandlerBehavior(
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [ModuleConstants.ModuleNameKey] = moduleName,
-                   [Constants.CorrelationIdKey] = correlationId,
-                   [Constants.FlowIdKey] = flowId,
-               }))
+        {
+            [ModuleConstants.ModuleNameKey] = moduleName,
+            [Constants.CorrelationIdKey] = correlationId,
+            [Constants.FlowIdKey] = flowId,
+        }))
         {
             if (module is not null && !module.Enabled)
             {
@@ -54,9 +54,9 @@ public class ModuleScopeMessageHandlerBehavior(
                         async (a, c) =>
                         {
                             using (this.Logger.BeginScope(new Dictionary<string, object>
-                                   {
-                                       ["TraceId"] = a.TraceId.ToString()
-                                   }))
+                            {
+                                ["TraceId"] = a.TraceId.ToString()
+                            }))
                             {
                                 await Activity.Current.StartActvity($"{Constants.TraceOperationHandleName} {messageType} -> {handlerType} [{moduleName}]",
                                     async (a, c) => await next().AnyContext(),

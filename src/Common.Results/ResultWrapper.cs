@@ -15,7 +15,7 @@ public class ResultWrapper<T>
     public Result<T> Result { get; set; }
 }
 
-public class PagedResultWrapper<T>
+public class ResultPagedWrapper<T>
 {
-    public PagedResult<T> Result { get; set; }
+    public ResultPaged<T> Result { get; set; }
 }

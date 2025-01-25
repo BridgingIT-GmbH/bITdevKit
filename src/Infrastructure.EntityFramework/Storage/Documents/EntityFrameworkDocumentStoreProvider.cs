@@ -199,7 +199,9 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         {
             documentEntity = new StorageDocument
             {
-                Type = type, PartitionKey = documentKey.PartitionKey, RowKey = documentKey.RowKey
+                Type = type,
+                PartitionKey = documentKey.PartitionKey,
+                RowKey = documentKey.RowKey
             };
 
             this.context.StorageDocuments.Add(documentEntity);
@@ -240,7 +242,9 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
                 {
                     documentEntity = new StorageDocument
                     {
-                        Type = type, PartitionKey = documentKey.PartitionKey, RowKey = documentKey.RowKey
+                        Type = type,
+                        PartitionKey = documentKey.PartitionKey,
+                        RowKey = documentKey.RowKey
                     };
 
                     this.context.StorageDocuments.Add(documentEntity);

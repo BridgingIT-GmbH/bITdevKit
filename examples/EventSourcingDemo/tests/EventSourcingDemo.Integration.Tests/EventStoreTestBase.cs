@@ -69,10 +69,12 @@ public class EventstoreTestBase : TestsBase
                                 .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))))
                     .AddTransient<IOutboxMessageWriterRepository>(sp =>
                         new OutboxMessageWriterRepository(new EntityFrameworkRepositoryOptions(ctxEventStore,
-                            sp.GetRequiredService<IEntityMapper>()) { Autosave = true }))
+                            sp.GetRequiredService<IEntityMapper>())
+                        { Autosave = true }))
                     .AddTransient<IOutboxMessageWorkerRepository>(sp =>
                         new OutboxMessageWorkerRepository(new EntityFrameworkRepositoryOptions(ctxEventStore,
-                            sp.GetRequiredService<IEntityMapper>()) { Autosave = true }));
+                            sp.GetRequiredService<IEntityMapper>())
+                        { Autosave = true }));
 
                 s.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()
                         .Where(a =>

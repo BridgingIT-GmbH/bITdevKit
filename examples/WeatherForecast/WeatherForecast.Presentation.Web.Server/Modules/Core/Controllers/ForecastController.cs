@@ -7,34 +7,22 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Mod
 
 using System.Net;
 using Application.Modules.Core;
+using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using Domain.Model;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/core/forecasts")]
 [ApiController]
-public class ForecastController : ControllerBase
+public class ForecastController(
+    //ILogger<ForecastController> logger,
+    IMediator mediator,
+    IMapper<ForecastQueryResponse, ForecastModel> mapper,
+    IAuthorizationService authorizationService) : ControllerBase
 {
-    private readonly ILogger<ForecastController> logger;
-    private readonly IMediator mediator;
-    private readonly IMapper<ForecastQueryResponse, ForecastModel> mapper;
-
-    public ForecastController(
-        ILogger<ForecastController> logger,
-        IMediator mediator,
-        IMapper<ForecastQueryResponse, ForecastModel> mapper)
-    {
-        EnsureArg.IsNotNull(logger, nameof(logger));
-        EnsureArg.IsNotNull(mediator, nameof(mediator));
-        EnsureArg.IsNotNull(mapper, nameof(mapper));
-
-        this.logger = logger;
-        this.mediator = mediator;
-        this.mapper = mapper;
-    }
-
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -52,10 +40,42 @@ public class ForecastController : ControllerBase
         //     ]
         // }
 
-        var response = await this.mediator.Send(
+        var response = await mediator.Send(
             new ForecastFindAllQuery(filter)).AnyContext();
 
-        return this.Ok(this.mapper.Map(response.Result));
+        return this.Ok(mapper.Map(response.Result));
+    }
+
+    [Authorize]
+    //[EntityPermissionRequirement(typeof(Forecast), nameof(Permission.Read))]
+    [HttpGet("auth")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<IEnumerable<ForecastModel>>> GetAllAuth([FromQueryFilter] FilterModel filter)
+    {
+        var authResult = await authorizationService.AuthorizeAsync(
+            this.User, typeof(Forecast), new EntityPermissionRequirement(Permission.Read));
+        if (!authResult.Succeeded)
+        {
+            return this.Unauthorized();
+        }
+
+        // Example filter model:
+        // {
+        //     "page": 0,
+        //     "pageSize": 0,
+        //     "filters": [
+        //       { "field": "type.name", "operator": "isnotnull" },
+        //       { "field": "type.name", "operator": "eq", "value": "AAA" },
+        //       { "field": "temperatureMin", "operator": "gte", "value": 16.1 },
+        //       { "field": "timestamp", "operator": "gte", "value": "2024-10-24T10:00:00+00:00" }
+        //     ]
+        // }
+
+        var response = await mediator.Send(
+            new ForecastFindAllQuery(filter)).AnyContext();
+
+        return this.Ok(mapper.Map(response.Result));
     }
 
     [HttpPost("search")]
@@ -75,16 +95,16 @@ public class ForecastController : ControllerBase
         //     ]
         // }
 
-        var response = await this.mediator.Send(
+        var response = await mediator.Send(
             new ForecastFindAllQuery(filter)).AnyContext();
 
-        return this.Ok(this.mapper.Map(response.Result));
+        return this.Ok(mapper.Map(response.Result));
     }
 
     [HttpPost("paged")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<PagedResult<Forecast>>> PostPaged([FromBodyFilter] FilterModel filter)
+    public async Task<ActionResult<ResultPaged<Forecast>>> PostPaged([FromBodyFilter] FilterModel filter)
     {
         // Example filter model:
         // {
@@ -105,7 +125,7 @@ public class ForecastController : ControllerBase
         //     ]
         // }
 
-        var response = await this.mediator.Send(
+        var response = await mediator.Send(
             new ForecastFindAllPagedQuery(filter)).AnyContext();
 
         return this.Ok(response.Result);
@@ -117,7 +137,7 @@ public class ForecastController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<IEnumerable<string>>> GetAllDescriptions()
     {
-        var response = await this.mediator.Send(new ForecastFindAllDescriptionsQuery()).AnyContext();
+        var response = await mediator.Send(new ForecastFindAllDescriptionsQuery()).AnyContext();
 
         return this.Ok(response.Result);
     }

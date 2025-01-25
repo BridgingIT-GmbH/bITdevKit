@@ -61,4 +61,103 @@ public static class JsRuntimeExtensions
     {
         await source.InvokeVoidAsync("navigator.clipboard.writeText", text);
     }
+
+    /// <summary>
+    /// Evaluates JavaScript code and returns the result.
+    /// </summary>
+    /// <typeparam name="T">The expected return type</typeparam>
+    /// <param name="source">The IJSRuntime instance</param>
+    /// <param name="code">JavaScript code to evaluate</param>
+    /// <returns>The evaluated result</returns>
+    /// <example>
+    /// await jsRuntime.EvalAsync<string[]>("Object.keys(sessionStorage).filter(k => k.startsWith('oidc.user:'))")
+    /// </example>
+    public static ValueTask<T> EvalAsync<T>(this IJSRuntime source, string code)
+    {
+        return source.InvokeAsync<T>("eval", code);
+    }
+
+    public static ValueTask<string> GetLocalStorageItemAsync(this IJSRuntime source, string key)
+    {
+        return source.InvokeAsync<string>("localStorage.getItem", key);
+    }
+
+    public static async ValueTask<T> GetLocalStorageItemAsync<T>(this IJSRuntime source, string key)
+    {
+        var json = await source.GetLocalStorageItemAsync(key);
+        return json == null ? default : JsonSerializer.Deserialize<T>(json);
+    }
+
+    public static ValueTask SetLocalStorageItemAsync(this IJSRuntime source, string key, string value)
+    {
+        return source.InvokeVoidAsync("localStorage.setItem", key, value);
+    }
+
+    public static ValueTask SetLocalStorageItemAsync<T>(this IJSRuntime source, string key, T value)
+    {
+        return source.SetLocalStorageItemAsync(key, JsonSerializer.Serialize(value));
+    }
+
+    public static ValueTask RemoveLocalStorageItemAsync(this IJSRuntime source, string key)
+    {
+        return source.InvokeVoidAsync("localStorage.removeItem", key);
+    }
+
+    public static ValueTask ClearLocalStorageAsync(this IJSRuntime source)
+    {
+        return source.InvokeVoidAsync("localStorage.clear");
+    }
+
+    public static ValueTask<int> GetLocalStorageItemCountAsync(this IJSRuntime source)
+    {
+        return source.InvokeAsync<int>("eval", "localStorage.length");
+    }
+
+    public static ValueTask<string> GetSessionStorageItemAsync(this IJSRuntime source, string key)
+    {
+        return source.InvokeAsync<string>("sessionStorage.getItem", key);
+    }
+
+    public static async ValueTask<T> GetSessionStorageItemAsync<T>(this IJSRuntime source, string key)
+    {
+        var json = await source.GetSessionStorageItemAsync(key);
+        return json == null ? default : JsonSerializer.Deserialize<T>(json);
+    }
+
+    public static ValueTask SetSessionStorageItemAsync(this IJSRuntime source, string key, string value)
+    {
+        return source.InvokeVoidAsync("sessionStorage.setItem", key, value);
+    }
+
+    public static ValueTask SetSessionStorageItemAsync<T>(this IJSRuntime source, string key, T value)
+    {
+        return source.SetSessionStorageItemAsync(key, JsonSerializer.Serialize(value));
+    }
+
+    public static ValueTask RemoveSessionStorageItemAsync(this IJSRuntime source, string key)
+    {
+        return source.InvokeVoidAsync("sessionStorage.removeItem", key);
+    }
+
+    public static ValueTask ClearSessionStorageAsync(this IJSRuntime source)
+    {
+        return source.InvokeVoidAsync("sessionStorage.clear");
+    }
+
+    public static ValueTask<int> GetSessionStorageItemCountAsync(this IJSRuntime source)
+    {
+        return source.InvokeAsync<int>("eval", "sessionStorage.length");
+    }
+
+    public static async ValueTask<bool> HasStorageKeyAsync(this IJSRuntime source, string key, bool useSessionStorage = false)
+    {
+        var storageType = useSessionStorage ? "sessionStorage" : "localStorage";
+        return await source.InvokeAsync<bool>("eval", $"{storageType}.hasOwnProperty('{key}')");
+    }
+
+    public static async ValueTask<string[]> GetStorageKeysAsync(this IJSRuntime source, bool useSessionStorage = false)
+    {
+        var storageType = useSessionStorage ? "sessionStorage" : "localStorage";
+        return await source.InvokeAsync<string[]>("eval", $"Object.keys({storageType})");
+    }
 }

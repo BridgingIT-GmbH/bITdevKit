@@ -25,7 +25,8 @@ public static class EndpointRouteBuilderExtensions
                 endpoints.MapHealthChecks(patternPrefix,
                     new HealthCheckOptions
                     {
-                        Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                        Predicate = _ => true,
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                     });
                 endpoints.MapHealthChecks($"{patternPrefix}/self",
                     new HealthCheckOptions

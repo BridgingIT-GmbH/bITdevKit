@@ -10,8 +10,8 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class RetryPolicy
 {
-    private readonly List<Type> retryableExceptions = new();
-    private readonly List<Func<Exception, bool>> retryConditions = new();
+    private readonly List<Type> retryableExceptions = [];
+    private readonly List<Func<Exception, bool>> retryConditions = [];
     private TimeSpan initialDelay = TimeSpan.FromSeconds(1);
     private TimeSpan maxDelay = TimeSpan.FromSeconds(30);
     private int maxRetries = 3;

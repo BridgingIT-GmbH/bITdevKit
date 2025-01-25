@@ -25,12 +25,7 @@ public class JobSchedulingEndpoints(
 
     public override void Map(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup(this.options.GroupPrefix).WithTags(this.options.GroupTag);
-
-        if (this.options.RequireAuthorization)
-        {
-            group.RequireAuthorization();
-        }
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetJobs)
             //.AllowAnonymous()

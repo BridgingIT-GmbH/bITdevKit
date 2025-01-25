@@ -42,7 +42,8 @@ public static partial class Extensions
         return Parallel.ForEachAsync(source,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = degreeOfParallelism, CancellationToken = cancellationToken = default
+                MaxDegreeOfParallelism = degreeOfParallelism,
+                CancellationToken = cancellationToken = default
             },
             (item, ct) => new ValueTask(action(item)));
     }

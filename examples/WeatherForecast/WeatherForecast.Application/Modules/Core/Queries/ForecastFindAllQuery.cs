@@ -14,7 +14,7 @@ public class ForecastFindAllQuery(FilterModel filter = null) : QueryRequestBase<
     public FilterModel Filter { get; } = filter;
 }
 
-public class ForecastFindAllPagedQuery(FilterModel filter = null) : QueryRequestBase<PagedResult<Forecast>>
+public class ForecastFindAllPagedQuery(FilterModel filter = null) : QueryRequestBase<ResultPaged<Forecast>>
 {
     public FilterModel Filter { get; } = filter;
 }

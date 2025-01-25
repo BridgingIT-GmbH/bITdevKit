@@ -10,19 +10,17 @@ using System.Collections.Concurrent;
 public class InMemoryContext<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly ConcurrentDictionary<object, TEntity> entities;
+    private readonly ConcurrentDictionary<object, TEntity> entities = [];
 
     public InMemoryContext()
     {
-        this.entities = new ConcurrentDictionary<object, TEntity>();
+        this.entities = [];
     }
 
     public InMemoryContext(IEnumerable<TEntity> entities)
     {
         if (entities is null)
         {
-            this.entities = new ConcurrentDictionary<object, TEntity>();
-
             return;
         }
 
@@ -31,8 +29,12 @@ public class InMemoryContext<TEntity>
             throw new ArgumentException("Entity id must cannot be null or empty.", nameof(entities));
         }
 
-        this.entities = new ConcurrentDictionary<object, TEntity>(
-            entities.ToDictionary(e => e.Id));
+        foreach (var entity in entities)
+        {
+            this.entities.TryAdd(entity.Id, entity);
+        }
+
+        // this.entities = [.. entities.ToDictionary(e => e.Id)];
     }
 
     public ICollection<TEntity> Entities => this.entities.Values;

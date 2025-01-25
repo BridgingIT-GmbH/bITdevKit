@@ -8,4 +8,5 @@ namespace BridgingIT.DevKit.Application.Entities;
 public interface IEntityFindAllQuery { }
 
 public interface IEntityFindAllQuery<TEntity> : IEntityFindAllQuery
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }

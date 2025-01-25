@@ -14,15 +14,15 @@ public abstract class SerializerTestsBase(ITestOutputHelper output) : TestsBase(
         // Arrange
         var sut = this.GetSerializer();
         var value = new StubModel
-            {
-                IntProperty = 1,
-                StringProperty =
+        {
+            IntProperty = 1,
+            StringProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                InitProperty =
+            InitProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                ListProperty = [1],
-                ObjectProperty = new StubModel { IntProperty = 1 }
-            }.AddItem(5)
+            ListProperty = [1],
+            ObjectProperty = new StubModel { IntProperty = 1 }
+        }.AddItem(5)
             .AddItem(9);
 
         // Act
@@ -68,15 +68,15 @@ public abstract class SerializerTestsBase(ITestOutputHelper output) : TestsBase(
     {
         var sut = this.GetSerializer();
         var value = new StubModel
-            {
-                IntProperty = 1,
-                StringProperty =
+        {
+            IntProperty = 1,
+            StringProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                InitProperty =
+            InitProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                ListProperty = [1],
-                ObjectProperty = new StubModel { IntProperty = 1 }
-            }.AddItem(5)
+            ListProperty = [1],
+            ObjectProperty = new StubModel { IntProperty = 1 }
+        }.AddItem(5)
             .AddItem(9);
 
         this.Benchmark(() =>
@@ -114,15 +114,15 @@ public abstract class SerializerTestsBase(ITestOutputHelper output) : TestsBase(
         }
 
         var value = new StubModel
-            {
-                IntProperty = 1,
-                StringProperty =
+        {
+            IntProperty = 1,
+            StringProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                InitProperty =
+            InitProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                ListProperty = [1],
-                ObjectProperty = new StubModel { IntProperty = 1 }
-            }.AddItem(5)
+            ListProperty = [1],
+            ObjectProperty = new StubModel { IntProperty = 1 }
+        }.AddItem(5)
             .AddItem(9);
 
         var bytes = serializer.SerializeToBytes(value);
@@ -157,15 +157,15 @@ public abstract class SerializerTestsBase(ITestOutputHelper output) : TestsBase(
         }
 
         var value = new StubModel
-            {
-                IntProperty = 1,
-                StringProperty =
+        {
+            IntProperty = 1,
+            StringProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                InitProperty =
+            InitProperty =
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                ListProperty = [1],
-                ObjectProperty = new StubModel { IntProperty = 1 }
-            }.AddItem(5)
+            ListProperty = [1],
+            ObjectProperty = new StubModel { IntProperty = 1 }
+        }.AddItem(5)
             .AddItem(9);
 
         var text = serializer.SerializeToString(value);
@@ -208,7 +208,7 @@ public class StubModel
     public IReadOnlyList<int> Items
     {
         get => this.items;
-        init => this.items = [..value]; // init needed for systemtextjson deserialization
+        init => this.items = [.. value]; // init needed for systemtextjson deserialization
     }
 
     public object ObjectProperty { get; set; }

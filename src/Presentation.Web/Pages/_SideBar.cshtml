@@ -1,0 +1,26 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Pages
+@inherits RazorSliceHttpResult<SidebarItem[]>
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+        @foreach (var item in Model)
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(this.HttpContext.Request.Path.Equals(item.Url.Split('?')[0]) ? "active" : "")" href="@item.Url">
+                        <i class="bi bi-@(item.Icon) me-2"></i>
+                        @item.Title
+                        @if (item.HasBadge && item.BadgeCount.HasValue)
+                        {
+                            <span class="badge rounded-pill bg-primary ms-2">@item.BadgeCount</span>
+                        }
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>
+
+@functions {
+
+}

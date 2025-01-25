@@ -41,6 +41,16 @@ public class FilterModel
     public List<string> Includes { get; set; } = [];
 
     /// <summary>
+    /// Gets or sets the children to include in the query.
+    /// </summary>
+    public string Hierarchy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum depth for including child entities.
+    /// </summary>
+    public int HierarchyMaxDepth { get; set; } = 5;
+
+    /// <summary>
     /// Returns a string that represents the current model.
     /// </summary>
     /// <returns>
@@ -134,7 +144,7 @@ public class FilterCriteria
     /// <summary>
     /// Gets or sets the nested filters to apply.
     /// </summary>
-    public List<FilterCriteria> Filters { get; set; } = new List<FilterCriteria>();
+    public List<FilterCriteria> Filters { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the custom filter type.
@@ -317,7 +327,7 @@ public class CompositeSpecification
     /// <summary>
     /// Gets or sets the list of nodes in the composite specification.
     /// </summary>
-    public List<SpecificationNode> Nodes { get; set; } = new List<SpecificationNode>();
+    public List<SpecificationNode> Nodes { get; set; } = [];
 }
 
 /// <summary>
@@ -354,7 +364,7 @@ public class SpecificationGroup : SpecificationNode
     /// <summary>
     /// Gets or sets the list of nodes in the specification group.
     /// </summary>
-    public List<SpecificationNode> Nodes { get; set; } = new List<SpecificationNode>();
+    public List<SpecificationNode> Nodes { get; set; } = [];
 }
 
 /// <summary>
@@ -387,5 +397,5 @@ public enum PageSize
     ExtraLarge = 100, // Extra large page size
 
     [EnumMember(Value = "xxl")]
-    ExtraExtraLarge = 100 // Extra large page size
+    ExtraExtraLarge = 1000 // Extra extra large page size
 }

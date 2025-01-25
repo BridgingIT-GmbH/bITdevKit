@@ -4,9 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain.Repositories;
-
-using System.Collections;
-
 /// <summary>
 /// Provides extension methods for performing result-based queries on repositories.
 /// </summary>
@@ -123,6 +120,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
     }
 
+    /// <summary>
     /// Asynchronously finds a single entity by its identifier and returns a result object.
     /// <param name="source">The repository source from which to find the entity.</param>
     /// <param name="id">The identifier of the entity to be found.</param>
@@ -169,6 +167,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         return await source.FindOneResultAsync(new Specification<TEntity>(expression), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
     /// Asynchronously finds and returns a single entity that matches the given specification.
     /// <param name="source">The repository from which the entity is to be fetched.</param>
     /// <param name="specification">The specification that defines the criteria for selecting the entity.</param>
@@ -465,7 +464,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">The path for including related entities.</param>
     /// <param name="cancellationToken">A token to notify if the operation should be canceled.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paged result of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         string ordering, // of the form >   fieldname [ascending|descending], ...
         int page = 1,
@@ -479,21 +478,21 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var count = await source.CountAsync(cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(new FindOptions<TEntity>
-                    {
-                        Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
-                        Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
+            {
+                Order = !ordering.IsNullOrEmpty() ? new OrderOption<TEntity>(ordering) : null,
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
+            },
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -509,8 +508,8 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includeExpression">Optional expression to include related entities.</param>
     /// <param name="includePath">Optional include path to related entities.</param>
     /// <param name="cancellationToken">Optional token to cancel the async operation.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="PagedResult{TEntity}"/> which includes the entities and pagination info.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="ResultPaged{TEntity}"/> which includes the entities and pagination info.</returns>
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         Expression<Func<TEntity, object>> orderingExpression,
         int page = 1,
@@ -525,21 +524,21 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var count = await source.CountAsync(cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(new FindOptions<TEntity>
-                    {
-                        Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
-                        Skip = (page - 1) * pageSize,
-                        Take = pageSize,
-                        Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
+            {
+                Order = new OrderOption<TEntity>(orderingExpression, orderDirection),
+                Skip = (page - 1) * pageSize,
+                Take = pageSize,
+                Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
+            },
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -556,7 +555,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">The path to include related entities.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a paged result set of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         Expression<Func<TEntity, bool>> expression,
         string ordering, // of the form >   fieldname [ascending|descending], ...
@@ -567,7 +566,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
-        return await source.FindAllPagedResultAsync(
+        return await source.FindAllResultPagedAsync(
             new Specification<TEntity>(expression),
             ordering,
             page,
@@ -590,7 +589,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">Optional path string specifying related entities to include.</param>
     /// <param name="cancellationToken">Optional cancellation token for the async operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paginated result set of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         ISpecification<TEntity> specification,
         string ordering, // of the form >   fieldname [ascending|descending], ...
@@ -616,11 +615,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -638,7 +637,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">An optional path to include related entities.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operations.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a paged result of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         Expression<Func<TEntity, bool>> expression,
         Expression<Func<TEntity, object>> orderingExpression,
@@ -650,7 +649,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
-        return await source.FindAllPagedResultAsync(
+        return await source.FindAllResultPagedAsync(
             new Specification<TEntity>(expression),
             orderingExpression,
             page,
@@ -661,7 +660,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             cancellationToken).AnyContext();
     }
 
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,
         IEnumerable<ISpecification<TEntity>> specifications = null,
@@ -681,11 +680,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, filterModel.Page, filterModel.PageSize);
+            return ResultPaged<TEntity>.Success(entities, count, filterModel.Page, filterModel.PageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -703,7 +702,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">The path to include related entities (default is null).</param>
     /// <param name="cancellationToken">Cancellation token (default is none).</param>
     /// <returns>A task representing the asynchronous operation, with a result of the paged entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, object>> orderingExpression,
@@ -730,11 +729,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -752,7 +751,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">An optional path to include related data.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paged result set of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         IEnumerable<ISpecification<TEntity>> specifications, // filters
         string ordering, // of the form >   fieldname [ascending|descending], ...
@@ -779,11 +778,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -801,7 +800,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
     /// <param name="includePath">An optional path string to include related entities.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the paged result of entities.</returns>
-    public static async Task<PagedResult<TEntity>> FindAllPagedResultAsync<TEntity>(
+    public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, object>> orderingExpression,
@@ -828,11 +827,11 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     cancellationToken)
                 .AnyContext();
 
-            return PagedResult<TEntity>.Success(entities, count, page, pageSize);
+            return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return PagedResult<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

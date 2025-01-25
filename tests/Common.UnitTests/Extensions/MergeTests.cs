@@ -133,7 +133,7 @@ public class ExtensionsTests
     {
         // Arrange
         var primaryValues = new[] { this.faker.Random.Word() + "_1a", this.faker.Random.Word() + "_1b" };
-        var secondaryValues = new[] { this.faker.Random.Word() + "_2a", this.faker.Random.Word()  + "_2b"};
+        var secondaryValues = new[] { this.faker.Random.Word() + "_2a", this.faker.Random.Word() + "_2b" };
 
         var primary = new Stack<string>(primaryValues);
         var secondary = new Stack<string>(secondaryValues);

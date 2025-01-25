@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
 using System.Text.Json;
-using NSubstitute.ExceptionExtensions;
 
 [UnitTest("Common")]
 public class StreamExtensionsTests

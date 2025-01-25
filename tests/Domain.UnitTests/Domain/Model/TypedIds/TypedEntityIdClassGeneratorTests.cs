@@ -77,7 +77,7 @@ public class Order : IEntity
 
         // Assert
         var result = driver.GetRunResult().Results.Single();
-        var generatedCode = result.GeneratedSources.Single()            .SourceText.ToString();
+        var generatedCode = result.GeneratedSources.Single().SourceText.ToString();
 
         Assert.NotEmpty(result.GeneratedSources);
         Assert.Contains("public partial class OrderId : EntityId<Int32>", generatedCode);

@@ -69,7 +69,7 @@ public class HttpCurrentUserAccessorTests
     public void Roles_WhenUserHasRoleClaims_ReturnsArrayOfRoles()
     {
         // Arrange
-        var expectedRoles = new[] { "Admin", "User", "Manager" };
+        var expectedRoles = new string[] { Role.Administrators, Role.Users, Role.Writers };
         this.SetupHttpContextWithRoleClaims(expectedRoles);
 
         // Act

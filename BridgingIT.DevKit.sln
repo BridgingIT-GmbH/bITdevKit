@@ -39,10 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		global.json = global.json
 		LICENSE = LICENSE
 		nuget.config = nuget.config
+		.qodana\qodana-profile.yaml = .qodana\qodana-profile.yaml
+		qodana.yaml = qodana.yaml
 		RELEASES.md = RELEASES.md
 		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
-		qodana.yaml = qodana.yaml
-		.qodana\qodana-profile.yaml = .qodana\qodana-profile.yaml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing", "src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj", "{22EDF536-7B1C-4216-8B98-9956F8737803}"
@@ -56,18 +56,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.AutoMapper",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4AAB-482C-AF16-A3434D9716A8}"
 	ProjectSection(SolutionItems) = preProject
-		docs\features-filtering.md = docs\features-filtering.md
 		docs\features-commands.md = docs\features-commands.md
-		docs\features-messaging.md = docs\features-messaging.md
-		docs\features-queries.md = docs\features-queries.md
-		docs\features-modules.md = docs\features-modules.md
-		docs\features-jobscheduling.md = docs\features-jobscheduling.md
-		docs\features-startuptasks.md = docs\features-startuptasks.md
 		docs\features-documentstorage.md = docs\features-documentstorage.md
 		docs\features-domain-repositories.md = docs\features-domain-repositories.md
+		docs\features-filtering.md = docs\features-filtering.md
+		docs\features-jobscheduling.md = docs\features-jobscheduling.md
+		docs\features-messaging.md = docs\features-messaging.md
+		docs\features-modules.md = docs\features-modules.md
+		docs\features-queries.md = docs\features-queries.md
 		docs\features-results.md = docs\features-results.md
-		README.md = README.md
 		docs\features-rules.md = docs\features-rules.md
+		docs\features-startuptasks.md = docs\features-startuptasks.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.EntityFramework.EventSourcing.SqlServer", "src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj", "{F8BD56DD-C6F9-4853-9E09-F761F3CD2051}"
@@ -339,6 +339,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{60F2A5
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Rules", "src\Common.Rules\Common.Rules.csproj", "{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Identity", "src\Application.Identity\Application.Identity.csproj", "{7F5F8E58-22C1-0209-965B-C86E60CB8D64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todos", "Todos", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36F2F724-500A-4E34-8CF7-7FB7CC2A5E0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todos.Presentation.Web", "examples\Todos\Todos.Presentation.Web\Todos.Presentation.Web.csproj", "{3F6A44D8-5C01-4DB5-9731-44926FB9808A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B487AC83-5481-4A9D-8CFC-3DCE349E5171}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{EDE5B21B-CE15-443F-A566-EA4795AA0187}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -718,6 +730,14 @@ Global
 		{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDDDB04-D65F-4D21-8FBE-14749CC382F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5F8E58-22C1-0209-965B-C86E60CB8D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5F8E58-22C1-0209-965B-C86E60CB8D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5F8E58-22C1-0209-965B-C86E60CB8D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5F8E58-22C1-0209-965B-C86E60CB8D64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F6A44D8-5C01-4DB5-9731-44926FB9808A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F6A44D8-5C01-4DB5-9731-44926FB9808A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F6A44D8-5C01-4DB5-9731-44926FB9808A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F6A44D8-5C01-4DB5-9731-44926FB9808A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -846,6 +866,12 @@ Global
 		{39918CB1-7AFD-4A93-8A4C-6A04B70AD13D} = {862110B7-95CF-40ED-8DF8-F6E4FC3A5900}
 		{60F2A54B-EDD0-447C-8168-9BE7E35BF656} = {16A3992B-4AAB-482C-AF16-A3434D9716A8}
 		{3CDDDB04-D65F-4D21-8FBE-14749CC382F8} = {862110B7-95CF-40ED-8DF8-F6E4FC3A5900}
+		{7F5F8E58-22C1-0209-965B-C86E60CB8D64} = {AB446D7C-69B0-4A1C-A297-807CE3B0A520}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {0E422851-9B82-435E-9E37-F4735A718729}
+		{36F2F724-500A-4E34-8CF7-7FB7CC2A5E0A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{3F6A44D8-5C01-4DB5-9731-44926FB9808A} = {36F2F724-500A-4E34-8CF7-7FB7CC2A5E0A}
+		{B487AC83-5481-4A9D-8CFC-3DCE349E5171} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{EDE5B21B-CE15-443F-A566-EA4795AA0187} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71C09054-DA91-4896-83AE-024F259D5330}

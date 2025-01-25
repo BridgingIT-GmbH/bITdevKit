@@ -15,19 +15,20 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
-    <PackageReference Include="System.Linq.Dynamic.Core"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj"/>
-    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj"/>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj"/>
-    <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj"/>
-    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj"/>
+    <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
   </ItemGroup>
 
 </Project>

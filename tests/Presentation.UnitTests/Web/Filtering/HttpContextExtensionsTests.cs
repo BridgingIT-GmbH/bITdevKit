@@ -32,7 +32,7 @@ public class HttpContextExtensionsTests
     public async Task FromQueryFilter_NoFilterParameter_ReturnsDefault()
     {
         // Arrange
-        var context = CreateMockContextWithQuery(new Dictionary<string, string>());
+        var context = CreateMockContextWithQuery([]);
 
         // Act
         var result = await context.FromQueryFilterAsync();

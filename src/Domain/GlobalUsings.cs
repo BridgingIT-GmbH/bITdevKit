@@ -6,5 +6,4 @@
 global using System.Diagnostics;
 global using System.Linq.Expressions;
 global using BridgingIT.DevKit.Common;
-global using BridgingIT.DevKit.Domain;
 global using BridgingIT.DevKit.Domain.Model;

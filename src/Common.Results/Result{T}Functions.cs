@@ -40,11 +40,13 @@ public readonly partial struct Result<T>
             var newValue = mapper(this.Value);
 
             return Result<TNew>.Success(newValue)
+                .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -82,17 +84,20 @@ public readonly partial struct Result<T>
             var newValue = await mapper(this.Value, cancellationToken);
 
             return Result<TNew>.Success(newValue)
+                .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -125,11 +130,14 @@ public readonly partial struct Result<T>
         {
             var result = binder(this.Value);
 
-            return result.WithMessages(this.Messages);
+            return result
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -166,17 +174,21 @@ public readonly partial struct Result<T>
         {
             var result = await binder(this.Value, cancellationToken);
 
-            return result.WithMessages(this.Messages);
+            return result
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -240,6 +252,7 @@ public readonly partial struct Result<T>
         if (predicate is null)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new Error("Predicate cannot be null"))
                 .WithMessages(this.Messages);
         }
@@ -249,12 +262,14 @@ public readonly partial struct Result<T>
             return predicate(this.Value)
                 ? this
                 : Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
                     .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -290,6 +305,7 @@ public readonly partial struct Result<T>
         if (predicate is null)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new Error("Predicate cannot be null"))
                 .WithMessages(this.Messages);
         }
@@ -299,18 +315,21 @@ public readonly partial struct Result<T>
             return await predicate(this.Value, cancellationToken)
                 ? this
                 : Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
                     .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -421,6 +440,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -459,12 +479,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -504,11 +526,13 @@ public readonly partial struct Result<T>
             operation?.Invoke(newValue);
 
             return Result<TNew>.Success(newValue)
+                .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -555,17 +579,20 @@ public readonly partial struct Result<T>
             }
 
             return Result<TNew>.Success(newValue)
+                .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -599,6 +626,7 @@ public readonly partial struct Result<T>
             if (!operation(this.Value))
             {
                 return Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
                     .WithMessages(this.Messages);
             }
@@ -606,6 +634,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -645,6 +674,7 @@ public readonly partial struct Result<T>
             if (!await operation(this.Value, cancellationToken))
             {
                 return Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
                     .WithMessages(this.Messages);
             }
@@ -652,12 +682,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -692,6 +724,7 @@ public readonly partial struct Result<T>
             if (operation(this.Value))
             {
                 return Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
                     .WithMessages(this.Messages);
             }
@@ -699,6 +732,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -738,6 +772,7 @@ public readonly partial struct Result<T>
             if (await operation(this.Value, cancellationToken))
             {
                 return Failure(this.Value)
+                    .WithErrors(this.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
                     .WithMessages(this.Messages);
             }
@@ -745,12 +780,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -784,6 +821,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -822,12 +860,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError("Operation was cancelled"))
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -858,11 +898,13 @@ public readonly partial struct Result<T>
             var fallbackValue = operation();
 
             return Success(fallbackValue)
+                //.WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -897,17 +939,20 @@ public readonly partial struct Result<T>
             var fallbackValue = await operation(cancellationToken);
 
             return Success(fallbackValue)
+                //.WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -941,6 +986,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -979,12 +1025,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1015,6 +1063,7 @@ public readonly partial struct Result<T>
             if (onSuccess is null)
             {
                 return Result<TNew>.Failure()
+                    .WithErrors(this.Errors)
                     .WithError(new Error("Success mapper is null"))
                     .WithMessages(this.Messages);
             }
@@ -1022,11 +1071,13 @@ public readonly partial struct Result<T>
             try
             {
                 return Result<TNew>.Success(onSuccess(this.Value))
+                    .WithErrors(this.Errors)
                     .WithMessages(this.Messages);
             }
             catch (Exception ex)
             {
                 return Result<TNew>.Failure()
+                    .WithErrors(this.Errors)
                     .WithError(Result.Settings.ExceptionErrorFactory(ex))
                     .WithMessages(this.Messages);
             }
@@ -1048,6 +1099,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1083,12 +1135,14 @@ public readonly partial struct Result<T>
             return option.TryGetValue(out var value)
                 ? Result<TNew>.Success(value).WithMessages(this.Messages)
                 : Result<TNew>.Failure()
+                 .WithErrors(this.Errors)
                     .WithError(new Error("No value was chosen"))
                     .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1130,18 +1184,21 @@ public readonly partial struct Result<T>
             return option.TryGetValue(out var value)
                 ? Result<TNew>.Success(value).WithMessages(this.Messages)
                 : Result<TNew>.Failure()
+                    .WithErrors(this.Errors)
                     .WithError(new Error("No value was chosen"))
                     .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1161,7 +1218,7 @@ public readonly partial struct Result<T>
     /// </code>
     /// </example>
     public Result<IEnumerable<TOutput>> Collect<TInput, TOutput>(Func<TInput, Result<TOutput>> operation)
-        // where TInput : IEnumerable<TOutput>
+    // where TInput : IEnumerable<TOutput>
     {
         if (!this.IsSuccess || operation is null)
         {
@@ -1173,6 +1230,7 @@ public readonly partial struct Result<T>
         if (this.Value is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new Error("Source sequence is null"))
                 .WithMessages(this.Messages);
         }
@@ -1205,9 +1263,11 @@ public readonly partial struct Result<T>
 
         return errors.Any()
             ? Result<IEnumerable<TOutput>>.Failure()
+                .WithErrors(this.Errors)
                 .WithErrors(errors)
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results)
+                .WithErrors(this.Errors)
                 .WithMessages(messages);
     }
 
@@ -1231,7 +1291,7 @@ public readonly partial struct Result<T>
     public async Task<Result<IEnumerable<TOutput>>> CollectAsync<TInput, TOutput>(
             Func<TInput, CancellationToken, Task<Result<TOutput>>> operation,
             CancellationToken cancellationToken = default)
-        //where TInput : IEnumerable<TOutput>
+    //where TInput : IEnumerable<TOutput>
     {
         if (!this.IsSuccess || operation is null)
         {
@@ -1243,6 +1303,7 @@ public readonly partial struct Result<T>
         if (this.Value is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
+                .WithErrors(this.Errors)
                 .WithError(new Error("Source sequence is null"))
                 .WithMessages(this.Messages);
         }
@@ -1281,9 +1342,11 @@ public readonly partial struct Result<T>
 
         return errors.Any()
             ? Result<IEnumerable<TOutput>>.Failure()
+                .WithErrors(this.Errors)
                 .WithErrors(errors)
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results)
+                .WithErrors(this.Errors)
                 .WithMessages(messages);
     }
 
@@ -1321,6 +1384,7 @@ public readonly partial struct Result<T>
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1365,12 +1429,14 @@ public readonly partial struct Result<T>
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(this.Messages);
         }
@@ -1424,12 +1490,14 @@ public readonly partial struct Result<T>
             }
 
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
                 .WithMessages(this.Messages);
@@ -1473,6 +1541,7 @@ public readonly partial struct Result<T>
         if (validator is null)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new Error("Validator cannot be null"))
                 .WithMessages(this.Messages);
         }
@@ -1489,18 +1558,21 @@ public readonly partial struct Result<T>
             }
 
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new FluentValidationError(validationResult))
                 .WithMessages(this.Messages);
         }
         catch (OperationCanceledException)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(this.Messages);
         }
         catch (Exception ex)
         {
             return Failure(this.Value)
+                .WithErrors(this.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
                 .WithMessages(this.Messages);

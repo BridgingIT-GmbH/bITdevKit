@@ -67,7 +67,9 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         {
             this.factory = new ConnectionFactory
             {
-                HostName = this.options.HostName, AutomaticRecoveryEnabled = true, DispatchConsumersAsync = true
+                HostName = this.options.HostName,
+                AutomaticRecoveryEnabled = true,
+                DispatchConsumersAsync = true
             };
         }
         else if (!this.options.ConnectionString.IsNullOrEmpty())

@@ -15,7 +15,7 @@ public class DomainEvents // TODO: create interface?
     ///     This collection enables the registration, retrieval, and management of domain events,
     ///     ensuring the integrity and consistency of the aggregate root.
     /// </summary>
-    private ICollection<IDomainEvent> registrations = new List<IDomainEvent>(); // TODO: concurrent collection?
+    private ICollection<IDomainEvent> registrations = []; // TODO: concurrent collection?
 
     /// <summary>
     ///     Retrieves all currently registered domain events.

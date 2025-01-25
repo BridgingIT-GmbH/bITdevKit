@@ -54,7 +54,8 @@ public class AggregateEventRepository(
     {
         var options = new FindOptions<EventStoreAggregateEvent>
         {
-            Order = new OrderOption<EventStoreAggregateEvent>(oo => oo.AggregateVersion), NoTracking = true
+            Order = new OrderOption<EventStoreAggregateEvent>(oo => oo.AggregateVersion),
+            NoTracking = true
         };
         var spec = new Specification<EventStoreAggregateEvent>(s =>
             s.AggregateId == aggregateId && s.AggregateType == immutableAggregateTypeName);

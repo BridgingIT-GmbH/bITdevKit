@@ -75,6 +75,8 @@ public interface IFindOptions<TEntity>
     /// </value>
     IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
 
+    HierarchyOption<TEntity> Hierarchy { get; set; }
+
     /// <summary>
     ///     Determines whether this instance has orderings.
     /// </summary>
@@ -90,4 +92,6 @@ public interface IFindOptions<TEntity>
     ///     <c>true</c> if this instance has includes; otherwise, <c>false</c>.
     /// </returns>
     bool HasIncludes();
+
+    bool HasHierarchy();
 }

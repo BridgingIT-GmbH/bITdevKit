@@ -17,6 +17,7 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>  <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
 
   <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
@@ -27,9 +28,14 @@
     <None Include="../../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>-->
 
+  <ItemGroup>
+    <Content Update="package*.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors>true</WarningsAsErrors>
+
     <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
     <!--<UseSharedCompilation>true</UseSharedCompilation>-->
     <!--roslyn build speed-->
@@ -53,7 +59,10 @@
   <ItemGroup>
     <PackageReference Include="Ensure.That"/>
     <PackageReference Include="MinVer" PrivateAssets="All"/>
-    <!--<PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" IncludeAssets="runtime; build; native; contentfiles; analyzers"/>-->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
 
   </ItemGroup>
 

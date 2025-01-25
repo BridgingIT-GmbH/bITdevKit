@@ -14,10 +14,13 @@ public interface IEntityCommandRule<TEntity>
 }
 
 public interface IEntityCreateCommandRule<TEntity> : IEntityCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 public interface IEntityUpdateCommandRule<TEntity> : IEntityCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 public interface IEntityDeleteCommandRule<TEntity> : IEntityCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }

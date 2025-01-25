@@ -14,7 +14,8 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 public class EntityFrameworkRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : EntityFrameworkGenericRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
-    where TContext : DbContext { }
+    where TContext : DbContext
+{ }
 
 /// <summary>
 /// EntityFrameworkGenericRepository is a generic repository for Entity Framework,

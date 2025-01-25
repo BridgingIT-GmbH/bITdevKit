@@ -318,7 +318,7 @@ public class SpecificationTests
         var firstName = this.faker.Person.FirstName;
         var age = 10;
         var sut = new Specification<PersonStub>("FirstName == @0 OR Age == @1", firstName, age);
-        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age};
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age };
 
         // Act
         var result = sut.IsSatisfiedBy(person);
@@ -334,7 +334,7 @@ public class SpecificationTests
         var firstName = this.faker.Person.FirstName;
         var age = 10;
         var sut = new Specification<PersonStub>("FirstName == @0 AND Age == @1", firstName, age);
-        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age};
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = firstName, Age = age };
 
         // Act
         var result = sut.IsSatisfiedBy(person);

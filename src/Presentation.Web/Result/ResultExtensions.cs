@@ -86,8 +86,8 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Ok(result, models);
     }
 
-    public static ActionResult<PagedResult<TModel>> ToOkActionResult<TModel>(
-        this PagedResult<TModel> result,
+    public static ActionResult<ResultPaged<TModel>> ToOkActionResult<TModel>(
+        this ResultPaged<TModel> result,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
@@ -96,26 +96,26 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Ok(result);
     }
 
-    public static ActionResult<PagedResult<TModel>> ToOkActionResult<TSource, TModel>(
-        this PagedResult<TSource> result,
+    public static ActionResult<ResultPaged<TModel>> ToOkActionResult<TSource, TModel>(
+        this ResultPaged<TSource> result,
         IMapper mapper,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var pagedResult = result.IsSuccess
-            ? PagedResult<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
+        var resultPaged = result.IsSuccess
+            ? ResultPaged<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
-            : PagedResult<TModel>.Failure()
+            : ResultPaged<TModel>.Failure()
                 .WithMessages(result.Messages);
 
         foreach (var error in result.Errors.SafeNull())
         {
-            pagedResult.WithError(error);
+            resultPaged.WithError(error);
         }
 
         return actionResultMapper is not null
-            ? actionResultMapper.Ok(pagedResult)
-            : new DefaultActionResultMapper().Ok(pagedResult);
+            ? actionResultMapper.Ok(resultPaged)
+            : new DefaultActionResultMapper().Ok(resultPaged);
     }
 
     public static ActionResult<TModel> ToOkActionResult<TModel>(
@@ -549,7 +549,7 @@ public static class ResultExtensions
     }
 
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(
-        this PagedResult<TModel> result,
+        this ResultPaged<TModel> result,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
@@ -559,32 +559,32 @@ public static class ResultExtensions
             : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
-    public static ActionResult<PagedResult<TModel>> ToObjectActionResult<TModel, TSource>(
-        this PagedResult<TSource> result,
+    public static ActionResult<ResultPaged<TModel>> ToObjectActionResult<TModel, TSource>(
+        this ResultPaged<TSource> result,
         IMapper mapper,
         int statusCode,
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var pagedResult = result.IsSuccess
-            ? PagedResult<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
+        var resultPaged = result.IsSuccess
+            ? ResultPaged<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
-            : PagedResult<TModel>.Failure()
+            : ResultPaged<TModel>.Failure()
                 .WithMessages(result.Messages);
 
-        // var pagedResult =
-        //     new PagedResult<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
+        // var resultPaged =
+        //     new ResultPaged<TModel>(models, result.Messages, result.TotalCount, result.CurrentPage, result.PageSize)
         //     {
         //         IsSuccess = result.IsSuccess
         //     };
 
         foreach (var error in result.Errors.SafeNull())
         {
-            pagedResult.WithError(error);
+            resultPaged.WithError(error);
         }
 
         return actionResultMapper is not null
-            ? actionResultMapper.Object(pagedResult, statusCode)
-            : new DefaultActionResultMapper().Object(pagedResult, statusCode);
+            ? actionResultMapper.Object(resultPaged, statusCode)
+            : new DefaultActionResultMapper().Object(resultPaged, statusCode);
     }
 }

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.UnitTests.Presentation;
 
-using System.Collections;
 using Core.Application;
 using Core.Domain;
 using Core.Presentation;
@@ -48,7 +47,7 @@ public class CoreMapperRegisterTests
         var source = new Faker<ResultWrapper<Dinner>>()
             .RuleFor(u => u.Result, f => Result<Dinner>.Success(entity)
                 .WithMessages(f.Lorem.Sentences().Split('\n')))
-            .Generate().Result;;
+            .Generate().Result; ;
 
         // Act
         var target = this.sut.Map<Dinner, DinnerModel>(source.Value);
@@ -81,7 +80,7 @@ public class CoreMapperRegisterTests
         var source = new Faker<ResultWrapper<IEnumerable<Dinner>>>()
             .RuleFor(u => u.Result, f => Result<IEnumerable<Dinner>>.Success([entities.First(), entities.Last()])
                 .WithMessages(f.Lorem.Sentences().Split('\n')))
-            .Generate().Result;;
+            .Generate().Result; ;
 
         // Act
         var target = this.sut.Map<IEnumerable<Dinner>, IEnumerable<DinnerModel>>(source.Value);
@@ -131,7 +130,8 @@ public class CoreMapperRegisterTests
             .RuleFor(u => u.Schedule,
                 new DinnerScheduleModel
                 {
-                    StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime
+                    StartDateTime = entity.Schedule.StartDateTime,
+                    EndDateTime = entity.Schedule.EndDateTime
                 })
             .Generate();
 
@@ -168,7 +168,7 @@ public class CoreMapperRegisterTests
         var source = new Faker<ResultWrapper<Menu>>()
             .RuleFor(u => u.Result, f => Result<Menu>.Success(entity)
                 .WithMessages(f.Lorem.Sentences().Split('\n')))
-            .Generate().Result;;
+            .Generate().Result; ;
 
         // Act
         var target = this.sut.Map<Menu, MenuModel>(source.Value);

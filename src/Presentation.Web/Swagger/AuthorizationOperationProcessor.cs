@@ -26,7 +26,7 @@ public class AuthorizationOperationProcessor(string name) : IOperationProcessor
             context.OperationDescription.Operation.Responses.Add("403",
                 new OpenApiResponse { Description = "Forbidden" });
             context.OperationDescription.Operation.Security =
-                new List<OpenApiSecurityRequirement> { new() { [this.name] = new List<string>() } };
+                [new() { [this.name] = new List<string>() }];
         }
 
         return true;

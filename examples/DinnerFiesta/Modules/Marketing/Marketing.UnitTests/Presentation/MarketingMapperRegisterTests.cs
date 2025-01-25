@@ -43,7 +43,7 @@ public class MarketingMapperRegisterTests
         var source = new Faker<ResultWrapper<Customer>>()
             .RuleFor(u => u.Result, f => Result<Customer>.Success(entity)
                 .WithMessages(f.Lorem.Sentences().Split('\n')))
-            .Generate().Result;;
+            .Generate().Result; ;
 
         // Act
         var target = this.sut.Map<Result<Customer>, ResultOfCustomerResponseModel>(source);
@@ -83,7 +83,7 @@ public class MarketingMapperRegisterTests
         var source = new Faker<ResultWrapper<IEnumerable<Customer>>>()
             .RuleFor(u => u.Result, f => Result<IEnumerable<Customer>>.Success(
                 new List<Customer> { entities.First(), entities.Last() }).WithMessages(f.Lorem.Sentences().Split('\n')))
-            .Generate().Result;;
+            .Generate().Result; ;
 
         // Act
         var target = this.sut.Map<Result<IEnumerable<Customer>>, ResultOfCustomersResponseModel>(source);

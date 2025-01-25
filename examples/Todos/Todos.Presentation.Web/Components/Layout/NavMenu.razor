@@ -1,0 +1,51 @@
+﻿<div class="nav-container">
+    <MudNavMenu Color="Color.Surface" Class="centered-nav">
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="#" Icon="@Icons.Material.Filled.List" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Add" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="#" Icon="@Icons.Material.Filled.Search" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="/report" Icon="@Icons.Material.Filled.ReportProblem" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudDivider />
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="/monitor" Icon="@Icons.Material.Filled.MonitorHeart" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+        <MudTooltip Text="Lorem Ipsum" Placement="Placement.End">
+            <MudNavLink Href="/userprofile" Icon="@Icons.Material.Filled.VerifiedUser" IconColor="Color.Inherit" Match="NavLinkMatch.All" />
+        </MudTooltip>
+    </MudNavMenu>
+</div>
+
+<style>
+    .nav-container {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 64px;
+        background-color: #3F3F3F;
+        color: white;
+    }
+
+    ::deep .mud-nav-link {
+        padding: 12px 0;
+        justify-content: center;
+        min-height: 40px;
+        opacity: 0.3;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+        ::deep .mud-nav-link:hover,
+        ::deep .mud-nav-link.active {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+</style>

@@ -234,7 +234,7 @@ public abstract class EntityFrameworkGenericRepositoryResultTestsBase
     //     var sut = this.CreateRepository(this.GetContext());
     //
     //     // Act
-    //     var results = await sut.FindAllPagedResultAsync(new Specification<PersonStub>(e =>
+    //     var results = await sut.FindAllResultPagedAsync(new Specification<PersonStub>(e =>
     //             e.FirstName == entity1.FirstName ||
     //             e.FirstName == entity2.FirstName ||
     //             e.FirstName == entity3.FirstName ||
@@ -658,7 +658,7 @@ public abstract class EntityFrameworkGenericRepositoryResultTestsBase
     //     existingEntity.Locations.ShouldContain(location3);
     // }
 
-    public virtual async Task FindAllPagedResultAsync_AnyEntityWithFilter_EntitiesFound()
+    public virtual async Task FindAllResultPagedAsync_AnyEntityWithFilter_EntitiesFound()
     {
         SpecificationResolver.Clear();
         SpecificationResolver.Register<PersonStub, PersonByEmailSpecification>("PersonHasEmail");
@@ -705,7 +705,7 @@ public abstract class EntityFrameworkGenericRepositoryResultTestsBase
         var sut = this.CreateRepository(this.GetContext());
 
         // Act
-        var result = await sut.FindAllPagedResultAsync(filter);
+        var result = await sut.FindAllResultPagedAsync(filter);
 
         // Assert
         result.ShouldBeSuccess();

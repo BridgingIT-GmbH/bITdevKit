@@ -8,7 +8,8 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 [Obsolete("Use GenericRepositoryCancellationBehavior instead")]
 public class GenericRepositoryCancellationDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryCancellationBehavior<TEntity>(inner)
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>

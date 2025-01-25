@@ -6,7 +6,11 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net.Http.Headers;
 using BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Client;
+using BridgingIT.DevKit.Presentation.Web.Client;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
@@ -16,12 +20,35 @@ using Polly;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 var configuration = builder.Configuration.Build();
 
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebAssembly.Authentication", LogLevel.Debug);
+
 builder.Services.AddLocalization();
 builder.Services.AddScoped<IApiClient, ApiClient>();
-builder.Services.AddHttpClient("backend-api")
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+//builder.Services.AddHttpClient("backend-api")
+//    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+//    .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
+builder.Services.AddHttpClient("backend-api",
+    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    .AddHttpMessageHandler(sp =>
+    {
+        return sp.GetService<AuthorizationMessageHandler>()
+            .ConfigureHandler(
+                authorizedUrls: [builder.HostEnvironment.BaseAddress],
+                scopes: ["openid", "profile", "email", "roles", "offline_access"]);
+    })
     .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
 builder.Services.AddScoped(sp => HttpClientFactory(sp, configuration));
+
+//builder.Services.AddScoped<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Authentication", options.ProviderOptions);
+
+    // needed for refresh token?
+    options.ProviderOptions.ResponseType = "code";
+    options.ProviderOptions.DefaultScopes.Add("offline_access");
+});
 
 builder.Services.AddMudServices(config =>
 {

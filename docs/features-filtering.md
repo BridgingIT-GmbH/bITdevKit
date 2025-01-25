@@ -128,9 +128,9 @@ sequenceDiagram
 
     R->>+D: Execute Query (FindOptions)
     D-->>-R: Raw Results
-    R-->>-H: PagedResult
+    R-->>-H: ResultPaged
     H-->>-A: Response
-    A-->>-C: HTTP Response (PagedResult)
+    A-->>-C: HTTP Response (ResultPaged)
 ```
 
 The following sections detail the implementation and usage of the Filtering feature, providing
@@ -180,23 +180,23 @@ comprehensive examples and best practices for common scenarios.
 public class UsersController : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<PagedResult<User>>> GetAll(
+    public async Task<ActionResult<ResultPaged<User>>> GetAll(
         [FromQueryFilter] FilterModel filter)
     {
         // or: var filter await this.HttpContext.FromQueryFilterAsync();
-        var response = await mediator.Send(new UserFindAllQuery(filter)); // handler calls repository.FindAllPagedResultAsync(filter)
+        var response = await mediator.Send(new UserFindAllQuery(filter)); // handler calls repository.FindAllResultPagedAsync(filter)
 
-        return Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
+        return Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
     }
 
     [HttpPost("search")]
-    public async Task<ActionResult<PagedResult<User>>> Search(
+    public async Task<ActionResult<ResultPaged<User>>> Search(
         [FromBodyFilter] FilterModel filter)
     {
         // or: var filter await this.HttpContext.FromBodyFilterAsync();
-        var response = await mediator.Send(new UserSearchQuery(filter)); // handler calls repository.FindAllPagedResultAsync(filter)
+        var response = await mediator.Send(new UserSearchQuery(filter)); // handler calls repository.FindAllResultPagedAsync(filter)
 
-        return Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
+        return Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
     }
 }
 ```
@@ -204,21 +204,21 @@ public class UsersController : ControllerBase
 ### ASP.NET Minimal API Example
 
 ```csharp
-app.MapGet("/api/users/search", async Task<Results<Ok<PagedResult<User>>, NotFound>>
+app.MapGet("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFound>>
   (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
 {
     var filter = await context.FromQueryFilterAsync();
     var response = await mediator.Send(
-        new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllPagedResultAsync(filter)
+        new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
 
-    return TypedResults.Ok(response); // should ideally return a PagedResult<UserModel> (mapped)
+    return TypedResults.Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
 });
 ```
 
 ### Repository Usage (QueryHandler)
 
 ```csharp
-public class UserQueryHandler : IRequestHandler<UserFindAllQuery, PagedResult<User>>
+public class UserQueryHandler : IRequestHandler<UserFindAllQuery, ResultPaged<User>>
 {
     private readonly IGenericReadOnlyRepository<User> repository;
 
@@ -227,7 +227,7 @@ public class UserQueryHandler : IRequestHandler<UserFindAllQuery, PagedResult<Us
         this.repository = repository;
     }
 
-    public async Task<PagedResult<User>> Handle(
+    public async Task<ResultPaged<User>> Handle(
         UserFindAllQuery query,
         CancellationToken cancellationToken)
     {
@@ -1251,7 +1251,7 @@ export interface FilterModel {
   includes?: string[];
 }
 
-export interface PagedResult<T> {
+export interface ResultPaged<T> {
   items: T[];
   totalCount: number;
   pageNumber: number;
@@ -1270,7 +1270,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
-import {FilterModel, PagedResult} from '../models';
+import {FilterModel, ResultPaged} from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -1282,7 +1282,7 @@ export class ApiService<T> {
   ) {
   }
 
-  getFiltered(filterModel: FilterModel): Observable<PagedResult<T>> {
+  getFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
     let params = new HttpParams()
       .set('page', filterModel.page.toString())
       .set('pageSize', filterModel.pageSize.toString());
@@ -1323,7 +1323,7 @@ export class ApiService<T> {
       params = params.set(`includes[${index}]`, include);
     });
 
-    return this.http.get<PagedResult<T>>(this.baseUrl, {params});
+    return this.http.get<ResultPaged<T>>(this.baseUrl, {params});
   }
 }
 ```
@@ -1356,7 +1356,7 @@ export class UserService extends ApiService<User> {
 // components/user-list/user-list.component.ts
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../services/user.service';
-import {User, FilterModel, PagedResult} from '../../models';
+import {User, FilterModel, ResultPaged} from '../../models';
 import {finalize} from 'rxjs/operators';
 
 @Component({
@@ -1406,7 +1406,7 @@ import {finalize} from 'rxjs/operators';
     `
 })
 export class UserListComponent implements OnInit {
-  users: PagedResult<User> | null = null;
+  users: ResultPaged<User> | null = null;
   loading = false;
   error: string | null = null;
 
@@ -1588,7 +1588,7 @@ graph TD
     F -->|OrderOptions| FO
     G -->|IncludeOptions| FO
     FO -->|-| H[(Database Query)]
-    H -->|PagedResult| I[Response]
+    H -->|ResultPaged| I[Response]
 ```
 
 # Appendix C: Filter Model Builder

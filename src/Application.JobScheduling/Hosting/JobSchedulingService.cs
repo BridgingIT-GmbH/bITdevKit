@@ -50,93 +50,72 @@ public class JobSchedulingService : BackgroundService
         await base.StopAsync(cancellationToken);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        // Wait "indefinitely", until ApplicationStarted is triggered
-        await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
-            .ContinueWith(_ =>
-                {
-                    this.logger.LogDebug("{LogKey} scheduling service - application started", Constants.LogKey);
-                },
-                TaskContinuationOptions.OnlyOnCanceled)
-            .ConfigureAwait(false);
-
-        if (this.options.StartupDelay.TotalMilliseconds > 0)
+        var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
         {
-            this.logger.LogDebug("{LogKey} scheduling service startup delayed", Constants.LogKey);
-
-            await Task.Delay(this.options.StartupDelay, cancellationToken);
-        }
-
-        try
-        {
-            this.logger.LogInformation("{LogKey} scheduling service starting", Constants.LogKey);
-            this.Scheduler = await this.schedulerFactory.GetScheduler(cancellationToken).AnyContext();
-            this.Scheduler.JobFactory = this.jobFactory;
-
-            foreach (var jobSchedule in this.jobSchedules.SafeNull())
+            if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                var jobDetail = CreateJobDetail(jobSchedule);
-                var trigger = CreateTrigger(jobSchedule);
-                var jobTypeName = jobDetail.JobType.FullName;
-
-                if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken)
-                        .AnyContext()) // trigger could have been changed (cron)
-                {
-                    var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
-                    if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
-                    {
-                        await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                        this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})",
-                            Constants.LogKey,
-                            jobTypeName,
-                            trigger.Description);
-                    }
-                }
-
-                if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
-                {
-                    try
-                    {
-                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})",
-                            Constants.LogKey,
-                            jobTypeName,
-                            trigger.Description);
-                        await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
-                    }
-                    catch (ObjectAlreadyExistsException ex)
-                    {
-                        this.logger.LogError(ex,
-                            "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})",
-                            Constants.LogKey,
-                            ex.Message,
-                            jobTypeName);
-                    }
-                }
-                else
-                {
-                    this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})",
-                        Constants.LogKey,
-                        jobTypeName,
-                        trigger.Description);
-                }
+                this.logger.LogDebug("{LogKey} scheduling service startup delayed", Constants.LogKey);
+                await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
-            await this.Scheduler.Start(cancellationToken).AnyContext();
-            this.logger.LogInformation("{LogKey} scheduling service started", Constants.LogKey);
-        }
-        catch (SchedulerException ex)
-        {
-            this.logger.LogError(ex,
-                "{LogKey} scheduling service failed: {ErrorMessage}",
-                Constants.LogKey,
-                ex.Message);
-        }
+            try
+            {
+                this.logger.LogInformation("{LogKey} scheduling service starting", Constants.LogKey);
+                this.Scheduler = await this.schedulerFactory.GetScheduler(cancellationToken).AnyContext();
+                this.Scheduler.JobFactory = this.jobFactory;
+
+                foreach (var jobSchedule in this.jobSchedules.SafeNull())
+                {
+                    var jobDetail = CreateJobDetail(jobSchedule);
+                    var trigger = CreateTrigger(jobSchedule);
+                    var jobTypeName = jobDetail.JobType.FullName;
+
+                    if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken)
+                            .AnyContext()) // trigger could have been changed (cron)
+                    {
+                        var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
+                        if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
+                        {
+                            await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
+                            this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                        }
+                    }
+
+                    if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
+                    {
+                        try
+                        {
+                            this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                            await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
+                        }
+                        catch (ObjectAlreadyExistsException ex)
+                        {
+                            this.logger.LogError(ex, "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})", Constants.LogKey, ex.Message, jobTypeName);
+                        }
+                    }
+                    else
+                    {
+                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                    }
+                }
+
+                await this.Scheduler.Start(cancellationToken).AnyContext();
+                this.logger.LogInformation("{LogKey} scheduling service started", Constants.LogKey);
+            }
+            catch (SchedulerException ex)
+            {
+                this.logger.LogError(ex, "{LogKey} scheduling service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            }
+        });
+
+        return Task.CompletedTask;
     }
 
     private static ITrigger CreateTrigger(JobSchedule schedule)

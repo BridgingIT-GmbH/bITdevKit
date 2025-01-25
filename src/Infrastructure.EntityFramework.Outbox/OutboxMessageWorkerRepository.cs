@@ -10,4 +10,5 @@ using Models;
 using Repositories;
 
 public class OutboxMessageWorkerRepository(EntityFrameworkRepositoryOptions options)
-    : EntityFrameworkGenericRepository<OutboxMessage, Outbox>(options), IOutboxMessageWorkerRepository { }
+    : EntityFrameworkGenericRepository<OutboxMessage, Outbox>(options), IOutboxMessageWorkerRepository
+{ }

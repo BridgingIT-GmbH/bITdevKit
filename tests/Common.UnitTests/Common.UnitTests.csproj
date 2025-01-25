@@ -9,24 +9,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="BridgingIT.DevKit.Common"/>
-    <Using Include="Bogus"/>
-    <Using Include="Bogus.DataSets"/>
-    <Using Include="NSubstitute"/>
-    <Using Include="Shouldly"/>
-    <Using Include="Xunit"/>
-    <Using Include="Xunit.Abstractions"/>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="Bogus" />
+    <Using Include="Bogus.DataSets" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping"/>
-    <PackageReference Include="Bogus"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-    <PackageReference Include="NSubstitute"/>
-    <PackageReference Include="BenchmarkDotNet"/>
-    <PackageReference Include="Shouldly"/>
-    <PackageReference Include="xunit"/>
+    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,15 +38,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Common.Caching\Common.Caching.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Mapping\Common.Mapping.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Options\Common.Options.csproj"/>
+    <ProjectReference Include="..\..\src\Common.Caching\Common.Caching.csproj" />
+    <ProjectReference Include="..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
+    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Common.Mapping\Common.Mapping.csproj" />
+    <ProjectReference Include="..\..\src\Common.Options\Common.Options.csproj" />
     <ProjectReference Include="..\..\src\Common.Rules\Common.Rules.csproj" />
-    <ProjectReference Include="..\..\src\Common.Serialization\Common.Serialization.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Utilities.Tracing\Common.Utilities.Tracing.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
+    <ProjectReference Include="..\..\src\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Tracing\Common.Utilities.Tracing.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
   </ItemGroup>
 
 </Project>

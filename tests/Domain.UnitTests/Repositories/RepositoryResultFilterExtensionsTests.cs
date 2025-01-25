@@ -12,7 +12,7 @@ public class RepositoryResultFilterExtensionsTests
     private readonly IGenericReadOnlyRepository<PersonStub> repository = Substitute.For<IGenericReadOnlyRepository<PersonStub>>();
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithBasicFilters_ReturnsCorrectResult()
+    public async Task FindAllResultPagedAsync_WithBasicFilters_ReturnsCorrectResult()
     {
         // Arrange
         var filter = new FilterModel
@@ -33,7 +33,7 @@ public class RepositoryResultFilterExtensionsTests
         this.SetupRepository(expectedPersons, 2);
 
         // Act
-        var result = await this.repository.FindAllPagedResultAsync(filter);
+        var result = await this.repository.FindAllResultPagedAsync(filter);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -59,7 +59,7 @@ public class RepositoryResultFilterExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithCustomSpecificationFilter_ReturnsCorrectResult()
+    public async Task FindAllResultPagedAsync_WithCustomSpecificationFilter_ReturnsCorrectResult()
     {
         // Arrange
         var filter = new FilterModel
@@ -90,7 +90,7 @@ public class RepositoryResultFilterExtensionsTests
         SpecificationResolver.Register<PersonStub, AdultSpecification>("IsAdult");
 
         // Act
-        var result = await this.repository.FindAllPagedResultAsync(filter);
+        var result = await this.repository.FindAllResultPagedAsync(filter);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -112,7 +112,7 @@ public class RepositoryResultFilterExtensionsTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithAnyCustomFilter_ReturnsCorrectResult()
+    public async Task FindAllResultPagedAsync_WithAnyCustomFilter_ReturnsCorrectResult()
     {
         // Arrange
         var filter = new FilterModel
@@ -154,7 +154,7 @@ public class RepositoryResultFilterExtensionsTests
         this.SetupRepository(expectedPersons, 2);
 
         // Act
-        var result = await this.repository.FindAllPagedResultAsync(filter);
+        var result = await this.repository.FindAllResultPagedAsync(filter);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();

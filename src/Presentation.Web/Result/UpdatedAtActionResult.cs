@@ -11,4 +11,5 @@ public class UpdatedAtActionResult(
     string actionName,
     string controllerName,
     object routeValues,
-    [ActionResultObjectValue] object value) : CreatedAtActionResult(actionName, controllerName, routeValues, value) { }
+    [ActionResultObjectValue] object value) : CreatedAtActionResult(actionName, controllerName, routeValues, value)
+{ }

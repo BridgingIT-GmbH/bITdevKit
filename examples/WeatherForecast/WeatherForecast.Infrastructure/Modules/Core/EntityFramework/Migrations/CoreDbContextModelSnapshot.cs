@@ -18,7 +18,7 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("core")
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -223,6 +223,63 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
                     b.ToTable("UserAccounts", "core");
                 });
 
+            modelBuilder.Entity("BridgingIT.DevKit.Infrastructure.EntityFramework.EntityPermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EntityId")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Module")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Permission")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("PropertiesJson")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Properties");
+
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTimeOffset>("UpdatedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedDate");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("EntityType");
+
+                    b.HasIndex("RoleName");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("__Identity_EntityPermissions", "core");
+                });
+
             modelBuilder.Entity("BridgingIT.DevKit.Infrastructure.EntityFramework.OutboxDomainEvent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -250,11 +307,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
                     b.Property<string>("PropertiesJson")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Properties");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -301,11 +353,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.Modules.Core
                     b.Property<string>("PropertiesJson")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Properties");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<string>("Type")
                         .IsRequired()

@@ -1,0 +1,143 @@
+﻿@using BridgingIT.DevKit.Examples.Todos.Presentation.Web.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudThemeProvider @ref="@mudThemeProvider" @bind-IsDarkMode="@isDarkMode" Theme="theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Fixed="true" Class="@($"app-header-{(isDarkMode ? "dark" : "light")}")">
+        <MudContainer MaxWidth="MaxWidth.False" Class="@($"d-flex justify-space-between align-center pa-0 app-header-{(isDarkMode ? "dark" : "light")}")">
+            <MudGrid Spacing="0">
+                <MudItem xs="1">
+                        <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />
+                </MudItem>
+                <MudItem xs="7">
+                    <MudImage
+                        Src="https://www.kvno.de/_assets/1e9b4bda4188c921a5f70dd8e8f89d33/Default/Images/Frontend/KVNO_Logo_FIN_RGB.svg"
+                        Height="100" Alt="Logo" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudStack Row="true" Spacing="2" Style="margin-top:35px;">
+                        <MudIcon Color="@(isDarkMode ? Color.Primary : Color.Dark)" Icon="@Icons.Material.Filled.Person" />
+                        <MudText Color="@(isDarkMode ? Color.Primary : Color.Dark)">@user?.FindFirst(ClaimTypes.Email)?.Value</MudText>
+                    </MudStack>
+                </MudItem>
+
+                <MudFlexBreak Style="padding-top:25px;" />
+
+                <MudItem xs="1" Class="breadcrumbs-container">
+                    @* <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" Size="Size.Small"
+                        OnClick="@((e) => DrawerToggle())" /> *@
+                </MudItem>
+                <MudItem xs="10">
+                    <MudBreadcrumbs Items="_items1" Class="breadcrumbs-container" Style="padding-left: 0px;">
+                        <ItemTemplate Context="item">
+                            <MudLink Href="@item.Href" Color="Color.Default"
+                                Style="font-size: 0.875rem; color: #666666;">
+                                @item.Text
+                            </MudLink>
+                        </ItemTemplate>
+                    </MudBreadcrumbs>
+                </MudItem>
+                <MudItem xs="1"></MudItem>
+            </MudGrid>
+        </MudContainer>
+    </MudAppBar>
+
+    <MudDrawer Variant="@DrawerVariant.Persistent" Width="0px" @bind-Open="drawerOpen"
+        Elevation="2" ClipMode="@DrawerClipMode.Always">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudGrid Spacing="0" Style="margin-top: 115px;">
+            <MudItem xs="1" Style="margin-right: 15px;">
+            </MudItem>
+            <MudItem xs="10" >
+                @Body
+            </MudItem>
+            <MudItem xs="1">
+            </MudItem>
+
+        </MudGrid>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<style>
+    .app-header-light {
+        background-color: white;
+        margin-top: 35px;
+    }
+
+    .app-header-dark {
+        background-color: #333333;
+        margin-top: 35px;
+    }
+
+    .breadcrumbs-container {
+        background-color: #F5F5F5;
+        padding: 8px;
+        color: #666666;
+        font-size: 0.875rem;
+    }
+
+    .mud-appbar {
+        z-index: 1000;
+    }
+</style>
+
+@code {
+    private MudThemeProvider mudThemeProvider;
+    private ClaimsPrincipal user;
+    private MudTheme theme = Themes.Custom;
+    private bool drawerOpen = true;
+    private bool isDarkMode = false;
+    private const string THEME_KEY = "isDarkMode";
+    private string ThemeToggleIcon => isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode;
+    private List<BreadcrumbItem> _items1 = new()
+    {
+        new BreadcrumbItem("Protokolle", "#"),
+        new BreadcrumbItem("Abweichungen", null)
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isDarkMode = await JSRuntime.GetLocalStorageItemAsync<bool>("isDarkMode");
+            if (!await JSRuntime.HasStorageKeyAsync("isDarkMode"))
+            {
+                isDarkMode = await mudThemeProvider.GetSystemPreference();
+            }
+            StateHasChanged();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+        await JSRuntime.SetLocalStorageItemAsync("isDarkMode", isDarkMode);
+        StateHasChanged();
+    }
+}

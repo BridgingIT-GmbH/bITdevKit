@@ -38,10 +38,10 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
         var handlerType = this.GetType().PrettyName();
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
-               {
-                   [QueryIdKey] = query.RequestId.ToString("N"),
-                   [QueryTypeKey] = requestType
-               }))
+        {
+            [QueryIdKey] = query.RequestId.ToString("N"),
+            [QueryTypeKey] = requestType
+        }))
         {
             try
             {

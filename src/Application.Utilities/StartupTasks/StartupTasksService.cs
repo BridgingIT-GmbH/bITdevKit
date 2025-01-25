@@ -64,22 +64,14 @@ public class StartupTasksService : IHostedService
             return Task.CompletedTask;
         }
 
-        _ = Task.Run(async () =>
+        var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
+        {
+            _ = Task.Run(async () =>
             {
-                // Wait "indefinitely", until ApplicationStarted is triggered
-                await Task.Delay(Timeout.InfiniteTimeSpan, this.applicationLifetime.ApplicationStarted)
-                    .ContinueWith(_ =>
-                        {
-                            this.logger.LogDebug("{LogKey} startup tasks - application started", Constants.LogKey);
-                        },
-                        TaskContinuationOptions.OnlyOnCanceled)
-                    .ConfigureAwait(false);
-
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogDebug("{LogKey} startup tasks service delayed", Constants.LogKey);
-
-                    await Task.Delay(this.options.StartupDelay, cancellationToken).AnyContext();
+                    await Task.Delay(this.options.StartupDelay, cancellationToken);
                 }
 
                 try
@@ -93,17 +85,19 @@ public class StartupTasksService : IHostedService
                                 using var scope = this.serviceProvider.CreateScope();
                                 if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
                                 {
-                                    this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})", Constants.LogKey, definition.TaskType.Name);
-
+                                    this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})",
+                                        Constants.LogKey, definition.TaskType.Name);
                                     return;
                                 }
 
                                 var behaviors = scope.ServiceProvider.GetServices<IStartupTaskBehavior>();
-                                await this.ExecutePipelineAsync(definition, task, behaviors, cancellationToken).ConfigureAwait(false);
+                                await this.ExecutePipelineAsync(definition, task, behaviors, cancellationToken)
+                                    .ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
-                                this.logger.LogError(ex, "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}", Constants.LogKey, definition.TaskType.Name, ex.Message);
+                                this.logger.LogError(ex, "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}",
+                                    Constants.LogKey, definition.TaskType.Name, ex.Message);
                             }
                         });
 
@@ -115,10 +109,11 @@ public class StartupTasksService : IHostedService
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+                    this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}",
+                        Constants.LogKey, ex.Message);
                 }
-            },
-            cancellationToken);
+            }, cancellationToken);
+        });
 
         return Task.CompletedTask;
     }

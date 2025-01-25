@@ -22,7 +22,8 @@ public class JobSchedulingSqlServerSeederStartupTask
     public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
         : this(loggerFactory,
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.dataSource.default.connectionString"],
-            configuration.GetSection("JobScheduling:Quartz", false)["quartz.jobStore.tablePrefix"]) { }
+            configuration.GetSection("JobScheduling:Quartz", false)["quartz.jobStore.tablePrefix"])
+    { }
 
     public JobSchedulingSqlServerSeederStartupTask(
         ILoggerFactory loggerFactory,

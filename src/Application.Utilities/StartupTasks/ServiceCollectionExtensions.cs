@@ -98,7 +98,8 @@ public static class ServiceCollectionExtensions
             context.Services.AddSingleton(sp =>
                 new StartupTaskDefinition
                 {
-                    TaskType = implementationType, Options = options ?? new StartupTaskOptions()
+                    TaskType = implementationType,
+                    Options = options ?? new StartupTaskOptions()
                 });
             context.Services.AddScoped(implementationType, implementationFactory);
         }

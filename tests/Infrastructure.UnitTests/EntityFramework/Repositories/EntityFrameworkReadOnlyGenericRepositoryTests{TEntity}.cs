@@ -241,7 +241,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_ReturnsPagedResult()
+    public async Task FindAllResultPagedAsync_ReturnsResultPaged()
     {
         // Arrange
         await using var context = new TestPersonDbContext(this.dbContextOptions);
@@ -252,7 +252,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
         var sut = new EntityFrameworkReadOnlyGenericRepository<PersonStub>(this.loggerFactory, context);
 
         // Act
-        var result = await sut.FindAllPagedResultAsync(e => e.LastName, 2, 5);
+        var result = await sut.FindAllResultPagedAsync(e => e.LastName, 2, 5);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -266,7 +266,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
     }
 
     [Fact]
-    public async Task FindAllPagedResultAsync_WithSpecification_ReturnsFilteredPagedResult()
+    public async Task FindAllResultPagedAsync_WithSpecification_ReturnsFilteredResultPaged()
     {
         // Arrange
         await using var context = new TestPersonDbContext(this.dbContextOptions);
@@ -278,7 +278,7 @@ public class EntityFrameworkReadOnlyGenericRepositoryTests
         var specification = new PersonByFirstNameSpecification(entities[0].FirstName);
 
         // Act
-        var result = await sut.FindAllPagedResultAsync(specification, e => e.LastName);
+        var result = await sut.FindAllResultPagedAsync(specification, e => e.LastName);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();

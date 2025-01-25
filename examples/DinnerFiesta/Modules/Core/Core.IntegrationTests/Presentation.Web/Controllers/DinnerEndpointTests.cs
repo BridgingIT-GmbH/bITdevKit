@@ -117,7 +117,8 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             },
             Schedule = new DinnerScheduleModel
             {
-                StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime
+                StartDateTime = entity.Schedule.StartDateTime,
+                EndDateTime = entity.Schedule.EndDateTime
             }
         };
         var content = new StringContent(
@@ -151,7 +152,10 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         var entity = Stubs.Dinners(DateTime.UtcNow.Ticks).First();
         var model = new DinnerModel
         {
-            HostId = menu.HostId, MenuId = menu.Id, Name = null, Description = entity.Description
+            HostId = menu.HostId,
+            MenuId = menu.Id,
+            Name = null,
+            Description = entity.Description
         };
         var content = new StringContent(
             JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
@@ -195,7 +199,8 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             },
             Schedule = new DinnerScheduleModel
             {
-                StartDateTime = entity.Schedule.StartDateTime, EndDateTime = entity.Schedule.EndDateTime
+                StartDateTime = entity.Schedule.StartDateTime,
+                EndDateTime = entity.Schedule.EndDateTime
             }
         };
         var content = new StringContent(
@@ -203,8 +208,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
-            .AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
         return await HttpContentExtensions.ReadAsAsync<DinnerModel>(response.Content);
@@ -219,8 +223,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
-            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content)
-            .AnyContext();
+            .PostAsync(route.Replace("{hostId}", entity.HostId.Value.ToString()), content).AnyContext();
         response.EnsureSuccessStatusCode();
 
         return await HttpContentExtensions.ReadAsAsync<MenuModel>(response.Content);

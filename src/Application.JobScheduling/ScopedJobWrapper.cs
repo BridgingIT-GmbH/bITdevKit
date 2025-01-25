@@ -22,12 +22,12 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
-               {
-                   [Constants.CorrelationIdKey] = correlationId,
-                   [Constants.FlowIdKey] = flowId,
-                   [Constants.JobIdKey] = jobId,
-                   [Constants.JobTypeKey] = jobTypeName
-               }))
+        {
+            [Constants.CorrelationIdKey] = correlationId,
+            [Constants.FlowIdKey] = flowId,
+            [Constants.JobIdKey] = jobId,
+            [Constants.JobTypeKey] = jobTypeName
+        }))
         {
             try
             {

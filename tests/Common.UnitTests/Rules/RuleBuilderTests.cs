@@ -15,7 +15,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
 {
     private readonly RulesFixture fixture = fixture;
     private readonly Faker faker = new();
-    private readonly TestValidator validator = new();
+    private readonly TestValidator validator = [];
 
     [Fact]
     public void RulesBuilder_When_WithConditionTrue_ShouldExecuteRule()

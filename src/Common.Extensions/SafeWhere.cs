@@ -38,7 +38,7 @@ public static partial class Extensions
         this ICollection<TSource> source,
         Func<TSource, bool> predicate)
     {
-        return (source ?? new List<TSource>()).Where(predicate).ToList();
+        return (source ?? []).Where(predicate).ToList();
     }
 
     /// <summary>

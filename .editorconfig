@@ -122,7 +122,7 @@ csharp_style_unused_value_assignment_preference = discard_variable:suggestion
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
 
 #### C# Formatting Rules ####
-
+csharp_style_namespace_declarations = file_scoped:error
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
@@ -195,6 +195,7 @@ dotnet_diagnostic.ide0055.severity = suggestion
 dotnet_diagnostic.sa1408.severity = none
 
 # Microsoft .NET properties
+dotnet_diagnostic.IDE0161.severity = error
 dotnet_naming_rule.private_constants_rule.severity = warning
 dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols

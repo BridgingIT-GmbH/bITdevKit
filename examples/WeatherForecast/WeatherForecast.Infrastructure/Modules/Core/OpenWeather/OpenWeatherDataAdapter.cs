@@ -34,8 +34,7 @@ public class OpenWeatherDataAdapter : IWeatherDataAdapter
         EnsureArg.IsNotNull(city.Location, nameof(city.Location));
 
         // doc: https://openweathermap.org/api/one-call-api
-        var url =
-            $"data/2.5/onecall?lat={city.Location.Latitude}&lon={city.Location.Longitude}&units=metric&APPID={this.apiKey}";
+        var url = $"data/3.0/onecall?lat={city.Location.Latitude}&lon={city.Location.Longitude}&units=metric&APPID={this.apiKey}";
         this.logger.LogInformation("openweather adapter: processing (city={cityName})", city.Name);
         this.logger.LogDebug("openweather adapter: request (url={url})", url);
         var response = await this.client.GetAsync(url).AnyContext();

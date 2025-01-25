@@ -15,12 +15,15 @@ public abstract class EntityCommandRuleBase<TEntity> : IEntityCommandRule<TEntit
 
 public abstract class EntityCreateCommandRuleBase<TEntity>
     : EntityCommandRuleBase<TEntity>, IEntityCreateCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 public abstract class EntityDeleteCommandRuleBase<TEntity>
     : EntityCommandRuleBase<TEntity>, IEntityDeleteCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }
 
 public abstract class EntityUpdateCommandRuleBase<TEntity>
     : EntityCommandRuleBase<TEntity>, IEntityUpdateCommandRule<TEntity>
-    where TEntity : class, IEntity { }
+    where TEntity : class, IEntity
+{ }

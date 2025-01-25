@@ -140,9 +140,9 @@ public class Money : DecimalValueObject
         EnsureArg.IsNotNullOrEmpty(currencyCode, nameof(currencyCode));
 
         var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            let r = this.CreateRegionInfo(c.Name)
-            where r is not null && string.Equals(r.ISOCurrencySymbol, currencyCode, StringComparison.OrdinalIgnoreCase)
-            select c).FirstOrDefault();
+                       let r = this.CreateRegionInfo(c.Name)
+                       where r is not null && string.Equals(r.ISOCurrencySymbol, currencyCode, StringComparison.OrdinalIgnoreCase)
+                       select c).FirstOrDefault();
 
         if (culture is null)
         {

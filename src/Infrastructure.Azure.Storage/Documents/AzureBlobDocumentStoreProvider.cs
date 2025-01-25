@@ -384,7 +384,8 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
             {
                 HttpHeaders = new BlobHttpHeaders
                 {
-                    ContentType = ContentType.JSON.MimeType(), ContentEncoding = Encoding.UTF8.ToString()
+                    ContentType = ContentType.JSON.MimeType(),
+                    ContentEncoding = Encoding.UTF8.ToString()
                 }
             },
             cancellationToken);

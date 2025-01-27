@@ -33,14 +33,14 @@ public static class Themes
             TextSecondary = "#CCCCCC",
             Surface = "#424242"
         },
-        Typography = new Typography()
-        {
-            H4 = new H4()
-            {
-                FontSize = "1.5rem",
-                FontWeight = 500
-            }
-        },
+        //Typography = new Typography()
+        //{
+        //    H4 = new H4()
+        //    {
+        //        FontSize = "1.5rem",
+        //        FontWeight = 500
+        //    }
+        //},
         // Add specific button styles
         LayoutProperties = new LayoutProperties()
         {

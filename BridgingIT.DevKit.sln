@@ -39,8 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		global.json = global.json
 		LICENSE = LICENSE
 		nuget.config = nuget.config
-		.qodana\qodana-profile.yaml = .qodana\qodana-profile.yaml
-		qodana.yaml = qodana.yaml
 		RELEASES.md = RELEASES.md
 		.github\workflows\sonarcloud.yml = .github\workflows\sonarcloud.yml
 	EndProjectSection

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ModuleName>Core</ModuleName>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).Domain</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).Domain</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>

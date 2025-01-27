@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>BridgingIT.DevKit.Examples.EventSourcingDemo.Application</RootNamespace>
     <AssemblyName>BridgingIT.DevKit.Examples.EventSourcingDemo.Application</AssemblyName>
     <IsPackable>false</IsPackable>

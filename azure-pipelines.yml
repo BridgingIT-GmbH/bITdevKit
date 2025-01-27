@@ -219,6 +219,7 @@ stages:
               $publishableBranches = "$(publishableBranches)".Split(',')
 
               $isPublishableBranch = $publishableBranches -contains $currentBranch -or "$(Build.SourceBranch)".StartsWith('refs/tags/')
+              Write-Host $isPublishableBranch
               Write-Host "##vso[task.setvariable variable=IsPublishableBranch]$isPublishableBranch"
             displayName: 'Evaluate Publishing Criteria'
 

@@ -196,6 +196,14 @@ stages:
               artifactName: 'BuildOutput'
               targetPath: '$(Build.SourcesDirectory)/src'
 
+          - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+            displayName: Use .NET SDK
+            condition: succeeded()
+            inputs:
+              version: '9.0.x'
+              performMultiLevelLookup: true
+              includePreviewVersions: false
+
           - bash: |
               docker compose up -d
             displayName: Docker start containers
@@ -249,6 +257,14 @@ stages:
             inputs:
               artifactName: 'BuildOutput'
               targetPath: '$(Build.SourcesDirectory)/src'
+
+          - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+            displayName: Use .NET SDK
+            condition: succeeded()
+            inputs:
+              version: '9.0.x'
+              performMultiLevelLookup: true
+              includePreviewVersions: false
 
           - powershell: |
               $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')

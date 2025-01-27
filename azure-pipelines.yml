@@ -5,6 +5,8 @@ variables:
     value: "**/*.sln"
   - name: buildConfiguration
     value: 'Release'
+  - name: publishableBranches
+    value: 'main,features/dotnet9'  # Comma-separated list of branch names to publish packages from
 
 trigger:
   tags:
@@ -212,18 +214,17 @@ stages:
             condition: succeeded()
             continueOnError: true
 
+          - powershell: |
+              $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')
+              $publishableBranches = "$(publishableBranches)".Split(',')
+
+              $isPublishableBranch = $publishableBranches -contains $currentBranch -or "$(Build.SourceBranch)".StartsWith('refs/tags/')
+              Write-Host "##vso[task.setvariable variable=IsPublishableBranch]$isPublishableBranch"
+            displayName: 'Evaluate Publishing Criteria'
+
           - task: DotNetCoreCLI@2
             displayName: Package pack (nuget)
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
             inputs:
               command: pack
               configuration: $(buildConfiguration)
@@ -233,39 +234,21 @@ stages:
               packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
               verbosityPack: Normal
 
-          - task: DotNetCoreCLI@2
-            displayName: Package push (nuget)
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
-            inputs:
-              command: custom
-              custom: nuget
-              arguments: >
-                push $(Build.ArtifactStagingDirectory)/packages/*.nupkg
-                -s https://api.nuget.org/v3/index.json
-                -k $(NugetOrgApiKey)
-                --skip-duplicate
+          # - task: DotNetCoreCLI@2
+          #   displayName: Package push (nuget)
+          #   condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
+          #   inputs:
+          #     command: custom
+          #     custom: nuget
+          #     arguments: >
+          #       push $(Build.ArtifactStagingDirectory)/packages/*.nupkg
+          #       -s https://api.nuget.org/v3/index.json
+          #       -k $(NugetOrgApiKey)
+          #       --skip-duplicate
 
-          - task: PublishPipelineArtifact@1
-            displayName: Publish package artifacts
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
-            inputs:
-              targetPath: "$(Build.ArtifactStagingDirectory)/packages"
-              artifactName: packages
+          # - task: PublishPipelineArtifact@1
+          #   displayName: Publish package artifacts
+          #   condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
+          #   inputs:
+          #     targetPath: "$(Build.ArtifactStagingDirectory)/packages"
+          #     artifactName: packages

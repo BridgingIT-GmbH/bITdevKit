@@ -173,6 +173,31 @@ stages:
                     exit 0
                 fi
 
+          - task: PublishPipelineArtifact@1
+            displayName: Publish build artifacts
+            inputs:
+              targetPath: |
+                $(Build.SourcesDirectory)/**/bin/$(buildConfiguration)
+                $(Build.SourcesDirectory)/docker-compose.yml  # Add docker files
+              artifact: 'BuildOutput'
+
+  - stage: test
+    displayName: Test stage
+    dependsOn: [ build ]
+    jobs:
+      - job: tests
+        displayName: Run Tests
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: '0'
+
+          - task: DownloadPipelineArtifact@2 # Download build artifacts
+            inputs:
+              artifactName: 'BuildOutput'
+              targetPath: '$(Build.SourcesDirectory)'
+
           - bash: |
               docker compose up -d
             displayName: Docker start containers
@@ -180,11 +205,9 @@ stages:
           - bash: |
               docker ps -a
             displayName: Docker list containers
-            condition: succeeded()
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (unit)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*UnitTests.csproj"
@@ -192,7 +215,6 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (integration)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*IntegrationTests.csproj"
@@ -200,7 +222,6 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (end2end)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*EndToEndTests.csproj"
@@ -211,15 +232,31 @@ stages:
               docker container stop $(docker container ls -aq)
               docker container rm $(docker container ls -aq)
             displayName: Docker cleanup
-            condition: succeeded()
-            continueOnError: true
+            condition: always()
+
+  - stage: publish
+    displayName: Publish stage
+    dependsOn: [ test ]
+    condition: succeeded()
+    jobs:
+      - job: publish
+        displayName: Publish Packages
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: '0'
+
+          - task: DownloadPipelineArtifact@2 # Download build artifacts
+            inputs:
+              artifactName: 'BuildOutput'
+              targetPath: '$(Build.SourcesDirectory)'
 
           - powershell: |
               $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')
               $publishableBranches = "$(publishableBranches)".Split(',')
 
               $isPublishableBranch = $publishableBranches -contains $currentBranch -or "$(Build.SourceBranch)".StartsWith('refs/tags/')
-              Write-Host $isPublishableBranch
               Write-Host "##vso[task.setvariable variable=IsPublishableBranch]$isPublishableBranch"
             displayName: 'Evaluate Publishing Criteria'
 

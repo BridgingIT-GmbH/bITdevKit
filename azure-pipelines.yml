@@ -177,7 +177,7 @@ stages:
             displayName: Publish build artifacts
             inputs:
               targetPath: |
-                $(Build.SourcesDirectory)/**/bin/$(buildConfiguration)
+                $(Build.SourcesDirectory)/**/bin/$(buildConfiguration)/**
                 $(Build.SourcesDirectory)/docker-compose.yml  # Add docker files
               artifact: 'BuildOutput'
 

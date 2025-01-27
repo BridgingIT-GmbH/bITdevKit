@@ -176,9 +176,7 @@ stages:
           - task: PublishPipelineArtifact@1
             displayName: Publish build artifacts
             inputs:
-              targetPath: |
-                $(Build.SourcesDirectory)/src/*/bin/$(buildConfiguration)
-                $(Build.SourcesDirectory)/docker-compose.yml
+              targetPath: $(Build.SourcesDirectory)/src
               artifact: 'BuildOutput'
 
   - stage: test
@@ -196,7 +194,7 @@ stages:
           - task: DownloadPipelineArtifact@2 # Download build artifacts
             inputs:
               artifactName: 'BuildOutput'
-              targetPath: '$(Build.SourcesDirectory)'
+              targetPath: '$(Build.SourcesDirectory)/src'
 
           - bash: |
               docker compose up -d
@@ -250,7 +248,7 @@ stages:
           - task: DownloadPipelineArtifact@2 # Download build artifacts
             inputs:
               artifactName: 'BuildOutput'
-              targetPath: '$(Build.SourcesDirectory)'
+              targetPath: '$(Build.SourcesDirectory)/src'
 
           - powershell: |
               $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')

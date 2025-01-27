@@ -235,21 +235,21 @@ stages:
               packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
               verbosityPack: Normal
 
-          # - task: DotNetCoreCLI@2
-          #   displayName: Package push (nuget)
-          #   condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
-          #   inputs:
-          #     command: custom
-          #     custom: nuget
-          #     arguments: >
-          #       push $(Build.ArtifactStagingDirectory)/packages/*.nupkg
-          #       -s https://api.nuget.org/v3/index.json
-          #       -k $(NugetOrgApiKey)
-          #       --skip-duplicate
+          - task: DotNetCoreCLI@2
+            displayName: Package push (nuget)
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
+            inputs:
+              command: custom
+              custom: nuget
+              arguments: >
+                push $(Build.ArtifactStagingDirectory)/packages/*.nupkg
+                -s https://api.nuget.org/v3/index.json
+                -k $(NugetOrgApiKey)
+                --skip-duplicate
 
-          # - task: PublishPipelineArtifact@1
-          #   displayName: Publish package artifacts
-          #   condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
-          #   inputs:
-          #     targetPath: "$(Build.ArtifactStagingDirectory)/packages"
-          #     artifactName: packages
+          - task: PublishPipelineArtifact@1
+            displayName: Publish package artifacts
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/packages"
+              artifactName: packages

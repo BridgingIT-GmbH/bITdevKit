@@ -39,8 +39,7 @@ public class CityFindOneQuery : QueryRequestBase<CityQueryResponse>, ICacheQuery
     CacheQueryOptions ICacheQuery.Options =>
         new()
         {
-            Key =
-                $"application_{nameof(CityFindOneQuery)}_{this.Name}_{this.Longitude}_{this.Latitude}".TrimEnd('_'),
+            Key = $"application_{nameof(CityFindOneQuery)}_{this.Name}_{this.Longitude}_{this.Latitude}".TrimEnd('_'),
             SlidingExpiration = new TimeSpan(0, 0, 30)
         };
 

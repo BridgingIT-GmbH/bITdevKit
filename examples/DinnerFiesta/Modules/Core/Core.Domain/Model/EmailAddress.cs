@@ -29,9 +29,6 @@ public class EmailAddress : ValueObject
 
         Rule.Add(EmailAddressRules.IsValid(value)).Check();
 
-        Rule.Add(
-            EmailAddressRules.IsValid(value)).Check();
-
         return new EmailAddress(value);
     }
 

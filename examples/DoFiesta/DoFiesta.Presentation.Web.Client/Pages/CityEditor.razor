@@ -1,0 +1,34 @@
+﻿@inject IStringLocalizer<Global> localizer
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField Label="@localizer["Label_CityName"]" @bind-Value="Model.Name"></MudTextField>
+        <MudTextField Label="@localizer["Label_CountryName"]" @bind-Value="Model.Country"></MudTextField>
+        <MudNumericField Label="@localizer["Label_Longitude"]" @bind-Value="Model.Longitude" Format="F6"></MudNumericField>
+        <MudNumericField Label="@localizer["Label_.Latitude"]" @bind-Value="Model.Latitude" Format="F6"></MudNumericField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnCancel">@localizer["Button_Cancel"]</MudButton>
+        <MudButton OnClick="OnOk" Color="Color.Primary">@localizer["Button_Ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public CityModel Model { get; set; } = new();
+
+    private void OnCancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void OnOk()
+    {
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+
+}

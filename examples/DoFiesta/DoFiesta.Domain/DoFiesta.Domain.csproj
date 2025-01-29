@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.DoFiesta.Domain</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.DoFiesta.Domain</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer"/>
+    <ProjectReference Include="..\..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+  </ItemGroup>
+
+</Project>

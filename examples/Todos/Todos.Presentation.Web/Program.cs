@@ -33,7 +33,7 @@ builder.Services.AddSingleton<ServerMonitorService>();
 // Configure the Identity Provider middleware
 builder.Services.AddFakeIdentityProvider(o => o
     .WithIssuer(builder.Configuration.GetValue<string>("Authentication:Authority"))
-    .WithUsers(Fakes.Users)
+    .WithUsers(Fakes.UsersStarwars)
     .WithConfidentalClient( // mvc, razor pages, blazor server
         "Blazor Server App",
         builder.Configuration.GetValue<string>("Authentication:ClientId"),

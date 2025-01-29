@@ -98,7 +98,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
     //    .TokenPath("/oauth2/v2.0/token")
     //    .UserInfoPath("/oidc/userinfo")
     //    .LogoutPath("/oauth2/v2.0/logout"))
-    .WithUsers(Fakes.Users)
+    .WithUsers(Fakes.UsersStarwars)
     //.WithUserProvider() // TODO: use a provider model for the users, should support password validation, user creation, get user by id, get user by username
     .WithTokenLifetimes(
         accessToken: TimeSpan.FromMinutes(2),

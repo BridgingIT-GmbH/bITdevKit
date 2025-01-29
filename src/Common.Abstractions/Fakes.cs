@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 public static class Fakes
 {
-    public static readonly FakeUser[] Users =
+    public static readonly FakeUser[] UsersStarwars =
     [
         new(
             "luke.skywalker@starwars.com",
@@ -230,6 +230,66 @@ public static class Fakes
                 }
             })
     ];
+
+    public static readonly FakeUser[] UsersGerman =
+    [
+        new(
+            "johannes.schmidt@example.de",
+            "Johannes Schmidt",
+            [Role.Administrators, Role.Users, Role.Writers],
+            "passwort",
+            isDefault: true),
+        new(
+            "anna.mueller@example.de",
+            "Anna Müller",
+            [Role.Users, Role.Writers],
+            "passwort"),
+        new(
+            "thomas.weber@example.de",
+            "Thomas Weber",
+            [Role.Readers, Role.Contributors],
+            "passwort"),
+        new(
+            "elisabeth.fischer@example.de",
+            "Elisabeth Fischer",
+            [Role.Writers, Role.Contributors],
+            "passwort"),
+        new(
+            "michael.wagner@example.de",
+            "Michael Wagner",
+            [Role.Users, Role.Readers],
+            "passwort")
+    ];
+
+    public static readonly FakeUser[] UsersEnglish =
+    [
+       new(
+            "john.smith@example.com",
+            "John Smith",
+            [Role.Administrators, Role.Users, Role.Writers],
+            "password",
+            isDefault: true),
+        new(
+            "anna.miller@example.com",
+            "Anna Miller",
+            [Role.Users, Role.Writers],
+            "password"),
+        new(
+            "thomas.walker@example.com",
+            "Thomas Walker",
+            [Role.Readers, Role.Contributors],
+            "password"),
+        new(
+            "elizabeth.fisher@example.com",
+            "Elizabeth Fisher",
+            [Role.Writers, Role.Contributors],
+            "password"),
+        new(
+            "michael.warren@example.com",
+            "Michael Warren",
+            [Role.Users, Role.Readers],
+            "password")
+   ];
 }
 
 [DebuggerDisplay("Id={Id}, Email={Email}")]

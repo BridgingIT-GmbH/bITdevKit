@@ -60,7 +60,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     {
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
-        var response = await (await this.CreateClient(Fakes.Users[0])).GetAsync(route).AnyContext();
+        var response = await (await this.CreateClient(Fakes.UsersStarwars[0])).GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert
@@ -73,7 +73,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     {
         // Arrange & Act
         this.fixture.Output.WriteLine($"Start Endpoint test for route: {route}");
-        var response = await (await this.CreateClient(Fakes.Users[0])).GetAsync(route).AnyContext();
+        var response = await (await this.CreateClient(Fakes.UsersStarwars[0])).GetAsync(route).AnyContext();
         this.fixture.Output.WriteLine($"Finish Endpoint test for route: {route} (status={(int)response.StatusCode})");
 
         // asert

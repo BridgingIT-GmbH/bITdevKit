@@ -14,10 +14,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemUpdateCommand(TodoItem entity) : CommandRequestBase<AggregateUpdatedCommandResult>,
+public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<AggregateUpdatedCommandResult>,
     ICacheInvalidateCommand
 {
-    public TodoItem Entity { get; } = entity;
+    public TodoItemModel Model { get; } = model;
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 
@@ -30,36 +30,38 @@ public class TodoItemUpdateCommand(TodoItem entity) : CommandRequestBase<Aggrega
     {
         public Validator()
         {
-            this.RuleFor(c => c.Entity).NotNull();
-            this.RuleFor(c => c.Entity.Id).Must(id => id != Guid.Empty).WithMessage("Invalid guid.");
-            this.RuleFor(c => c.Entity.Title).NotNull();
+            this.RuleFor(c => c.Model).NotNull();
+            this.RuleFor(c => c.Model.Id).MustBeValidGuid().WithMessage("Invalid guid.");
+            this.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
         }
     }
 }
 
 public class TodoItemUpdateCommandHandler(
     ILoggerFactory loggerFactory,
-    IGenericRepository<TodoItem> repository)
+    IGenericRepository<TodoItem> repository,
+    IMapper mapper)
     : CommandHandlerBase<TodoItemUpdateCommand, AggregateUpdatedCommandResult>(loggerFactory)
 {
     public override async Task<CommandResponse<AggregateUpdatedCommandResult>> Process(
         TodoItemUpdateCommand command,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"+++ update item: {command.Entity.Title}");
+        this.Logger.LogInformation($"+++ update item: {command.Model.Title}");
 
-        if (!await repository.ExistsAsync(command.Entity.Id, cancellationToken).AnyContext())
+        if (!await repository.ExistsAsync(command.Model.Id, cancellationToken).AnyContext())
         {
             throw new EntityNotFoundException();
         }
 
-        await repository.UpsertAsync(command.Entity, cancellationToken).AnyContext();
+        var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
+        await repository.UpsertAsync(entity, cancellationToken).AnyContext();
 
         // TODO: invalidate query cache
 
         return new CommandResponse<AggregateUpdatedCommandResult>
         {
-            Result = new AggregateUpdatedCommandResult(command.Entity.Id.ToString())
+            Result = new AggregateUpdatedCommandResult(command.Model.Id.ToString())
         };
     }
 }

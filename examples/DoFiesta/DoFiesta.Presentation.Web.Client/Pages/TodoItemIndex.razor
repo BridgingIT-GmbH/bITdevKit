@@ -27,7 +27,7 @@
                <MudTable Items="items" Hover="true" SortLabel="Sort By" Elevation="0">
                     <HeaderContent>
                         <MudTh>
-                            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItem, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
+                            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItemModel, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
                         </MudTh>
                         <MudTh>
                         </MudTh>
@@ -48,7 +48,7 @@
 </MudContainer>
 
 @code {
-    private ICollection<TodoItem> items;
+    private ICollection<TodoItemModel> items;
 
     protected override async Task OnInitializedAsync()
     {

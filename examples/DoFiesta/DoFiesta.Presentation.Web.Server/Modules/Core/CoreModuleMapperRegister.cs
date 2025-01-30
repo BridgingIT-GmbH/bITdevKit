@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
-using BridgingIT.DevKit.Examples.DoFiesta.Application;
+using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Mapster;
 
@@ -14,16 +14,23 @@ public class CatalogMapperRegister : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.ForType<TodoItem, TodoItemModel>()
-            .Map(d => d.Status, s => s.Status.Value)
-            .Map(d => d.Priority, s => s.Priority.Value)
-            .Map(d => d.Assignee, s => s.Assignee.Value);
+        .Map(dest => dest.Id, src => src.Id.Value.ToString())
+        .Map(dest => dest.Status, src => src.Status.Id)
+        .Map(dest => dest.Priority, src => src.Priority.Id)
+        .Map(dest => dest.Assignee, src => src.Assignee.Value)
+        .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
+        .IgnoreNullValues(true);
 
         config.ForType<TodoStep, TodoStepModel>()
-            .Map(d => d.Status, s => s.Status.Value);
+        .Map(dest => dest.Id, src => src.Id.Value.ToString())
+        .Map(dest => dest.TodoItemId, src => src.TodoItemId.Value.ToString())
+        .Map(dest => dest.Status, src => src.Status.Id)
+        .IgnoreNullValues(true);
 
         config.ForType<Subscription, SubscriptionModel>()
-            .Map(d => d.Plan, s => s.Plan.Value)
-            .Map(d => d.Status, s => s.Status.Value)
-            .Map(d => d.BillingCycle, s => s.BillingCycle.Value);
+            .IgnoreNullValues(true);
+            //.Map(d => d.Plan, s => s.Plan.Value)
+            //.Map(d => d.Status, s => s.Status.Value)
+            //.Map(d => d.BillingCycle, s => s.BillingCycle.Value);
     }
 }

@@ -20,15 +20,18 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/core/todoitems")]
 [ApiController]
 public class TodoItemController( // TODO: move to minimal endpoints
-    //ILogger<CityController> logger,
+                                 //ILogger<CityController> logger,
     IMediator mediator,
-    IAuthorizationService authorizationService) : ControllerBase
+    IAuthorizationService authorizationService,
+    IMapper mapper) : ControllerBase
 {
+    private readonly IMapper mapper = mapper;
+
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.List))]
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> GetAll([FromQueryFilter] FilterModel filter)
+    public async Task<ActionResult<IEnumerable<TodoItemModel>>> GetAll([FromQueryFilter] FilterModel filter)
     {
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.List));
@@ -57,14 +60,15 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        return this.Ok(response.Result.Value);
+        var mapped = this.mapper.Map<IEnumerable<TodoItem>, IEnumerable<TodoItemModel>>(response.Result.Value);
+        return this.Ok(mapped);
     }
 
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.List))]
     [HttpPost("search")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<IEnumerable<TodoItem>>> PostSearch([FromBodyFilter] FilterModel filter)
+    public async Task<ActionResult<IEnumerable<TodoItemModel>>> PostSearch([FromBodyFilter] FilterModel filter)
     {
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.List));
@@ -93,7 +97,8 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        return this.Ok(response.Result.Value);
+        return this.Ok(
+            this.mapper.Map<IEnumerable<TodoItem>, IEnumerable<TodoItemModel>>(response.Result.Value));
     }
 
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Read))]
@@ -103,7 +108,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<TodoItem>> GetById(string id)
+    public async Task<ActionResult<TodoItemModel>> GetById(string id)
     {
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Read));
@@ -112,11 +117,13 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        var response = await mediator.Send(new TodoItemFindOneQuery(id)).AnyContext();
+        var response = await mediator.Send(
+            new TodoItemFindOneQuery(id)).AnyContext();
 
         return response?.Result is null
             ? this.NotFound()
-            : this.Ok(response.Result.Value);
+            : this.Ok(
+                this.mapper.Map<TodoItem, TodoItemModel>(response.Result.Value));
     }
 
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Write))]
@@ -125,7 +132,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult> Post(TodoItem entity)
+    public async Task<ActionResult> Post(TodoItemModel model)
     {
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Write));
@@ -134,12 +141,13 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized("write permission needed");
         }
 
-        if (entity is null)
+        if (model is null)
         {
             this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
 
-        var response = await mediator.Send(new TodoItemCreateCommand(entity)).AnyContext();
+        var response = await mediator.Send(
+            new TodoItemCreateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
 
         return response.Cancelled
@@ -154,7 +162,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult> Put(string id, TodoItem entity)
+    public async Task<ActionResult> Put(string id, TodoItemModel model)
     {
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Write));
@@ -163,12 +171,13 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        if (id != entity?.Id.ToString())
+        if (id != model?.Id.ToString())
         {
             this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
 
-        var response = await mediator.Send(new TodoItemUpdateCommand(entity)).AnyContext();
+        var response = await mediator.Send(
+            new TodoItemUpdateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
 
         return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Ok();
@@ -190,10 +199,13 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        var response = await mediator.Send(new TodoItemDeleteCommand(id)).AnyContext();
+        var response = await mediator.Send(
+            new TodoItemDeleteCommand(id)).AnyContext();
 
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.EntityId);
 
-        return response.Cancelled ? this.BadRequest(response.CancelledReason) : this.Ok();
+        return response.Cancelled
+            ? this.BadRequest(response.CancelledReason)
+            : this.Ok();
     }
 }

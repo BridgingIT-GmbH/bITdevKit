@@ -13,10 +13,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemCreateCommand(TodoItem entity) : CommandRequestBase<AggregateCreatedCommandResult>,
+public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<AggregateCreatedCommandResult>,
     ICacheInvalidateCommand
 {
-    public TodoItem Entity { get; } = entity;
+    public TodoItemModel Model { get; } = model;
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 
@@ -29,29 +29,31 @@ public class TodoItemCreateCommand(TodoItem entity) : CommandRequestBase<Aggrega
     {
         public Validator()
         {
-            this.RuleFor(c => c.Entity).NotNull();
-            this.RuleFor(c => c.Entity.Id).Must(id => id == Guid.Empty).WithMessage("Invalid guid.");
-            this.RuleFor(c => c.Entity.Title).NotNull().NotEmpty();
+            this.RuleFor(c => c.Model).NotNull();
+            this.RuleFor(c => c.Model.Id).MustBeDefaultOrEmptyGuid();
+            this.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
         }
     }
 }
 
 public class TodoItemCreateCommandHandler(
     ILoggerFactory loggerFactory,
-    IGenericRepository<TodoItem> repository)
+    IGenericRepository<TodoItem> repository,
+    IMapper mapper)
     : CommandHandlerBase<TodoItemCreateCommand, AggregateCreatedCommandResult>(loggerFactory)
 {
     public override async Task<CommandResponse<AggregateCreatedCommandResult>> Process(
         TodoItemCreateCommand command,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"+++ create item: {command.Entity.Title}");
+        this.Logger.LogInformation($"+++ create item: {command.Model.Title}");
 
-        await repository.InsertAsync(command.Entity, cancellationToken).AnyContext();
+        var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
+        await repository.InsertAsync(entity, cancellationToken).AnyContext();
 
         return new CommandResponse<AggregateCreatedCommandResult>
         {
-            Result = new AggregateCreatedCommandResult(command.Entity.Id.ToString())
+            Result = new AggregateCreatedCommandResult(command.Model.Id.ToString())
         };
     }
 }

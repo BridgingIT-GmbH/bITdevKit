@@ -38,7 +38,7 @@ public class TodoItemFindOneQuery : QueryRequestBase<Result<TodoItem>>, ICacheQu
     {
         public Validator()
         {
-            this.RuleFor(c => c.EntityId).NotNull().NotEmpty().Length(3, 128);
+            this.RuleFor(c => c.EntityId).MustBeValidGuid().WithMessage("Invalid guid.");
         }
     }
 }

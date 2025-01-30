@@ -1218,7 +1218,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TodoItem"
+                    "$ref": "#/components/schemas/TodoItemModel"
                   }
                 }
               }
@@ -1235,11 +1235,11 @@
         ],
         "operationId": "TodoItem_Post",
         "requestBody": {
-          "x-name": "entity",
+          "x-name": "model",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TodoItem"
+                "$ref": "#/components/schemas/TodoItemModel"
               }
             }
           },
@@ -1298,7 +1298,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TodoItem"
+                    "$ref": "#/components/schemas/TodoItemModel"
                   }
                 }
               }
@@ -1333,7 +1333,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoItem"
+                  "$ref": "#/components/schemas/TodoItemModel"
                 }
               }
             }
@@ -1380,11 +1380,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "entity",
+          "x-name": "model",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TodoItem"
+                "$ref": "#/components/schemas/TodoItemModel"
               }
             }
           },
@@ -1910,325 +1910,89 @@
           }
         }
       },
-      "TodoItem": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuditableAggregateRootOfTodoItemId"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "userId": {
-                "type": "string",
-                "nullable": true
-              },
-              "title": {
-                "type": "string",
-                "nullable": true
-              },
-              "description": {
-                "type": "string",
-                "nullable": true
-              },
-              "status": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/TodoStatus"
-                  }
-                ]
-              },
-              "priority": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/TodoPriority"
-                  }
-                ]
-              },
-              "dueDate": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "orderIndex": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "assignee": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/EmailAddress"
-                  }
-                ]
-              },
-              "concurrencyVersion": {
-                "type": "string",
-                "format": "guid"
-              }
-            }
-          }
-        ]
-      },
-      "TodoStatus": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Enumeration"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "description": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "Enumeration": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/EnumerationOfIntegerAndString"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false
-          }
-        ]
-      },
-      "EnumerationOfIntegerAndString": {
+      "TodoItemModel": {
         "type": "object",
-        "x-abstract": true,
         "additionalProperties": false,
         "properties": {
           "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
             "type": "integer",
             "format": "int32"
           },
-          "value": {
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "orderIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assignee": {
+            "type": "string",
+            "nullable": true
+          },
+          "steps": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoStepModel"
+            }
+          },
+          "concurrencyVersion": {
             "type": "string",
             "nullable": true
           }
         }
       },
-      "TodoPriority": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Enumeration"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "description": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "EmailAddress": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ValueObject"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "ValueObject": {
+      "TodoStepModel": {
         "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false
-      },
-      "AuditableAggregateRootOfTodoItemId": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuditableEntityOfTodoItemId"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false
-          }
-        ]
-      },
-      "AuditableEntityOfTodoItemId": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/EntityOfTodoItemId"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false,
-            "properties": {
-              "auditState": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/AuditState"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "AuditState": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "updatedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "updatedDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "updatedReasons": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "deactivated": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "deactivatedReasons": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "deactivatedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "deactivatedDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deactivatedDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "deleted": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "deletedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "deletedDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "deletedReason": {
-            "type": "string",
-            "nullable": true
-          },
-          "deletedDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastActionDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        }
-      },
-      "EntityOfTodoItemId": {
-        "type": "object",
-        "x-abstract": true,
         "additionalProperties": false,
         "properties": {
           "id": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/TodoItemId"
-              }
-            ]
+            "type": "string",
+            "nullable": true
+          },
+          "todoItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDeleted": {
+            "type": "boolean",
+            "nullable": true
           }
         }
-      },
-      "TodoItemId": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/EntityIdOfGuid"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "type": "string",
-                "format": "guid"
-              },
-              "isEmpty": {
-                "type": "boolean"
-              }
-            }
-          }
-        ]
-      },
-      "EntityIdOfGuid": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ValueObject"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "type": "string",
-                "format": "guid"
-              }
-            }
-          }
-        ]
       },
       "FilterModel": {
         "type": "object",

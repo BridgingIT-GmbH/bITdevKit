@@ -13,10 +13,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemDeleteCommand(string entityId) : CommandRequestBase<AggregateDeletedCommandResult>,
+public class TodoItemDeleteCommand(string id) : CommandRequestBase<AggregateDeletedCommandResult>,
     ICacheInvalidateCommand
 {
-    public string EntityId { get; } = entityId;
+    public string Id { get; } = id;
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 
@@ -29,8 +29,7 @@ public class TodoItemDeleteCommand(string entityId) : CommandRequestBase<Aggrega
     {
         public Validator()
         {
-            this.RuleFor(c => c.EntityId).NotNull().NotEmpty().Length(3, 128);
-            // this.RuleFor(c => c.Id).Must(id => id != Guid.Empty).WithMessage("Invalid guid.");
+            this.RuleFor(c => c.Id).MustBeValidGuid().WithMessage("Invalid guid.");
         }
     }
 }
@@ -44,13 +43,13 @@ public class TodoItemDeleteCommandHandler(
         TodoItemDeleteCommand command,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"+++ delete item: {command.EntityId}");
+        this.Logger.LogInformation($"+++ delete item: {command.Id}");
 
-        await repository.DeleteAsync(TodoItemId.Create(command.EntityId), cancellationToken).AnyContext();
+        await repository.DeleteAsync(TodoItemId.Create(command.Id), cancellationToken).AnyContext();
 
         return new CommandResponse<AggregateDeletedCommandResult>
         {
-            Result = new AggregateDeletedCommandResult(command.EntityId.ToString())
+            Result = new AggregateDeletedCommandResult(command.Id.ToString())
         };
     }
 }

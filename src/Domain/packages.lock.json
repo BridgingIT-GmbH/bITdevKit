@@ -44,9 +44,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "6xGWCu89VdrAYpw07KSbvVZC21XcJ5YSEzPEFbWBZsgeATTep5c5x/MQA/QS15HVHqoAtYIAHzr3ke6zCyOX7g=="
+        "requested": "[1.6.0.1, )",
+        "resolved": "1.6.0.1",
+        "contentHash": "u1ome4HL3OS5lq2QbxIAmHv+i5uewSf2hqosGr8O5FjkseqSx4Fmt1Pn+8fjyex7/rQOOYrXk+iTkxxEgSc9yA=="
       },
       "MessagePack.Annotations": {
         "type": "Transitive",

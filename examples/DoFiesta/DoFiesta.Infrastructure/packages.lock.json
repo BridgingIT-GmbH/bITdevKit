@@ -881,7 +881,7 @@
           "MediatR.Contracts": "[2.0.1, )",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.1, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.0, )"
+          "System.Linq.Dynamic.Core": "[1.6.0.1, )"
         }
       },
       "BridgingIT.DevKit.Domain.CodeGen": {
@@ -951,7 +951,7 @@
           "Microsoft.EntityFrameworkCore": "[9.0.1, )",
           "Microsoft.EntityFrameworkCore.InMemory": "[9.0.1, )",
           "Microsoft.EntityFrameworkCore.Relational": "[9.0.1, )",
-          "System.Linq.Dynamic.Core": "[1.6.0, )"
+          "System.Linq.Dynamic.Core": "[1.6.0.1, )"
         }
       },
       "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": {
@@ -1462,9 +1462,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "6xGWCu89VdrAYpw07KSbvVZC21XcJ5YSEzPEFbWBZsgeATTep5c5x/MQA/QS15HVHqoAtYIAHzr3ke6zCyOX7g=="
+        "requested": "[1.6.0.1, )",
+        "resolved": "1.6.0.1",
+        "contentHash": "u1ome4HL3OS5lq2QbxIAmHv+i5uewSf2hqosGr8O5FjkseqSx4Fmt1Pn+8fjyex7/rQOOYrXk+iTkxxEgSc9yA=="
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

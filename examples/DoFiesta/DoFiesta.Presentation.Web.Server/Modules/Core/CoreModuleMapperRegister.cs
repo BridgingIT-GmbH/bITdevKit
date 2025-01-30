@@ -17,31 +17,27 @@ public class CatalogMapperRegister : IRegister
         // Generic type conversions
         config.Default.EnumMappingStrategy(EnumMappingStrategy.ByValue);
 
-        // Register type converters for TodoItemId
-        config.NewConfig<TodoItemId, string>()
-            .MapWith(src => src.Value.ToString());
+        //// Register type converters for TodoItemId
+        //config.NewConfig<TodoItemId, string>()
+        //    .MapWith(src => src.Value.ToString());
+        //config.NewConfig<string, TodoItemId>()
+        //    .MapWith(src => TodoItemId.Create(src));
 
-        config.NewConfig<string, TodoItemId>()
-            .MapWith(src => TodoItemId.Create(src));
+        //// Register type converters for TodoStepId
+        //config.NewConfig<TodoStepId, string>()
+        //    .MapWith(src => src.Value.ToString());
+        //config.NewConfig<string, TodoStepId>()
+        //    .MapWith(src => TodoStepId.Create(src));
 
-        // Register type converters for TodoStepId
-        config.NewConfig<TodoStepId, string>()
-            .MapWith(src => src.Value.ToString());
-
-        config.NewConfig<string, TodoStepId>()
-            .MapWith(src => TodoStepId.Create(src));
-
-        // Register type converters for SubscriptionId
-        config.NewConfig<SubscriptionId, string>()
-            .MapWith(src => src.Value.ToString());
-
-        config.NewConfig<string, SubscriptionId>()
-            .MapWith(src => SubscriptionId.Create(src));
+        //// Register type converters for SubscriptionId
+        //config.NewConfig<SubscriptionId, string>()
+        //    .MapWith(src => src.Value.ToString());
+        //config.NewConfig<string, SubscriptionId>()
+        //    .MapWith(src => SubscriptionId.Create(src));
 
         // Register type converter for EmailAddress
         config.NewConfig<EmailAddress, string>()
             .MapWith(src => src.Value);
-
         config.NewConfig<string, EmailAddress>()
             .MapWith(src => EmailAddress.Create(src));
 
@@ -56,21 +52,18 @@ public class CatalogMapperRegister : IRegister
         config.ForType<TodoItem, TodoItemModel>()
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
-
         config.ForType<TodoItemModel, TodoItem>()
             .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
             .IgnoreNullValues(true);
 
         config.ForType<TodoStep, TodoStepModel>()
             .IgnoreNullValues(true);
-
         config.ForType<TodoStepModel, TodoStep>()
             .IgnoreNullValues(true);
 
         config.ForType<Subscription, SubscriptionModel>()
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
-
         config.ForType<SubscriptionModel, Subscription>()
             .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
             .IgnoreNullValues(true);

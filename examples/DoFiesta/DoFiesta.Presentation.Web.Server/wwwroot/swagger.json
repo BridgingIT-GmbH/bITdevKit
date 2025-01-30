@@ -1189,6 +1189,39 @@
         }
       }
     },
+    "/api/core/enumerations": {
+      "get": {
+        "tags": [
+          "Enumeration"
+        ],
+        "operationId": "Enumeration_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumerationModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/core/todoitems": {
       "get": {
         "tags": [
@@ -1909,6 +1942,208 @@
             "additionalProperties": {}
           }
         }
+      },
+      "EnumerationModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "todoStatuses": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoStatus"
+            }
+          },
+          "todoPriorities": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoPriority"
+            }
+          },
+          "subscriptionStatuses": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SubscriptionStatus"
+            }
+          },
+          "subscriptionPlans": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SubscriptionPlan"
+            }
+          },
+          "subscriptionBillingCycles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SubscriptionBillingCycle"
+            }
+          }
+        }
+      },
+      "TodoStatus": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "Enumeration": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EnumerationOfIntegerAndString"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false
+          }
+        ]
+      },
+      "EnumerationOfIntegerAndString": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TodoPriority": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "SubscriptionStatus": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "SubscriptionPlan": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "details": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/SubscriptionPlanDetails"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "SubscriptionPlanDetails": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "pricePerMonth": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxTodos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxUsersPerTodo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "allowsRecurring": {
+            "type": "boolean"
+          },
+          "allowsAttachments": {
+            "type": "boolean"
+          },
+          "allowsTemplates": {
+            "type": "boolean"
+          },
+          "maxProjects": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "allowsComments": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SubscriptionBillingCycle": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "autoRenew": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
       },
       "TodoItemModel": {
         "type": "object",

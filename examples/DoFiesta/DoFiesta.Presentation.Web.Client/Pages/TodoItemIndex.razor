@@ -1,0 +1,80 @@
+﻿@page "/cities"
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+@inject IStringLocalizer<Global> localizer
+@inject IApiClient ApiClient
+
+<PageTitle>Items</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Items</MudText>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-16">
+    <MudGrid>
+        <MudItem xs="12" lg="1">
+            <MudTooltip Text="@localizer["Title_CreateTodoItem"]">
+                @* <MudFab OnClick="e => OnCreate()" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"/> *@
+            </MudTooltip>
+        </MudItem>
+        <MudItem xs="12" lg="11">
+            <MudText Typo="Typo.h3" GutterBottom="true">@localizer["Title_TodoItems"]</MudText>
+        </MudItem>
+        <MudItem xs="12" lg="6">
+            @if (items is null)
+            {
+                <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
+            }
+            else
+            {
+               <MudTable Items="items" Hover="true" SortLabel="Sort By" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>
+                            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItem, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                        </MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTooltip Text="@context.Id.ToString()">
+                            <MudTd DataLabel="Title">@localizer[context.Title]</MudTd>
+                        </MudTooltip>
+                        <MudTd DataLabel="Description">@localizer[context.Description]</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager PageSizeOptions="new[] { 10, 50, 100 }"/>
+                    </PagerContent>
+                </MudTable>
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private ICollection<TodoItem> items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var filterModel = new FilterModel();
+        items = (await ApiClient.TodoItem_GetAllAsync(filterModel).ConfigureAwait(false)).Result.ToList();
+    }
+
+    // private async Task OnCreate()
+    // {
+    //     var dialog = await dialogService.ShowAsync<CityEditor>(localizer["Title_CreateCity"]);
+    //     var result = await dialog.Result;
+
+    //     if (!result.Canceled && result.Data is CityModel model)
+    //     {
+    //         try
+    //         {
+    //             var response = await ApiClient.City_PostAsync(model);
+    //             model.Id = response.Headers.GetValueOrDefault("x-entity-id").FirstOrDefault().To<Guid>();
+    //             cities.Add(model);
+    //             snackbar.Add($"{localizer["Notification_CityCreated"]}: {localizer[model.Name]} ({model.Id})");
+    //         }
+    //         catch (ApiException<ProblemDetails> ex)
+    //         {
+    //             snackbar.Add(localizer["Notification_Error"] + $": [{ex.StatusCode}] {ex.Result.Detail} {ex.Result.AdditionalProperties.FirstOrDefault()}");
+    //         }
+    //     }
+    // }
+
+}

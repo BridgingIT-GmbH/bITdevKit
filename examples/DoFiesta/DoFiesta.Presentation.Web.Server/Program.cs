@@ -42,6 +42,7 @@ builder.Services.AddHttpContextAccessor();
 // ===============================================================================================
 // Configure the services
 builder.Services.AddMediatR();
+builder.Services.AddMapping().WithMapster();
 
 builder.Services.AddCommands()
     .WithBehavior(typeof(ModuleScopeCommandBehavior<,>))

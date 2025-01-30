@@ -69,9 +69,6 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
                 .IsRequired()
                 .HasDefaultValue(0);
 
-            sb.Property(s => s.IsDeleted)
-                .HasDefaultValue(false);
-
             sb.WithOwner()
                 .HasForeignKey(s => s.TodoItemId);
 

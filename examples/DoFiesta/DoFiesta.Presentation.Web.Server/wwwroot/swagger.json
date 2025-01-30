@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))",
+  "x-generator": "NSwag v14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "Backend API",
@@ -11,6 +11,967 @@
     }
   ],
   "paths": {
+    "/api/_system/identity/entities/permissions/{permission}": {
+      "get": {
+        "tags": [
+          "_system/identity"
+        ],
+        "operationId": "GetApiSystemIdentityEntitiesPermissions",
+        "parameters": [
+          {
+            "name": "permission",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityPermissionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/entities/permissions": {
+      "get": {
+        "tags": [
+          "_system/identity"
+        ],
+        "operationId": "GetApiSystemIdentityEntitiesPermissions2",
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityPermissionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/management/entities/permissions/users/{userId}": {
+      "post": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "PostApiSystemIdentityManagementEntitiesPermissionsUsers",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionRequest"
+              }
+            }
+          },
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "DeleteApiSystemIdentityManagementEntitiesPermissionsUsers",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionRequest"
+              }
+            }
+          },
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "GetApiSystemIdentityManagementEntitiesPermissionsUsers",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/management/entities/permissions/users/{userId}/all": {
+      "delete": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "DeleteApiSystemIdentityManagementEntitiesPermissionsUsersAll",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/management/entities/permissions/roles/{role}": {
+      "post": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "PostApiSystemIdentityManagementEntitiesPermissionsRoles",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionRequest"
+              }
+            }
+          },
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "DeleteApiSystemIdentityManagementEntitiesPermissionsRoles",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionRequest"
+              }
+            }
+          },
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "GetApiSystemIdentityManagementEntitiesPermissionsRoles",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/management/entities/permissions/roles/{role}/all": {
+      "delete": {
+        "tags": [
+          "_system/identity/management"
+        ],
+        "operationId": "DeleteApiSystemIdentityManagementEntitiesPermissionsRolesAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/.well-known/openid-configuration": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnect.wellKnownOpenidConfiguration",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenIdConfiguration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/authorize": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnectAuthorize",
+        "parameters": [
+          {
+            "name": "response_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/authorize/callback": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnectAuthorizeCallback",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "response_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/token": {
+      "post": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "PostApiSystemIdentityConnectToken",
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 8
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 9
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/userinfo": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnectUserinfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/logout": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnectLogout",
+        "parameters": [
+          {
+            "name": "id_token_hint",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "post_logout_redirect_uri",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "302": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/_system/identity/connect/debuginfo": {
+      "get": {
+        "tags": [
+          "_system/identity/connect"
+        ],
+        "operationId": "GetApiSystemIdentityConnectDebuginfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebugInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/_system": {
       "get": {
         "tags": [
@@ -140,7 +1101,7 @@
     "/api/_system/jobs": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_system"
         ],
         "operationId": "GetApiSystemJobs",
         "responses": {
@@ -173,7 +1134,7 @@
     "/api/_system/jobs/{name}": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_system"
         ],
         "operationId": "PostApiSystemJobs",
         "parameters": [
@@ -228,12 +1189,27 @@
         }
       }
     },
-    "/api/core/cities": {
+    "/api/core/todoitems": {
       "get": {
         "tags": [
-          "City"
+          "TodoItem"
         ],
-        "operationId": "City_GetAll",
+        "operationId": "TodoItem_GetAll",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "nullable": true,
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/FilterModel"
+                }
+              ]
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -242,7 +1218,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CityModel"
+                    "$ref": "#/components/schemas/TodoItem"
                   }
                 }
               }
@@ -255,15 +1231,15 @@
       },
       "post": {
         "tags": [
-          "City"
+          "TodoItem"
         ],
-        "operationId": "City_Post",
+        "operationId": "TodoItem_Post",
         "requestBody": {
-          "x-name": "model",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CityModel"
+                "$ref": "#/components/schemas/TodoItem"
               }
             }
           },
@@ -293,15 +1269,56 @@
         }
       }
     },
-    "/api/core/cities/{name}": {
-      "get": {
+    "/api/core/todoitems/search": {
+      "post": {
         "tags": [
-          "City"
+          "TodoItem"
         ],
-        "operationId": "City_GetByName",
+        "operationId": "TodoItem_PostSearch",
         "parameters": [
           {
-            "name": "name",
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "nullable": true,
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/FilterModel"
+                }
+              ]
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TodoItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/core/todoitems/{id}": {
+      "get": {
+        "tags": [
+          "TodoItem"
+        ],
+        "operationId": "TodoItem_GetById",
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -316,7 +1333,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CityModel"
+                  "$ref": "#/components/schemas/TodoItem"
                 }
               }
             }
@@ -346,123 +1363,11 @@
           }
         }
       },
-      "delete": {
-        "tags": [
-          "City"
-        ],
-        "operationId": "City_DeleteByName",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/core/cities/location": {
-      "get": {
-        "tags": [
-          "City"
-        ],
-        "operationId": "City_GetByLocation",
-        "parameters": [
-          {
-            "name": "longitude",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "double",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "latitude",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "double",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CityModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/core/cities/{id}": {
       "put": {
         "tags": [
-          "City"
+          "TodoItem"
         ],
-        "operationId": "City_Put",
+        "operationId": "TodoItem_Put",
         "parameters": [
           {
             "name": "id",
@@ -475,11 +1380,11 @@
           }
         ],
         "requestBody": {
-          "x-name": "model",
+          "x-name": "entity",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CityModel"
+                "$ref": "#/components/schemas/TodoItem"
               }
             }
           },
@@ -514,102 +1419,43 @@
             "description": ""
           }
         }
-      }
-    },
-    "/api/core/countries": {
-      "get": {
+      },
+      "delete": {
         "tags": [
-          "Country"
+          "TodoItem"
         ],
-        "operationId": "Country_GetAll",
+        "operationId": "TodoItem_DeleteByName",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
+            "description": ""
+          },
+          "404": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
           },
-          "500": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/core/forecasts": {
-      "get": {
-        "tags": [
-          "Forecast"
-        ],
-        "operationId": "Forecast_GetAll",
-        "responses": {
-          "200": {
+          "400": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/City"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/core/forecasts/descriptions": {
-      "get": {
-        "tags": [
-          "Forecast"
-        ],
-        "operationId": "Forecast_GetAllDescriptions",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/core/forecasttypes": {
-      "get": {
-        "tags": [
-          "ForecastType"
-        ],
-        "operationId": "ForecastType_GetAll",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ForecastType"
-                  }
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -623,6 +1469,27 @@
   },
   "components": {
     "schemas": {
+      "EntityPermissionModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "permission": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasAccess": {
+            "type": "boolean"
+          }
+        }
+      },
       "ProblemDetails": {
         "type": "object",
         "additionalProperties": {
@@ -647,6 +1514,302 @@
             "nullable": true
           },
           "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PermissionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "nullable": true
+          },
+          "entityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "permission": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "OpenIdConfiguration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "issuer": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorization_endpoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "token_endpoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "userinfo_endpoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "end_session_endpoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "grant_types_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "response_types_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "response_modes_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "scopes_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "claims_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "token_endpoint_auth_methods_supported": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refresh_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "refresh_expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "token_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "id_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "session_state": {
+            "type": "string",
+            "nullable": true
+          },
+          "scope": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "OAuth2Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_uri": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sub": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "given_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "family_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "preferred_username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "email_verified": {
+            "type": "boolean"
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DebugInfoResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tokenIssuer": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenProvider": {
+            "type": "string",
+            "nullable": true
+          },
+          "configuredClients": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DevClientDebugInfo"
+            }
+          },
+          "configuredUsers": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserDebugInfo"
+            }
+          },
+          "endpoints": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/EndpointDebugInfo"
+              }
+            ]
+          }
+        }
+      },
+      "DevClientDebugInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "redirectUris": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedScopes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UserDebugInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EndpointDebugInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "authorization": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "userInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "logout": {
             "type": "string",
             "nullable": true
           }
@@ -747,120 +1910,78 @@
           }
         }
       },
-      "CityModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "country": {
-            "type": "string",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "forecasts": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/ForecastModel"
-            }
-          }
-        }
-      },
-      "ForecastModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "temperatureMin": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "temperatureMax": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "windSpeed": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "City": {
+      "TodoItem": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/AggregateRootOfGuid"
+            "$ref": "#/components/schemas/AuditableAggregateRootOfTodoItemId"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "name": {
+              "userId": {
                 "type": "string",
                 "nullable": true
               },
-              "country": {
+              "title": {
                 "type": "string",
                 "nullable": true
               },
-              "createdDate": {
+              "description": {
                 "type": "string",
-                "format": "date-time",
                 "nullable": true
               },
-              "updatedDate": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "location": {
+              "status": {
                 "nullable": true,
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/GeoLocation"
+                    "$ref": "#/components/schemas/TodoStatus"
                   }
                 ]
               },
-              "isDeleted": {
-                "type": "boolean"
+              "priority": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TodoPriority"
+                  }
+                ]
               },
-              "deletedDate": {
+              "dueDate": {
                 "type": "string",
                 "format": "date-time",
                 "nullable": true
               },
-              "deletedReason": {
+              "orderIndex": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "assignee": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EmailAddress"
+                  }
+                ]
+              },
+              "concurrencyVersion": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "TodoStatus": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
                 "type": "string",
                 "nullable": true
               }
@@ -868,7 +1989,51 @@
           }
         ]
       },
-      "GeoLocation": {
+      "Enumeration": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EnumerationOfIntegerAndString"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false
+          }
+        ]
+      },
+      "EnumerationOfIntegerAndString": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TodoPriority": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Enumeration"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "EmailAddress": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ValueObject"
@@ -877,13 +2042,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "longitude": {
-                "type": "number",
-                "format": "double"
-              },
-              "latitude": {
-                "type": "number",
-                "format": "double"
+              "value": {
+                "type": "string",
+                "nullable": true
               }
             }
           }
@@ -894,10 +2055,10 @@
         "x-abstract": true,
         "additionalProperties": false
       },
-      "AggregateRootOfGuid": {
+      "AuditableAggregateRootOfTodoItemId": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/EntityOfGuid"
+            "$ref": "#/components/schemas/AuditableEntityOfTodoItemId"
           },
           {
             "type": "object",
@@ -906,55 +2067,404 @@
           }
         ]
       },
-      "EntityOfGuid": {
+      "AuditableEntityOfTodoItemId": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EntityOfTodoItemId"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "auditState": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/AuditState"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "AuditState": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedReasons": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "deactivated": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "deactivatedReasons": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "deactivatedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "deactivatedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deactivatedDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "deleted": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "deletedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deletedReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "deletedDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastActionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "EntityOfTodoItemId": {
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "string",
-            "format": "guid"
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TodoItemId"
+              }
+            ]
           }
         }
       },
-      "ForecastType": {
+      "TodoItemId": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/EntityOfGuid"
+            "$ref": "#/components/schemas/EntityIdOfGuid"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "name": {
+              "value": {
                 "type": "string",
-                "nullable": true
+                "format": "guid"
               },
-              "description": {
-                "type": "string",
-                "nullable": true
+              "isEmpty": {
+                "type": "boolean"
               }
             }
           }
         ]
-      }
-    },
-    "securitySchemes": {
-      "bearer": {
-        "type": "oauth2",
-        "description": "Oidc Authentication",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "http://localhost:8080/auth/realms/master/protocol/openid-connect/auth",
-            "tokenUrl": "http://localhost:8080/auth/realms/master/protocol/openid-connect/token"
+      },
+      "EntityIdOfGuid": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ValueObject"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "FilterModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderings": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FilterOrderCriteria"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FilterCriteria"
+            }
+          },
+          "includes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "hierarchy": {
+            "type": "string",
+            "nullable": true
+          },
+          "hierarchyMaxDepth": {
+            "type": "integer",
+            "format": "int32"
           }
         }
+      },
+      "FilterOrderCriteria": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "$ref": "#/components/schemas/OrderDirection"
+          }
+        }
+      },
+      "OrderDirection": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Ascending",
+          "Descending"
+        ],
+        "enum": [
+          "asc",
+          "desc"
+        ]
+      },
+      "FilterCriteria": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "operator": {
+            "$ref": "#/components/schemas/FilterOperator"
+          },
+          "value": {
+            "nullable": true
+          },
+          "logic": {
+            "$ref": "#/components/schemas/FilterLogicOperator"
+          },
+          "filters": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FilterCriteria"
+            }
+          },
+          "customType": {
+            "$ref": "#/components/schemas/FilterCustomType"
+          },
+          "customParameters": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {}
+          },
+          "specificationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "specificationArguments": {
+            "type": "array",
+            "nullable": true,
+            "items": {}
+          },
+          "compositeSpecification": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CompositeSpecification"
+              }
+            ]
+          }
+        }
+      },
+      "FilterOperator": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Equal",
+          "NotEqual",
+          "IsNull",
+          "IsNotNull",
+          "IsEmpty",
+          "IsNotEmpty",
+          "GreaterThan",
+          "GreaterThanOrEqual",
+          "LessThan",
+          "LessThanOrEqual",
+          "Contains",
+          "DoesNotContain",
+          "StartsWith",
+          "DoesNotStartWith",
+          "EndsWith",
+          "DoesNotEndWith",
+          "Any",
+          "All",
+          "None"
+        ],
+        "enum": [
+          "eq",
+          "neq",
+          "isnull",
+          "isnotnull",
+          "isempty",
+          "isnotempty",
+          "gt",
+          "gte",
+          "lt",
+          "lte",
+          "contains",
+          "doesnotcontain",
+          "startswith",
+          "doesnotstartwith",
+          "endswith",
+          "doesnotendwith",
+          "any",
+          "all",
+          "none"
+        ]
+      },
+      "FilterLogicOperator": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "And",
+          "Or"
+        ],
+        "enum": [
+          "and",
+          "or"
+        ]
+      },
+      "FilterCustomType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "FullTextSearch",
+          "DateRange",
+          "DateRelative",
+          "TimeRange",
+          "TimeRelative",
+          "NumericRange",
+          "IsNull",
+          "IsNotNull",
+          "EnumValues",
+          "TextIn",
+          "TextNotIn",
+          "NumericIn",
+          "NumericNotIn",
+          "NamedSpecification",
+          "CompositeSpecification"
+        ],
+        "enum": [
+          "none",
+          "fulltextsearch",
+          "daterange",
+          "daterelative",
+          "timerange",
+          "timerelative",
+          "numericrange",
+          "isnull",
+          "isnotnull",
+          "enumvalues",
+          "textin",
+          "textnotin",
+          "numericin",
+          "numericnotin",
+          "namedspecification",
+          "compositespecification"
+        ]
+      },
+      "CompositeSpecification": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SpecificationNode"
+            }
+          }
+        }
+      },
+      "SpecificationNode": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
       }
     }
-  },
-  "security": [
-    {
-      "bearer": []
-    }
-  ]
+  }
 }

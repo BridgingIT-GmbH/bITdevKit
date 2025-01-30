@@ -25,3 +25,10 @@ The tools manifest can be found [here](../../../.config/dotnet-tools.json)
 
 Rebuild the solution and the ApiClient should be updated. For details see the OpenApiReference
 target in the Client project.
+
+### Update the api client
+
+rebuild the project after swagger generation and the ApiClient should be updated.
+.\examples\DoFiesta\DoFiesta.Presentation.Web.Client\obj\ApiClient.g.cs
+
+OpenApiReference in Client project triggers this generation.

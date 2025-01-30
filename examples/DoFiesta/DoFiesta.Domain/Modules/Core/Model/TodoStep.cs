@@ -19,6 +19,4 @@ public class TodoStep : Entity<TodoStepId>
     public TodoStatus Status { get; set; }
 
     public int OrderIndex { get; set; }
-
-    public bool? IsDeleted { get; set; }
 }

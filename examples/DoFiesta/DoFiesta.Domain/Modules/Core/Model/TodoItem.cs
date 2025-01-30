@@ -28,7 +28,7 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
 
     public EmailAddress Assignee { get; set; }
 
-    public virtual ICollection<TodoStep> Steps { get; set; } = new List<TodoStep>();
+    public virtual ICollection<TodoStep> Steps { get; set; } = [];
 
     public Guid ConcurrencyVersion { get; set; }
 }

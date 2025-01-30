@@ -23,7 +23,11 @@
     </OpenApiReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Pages\CityEditor.razor.old" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Pages\Authentication.razor" />
+    <None Include="Pages\TodoItemIndex.razor" />
   </ItemGroup>
   <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:ApiClient /namespace:$(RootNamespace) /output:$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">

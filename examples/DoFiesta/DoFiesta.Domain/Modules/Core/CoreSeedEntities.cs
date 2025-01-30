@@ -38,8 +38,7 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Create initial draft", Status = TodoStatus.InProgress },
                     new TodoStep { Description = "Review with stakeholders", Status = TodoStatus.New }
                 ]
-            },
-            new TodoItem
+            },           new TodoItem
             {
                 Title = "Setup Development Environment",
                 Description = "Configure local development setup for new project",
@@ -52,10 +51,8 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Install required software", Status = TodoStatus.New },
                     new TodoStep { Description = "Configure IDE", Status = TodoStatus.New }
                 ]
-            },
-            new TodoItem
-            {
-                Title = "Code Review Sprint 5",
+            },           new TodoItem
+            {               Title = "Code Review Sprint 5",
                 Description = "Review code changes for sprint 5",
                 Status = TodoStatus.New,
                 Priority = TodoPriority.High,
@@ -67,8 +64,8 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Review API endpoints", Status = TodoStatus.New }
                 ]
             },
-            new TodoItem
-            {
+                new TodoItem
+             {
                 Title = "Prepare Technical Documentation",
                 Description = "Create technical documentation for new features",
                 Status = TodoStatus.InProgress,
@@ -81,8 +78,8 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Update sequence diagrams", Status = TodoStatus.New }
                 ]
             },
-            new TodoItem
-            {
+                new TodoItem
+                {
                 Title = "Security Audit",
                 Description = "Conduct security audit of the application",
                 Status = TodoStatus.New,
@@ -96,7 +93,6 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Conduct penetration testing", Status = TodoStatus.New }
                 ]
             },
-
             // User 2 todos
             new TodoItem
             {
@@ -128,8 +124,7 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Implement query caching", Status = TodoStatus.New },
                     new TodoStep { Description = "Add appropriate indices", Status = TodoStatus.New }
                 ]
-            },
-            new TodoItem
+            },           new TodoItem
             {
                 Title = "Implement CI/CD Pipeline",
                 Description = "Setup automated build and deployment pipeline using Azure DevOps",
@@ -143,8 +138,7 @@ public static class CoreSeedEntities
                     new TodoStep { Description = "Setup test automation", Status = TodoStatus.InProgress },
                     new TodoStep { Description = "Configure deployment stages", Status = TodoStatus.New }
                 ]
-            },
-            new TodoItem
+            },           new TodoItem
             {
                 Title = "Migrate to .NET 8",
                 Description = "Upgrade project from .NET 6 to .NET 8 including all dependencies",

@@ -46,11 +46,11 @@ public class CatalogMapperRegister : IRegister
             .MapWith(src => EmailAddress.Create(src));
 
         // Register type converters for enumerations
-        RegisterEnumerationConverter<TodoStatus>(config);
-        RegisterEnumerationConverter<TodoPriority>(config);
-        RegisterEnumerationConverter<SubscriptionStatus>(config);
-        RegisterEnumerationConverter<SubscriptionPlan>(config);
-        RegisterEnumerationConverter<SubscriptionBillingCycle>(config);
+        RegisterConverter<TodoStatus>(config);
+        RegisterConverter<TodoPriority>(config);
+        RegisterConverter<SubscriptionStatus>(config);
+        RegisterConverter<SubscriptionPlan>(config);
+        RegisterConverter<SubscriptionBillingCycle>(config);
 
         // Main type mappings
         config.ForType<TodoItem, TodoItemModel>()
@@ -76,7 +76,7 @@ public class CatalogMapperRegister : IRegister
             .IgnoreNullValues(true);
     }
 
-    private static void RegisterEnumerationConverter<T>(TypeAdapterConfig config)
+    private static void RegisterConverter<T>(TypeAdapterConfig config)
         where T : Enumeration
     {
         config.NewConfig<T, int>()

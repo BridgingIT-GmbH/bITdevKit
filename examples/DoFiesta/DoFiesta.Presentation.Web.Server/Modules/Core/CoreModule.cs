@@ -25,20 +25,24 @@ public class CoreModule : WebModuleBase
         // services.AddJobScheduling()
         //     .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
+        // tasks
+        services.AddStartupTasks()
+            .WithTask<CoreDomainSeederTask>(o => o
+                .Enabled(environment?.IsDevelopment() == true)
+                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+
         // dbcontext
-        services.AddSqlServerDbContext<CoreDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                .UseLogger()
-                .UseSimpleLogger())
-            .WithDatabaseCreatorService(o => o.DeleteOnStartup());
+        //services.AddSqlServerDbContext<CoreDbContext>(o => o
+        //        .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+        //        .UseLogger().UseSimpleLogger())
+        //    .WithDatabaseCreatorService(o => o.DeleteOnStartup());
 
         services.AddInMemoryDbContext<CoreDbContext>()
             .WithDatabaseCreatorService(o => o
-                //.Enabled(environment?.IsDevelopment() == true)
-                .DeleteOnStartup(false));
+                .Enabled(environment?.IsDevelopment() == true));
 
         // permissions
-        services.AddIdentity(o => // rename .AddAuthorization
+        services.AddAuthorization(o =>
         {
             o.WithEntityPermissions<CoreDbContext>(o =>
             {
@@ -46,13 +50,17 @@ public class CoreModule : WebModuleBase
                 o.AddEntity<TodoItem>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
                     .AddDefaultPermissions<TodoItem>(Permission.Read/*, Permission.Write*/, Permission.List) // default permissions if user/group has no grants
                     .UseDefaultPermissionProvider<TodoItem>();
+
+                o.AddEntity<Subscription>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
+                    .AddDefaultPermissions<Subscription>(Permission.Read) // default permissions if user/group has no grants
+                    .UseDefaultPermissionProvider<Subscription>();
             });
 
             o.EnableEvaluationEndpoints();
             o.EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
         });
 
-        // TodoItem repository
+        // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>();
@@ -77,7 +85,7 @@ public class CoreModule : WebModuleBase
         IConfiguration configuration = null,
         IWebHostEnvironment environment = null)
     {
-        // TODO: map the city endpoints here
+        // TODO: map the endpoints here (replaces TodoItemController)
 
         return app;
     }

@@ -94,7 +94,7 @@ public class CoreModule : WebModuleBase
                 .StartupDelay("00:00:15")
                 .PurgeOnStartup());
 
-        services.AddIdentity(o => // rename .AddAuthorization
+        services.AddAuthorization(o => // rename .AddAuthorization
         {
             o.WithEntityPermissions<CoreDbContext>(e =>
             {

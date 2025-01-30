@@ -11,6 +11,8 @@ public class CoreModuleConfiguration
 {
     public IReadOnlyDictionary<string, string> ConnectionStrings { get; set; }
 
+    public string SeederTaskStartupDelay { get; set; } = "00:00:05";
+
     public class Validator : AbstractValidator<CoreModuleConfiguration>
     {
         public Validator()
@@ -18,6 +20,10 @@ public class CoreModuleConfiguration
             this.RuleFor(c => c.ConnectionStrings)
                 .NotNull().NotEmpty().Must(c => c.ContainsKey("Default"))
                 .WithMessage("Connection string with name 'default' is required");
+
+            this.RuleFor(c => c.SeederTaskStartupDelay)
+                .NotNull().NotEmpty()
+                .WithMessage("SeederTaskStartupDelay cannot be null or empty");
         }
     }
 }

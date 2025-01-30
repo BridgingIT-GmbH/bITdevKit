@@ -132,39 +132,26 @@ public class SubscriptionBillingCycle : Enumeration
     }
 }
 
-public class SubscriptionPlanDetails
+public class SubscriptionPlanDetails(
+    string name,
+    decimal pricePerMonth,
+    int maxTodos,
+    int maxUsersPerTodo,
+    bool allowsRecurring,
+    bool allowsAttachments,
+    bool allowsTemplates,
+    int maxProjects,
+    bool allowsComments)
 {
-    public SubscriptionPlanDetails(
-        string name,
-        decimal pricePerMonth,
-        int maxTodos,
-        int maxUsersPerTodo,
-        bool allowsRecurring,
-        bool allowsAttachments,
-        bool allowsTemplates,
-        int maxProjects,
-        bool allowsComments)
-    {
-        this.Name = name;
-        this.PricePerMonth = pricePerMonth;
-        this.MaxTodos = maxTodos;
-        this.MaxUsersPerTodo = maxUsersPerTodo;
-        this.AllowsRecurring = allowsRecurring;
-        this.AllowsAttachments = allowsAttachments;
-        this.AllowsTemplates = allowsTemplates;
-        this.MaxProjects = maxProjects;
-        this.AllowsComments = allowsComments;
-    }
-
-    public string Name { get; }
-    public decimal PricePerMonth { get; }
-    public int MaxTodos { get; }
-    public int MaxUsersPerTodo { get; }
-    public bool AllowsRecurring { get; }
-    public bool AllowsAttachments { get; }
-    public bool AllowsTemplates { get; }
-    public int MaxProjects { get; }
-    public bool AllowsComments { get; }
+    public string Name { get; } = name;
+    public decimal PricePerMonth { get; } = pricePerMonth;
+    public int MaxTodos { get; } = maxTodos;
+    public int MaxUsersPerTodo { get; } = maxUsersPerTodo;
+    public bool AllowsRecurring { get; } = allowsRecurring;
+    public bool AllowsAttachments { get; } = allowsAttachments;
+    public bool AllowsTemplates { get; } = allowsTemplates;
+    public int MaxProjects { get; } = maxProjects;
+    public bool AllowsComments { get; } = allowsComments;
 }
 
 public class EmailAddress : ValueObject
@@ -231,5 +218,22 @@ public class TodoItemIsNotDeletedSpecification : Specification<TodoItem>
     public override Expression<Func<TodoItem, bool>> ToExpression()
     {
         return e => !e.AuditState.IsDeleted();
+    }
+}
+
+public class ActiveSubscriptionSpecification : Specification<Subscription>
+{
+    public override Expression<Func<Subscription, bool>> ToExpression()
+    {
+        return e => e.Status == SubscriptionStatus.Active &&
+                   (e.EndDate == null || e.EndDate > DateTime.UtcNow);
+    }
+}
+
+public class TodoItemByUserSpecification(string userId) : Specification<TodoItem>
+{
+    public override Expression<Func<TodoItem, bool>> ToExpression()
+    {
+        return item => item.UserId == userId;
     }
 }

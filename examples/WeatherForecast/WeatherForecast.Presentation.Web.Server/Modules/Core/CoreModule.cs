@@ -73,12 +73,11 @@ public class CoreModule : WebModuleBase
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                .UseLogger()
-                .UseSimpleLogger())
+                .UseLogger().UseSimpleLogger())
             .WithHealthChecks()
             .WithDatabaseMigratorService();
 
-        services.AddIdentity(o => // rename .AddAuthorization
+        services.AddAuthorization(o =>
         {
             o.WithEntityPermissions<CoreDbContext>(o =>
             {

@@ -4,8 +4,11 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
+
+using System.Diagnostics;
 using DevKit.Domain.Model;
 
+[DebuggerDisplay("Id={Id}, Status={Status}")]
 [TypedEntityId<Guid>]
 public class TodoStep : Entity<TodoStepId>
 {

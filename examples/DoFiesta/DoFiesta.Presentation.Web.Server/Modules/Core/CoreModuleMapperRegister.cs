@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
+using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Mapster;
@@ -13,54 +14,75 @@ public class CatalogMapperRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        // Entity -> Model mappings
+        // Generic type conversions
+        config.Default.EnumMappingStrategy(EnumMappingStrategy.ByValue);
+
+        // Register type converters for TodoItemId
+        config.NewConfig<TodoItemId, string>()
+            .MapWith(src => src.Value.ToString());
+
+        config.NewConfig<string, TodoItemId>()
+            .MapWith(src => TodoItemId.Create(src));
+
+        // Register type converters for TodoStepId
+        config.NewConfig<TodoStepId, string>()
+            .MapWith(src => src.Value.ToString());
+
+        config.NewConfig<string, TodoStepId>()
+            .MapWith(src => TodoStepId.Create(src));
+
+        // Register type converters for SubscriptionId
+        config.NewConfig<SubscriptionId, string>()
+            .MapWith(src => src.Value.ToString());
+
+        config.NewConfig<string, SubscriptionId>()
+            .MapWith(src => SubscriptionId.Create(src));
+
+        // Register type converter for EmailAddress
+        config.NewConfig<EmailAddress, string>()
+            .MapWith(src => src.Value);
+
+        config.NewConfig<string, EmailAddress>()
+            .MapWith(src => EmailAddress.Create(src));
+
+        // Register type converters for enumerations
+        RegisterEnumerationConverter<TodoStatus>(config);
+        RegisterEnumerationConverter<TodoPriority>(config);
+        RegisterEnumerationConverter<SubscriptionStatus>(config);
+        RegisterEnumerationConverter<SubscriptionPlan>(config);
+        RegisterEnumerationConverter<SubscriptionBillingCycle>(config);
+
+        // Main type mappings
         config.ForType<TodoItem, TodoItemModel>()
-            .Map(dest => dest.Id, src => src.Id.Value.ToString())
-            .Map(dest => dest.Status, src => src.Status.Id)
-            .Map(dest => dest.Priority, src => src.Priority.Id)
-            .Map(dest => dest.Assignee, src => src.Assignee.Value)
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
 
-        // Model -> Entity mappings
         config.ForType<TodoItemModel, TodoItem>()
-            .Map(dest => dest.Id, src => TodoItemId.Create(src.Id))
-            .Map(dest => dest.Status, src => TodoStatus.GetAll<TodoStatus>().First(x => x.Id == src.Status))
-            .Map(dest => dest.Priority, src => TodoPriority.GetAll<TodoPriority>().First(x => x.Id == src.Priority))
-            .Map(dest => dest.Assignee, src => EmailAddress.Create(src.Assignee))
             .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
             .IgnoreNullValues(true);
 
-        // Entity -> Model mappings
         config.ForType<TodoStep, TodoStepModel>()
-            .Map(dest => dest.Id, src => src.Id.Value.ToString())
-            .Map(dest => dest.TodoItemId, src => src.TodoItemId.Value.ToString())
-            .Map(dest => dest.Status, src => src.Status.Id)
             .IgnoreNullValues(true);
 
-        // Model -> Entity mappings
         config.ForType<TodoStepModel, TodoStep>()
-            .Map(dest => dest.Id, src => TodoStepId.Create(src.Id))
-            .Map(dest => dest.TodoItemId, src => TodoItemId.Create(src.TodoItemId))
-            .Map(dest => dest.Status, src => TodoStatus.GetAll<TodoStatus>().First(x => x.Id == src.Status))
             .IgnoreNullValues(true);
 
-        // Entity -> Model mappings
         config.ForType<Subscription, SubscriptionModel>()
-            .Map(dest => dest.Id, src => src.Id.Value.ToString())
-            .Map(dest => dest.Plan, src => src.Plan.Id)
-            .Map(dest => dest.Status, src => src.Status.Id)
-            .Map(dest => dest.BillingCycle, src => src.BillingCycle.Id)
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
 
-        // Model -> Entity mappings
         config.ForType<SubscriptionModel, Subscription>()
-            .Map(dest => dest.Id, src => SubscriptionId.Create(src.Id))
-            .Map(dest => dest.Plan, src => SubscriptionPlan.GetAll<SubscriptionPlan>().First(x => x.Id == src.Plan))
-            .Map(dest => dest.Status, src => SubscriptionStatus.GetAll<SubscriptionStatus>().First(x => x.Id == src.Status))
-            .Map(dest => dest.BillingCycle, src => SubscriptionBillingCycle.GetAll<SubscriptionBillingCycle>().First(x => x.Id == src.BillingCycle))
             .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
             .IgnoreNullValues(true);
+    }
+
+    private static void RegisterEnumerationConverter<T>(TypeAdapterConfig config)
+        where T : Enumeration
+    {
+        config.NewConfig<T, int>()
+            .MapWith(src => src.Id);
+
+        config.NewConfig<int, T>()
+            .MapWith(src => Enumeration.GetAll<T>().First(x => x.Id == src));
     }
 }

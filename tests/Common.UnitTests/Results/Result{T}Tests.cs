@@ -112,8 +112,8 @@ public class ResultValueTests
         var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
 
         // Act
-        var nonGenericSuccess = successResult.ToResult();
-        var nonGenericFailure = failureResult.ToResult();
+        var nonGenericSuccess = successResult.Unwrap();
+        var nonGenericFailure = failureResult.Unwrap();
 
         var genericSuccess = successResult.ToResult<string>();
         var genericFailureWithValue = failureResult.ToResult("test");

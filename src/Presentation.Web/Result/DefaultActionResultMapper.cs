@@ -502,6 +502,11 @@ public class DefaultActionResultMapper : IActionResultMapper
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
             // return this.ValidationProblem(...)
         }
+        else if (result.TryGetErrors<FluentValidationError>(out errors))
+        {
+            // TODO: not yet handled
+            // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
+        }
         else if (result.TryGetErrors<RuleError>(out errors))
         {
             // TODO: not yet handled

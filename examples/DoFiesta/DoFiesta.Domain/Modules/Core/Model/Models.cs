@@ -19,6 +19,7 @@ public class TodoStatus : Enumeration
     public static readonly TodoStatus InProgress = new(2, nameof(InProgress), "Task is being worked on");
     public static readonly TodoStatus Completed = new(3, nameof(Completed), "Task has been completed");
     public static readonly TodoStatus Cancelled = new(4, nameof(Cancelled), "Task has been cancelled");
+    public static readonly TodoStatus Deleted = new(4, nameof(Deleted), "Task has been deleted");
 
     private TodoStatus(int id, string value, string description)
         : base(id, value)
@@ -217,7 +218,15 @@ public class TodoItemIsNotDeletedSpecification : Specification<TodoItem>
 {
     public override Expression<Func<TodoItem, bool>> ToExpression()
     {
-        return e => !e.AuditState.IsDeleted();
+        return e => e.AuditState == null || e.AuditState.Deleted == null || e.AuditState.Deleted == false;
+    }
+}
+
+public class ForUserSpecification(string userId) : Specification<TodoItem>
+{
+    public override Expression<Func<TodoItem, bool>> ToExpression()
+    {
+        return e => e.UserId == userId;
     }
 }
 

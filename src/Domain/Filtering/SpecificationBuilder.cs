@@ -36,7 +36,7 @@ public static class SpecificationBuilder
     public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(IEnumerable<FilterCriteria> filters, IEnumerable<ISpecification<TEntity>> specifications = null)
         where TEntity : class, IEntity
     {
-        if (filters == null || !filters.Any())
+        if (filters == null) //  || !filters.Any()
         {
             return [];
         }

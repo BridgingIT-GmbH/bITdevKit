@@ -13,7 +13,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemDeleteCommand(string id) : CommandRequestBase<AggregateDeletedCommandResult>,
+public class TodoItemDeleteCommand(string id) : CommandRequestBase<Result>,
     ICacheInvalidateCommand
 {
     public string Id { get; } = id;
@@ -37,19 +37,20 @@ public class TodoItemDeleteCommand(string id) : CommandRequestBase<AggregateDele
 public class TodoItemDeleteCommandHandler(
     ILoggerFactory loggerFactory,
     IGenericRepository<TodoItem> repository)
-    : CommandHandlerBase<TodoItemDeleteCommand, AggregateDeletedCommandResult>(loggerFactory)
+    : CommandHandlerBase<TodoItemDeleteCommand, Result>(loggerFactory)
 {
-    public override async Task<CommandResponse<AggregateDeletedCommandResult>> Process(
+    public override async Task<CommandResponse<Result>> Process(
         TodoItemDeleteCommand command,
         CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"+++ delete item: {command.Id}");
 
-        await repository.DeleteAsync(TodoItemId.Create(command.Id), cancellationToken).AnyContext();
+        var result = await repository.DeleteResultAsync(TodoItemId.Create(command.Id), cancellationToken)
+            .Ensure(e => e == RepositoryActionResult.Deleted, new EntityNotFoundError())
+            .Tap(e => Console.WriteLine("AUDIT")); // do something
 
-        return new CommandResponse<AggregateDeletedCommandResult>
-        {
-            Result = new AggregateDeletedCommandResult(command.Id.ToString())
-        };
+        // TODO: invalidate query cache
+
+        return CommandResult.For(result.Unwrap());
     }
 }

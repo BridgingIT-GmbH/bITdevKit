@@ -12,7 +12,7 @@ using DevKit.Application.Queries;
 using Microsoft.Extensions.Logging;
 
 public class TodoItemFindAllQuery(FilterModel filter = null)
-    : QueryRequestBase<Result<IEnumerable<TodoItem>>>, ICacheQuery
+    : QueryRequestBase<Result<IEnumerable<TodoItemModel>>>, ICacheQuery
 {
     public FilterModel Filter { get; } = filter;
 
@@ -20,38 +20,52 @@ public class TodoItemFindAllQuery(FilterModel filter = null)
         new() { Key = $"application_{nameof(TodoItemFindAllQuery)}", SlidingExpiration = new TimeSpan(0, 0, 30) };
 }
 
-public class TodoItemFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericRepository<TodoItem> repository)
-    : QueryHandlerBase<TodoItemFindAllQuery, Result<IEnumerable<TodoItem>>>(loggerFactory)
+public class TodoItemFindAllQueryHandler(ILoggerFactory loggerFactory, IMapper mapper, IGenericRepository<TodoItem> repository, ICurrentUserAccessor currentUserAccessor)
+    : QueryHandlerBase<TodoItemFindAllQuery, Result<IEnumerable<TodoItemModel>>>(loggerFactory)
 {
-    public override async Task<QueryResponse<Result<IEnumerable<TodoItem>>>> Process(
+    public override async Task<QueryResponse<Result<IEnumerable<TodoItemModel>>>> Process(
         TodoItemFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await repository.FindAllResultAsync( // repo takes care of the filter
+        var result = (await repository.FindAllResultAsync( // repo takes care of the filter
                 query.Filter,
-                [new TodoItemIsNotDeletedSpecification()],
-                cancellationToken: cancellationToken)
-            .Ensure(e => e != null, new EntityNotFoundError())
-            .TapAsync(async (e, ct) => await Task.Delay(1, ct), cancellationToken);
+                [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+            .Ensure(e => e.SafeAny(), new EntityNotFoundError())
+            .Tap(e => Console.WriteLine("AUDIT")) // do something
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 
-        return QueryResponse.For(result);
+        return QueryResult.For(result);
+
+        //return QueryResult.For(
+        //    result.Map(mapper.Map<TodoItem, TodoItemModel>));
+
+        //return result.Match(
+        //    onSuccess: _ => QueryResult.For(mapper.Map<TodoItem, TodoItemModel>(result.Value)),
+        //    onFailure: _ => QueryResult.For<IEnumerable<TodoItemModel>>(result));
     }
 
-    public async Task<QueryResponse<ResultPaged<TodoItem>>> ProcessEntities(
+    public async Task<QueryResponse<ResultPaged<TodoItemModel>>> ProcessEntities(
         TodoItemFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await (await repository.FindAllResultPagedAsync( // repo takes care of the filter
+        var result = (await repository.FindAllResultPagedAsync( // repo takes care of the filter
                 query.Filter,
-                [new TodoItemIsNotDeletedSpecification()],
-                cancellationToken: cancellationToken))
-            .Ensure(e => e != null, new EntityNotFoundError())
-            .TapAsync(async (e, ct) => await Task.Delay(1, ct), cancellationToken);
+                [new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken))
+            .Ensure(e => e.SafeAny(), new EntityNotFoundError())
+            .Tap(e => Console.WriteLine("AUDIT")) // do something
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 
-        return QueryResponse.For(result);
+        return QueryResult.For(result);
+
+        //return QueryResult.For(
+        //    result.Map(mapper.Map<TodoItem, TodoItemModel>));
+
+        //return result.HasError()
+        //    ? QueryResult.ForPaged<TodoItemModel>(result)
+        //    : QueryResult.For(mapper.Map<TodoItem, TodoItemModel>(result.Value));
     }
 
-    // public async Task<ResultPaged<TodoItem>> ProcessEntities2(
+    // public async Task<ResultPaged<TodoItemModel>> ProcessEntities2(
     //         TodoItemFindAllQuery query,
     //         CancellationToken cancellationToken)
     // {
@@ -65,7 +79,7 @@ public class TodoItemFindAllQueryHandler(ILoggerFactory loggerFactory, IGenericR
     //     return items;
     // }
 
-    // public async Task<QueryResponse<Result<IEnumerable<TodoItem>>>> ProcessResult(
+    // public async Task<QueryResponse<Result<IEnumerable<TodoItemModel>>>> ProcessResult(
     //     TodoItemFindAllQuery query,
     //     CancellationToken cancellationToken)
     // {

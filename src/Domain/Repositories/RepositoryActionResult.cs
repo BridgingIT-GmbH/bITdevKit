@@ -34,5 +34,11 @@ public enum RepositoryActionResult
     ///     Entity was deleted.
     /// </summary>
     [Description("entity deleted")]
-    Deleted
+    Deleted,
+
+    /// <summary>
+    ///     Entity was not found.
+    /// </summary>
+    [Description("entity not found")]
+    NotFound, // not used currently
 }

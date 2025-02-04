@@ -14,7 +14,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<AggregateUpdatedCommandResult>,
+public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<Result<TodoItemModel>>,
     ICacheInvalidateCommand
 {
     public TodoItemModel Model { get; } = model;
@@ -39,11 +39,10 @@ public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<Agg
 
 public class TodoItemUpdateCommandHandler(
     ILoggerFactory loggerFactory,
-    IGenericRepository<TodoItem> repository,
-    IMapper mapper)
-    : CommandHandlerBase<TodoItemUpdateCommand, AggregateUpdatedCommandResult>(loggerFactory)
+    IMapper mapper,
+    IGenericRepository<TodoItem> repository) : CommandHandlerBase<TodoItemUpdateCommand, Result<TodoItemModel>>(loggerFactory)
 {
-    public override async Task<CommandResponse<AggregateUpdatedCommandResult>> Process(
+    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(
         TodoItemUpdateCommand command,
         CancellationToken cancellationToken)
     {
@@ -55,13 +54,12 @@ public class TodoItemUpdateCommandHandler(
         }
 
         var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
-        await repository.UpsertAsync(entity, cancellationToken).AnyContext();
+        var result = await repository.UpdateResultAsync(entity, cancellationToken)
+            .Tap(e => Console.WriteLine("AUDIT")) // do something
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 
         // TODO: invalidate query cache
 
-        return new CommandResponse<AggregateUpdatedCommandResult>
-        {
-            Result = new AggregateUpdatedCommandResult(command.Model.Id.ToString())
-        };
+        return CommandResult.For(result);
     }
 }

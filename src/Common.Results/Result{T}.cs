@@ -1139,7 +1139,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine(result.IsSuccess); // Still maintains success state
     /// </code>
     /// </example>
-    public Result ToResult()
+    public Result Unwrap()
     {
         return this; // Uses implicit operator
     }

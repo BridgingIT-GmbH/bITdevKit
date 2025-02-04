@@ -13,7 +13,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<AggregateCreatedCommandResult>,
+public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<Result<TodoItemModel>>,
     ICacheInvalidateCommand
 {
     public TodoItemModel Model { get; } = model;
@@ -38,22 +38,23 @@ public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<Agg
 
 public class TodoItemCreateCommandHandler(
     ILoggerFactory loggerFactory,
+    IMapper mapper,
     IGenericRepository<TodoItem> repository,
-    IMapper mapper)
-    : CommandHandlerBase<TodoItemCreateCommand, AggregateCreatedCommandResult>(loggerFactory)
+    ICurrentUserAccessor currentUserAccessor) : CommandHandlerBase<TodoItemCreateCommand, Result<TodoItemModel>>(loggerFactory)
 {
-    public override async Task<CommandResponse<AggregateCreatedCommandResult>> Process(
+    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(
         TodoItemCreateCommand command,
         CancellationToken cancellationToken)
     {
         this.Logger.LogInformation($"+++ create item: {command.Model.Title}");
 
         var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
-        await repository.InsertAsync(entity, cancellationToken).AnyContext();
+        entity.UserId = currentUserAccessor.UserId;
 
-        return new CommandResponse<AggregateCreatedCommandResult>
-        {
-            Result = new AggregateCreatedCommandResult(command.Model.Id.ToString())
-        };
+        var result = await repository.InsertResultAsync(entity, cancellationToken)
+            .Tap(e => Console.WriteLine("AUDIT")) // do something
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
+
+        return CommandResult.For(result);
     }
 }

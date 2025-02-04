@@ -13,19 +13,14 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemFindOneQuery : QueryRequestBase<Result<TodoItem>>, ICacheQuery
+public class TodoItemFindOneQuery(string id) : QueryRequestBase<Result<TodoItemModel>>, ICacheQuery
 {
-    public TodoItemFindOneQuery(string entityId)
-    {
-        this.EntityId = entityId;
-    }
-
-    public string EntityId { get; }
+    public string Id { get; } = id;
 
     CacheQueryOptions ICacheQuery.Options =>
         new()
         {
-            Key = $"application_{nameof(TodoItemFindOneQuery)}_{this.EntityId}".TrimEnd('_'),
+            Key = $"application_{nameof(TodoItemFindOneQuery)}_{this.Id}".TrimEnd('_'),
             SlidingExpiration = new TimeSpan(0, 0, 30)
         };
 
@@ -38,23 +33,32 @@ public class TodoItemFindOneQuery : QueryRequestBase<Result<TodoItem>>, ICacheQu
     {
         public Validator()
         {
-            this.RuleFor(c => c.EntityId).MustBeValidGuid().WithMessage("Invalid guid.");
+            this.RuleFor(c => c.Id).MustBeValidGuid().WithMessage("Invalid guid.");
         }
     }
 }
 
 public class TodoItemFindOneQueryHandler(
     ILoggerFactory loggerFactory,
-    IGenericRepository<TodoItem> repository)
-    : QueryHandlerBase<TodoItemFindOneQuery, Result<TodoItem>>(loggerFactory)
+    IMapper mapper,
+    IGenericRepository<TodoItem> repository,
+    ICurrentUserAccessor currentUserAccessor)
+    : QueryHandlerBase<TodoItemFindOneQuery, Result<TodoItemModel>>(loggerFactory)
 {
-    public override async Task<QueryResponse<Result<TodoItem>>> Process(
+    public override async Task<QueryResponse<Result<TodoItemModel>>> Process(
         TodoItemFindOneQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await repository.FindOneResultAsync(
-            TodoItemId.Create(query.EntityId), cancellationToken: cancellationToken);
+        var result = await repository.FindOneResultAsync(TodoItemId.Create(query.Id), cancellationToken: cancellationToken)
+            .Ensure(e => e != null, new EntityNotFoundError())
+            .Ensure(e => e.UserId == currentUserAccessor.UserId, new UnauthorizedError())
+            .Tap(e => Console.WriteLine("AUDIT")) // do something
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 
-        return QueryResponse.For(result);
+        return QueryResult.For(result);
+
+        //return result.HasError()
+        //    ? QueryResult.For<TodoItemModel>(result)
+        //    : QueryResult.For(mapper.Map<TodoItem, TodoItemModel>(result.Value));
     }
 }

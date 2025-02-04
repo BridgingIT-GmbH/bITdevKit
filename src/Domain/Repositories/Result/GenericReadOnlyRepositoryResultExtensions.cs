@@ -281,8 +281,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
             var entities = await source.FindAllAsync(
                     specifications,
-                    findOptions,
-                    cancellationToken)
+                    findOptions, cancellationToken)
                 .AnyContext();
 
             return Result<IEnumerable<TEntity>>.Success(entities);
@@ -484,8 +483,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                 Take = pageSize,
                 Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-            },
-                    cancellationToken)
+            }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
@@ -530,8 +528,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                 Take = pageSize,
                 Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-            },
-                    cancellationToken)
+            }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
@@ -572,8 +569,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             page,
             pageSize,
             includeExpression,
-            includePath,
-            cancellationToken).AnyContext();
+            includePath, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -611,8 +607,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                         Take = pageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
-                    cancellationToken)
+                    }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
@@ -656,8 +651,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             pageSize,
             orderDirection,
             includeExpression,
-            includePath,
-            cancellationToken).AnyContext();
+            includePath, cancellationToken).AnyContext();
     }
 
     public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
@@ -676,8 +670,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
                     specifications,
-                    findOptions,
-                    cancellationToken)
+                    findOptions, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, filterModel.Page, filterModel.PageSize);
@@ -725,8 +718,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                         Take = pageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
-                    cancellationToken)
+                    }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
@@ -774,8 +766,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                         Take = pageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
-                    cancellationToken)
+                    }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);
@@ -823,8 +814,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                         Take = pageSize,
                         Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) :
                             !includePath.IsNullOrEmpty() ? new IncludeOption<TEntity>(includePath) : null
-                    },
-                    cancellationToken)
+                    }, cancellationToken)
                 .AnyContext();
 
             return ResultPaged<TEntity>.Success(entities, count, page, pageSize);

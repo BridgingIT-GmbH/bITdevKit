@@ -82,6 +82,7 @@ public static class CommandResult
         return new CommandResponse<Result<TOuput>> { Result = result.ToResult(value) };
     }
 
+    /// <summary>
     /// Creates a <see cref="CommandResponse{Result}"/> object indicating a successful operation.
     /// <return>
     /// A <see cref="CommandResponse{Result}"/> object with the result set to success.
@@ -189,10 +190,11 @@ public static class CommandResult
         return new CommandResponse<Result> { Result = Common.Result.Failure(messages, errors) };
     }
 
+    /// <summary>
     /// Generates a failure response with a specific error type.
     /// This method creates a CommandResponse object that contains a Result indicating failure and an optional error message.
     /// <param name="message">An optional error message describing the failure. Default is null.</param> <typeparam name="TError">The type of the error implementing the IResultError interface.</typeparam> <return>A CommandResponse object containing the failure Result.</return>
-    /// /
+    /// </summary>
     public static CommandResponse<Result> Failure<TError>(string message = null)
         where TError : IResultError, new()
     {
@@ -211,10 +213,12 @@ public static class CommandResult
         return new CommandResponse<Result> { Result = Common.Result.Failure<TError>(messages) };
     }
 
+    /// <summary>
     /// Creates a failure CommandResponse with a specified value.
     /// <param name="value">The value to be associated with the failure result.</param>
     /// <typeparam name="TValue">The type of the value to be included in the failure result.</typeparam>
     /// <return>A CommandResponse containing a Result with the provided value.</return>
+    /// </summary>
     public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value) };

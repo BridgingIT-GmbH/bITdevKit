@@ -32,6 +32,12 @@ public class TodoStatus : Enumeration
     {
         return GetAll<TodoStatus>();
     }
+
+    public static implicit operator TodoStatus(int id)
+    {
+        return GetAll<TodoStatus>().FirstOrDefault(e => e.Id == id)
+            ?? throw new ArgumentException($"No TodoStatus exists with Id {id}", nameof(id));
+    }
 }
 
 [DebuggerDisplay("Id={Id}, Value={Value}")]
@@ -56,6 +62,12 @@ public class TodoPriority : Enumeration
     public static IEnumerable<TodoPriority> GetAll()
     {
         return GetAll<TodoPriority>();
+    }
+
+    public static implicit operator TodoPriority(int id)
+    {
+        return GetAll<TodoPriority>().FirstOrDefault(e => e.Id == id)
+            ?? throw new ArgumentException($"No TodoPriority exists with Id {id}", nameof(id));
     }
 }
 

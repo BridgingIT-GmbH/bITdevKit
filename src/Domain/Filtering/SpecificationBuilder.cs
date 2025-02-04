@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain;
 
 using System.Globalization;
+using System.Reflection;
 using System.Text.Json;
 
 /// <summary>
@@ -360,7 +361,7 @@ public static class SpecificationBuilder
 
         return value is string stringValue
             ? ConvertStringValue(stringValue)
-            : Convert.ChangeType(value, nullableTargetType);
+            : TypeConverter.ChangeType(value, nullableTargetType); // Convert.ChangeType(value, nullableTargetType);
 
         object ConvertStringValue(string stringValue) => nullableTargetType switch
         {
@@ -369,7 +370,41 @@ public static class SpecificationBuilder
             not null when nullableTargetType == typeof(DateOnly) => DateOnly.Parse(stringValue, CultureInfo.InvariantCulture),
             not null when nullableTargetType == typeof(TimeOnly) => TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture),
             not null when nullableTargetType == typeof(Guid) => Guid.Parse(stringValue),
-            _ => Convert.ChangeType(stringValue, nullableTargetType)
+            _ => TypeConverter.ChangeType(stringValue, nullableTargetType)
         };
+    }
+}
+
+public static class TypeConverter
+{
+    public static object ChangeType(object value, Type targetType)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        var sourceType = value.GetType();
+
+        // Check if types are already compatible
+        if (targetType.IsAssignableFrom(sourceType))
+        {
+            return value;
+        }
+
+        // Check for implicit conversion operator
+        var implicitOperator = targetType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .FirstOrDefault(m =>
+                m.Name == "op_Implicit" &&
+                m.ReturnType == targetType &&
+                m.GetParameters().FirstOrDefault()?.ParameterType == sourceType);
+
+        if (implicitOperator != null)
+        {
+            return implicitOperator.Invoke(null, new[] { value });
+        }
+
+        // Fallback to standard conversion
+        return Convert.ChangeType(value, targetType);
     }
 }

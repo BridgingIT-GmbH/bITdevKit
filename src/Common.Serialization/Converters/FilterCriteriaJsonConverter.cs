@@ -3,11 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace BridgingIT.DevKit.Common;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 /// <summary>
 /// A custom JSON converter for the <see cref="FilterCriteria"/> class.
 /// </summary>
@@ -35,7 +34,7 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
         }
 
         var filterCriteria = new FilterCriteria();
-        var enumConverter = new EnumConverter<FilterOperator>();
+        var enumConverter = new EnumMemberConverter<FilterOperator>();
 
         while (reader.Read())
         {
@@ -64,7 +63,45 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
 
                     break;
                 case nameof(FilterCriteria.Value):
-                    filterCriteria.Value = JsonSerializer.Deserialize<object>(ref reader, options);
+                    if (reader.TokenType == JsonTokenType.Number)
+                    {
+                        if (reader.TryGetInt32(out var intValue))
+                        {
+                            filterCriteria.Value = intValue;
+                        }
+                        else if (reader.TryGetInt64(out var longValue))
+                        {
+                            filterCriteria.Value = longValue;
+                        }
+                        else if (reader.TryGetDouble(out var doubleValue))
+                        {
+                            filterCriteria.Value = doubleValue;
+                        }
+                        else
+                        {
+                            filterCriteria.Value = reader.GetDecimal();
+                        }
+                    }
+                    else if (reader.TokenType == JsonTokenType.String)
+                    {
+                        filterCriteria.Value = reader.GetString();
+                    }
+                    else if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
+                    {
+                        filterCriteria.Value = reader.GetBoolean();
+                    }
+                    else if (reader.TokenType == JsonTokenType.Null)
+                    {
+                        filterCriteria.Value = null;
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartArray)
+                    {
+                        filterCriteria.Value = JsonSerializer.Deserialize<object[]>(ref reader, options);
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartObject)
+                    {
+                        filterCriteria.Value = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
+                    }
 
                     break;
                 case nameof(FilterCriteria.Logic):

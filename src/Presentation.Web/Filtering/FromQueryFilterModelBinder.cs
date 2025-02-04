@@ -27,12 +27,21 @@ public class FromQueryFilterModelBinder : IModelBinder
 
         try
         {
-            var filterModel = Serializer.Deserialize<FilterModel>(json); // options include necessary converteres
-            bindingContext.Result = ModelBindingResult.Success(filterModel);
+            var filter = Serializer.Deserialize<FilterModel>(json); // options include necessary converteres
+            bindingContext.Result = ModelBindingResult.Success(filter);
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
-            bindingContext.ModelState.AddModelError(bindingContext.ModelName, "Invalid JSON format for filter model.");
+            bindingContext.ModelState.AddModelError(
+                bindingContext.ModelName,
+                $"Invalid filter model format: {ex.Message}");
+            bindingContext.Result = ModelBindingResult.Failed();
+        }
+        catch (Exception ex)
+        {
+            bindingContext.ModelState.AddModelError(
+                bindingContext.ModelName,
+                $"Error processing filter model: {ex.Message}");
             bindingContext.Result = ModelBindingResult.Failed();
         }
 

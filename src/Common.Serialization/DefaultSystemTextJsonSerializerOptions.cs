@@ -19,10 +19,11 @@ public static class DefaultSystemTextJsonSerializerOptions
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             Converters =
             {
-                new EnumConverter<FilterOperator>(),
-                new EnumConverter<FilterLogicOperator>(),
-                new EnumConverter<FilterCustomType>(),
-                new EnumConverter<OrderDirection>(),
+                new EnumMemberConverter<FilterOperator>(),
+                new EnumMemberConverter<FilterLogicOperator>(),
+                new EnumMemberConverter<FilterCustomType>(),
+                new EnumMemberConverter<OrderDirection>(),
+                new EnumMemberConverter<PageSize>(),
                 new FilterCriteriaJsonConverter(),
                 new FilterSpecificationNodeConverter(),
                 new ResultJsonConverter(),

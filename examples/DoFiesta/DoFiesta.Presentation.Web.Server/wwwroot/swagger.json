@@ -1230,17 +1230,82 @@
         "operationId": "TodoItem_GetAll",
         "parameters": [
           {
-            "name": "filter",
+            "name": "Page",
             "in": "query",
             "schema": {
-              "nullable": true,
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/FilterModel"
-                }
-              ]
+              "type": "integer",
+              "format": "int32"
             },
             "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Orderings",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "$ref": "#/components/schemas/FilterOrderCriteria"
+              }
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Filters",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "$ref": "#/components/schemas/FilterCriteria"
+              }
+            },
+            "x-position": 4
+          },
+          {
+            "name": "Includes",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "x-position": 5
+          },
+          {
+            "name": "Hierarchy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "HierarchyMaxDepth",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 7
           }
         ],
         "responses": {
@@ -1322,21 +1387,18 @@
           "TodoItem"
         ],
         "operationId": "TodoItem_PostSearch",
-        "parameters": [
-          {
-            "name": "filter",
-            "in": "query",
-            "schema": {
-              "nullable": true,
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/FilterModel"
-                }
-              ]
-            },
-            "x-position": 1
-          }
-        ],
+        "requestBody": {
+          "x-name": "filter",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -2272,49 +2334,6 @@
           }
         }
       },
-      "FilterModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "orderings": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/FilterOrderCriteria"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/FilterCriteria"
-            }
-          },
-          "includes": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "hierarchy": {
-            "type": "string",
-            "nullable": true
-          },
-          "hierarchyMaxDepth": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "FilterOrderCriteria": {
         "type": "object",
         "additionalProperties": false,
@@ -2506,6 +2525,49 @@
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false
+      },
+      "FilterModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderings": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FilterOrderCriteria"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FilterCriteria"
+            }
+          },
+          "includes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "hierarchy": {
+            "type": "string",
+            "nullable": true
+          },
+          "hierarchyMaxDepth": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       }
     }
   }

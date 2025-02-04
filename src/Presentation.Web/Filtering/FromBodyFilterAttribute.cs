@@ -5,7 +5,15 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 public class FromBodyFilterAttribute()
-    : ModelBinderAttribute(typeof(FromBodyFilterModelBinder));
+    : ModelBinderAttribute(typeof(FromBodyFilterModelBinder)),
+    IBindingSourceMetadata, IFromBodyMetadata
+{
+    public override BindingSource BindingSource => BindingSource.Body;
+
+    public bool AllowEmpty => true;
+}

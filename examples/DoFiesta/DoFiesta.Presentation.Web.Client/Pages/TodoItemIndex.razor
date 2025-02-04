@@ -63,9 +63,9 @@
                             @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
-                            <MudDatePicker Date="todoItem.DueDate"
+                            @* <MudDatePicker Date="todoItem.DueDate"
                             DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
+                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" /> *@
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
@@ -77,10 +77,14 @@
             </MudItem>
 
             <MudItem xs="12" Class="d-flex justify-space-between align-center">
-                <MudText>@items.Count() items</MudText>
-                <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                @* <MudText>@items.Count() items</MudText> *@
+                <MudTextField @bind-Value="filterTitle" Immediate="false"
+                              Label="Title" Variant="Variant.Text" Clearable="true"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                              OnAdornmentClick="() => _ = LoadItems()" />
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
                     <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
-                    Variant="@(filterStatusId == null ? Variant.Filled : Variant.Outlined)">
+                        Variant="@(filterStatusId == null ? Variant.Filled : Variant.Outlined)">
                         All
                     </MudButton>
                     @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
@@ -88,7 +92,7 @@
                         var statusId = status.Id;
                         <MudTooltip Text="@status.Description">
                             <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
-                            Variant="@(filterStatusId == statusId ? Variant.Filled : Variant.Outlined)">
+                                Variant="@(filterStatusId == statusId ? Variant.Filled : Variant.Outlined)">
                                 @status.Value
                             </MudButton>
                         </MudTooltip>
@@ -104,7 +108,7 @@
     private EnumerationModel enums;
     private string newTodoTitle;
     private int? filterStatusId;
-    private string filterTitle;
+    private string filterTitle = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,33 +134,33 @@
     {
         try
         {
-            var filterModel = new FilterModel();
+            var filter = new FilterModel();
+            filter.Filters = new List<FilterCriteria>();
 
             if (filterStatusId.HasValue)
             {
-                filterModel.Filters = new[]
-                {
+                filter.Filters.Add(
                     new FilterCriteria
                     {
                         Field = "Status",
                         Operator = Client.FilterOperator.Equal,
                         Value = filterStatusId.Value
-                    }
-                };
+                    });
             }
 
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
-                filterModel.Filters = filterModel.Filters.Append(
+                filter.Filters.Add(
                     new FilterCriteria
                     {
                         Field = "Title",
                         Operator = Client.FilterOperator.Contains,
                         Value = filterTitle
-                    }).ToArray();
+                    });
             }
 
-            var response = await ApiClient.TodoItem_GetAllAsync(filterModel);
+            //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
+            var response = await ApiClient.TodoItem_PostSearchAsync(filter);
             items = response.Result.ToList();
         }
         catch (ApiException ex)

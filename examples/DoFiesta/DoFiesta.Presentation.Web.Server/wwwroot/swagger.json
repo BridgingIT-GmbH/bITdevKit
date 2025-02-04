@@ -1281,10 +1281,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoItemModel"
+                }
+              }
+            }
           },
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoItemModel"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -1391,6 +1405,16 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "500": {
             "description": ""
           }
@@ -1426,7 +1450,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoItemModel"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -1993,6 +2024,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
               "description": {
                 "type": "string",
                 "nullable": true
@@ -2037,6 +2071,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
               "description": {
                 "type": "string",
                 "nullable": true
@@ -2054,6 +2091,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
               "description": {
                 "type": "string",
                 "nullable": true
@@ -2134,6 +2174,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
               "description": {
                 "type": "string",
                 "nullable": true

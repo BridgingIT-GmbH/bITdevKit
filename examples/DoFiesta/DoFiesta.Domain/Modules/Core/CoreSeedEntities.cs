@@ -28,7 +28,7 @@ public static class CoreSeedEntities
                     Description = "Define service boundaries and communication patterns for new microservices architecture",
                     Category = "Architecture",
                     Status = TodoStatus.InProgress,
-                    Priority = TodoPriority.Critical,
+                    Priority = TodoPriority.High,
                     DueDate = DateTime.UtcNow.AddDays(5),
                     UserId = UserIds[0],
                     Steps =
@@ -92,7 +92,7 @@ public static class CoreSeedEntities
                    Description = "Optimize EF Core queries and implement caching strategy",
                    Category = "Performance",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(2),
                    UserId = UserIds[0],
                    Steps =
@@ -124,7 +124,7 @@ public static class CoreSeedEntities
                    Description = "Implement OAuth2/OIDC authentication service with IdentityServer",
                    Category = "Security",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(3),
                    UserId = UserIds[1],
                    Steps =
@@ -156,7 +156,7 @@ public static class CoreSeedEntities
                    Description = "Setup K8s cluster with monitoring and autoscaling",
                    Category = "DevOps",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[1],
                    Steps =
@@ -236,7 +236,7 @@ public static class CoreSeedEntities
                    Description = "Implement security best practices and penetration testing",
                    Category = "Security",
                    Status = TodoStatus.New,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[2],
                    Steps =
@@ -284,7 +284,7 @@ public static class CoreSeedEntities
                    Description = "Implement database sharding for horizontal scaling",
                    Category = "Performance",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(7),
                    UserId = UserIds[2],
                    Steps =
@@ -380,7 +380,7 @@ public static class CoreSeedEntities
                    Description = "Implement HashiCorp Vault for secrets management",
                    Category = "Security",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.Critical,
+                   Priority = TodoPriority.High,
                    DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[1],
                    Steps =
@@ -406,7 +406,7 @@ public static class Subscriptions
                     Plan = SubscriptionPlan.Enterprise,
                     Status = SubscriptionStatus.Active,
                     BillingCycle = SubscriptionBillingCycle.Monthly,
-                    StartDate = new DateTimeOffset(2024, 11, 1, 0, 0, 0, TimeSpan.Zero),
+                    StartDate = new DateTime(2024, 11, 1, 0, 0, 0),
                     EndDate = null
                 },
 
@@ -416,7 +416,7 @@ public static class Subscriptions
                     Plan = SubscriptionPlan.Team,
                     Status = SubscriptionStatus.Active,
                     BillingCycle = SubscriptionBillingCycle.Yearly,
-                    StartDate = new DateTimeOffset(2025, 1, 15, 0, 0, 0, TimeSpan.Zero),
+                    StartDate = new DateTime(2025, 1, 15, 0, 0, 0),
                     EndDate = null
                 },
 
@@ -426,7 +426,7 @@ public static class Subscriptions
                     Plan = SubscriptionPlan.Basic,
                     Status = SubscriptionStatus.Active,
                     BillingCycle = SubscriptionBillingCycle.Monthly,
-                    StartDate = new DateTimeOffset(2024, 12, 5, 0, 0, 0, TimeSpan.Zero),
+                    StartDate = new DateTime(2024, 12, 5, 0, 0, 0),
                     EndDate = null
                 }
         ];

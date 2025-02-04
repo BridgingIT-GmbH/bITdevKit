@@ -3,7 +3,7 @@
 @inject IApiClient ApiClient
 @inject ISnackbar Snackbar
 
-<PageTitle>Todo Items</PageTitle>
+<PageTitle>DoFiesta - Items</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge">
     @if (enums == null || items == null)
@@ -16,55 +16,61 @@
             <MudItem xs="12">
                 <MudPaper Class="pa-4">
                     <MudTextField @bind-Value="newTodoTitle" Immediate="false"
-                                  Label="New Todo" Variant="Variant.Outlined"
-                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
-                                  OnAdornmentClick="() => _ = AddNewTodo()" />
+                    Label="New Todo" Variant="Variant.Outlined"
+                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
+                    OnAdornmentClick="() => _ = AddNewTodo()" />
                     @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
                 </MudPaper>
             </MudItem>
 
             <MudItem xs="12">
                 <MudTable Items="@items" Hover="true" Dense="true" Striped="true">
-                    @* <HeaderContent>
+                    <HeaderContent>
                         <MudTh>Title</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Priority</MudTh>
                         <MudTh>Due Date</MudTh>
                         <MudTh>Actions</MudTh>
-                    </HeaderContent> *@
+                    </HeaderContent>
                     <RowTemplate Context="todoItem">
                         <MudTd DataLabel="Title">
-                            <MudTextField @bind-Value="todoItem.Title"
-                                          Immediate="true"
-                                          OnBlur="@(() => UpdateTodo(todoItem))" />
+                            <MudTooltip Text="@todoItem.Description">
+                                <MudTextField @bind-Value="todoItem.Title"
+                                Immediate="true"
+                                OnBlur="@(() => UpdateTodo(todoItem))" />
+                            </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status">
+                            @* <MudTooltip Text="@enums.TodoStatuses.FirstOrDefault(e => e.Id == todoItem.Status).Description"> *@
                             <MudSelect Value="todoItem.Status" T="int"
-                                       ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
-                                @foreach (var status in enums.TodoStatuses)
+                            ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
+                                @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
                                 }
                             </MudSelect>
+                            @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Priority">
+                            @* <MudTooltip Text="@enums.TodoPriorities.FirstOrDefault(e => e.Id == todoItem.Priority).Description"> *@
                             <MudSelect Value="todoItem.Priority" T="int"
-                                       ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
-                                @foreach (var priority in enums.TodoPriorities)
+                            ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
+                                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
                                 }
                             </MudSelect>
+                            @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
                             <MudDatePicker Date="todoItem.DueDate"
-                                           DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                                           DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
+                            DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
+                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error" Size="Size.Small"
-                                           OnClick="@(() => DeleteTodo(todoItem))" />
+                            Color="Color.Error" Size="Size.Small"
+                            OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -74,16 +80,18 @@
                 <MudText>@items.Count() items</MudText>
                 <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
                     <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
-                               Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
+                    Variant="@(filterStatusId == null ? Variant.Filled : Variant.Outlined)">
                         All
                     </MudButton>
-                    @foreach (var status in enums.TodoStatuses)
+                    @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
                     {
                         var statusId = status.Id;
-                        <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
-                                   Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
-                            @status.Value
-                        </MudButton>
+                        <MudTooltip Text="@status.Description">
+                            <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
+                            Variant="@(filterStatusId == statusId ? Variant.Filled : Variant.Outlined)">
+                                @status.Value
+                            </MudButton>
+                        </MudTooltip>
                     }
                 </MudButtonGroup>
             </MudItem>
@@ -95,7 +103,8 @@
     private ICollection<TodoItemModel> items;
     private EnumerationModel enums;
     private string newTodoTitle;
-    private int? selectedStatusId;
+    private int? filterStatusId;
+    private string filterTitle;
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,12 +130,31 @@
     {
         try
         {
-            var filterModel = new FilterModel
+            var filterModel = new FilterModel();
+
+            if (filterStatusId.HasValue)
             {
-                // Filters = selectedStatusId.HasValue
-                //     ? new[] { new FilterCriteria { Field = "Status", Operator = FilterOperator.Equal, Value = selectedStatusId.Value } }
-                //     : null
-            };
+                filterModel.Filters = new[]
+                {
+                    new FilterCriteria
+                    {
+                        Field = "Status",
+                        Operator = Client.FilterOperator.Equal,
+                        Value = filterStatusId.Value
+                    }
+                };
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterTitle))
+            {
+                filterModel.Filters = filterModel.Filters.Append(
+                    new FilterCriteria
+                    {
+                        Field = "Title",
+                        Operator = Client.FilterOperator.Contains,
+                        Value = filterTitle
+                    }).ToArray();
+            }
 
             var response = await ApiClient.TodoItem_GetAllAsync(filterModel);
             items = response.Result.ToList();
@@ -140,7 +168,7 @@
 
     private async Task OnStatusFilterChanged(int? statusId)
     {
-        selectedStatusId = statusId;
+        filterStatusId = statusId;
         await LoadItems();
     }
 

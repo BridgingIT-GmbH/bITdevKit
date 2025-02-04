@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer"/>
+    <ProjectReference Include="..\..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
   </ItemGroup>

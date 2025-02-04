@@ -6,10 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using BridgingIT.DevKit.Domain;
-using Common;
 using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, Value={Value}")]
@@ -18,14 +14,17 @@ public class TodoStatus : Enumeration
     public static readonly TodoStatus New = new(1, nameof(New), "Newly created task");
     public static readonly TodoStatus InProgress = new(2, nameof(InProgress), "Task is being worked on");
     public static readonly TodoStatus Completed = new(3, nameof(Completed), "Task has been completed");
-    public static readonly TodoStatus Cancelled = new(4, nameof(Cancelled), "Task has been cancelled");
-    public static readonly TodoStatus Deleted = new(4, nameof(Deleted), "Task has been deleted");
+    public static readonly TodoStatus Cancelled = new(4, nameof(Cancelled), "Task has been cancelled", false);
+    public static readonly TodoStatus Deleted = new(5, nameof(Deleted), "Task has been deleted", false);
 
-    private TodoStatus(int id, string value, string description)
+    private TodoStatus(int id, string value, string description, bool enabled = true)
         : base(id, value)
     {
+        this.Enabled = enabled;
         this.Description = description;
     }
+
+    public bool Enabled { get; }
 
     public string Description { get; }
 
@@ -41,13 +40,16 @@ public class TodoPriority : Enumeration
     public static readonly TodoPriority Low = new(1, nameof(Low), "Low priority task");
     public static readonly TodoPriority Medium = new(2, nameof(Medium), "Medium priority task");
     public static readonly TodoPriority High = new(3, nameof(High), "High priority task");
-    public static readonly TodoPriority Critical = new(4, nameof(Critical), "Critical priority task");
+    public static readonly TodoPriority Critical = new(4, nameof(Critical), "Critical priority task", false);
 
-    private TodoPriority(int id, string value, string description)
+    private TodoPriority(int id, string value, string description, bool enabled = true)
         : base(id, value)
     {
+        this.Enabled = enabled;
         this.Description = description;
     }
+
+    public bool Enabled { get; }
 
     public string Description { get; }
 
@@ -96,11 +98,14 @@ public class SubscriptionStatus : Enumeration
     public static readonly SubscriptionStatus Cancelled = new(3, nameof(Cancelled), "Subscription has been cancelled");
     public static readonly SubscriptionStatus Expired = new(4, nameof(Expired), "Subscription has expired");
 
-    private SubscriptionStatus(int id, string value, string description)
+    private SubscriptionStatus(int id, string value, string description, bool enabled = true)
         : base(id, value)
     {
+        this.Enabled = enabled;
         this.Description = description;
     }
+
+    public bool Enabled { get; }
 
     public string Description { get; }
 
@@ -117,14 +122,18 @@ public class SubscriptionBillingCycle : Enumeration
     public static readonly SubscriptionBillingCycle Monthly = new(1, nameof(Monthly), "Monthly billing cycle", true);
     public static readonly SubscriptionBillingCycle Yearly = new(2, nameof(Yearly), "Annual billing cycle", true);
 
-    private SubscriptionBillingCycle(int id, string value, string description, bool autoRenew)
+    private SubscriptionBillingCycle(int id, string value, string description, bool autoRenew, bool enabled = true)
         : base(id, value)
     {
+        this.Enabled = true;
         this.Description = description;
         this.AutoRenew = autoRenew;
     }
 
+    public bool Enabled { get; }
+
     public string Description { get; }
+
     public bool AutoRenew { get; }
 
     public static IEnumerable<SubscriptionBillingCycle> GetAll()
@@ -153,96 +162,4 @@ public class SubscriptionPlanDetails(
     public bool AllowsTemplates { get; } = allowsTemplates;
     public int MaxProjects { get; } = maxProjects;
     public bool AllowsComments { get; } = allowsComments;
-}
-
-public class EmailAddress : ValueObject
-{
-    private EmailAddress() { }
-
-    private EmailAddress(string value)
-    {
-        this.Value = value;
-    }
-
-    public string Value { get; }
-
-    public static implicit operator string(EmailAddress email)
-    {
-        return email.Value;
-    }
-
-    public static EmailAddress Create(string value)
-    {
-        value = value?.Trim()?.ToLowerInvariant();
-
-        Rule.Add(EmailAddressRules.IsValid(value)).Check();
-
-        return new EmailAddress(value);
-    }
-
-    protected override IEnumerable<object> GetAtomicValues()
-    {
-        yield return this.Value;
-    }
-}
-
-public class IsValidEmailAddressRule(string value) : RuleBase
-{
-    private static readonly Regex Regex = new( // TODO: change to compiled regex (source gen)
-        @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
-        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
-        RegexOptions.Compiled,
-        new TimeSpan(0, 0, 3));
-
-    private readonly string value = value?.ToLowerInvariant();
-
-    public override string Message => "Not a valid email address";
-
-    protected override Result Execute()
-    {
-        return Result.SuccessIf(!string.IsNullOrEmpty(this.value) &&
-            this.value.Length <= 255 &&
-            Regex.IsMatch(this.value));
-    }
-}
-
-public static class EmailAddressRules
-{
-    public static IRule IsValid(string value)
-    {
-        return new IsValidEmailAddressRule(value);
-    }
-}
-
-public class TodoItemIsNotDeletedSpecification : Specification<TodoItem>
-{
-    public override Expression<Func<TodoItem, bool>> ToExpression()
-    {
-        return e => e.AuditState == null || e.AuditState.Deleted == null || e.AuditState.Deleted == false;
-    }
-}
-
-public class ForUserSpecification(string userId) : Specification<TodoItem>
-{
-    public override Expression<Func<TodoItem, bool>> ToExpression()
-    {
-        return e => e.UserId == userId;
-    }
-}
-
-public class ActiveSubscriptionSpecification : Specification<Subscription>
-{
-    public override Expression<Func<Subscription, bool>> ToExpression()
-    {
-        return e => e.Status == SubscriptionStatus.Active &&
-                   (e.EndDate == null || e.EndDate > DateTime.UtcNow);
-    }
-}
-
-public class TodoItemByUserSpecification(string userId) : Specification<TodoItem>
-{
-    public override Expression<Func<TodoItem, bool>> ToExpression()
-    {
-        return item => item.UserId == userId;
-    }
 }

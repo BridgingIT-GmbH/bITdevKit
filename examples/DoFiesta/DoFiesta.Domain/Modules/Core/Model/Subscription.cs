@@ -20,9 +20,9 @@ public class Subscription : AuditableAggregateRoot<SubscriptionId>, IConcurrency
 
     public SubscriptionBillingCycle BillingCycle { get; set; }
 
-    public DateTimeOffset StartDate { get; set; }
+    public DateTime StartDate { get; set; }
 
-    public DateTimeOffset? EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     public bool IsActive => this.Status == SubscriptionStatus.Active &&
                            (this.EndDate == null || this.EndDate > DateTime.UtcNow);

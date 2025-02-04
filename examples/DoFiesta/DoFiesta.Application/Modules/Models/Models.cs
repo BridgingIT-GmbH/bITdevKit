@@ -59,9 +59,9 @@ public class SubscriptionModel
 
     public int BillingCycle { get; set; }
 
-    public DateTimeOffset StartDate { get; set; }
+    public DateTime StartDate { get; set; }
 
-    public DateTimeOffset? EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     public string ConcurrencyVersion { get; set; }
 }

@@ -14,11 +14,11 @@
     {
         <MudGrid>
             <MudItem xs="12">
-                <MudPaper Class="pa-4">
+                <MudPaper Class="d-flex gap-4 align-center pa-4" Elevation="0" Outlined>
                     <MudTextField @bind-Value="newTodoTitle" Immediate="false"
-                    Label="New Todo" Variant="Variant.Outlined"
-                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
-                    OnAdornmentClick="() => _ = AddNewTodo()" />
+                                  Label="New Todo" Variant="Variant.Outlined"
+                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
+                                  OnAdornmentClick="() => _ = AddNewTodo()" />
                     @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
                 </MudPaper>
             </MudItem>
@@ -36,14 +36,14 @@
                         <MudTd DataLabel="Title">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title"
-                                Immediate="true"
-                                OnBlur="@(() => UpdateTodo(todoItem))" />
+                                              Immediate="true"
+                                              OnBlur="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status">
                             @* <MudTooltip Text="@enums.TodoStatuses.FirstOrDefault(e => e.Id == todoItem.Status).Description"> *@
                             <MudSelect Value="todoItem.Status" T="int"
-                            ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
+                                       ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
                                 @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
@@ -54,7 +54,7 @@
                         <MudTd DataLabel="Priority">
                             @* <MudTooltip Text="@enums.TodoPriorities.FirstOrDefault(e => e.Id == todoItem.Priority).Description"> *@
                             <MudSelect Value="todoItem.Priority" T="int"
-                            ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
+                                       ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
                                 @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
@@ -64,33 +64,43 @@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
                             <MudDatePicker Date="todoItem.DueDate"
-                            DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
+                                           DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
+                                           DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                            Color="Color.Error" Size="Size.Small"
-                            OnClick="@(() => DeleteTodo(todoItem))" />
+                                           Color="Color.Error" Size="Size.Small"
+                                           OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
             </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between align-center">
-                @* <MudText>@items.Count() items</MudText> *@
-                <MudTextField @bind-Value="filterTitle" Immediate="false"
-                Label="Title" Variant="Variant.Text" Clearable="true"
-                Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
-                OnAdornmentClick="() => _ = LoadItems()" />
-                <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" CheckMark SelectedValueChanged="OnStatusChipChanged">
-                    @* <MudChip T="int" Value="@((int?)null)" Default>All</MudChip> *@
-                    @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
-                    {
-                        <MudTooltip Text="@status.Description">
-                            <MudChip T="int" Value="@status.Id">@status.Value</MudChip>
-                        </MudTooltip>
-                    }
-                </MudChipSet>
+            <MudItem xs="12">
+                <MudPaper Class="d-flex gap-4 align-center pa-4" Elevation="0" Outlined>
+                    <MudTextField @bind-Value="filterTitle"
+                                  Immediate="false" Label="Title"
+                                  Variant="Variant.Outlined" Clearable="true"
+                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                                  OnAdornmentClick="() => _ = LoadItems()"
+                                  Class="flex-grow-0" Style="min-width: 300px;" />
+
+                    <MudDivider Vertical="true" FlexItem="true" />
+
+                    <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                CheckMark SelectedValueChanged="OnStatusChipChanged">
+                        @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
+                        {
+                            <MudTooltip Text="@status.Description">
+                                <MudChip T="int" Value="@status.Id">@status.Value</MudChip>
+                            </MudTooltip>
+                        }
+                    </MudChipSet>
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Search"
+                                   Color="Color.Default"
+                                   OnClick="() => _ = LoadItems()" />
+                </MudPaper>
             </MudItem>
         </MudGrid>
     }
@@ -134,22 +144,22 @@
             {
                 filter.Filters.Add(
                     new FilterCriteria
-                    {
-                        Field = "Status",
-                        Operator = Client.FilterOperator.Equal,
-                        Value = filterStatusId.Value
-                    });
+                        {
+                            Field = "Status",
+                            Operator = Client.FilterOperator.Equal,
+                            Value = filterStatusId.Value
+                        });
             }
 
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
                 filter.Filters.Add(
                     new FilterCriteria
-                    {
-                        Field = "Title",
-                        Operator = Client.FilterOperator.Contains,
-                        Value = filterTitle
-                    });
+                        {
+                            Field = "Title",
+                            Operator = Client.FilterOperator.Contains,
+                            Value = filterTitle
+                        });
             }
 
             //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient

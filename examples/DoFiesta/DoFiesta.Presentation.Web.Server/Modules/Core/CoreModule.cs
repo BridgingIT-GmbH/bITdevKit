@@ -48,11 +48,11 @@ public class CoreModule : WebModuleBase
             {
                 // Register entities that need permission checks + auth policies
                 o.AddEntity<TodoItem>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
-                    .AddDefaultPermissions<TodoItem>(Permission.Read/*, Permission.Write*/, Permission.List) // default permissions if user/group has no grants
+                    .AddDefaultPermissions<TodoItem>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // default permissions if user/group has no grants
                     .UseDefaultPermissionProvider<TodoItem>();
 
                 o.AddEntity<Subscription>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
-                    .AddDefaultPermissions<Subscription>(Permission.Read) // default permissions if user/group has no grants
+                    .AddDefaultPermissions<Subscription>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // default permissions if user/group has no grants
                     .UseDefaultPermissionProvider<Subscription>();
             });
 

@@ -29,7 +29,7 @@ public static class CoreSeedEntities
                     Category = "Architecture",
                     Status = TodoStatus.InProgress,
                     Priority = TodoPriority.Critical,
-                    DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                    DueDate = DateTime.UtcNow.AddDays(5),
                     UserId = UserIds[0],
                     Steps =
                     [
@@ -45,7 +45,7 @@ public static class CoreSeedEntities
                     Category = "Infrastructure",
                     Status = TodoStatus.New,
                     Priority = TodoPriority.High,
-                    DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                    DueDate = DateTime.UtcNow.AddDays(3),
                     UserId = UserIds[0],
                     Steps =
                     [
@@ -61,7 +61,7 @@ public static class CoreSeedEntities
                     Category = "Development",
                     Status = TodoStatus.InProgress,
                     Priority = TodoPriority.High,
-                    DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                    DueDate = DateTime.UtcNow.AddDays(4),
                     UserId = UserIds[0],
                     Steps =
                     [
@@ -77,7 +77,7 @@ public static class CoreSeedEntities
                    Category = "Infrastructure",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[0],
                    Steps =
                    [
@@ -93,7 +93,7 @@ public static class CoreSeedEntities
                    Category = "Performance",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(2),
+                   DueDate = DateTime.UtcNow.AddDays(2),
                    UserId = UserIds[0],
                    Steps =
                    [
@@ -109,7 +109,7 @@ public static class CoreSeedEntities
                    Category = "Infrastructure",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[0],
                    Steps =
                    [
@@ -125,7 +125,7 @@ public static class CoreSeedEntities
                    Category = "Security",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   DueDate = DateTime.UtcNow.AddDays(3),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -141,7 +141,7 @@ public static class CoreSeedEntities
                    Category = "Development",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.Medium,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   DueDate = DateTime.UtcNow.AddDays(6),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -157,7 +157,7 @@ public static class CoreSeedEntities
                    Category = "DevOps",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -173,7 +173,7 @@ public static class CoreSeedEntities
                    Category = "Monitoring",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -189,7 +189,7 @@ public static class CoreSeedEntities
                    Category = "DevOps",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   DueDate = DateTime.UtcNow.AddDays(3),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -205,7 +205,7 @@ public static class CoreSeedEntities
                    Category = "Architecture",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(7),
+                   DueDate = DateTime.UtcNow.AddDays(7),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -221,7 +221,7 @@ public static class CoreSeedEntities
                    Category = "Testing",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Medium,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -237,7 +237,7 @@ public static class CoreSeedEntities
                    Category = "Security",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -253,7 +253,7 @@ public static class CoreSeedEntities
                    Category = "Architecture",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   DueDate = DateTime.UtcNow.AddDays(6),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -269,7 +269,7 @@ public static class CoreSeedEntities
                    Category = "Infrastructure",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(8),
+                   DueDate = DateTime.UtcNow.AddDays(8),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -285,7 +285,7 @@ public static class CoreSeedEntities
                    Category = "Performance",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(7),
+                   DueDate = DateTime.UtcNow.AddDays(7),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -301,7 +301,7 @@ public static class CoreSeedEntities
                    Category = "Development",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.Medium,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -317,7 +317,7 @@ public static class CoreSeedEntities
                    Category = "Testing",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -333,7 +333,7 @@ public static class CoreSeedEntities
                    Category = "Performance",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.High,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[2],
                    Steps =
                    [
@@ -349,7 +349,7 @@ public static class CoreSeedEntities
                    Category = "Architecture",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Medium,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   DueDate = DateTime.UtcNow.AddDays(6),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -365,7 +365,7 @@ public static class CoreSeedEntities
                    Category = "Development",
                    Status = TodoStatus.New,
                    Priority = TodoPriority.Medium,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   DueDate = DateTime.UtcNow.AddDays(3),
                    UserId = UserIds[1],
                    Steps =
                    [
@@ -381,7 +381,7 @@ public static class CoreSeedEntities
                    Category = "Security",
                    Status = TodoStatus.InProgress,
                    Priority = TodoPriority.Critical,
-                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[1],
                    Steps =
                    [

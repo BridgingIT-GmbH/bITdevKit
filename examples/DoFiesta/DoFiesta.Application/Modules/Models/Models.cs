@@ -21,7 +21,7 @@ public class TodoItemModel
 
     public int Priority { get; set; }
 
-    public DateTimeOffset? DueDate { get; set; }
+    public DateTime? DueDate { get; set; }
 
     public int OrderIndex { get; set; }
 

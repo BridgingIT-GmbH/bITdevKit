@@ -1,65 +1,204 @@
-﻿@page "/cities"
-@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+﻿@page "/todos"
 @inject IStringLocalizer<Global> localizer
 @inject IApiClient ApiClient
+@inject ISnackbar Snackbar
 
-<PageTitle>Items</PageTitle>
+<PageTitle>Todo Items</PageTitle>
 
-@* <MudText Typo="Typo.h3" GutterBottom="true">Items</MudText> *@
-
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-16">
-    @if (items is null)
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    @if (enums == null || items == null)
     {
-        <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
+        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
     }
     else
     {
-        <MudTable Items="items" Hover="true" SortLabel="Sort By" Elevation="0">
-            <HeaderContent>
-                <MudTh>
-                    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItemModel, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
-                </MudTh>
-                <MudTh>
-                </MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTooltip Text="@context.Id.ToString()">
-                    <MudTd DataLabel="Title">@localizer[context.Title]</MudTd>
-                </MudTooltip>
-                <MudTd DataLabel="Description">@localizer[context.Description]</MudTd>
-            </RowTemplate>
-        </MudTable>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudPaper Class="pa-4">
+                    <MudTextField @bind-Value="newTodoTitle"
+                                  Label="New Todo"
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Add"
+                                  OnAdornmentClick="AddNewTodo"
+                                  @onkeyup="@(async e => { if (e.Key == "Enter") { await AddNewTodo(); }})" />
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudTable Items="@items" Hover="true" Dense="true" Striped="true">
+                    @* <HeaderContent>
+                        <MudTh>Title</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Priority</MudTh>
+                        <MudTh>Due Date</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent> *@
+                    <RowTemplate Context="todoItem">
+                        <MudTd DataLabel="Title">
+                            <MudTextField @bind-Value="todoItem.Title"
+                                          Immediate="true"
+                                          OnBlur="@(() => UpdateTodo(todoItem))" />
+                        </MudTd>
+                        <MudTd DataLabel="Status">
+                            <MudSelect @bind-Value="todoItem.Status"
+                                       Immediate="true"
+                                       OnBlur="@(() => UpdateTodo(todoItem))">
+                                @foreach (var status in enums.TodoStatuses)
+                                {
+                                    <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Priority">
+                            <MudSelect @bind-Value="todoItem.Priority"
+                                       Immediate="true"
+                                       OnBlur="@(() => UpdateTodo(todoItem))">
+                                @foreach (var priority in enums.TodoPriorities)
+                                {
+                                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Due Date">
+                            <MudDatePicker @bind-Date="todoItem.DueDate"
+                                           DateFormat="yyyy-MM-dd"
+                                           Editable="true"
+                                           Placeholder="Select Date" />
+                                           @* OnBlur="@(() => UpdateTodo(todoItem))" /> *@
+                        </MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           OnClick="@(() => DeleteTodo(todoItem))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudItem>
+
+            <MudItem xs="12" Class="d-flex justify-space-between align-center">
+                <MudText>@items.Count() items</MudText>
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                    <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
+                               Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
+                        All
+                    </MudButton>
+                    @foreach (var status in enums.TodoStatuses)
+                    {
+                        var statusId = status.Id;
+                        <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
+                                   Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
+                            @status.Value
+                        </MudButton>
+                    }
+                </MudButtonGroup>
+            </MudItem>
+        </MudGrid>
     }
 </MudContainer>
 
 @code {
     private ICollection<TodoItemModel> items;
+    private EnumerationModel enums;
+    private string newTodoTitle;
+    private int? selectedStatusId;
 
     protected override async Task OnInitializedAsync()
     {
-        var filterModel = new FilterModel();
-        items = (await ApiClient.TodoItem_GetAllAsync(filterModel).ConfigureAwait(false)).Result.ToList();
+        await LoadEnumerations();
+        await LoadItems();
     }
 
-    // private async Task OnCreate()
-    // {
-    //     var dialog = await dialogService.ShowAsync<CityEditor>(localizer["Title_CreateCity"]);
-    //     var result = await dialog.Result;
+    private async Task LoadEnumerations()
+    {
+        try
+        {
+            var response = await ApiClient.Enumeration_GetAsync();
+            enums = response.Result;
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error loading enumerations: {ex.Message}", Severity.Error);
+        }
+    }
 
-    //     if (!result.Canceled && result.Data is CityModel model)
-    //     {
-    //         try
-    //         {
-    //             var response = await ApiClient.City_PostAsync(model);
-    //             model.Id = response.Headers.GetValueOrDefault("x-entity-id").FirstOrDefault().To<Guid>();
-    //             cities.Add(model);
-    //             snackbar.Add($"{localizer["Notification_CityCreated"]}: {localizer[model.Name]} ({model.Id})");
-    //         }
-    //         catch (ApiException<ProblemDetails> ex)
-    //         {
-    //             snackbar.Add(localizer["Notification_Error"] + $": [{ex.StatusCode}] {ex.Result.Detail} {ex.Result.AdditionalProperties.FirstOrDefault()}");
-    //         }
-    //     }
-    // }
+    private async Task LoadItems()
+    {
+        try
+        {
+            var filterModel = new FilterModel
+                {
+                    // Filters = selectedStatusId.HasValue
+                    //     ? new[] { new FilterCriteria { Field = "Status", Operator = FilterOperator.Equal, Value = selectedStatusId.Value } }
+                    //     : null
+                };
 
+            var response = await ApiClient.TodoItem_GetAllAsync(filterModel);
+            items = response.Result.ToList();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error loading items: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnStatusFilterChanged(int? statusId)
+    {
+        selectedStatusId = statusId;
+        await LoadItems();
+    }
+
+    private async Task AddNewTodo()
+    {
+        if (string.IsNullOrWhiteSpace(newTodoTitle))
+            return;
+
+        try
+        {
+            var newItem = new TodoItemModel
+                {
+                    Title = newTodoTitle,
+                    Status = enums.TodoStatuses.First().Id,
+                    Priority = enums.TodoPriorities.First().Id
+                };
+
+            await ApiClient.TodoItem_PostAsync(newItem);
+            await LoadItems();
+            newTodoTitle = string.Empty;
+            Snackbar.Add("Todo added successfully", Severity.Success);
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error adding todo: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task UpdateTodo(TodoItemModel item)
+    {
+        try
+        {
+            await ApiClient.TodoItem_PutAsync(item.Id, item);
+            Snackbar.Add("Todo updated successfully", Severity.Success);
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
+            await LoadItems(); // Reload to reset changes
+        }
+    }
+
+    private async Task DeleteTodo(TodoItemModel item)
+    {
+        try
+        {
+            await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
+            await LoadItems();
+            Snackbar.Add("Todo deleted successfully", Severity.Success);
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error deleting todo: {ex.Message}", Severity.Error);
+        }
+    }
 }

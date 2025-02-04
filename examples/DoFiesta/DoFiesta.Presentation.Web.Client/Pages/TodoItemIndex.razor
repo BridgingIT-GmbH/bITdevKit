@@ -39,9 +39,8 @@
                                 OnBlur="@(() => UpdateTodo(todoItem))" />
                         </MudTd>
                         <MudTd DataLabel="Status">
-                            <MudSelect @bind-Value="todoItem.Status"
-                                Immediate="true"
-                                OnBlur="@(() => UpdateTodo(todoItem))">
+                            <MudSelect Value="todoItem.Status" T="int"
+                                       ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
                                     @foreach (var status in enums.TodoStatuses)
                                     {
                                         <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
@@ -49,9 +48,8 @@
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Priority">
-                            <MudSelect @bind-Value="todoItem.Priority"
-                            Immediate="true"
-                            OnBlur="@(() => UpdateTodo(todoItem))">
+                            <MudSelect Value="todoItem.Priority" T="int"
+                                       ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
                                 @foreach (var priority in enums.TodoPriorities)
                                 {
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>

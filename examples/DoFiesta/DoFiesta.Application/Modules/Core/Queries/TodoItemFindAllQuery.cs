@@ -30,7 +30,7 @@ public class TodoItemFindAllQueryHandler(ILoggerFactory loggerFactory, IMapper m
         var result = (await repository.FindAllResultAsync( // repo takes care of the filter
                 query.Filter,
                 [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken))
-            .Ensure(e => e.SafeAny(), new EntityNotFoundError())
+            //.Ensure(e => e.SafeAny(), new EntityNotFoundError())
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
 

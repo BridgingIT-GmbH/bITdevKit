@@ -48,18 +48,12 @@ public class TodoItemUpdateCommandHandler(
     {
         this.Logger.LogInformation($"+++ update item: {command.Model.Title}");
 
-        if (!await repository.ExistsAsync(command.Model.Id, cancellationToken).AnyContext())
-        {
-            throw new EntityNotFoundException();
-        }
-
         var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
         var result = await repository.UpdateResultAsync(entity, cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
 
-        // TODO: invalidate query cache
-
         return CommandResult.For(result);
+        // TODO: invalidate query cache
     }
 }

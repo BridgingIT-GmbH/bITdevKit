@@ -49,8 +49,7 @@ public class TodoItemDeleteCommandHandler(
             .Ensure(e => e == RepositoryActionResult.Deleted, new EntityNotFoundError())
             .Tap(e => Console.WriteLine("AUDIT")); // do something
 
-        // TODO: invalidate query cache
-
         return CommandResult.For(result.Unwrap());
+        // TODO: invalidate query cache
     }
 }

@@ -15,13 +15,11 @@
         <MudGrid>
             <MudItem xs="12">
                 <MudPaper Class="pa-4">
-                    <MudTextField @bind-Value="newTodoTitle"
-                                  Label="New Todo"
-                                  Variant="Variant.Outlined"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Filled.Add"
-                                  OnAdornmentClick="AddNewTodo"
-                                  @onkeyup="@(async e => { if (e.Key == "Enter") { await AddNewTodo(); }})" />
+                    <MudTextField @bind-Value="newTodoTitle" Immediate="false"
+                    Label="New Todo" Variant="Variant.Outlined"
+                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
+                    OnAdornmentClick="() => _ = AddNewTodo()" />
+                    @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
                 </MudPaper>
             </MudItem>
 
@@ -37,23 +35,23 @@
                     <RowTemplate Context="todoItem">
                         <MudTd DataLabel="Title">
                             <MudTextField @bind-Value="todoItem.Title"
-                                          Immediate="true"
-                                          OnBlur="@(() => UpdateTodo(todoItem))" />
+                                Immediate="true"
+                                OnBlur="@(() => UpdateTodo(todoItem))" />
                         </MudTd>
                         <MudTd DataLabel="Status">
                             <MudSelect @bind-Value="todoItem.Status"
-                                       Immediate="true"
-                                       OnBlur="@(() => UpdateTodo(todoItem))">
-                                @foreach (var status in enums.TodoStatuses)
-                                {
-                                    <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
-                                }
+                                Immediate="true"
+                                OnBlur="@(() => UpdateTodo(todoItem))">
+                                    @foreach (var status in enums.TodoStatuses)
+                                    {
+                                        <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                                    }
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Priority">
                             <MudSelect @bind-Value="todoItem.Priority"
-                                       Immediate="true"
-                                       OnBlur="@(() => UpdateTodo(todoItem))">
+                            Immediate="true"
+                            OnBlur="@(() => UpdateTodo(todoItem))">
                                 @foreach (var priority in enums.TodoPriorities)
                                 {
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
@@ -62,16 +60,14 @@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
                             <MudDatePicker @bind-Date="todoItem.DueDate"
-                                           DateFormat="yyyy-MM-dd"
-                                           Editable="true"
-                                           Placeholder="Select Date" />
-                                           @* OnBlur="@(() => UpdateTodo(todoItem))" /> *@
+                                DateFormat="yyyy-MM-dd" Editable="true"
+                                Placeholder="Select Date" />
+                                @* OnBlur="@(() => UpdateTodo(todoItem))" /> *@
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           OnClick="@(() => DeleteTodo(todoItem))" />
+                                Color="Color.Error" Size="Size.Small"
+                                OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -81,14 +77,14 @@
                 <MudText>@items.Count() items</MudText>
                 <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
                     <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
-                               Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
+                    Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
                         All
                     </MudButton>
                     @foreach (var status in enums.TodoStatuses)
                     {
                         var statusId = status.Id;
                         <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
-                                   Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
+                        Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
                             @status.Value
                         </MudButton>
                     }
@@ -120,6 +116,7 @@
         catch (ApiException ex)
         {
             Snackbar.Add($"Error loading enumerations: {ex.Message}", Severity.Error);
+            items = new List<TodoItemModel>();
         }
     }
 
@@ -128,11 +125,11 @@
         try
         {
             var filterModel = new FilterModel
-                {
-                    // Filters = selectedStatusId.HasValue
-                    //     ? new[] { new FilterCriteria { Field = "Status", Operator = FilterOperator.Equal, Value = selectedStatusId.Value } }
-                    //     : null
-                };
+            {
+                // Filters = selectedStatusId.HasValue
+                //     ? new[] { new FilterCriteria { Field = "Status", Operator = FilterOperator.Equal, Value = selectedStatusId.Value } }
+                //     : null
+            };
 
             var response = await ApiClient.TodoItem_GetAllAsync(filterModel);
             items = response.Result.ToList();
@@ -140,6 +137,7 @@
         catch (ApiException ex)
         {
             Snackbar.Add($"Error loading items: {ex.Message}", Severity.Error);
+            enums = new EnumerationModel();
         }
     }
 
@@ -162,11 +160,13 @@
                     Status = enums.TodoStatuses.First().Id,
                     Priority = enums.TodoPriorities.First().Id
                 };
+            newTodoTitle = string.Empty;
+            items.Add(newItem);
 
             await ApiClient.TodoItem_PostAsync(newItem);
+
+            Snackbar.Add("Added successfully", Severity.Success);
             await LoadItems();
-            newTodoTitle = string.Empty;
-            Snackbar.Add("Todo added successfully", Severity.Success);
         }
         catch (ApiException ex)
         {
@@ -178,13 +178,15 @@
     {
         try
         {
+            Console.WriteLine($"Updating todo: {item.Id}");
             await ApiClient.TodoItem_PutAsync(item.Id, item);
-            Snackbar.Add("Todo updated successfully", Severity.Success);
+
+            Snackbar.Add("Updated successfully", Severity.Success);
+            await LoadItems();
         }
         catch (ApiException ex)
         {
             Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
-            await LoadItems(); // Reload to reset changes
         }
     }
 
@@ -192,9 +194,11 @@
     {
         try
         {
+            items.Remove(items.FirstOrDefault(e => e.Id == item.Id));
             await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
+
+            Snackbar.Add("Deleted successfully", Severity.Success);
             await LoadItems();
-            Snackbar.Add("Todo deleted successfully", Severity.Success);
         }
         catch (ApiException ex)
         {

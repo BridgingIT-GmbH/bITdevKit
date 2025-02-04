@@ -53,7 +53,7 @@ public class CatalogMapperRegister : IRegister
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
         config.ForType<TodoItemModel, TodoItem>()
-            .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
+            .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion != null ? Guid.Parse(src.ConcurrencyVersion) : Guid.Empty)
             .IgnoreNullValues(true);
 
         config.ForType<TodoStep, TodoStepModel>()
@@ -65,7 +65,7 @@ public class CatalogMapperRegister : IRegister
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString())
             .IgnoreNullValues(true);
         config.ForType<SubscriptionModel, Subscription>()
-            .Map(dest => dest.ConcurrencyVersion, src => Guid.Parse(src.ConcurrencyVersion))
+            .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion != null ? Guid.Parse(src.ConcurrencyVersion) : Guid.Empty)
             .IgnoreNullValues(true);
     }
 

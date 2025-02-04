@@ -63,9 +63,9 @@
                             @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
-                            @* <MudDatePicker Date="todoItem.DueDate"
+                            <MudDatePicker Date="todoItem.DueDate"
                             DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" /> *@
+                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
@@ -79,25 +79,18 @@
             <MudItem xs="12" Class="d-flex justify-space-between align-center">
                 @* <MudText>@items.Count() items</MudText> *@
                 <MudTextField @bind-Value="filterTitle" Immediate="false"
-                              Label="Title" Variant="Variant.Text" Clearable="true"
-                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
-                              OnAdornmentClick="() => _ = LoadItems()" />
-                <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
-                    <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
-                        Variant="@(filterStatusId == null ? Variant.Filled : Variant.Outlined)">
-                        All
-                    </MudButton>
+                Label="Title" Variant="Variant.Text" Clearable="true"
+                Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                OnAdornmentClick="() => _ = LoadItems()" />
+                <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" CheckMark SelectedValueChanged="OnStatusChipChanged">
+                    @* <MudChip T="int" Value="@((int?)null)" Default>All</MudChip> *@
                     @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
                     {
-                        var statusId = status.Id;
                         <MudTooltip Text="@status.Description">
-                            <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
-                                Variant="@(filterStatusId == statusId ? Variant.Filled : Variant.Outlined)">
-                                @status.Value
-                            </MudButton>
+                            <MudChip T="int" Value="@status.Id">@status.Value</MudChip>
                         </MudTooltip>
                     }
-                </MudButtonGroup>
+                </MudChipSet>
             </MudItem>
         </MudGrid>
     }
@@ -173,6 +166,16 @@
     private async Task OnStatusFilterChanged(int? statusId)
     {
         filterStatusId = statusId;
+        await LoadItems();
+    }
+
+    private async Task OnStatusChipChanged(int id)
+    {
+        filterStatusId = id;
+
+        if (id == 0)
+            filterStatusId = null;
+
         await LoadItems();
     }
 

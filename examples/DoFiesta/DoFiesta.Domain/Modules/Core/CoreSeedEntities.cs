@@ -12,7 +12,7 @@ public static class CoreSeedEntities
     private static readonly string[] UserIds =
     [
         Fakes.UsersStarwars[0].Id, // luke skywalker
-        Fakes.UsersStarwars[1].Id, // ypda
+        Fakes.UsersStarwars[1].Id, // yoda
         Fakes.UsersStarwars[2].Id, // obi wan
     ];
 
@@ -22,250 +22,385 @@ public static class CoreSeedEntities
         {
             return
             [
-                // User 1 todos
-                new TodoItem
-            {
-                Title = "Complete Project Proposal",
-                Description = "Draft and finalize the Q2 project proposal",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(5),
-                UserId = UserIds[0],
-                Assignee = EmailAddress.Create("john.doe@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Research market trends", Status = TodoStatus.Completed },
-                    new TodoStep { Description = "Create initial draft", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Review with stakeholders", Status = TodoStatus.New }
-                ]
-            },           new TodoItem
-            {
-                Title = "Setup Development Environment",
-                Description = "Configure local development setup for new project",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(2),
-                UserId = UserIds[0],
-                Steps =
-                [
-                    new TodoStep { Description = "Install required software", Status = TodoStatus.New },
-                    new TodoStep { Description = "Configure IDE", Status = TodoStatus.New }
-                ]
-            },           new TodoItem
-            {               Title = "Code Review Sprint 5",
-                Description = "Review code changes for sprint 5",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(1),
-                UserId = UserIds[0],
-                Steps =
-                [
-                    new TodoStep { Description = "Review authentication module", Status = TodoStatus.New },
-                    new TodoStep { Description = "Review API endpoints", Status = TodoStatus.New }
-                ]
-            },
-                new TodoItem
-             {
-                Title = "Prepare Technical Documentation",
-                Description = "Create technical documentation for new features",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(3),
-                UserId = UserIds[0],
-                Steps =
-                [
-                    new TodoStep { Description = "Document API changes", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Update sequence diagrams", Status = TodoStatus.New }
-                ]
-            },
                 new TodoItem
                 {
-                Title = "Security Audit",
-                Description = "Conduct security audit of the application",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Critical,
-                DueDate = DateTimeOffset.UtcNow.AddDays(4),
-                UserId = UserIds[0],
-                Assignee = EmailAddress.Create("security.team@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Review security configurations", Status = TodoStatus.New },
-                    new TodoStep { Description = "Conduct penetration testing", Status = TodoStatus.New }
-                ]
-            },
-            // User 2 todos
-            new TodoItem
-            {
-                Title = "Refactor Authentication Service",
-                Description = "Implement new JWT handling and refresh token logic",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(3),
-                UserId = UserIds[1],
-                Assignee = EmailAddress.Create("alice.smith@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Update token generation", Status = TodoStatus.Completed },
-                    new TodoStep { Description = "Implement refresh token rotation", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Add unit tests", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "Optimize Database Queries",
-                Description = "Profile and optimize slow-running queries in the user management module",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Critical,
-                DueDate = DateTimeOffset.UtcNow.AddDays(1),
-                UserId = UserIds[1],
-                Steps =
-                [
-                    new TodoStep { Description = "Run query performance analysis", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement query caching", Status = TodoStatus.New },
-                    new TodoStep { Description = "Add appropriate indices", Status = TodoStatus.New }
-                ]
-            },           new TodoItem
-            {
-                Title = "Implement CI/CD Pipeline",
-                Description = "Setup automated build and deployment pipeline using Azure DevOps",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(5),
-                UserId = UserIds[1],
-                Steps =
-                [
-                    new TodoStep { Description = "Configure build agents", Status = TodoStatus.Completed },
-                    new TodoStep { Description = "Setup test automation", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Configure deployment stages", Status = TodoStatus.New }
-                ]
-            },           new TodoItem
-            {
-                Title = "Migrate to .NET 8",
-                Description = "Upgrade project from .NET 6 to .NET 8 including all dependencies",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(7),
-                UserId = UserIds[1],
-                Steps =
-                [
-                    new TodoStep { Description = "Update project files", Status = TodoStatus.New },
-                    new TodoStep { Description = "Update NuGet packages", Status = TodoStatus.New },
-                    new TodoStep { Description = "Fix breaking changes", Status = TodoStatus.New },
-                    new TodoStep { Description = "Run integration tests", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "Implement Domain Events",
-                Description = "Add domain event handling for better service decoupling",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(4),
-                UserId = UserIds[1],
-                Assignee = EmailAddress.Create("alice.smith@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Design event structure", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement event dispatcher", Status = TodoStatus.New },
-                    new TodoStep { Description = "Add event handlers", Status = TodoStatus.New },
-                    new TodoStep { Description = "Write integration tests", Status = TodoStatus.New }
-                ]
-            },
-
-            // User 3 todos
-            new TodoItem
-            {
-                Title = "Setup Kubernetes Cluster",
-                Description = "Configure and deploy production-grade K8s cluster",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.Critical,
-                DueDate = DateTimeOffset.UtcNow.AddDays(2),
-                UserId = UserIds[2],
-                Assignee = EmailAddress.Create("devops.lead@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Setup master nodes", Status = TodoStatus.Completed },
-                    new TodoStep { Description = "Configure worker nodes", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Setup monitoring", Status = TodoStatus.New },
-                    new TodoStep { Description = "Configure auto-scaling", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "Implement CQRS Pattern",
-                Description = "Separate read and write operations for better scalability",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(6),
-                UserId = UserIds[2],
-                Steps =
-                [
-                    new TodoStep { Description = "Design command handlers", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement query handlers", Status = TodoStatus.New },
-                    new TodoStep { Description = "Setup event sourcing", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement read models", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "API Performance Optimization",
-                Description = "Improve API response times and implement caching",
-                Status = TodoStatus.InProgress,
-                Priority = TodoPriority.High,
-                DueDate = DateTimeOffset.UtcNow.AddDays(4),
-                UserId = UserIds[2],
-                Steps =
-                [
-                    new TodoStep { Description = "Implement Redis caching", Status = TodoStatus.Completed },
-                    new TodoStep { Description = "Add response compression", Status = TodoStatus.InProgress },
-                    new TodoStep { Description = "Optimize database queries", Status = TodoStatus.New },
-                    new TodoStep { Description = "Load test optimization", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "Implement Event Sourcing",
-                Description = "Add event sourcing for critical business operations",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(8),
-                UserId = UserIds[2],
-                Assignee = EmailAddress.Create("architect@example.com"),
-                Steps =
-                [
-                    new TodoStep { Description = "Design event store schema", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement event store", Status = TodoStatus.New },
-                    new TodoStep { Description = "Add event replay functionality", Status = TodoStatus.New },
-                    new TodoStep { Description = "Create snapshot mechanism", Status = TodoStatus.New }
-                ]
-            },
-            new TodoItem
-            {
-                Title = "GraphQL Integration",
-                Description = "Add GraphQL support to existing REST APIs",
-                Status = TodoStatus.New,
-                Priority = TodoPriority.Medium,
-                DueDate = DateTimeOffset.UtcNow.AddDays(5),
-                UserId = UserIds[2],
-                Steps =
-                [
-                    new TodoStep { Description = "Setup Hot Chocolate", Status = TodoStatus.New },
-                    new TodoStep { Description = "Define GraphQL schema", Status = TodoStatus.New },
-                    new TodoStep { Description = "Implement resolvers", Status = TodoStatus.New },
-                    new TodoStep { Description = "Add GraphQL subscriptions", Status = TodoStatus.New }
-                ]
-            },
-        ];
+                    Title = "Design Microservices Architecture",
+                    Description = "Define service boundaries and communication patterns for new microservices architecture",
+                    Category = "Architecture",
+                    Status = TodoStatus.InProgress,
+                    Priority = TodoPriority.Critical,
+                    DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                    UserId = UserIds[0],
+                    Steps =
+                    [
+                        new TodoStep { Description = "Define domain boundaries", Status = TodoStatus.Completed },
+                        new TodoStep { Description = "Design event schema", Status = TodoStatus.InProgress },
+                        new TodoStep { Description = "Document service contracts", Status = TodoStatus.New }
+                    ]
+                },
+                new TodoItem
+                {
+                    Title = "API Gateway Implementation",
+                    Description = "Implement API Gateway using Ocelot with JWT authentication",
+                    Category = "Infrastructure",
+                    Status = TodoStatus.New,
+                    Priority = TodoPriority.High,
+                    DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                    UserId = UserIds[0],
+                    Steps =
+                    [
+                        new TodoStep { Description = "Setup Ocelot configuration", Status = TodoStatus.New },
+                        new TodoStep { Description = "Implement rate limiting", Status = TodoStatus.New },
+                        new TodoStep { Description = "Add JWT validation", Status = TodoStatus.New }
+                    ]
+                },
+                new TodoItem
+                {
+                    Title = "Domain Model Refactoring",
+                    Description = "Refactor core domain models to implement DDD patterns",
+                    Category = "Development",
+                    Status = TodoStatus.InProgress,
+                    Priority = TodoPriority.High,
+                    DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                    UserId = UserIds[0],
+                    Steps =
+                    [
+                        new TodoStep { Description = "Implement aggregates", Status = TodoStatus.Completed },
+                        new TodoStep { Description = "Add value objects", Status = TodoStatus.InProgress },
+                        new TodoStep { Description = "Update repositories", Status = TodoStatus.New }
+                    ]
+                },
+                new TodoItem
+                {
+                   Title = "Elasticsearch Integration",
+                   Description = "Implement search infrastructure using Elasticsearch and Kibana",
+                   Category = "Infrastructure",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   UserId = UserIds[0],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Configure ES cluster", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement indexing", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add search queries", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Query Optimization",
+                   Description = "Optimize EF Core queries and implement caching strategy",
+                   Category = "Performance",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(2),
+                   UserId = UserIds[0],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Profile slow queries", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Implement Redis cache", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add query hints", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Message Queue Setup",
+                   Description = "Implement RabbitMQ for asynchronous processing",
+                   Category = "Infrastructure",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   UserId = UserIds[0],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup RabbitMQ cluster", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement consumers", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add dead letter queues", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Authentication Service",
+                   Description = "Implement OAuth2/OIDC authentication service with IdentityServer",
+                   Category = "Security",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Configure OIDC flows", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Add token validation", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Implement refresh logic", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "GraphQL Implementation",
+                   Description = "Add GraphQL API layer using HotChocolate",
+                   Category = "Development",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.Medium,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Define schema", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add resolvers", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement dataloader", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Kubernetes Deployment",
+                   Description = "Setup K8s cluster with monitoring and autoscaling",
+                   Category = "DevOps",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Configure AKS cluster", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Setup Prometheus", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Implement HPA", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Observability Setup",
+                   Description = "Implement distributed tracing using OpenTelemetry",
+                   Category = "Monitoring",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup Jaeger", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add trace contexts", Status = TodoStatus.New },
+                       new TodoStep { Description = "Configure sampling", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "CI/CD Pipeline",
+                   Description = "Implement GitOps workflow with Azure DevOps",
+                   Category = "DevOps",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup build agents", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Configure ArgoCD", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add smoke tests", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Event Store Setup",
+                   Description = "Implement event sourcing using EventStoreDB",
+                   Category = "Architecture",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(7),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup event store", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement projections", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add snapshots", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Load Testing",
+                   Description = "Implement performance testing using k6 and Grafana",
+                   Category = "Testing",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Medium,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Write test scripts", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Setup metrics", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Configure dashboards", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Security Hardening",
+                   Description = "Implement security best practices and penetration testing",
+                   Category = "Security",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup WAF rules", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement rate limiting", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add CSRF protection", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "CQRS Implementation",
+                   Description = "Separate read and write operations using MediatR",
+                   Category = "Architecture",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Create command handlers", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Implement queries", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add event handlers", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Service Mesh",
+                   Description = "Implement Istio service mesh for microservices",
+                   Category = "Infrastructure",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(8),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup Istio gateway", Status = TodoStatus.New },
+                       new TodoStep { Description = "Configure mTLS", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add traffic policies", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Database Sharding",
+                   Description = "Implement database sharding for horizontal scaling",
+                   Category = "Performance",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(7),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Design shard key", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Implement router", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add rebalancing", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "API Versioning",
+                   Description = "Implement API versioning and documentation",
+                   Category = "Development",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.Medium,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Add version headers", Status = TodoStatus.New },
+                       new TodoStep { Description = "Update Swagger", Status = TodoStatus.New },
+                       new TodoStep { Description = "Create contracts", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Integration Testing",
+                   Description = "Implement integration tests using TestContainers",
+                   Category = "Testing",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(5),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup test containers", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Write API tests", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add data fixtures", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Caching Strategy",
+                   Description = "Implement distributed caching with Redis",
+                   Category = "Performance",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.High,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   UserId = UserIds[2],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup Redis cluster", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement backplane", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add cache policies", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Domain Events",
+                   Description = "Implement domain events using MediatR",
+                   Category = "Architecture",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Medium,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(6),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Create event handlers", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Add notifications", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Implement outbox", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Feature Flags",
+                   Description = "Implement feature toggles using LaunchDarkly",
+                   Category = "Development",
+                   Status = TodoStatus.New,
+                   Priority = TodoPriority.Medium,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(3),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup SDK", Status = TodoStatus.New },
+                       new TodoStep { Description = "Add flag contexts", Status = TodoStatus.New },
+                       new TodoStep { Description = "Implement rollouts", Status = TodoStatus.New }
+                   ]
+                },
+                new TodoItem
+                {
+                   Title = "Vault Integration",
+                   Description = "Implement HashiCorp Vault for secrets management",
+                   Category = "Security",
+                   Status = TodoStatus.InProgress,
+                   Priority = TodoPriority.Critical,
+                   DueDate = DateTimeOffset.UtcNow.AddDays(4),
+                   UserId = UserIds[1],
+                   Steps =
+                   [
+                       new TodoStep { Description = "Setup Vault server", Status = TodoStatus.Completed },
+                       new TodoStep { Description = "Configure policies", Status = TodoStatus.InProgress },
+                       new TodoStep { Description = "Add key rotation", Status = TodoStatus.New }
+                   ]
+                }
+            ];
         }
-    }
+}
 
-    public static class Subscriptions
+public static class Subscriptions
+{
+    public static Subscription[] Create()
     {
-        public static Subscription[] Create()
-        {
-            return
-            [
-                new Subscription
+        return
+        [
+            new Subscription
                 {
                     UserId = UserIds[0],
                     Plan = SubscriptionPlan.Enterprise,
@@ -294,7 +429,7 @@ public static class CoreSeedEntities
                     StartDate = new DateTimeOffset(2024, 12, 5, 0, 0, 0, TimeSpan.Zero),
                     EndDate = null
                 }
-            ];
-        }
+        ];
     }
+}
 }

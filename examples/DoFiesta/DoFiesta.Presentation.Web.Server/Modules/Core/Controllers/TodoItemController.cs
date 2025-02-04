@@ -117,11 +117,6 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized("write permission needed");
         }
 
-        if (model is null)
-        {
-            this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        }
-
         var response = await mediator.Send(
             new TodoItemCreateCommand(model)).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.Value.Id);
@@ -145,14 +140,8 @@ public class TodoItemController( // TODO: move to minimal endpoints
             return this.Unauthorized();
         }
 
-        if (id != model?.Id)
-        {
-            this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        }
-
         var response = await mediator.Send(
             new TodoItemUpdateCommand(model)).AnyContext();
-        this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.Value.Id);
 
         return response.Result.ToUpdatedActionResult();
     }
@@ -175,7 +164,6 @@ public class TodoItemController( // TODO: move to minimal endpoints
 
         var response = await mediator.Send(
             new TodoItemDeleteCommand(id)).AnyContext();
-        this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, id);
 
         return response.Result.ToOkActionResult();
     }

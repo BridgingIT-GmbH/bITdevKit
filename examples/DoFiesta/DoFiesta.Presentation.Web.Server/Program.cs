@@ -87,60 +87,14 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     .WithIssuer("https://localhost:5001") // host should match Authority (appsettings.json:Authentication:Authority)
-    // default tokens are unsigned, set a key for signed tokens. when signed also set thje key in the server appsettings.json "Authentication.SigningKey"
-    //.WithSigningKey("your-256-bit-secret-your-256-bit-secret-your-256-bit-secret")
-    //.WithClientId("client-id")
-    //.UseEntraIdV2Provider("test-tenant")
-    //.UseAdfsProvider("blazor-wasm")
-    //.UseKeyCloakProvider("test-realm")
-    //.WithPaths(paths => paths // EntraId v2.0 endpoint paths
-    //    .WellKnownConfigurationPath("/.well-known/openid-configuration/v2.0")
-    //    .AuthorizePath("/oauth2/v2.0/authorize")
-    //    .TokenPath("/oauth2/v2.0/token")
-    //    .UserInfoPath("/oidc/userinfo")
-    //    .LogoutPath("/oauth2/v2.0/logout"))
     .WithUsers(Fakes.UsersStarwars)
-    //.WithUserProvider() // TODO: use a provider model for the users, should support password validation, user creation, get user by id, get user by username
     .WithTokenLifetimes(
         accessToken: TimeSpan.FromMinutes(2),
         refreshToken: TimeSpan.FromDays(1))
     .WithClient( // these are optional
         "Blazor WASM Frontend",
         "blazor-wasm",
-        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback")
-    .WithConfidentalClient( // mvc, razor pages, blazor server
-        "Server App",
-        "server-app",
-        "server-app",
-        ["https://localhost:5001", "https://localhost:5001/signin-oidc"])
-    .WithClient(
-        "Angular Frontend",
-        "angular-app",
-        "http://localhost:4200/auth-callback", "http://localhost:4200/silent-refresh")
-    .WithClient(
-        "React Frontend",
-        "react-app",
-        "http://localhost:3000/callback", "http://localhost:3000/silent-renew", "http://localhost:3000/logout")
-    .WithClient(
-        "MAUI Mobile App",
-        "maui-app",
-        "myapp://callback", "myapp://logout")
-    .WithClient(
-        "Swagger API Documentation",
-        "swagger",
-        "https://localhost:5001/swagger/oauth2-redirect.html")
-    .WithClient(
-        "Scalar API Documentation",
-        "scalar",
-        "https://localhost:5001/swagger/oauth2-redirect.html")
-    .WithClient(
-        "Postman API Testing",
-        "postman",
-        "https://oauth.pstmn.io/v1/callback")
-    .WithClient(
-        "Bruno API Client",
-        "bruno",
-        "http://localhost:3000/callback", "http://localhost:3000"));
+        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback"));
 
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);

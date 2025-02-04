@@ -18,6 +18,8 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
 
     public string Description { get; set; }
 
+    public string Category { get; set; }
+
     public TodoStatus Status { get; set; }
 
     public TodoPriority Priority { get; set; }

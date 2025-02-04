@@ -5,46 +5,31 @@
 
 <PageTitle>Items</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Items</MudText>
+@* <MudText Typo="Typo.h3" GutterBottom="true">Items</MudText> *@
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-16">
-    <MudGrid>
-        <MudItem xs="12" lg="1">
-            <MudTooltip Text="@localizer["Title_CreateTodoItem"]">
-                @* <MudFab OnClick="e => OnCreate()" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"/> *@
-            </MudTooltip>
-        </MudItem>
-        <MudItem xs="12" lg="11">
-            <MudText Typo="Typo.h3" GutterBottom="true">@localizer["Title_TodoItems"]</MudText>
-        </MudItem>
-        <MudItem xs="12" lg="6">
-            @if (items is null)
-            {
-                <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
-            }
-            else
-            {
-               <MudTable Items="items" Hover="true" SortLabel="Sort By" Elevation="0">
-                    <HeaderContent>
-                        <MudTh>
-                            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItemModel, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
-                        </MudTh>
-                        <MudTh>
-                        </MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTooltip Text="@context.Id.ToString()">
-                            <MudTd DataLabel="Title">@localizer[context.Title]</MudTd>
-                        </MudTooltip>
-                        <MudTd DataLabel="Description">@localizer[context.Description]</MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager PageSizeOptions="new[] { 10, 50, 100 }"/>
-                    </PagerContent>
-                </MudTable>
-            }
-        </MudItem>
-    </MudGrid>
+    @if (items is null)
+    {
+        <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
+    }
+    else
+    {
+        <MudTable Items="items" Hover="true" SortLabel="Sort By" Elevation="0">
+            <HeaderContent>
+                <MudTh>
+                    <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TodoItemModel, object>(x => x.Title)">@localizer["Label_TodoItem_Title"]</MudTableSortLabel>
+                </MudTh>
+                <MudTh>
+                </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTooltip Text="@context.Id.ToString()">
+                    <MudTd DataLabel="Title">@localizer[context.Title]</MudTd>
+                </MudTooltip>
+                <MudTd DataLabel="Description">@localizer[context.Description]</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
 </MudContainer>
 
 @code {

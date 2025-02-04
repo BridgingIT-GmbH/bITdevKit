@@ -29,6 +29,9 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
         builder.Property(x => x.Description)
             .HasMaxLength(2000);
 
+        builder.Property(x => x.Category)
+            .HasMaxLength(100);
+
         builder.Property(x => x.Status)
             .HasConversion(new EnumerationConverter<TodoStatus>())
             .IsRequired();

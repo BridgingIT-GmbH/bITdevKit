@@ -24,15 +24,23 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudTable Items="@items" Hover="true" Dense="true" Striped="true">
+                <MudTable Items="@items" Hover="true" Dense="true" Striped="false"
+                          Loading="@loading" LoadingProgressColor="Color.Info">
                     <HeaderContent>
+                        <MudTh></MudTh>
                         <MudTh>Title</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Priority</MudTh>
-                        <MudTh>Due Date</MudTh>
-                        <MudTh>Actions</MudTh>
+                        <MudTh>Due</MudTh>
+                        <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate Context="todoItem">
+                        <MudTd>
+                            @{
+                                var (icon, color) = GetStatusIcon(todoItem.Status);
+                                <MudIcon Icon="@icon" Color="@color" />
+                            }
+                        </MudTd>
                         <MudTd DataLabel="Title">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title"
@@ -119,6 +127,7 @@
 </MudContainer>
 
 @code {
+    private bool loading;
     private ICollection<TodoItemModel> items;
     private EnumerationModel enums;
     private string newTodoTitle;
@@ -150,6 +159,7 @@
     {
         try
         {
+            loading = true;
             var filter = new FilterModel();
             filter.Filters = new List<FilterCriteria>();
 
@@ -195,6 +205,10 @@
             Snackbar.Add($"Error loading items: {ex.Message}", Severity.Error);
             enums = new EnumerationModel();
         }
+        finally
+        {
+            loading = false;
+        }
     }
 
     private async Task OnStatusFilterChanged(int? statusId)
@@ -230,6 +244,7 @@
 
         try
         {
+            loading = true;
             var newItem = new TodoItemModel
                 {
                     Title = newTodoTitle,
@@ -248,12 +263,17 @@
         {
             Snackbar.Add($"Error adding todo: {ex.Message}", Severity.Error);
         }
+        finally
+        {
+            loading = false;
+        }
     }
 
     private async Task UpdateTodo(TodoItemModel item)
     {
         try
         {
+            loading = true;
             Console.WriteLine($"Updating todo: {item.Id}");
             await ApiClient.TodoItem_PutAsync(item.Id, item);
 
@@ -264,12 +284,17 @@
         {
             Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
         }
+        finally
+        {
+            loading = false;
+        }
     }
 
     private async Task DeleteTodo(TodoItemModel item)
     {
         try
         {
+            loading = true;
             items.Remove(items.FirstOrDefault(e => e.Id == item.Id));
             await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
 
@@ -280,5 +305,20 @@
         {
             Snackbar.Add($"Error deleting todo: {ex.Message}", Severity.Error);
         }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private (string icon, Color color) GetStatusIcon(int statusId)
+    {
+        return statusId switch
+        {
+            1 => (Icons.Material.Filled.FiberNew, Color.Info),        // New
+            2 => (Icons.Material.Filled.RunCircle, Color.Warning),    // InProgress
+            3 => (Icons.Material.Filled.CheckCircle, Color.Success),  // Completed
+            _ => (Icons.Material.Filled.Circle, Color.Default)        // Default
+        };
     }
 }

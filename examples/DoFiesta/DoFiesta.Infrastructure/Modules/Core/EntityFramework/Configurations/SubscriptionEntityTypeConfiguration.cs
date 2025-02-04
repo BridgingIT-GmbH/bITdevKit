@@ -37,11 +37,11 @@ public class SubscriptionEntityTypeConfiguration : IEntityTypeConfiguration<Subs
             .HasConversion(new EnumerationConverter<SubscriptionBillingCycle>())
             .IsRequired();
 
-        builder.Property(x => x.StartDate)
-            .HasColumnType("datetimeoffset").IsRequired();
+        builder.Property(x => x.StartDate).IsRequired();
+            //.HasColumnType("datetimeoffset");
 
-        builder.Property(x => x.EndDate)
-            .HasColumnType("datetimeoffset");
+        builder.Property(x => x.EndDate);
+            //.HasColumnType("datetimeoffset");
 
         builder.HasIndex(x => x.UserId);
         builder.HasIndex(x => x.Status);

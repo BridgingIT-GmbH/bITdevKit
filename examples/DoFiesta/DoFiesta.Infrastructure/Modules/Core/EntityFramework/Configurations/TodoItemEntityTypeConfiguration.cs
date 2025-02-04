@@ -40,8 +40,8 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
             .HasConversion(new EnumerationConverter<TodoPriority>())
             .IsRequired();
 
-        builder.Property(x => x.DueDate)
-            .HasColumnType("datetimeoffset");
+        builder.Property(x => x.DueDate);
+            //.HasColumnType("datetimeoffset");
 
         builder.Property(x => x.OrderIndex)
             .IsRequired()

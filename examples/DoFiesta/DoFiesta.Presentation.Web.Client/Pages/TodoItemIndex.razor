@@ -16,9 +16,9 @@
             <MudItem xs="12">
                 <MudPaper Class="pa-4">
                     <MudTextField @bind-Value="newTodoTitle" Immediate="false"
-                    Label="New Todo" Variant="Variant.Outlined"
-                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
-                    OnAdornmentClick="() => _ = AddNewTodo()" />
+                                  Label="New Todo" Variant="Variant.Outlined"
+                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
+                                  OnAdornmentClick="() => _ = AddNewTodo()" />
                     @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
                 </MudPaper>
             </MudItem>
@@ -35,16 +35,16 @@
                     <RowTemplate Context="todoItem">
                         <MudTd DataLabel="Title">
                             <MudTextField @bind-Value="todoItem.Title"
-                                Immediate="true"
-                                OnBlur="@(() => UpdateTodo(todoItem))" />
+                                          Immediate="true"
+                                          OnBlur="@(() => UpdateTodo(todoItem))" />
                         </MudTd>
                         <MudTd DataLabel="Status">
                             <MudSelect Value="todoItem.Status" T="int"
                                        ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
-                                    @foreach (var status in enums.TodoStatuses)
-                                    {
-                                        <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
-                                    }
+                                @foreach (var status in enums.TodoStatuses)
+                                {
+                                    <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                                }
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Priority">
@@ -57,15 +57,14 @@
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Due Date">
-                            <MudDatePicker @bind-Date="todoItem.DueDate"
-                                DateFormat="yyyy-MM-dd" Editable="true"
-                                Placeholder="Select Date" />
-                                @* OnBlur="@(() => UpdateTodo(todoItem))" /> *@
+                            <MudDatePicker Date="todoItem.DueDate"
+                                           DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
+                                           DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                Color="Color.Error" Size="Size.Small"
-                                OnClick="@(() => DeleteTodo(todoItem))" />
+                                           Color="Color.Error" Size="Size.Small"
+                                           OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -75,14 +74,14 @@
                 <MudText>@items.Count() items</MudText>
                 <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
                     <MudButton OnClick="@(() => OnStatusFilterChanged(null))"
-                    Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
+                               Variant="@(selectedStatusId == null ? Variant.Filled : Variant.Outlined)">
                         All
                     </MudButton>
                     @foreach (var status in enums.TodoStatuses)
                     {
                         var statusId = status.Id;
                         <MudButton OnClick="@(() => OnStatusFilterChanged(statusId))"
-                        Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
+                                   Variant="@(selectedStatusId == statusId ? Variant.Filled : Variant.Outlined)">
                             @status.Value
                         </MudButton>
                     }

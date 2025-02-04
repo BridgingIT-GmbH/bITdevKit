@@ -87,12 +87,24 @@
 
                     <MudDivider Vertical="true" FlexItem="true" />
 
-                    <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                    <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Primary"
                                 CheckMark SelectedValueChanged="OnStatusChipChanged">
-                        @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
+                        @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
                         {
-                            <MudTooltip Text="@status.Description">
-                                <MudChip T="int" Value="@status.Id">@status.Value</MudChip>
+                            <MudTooltip Text="@e.Description">
+                                <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
+                            </MudTooltip>
+                        }
+                    </MudChipSet>
+
+                    <MudDivider Vertical="true" FlexItem="true" />
+
+                    <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Secondary"
+                                CheckMark SelectedValueChanged="OnPriorityChipChanged">
+                        @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
+                        {
+                            <MudTooltip Text="@e.Description">
+                                <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
                             </MudTooltip>
                         }
                     </MudChipSet>
@@ -152,6 +164,17 @@
                         });
             }
 
+            if (filterPriorityId.HasValue)
+            {
+                filter.Filters.Add(
+                    new FilterCriteria
+                        {
+                            Field = "Priority",
+                            Operator = Client.FilterOperator.GreaterThanOrEqual,
+                            Value = filterPriorityId.Value
+                        });
+            }
+
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
                 filter.Filters.Add(
@@ -186,6 +209,16 @@
 
         if (id == 0)
             filterStatusId = null;
+
+        await LoadItems();
+    }
+
+    private async Task OnPriorityChipChanged(int id)
+    {
+        filterPriorityId = id;
+
+        if (id == 0)
+            filterPriorityId = null;
 
         await LoadItems();
     }

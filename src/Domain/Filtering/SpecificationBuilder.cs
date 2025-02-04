@@ -123,6 +123,46 @@ public static class SpecificationBuilder
         var property = BuildPropertyExpression(parameter, filter.Field);
         var value = ConvertValueType(filter.Value, property.Type);
         var constant = Expression.Constant(value);
+        var underlyingType = Nullable.GetUnderlyingType(property.Type) ?? property.Type;
+
+        // Handle comparisons for Enumeration types (both nullable and non-nullable)
+        if (typeof(Enumeration).IsAssignableFrom(underlyingType) &&
+            IsComparisonOperator(filter.Operator))
+        {
+            // For nullable types, we need to handle the null case
+            if (property.Type.IsNullableType())
+            {
+                var propertyId = Expression.Property(Expression.Property(property, "Value"), nameof(Enumeration.Id));
+                var valueId = Expression.Constant(value != null ? ((Enumeration)value).Id : 0);
+
+                var hasValueProperty = Expression.Property(property, "HasValue");
+                var nullCheckExpression = Expression.NotEqual(property, Expression.Constant(null, property.Type));
+
+                var comparisonExpression = filter.Operator switch
+                {
+                    FilterOperator.GreaterThan => Expression.GreaterThan(propertyId, valueId),
+                    FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(propertyId, valueId),
+                    FilterOperator.LessThan => Expression.LessThan(propertyId, valueId),
+                    FilterOperator.LessThanOrEqual => Expression.LessThanOrEqual(propertyId, valueId),
+                    _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
+                };
+
+                return Expression.AndAlso(nullCheckExpression, comparisonExpression);
+            }
+
+            // Non-nullable Enumeration handling
+            var nonNullablePropertyId = Expression.Property(property, nameof(Enumeration.Id));
+            var nonNullableValueId = Expression.Constant(((Enumeration)value).Id);
+
+            return filter.Operator switch
+            {
+                FilterOperator.GreaterThan => Expression.GreaterThan(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.LessThan => Expression.LessThan(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.LessThanOrEqual => Expression.LessThanOrEqual(nonNullablePropertyId, nonNullableValueId),
+                _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
+            };
+        }
 
         // For nullable properties, we need to ensure we're comparing the value part
         if (property.Type.IsNullableType())
@@ -181,6 +221,14 @@ public static class SpecificationBuilder
             FilterOperator.DoesNotEndWith => Expression.Not(Expression.Call(property, typeof(string).GetMethod("EndsWith", [typeof(string)]), constant)),
             _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
         };
+    }
+
+    private static bool IsComparisonOperator(FilterOperator @operator)
+    {
+        return @operator is FilterOperator.GreaterThan
+            or FilterOperator.GreaterThanOrEqual
+            or FilterOperator.LessThan
+            or FilterOperator.LessThanOrEqual;
     }
 
     private static Expression BuildPropertyExpression(ParameterExpression parameter, string field)

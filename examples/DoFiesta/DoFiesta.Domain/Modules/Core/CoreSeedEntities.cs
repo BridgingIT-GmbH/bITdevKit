@@ -28,7 +28,7 @@ public static class CoreSeedEntities
                     Description = "Define service boundaries and communication patterns for new microservices architecture",
                     Category = "Architecture",
                     Status = TodoStatus.InProgress,
-                    Priority = TodoPriority.High,
+                    Priority = TodoPriority.Low,
                     DueDate = DateTime.UtcNow.AddDays(5),
                     UserId = UserIds[0],
                     Steps =
@@ -44,7 +44,7 @@ public static class CoreSeedEntities
                     Description = "Implement API Gateway using Ocelot with JWT authentication",
                     Category = "Infrastructure",
                     Status = TodoStatus.New,
-                    Priority = TodoPriority.High,
+                    Priority = TodoPriority.Medium,
                     DueDate = DateTime.UtcNow.AddDays(3),
                     UserId = UserIds[0],
                     Steps =
@@ -76,7 +76,7 @@ public static class CoreSeedEntities
                    Description = "Implement search infrastructure using Elasticsearch and Kibana",
                    Category = "Infrastructure",
                    Status = TodoStatus.New,
-                   Priority = TodoPriority.High,
+                   Priority = TodoPriority.Low,
                    DueDate = DateTime.UtcNow.AddDays(5),
                    UserId = UserIds[0],
                    Steps =
@@ -108,7 +108,7 @@ public static class CoreSeedEntities
                    Description = "Implement RabbitMQ for asynchronous processing",
                    Category = "Infrastructure",
                    Status = TodoStatus.New,
-                   Priority = TodoPriority.High,
+                   Priority = TodoPriority.Low,
                    DueDate = DateTime.UtcNow.AddDays(4),
                    UserId = UserIds[0],
                    Steps =
@@ -188,7 +188,7 @@ public static class CoreSeedEntities
                    Description = "Implement GitOps workflow with Azure DevOps",
                    Category = "DevOps",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.High,
+                   Priority = TodoPriority.Low,
                    DueDate = DateTime.UtcNow.AddDays(3),
                    UserId = UserIds[1],
                    Steps =
@@ -252,7 +252,7 @@ public static class CoreSeedEntities
                    Description = "Separate read and write operations using MediatR",
                    Category = "Architecture",
                    Status = TodoStatus.InProgress,
-                   Priority = TodoPriority.High,
+                   Priority = TodoPriority.Medium,
                    DueDate = DateTime.UtcNow.AddDays(6),
                    UserId = UserIds[2],
                    Steps =

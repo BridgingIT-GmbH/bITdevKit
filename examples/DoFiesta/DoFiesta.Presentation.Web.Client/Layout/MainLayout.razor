@@ -10,7 +10,9 @@
 <MudLayout>
     <MudAppBar Elevation="0" Dense="true">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
-        <MudText Typo="Typo.h6">DoFiesta</MudText>
+        <MudLink Href="/" Underline="Underline.None" Color="Color.Inherit">
+            <MudText Typo="Typo.h6" Color="Color.Inherit">DoFiesta</MudText>
+        </MudLink>
         <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
         <MudIconButton Icon="@Icons.Material.Filled.Help" Color="Color.Tertiary" Href="todos/help" />
         <MudSpacer />

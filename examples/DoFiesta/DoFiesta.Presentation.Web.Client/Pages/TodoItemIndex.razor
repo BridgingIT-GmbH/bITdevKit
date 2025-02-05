@@ -34,7 +34,6 @@
             <MudItem xs="12">
                 <MudTable Items="@items" Hover="true" Dense="true" Striped="false" Loading="@loading" LoadingProgressColor="Color.Info">
                     <ToolBarContent>
-                        <MudToolBar Dense="true">
                             <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                         Color="Color.Primary" CheckMark
                                         SelectedValueChanged="OnStatusChipChanged">
@@ -45,7 +44,9 @@
                                     </MudTooltip>
                                 }
                             </MudChipSet>
-                            <MudDivider Vertical="true" FlexItem="true" Class="mx-4" />
+
+                            <MudDivider Vertical="true" FlexItem="true" />
+
                             <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                         Color="Color.Secondary" CheckMark
                                         SelectedValueChanged="OnPriorityChipChanged">
@@ -56,13 +57,19 @@
                                     </MudTooltip>
                                 }
                             </MudChipSet>
-                            @* <MudDivider Vertical="true" FlexItem="true" Class="mx-4" /> *@
-                            <MudSpacer></MudSpacer>
-                            <MudTextField @bind-Value="filterTitle" Immediate="false"
-                                          Label="Title" Variant="Variant.Text" Margin="Margin.Dense" Clearable="true"
-                                          Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="() => _ = LoadItems()"
-                                          Style="min-width: 300px;" />
-                        </MudToolBar>
+
+                            <MudSpacer />
+
+                            <MudTextField @bind-Value="filterTitle"
+                                          Immediate="false"
+                                          Label="Title"
+                                          Variant="Variant.Text"
+                                          Margin="Margin.Dense"
+                                          Clearable="true"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          OnAdornmentClick="() => _ = LoadItems()"
+                                          Style="width: 300px;" />
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh></MudTh>

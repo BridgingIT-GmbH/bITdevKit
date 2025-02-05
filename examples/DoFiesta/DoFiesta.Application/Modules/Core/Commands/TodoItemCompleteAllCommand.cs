@@ -7,13 +7,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using DevKit.Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
-public class TodoItemCompleteAllCommand(DateTime? from) : CommandRequestBase<Result>
+public class TodoItemCompleteAllCommand(DateTime? from = null) : CommandRequestBase<Result>
 {
     public DateTime? From { get; } = from;
 
@@ -33,7 +34,8 @@ public class TodoItemCompleteAllCommand(DateTime? from) : CommandRequestBase<Res
 
 public class TodoItemCompleteAllCommandHandler(
     ILoggerFactory loggerFactory,
-    IGenericRepository<TodoItem> repository)
+    IGenericRepository<TodoItem> repository,
+    ICurrentUserAccessor currentUserAccessor)
     : CommandHandlerBase<TodoItemCompleteAllCommand, Result>(loggerFactory)
 {
     public override async Task<CommandResponse<Result>> Process(
@@ -42,21 +44,27 @@ public class TodoItemCompleteAllCommandHandler(
     {
         var filter = FilterModelBuilder.For<TodoItem>()
             .AddFilter(e => e.Status, FilterOperator.Equal, TodoStatus.InProgress)
-            .AddCustomFilter(FilterCustomType.FullTextSearch)
-                .AddParameter("searchTerm", "***")
-                .AddParameter("fields", ["Title"]).Done()
+            //.AddCustomFilter(FilterCustomType.FullTextSearch)
+            //    .AddParameter("searchTerm", "***")
+            //    .AddParameter("fields", ["Title"]).Done()
+            //.AddCustomFilter(FilterCustomType.NamedSpecification)
+            //    .AddParameter("specificationName", "TodoItemIsNotDeleted").Done()
             .AddInclude(e => e.Steps)
-            .AddOrdering(e => e.DueDate, OrderDirection.Ascending)
+            .AddOrdering(e => e.DueDate, OrderDirection.Descending)
             //.SetPaging(0, 10)
             .Build();
 
-        var itemsResult = await repository.FindAllResultAsync(filter, cancellationToken: cancellationToken)
-            .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Unless(e => e.All(s => s.Status == TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
-            .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
-            .ProcessEachAsync(async (item, ct) => await repository.UpdateAsync(item, ct), cancellationToken);
+        var result = await repository.FindAllResultAsync(
+            filter,
+            [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken)
+                // work on the repository result
+                .Tap(e => Console.WriteLine("COMPLETEALL: #" + e.Count())) // do something
+                .Unless(e => e.Any(s => s.Status != TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
+                .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
+                .TraverseAsync(async (e, ct) =>
+                    await repository.UpdateAsync(e, ct), cancellationToken: cancellationToken);
 
-        return CommandResult.For(itemsResult.Unwrap());
+        return CommandResult.For(result.Unwrap());
         // TODO: invalidate query cache
     }
 }

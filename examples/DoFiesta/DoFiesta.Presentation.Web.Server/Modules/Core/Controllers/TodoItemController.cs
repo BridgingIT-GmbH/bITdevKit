@@ -167,4 +167,24 @@ public class TodoItemController( // TODO: move to minimal endpoints
 
         return response.Result.ToOkActionResult();
     }
+
+    [HttpPost("actions/completeall")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult> CompleteAll()
+    {
+        var authResult = await authorizationService.AuthorizeAsync(
+            this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Write));
+        if (!authResult.Succeeded)
+        {
+            return this.Unauthorized("write permission needed");
+        }
+
+        var response = await mediator.Send(
+            new TodoItemCompleteAllCommand()).AnyContext();
+
+        return response.Result.ToOkActionResult();
+    }
 }

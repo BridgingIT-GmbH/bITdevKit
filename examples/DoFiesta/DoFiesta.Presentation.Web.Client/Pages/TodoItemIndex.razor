@@ -13,19 +13,27 @@
     else
     {
         <MudGrid>
-            <MudItem xs="12">
+            <MudItem xs="10">
                 <MudPaper Class="d-flex gap-2 align-center py-2 px-4" Elevation="0" Outlined>
                     <MudTextField @bind-Value="newTodoTitle" Immediate="false"
-                                  Label="New Todo" Variant="Variant.Outlined"
-                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
-                                  OnAdornmentClick="() => _ = AddNewTodo()" />
+                    Label="New Todo" Variant="Variant.Outlined"
+                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
+                    OnAdornmentClick="() => _ = AddNewTodo()" />
                     @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
                 </MudPaper>
             </MudItem>
 
+            <MudItem xs="2">
+                <MudTooltip Text="Complete all items which are InProgress">
+                    <MudIconButton Icon="@Icons.Material.Filled.Checklist"
+                    Color="Color.Error" Size="Size.Large"
+                    OnClick="@(() => CompleteAll())" />
+                </MudTooltip>
+            </MudItem>
+
             <MudItem xs="12">
                 <MudTable Items="@items" Hover="true" Dense="true" Striped="false"
-                          Loading="@loading" LoadingProgressColor="Color.Info">
+                Loading="@loading" LoadingProgressColor="Color.Info">
                     <HeaderContent>
                         <MudTh></MudTh>
                         <MudTh>Title</MudTh>
@@ -44,14 +52,14 @@
                         <MudTd DataLabel="Title">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title"
-                                              Immediate="true" Class="flex-grow-1" Style="min-width: 300px;"
-                                              OnBlur="@(() => UpdateTodo(todoItem))" />
+                                Immediate="true" Class="flex-grow-1" Style="min-width: 300px;"
+                                OnBlur="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status">
                             @* <MudTooltip Text="@enums.TodoStatuses.FirstOrDefault(e => e.Id == todoItem.Status).Description"> *@
                             <MudSelect Value="todoItem.Status" T="int"
-                                       ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
+                            ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
                                 @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
@@ -62,7 +70,7 @@
                         <MudTd DataLabel="Priority">
                             @* <MudTooltip Text="@enums.TodoPriorities.FirstOrDefault(e => e.Id == todoItem.Priority).Description"> *@
                             <MudSelect Value="todoItem.Priority" T="int"
-                                       ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
+                            ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
                                 @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
                                 {
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
@@ -72,13 +80,13 @@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
                             <MudDatePicker Date="todoItem.DueDate"
-                                           DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                                           DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
+                            DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
+                            DateFormat="yyyy-MM-dd" Editable="true" Placeholder="Select Date" />
                         </MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error" Size="Size.Small"
-                                           OnClick="@(() => DeleteTodo(todoItem))" />
+                            Color="Color.Error" Size="Size.Small"
+                            OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -87,16 +95,16 @@
             <MudItem xs="12">
                 <MudPaper Class="d-flex gap-2 align-center py-2 px-4" Elevation="0" Outlined>
                     <MudTextField @bind-Value="filterTitle"
-                                  Immediate="false" Label="Title"
-                                  Variant="Variant.Outlined" Clearable="true"
-                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
-                                  OnAdornmentClick="() => _ = LoadItems()"
-                                  Class="flex-grow-0" Style="min-width: 300px;" />
+                    Immediate="false" Label="Title"
+                    Variant="Variant.Outlined" Clearable="true"
+                    Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+                    OnAdornmentClick="() => _ = LoadItems()"
+                    Class="flex-grow-0" Style="min-width: 300px;" />
 
                     <MudDivider Vertical="true" FlexItem="true" />
 
                     <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Primary"
-                                CheckMark SelectedValueChanged="OnStatusChipChanged">
+                    CheckMark SelectedValueChanged="OnStatusChipChanged">
                         @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
                         {
                             <MudTooltip Text="@e.Description">
@@ -108,7 +116,7 @@
                     <MudDivider Vertical="true" FlexItem="true" />
 
                     <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Secondary"
-                                CheckMark SelectedValueChanged="OnPriorityChipChanged">
+                    CheckMark SelectedValueChanged="OnPriorityChipChanged">
                         @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
                         {
                             <MudTooltip Text="@e.Description">
@@ -160,8 +168,7 @@
         try
         {
             loading = true;
-            var filter = new FilterModel();
-            filter.Filters = new List<FilterCriteria>();
+            var filter = new FilterModel() { Filters = new List<FilterCriteria>(), Orderings = new List<FilterOrderCriteria>() };
 
             if (filterStatusId.HasValue)
             {
@@ -195,6 +202,19 @@
                             Value = filterTitle
                         });
             }
+
+            filter.Orderings.Add(new FilterOrderCriteria
+                {
+                    Field = "DueDate",
+                    Direction = Client.OrderDirection.Descending
+                });
+
+            // filter.Filters.Add(
+            //     new FilterCriteria
+            //         {
+            //             CustomType = FilterCustomType.NamedSpecification,
+            //             SpecificationName = "TodoItemIsNotDeleted",
+            //         });
 
             //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
             var response = await ApiClient.TodoItem_PostSearchAsync(filter);
@@ -283,6 +303,27 @@
         catch (ApiException ex)
         {
             Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task CompleteAll()
+    {
+        try
+        {
+            loading = true;
+            Console.WriteLine($"Completing all");
+            await ApiClient.TodoItem_CompleteAllAsync();
+
+            Snackbar.Add("Completed successfully", Severity.Success);
+            await LoadItems();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error completing todos: {ex.Message}", Severity.Error);
         }
         finally
         {

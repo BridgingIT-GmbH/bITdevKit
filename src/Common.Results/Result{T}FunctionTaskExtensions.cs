@@ -1638,14 +1638,23 @@ public static partial class ResultFunctionTaskExtensions
     }
 
     /// <summary>
-    ///     Processes each element in a sequence from a Result task.
+    ///     Traverses a sequence from a Result task by applying an operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the sequence to process.</param>
+    /// <param name="resultTask">The Result task containing the sequence to traverse.</param>
     /// <param name="operation">The operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
-    public static async Task<Result<IEnumerable<T>>> ProcessEach<T>(
+    /// <example>
+    /// <code>
+    /// var result = await repository.FindAllResultAsync()
+    ///     .Traverse(
+    ///         item => repository.ValidateItem(item),
+    ///         ProcessingOptions.Default
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<IEnumerable<T>>> Traverse<T>(
         this Task<Result<IEnumerable<T>>> resultTask,
         Func<T, Result<T>> operation,
         ProcessingOptions options = null)
@@ -1742,15 +1751,25 @@ public static partial class ResultFunctionTaskExtensions
     }
 
     /// <summary>
-    ///     Asynchronously processes each element in a sequence from a Result task.
+    ///     Traverses a sequence from a Result task by applying an async operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the sequence to process.</param>
+    /// <param name="resultTask">The Result task containing the sequence to traverse.</param>
     /// <param name="operation">The async operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
-    public static async Task<Result<IEnumerable<T>>> ProcessEachAsync<T>(
+    /// <example>
+    /// <code>
+    /// var result = await repository.FindAllResultAsync()
+    ///     .Traverse(
+    ///         async (item, ct) => await repository.ValidateItemAsync(item),
+    ///         ProcessingOptions.Default,
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<IEnumerable<T>>> TraverseAsync<T>(
         this Task<Result<IEnumerable<T>>> resultTask,
         Func<T, CancellationToken, Task<Result<T>>> operation,
         ProcessingOptions options = null,

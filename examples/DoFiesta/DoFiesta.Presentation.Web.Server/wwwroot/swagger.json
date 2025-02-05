@@ -1591,6 +1591,35 @@
           }
         }
       }
+    },
+    "/api/core/todoitems/actions/completeall": {
+      "post": {
+        "tags": [
+          "TodoItem"
+        ],
+        "operationId": "TodoItem_CompleteAll",
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {

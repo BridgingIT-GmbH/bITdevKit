@@ -1580,28 +1580,27 @@ public readonly partial struct Result<T>
     }
 
     /// <summary>
-    ///     Processes each element in a sequence with the same input and output type.
+    ///     Traverses a sequence by applying an operation to each element while maintaining the Result context.
     /// </summary>
     /// <param name="operation">The operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{List{User}}.Success(users)
-    ///     .ProcessEach(
-    ///         user => ValidateUser(user),
-    ///         ProcessingOptions.Default
+    /// var result = Result.Success(items)
+    ///     .Traverse(
+    ///         item => ValidateItem(item),
+    ///         new ProcessingOptions { ContinueOnItemFailure = true }
     ///     );
     /// </code>
     /// </example>
-    public Result<TCollection> ProcessEach<TCollection>(
-        Func<T, Result<T>> operation,
-        ProcessingOptions options = null)
-        where TCollection : IEnumerable<T>
+    public Result<IEnumerable<T>> Traverse(
+    Func<T, Result<T>> operation,
+    ProcessingOptions options = null)
     {
         if (!this.IsSuccess || operation is null)
         {
-            return Result<TCollection>.Failure()
+            return Result<IEnumerable<T>>.Failure()
                 .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
@@ -1662,24 +1661,20 @@ public readonly partial struct Result<T>
             }
         }
 
-        var resultCollection = (TCollection)Activator.CreateInstance(
-            typeof(TCollection),
-            new object[] { results });
-
         var isSuccess = results.Any() &&
             (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
         return isSuccess
-            ? Result<TCollection>.Success(resultCollection)
+            ? Result<IEnumerable<T>>.Success(results)
                 .WithErrors(errors)
                 .WithMessages(messages)
-            : Result<TCollection>.Failure()
+            : Result<IEnumerable<T>>.Failure()
                 .WithErrors(errors)
                 .WithMessages(messages);
     }
 
     /// <summary>
-    ///     Asynchronously processes each element in a sequence with the same input and output type.
+    ///     Traverses a sequence by applying an async operation to each element while maintaining the Result context.
     /// </summary>
     /// <param name="operation">The async operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
@@ -1687,23 +1682,22 @@ public readonly partial struct Result<T>
     /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{List{User}}.Success(users)
-    ///     .ProcessEachAsync(
-    ///         async (user, ct) => await ValidateUserAsync(user),
-    ///         ProcessingOptions.Default,
+    /// var result = await Result.Success(items)
+    ///     .Traverse(
+    ///         async (item, ct) => await ValidateItemAsync(item),
+    ///         new ProcessingOptions { MaxFailures = 5 },
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<TCollection>> ProcessEachAsync<TCollection>(
+    public async Task<Result<IEnumerable<T>>> TraverseAsync(
         Func<T, CancellationToken, Task<Result<T>>> operation,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
-        where TCollection : IEnumerable<T>
     {
         if (!this.IsSuccess || operation is null)
         {
-            return Result<TCollection>.Failure()
+            return Result<IEnumerable<T>>.Failure()
                 .WithErrors(this.Errors)
                 .WithMessages(this.Messages);
         }
@@ -1769,18 +1763,14 @@ public readonly partial struct Result<T>
             }
         }
 
-        var resultCollection = (TCollection)Activator.CreateInstance(
-            typeof(TCollection),
-            new object[] { results });
-
         var isSuccess = results.Any() &&
             (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
         return isSuccess
-            ? Result<TCollection>.Success(resultCollection)
+            ? Result<IEnumerable<T>>.Success(results)
                 .WithErrors(errors)
                 .WithMessages(messages)
-            : Result<TCollection>.Failure()
+            : Result<IEnumerable<T>>.Failure()
                 .WithErrors(errors)
                 .WithMessages(messages);
     }

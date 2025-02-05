@@ -13,6 +13,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
+//
+// COMMAND ===============================
+//
+
 public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<Result<TodoItemModel>>,
     ICacheInvalidateCommand
 {
@@ -36,21 +40,34 @@ public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<Res
     }
 }
 
+//
+// HANDLER ===============================
+//
+
 public class TodoItemCreateCommandHandler(
     ILoggerFactory loggerFactory,
     IMapper mapper,
     IGenericRepository<TodoItem> repository,
     ICurrentUserAccessor currentUserAccessor) : CommandHandlerBase<TodoItemCreateCommand, Result<TodoItemModel>>(loggerFactory)
 {
-    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(
-        TodoItemCreateCommand command,
-        CancellationToken cancellationToken)
+    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(TodoItemCreateCommand command, CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"+++ create item: {command.Model.Title}");
-
+        // map the model to the entity
         var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
         entity.UserId = currentUserAccessor.UserId;
 
+        // use some rules to validate the entity
+        var ruleResult = Rule
+            .Add(RuleSet.IsNotEmpty(entity.Title))
+            .Add(RuleSet.NotEqual(entity.Title, "todo"))
+            .Add(new TitleShouldBeUniqueRule(entity.Title, repository)) // custom rule
+            .Check();
+        if (ruleResult.IsFailure)
+        {
+            return CommandResult.For<TodoItemModel>(ruleResult);
+        }
+
+        // insert the entity into the repository
         var result = await repository.InsertResultAsync(entity, cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);

@@ -13,6 +13,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
+//
+// COMMAND ===============================
+//
+
 public class TodoItemDeleteCommand(string id) : CommandRequestBase<Result>,
     ICacheInvalidateCommand
 {
@@ -33,6 +37,10 @@ public class TodoItemDeleteCommand(string id) : CommandRequestBase<Result>,
         }
     }
 }
+
+//
+// HANDLER ===============================
+//
 
 public class TodoItemDeleteCommandHandler(
     ILoggerFactory loggerFactory,

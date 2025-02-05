@@ -16,7 +16,7 @@
 
 The Rules feature provides a centralized approach to defining and evaluating business rules in a
 composable and maintainable way. This feature is designed to handle evaluation, business logic
-enforcement, and complex conditional rule chains while integrating seamlessly with the Result
+enforcement, and complex conditional rule chains while integrating seamlessly with the [Result](./features-results.md)
 pattern.
 
 Key benefits:

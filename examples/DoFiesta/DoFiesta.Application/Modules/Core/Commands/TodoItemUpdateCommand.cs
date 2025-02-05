@@ -14,6 +14,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
+//
+// COMMAND ===============================
+//
+
 public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<Result<TodoItemModel>>,
     ICacheInvalidateCommand
 {
@@ -36,6 +40,10 @@ public class TodoItemUpdateCommand(TodoItemModel model) : CommandRequestBase<Res
         }
     }
 }
+
+//
+// HANDLER ===============================
+//
 
 public class TodoItemUpdateCommandHandler(
     ILoggerFactory loggerFactory,

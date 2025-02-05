@@ -13,6 +13,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 
+//
+// QUERY ===============================
+//
+
 public class TodoItemFindOneQuery(string id) : QueryRequestBase<Result<TodoItemModel>>, ICacheQuery
 {
     public string Id { get; } = id;
@@ -37,6 +41,10 @@ public class TodoItemFindOneQuery(string id) : QueryRequestBase<Result<TodoItemM
         }
     }
 }
+
+//
+// HANDLER ===============================
+//
 
 public class TodoItemFindOneQueryHandler(
     ILoggerFactory loggerFactory,

@@ -11,26 +11,20 @@ using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using DevKit.Application.Commands;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+
+//
+// COMMAND ===============================
+//
 
 public class TodoItemCompleteAllCommand(DateTime? from = null) : CommandRequestBase<Result>
 {
     public DateTime? From { get; } = from;
-
-    public override ValidationResult Validate()
-    {
-        return new Validator().Validate(this);
-    }
-
-    public class Validator : AbstractValidator<TodoItemCompleteAllCommand>
-    {
-        public Validator()
-        {
-            //this.RuleFor(c => c.From).NotNull().NotEmpty();
-        }
-    }
 }
+
+//
+// HANDLER ===============================
+//
 
 public class TodoItemCompleteAllCommandHandler(
     ILoggerFactory loggerFactory,

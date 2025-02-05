@@ -54,8 +54,7 @@ public class TodoItemCompleteAllCommandHandler(
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Unless(e => e.All(s => s.Status == TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
             .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
-            .ProcessEachAsync<TodoItem, IEnumerable<TodoItem>>(
-                async (item, ct) => await repository.UpdateAsync(item, ct), cancellationToken);
+            .ProcessEachAsync(async (item, ct) => await repository.UpdateAsync(item, ct), cancellationToken);
 
         return CommandResult.For(itemsResult.Unwrap());
         // TODO: invalidate query cache

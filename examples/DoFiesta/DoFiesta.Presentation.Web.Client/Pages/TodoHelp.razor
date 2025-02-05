@@ -1,0 +1,96 @@
+﻿@page "/todos/help"
+@inject IStringLocalizer<Global> localizer
+
+<PageTitle>DoFiesta - Help</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 20px;">
+    <MudPaper Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" GutterBottom="true">Getting Started</MudText>
+        <MudText>
+            The Todo application helps you manage your tasks efficiently. Here are the main features:
+        </MudText>
+
+        <MudDivider Class="my-4"/>
+
+        <MudText Typo="Typo.h6">Creating Tasks</MudText>
+        <MudList T="string">
+            <MudListItem Icon="@Icons.Material.Filled.Add" IconColor="Color.Secondary">
+                Enter your task in the "New Todo" field at the top
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Title">
+                Tasks can have a title, description, status, priority, and due date
+            </MudListItem>
+        </MudList>
+
+        <MudText Typo="Typo.h6" Class="mt-4">Task Status</MudText>
+        <MudList T="string">
+            <MudListItem>
+                <MudIcon Icon="@Icons.Material.Filled.FiberNew" Color="Color.Info" Class="mr-2"/> New - Newly created tasks
+            </MudListItem>
+            <MudListItem>
+                <MudIcon Icon="@Icons.Material.Filled.RunCircle" Color="Color.Warning" Class="mr-2"/> InProgress - Tasks being worked on
+            </MudListItem>
+            <MudListItem>
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2"/> Completed - Finished tasks
+            </MudListItem>
+        </MudList>
+
+        <MudText Typo="Typo.h6" Class="mt-4">Priority Levels</MudText>
+        <MudList T="string">
+            <MudListItem Icon="@Icons.Material.Filled.ArrowDownward">Low - Regular tasks</MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Remove">Medium - Important tasks</MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.ArrowUpward">High - Urgent tasks</MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudText Typo="Typo.h5" GutterBottom="true">Special Features</MudText>
+
+        <MudText Typo="Typo.h6">Bulk Actions</MudText>
+        <MudList T="string">
+            <MudListItem Icon="@Icons.Material.Filled.Refresh">
+                Refresh - Update your task list
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Checklist">
+                Complete All - Mark all InProgress tasks as Complete
+            </MudListItem>
+        </MudList>
+
+        <MudText Typo="Typo.h6" Class="mt-4">Filtering</MudText>
+        <MudList T="string">
+            <MudListItem Icon="@Icons.Material.Filled.FilterList">
+                Use status chips to filter tasks by their current state
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.PriorityHigh">
+                Filter by priority level to focus on important tasks
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Search">
+                Search tasks by title using the search field
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudText Typo="Typo.h5" GutterBottom="true">Tips & Tricks</MudText>
+        <MudList T="string">
+            <MudListItem Icon="@Icons.Material.Filled.Lightbulb">
+                Click on a task title to edit it directly
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.DateRange">
+                Set due dates to keep track of deadlines
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Sort">
+                Tasks are automatically sorted by due date
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.Description">
+                Hover over a task to see its full description
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 mt-4">
+        <MudAlert Severity="Severity.Info" Class="mb-4">
+            Need more help? Contact your system administrator or reach out to support.
+        </MudAlert>
+    </MudPaper>
+</MudContainer>

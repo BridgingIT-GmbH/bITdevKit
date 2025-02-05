@@ -57,11 +57,12 @@ public class TodoItemCreateCommandHandler(
         entity.UserId = currentUserAccessor.UserId;
 
         // use some rules to validate the entity
-        var ruleResult = Rule
+        var ruleResult = await Rule
             .Add(RuleSet.IsNotEmpty(entity.Title))
             .Add(RuleSet.NotEqual(entity.Title, "todo"))
             .Add(new TitleShouldBeUniqueRule(entity.Title, repository)) // custom rule
-            .Check();
+            .CheckAsync(cancellationToken);
+        Console.WriteLine("RESULT: " + ruleResult.ToString());
         if (ruleResult.IsFailure)
         {
             return CommandResult.For<TodoItemModel>(ruleResult);

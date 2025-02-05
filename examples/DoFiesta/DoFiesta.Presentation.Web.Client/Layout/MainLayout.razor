@@ -11,6 +11,7 @@
     <MudAppBar Elevation="0" Dense="true">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
         <MudText Typo="Typo.h6">DoFiesta</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
         <MudSpacer />
 
         <AuthorizeView>
@@ -66,7 +67,7 @@
     private MudThemeProvider mudThemeProvider;
     private MudTheme theme = Themes.Custom;
     private bool isDarkMode;
-    private bool drawerOpen = true;
+    private bool drawerOpen = false;
     private HubConnection hubConnection;
     private bool IsConnected { get; set; }
     private bool IsHealthy { get; set; } = true;

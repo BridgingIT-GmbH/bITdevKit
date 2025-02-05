@@ -119,7 +119,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
 
         var response = await mediator.Send(
             new TodoItemCreateCommand(model)).AnyContext();
-        this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.Value.Id);
+        this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.IsSuccess ? response.Result.Value.Id : null);
 
         return response.Result.ToCreatedActionResult();
     }

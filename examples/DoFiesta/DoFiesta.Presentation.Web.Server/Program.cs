@@ -89,8 +89,8 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
     .WithIssuer("https://localhost:5001") // host should match Authority (appsettings.json:Authentication:Authority)
     .WithUsers(Fakes.UsersStarwars)
     .WithTokenLifetimes(
-        accessToken: TimeSpan.FromMinutes(2),
-        refreshToken: TimeSpan.FromDays(1))
+        accessToken: TimeSpan.FromMinutes(60),
+        refreshToken: TimeSpan.FromDays(14))
     .WithClient( // these are optional
         "Blazor WASM Frontend",
         "blazor-wasm",

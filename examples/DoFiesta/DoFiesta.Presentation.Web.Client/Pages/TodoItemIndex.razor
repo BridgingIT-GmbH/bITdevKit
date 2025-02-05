@@ -5,71 +5,90 @@
 
 <PageTitle>DoFiesta - Items</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    @if (enums == null || items == null)
-    {
-        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-    }
-    else
-    {
-        <MudGrid>
-            <MudItem xs="10">
-                <MudPaper Class="d-flex gap-2 align-center py-2 px-4" Elevation="0" Outlined>
-                    <MudTextField @bind-Value="newTodoTitle" Immediate="false"
-                                  Label="New Todo" Variant="Variant.Text" Margin="Margin.Dense"
-                                  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Add"
-                                  OnAdornmentClick="() => _ = AddNewTodo()" />
-                    @* OnKeyDown="@(e => { if (e.Key == "Enter") { _ = AddNewTodo(); } })" *@
-                </MudPaper>
-            </MudItem>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="margin-top: 10px;">
+    <MudGrid>
+        <MudItem xs="12" Class="d-flex align-center">
+            @* <MudSelect T="int" @bind-Value="newTodoPriority">
+                <MudSelectItem Value="1">-</MudSelectItem>
+                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
+                {
+                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                }
+            </MudSelect> *@
+            <MudTextField @bind-Value="newTodoTitle"
+                          Immediate="false"
+                          Label="New Todo"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense" />
+                          @* Adornment="Adornment.End"
+                          AdornmentIcon="@Icons.Material.Filled.Add"
+                          OnAdornmentClick="() => _ = AddNewTodo()" /> *@
+            <MudTooltip Text="Add Todo">
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               Size="Size.Large"
+                               OnClick="@(() => AddNewTodo())" />
+            </MudTooltip>
+            <MudSpacer />
 
-            <MudItem xs="2">
-                <MudTooltip Text="Complete all items which are InProgress">
-                    <MudIconButton Icon="@Icons.Material.Filled.Checklist"
-                                   Color="Color.Success" Size="Size.Large"
-                                   OnClick="@(() => CompleteAll())" />
-                </MudTooltip>
-            </MudItem>
+            <MudTooltip Text="Refresh">
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                               Color="Color.Secondary"
+                               Size="Size.Large"
+                               OnClick="@(() => LoadItems())" />
+            </MudTooltip>
 
-            <MudItem xs="12">
+            <MudTooltip Text="Complete all items which are InProgress">
+                <MudIconButton Icon="@Icons.Material.Filled.Checklist"
+                               Color="Color.Success"
+                               Size="Size.Large"
+                               OnClick="@(() => CompleteAll())" />
+            </MudTooltip>
+        </MudItem>
+
+        <MudItem xs="12">
+            @if (enums == null || items == null)
+            {
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+            }
+            else
+            {
                 <MudTable Items="@items" Hover="true" Dense="true" Striped="false" Loading="@loading" LoadingProgressColor="Color.Info">
                     <ToolBarContent>
-                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
-                                        Color="Color.Primary" CheckMark
-                                        SelectedValueChanged="OnStatusChipChanged">
-                                @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
-                                {
-                                    <MudTooltip Text="@e.Description">
-                                        <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
-                                    </MudTooltip>
-                                }
-                            </MudChipSet>
-
-                            <MudDivider Vertical="true" FlexItem="true" />
-
-                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
-                                        Color="Color.Secondary" CheckMark
-                                        SelectedValueChanged="OnPriorityChipChanged">
-                                @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
-                                {
-                                    <MudTooltip Text="@e.Description">
-                                        <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
-                                    </MudTooltip>
-                                }
-                            </MudChipSet>
-
-                            <MudSpacer />
-
-                            <MudTextField @bind-Value="filterTitle"
-                                          Immediate="false"
-                                          Label="Title"
-                                          Variant="Variant.Text"
-                                          Margin="Margin.Dense"
-                                          Clearable="true"
-                                          Adornment="Adornment.End"
-                                          AdornmentIcon="@Icons.Material.Filled.Search"
-                                          OnAdornmentClick="() => _ = LoadItems()"
-                                          Style="width: 300px;" />
+                        <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                    Color="Color.Primary" CheckMark
+                                    SelectedValueChanged="OnStatusChipChanged">
+                            @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
+                            {
+                                <MudTooltip Text="@e.Description">
+                                    <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
+                                </MudTooltip>
+                            }
+                        </MudChipSet>
+                        <MudDivider Vertical="true" FlexItem="true" />
+                        <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                    Color="Color.Secondary" CheckMark
+                                    SelectedValueChanged="OnPriorityChipChanged">
+                            @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
+                            {
+                                <MudTooltip Text="@e.Description">
+                                    <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
+                                </MudTooltip>
+                            }
+                        </MudChipSet>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="filterTitle"
+                                      Immediate="false"
+                                      Label="Search"
+                                      Variant="Variant.Text"
+                                      Margin="Margin.Dense"
+                                      Clearable="true"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      OnAdornmentClick="() => _ = LoadItems()" />
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh></MudTh>
@@ -94,7 +113,6 @@
                             </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status">
-                            @* <MudTooltip Text="@enums.TodoStatuses.FirstOrDefault(e => e.Id == todoItem.Status).Description"> *@
                             <MudSelect Value="todoItem.Status" T="int"
                                        ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
                                 @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
@@ -102,10 +120,8 @@
                                     <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
                                 }
                             </MudSelect>
-                            @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Priority">
-                            @* <MudTooltip Text="@enums.TodoPriorities.FirstOrDefault(e => e.Id == todoItem.Priority).Description"> *@
                             <MudSelect Value="todoItem.Priority" T="int"
                                        ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
                                 @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
@@ -113,7 +129,6 @@
                                     <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
                                 }
                             </MudSelect>
-                            @* </MudTooltip> *@
                         </MudTd>
                         <MudTd DataLabel="Due Date">
                             <MudDatePicker Date="todoItem.DueDate"
@@ -127,16 +142,17 @@
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
-            </MudItem>
-        </MudGrid>
-    }
+            }
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 @code {
-    private bool loading;
+    private bool loading = true;
     private ICollection<TodoItemModel> items;
     private EnumerationModel enums;
     private string newTodoTitle;
+    private int newTodoPriority = 1;
     private int? filterStatusId;
     private int? filterPriorityId;
     private string filterTitle = string.Empty;
@@ -163,9 +179,10 @@
 
     private async Task LoadItems()
     {
+        loading = true;
+
         try
         {
-            loading = true;
             var filter = new FilterModel() { Filters = new List<FilterCriteria>(), Orderings = new List<FilterOrderCriteria>() };
 
             if (filterStatusId.HasValue)
@@ -260,17 +277,18 @@
         if (string.IsNullOrWhiteSpace(newTodoTitle))
             return;
 
+        loading = true;
+        var newItem = new TodoItemModel
+            {
+                Title = newTodoTitle,
+                Status = enums.TodoStatuses.First().Id,
+                Priority = newTodoPriority //enums.TodoPriorities.First().Id
+            };
+        newTodoTitle = string.Empty;
+        items.Add(newItem);
+
         try
         {
-            loading = true;
-            var newItem = new TodoItemModel
-                {
-                    Title = newTodoTitle,
-                    Status = enums.TodoStatuses.First().Id,
-                    Priority = enums.TodoPriorities.First().Id
-                };
-            newTodoTitle = string.Empty;
-            items.Add(newItem);
 
             await ApiClient.TodoItem_PostAsync(newItem);
 
@@ -279,6 +297,7 @@
         }
         catch (ApiException ex)
         {
+            items.Remove(newItem);
             Snackbar.Add($"Error adding todo: {ex.Message}", Severity.Error);
         }
         finally
@@ -289,10 +308,11 @@
 
     private async Task UpdateTodo(TodoItemModel item)
     {
+        loading = true;
+        Console.WriteLine($"Updating todo: {item.Id}");
+
         try
         {
-            loading = true;
-            Console.WriteLine($"Updating todo: {item.Id}");
             await ApiClient.TodoItem_PutAsync(item.Id, item);
 
             Snackbar.Add("Updated successfully", Severity.Success);
@@ -310,10 +330,11 @@
 
     private async Task CompleteAll()
     {
+        loading = true;
+        Console.WriteLine($"Completing all");
+
         try
         {
-            loading = true;
-            Console.WriteLine($"Completing all");
             await ApiClient.TodoItem_CompleteAllAsync();
 
             Snackbar.Add("Completed successfully", Severity.Success);
@@ -331,10 +352,12 @@
 
     private async Task DeleteTodo(TodoItemModel item)
     {
+        loading = true;
+        var removeItem = items.FirstOrDefault(e => e.Id == item.Id);
+        items.Remove(removeItem);
+
         try
         {
-            loading = true;
-            items.Remove(items.FirstOrDefault(e => e.Id == item.Id));
             await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
 
             Snackbar.Add("Deleted successfully", Severity.Success);
@@ -342,6 +365,7 @@
         }
         catch (ApiException ex)
         {
+            items.Add(removeItem);
             Snackbar.Add($"Error deleting todo: {ex.Message}", Severity.Error);
         }
         finally

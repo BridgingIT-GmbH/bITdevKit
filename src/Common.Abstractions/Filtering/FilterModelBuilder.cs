@@ -319,6 +319,12 @@ public static class FilterModelBuilder
                 return this;
             }
 
+            public CustomFilterBuilder AddParameter(string key, string[] values)
+            {
+                this.parameters.TryAdd(key, values);
+                return this;
+            }
+
             /// <summary>
             /// Exits the custom filter builder and returns to the main builder.
             /// </summary>

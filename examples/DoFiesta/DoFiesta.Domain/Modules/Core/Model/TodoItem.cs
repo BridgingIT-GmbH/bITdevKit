@@ -22,6 +22,16 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
 
     public TodoStatus Status { get; set; }
 
+    public void SetStatus(TodoStatus status)
+    {
+        this.Status = status;
+    }
+
+    public void SetCompleted()
+    {
+        this.Status = TodoStatus.Completed;
+    }
+
     public TodoPriority Priority { get; set; }
 
     public DateTime? DueDate { get; set; }

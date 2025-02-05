@@ -1578,4 +1578,233 @@ public readonly partial struct Result<T>
                 .WithMessages(this.Messages);
         }
     }
+
+    /// <summary>
+    ///     Processes each element in a sequence with the same input and output type.
+    /// </summary>
+    /// <param name="operation">The operation to apply to each element.</param>
+    /// <param name="options">Options for handling partial success scenarios.</param>
+    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{List{User}}.Success(users)
+    ///     .ProcessEach(
+    ///         user => ValidateUser(user),
+    ///         ProcessingOptions.Default
+    ///     );
+    /// </code>
+    /// </example>
+    public Result<TCollection> ProcessEach<TCollection>(
+        Func<T, Result<T>> operation,
+        ProcessingOptions options = null)
+        where TCollection : IEnumerable<T>
+    {
+        if (!this.IsSuccess || operation is null)
+        {
+            return Result<TCollection>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        options ??= ProcessingOptions.Default;
+        var results = new List<T>();
+        var errors = new List<IResultError>();
+        var messages = new List<string>();
+        var failureCount = 0;
+
+        foreach (var item in (IEnumerable<T>)this.Value)
+        {
+            try
+            {
+                var operationResult = operation(item);
+
+                if (operationResult.IsSuccess)
+                {
+                    results.Add(operationResult.Value);
+                }
+                else
+                {
+                    failureCount++;
+                    errors.AddRange(operationResult.Errors);
+
+                    if (options.IncludeFailedItems)
+                    {
+                        results.Add(item);
+                    }
+
+                    if (!options.ContinueOnItemFailure ||
+                        (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                    {
+                        messages.Add($"Processing aborted after {failureCount} failures");
+                        break;
+                    }
+                }
+
+                messages.AddRange(operationResult.Messages);
+            }
+            catch (Exception ex)
+            {
+                failureCount++;
+                var error = Result.Settings.ExceptionErrorFactory(ex);
+                errors.Add(error);
+
+                if (options.IncludeFailedItems)
+                {
+                    results.Add(item);
+                }
+
+                if (!options.ContinueOnItemFailure ||
+                    (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                {
+                    messages.Add($"Processing aborted after {failureCount} failures");
+                    break;
+                }
+            }
+        }
+
+        var resultCollection = (TCollection)Activator.CreateInstance(
+            typeof(TCollection),
+            new object[] { results });
+
+        var isSuccess = results.Any() &&
+            (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
+
+        return isSuccess
+            ? Result<TCollection>.Success(resultCollection)
+                .WithErrors(errors)
+                .WithMessages(messages)
+            : Result<TCollection>.Failure()
+                .WithErrors(errors)
+                .WithMessages(messages);
+    }
+
+    /// <summary>
+    ///     Asynchronously processes each element in a sequence with the same input and output type.
+    /// </summary>
+    /// <param name="operation">The async operation to apply to each element.</param>
+    /// <param name="options">Options for handling partial success scenarios.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result{List{User}}.Success(users)
+    ///     .ProcessEachAsync(
+    ///         async (user, ct) => await ValidateUserAsync(user),
+    ///         ProcessingOptions.Default,
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public async Task<Result<TCollection>> ProcessEachAsync<TCollection>(
+        Func<T, CancellationToken, Task<Result<T>>> operation,
+        ProcessingOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TCollection : IEnumerable<T>
+    {
+        if (!this.IsSuccess || operation is null)
+        {
+            return Result<TCollection>.Failure()
+                .WithErrors(this.Errors)
+                .WithMessages(this.Messages);
+        }
+
+        options ??= ProcessingOptions.Default;
+        var results = new List<T>();
+        var errors = new List<IResultError>();
+        var messages = new List<string>();
+        var failureCount = 0;
+
+        foreach (var item in (IEnumerable<T>)this.Value)
+        {
+            try
+            {
+                var operationResult = await operation(item, cancellationToken);
+
+                if (operationResult.IsSuccess)
+                {
+                    results.Add(operationResult.Value);
+                }
+                else
+                {
+                    failureCount++;
+                    errors.AddRange(operationResult.Errors);
+
+                    if (options.IncludeFailedItems)
+                    {
+                        results.Add(item);
+                    }
+
+                    if (!options.ContinueOnItemFailure ||
+                        (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                    {
+                        messages.Add($"Processing aborted after {failureCount} failures");
+                        break;
+                    }
+                }
+
+                messages.AddRange(operationResult.Messages);
+            }
+            catch (OperationCanceledException)
+            {
+                errors.Add(new OperationCancelledError());
+                break;
+            }
+            catch (Exception ex)
+            {
+                failureCount++;
+                var error = Result.Settings.ExceptionErrorFactory(ex);
+                errors.Add(error);
+
+                if (options.IncludeFailedItems)
+                {
+                    results.Add(item);
+                }
+
+                if (!options.ContinueOnItemFailure ||
+                    (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                {
+                    messages.Add($"Processing aborted after {failureCount} failures");
+                    break;
+                }
+            }
+        }
+
+        var resultCollection = (TCollection)Activator.CreateInstance(
+            typeof(TCollection),
+            new object[] { results });
+
+        var isSuccess = results.Any() &&
+            (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
+
+        return isSuccess
+            ? Result<TCollection>.Success(resultCollection)
+                .WithErrors(errors)
+                .WithMessages(messages)
+            : Result<TCollection>.Failure()
+                .WithErrors(errors)
+                .WithMessages(messages);
+    }
+}
+
+public class ProcessingOptions
+{
+    public bool ContinueOnItemFailure { get; set; } = true;
+
+    public int? MaxFailures { get; set; }
+
+    public bool IncludeFailedItems { get; set; }
+
+    public static ProcessingOptions Default => new()
+    {
+        ContinueOnItemFailure = true,
+        MaxFailures = null,
+        IncludeFailedItems = false
+    };
+
+    public static ProcessingOptions Strict => new()
+    {
+        ContinueOnItemFailure = false,
+        MaxFailures = 0,
+        IncludeFailedItems = false
+    };
 }

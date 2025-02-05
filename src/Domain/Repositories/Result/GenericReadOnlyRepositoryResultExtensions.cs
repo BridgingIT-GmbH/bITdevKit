@@ -268,16 +268,16 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
     public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
-        FilterModel filterModel,
+        FilterModel filter,
         IEnumerable<ISpecification<TEntity>> specifications = null,
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
         try
         {
-            filterModel ??= new FilterModel();
-            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
-            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
+            filter ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filter, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filter);
 
             var entities = await source.FindAllAsync(
                     specifications,
@@ -656,16 +656,16 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
     public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
-        FilterModel filterModel,
+        FilterModel filter,
         IEnumerable<ISpecification<TEntity>> specifications = null,
         CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
         try
         {
-            filterModel ??= new FilterModel();
-            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
-            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
+            filter ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filter, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filter);
 
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             var entities = await source.FindAllAsync(
@@ -673,7 +673,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
                     findOptions, cancellationToken)
                 .AnyContext();
 
-            return ResultPaged<TEntity>.Success(entities, count, filterModel.Page, filterModel.PageSize);
+            return ResultPaged<TEntity>.Success(entities, count, filter.Page, filter.PageSize);
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {

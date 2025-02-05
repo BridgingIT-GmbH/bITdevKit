@@ -1636,4 +1636,196 @@ public static partial class ResultFunctionTaskExtensions
                 .WithMessage(ex.Message);
         }
     }
+
+    /// <summary>
+    ///     Processes each element in a sequence from a Result task by applying an operation.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements.</typeparam>
+    /// <typeparam name="TCollection">The type of the collection containing elements of type T.</typeparam>
+    /// <param name="resultTask">The Result task containing the sequence to process.</param>
+    /// <param name="operation">The operation to apply to each element.</param>
+    /// <param name="options">Options for handling partial success scenarios.</param>
+    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    public static async Task<Result<TCollection>> ProcessEach<T, TCollection>(
+    this Task<Result<TCollection>> resultTask,
+    Func<T, Result<T>> operation,
+    ProcessingOptions options = null)
+    where TCollection : IEnumerable<T>
+    {
+        if (resultTask is null)
+        {
+            return Result<TCollection>.Failure()
+                .WithError(new Error("Result task cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
+            options ??= ProcessingOptions.Default;
+            var results = new List<T>();
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var failureCount = 0;
+
+            foreach (var item in result.Value)
+            {
+                try
+                {
+                    var operationResult = operation(item);
+
+                    if (operationResult.IsSuccess)
+                    {
+                        results.Add(operationResult.Value);
+                    }
+                    else
+                    {
+                        failureCount++;
+                        errors.AddRange(operationResult.Errors);
+
+                        if (options.IncludeFailedItems)
+                        {
+                            results.Add(item);
+                        }
+
+                        if (!options.ContinueOnItemFailure ||
+                            (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                        {
+                            messages.Add($"Processing aborted after {failureCount} failures");
+                            break;
+                        }
+                    }
+
+                    messages.AddRange(operationResult.Messages);
+                }
+                catch (Exception ex)
+                {
+                    failureCount++;
+                    var error = Result.Settings.ExceptionErrorFactory(ex);
+                    errors.Add(error);
+
+                    if (options.IncludeFailedItems)
+                    {
+                        results.Add(item);
+                    }
+
+                    if (!options.ContinueOnItemFailure ||
+                        (options.MaxFailures.HasValue && failureCount > options.MaxFailures.Value))
+                    {
+                        messages.Add($"Processing aborted after {failureCount} failures");
+                        break;
+                    }
+                }
+            }
+
+            var resultCollection = (TCollection)Activator.CreateInstance(
+                typeof(TCollection),
+                new object[] { results });
+
+            var isSuccess = results.Any() &&
+                (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
+
+            return isSuccess
+                ? Result<TCollection>.Success(resultCollection)
+                    .WithErrors(errors)
+                    .WithMessages(messages)
+                : Result<TCollection>.Failure()
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<TCollection>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously processes each element in a sequence from a Result task.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements.</typeparam>
+    /// <typeparam name="TCollection">The type of the collection containing elements of type T.</typeparam>
+    /// <param name="resultTask">The Result task containing the sequence to process.</param>
+    /// <param name="operation">The async operation to apply to each element.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    public static async Task<Result<TCollection>> ProcessEachAsync<T, TCollection>(
+        this Task<Result<TCollection>> resultTask,
+        Func<T, CancellationToken, Task<Result<T>>> operation,
+        CancellationToken cancellationToken = default)
+        where TCollection : IEnumerable<T>
+    {
+        if (resultTask is null)
+        {
+            return Result<TCollection>.Failure()
+                .WithError(new Error("Result task cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+
+            var results = new List<T>();
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var failureCount = 0;
+
+            foreach (var item in result.Value)
+            {
+                try
+                {
+                    var operationResult = await operation(item, cancellationToken);
+
+                    if (operationResult.IsSuccess)
+                    {
+                        results.Add(operationResult.Value);
+                    }
+                    else
+                    {
+                        failureCount++;
+                        errors.AddRange(operationResult.Errors);
+                    }
+
+                    messages.AddRange(operationResult.Messages);
+                }
+                catch (OperationCanceledException)
+                {
+                    return Result<TCollection>.Failure()
+                        .WithError(new OperationCancelledError());
+                }
+                catch (Exception ex)
+                {
+                    failureCount++;
+                    errors.Add(new ExceptionError(ex));
+                }
+            }
+
+            var resultCollection = (TCollection)Activator.CreateInstance(
+                typeof(TCollection),
+                new object[] { results });
+
+            return results.Any()
+                ? Result<TCollection>.Success(resultCollection)
+                    .WithErrors(errors)
+                    .WithMessages(messages)
+                : Result<TCollection>.Failure()
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<TCollection>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
 }

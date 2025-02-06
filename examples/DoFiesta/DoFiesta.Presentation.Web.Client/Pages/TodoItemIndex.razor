@@ -52,7 +52,7 @@
             }
             else
             {
-                <MudTable Items="@items" Hover="true" Dense="true" Striped="false" Loading="@loading" LoadingProgressColor="Color.Info">
+                <MudTable Items="@items" AllowUnsorted="false" Hover="true" Dense="true" Striped="false" Loading="@loading" LoadingProgressColor="Color.Info">
                     <ToolBarContent>
                         <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                     Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
@@ -83,7 +83,12 @@
                         <MudTh Style="width: 50%">Title</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Priority</MudTh>
-                        <MudTh Style="width: 25%">Due</MudTh>
+                        <MudTh Style="width: 25%">
+                            <MudTableSortLabel T="string" @onclick="@OnDueDateSortClick"
+                                SortDirection="@currentSortDirection" InitialDirection="SortDirection.Ascending">
+                                Due
+                            </MudTableSortLabel>
+                        </MudTh>
                         <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate Context="todoItem">
@@ -141,6 +146,7 @@
     private int? filterStatusId;
     private int? filterPriorityId;
     private string filterTitle = string.Empty;
+    private SortDirection currentSortDirection = SortDirection.Ascending;
 
     protected override async Task OnInitializedAsync()
     {
@@ -206,7 +212,9 @@
             filter.Orderings.Add(new FilterOrderCriteria
                 {
                     Field = "DueDate",
-                    Direction = Client.OrderDirection.Ascending
+                    Direction = currentSortDirection == SortDirection.Ascending
+                        ? OrderDirection.Ascending
+                        : OrderDirection.Descending
                 });
 
             // filter.Filters.Add(
@@ -275,7 +283,7 @@
         try
         {
 
-            await ApiClient.TodoItem_PostAsync(newItem);
+            var response = await ApiClient.TodoItem_PostAsync(newItem);
 
             Snackbar.Add("Added successfully", Severity.Success);
             await LoadItems();
@@ -357,6 +365,19 @@
         {
             loading = false;
         }
+    }
+
+    private async Task OnDueDateSortClick()
+    {
+        currentSortDirection = currentSortDirection switch
+        {
+            SortDirection.None => SortDirection.Ascending,
+            SortDirection.Ascending => SortDirection.Descending,
+            SortDirection.Descending => SortDirection.None,
+            _ => SortDirection.None
+        };
+
+        await LoadItems();
     }
 
     private (string icon, Color color) GetStatusIcon(int statusId)

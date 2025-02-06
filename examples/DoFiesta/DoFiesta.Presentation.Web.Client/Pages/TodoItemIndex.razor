@@ -202,10 +202,11 @@
                         });
             }
 
+            // set ordering
             filter.Orderings.Add(new FilterOrderCriteria
                 {
                     Field = "DueDate",
-                    Direction = Client.OrderDirection.Descending
+                    Direction = Client.OrderDirection.Ascending
                 });
 
             // filter.Filters.Add(

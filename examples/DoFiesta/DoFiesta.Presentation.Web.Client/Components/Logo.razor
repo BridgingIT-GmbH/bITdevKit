@@ -1,0 +1,45 @@
+﻿@namespace YourNamespace
+@using Microsoft.AspNetCore.Components
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 200 100"
+     style="width:@(Width)px; height:@(Height)px; @Style">
+    <!-- Circular background -->
+    <circle cx="50" cy="50" r="35" fill="#1E88E5" opacity="0.1" />
+
+    <!-- Checkmark -->
+    <path d="M30,50 Q45,65 55,80 Q85,30 120,20"
+          fill="none"
+          stroke="#1E88E5"
+          stroke-width="6"
+          stroke-linecap="round" />
+
+    <!-- Confetti -->
+    <rect x="90" y="20" width="8" height="2" fill="#FF4081" transform="rotate(45, 90, 20)" />
+    <rect x="110" y="40" width="8" height="2" fill="#FFC107" transform="rotate(-30, 110, 40)" />
+    <rect x="75" y="60" width="8" height="2" fill="#4CAF50" transform="rotate(15, 75, 60)" />
+    <rect x="130" y="30" width="8" height="2" fill="#FF4081" transform="rotate(-60, 130, 30)" />
+
+    <!-- Small dots -->
+    <circle cx="95" cy="25" r="3" fill="#FF4081" />
+    <circle cx="115" cy="45" r="3" fill="#FFC107" />
+    <circle cx="80" cy="65" r="3" fill="#4CAF50" />
+    <circle cx="135" cy="35" r="3" fill="#FF4081" />
+
+    <!-- Text with professional font -->
+    <text x="140" y="60" font-family="Arial" font-size="28" font-weight="bold" text-anchor="middle">
+        <tspan fill="#424242">Do</tspan>
+        <tspan fill="#1E88E5">Fiesta</tspan>
+    </text>
+</svg>
+
+@code {
+    [Parameter]
+    public int Width { get; set; } = 300; // Default width
+
+    [Parameter]
+    public int Height { get; set; } = 150; // Default height
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+}

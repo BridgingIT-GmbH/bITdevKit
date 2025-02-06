@@ -33,24 +33,26 @@
             </NotAuthorized>
         </AuthorizeView>
 
-        @* <MudTooltip Text="User Profile">
-            <MudIconButton Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Inherit" Href="/user-profile" />
-        </MudTooltip> *@
-        <MudTooltip Text="Swagger API documentation">
-            <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="swagger/index.html" Target="_blank" />
-        </MudTooltip>
-        <MudTooltip Text="Logs">
-            <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
-        </MudTooltip>
-        <MudTooltip Text="Traces">
-            <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
-        </MudTooltip>
-        <MudTooltip Text="Health">
-            <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
-        </MudTooltip>
-        <MudTooltip Text="Theme">
-            <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />
-        </MudTooltip>
+        <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+            @* <MudTooltip Text="User Profile">
+                <MudIconButton Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Inherit" Href="/user-profile" />
+            </MudTooltip> *@
+            <MudTooltip Text="Swagger API documentation">
+                <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="swagger/index.html" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Logs">
+                <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Traces">
+                <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Health">
+                <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Theme">
+                <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />
+            </MudTooltip>
+        </MudHidden>
     </MudAppBar>
     <MudDrawer @bind-Open="drawerOpen" Elevation="1" Width="150px">
         <MudDrawerHeader>

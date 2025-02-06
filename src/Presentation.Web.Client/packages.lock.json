@@ -278,7 +278,6 @@
           "Microsoft.IdentityModel.Tokens": "8.3.1"
         }
       }
-    },
-    "net9.0/linux-x64": {}
+    }
   }
 }

@@ -54,31 +54,34 @@
             }
             else
             {
-                <MudTable Items="@items" AllowUnsorted="false" Hover="true" Dense="true" Striped="false" Loading="@loading" LoadingProgressColor="Color.Info">
+                <MudTable Items="@items" AllowUnsorted="false" Hover="true" Dense="true"
+                    Striped="false" Bordered="false" Loading="@loading" LoadingProgressColor="Color.Info">
                     <ToolBarContent>
-                        <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
-                                    Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
-                            @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
-                            {
-                                <MudTooltip Text="@e.Description">
-                                    <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
-                                </MudTooltip>
-                            }
-                        </MudChipSet>
-                        <MudDivider Vertical="true" FlexItem="true" />
-                        <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
-                                    Color="Color.Secondary" CheckMark SelectedValueChanged="OnPriorityChipChanged">
-                            @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
-                            {
-                                <MudTooltip Text="@e.Description">
-                                    <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
-                                </MudTooltip>
-                            }
-                        </MudChipSet>
-                        <MudSpacer />
-                        <MudTextField @bind-Value="filterTitle" Immediate="false" Label="Search"
-                                      Variant="Variant.Text" Margin="Margin.Dense" Clearable="true"
-                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="() => _ = LoadItems()" />
+                        <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                        Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
+                                @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
+                                {
+                                    <MudTooltip Text="@e.Description">
+                                        <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
+                                    </MudTooltip>
+                                }
+                            </MudChipSet>
+                            <MudDivider Vertical="true" FlexItem="true" />
+                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                        Color="Color.Secondary" CheckMark SelectedValueChanged="OnPriorityChipChanged">
+                                @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
+                                {
+                                    <MudTooltip Text="@e.Description">
+                                        <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
+                                    </MudTooltip>
+                                }
+                            </MudChipSet>
+                            <MudSpacer />
+                            <MudTextField @bind-Value="filterTitle" Immediate="false" Label="Search"
+                                          Variant="Variant.Text" Margin="Margin.Dense" Clearable="true"
+                                          Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="() => _ = LoadItems()" />
+                        </MudHidden>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh></MudTh>
@@ -87,7 +90,7 @@
                         <MudTh>Priority</MudTh>
                         <MudTh Style="width: 25%">
                             <MudTableSortLabel T="string" @onclick="@OnDueDateSortClick"
-                                SortDirection="@currentSortDirection" InitialDirection="SortDirection.Ascending">
+                                               SortDirection="@currentSortDirection" InitialDirection="SortDirection.Ascending">
                                 Due
                             </MudTableSortLabel>
                         </MudTh>
@@ -95,10 +98,12 @@
                     </HeaderContent>
                     <RowTemplate Context="todoItem">
                         <MudTd>
-                            @{
-                                var (icon, color) = GetStatusIcon(todoItem.Status);
-                                <MudIcon Icon="@icon" Color="@color" />
-                            }
+                            <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                                @{
+                                    var (icon, color) = GetStatusIcon(todoItem.Status);
+                                    <MudIcon Icon="@icon" Color="@color" />
+                                }
+                            </MudHidden>
                         </MudTd>
                         <MudTd DataLabel="Title" Style="width: 100%">
                             <MudTooltip Text="@todoItem.Description">
@@ -124,11 +129,11 @@
                                 }
                             </MudSelect>
                         </MudTd>
-                        <MudTd DataLabel="Due Date">
+                        <MudTd DataLabel="Due Date" HideSmall="true">
                             <MudDatePicker Date="todoItem.DueDate" DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
                                            DateFormat="yyyy-MM-dd" Style="min-width: 150px;" Editable="true" Placeholder="Select Date" />
                         </MudTd>
-                        <MudTd>
+                        <MudTd HideSmall="true">
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                            Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
@@ -215,8 +220,8 @@
                 {
                     Field = "DueDate",
                     Direction = currentSortDirection == SortDirection.Ascending
-                        ? OrderDirection.Ascending
-                        : OrderDirection.Descending
+                                    ? OrderDirection.Ascending
+                                    : OrderDirection.Descending
                 });
 
             // filter.Filters.Add(

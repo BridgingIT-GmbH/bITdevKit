@@ -1,16 +1,6 @@
 # Results Feature Documentation
 
-<!-- TOC -->
-
-* [Overview](#overview)
-* [Basic Usage](#basic-usage)
-* [Examples](#examples)
-* [Appendix A: Repository Extensions](#appendix-a-repository-extensions)
-* [Appendix B: Functional Extensions](#appendix-b-functional-extensions)
-* [Appendix C: Result Creation Methods](#appendix-c-result-creation-methods)
-* [Appendix D: Either Type](#appendix-d-either-type)
-
-<!-- TOC -->
+[TOC]
 
 ## Overview
 

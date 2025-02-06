@@ -1,16 +1,6 @@
 # Rules Feature Documentation
 
-<!-- TOC -->
-
-* [Overview](#overview)
-* [Basic Usage](#basic-usage)
-* [Rule Builder Patterns](#rule-builder-patterns)
-* [Architecture](#architecture)
-* [Advanced Usage](#advanced-usage)
-* [Appendix A: Async Usage](#appendix-a-async-usage)
-* [Appendix B: Disclaimer](#appendix-b-disclaimer)
-
-<!-- TOC -->
+[TOC]
 
 ## Overview
 

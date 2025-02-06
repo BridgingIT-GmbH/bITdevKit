@@ -1,7 +1,9 @@
 ﻿@page "/todos"
+@using Microsoft.AspNetCore.Authorization
 @inject IStringLocalizer<Global> localizer
 @inject IApiClient ApiClient
 @inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <PageTitle>DoFiesta - Todos</PageTitle>
 

@@ -58,8 +58,14 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<TimeoutJobSchedulingBehavior>();
 
+//
+// Startup Tasks ==============================
+//
+
 builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
-    .WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
+    .WithTask<EchoStartupTask>(o => o
+        .Enabled(builder.Environment.IsDevelopment())
+        .StartupDelay("00:00:03"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
     //.WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
@@ -84,17 +90,22 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
     });
 
+//
+// Identity Provider Middleware ==============================
+//
+
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     .WithIssuer("https://localhost:5001") // host should match Authority (appsettings.json:Authentication:Authority)
     .WithUsers(Fakes.UsersStarwars)
     .WithTokenLifetimes(
-        accessToken: TimeSpan.FromMinutes(60),
+        accessToken: TimeSpan.FromHours(24),
         refreshToken: TimeSpan.FromDays(14))
-    .WithClient( // these are optional
+    .WithClient( // optional client configuration
         "Blazor WASM Frontend",
         "blazor-wasm",
-        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback"));
+        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback")
+    .EnableLoginCard(false));
 
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);

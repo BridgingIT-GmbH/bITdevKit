@@ -5,24 +5,22 @@
 <PageTitle>DoFiesta</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
-    <MudCarousel TData="object" Style="height:400px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="true">
+    <MudCarousel TData="object" Style="height:400px;" ShowArrows="true" ShowBullets="false" EnableSwipeGesture="true" AutoCycle="true">
         <MudCarouselItem Transition="Transition.Slide">
             <div class="d-flex flex-column align-center justify-center mud-height-full">
+                <Logo />
                 <MudPaper Class="pa-8 mud-width-full" Style="background-color: var(--mud-palette-primary);">
-                    <Logo />
                     <MudText Typo="Typo.h3" Align="Align.Center" Color="Color.Surface">Welcome to DoFiesta</MudText>
                     <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Surface" Class="mt-4">Your Task Management Solution</MudText>
-                    <div class="d-flex justify-center mt-8">
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" Href="/todos">Get Started</MudButton>
-                    </div>
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" Href="/todos">Get Started</MudButton>
                 </MudPaper>
             </div>
         </MudCarouselItem>
 
         <MudCarouselItem Transition="Transition.Slide">
             <div class="d-flex flex-column align-center justify-center mud-height-full">
+                <Logo />
                 <MudPaper Class="pa-8 mud-width-full" Style="background-color: var(--mud-palette-secondary);">
-                    <Logo />
                     <MudText Typo="Typo.h3" Align="Align.Center" Color="Color.Surface">Stay Organized</MudText>
                     <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Surface" Class="mt-4">
                         Manage tasks, set priorities, and track progress
@@ -38,8 +36,8 @@
 
         <MudCarouselItem Transition="Transition.Slide">
             <div class="d-flex flex-column align-center justify-center mud-height-full">
+                <Logo />
                 <MudPaper Class="pa-8 mud-width-full" Style="background-color: var(--mud-palette-success);">
-                    <Logo />
                     <MudText Typo="Typo.h3" Align="Align.Center" Color="Color.Surface">Track Progress</MudText>
                     <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Surface" Class="mt-4">
                         From New to Completed, monitor your task lifecycle

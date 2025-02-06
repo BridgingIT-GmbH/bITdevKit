@@ -149,66 +149,66 @@ public static class Fakes
                     """
                 }
             }),
-        new(
-            "r2d2@starwars.com",
-            "R2-D2",
-            [Role.Readers],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="5"/>
-                        <rect x="8" y="13" width="8" height="8" rx="1"/>
-                        <circle cx="12" cy="8" r="2"/>
-                        <path d="M9 16h6"/>
-                        <path d="M9 18h6"/>
-                    </svg>
-                    """
-                }
-            }),
-        new(
-            "c3po@starwars.com",
-            "C-3PO",
-            [Role.Writers],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="7" r="4"/>
-                        <rect x="8" y="11" width="8" height="10" rx="2"/>
-                        <circle cx="10" cy="7" r="1" fill="currentColor"/>
-                        <circle cx="14" cy="7" r="1" fill="currentColor"/>
-                        <path d="M10 16h4"/>
-                    </svg>
-                    """
-                }
-            }),
-        new(
-            "boba.fett@starwars.com",
-            "Boba Fett",
-            [Role.Guests],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 3L4 9v2h16V9L12 3z"/>
-                        <path d="M4 11v10h16V11"/>
-                        <path d="M8 13h8"/>
-                        <path d="M6 15l12 0"/>
-                        <circle cx="12" cy="17" r="1"/>
-                    </svg>
-                    """
-                }
-            }),
+        //new(
+        //    "r2d2@starwars.com",
+        //    "R2-D2",
+        //    [Role.Readers],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <circle cx="12" cy="8" r="5"/>
+        //                <rect x="8" y="13" width="8" height="8" rx="1"/>
+        //                <circle cx="12" cy="8" r="2"/>
+        //                <path d="M9 16h6"/>
+        //                <path d="M9 18h6"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
+        //new(
+        //    "c3po@starwars.com",
+        //    "C-3PO",
+        //    [Role.Writers],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <circle cx="12" cy="7" r="4"/>
+        //                <rect x="8" y="11" width="8" height="10" rx="2"/>
+        //                <circle cx="10" cy="7" r="1" fill="currentColor"/>
+        //                <circle cx="14" cy="7" r="1" fill="currentColor"/>
+        //                <path d="M10 16h4"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
+        //new(
+        //    "boba.fett@starwars.com",
+        //    "Boba Fett",
+        //    [Role.Guests],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <path d="M12 3L4 9v2h16V9L12 3z"/>
+        //                <path d="M4 11v10h16V11"/>
+        //                <path d="M8 13h8"/>
+        //                <path d="M6 15l12 0"/>
+        //                <circle cx="12" cy="17" r="1"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
         //new(
         //    "mace.windu@starwars.com",
         //    "Mace Windu",

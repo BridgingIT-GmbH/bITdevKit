@@ -220,7 +220,7 @@ public class UserService
         if (user == null)
         {
             return Result<User>.Failure()
-                .WithError<NotFoundResultError>()
+                .WithError<NotFoundError>()
                 .WithMessage($"User {id} not found");
         }
 

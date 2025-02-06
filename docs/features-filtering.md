@@ -1282,6 +1282,12 @@ export class ApiService<T> {
   ) {
   }
 
+  // POST (body)
+  searchFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
+    return this.http.post<ResultPaged<T>>(`${this.baseUrl}/search`, filterModel);
+  }
+    
+  // GET (querystring)
   getFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
     let params = new HttpParams()
       .set('page', filterModel.page.toString())
@@ -1427,7 +1433,7 @@ export class UserListComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.userService.getFiltered(this.currentFilter)
+    this.userService.getFiltered|searchFiltered(this.currentFilter)
       .pipe(
         finalize(() => this.loading = false)
       )
@@ -1491,86 +1497,6 @@ export class UserListComponent implements OnInit {
       this.loadUsers();
     }
   }
-}
-```
-
-## Error Handling
-
-### HTTP Interceptor
-
-```typescript
-// interceptors/error.interceptor.ts
-import {Injectable} from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpErrorResponse
-} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        let errorMessage = 'An unknown error occurred!';
-
-        if (error.error instanceof ErrorEvent) {
-          // Client-side error
-          errorMessage = error.error.message;
-        } else {
-          // Server-side error
-          switch (error.status) {
-            case 400:
-              errorMessage = 'Invalid filter parameters';
-              break;
-            case 401:
-              errorMessage = 'Unauthorized access';
-              break;
-            case 403:
-              errorMessage = 'Forbidden access';
-              break;
-            case 404:
-              errorMessage = 'Resource not found';
-              break;
-            case 500:
-              errorMessage = 'Internal server error';
-              break;
-          }
-        }
-
-        return throwError(() => new Error(errorMessage));
-      })
-    );
-  }
-}
-```
-
-## Registration in App Module
-
-```typescript
-// app.module.ts
-import {NgModule} from '@angular/core';
-import {HTTP_INTERCEPTORS} from '@angular/common/http';
-import {ErrorInterceptor} from './interceptors/error.interceptor';
-
-@NgModule({
-  // ...other module configuration
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true
-    }
-  ]
-})
-export class AppModule {
 }
 ```
 

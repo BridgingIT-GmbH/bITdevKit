@@ -82,7 +82,7 @@
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh></MudTh>
-                        <MudTh Style="width: 50%">Title</MudTh>
+                        <MudTh Style="width: 40%">Title</MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh>Priority</MudTh>
                         <MudTh Style="width: 25%">
@@ -103,7 +103,7 @@
                         <MudTd DataLabel="Title" Style="width: 100%">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title" Variant="Variant.Text" Margin="Margin.Dense"
-                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 500px;" AutoGrow Lines="2"
+                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 350px;" AutoGrow Lines="1"
                                               OnBlur="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>

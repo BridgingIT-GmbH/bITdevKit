@@ -96,7 +96,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
 
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
-    .WithIssuer("https://localhost:5001") // host should match Authority (appsettings.json:Authentication:Authority)
+    .WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
     .WithUsers(Fakes.UsersStarwars)
     .WithTokenLifetimes(
         accessToken: TimeSpan.FromHours(24),
@@ -104,6 +104,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
     .WithClient( // optional client configuration
         "Blazor WASM Frontend",
         "blazor-wasm",
+        "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback")
     .EnableLoginCard(false));
 

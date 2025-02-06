@@ -8,6 +8,83 @@
 
 ## Use Cases
 
+## Appendix A: Smart Enumerations
+
+### Overview
+In domain modeling, representing a fixed set of options or states is a common requirement. While C# provides the enum type for this purpose, it often proves too limiting for real-world domain models. The Smart Enumeration pattern offers a more powerful alternative that combines the simplicity of enums with the flexibility of full-fledged objects.
+
+### Challenge
+Traditional C# enums work well for simple flags or states but fall short when requirements grow:
+- Cannot include additional data like descriptions or metadata
+- No support for business rules or behavior
+- Limited to numeric values
+- Hard to extend or version
+- No validation beyond basic type checking
+
+### Solution: Smart Enumerations
+
+```mermaid
+sequenceDiagram
+    participant Code as Domain Code
+    participant Enum as Smart Enumeration
+    participant DB as Database
+    
+    Code->>Enum: Create TodoItem with Status
+    Note over Enum: Rich domain object<br/>with properties & behavior
+    Code->>Enum: Access Description
+    Enum-->>Code: "Task is in progress"
+    Code->>DB: Save TodoItem
+    Note over DB: Stores simple ID (2)
+    DB-->>Code: Load TodoItem
+    Note over Enum: Converts back to<br/>rich object
+```
+
+### Usage
+
+```csharp
+public class TodoStatus : Enumeration
+{
+    public static readonly TodoStatus New = new(1, nameof(New), "Newly created task");
+    public static readonly TodoStatus InProgress = new(2, nameof(InProgress), "Task is being worked on");
+    public static readonly TodoStatus Completed = new(3, nameof(Completed), "Task has been completed");
+
+    private TodoStatus(int id, string value, string description)
+        : base(id, value)
+    {
+        this.Description = description;
+    }
+
+    public string Description { get; }
+    
+    public static IEnumerable<TodoStatus> GetAll() => GetAll<TodoStatus>();
+}
+```
+
+#### Entity Framework Configuration
+```csharp
+public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem>
+{
+    public void Configure(EntityTypeBuilder<TodoItem> builder)
+    {
+        builder.Property(x => x.Status)
+            .HasConversion(new EnumerationConverter<TodoStatus>())
+            .IsRequired();
+    }
+}
+```
+
+### Benefits
+
+Smart Enumerations transform enumerated values from simple flags into rich domain concepts. They shine in real applications by providing:
+
+- **Rich Domain Expression** - Instead of bare numbers, enumerations carry meaning through additional properties and behavior. When a developer looks at a todo item's status, they see not just a value but also its description, business rules, and any metadata.
+
+- **Natural Evolution** - As applications grow, enumerations often need additional properties or behaviors. Smart Enumerations accommodate this growth naturally - adding a new status property or validation rule doesn't break existing code.
+
+- **Safety with Simplicity** - While providing rich domain features, they maintain the simplicity of traditional enums in usage. The type system prevents errors like assigning a priority to a status field, while Entity Framework Core's value converters ensure clean persistence.
+
+The result is code that better expresses business concepts while remaining maintainable and safe - a perfect fit for domain-driven applications that need to evolve over time.
+
 ## Appendix B: Strongly-Typed Entity IDs
 
 ### Overview

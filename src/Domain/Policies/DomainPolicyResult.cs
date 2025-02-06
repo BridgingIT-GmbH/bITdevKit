@@ -54,7 +54,6 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// Represents the outcome of a domain policy execution, including success status, result value,
     /// messages, and errors.
     /// </summary>
-    /// <typeparam name="T">The type of the result value.</typeparam>
     private DomainPolicyResult(bool isSuccess, T value = default, ValueList<string> messages = default, ValueList<IResultError> errors = default)
     {
         this.success = isSuccess;
@@ -155,7 +154,7 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if an error of the specified type is present; otherwise, false.</returns>
     public bool HasError<TError>()
-        where TError : IResultError
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
@@ -177,11 +176,11 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// <typeparam name="TError">The type of errors to retrieve.</typeparam>
     /// <param name="errors">An output parameter that will contain the errors of the specified type, if any are found.</param>
     /// <returns>True if errors of the specified type are found; otherwise, false.</returns>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
 
         return errors.Any();
     }
@@ -191,12 +190,12 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// </summary>
     /// <typeparam name="TError">The type of the error to retrieve.</typeparam>
     /// <returns>The first error of the specified type if found; otherwise, null.</returns>
-    public IResultError GetError<TError>()
-        where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
     }
 
     /// <summary>
@@ -207,8 +206,8 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// <returns>
     /// <c>true</c> if an error of the specified type is found; otherwise, <c>false</c>.
     /// </returns>
-    public bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = default;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
@@ -217,7 +216,7 @@ public struct DomainPolicyResult<T> : IResult<T>
             return false;
         }
 
-        error = (TError)foundError;
+        error = foundError as TError;
 
         return true;
     }
@@ -227,12 +226,12 @@ public struct DomainPolicyResult<T> : IResult<T>
     /// </summary>
     /// <typeparam name="TError">The type of errors to be retrieved.</typeparam>
     /// <returns>An IEnumerable of errors that match the specified type.</returns>
-    public IEnumerable<IResultError> GetErrors<TError>()
-        where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
     }
 
     /// <summary>

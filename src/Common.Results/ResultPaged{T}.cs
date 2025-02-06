@@ -744,9 +744,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("Validation error found");
     /// }
     /// </example>
-    public bool HasError<TError>() where TError : IResultError
+    public bool HasError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
+
         return this.errors.AsEnumerable().Any(e => e.GetType() == errorType);
     }
 
@@ -763,10 +765,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("No validation errors found");
     /// }
     /// </example>
-    public bool TryGetError<TError>(out IResultError error) where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError));
+            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
 
         return error is not null;
     }
@@ -783,11 +786,13 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     }
     /// }
     /// </example>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors) where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
         errors = this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
+            .Cast<TError>()
             .ToList();
 
         return errors.Any();
@@ -803,10 +808,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine($"Found error: {error.Message}");
     /// }
     /// </example>
-    public IResultError GetError<TError>() where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         return this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError));
+            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
     }
 
     /// <summary>
@@ -819,11 +825,13 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine($"Validation error: {error.Message}");
     /// }
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>() where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
         return this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
+            .Cast<TError>()
             .ToList();
     }
 

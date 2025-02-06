@@ -284,9 +284,15 @@
         {
 
             var response = await ApiClient.TodoItem_PostAsync(newItem);
-
-            Snackbar.Add("Added successfully", Severity.Success);
-            await LoadItems();
+            if(response.StatusCode == (int)System.Net.HttpStatusCode.Created)
+            {
+                Snackbar.Add("Added successfully", Severity.Success);
+                await LoadItems();
+            }
+            else
+            {
+                Snackbar.Add($"Error adding todo: {response.StatusCode}", Severity.Error);
+            }
         }
         catch (ApiException ex)
         {

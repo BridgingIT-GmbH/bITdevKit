@@ -800,7 +800,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public bool HasError<TError>()
-        where TError : IResultError
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
@@ -846,11 +846,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
 
         return errors.Any();
     }
@@ -869,12 +869,12 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public IResultError GetError<TError>()
-        where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
     }
 
     /// <summary>
@@ -895,8 +895,8 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = default;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
@@ -905,10 +905,20 @@ public readonly partial struct Result<T> : IResult<T>
             return false;
         }
 
-        error = (TError)foundError;
+        error = foundError as TError;
 
         return true;
     }
+
+    //bool IResult.TryGetError<TError>(out TError error)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //bool IResult.TryGetErrors<TError>(out IEnumerable<TError> errors)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     /// <summary>
     /// Gets all errors of a specific type from the Result.
@@ -928,12 +938,12 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .ToList();
     /// </code>
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>()
-        where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
     }
 
     /// <summary>

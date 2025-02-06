@@ -54,7 +54,7 @@ public interface IResult
     ///     A boolean value indicating whether any errors are present in the result.
     /// </returns>
     bool HasError<TError>()
-        where TError : IResultError;
+        where TError : class, IResultError;
 
     /// <summary>
     ///     Checks if the result contains any specific error.
@@ -62,8 +62,8 @@ public interface IResult
     /// <param name="error">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one error of the specified type; otherwise, false.</returns>
-    bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError;
+    bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError;
 
     /// <summary>
     ///     Checks if the result contains any specific errors.
@@ -71,8 +71,8 @@ public interface IResult
     /// <param name="errors">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one or more errors of the specified type; otherwise, false.</returns>
-    bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError;
+    bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError;
 }
 
 /// <summary>
@@ -84,6 +84,5 @@ public interface IResult<out TValue> : IResult
     /// <summary>
     ///     Gets the values associated with the result.
     /// </summary>
-    /// <typeparam name="TValue">The type of the values.</typeparam>
     TValue Value { get; }
 }

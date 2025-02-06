@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Linq;
+
 /// <summary>
 /// Represents a result of an operation that can either succeed or fail. This struct provides
 /// a robust way to handle operation outcomes with additional context through messages and typed errors.
@@ -432,7 +434,7 @@ public readonly partial struct Result : IResult
     /// }
     /// </example>
     public bool HasError<TError>()
-        where TError : IResultError
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
@@ -466,11 +468,12 @@ public readonly partial struct Result : IResult
     ///     }
     /// }
     /// </example>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        errors = this.errors.AsEnumerable()
+            .Where(e => e.GetType() == errorType).Cast<TError>();
 
         return errors.Any();
     }
@@ -488,8 +491,8 @@ public readonly partial struct Result : IResult
     ///     Console.WriteLine("No validation error found");
     /// }
     /// </example>
-    public bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = default;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
@@ -498,7 +501,7 @@ public readonly partial struct Result : IResult
             return false;
         }
 
-        error = (TError)foundError;
+        error = foundError as TError;
 
         return true;
     }

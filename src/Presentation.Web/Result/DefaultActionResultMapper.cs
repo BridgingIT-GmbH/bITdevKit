@@ -481,38 +481,45 @@ public class DefaultActionResultMapper : IActionResultMapper
 
     private static ActionResult MapError(IResult result)
     {
-        if (result.TryGetErrors<NotFoundError>(out var errors))
+        if (result.TryGetErrors<NotFoundError>(out var notFoundErrors))
         {
             return new NotFoundResult();
         }
 
-        if (result.TryGetErrors<EntityNotFoundError>(out errors))
+        if (result.TryGetErrors<EntityNotFoundError>(out var entityNotFoundErrors))
         {
             return new NotFoundResult();
         }
 
-        if (result.TryGetErrors<NotFoundError>(out errors))
+        if (result.TryGetErrors<ValidationError>(out var validationErrors))
         {
-            return new NotFoundResult();
-        }
-
-        if (result.TryGetErrors<ValidationError>(out errors))
-        {
-            // TODO: not yet handled
             // throw new FluentValidationException(errors) > handled by ProblemsDetails middleware
-            // return this.ValidationProblem(...)
+            return new ObjectResult(new ProblemDetails
+            {
+                Title = "Bad Request", // A validation error has occurred while executing the request
+                Status = (int)HttpStatusCode.BadRequest,
+                Detail = string.Join("; ", validationErrors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
+                Extensions =
+                {
+                    ["IsSuccess"] = result.IsSuccess,
+                    ["Messages"] = string.Join(Environment.NewLine, result.Messages),
+                    ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message)),
+                },
+                Type = "https://httpstatuses.com/400"
+            })
+            { StatusCode = 400 };
         }
-        else if (result.TryGetErrors<FluentValidationError>(out errors))
+        else if (result.TryGetErrors<FluentValidationError>(out var fluentValidationErrors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
-        else if (result.TryGetErrors<RuleError>(out errors))
+        else if (result.TryGetErrors<RuleError>(out var ruleErrors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
-        else if (result.TryGetErrors<DomainPolicyError>(out errors))
+        else if (result.TryGetErrors<DomainPolicyError>(out var domainPolicyErrors))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
@@ -522,12 +529,12 @@ public class DefaultActionResultMapper : IActionResultMapper
         {
             Title = "Unhandled Result Error",
             Status = (int)HttpStatusCode.InternalServerError,
-            Detail =
-                string.Join(Environment.NewLine, result.Errors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
+            Detail = string.Join("; ", result.Errors.Select(e => $"[{e.GetType().Name}] {e.Message}")),
             Extensions =
             {
                 ["IsSuccess"] = result.IsSuccess,
-                ["Messages"] = string.Join(Environment.NewLine, result.Messages)
+                ["Messages"] = string.Join(Environment.NewLine, result.Messages),
+                ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message))
             },
             Type = "https://httpstatuses.com/500"
         })

@@ -50,7 +50,6 @@ public static class ShouldBeResultExtensions
         }
     }
 
-
     public static void ShouldContainMessages([DoesNotReturnIf(false)] this IResult actual, string customMessage = null)
     {
         if (actual.Messages.IsNullOrEmpty())
@@ -72,24 +71,22 @@ public static class ShouldBeResultExtensions
     public static void ShouldContainError<TError>(
         [DoesNotReturnIf(false)] this IResult actual,
         string customMessage = null)
-        where TError : IResultError
+        where TError : class, IResultError
     {
         if (!actual.HasError<TError>())
         {
-            throw new ShouldAssertException(new ExpectedActualShouldlyMessage(typeof(TError), actual, customMessage)
-                .ToString());
+            throw new ShouldAssertException(new ExpectedActualShouldlyMessage(typeof(TError), actual, customMessage).ToString());
         }
     }
 
     public static void ShouldNotContainError<TError>(
         [DoesNotReturnIf(false)] this IResult actual,
         string customMessage = null)
-        where TError : IResultError
+        where TError : class, IResultError
     {
         if (actual.HasError<TError>())
         {
-            throw new ShouldAssertException(new ExpectedActualShouldlyMessage(typeof(TError), actual, customMessage)
-                .ToString());
+            throw new ShouldAssertException(new ExpectedActualShouldlyMessage(typeof(TError), actual, customMessage).ToString());
         }
     }
 

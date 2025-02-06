@@ -1,7 +1,8 @@
 # File Monitoring System - Design Summary
 
-## Core Design Philosophy
-The File Monitoring System is built around the principle of reliable file change detection and processing, with clear operational boundaries and comprehensive monitoring capabilities. It combines real-time monitoring with on-demand scanning while maintaining consistent processing behavior and clear resource management.
+> The File Monitoring System is built around the principle of reliable file change detection and processing, with clear operational boundaries and comprehensive monitoring capabilities. It combines real-time monitoring with on-demand scanning while maintaining consistent processing behavior and clear resource management.
+
+[TOC]
 
 ## Fundamental Approaches
 

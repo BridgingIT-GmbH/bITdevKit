@@ -1,7 +1,8 @@
 # File Monitoring System - Technical Design
 
-## System Overview
-The File Monitoring System's technical design focuses on clear interfaces, well-defined responsibilities, and efficient implementation patterns. The system uses modern .NET features for metrics and health monitoring while maintaining clear boundaries around core file monitoring functionality.
+> The File Monitoring System's technical design focuses on clear interfaces, well-defined responsibilities, and efficient implementation patterns. The system uses modern .NET features for metrics and health monitoring while maintaining clear boundaries around core file monitoring functionality.
+
+[TOC]
 
 ## Core Entity Model
 The file event model forms the foundation of the system, capturing all necessary information about file changes and their processing state. The model supports both persistent state through the Items dictionary and maintains clear relationships between events and their processing outcomes.

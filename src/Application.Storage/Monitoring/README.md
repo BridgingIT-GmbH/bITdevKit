@@ -1,7 +1,8 @@
 # File Monitoring System - Overview
 
-## Introduction
-The File Monitoring System provides comprehensive file change detection and processing capabilities across various storage types. It combines real-time monitoring with on-demand scanning to ensure no changes are missed, while maintaining efficient resource usage and clear operational boundaries. The system is designed for reliability, extensibility, and clear operational visibility through native .NET monitoring capabilities.
+> The File Monitoring System provides comprehensive file change detection and processing capabilities across various storage types. It combines real-time monitoring with on-demand scanning to ensure no changes are missed, while maintaining efficient resource usage and clear operational boundaries. The system is designed for reliability, extensibility, and clear operational visibility through native .NET monitoring capabilities.
+
+[TOC]
 
 ## Core Capabilities
 

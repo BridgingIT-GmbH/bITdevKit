@@ -1,7 +1,8 @@
 # File Monitoring System - Architecture
 
-## System Overview
-The File Monitoring System provides robust file change monitoring across various storage types. Changes can be detected through two distinct mechanisms: real-time watching and on-demand scanning. Events from both sources flow through a common processing pipeline, ensuring consistent handling regardless of the detection method. The system is designed for reliability, extensibility, and clear operational boundaries.
+[TOC]
+
+> The File Monitoring System provides robust file change monitoring across various storage types. Changes can be detected through two distinct mechanisms: real-time watching and on-demand scanning. Events from both sources flow through a common processing pipeline, ensuring consistent handling regardless of the detection method. The system is designed for reliability, extensibility, and clear operational boundaries.
 
 ## Architectural Component Overview
 The system is composed of several key component groups that work together to provide comprehensive file monitoring capabilities. Each group has specific responsibilities and clear interfaces with other components, ensuring a modular and maintainable architecture.

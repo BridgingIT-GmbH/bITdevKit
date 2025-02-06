@@ -1,6 +1,8 @@
-# Bare-Bones Identity Provider Documentation
+# Fake Identity Provider Feature Documentation
 
-A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users, designed for development and testing scenarios.
+> A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users, designed for development and testing scenarios.
+
+[TOC]
 
 ## Features
 - OAuth2 and OpenID Connect support

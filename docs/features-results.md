@@ -219,6 +219,42 @@ public class UserService
 }
 ```
 
+### Imperative vs Declaritive
+
+Imperative programming expresses logic as a sequence of explicit steps and checks. Declarative programming describes the desired outcome. 
+In the Result pattern, imperative style requires explicit success checks and error handling, while declarative style creates a clean pipeline of operations using the functional extensions.
+
+```csharp
+// IMPERATIVE STYLE (traditional)
+public Result<UserDto> ProcessRegistration(UserRequest request)
+{
+    var validationResult = ValidateUser(request);     // Validate user
+    if (validationResult.IsFailure)
+        return Result<UserDto>.Failure(validationResult.Errors);
+
+
+    var user = new User(request);     // Create user
+    var saveResult = SaveUser(user);
+    if (saveResult.IsFailure)
+        return Result<UserDto>.Failure(saveResult.Errors);
+
+    var emailResult = SendWelcomeEmail(user);     // Send email
+    if (emailResult.IsFailure)
+        return Result<UserDto>.Failure(emailResult.Errors);
+
+    return Result<UserDto>.Success(user.ToDto());
+}
+
+// DECLARATIVE STYLE (with functional extensions)
+public Result<UserDto> ProcessRegistration(UserRequest request) =>
+    Result<UserRequest>.Success(request)
+        .Bind(ValidateUser)
+        .Map(req => new User(req))
+        .Bind(SaveUser)
+        .Tap(SendWelcomeEmail)
+        .Map(user => user.ToDto());
+```
+
 ### Error Handling
 
 ```csharp

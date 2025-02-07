@@ -1,11 +1,6 @@
 # Modules Feature Documentation
 
-<!-- TOC -->
-
-* [Overview](#overview)
-* [Usage](#usage)
-
-<!-- TOC -->
+[TOC]
 
 ## Overview
 

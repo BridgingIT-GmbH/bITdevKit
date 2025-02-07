@@ -21,10 +21,7 @@
 
 ## Overview
 
-> The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data
-> through API requests. It allows clients to construct complex queries using a JSON-based filter
-> model that gets translated into domain specifications on the server side. The translated filter
-> model can easily be handled by the DevKit repositories.
+> The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications on the server side. The translated filter model can easily be handled by the DevKit repositories.
 
 ```mermaid
 graph LR

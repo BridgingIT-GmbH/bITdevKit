@@ -1,22 +1,12 @@
 # Rules Feature Documentation
 
-<!-- TOC -->
-
-* [Overview](#overview)
-* [Basic Usage](#basic-usage)
-* [Rule Builder Patterns](#rule-builder-patterns)
-* [Architecture](#architecture)
-* [Advanced Usage](#advanced-usage)
-* [Appendix A: Async Usage](#appendix-a-async-usage)
-* [Appendix B: Disclaimer](#appendix-b-disclaimer)
-
-<!-- TOC -->
+[TOC]
 
 ## Overview
 
 The Rules feature provides a centralized approach to defining and evaluating business rules in a
 composable and maintainable way. This feature is designed to handle evaluation, business logic
-enforcement, and complex conditional rule chains while integrating seamlessly with the Result
+enforcement, and complex conditional rule chains while integrating seamlessly with the [Result](./features-results.md)
 pattern.
 
 Key benefits:

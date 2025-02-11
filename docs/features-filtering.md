@@ -194,7 +194,19 @@ app.MapGet("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFou
         new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
 
     return TypedResults.Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
-});
+}).WithFilterSchema(); // adds openapi schema for the filter model
+```
+
+```csharp
+app.MapPost("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFound>>
+  (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
+{
+    var filter = await context.FromQueryFilterAsync();
+    var response = await mediator.Send(
+        new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
+
+    return TypedResults.Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
+}).WithFilterSchema(true); // adds openapi schema for the filter model
 ```
 
 ### Repository Usage (QueryHandler)

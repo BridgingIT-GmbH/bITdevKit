@@ -26,6 +26,15 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.0.1"
         }
       },
+      "Microsoft.AspNetCore.OpenApi": {
+        "type": "Direct",
+        "requested": "[9.0.1, )",
+        "resolved": "9.0.1",
+        "contentHash": "xRJe8UrLnOGs6hOBrT/4r74q97626H0mABb/DV0smlReIx6uQCENAe+TUqF6hD3NtT4sB+qrvWhAej6kxPxgew==",
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
+        }
+      },
       "Microsoft.Net.Compilers.Toolset": {
         "type": "Direct",
         "requested": "[4.12.0, )",
@@ -357,6 +366,11 @@
         "type": "Transitive",
         "resolved": "17.11.4",
         "contentHash": "mudqUHhNpeqIdJoUx2YDWZO/I9uEDYVowan89R6wsomfnUJQk6HteoQTlNjZDixhT2B4IXMkMtgZtoceIjLRmA=="
+      },
+      "Microsoft.OpenApi": {
+        "type": "Transitive",
+        "resolved": "1.6.17",
+        "contentHash": "Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA=="
       },
       "Namotion.Reflection": {
         "type": "Transitive",

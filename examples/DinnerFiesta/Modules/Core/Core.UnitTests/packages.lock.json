@@ -566,6 +566,11 @@
         "resolved": "1.1.3",
         "contentHash": "3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ=="
       },
+      "Microsoft.OpenApi": {
+        "type": "Transitive",
+        "resolved": "1.6.17",
+        "contentHash": "Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA=="
+      },
       "Microsoft.SqlServer.Server": {
         "type": "Transitive",
         "resolved": "1.0.0",
@@ -1763,6 +1768,7 @@
           "Ensure.That": "[10.1.0, )",
           "Hellang.Middleware.ProblemDetails": "[6.5.1, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[9.0.1, )",
+          "Microsoft.AspNetCore.OpenApi": "[9.0.1, )",
           "NSwag.AspNetCore": "[14.2.0, )",
           "RazorSlices": "[0.9.1, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
@@ -1938,6 +1944,15 @@
           "Microsoft.AspNetCore.TestHost": "9.0.1",
           "Microsoft.Extensions.DependencyModel": "9.0.1",
           "Microsoft.Extensions.Hosting": "9.0.1"
+        }
+      },
+      "Microsoft.AspNetCore.OpenApi": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.1, )",
+        "resolved": "9.0.1",
+        "contentHash": "xRJe8UrLnOGs6hOBrT/4r74q97626H0mABb/DV0smlReIx6uQCENAe+TUqF6hD3NtT4sB+qrvWhAej6kxPxgew==",
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
         }
       },
       "Microsoft.Azure.Cosmos": {

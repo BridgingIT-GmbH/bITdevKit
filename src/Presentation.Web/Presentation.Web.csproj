@@ -21,6 +21,7 @@
     <PackageReference Include="RazorSlices" />
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
   </ItemGroup>
 
   <ItemGroup>

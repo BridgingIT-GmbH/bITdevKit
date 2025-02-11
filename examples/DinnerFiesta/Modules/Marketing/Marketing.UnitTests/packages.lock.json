@@ -556,6 +556,11 @@
         "resolved": "2.0.0",
         "contentHash": "VdLJOCXhZaEMY7Hm2GKiULmn7IEPFE4XC5LPSfBVCUIA8YLZVh846gtfBJalsPQF2PlzdD7ecX7DZEulJ402ZQ=="
       },
+      "Microsoft.OpenApi": {
+        "type": "Transitive",
+        "resolved": "1.6.17",
+        "contentHash": "Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA=="
+      },
       "Microsoft.SqlServer.Server": {
         "type": "Transitive",
         "resolved": "1.0.0",
@@ -1221,6 +1226,7 @@
           "Ensure.That": "[10.1.0, )",
           "Hellang.Middleware.ProblemDetails": "[6.5.1, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[9.0.1, )",
+          "Microsoft.AspNetCore.OpenApi": "[9.0.1, )",
           "NSwag.AspNetCore": "[14.2.0, )",
           "RazorSlices": "[0.9.1, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
@@ -1386,6 +1392,15 @@
           "Microsoft.AspNetCore.TestHost": "9.0.1",
           "Microsoft.Extensions.DependencyModel": "9.0.1",
           "Microsoft.Extensions.Hosting": "9.0.1"
+        }
+      },
+      "Microsoft.AspNetCore.OpenApi": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.1, )",
+        "resolved": "9.0.1",
+        "contentHash": "xRJe8UrLnOGs6hOBrT/4r74q97626H0mABb/DV0smlReIx6uQCENAe+TUqF6hD3NtT4sB+qrvWhAej6kxPxgew==",
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
         }
       },
       "Microsoft.CodeAnalysis.Common": {

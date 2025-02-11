@@ -429,3 +429,5 @@ FodyWeavers.xsd
 /docs/structurizr/.structurizr
 /src/**/CombinedSource.ps1
 /src/**/CombinedSource.md
+
+/.ai/

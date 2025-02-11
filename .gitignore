@@ -430,4 +430,4 @@ FodyWeavers.xsd
 /src/**/CombinedSource.ps1
 /src/**/CombinedSource.md
 
-/.ai/
+/.tmp/

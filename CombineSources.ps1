@@ -1,6 +1,6 @@
 param (
   # Core parameters
-  [string]$OutputDirectory = "./.ai",
+  [string]$OutputDirectory = "./.tmp",
 
   # File patterns and exclusions
   [string[]]$ExcludePatterns = @(

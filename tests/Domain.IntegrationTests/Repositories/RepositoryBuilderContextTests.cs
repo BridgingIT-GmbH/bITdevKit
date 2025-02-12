@@ -9,8 +9,7 @@ using Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
-    s =>
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, s =>
     {
         s.AddMediatR();
 

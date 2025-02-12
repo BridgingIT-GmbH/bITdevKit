@@ -1763,6 +1763,7 @@
       "BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.Client": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",

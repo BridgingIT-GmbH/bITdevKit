@@ -181,11 +181,15 @@
 
         try
         {
-            var filter = new FilterModel() { Filters = new List<FilterCriteria>(), Orderings = new List<FilterOrderCriteria>() };
+            @* var filter2 = FilterModelBuilder.For<TodoItemModel>() // use the typed builder
+                .AddFilter(p => p.Status, Common.FilterOperator.Equal, filterStatusId.Value)
+                .Build(); *@
+
+            var filter = new Client.FilterModel() { Filters = new List<Client.FilterCriteria>(), Orderings = new List<Client.FilterOrderCriteria>() };
             if (filterStatusId.HasValue)
             {
                 filter.Filters.Add(
-                    new FilterCriteria
+                    new Client.FilterCriteria
                         {
                             Field = "Status",
                             Operator = Client.FilterOperator.Equal,
@@ -196,7 +200,7 @@
             if (filterPriorityId.HasValue)
             {
                 filter.Filters.Add(
-                    new FilterCriteria
+                    new Client.FilterCriteria
                         {
                             Field = "Priority",
                             Operator = Client.FilterOperator.GreaterThanOrEqual,
@@ -207,7 +211,7 @@
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
                 filter.Filters.Add(
-                    new FilterCriteria
+                    new Client.FilterCriteria
                         {
                             Field = "Title",
                             Operator = Client.FilterOperator.Contains,
@@ -216,12 +220,12 @@
             }
 
             // set ordering
-            filter.Orderings.Add(new FilterOrderCriteria
+            filter.Orderings.Add(new Client.FilterOrderCriteria
                 {
                     Field = "DueDate",
                     Direction = currentSortDirection == SortDirection.Ascending
-                                    ? OrderDirection.Ascending
-                                    : OrderDirection.Descending
+                                    ? Client.OrderDirection.Ascending
+                                    : Client.OrderDirection.Descending
                 });
 
             // filter.Filters.Add(

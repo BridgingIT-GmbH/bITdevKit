@@ -47,8 +47,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
         /// </example>
-        public Builder<T> SetPaging(int page, int pageSize)
+        public Builder<T> SetPaging(int page, int pageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (page < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(page), page, "Page must be greater than or equal to 1.");
@@ -73,11 +78,16 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
         /// </example>
-        public Builder<T> SetPaging(int pageSize)
+        public Builder<T> SetPaging(int pageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (pageSize < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than or equal to 1.");
+                throw new ArgumentOutOfRangeException(nameof(pageSize), pageSize, "Page size must be greater than or equal to 1.");
             }
 
             this.filterModel.Page = 1;
@@ -95,8 +105,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, PageSize.Medium);
         /// </example>
-        public Builder<T> SetPaging(int page, PageSize standardPageSize)
+        public Builder<T> SetPaging(int page, PageSize standardPageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (page < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(page), page, "Page must be greater than or equal to 1.");
@@ -116,8 +131,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(PageSize.Medium);
         /// </example>
-        public Builder<T> SetPaging(PageSize standardPageSize)
+        public Builder<T> SetPaging(PageSize standardPageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             this.filterModel.Page = 1;
             this.filterModel.PageSize = (int)standardPageSize;
 
@@ -135,10 +155,14 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddFilter(person => person.FirstName, FilterOperator.Equal, "John");
         /// </example>
-        public Builder<T> AddFilter(Expression<Func<T, object>> propertySelector, FilterOperator filterOperator, object value)
+        public Builder<T> AddFilter(Expression<Func<T, object>> propertySelector, FilterOperator filterOperator, object value, bool? condition = null)
         {
-            var memberExpression = GetMemberExpression(propertySelector);
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
 
+            var memberExpression = GetMemberExpression(propertySelector);
             if (memberExpression == null)
             {
                 throw new ArgumentException("Invalid property selector. Must be a member expression.");
@@ -173,10 +197,14 @@ public static class FilterModelBuilder
         public Builder<T> AddFilter<TCollection>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionSelector,
             FilterOperator filterOperator,
-            Action<Builder<TCollection>> configure)
+            Action<Builder<TCollection>> configure, bool? condition = null)
         {
-            var memberExpression = GetMemberExpression(collectionSelector);
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
 
+            var memberExpression = GetMemberExpression(collectionSelector);
             if (memberExpression == null)
             {
                 throw new ArgumentException("Invalid collection selector. Must be a member expression.");
@@ -212,8 +240,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddOrdering(person => person.LastName, OrderDirection.Ascending);
         /// </example>
-        public Builder<T> AddOrdering(Expression<Func<T, object>> orderBy, OrderDirection direction)
+        public Builder<T> AddOrdering(Expression<Func<T, object>> orderBy, OrderDirection direction, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             var ordering = new FilterOrderCriteria
             {
                 Field = GetMemberName(orderBy),
@@ -232,8 +265,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddInclude(person => person.Addresses);
         /// </example>
-        public Builder<T> AddInclude(Expression<Func<T, object>> includeSelector)
+        public Builder<T> AddInclude(Expression<Func<T, object>> includeSelector, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             this.filterModel.Includes.Add(GetMemberName(includeSelector));
 
             return this;
@@ -247,8 +285,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddHierarchy(manager => manager.Employees);
         /// </example>
-        public Builder<T> AddHierarchy(Expression<Func<T, object>> hierarchySelector, int maxDepth = 5)
+        public Builder<T> AddHierarchy(Expression<Func<T, object>> hierarchySelector, int maxDepth = 5, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             this.filterModel.Hierarchy = GetMemberName(hierarchySelector);
             this.filterModel.HierarchyMaxDepth = maxDepth;
 
@@ -264,8 +307,13 @@ public static class FilterModelBuilder
         /// var customFilter = builder.AddCustomFilter(FilterCustomType.FullTextSearch);
         /// customFilter.AddParameter("searchTerm", "John");
         /// </example>
-        public CustomFilterBuilder AddCustomFilter(FilterCustomType customType)
+        public CustomFilterBuilder AddCustomFilter(FilterCustomType customType, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return new CustomFilterBuilder(new(), this);
+            }
+
             var customFilter = new FilterCriteria
             {
                 CustomType = customType,
@@ -274,8 +322,7 @@ public static class FilterModelBuilder
 
             this.filterModel.Filters.Add(customFilter);
 
-            // Pass the parent builder instance to allow `Done()` to return control.
-            return new CustomFilterBuilder(customFilter.CustomParameters, this);
+            return new CustomFilterBuilder(customFilter.CustomParameters, this); // Pass the parent builder instance to allow `Done()` to return control.
         }
 
         /// <summary>
@@ -313,14 +360,24 @@ public static class FilterModelBuilder
             /// <summary>
             /// Adds a parameter to the custom filter.
             /// </summary>
-            public CustomFilterBuilder AddParameter(string key, object value)
+            public CustomFilterBuilder AddParameter(string key, object value, bool? condition = null)
             {
+                if (condition.HasValue && !condition.Value)
+                {
+                    return this;
+                }
+
                 this.parameters.TryAdd(key, value);
                 return this;
             }
 
-            public CustomFilterBuilder AddParameter(string key, string[] values)
+            public CustomFilterBuilder AddParameter(string key, string[] values, bool? condition = null)
             {
+                if (condition.HasValue && !condition.Value)
+                {
+                    return this;
+                }
+
                 this.parameters.TryAdd(key, values);
                 return this;
             }

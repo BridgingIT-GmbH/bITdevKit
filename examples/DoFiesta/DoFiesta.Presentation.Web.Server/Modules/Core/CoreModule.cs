@@ -69,6 +69,7 @@ public class CoreModule : WebModuleBase
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>();
+            //.WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()

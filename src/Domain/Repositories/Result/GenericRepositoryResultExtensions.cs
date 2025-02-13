@@ -107,7 +107,18 @@ public static class GenericRepositoryResultExtensions
         try
         {
             var result = await source.DeleteAsync(id, cancellationToken).AnyContext();
-            return Result<RepositoryActionResult>.Success(result);
+            if (result == RepositoryActionResult.Deleted)
+            {
+                return Result<RepositoryActionResult>.Success(result);
+            }
+            else if (result == RepositoryActionResult.NotFound)
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not found", new NotFoundError());
+            }
+            else
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not deleted", new Error("Entity not deleted"));
+            }
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
@@ -132,7 +143,18 @@ public static class GenericRepositoryResultExtensions
         try
         {
             var result = await source.DeleteAsync(entity, cancellationToken).AnyContext();
-            return Result<RepositoryActionResult>.Success(result);
+            if (result == RepositoryActionResult.Deleted)
+            {
+                return Result<RepositoryActionResult>.Success(result);
+            }
+            else if (result == RepositoryActionResult.NotFound)
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not found", new NotFoundError());
+            }
+            else
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not deleted", new Error("Entity not deleted"));
+            }
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {

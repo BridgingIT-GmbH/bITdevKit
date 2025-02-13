@@ -187,12 +187,10 @@ public class
     {
         if (id == default)
         {
-            return RepositoryActionResult.None;
+            return RepositoryActionResult.NotFound;
         }
 
-        var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>()
-            .FindAsync([this.ConvertEntityId(id) /*, cancellationToken: cancellationToken*/], cancellationToken)
-            .AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+        var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync([this.ConvertEntityId(id) /*, cancellationToken: cancellationToken*/], cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         if (existingEntity is not null)
         {
             this.Options.DbContext.Remove(existingEntity);
@@ -205,7 +203,7 @@ public class
             return RepositoryActionResult.Deleted;
         }
 
-        return RepositoryActionResult.None;
+        return RepositoryActionResult.NotFound;
     }
 
     /// <summary>

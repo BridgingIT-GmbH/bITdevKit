@@ -55,6 +55,7 @@ public class TodoItemCompleteAllCommandHandler(
                 .Tap(e => Console.WriteLine("COMPLETEALL: #" + e.Count())) // do something
                 .Unless(e => e.Any(s => s.Status != TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
                 .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
+                //.Traverse(e => e.Validate(null))
                 .TraverseAsync(async (e, ct) =>
                     await repository.UpdateAsync(e, ct), cancellationToken: cancellationToken);
 

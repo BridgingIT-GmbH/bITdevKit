@@ -183,9 +183,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// Console.WriteLine("Entity was successfully deleted.");
     /// }
     /// </example>
-    public virtual async Task<RepositoryActionResult> DeleteAsync(
-        object id,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
         {
@@ -205,7 +203,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             return RepositoryActionResult.Deleted;
         }
 
-        return RepositoryActionResult.None;
+        return RepositoryActionResult.NotFound;
     }
 
     /// <summary>
@@ -234,7 +232,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     {
         if (entity is null || entity.Id == default)
         {
-            return RepositoryActionResult.None;
+            return RepositoryActionResult.NotFound;
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();

@@ -13,7 +13,7 @@ using System.Linq.Expressions;
 /// </summary>
 public static class FilterModelBuilder
 {
-    private static readonly ThreadLocal<FilterModel> ThreadLocalFilterModel = new(() => new FilterModel());
+    private static readonly ThreadLocal<FilterModel> FilterModel = new(() => new FilterModel());
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Builder{T}"/> class for a specified type.
@@ -26,17 +26,18 @@ public static class FilterModelBuilder
     /// </example>
     public static Builder<T> For<T>()
     {
-        return new Builder<T>(ThreadLocalFilterModel.Value);
+        return new Builder<T>(FilterModel.Value);
     }
 
-    public class Builder<T>
+    public static Builder<T> For<T>(FilterModel filterModel)
     {
-        private readonly FilterModel filterModel;
+        filterModel ??= FilterModel.Value;
+        return new Builder<T>(filterModel);
+    }
 
-        internal Builder(FilterModel model)
-        {
-            this.filterModel = model;
-        }
+    public class Builder<T>(FilterModel model)
+    {
+        private readonly FilterModel filterModel = model;
 
         /// <summary>
         /// Sets the paging options for the filter model.
@@ -326,16 +327,16 @@ public static class FilterModelBuilder
         }
 
         /// <summary>
-        /// Builds and returns the final <see cref="FilterModel"/> instance.
+        /// Builds and returns the final <see cref="Common.FilterModel"/> instance.
         /// This resets the thread-local filter model for subsequent builds.
         /// </summary>
-        /// <returns>A <see cref="FilterModel"/> containing the built filter criteria, orderings, includes, and paging options.</returns>
+        /// <returns>A <see cref="Common.FilterModel"/> containing the built filter criteria, orderings, includes, and paging options.</returns>
         /// <example>
         /// var filterModel = builder.Build();
         /// </example>
         public FilterModel Build()
         {
-            ThreadLocalFilterModel.Value = new FilterModel();
+            FilterModel.Value = new FilterModel();
 
             return this.filterModel;
         }

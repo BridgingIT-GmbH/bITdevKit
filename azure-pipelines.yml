@@ -2,7 +2,7 @@ variables:
   - group: global
   - group: NuGetOrg
   - name: dotnetVersion
-    value: '9.0.x'
+    value: '9.0.102'
   - name: solution
     value: "**/*.sln"
   - name: buildConfiguration
@@ -31,7 +31,7 @@ pr:
 
 resources:
   - repo: self
-    fetchDepth: '0'
+    fetchDepth: 0
 
 #######################################################################################################
 # VERSION
@@ -49,7 +49,7 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
             displayName: Use .NET SDK
@@ -100,7 +100,7 @@ stages:
           NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
             displayName: Use .NET SDK
@@ -192,7 +192,7 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: DownloadPipelineArtifact@2 # Download build artifacts
             inputs:
@@ -254,7 +254,7 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: DownloadPipelineArtifact@2 # Download build artifacts
             inputs:

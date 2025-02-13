@@ -176,6 +176,7 @@ public static class FilterModelBuilder
                 Value = value
             };
 
+            this.filterModel.Filters ??= [];
             this.filterModel.Filters.Add(criteria);
 
             return this;
@@ -226,6 +227,7 @@ public static class FilterModelBuilder
             if (filters.Any()) // Check if there are any filters added
             {
                 criteria.Filters.AddRange(filters);
+                this.filterModel.Filters ??= [];
                 this.filterModel.Filters.Add(criteria);
             }
 
@@ -253,6 +255,8 @@ public static class FilterModelBuilder
                 Field = GetMemberName(orderBy),
                 Direction = direction
             };
+
+            this.filterModel.Orderings ??= [];
             this.filterModel.Orderings.Add(ordering);
 
             return this;
@@ -273,6 +277,7 @@ public static class FilterModelBuilder
                 return this;
             }
 
+            this.filterModel.Includes ??= [];
             this.filterModel.Includes.Add(GetMemberName(includeSelector));
 
             return this;
@@ -321,6 +326,7 @@ public static class FilterModelBuilder
                 CustomParameters = []
             };
 
+            this.filterModel.Filters ??= [];
             this.filterModel.Filters.Add(customFilter);
 
             return new CustomFilterBuilder(customFilter.CustomParameters, this); // Pass the parent builder instance to allow `Done()` to return control.

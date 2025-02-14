@@ -28,6 +28,52 @@ public static class GenericReadOnlyRepositoryResultExtensions
     }
 
     /// <summary>
+    /// Checks if any entity matches the specified expression and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="expression">The expression to filter entities.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object indicating if a matching entity exists.</returns>
+    public static async Task<Result<bool>> ExistsResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        Expression<Func<TEntity, bool>> expression,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        return await source.ExistsResultAsync(new Specification<TEntity>(expression), cancellationToken).AnyContext();
+    }
+
+    /// <summary>
+    /// Checks if any entity matches the filter model criteria and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="filterModel">The filter model to apply.</param>
+    /// <param name="specifications">Optional additional specifications to apply.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object indicating if a matching entity exists.</returns>
+    public static async Task<Result<bool>> ExistsResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        FilterModel filterModel,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            filterModel ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var exists = await source.FindOneAsync(specifications, null, cancellationToken).AnyContext() is not null;
+            return Result<bool>.Success(exists);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
     /// Asynchronously counts the total number of entities and returns the result as a Result object.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -112,6 +158,35 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
 
+            return Result<long>.Success(count);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously counts the number of entities based on the filter model and returns the result as a Result object.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="filterModel">The filter model to apply.</param>
+    /// <param name="specifications">Optional additional specifications to apply.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the count of matching entities.</returns>
+    public static async Task<Result<long>> CountResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        FilterModel filterModel,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            filterModel ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
             return Result<long>.Success(count);
         }
         catch (Exception ex) when (!ex.IsTransientException())
@@ -214,6 +289,28 @@ public static class GenericReadOnlyRepositoryResultExtensions
         {
             var entity = await source.FindOneAsync(specifications, options, cancellationToken).AnyContext();
 
+            return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        FilterModel filterModel,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        CancellationToken cancellationToken = default)
+    where TEntity : class, IEntity
+    {
+        try
+        {
+            filterModel ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
+
+            var entity = await source.FindOneAsync(specifications, findOptions, cancellationToken).AnyContext();
             return entity is null ? Result<TEntity>.Failure<NotFoundError>() : Result<TEntity>.Success(entity);
         }
         catch (Exception ex) when (!ex.IsTransientException())
@@ -822,6 +919,188 @@ public static class GenericReadOnlyRepositoryResultExtensions
         catch (Exception ex) when (!ex.IsTransientException())
         {
             return ResultPaged<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Projects all entities to the specified projection type and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TProjection">The type to project the entities to.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="projection">The expression defining the projection.</param>
+    /// <param name="options">Optional find options to customize the query.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</returns>
+    public static async Task<Result<IEnumerable<TProjection>>> ProjectAllResultAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var result = await source.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
+            return Result<IEnumerable<TProjection>>.Success(result);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Projects all entities that match the specified expression to the projection type and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TProjection">The type to project the entities to.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="expression">The expression to filter the entities.</param>
+    /// <param name="projection">The expression defining the projection.</param>
+    /// <param name="options">Optional find options to customize the query.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</returns>
+    public static async Task<Result<IEnumerable<TProjection>>> ProjectAllResultAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        Expression<Func<TEntity, bool>> expression,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var result = await source.ProjectAllAsync(expression, projection, options, cancellationToken).AnyContext();
+            return Result<IEnumerable<TProjection>>.Success(result);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Projects all entities that match the specified specification to the projection type and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TProjection">The type to project the entities to.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="specification">The specification to filter the entities.</param>
+    /// <param name="projection">The expression defining the projection.</param>
+    /// <param name="options">Optional find options to customize the query.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</returns>
+    public static async Task<Result<IEnumerable<TProjection>>> ProjectAllResultAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        ISpecification<TEntity> specification,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var result = await source.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
+            return Result<IEnumerable<TProjection>>.Success(result);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Projects all entities that match the specified specifications to the projection type and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TProjection">The type to project the entities to.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="specifications">The collection of specifications to filter the entities.</param>
+    /// <param name="projection">The expression defining the projection.</param>
+    /// <param name="options">Optional find options to customize the query.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</returns>
+    public static async Task<Result<IEnumerable<TProjection>>> ProjectAllResultAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Expression<Func<TEntity, TProjection>> projection,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var result = await source.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
+            return Result<IEnumerable<TProjection>>.Success(result);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Projects all entities based on the filter model and returns the result asynchronously.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TProjection">The type to project the entities to.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="filter">The filter model to apply.</param>
+    /// <param name="projection">The expression defining the projection.</param>
+    /// <param name="specifications">Optional additional specifications to apply.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</returns>
+    public static async Task<Result<IEnumerable<TProjection>>> ProjectAllResultAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        FilterModel filter,
+        Expression<Func<TEntity, TProjection>> projection,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            filter ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filter, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filter);
+
+            var result = await source.ProjectAllAsync(
+                specifications,
+                projection,
+                findOptions,
+                cancellationToken).AnyContext();
+
+            return Result<IEnumerable<TProjection>>.Success(result);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TProjection>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    public static async Task<ResultPaged<TProjection>> ProjectAllResultPagedAsync<TEntity, TProjection>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        FilterModel filterModel,
+        Expression<Func<TEntity, TProjection>> projection,
+        IEnumerable<ISpecification<TEntity>> specifications = null,
+        CancellationToken cancellationToken = default)
+    where TEntity : class, IEntity
+    {
+        try
+        {
+            filterModel ??= new FilterModel();
+            specifications = SpecificationBuilder.Build(filterModel, specifications).ToArray();
+            var findOptions = FindOptionsBuilder.Build<TEntity>(filterModel);
+
+            var count = await source.CountAsync(specifications, cancellationToken).AnyContext();
+            var entities = await source.ProjectAllAsync(specifications, projection, findOptions, cancellationToken).AnyContext();
+
+            return ResultPaged<TProjection>.Success(entities, count, filterModel.Page, filterModel.PageSize);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return ResultPaged<TProjection>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

@@ -161,7 +161,15 @@ public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync([], options, cancellationToken).AnyContext();
+        var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
+
+        if (this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            return notDeletedSpecification.IsSatisfiedBy(entity) ? entity : default;
+        }
+
+        return entity;
     }
 
     public async Task<TEntity> FindOneAsync(

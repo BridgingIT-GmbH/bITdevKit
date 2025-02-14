@@ -16,7 +16,6 @@
     <PackageReference Include="System.Diagnostics.PerformanceCounter" />
   </ItemGroup>
 
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />

@@ -26,6 +26,12 @@ public class FilterModel
     public int PageSize { get; set; } = 10;
 
     /// <summary>
+    /// Gets or sets a value indicating whether to disable change tracking for the query.
+    /// Default value is <c>true</c>.
+    /// </summary>
+    public bool NoTracking { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the list of ordering criteria.
     /// </summary>
     public List<FilterOrderCriteria> Orderings { get; set; } = [];

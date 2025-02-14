@@ -233,6 +233,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
             return await this.Options.DbContext.Set<TEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options)
+                .HierarchyIf(options)
                 .WhereExpressions(expressions)
                 .OrderByIf(options)
                 .Select(projection)
@@ -246,6 +247,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         return await this.Options.DbContext.Set<TEntity>()
             .AsNoTrackingIf(options, this.Options.Mapper)
             .IncludeIf(options)
+            .HierarchyIf(options)
             .WhereExpressions(expressions)
             .Select(projection)
             .DistinctIf(options, this.Options.Mapper)
@@ -322,6 +324,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         return await this.Options.DbContext.Set<TEntity>()
             .AsNoTrackingIf(options, this.Options.Mapper)
             .IncludeIf(options)
+            .HierarchyIf(options)
             .WhereExpressions(expressions)
             .FirstOrDefaultAsync(cancellationToken)
             .AnyContext();

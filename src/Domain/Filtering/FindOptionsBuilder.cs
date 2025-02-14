@@ -31,6 +31,7 @@ public static class FindOptionsBuilder
             Hierarchy = HierarchyOptionBuilder.Build<TEntity>(filterModel.Hierarchy, filterModel.HierarchyMaxDepth),
             Skip = filterModel.PageSize * (filterModel.Page - 1),
             Take = filterModel.PageSize,
+            NoTracking = filterModel.NoTracking
         };
     }
 
@@ -72,12 +73,12 @@ public static class FindOptionsBuilder
         {
             Skip = primary.Skip ?? secondary.Skip,
             Take = primary.Take ?? secondary.Take,
-            NoTracking = primary.NoTracking || secondary.NoTracking,
             Order = primary.Order ?? secondary.Order,
             Orders = primary.Orders.Merge(secondary.Orders),
             Include = primary.Include ?? secondary.Include,
             Includes = primary.Includes.Merge(secondary.Includes),
-            Distinct = primary.Distinct ?? secondary.Distinct
+            Distinct = primary.Distinct ?? secondary.Distinct,
+            NoTracking = primary.NoTracking || secondary.NoTracking
         };
     }
 }

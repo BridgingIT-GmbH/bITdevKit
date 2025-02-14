@@ -48,37 +48,4 @@ public static class FindOptionsBuilder
         configure?.Invoke(options);
         return options;
     }
-
-    /// <summary>
-    ///     Creates a new FindOptions instance by merging two existing instances.
-    /// </summary>
-    /// <typeparam name="TEntity">The type of entity for the options.</typeparam>
-    /// <param name="primary">The primary options instance.</param>
-    /// <param name="secondary">The secondary options instance to merge.</param>
-    /// <returns>A new FindOptions instance combining both inputs.</returns>
-    public static FindOptions<TEntity> Merge<TEntity>(FindOptions<TEntity> primary, FindOptions<TEntity> secondary)
-        where TEntity : class, IEntity
-    {
-        if (primary == null)
-        {
-            return secondary ?? new FindOptions<TEntity>();
-        }
-
-        if (secondary == null)
-        {
-            return primary;
-        }
-
-        return new FindOptions<TEntity>
-        {
-            Skip = primary.Skip ?? secondary.Skip,
-            Take = primary.Take ?? secondary.Take,
-            Order = primary.Order ?? secondary.Order,
-            Orders = primary.Orders.Merge(secondary.Orders),
-            Include = primary.Include ?? secondary.Include,
-            Includes = primary.Includes.Merge(secondary.Includes),
-            Distinct = primary.Distinct ?? secondary.Distinct,
-            NoTracking = primary.NoTracking || secondary.NoTracking
-        };
-    }
 }

@@ -27,10 +27,23 @@ public static partial class Extensions
             return source;
         }
 
-        var propertyName = GetPropertyNameFromExpression(options.Hierarchy.Expression);
-        var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
+        if (options.Hierarchy.Expression is not null)
+        {
+            var propertyName = GetPropertyNameFromExpression(options.Hierarchy.Expression);
+            var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
 
-        return source.Include(path);
+            return source.Include(path);
+        }
+
+        if (!options.Hierarchy.Path.IsNullOrEmpty())
+        {
+            var pathSegment = options.Hierarchy.Path.Split('.').Last();
+            var path = string.Join(".", Enumerable.Repeat(pathSegment, options.Hierarchy.MaxDepth));
+
+            return source.Include(path);
+        }
+
+        return source;
     }
 
     /// <summary>
@@ -56,11 +69,24 @@ public static partial class Extensions
             return source;
         }
 
-        var expression = mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Hierarchy.Expression);
-        var propertyName = GetPropertyNameFromExpression(expression);
-        var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
+        if (options.Hierarchy.Expression is not null)
+        {
+            var expr = mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Hierarchy.Expression);
+            var propertyName = GetPropertyNameFromExpression(expr);
+            var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
 
-        return source.Include(path);
+            return source.Include(path);
+        }
+
+        if (!options.Hierarchy.Path.IsNullOrEmpty())
+        {
+            var pathSegment = options.Hierarchy.Path.Split('.').Last();
+            var path = string.Join(".", Enumerable.Repeat(pathSegment, options.Hierarchy.MaxDepth));
+
+            return source.Include(path);
+        }
+
+        return source;
     }
 
     private static string GetPropertyNameFromExpression<TSource, TProperty>(Expression<Func<TSource, TProperty>> expression)

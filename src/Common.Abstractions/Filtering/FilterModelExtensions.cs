@@ -6,6 +6,8 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Linq;
+using System.Text.Json;
+using System.Web;
 
 public static class FilterModelExtensions
 {
@@ -128,5 +130,300 @@ public static class FilterModelExtensions
         }
 
         return source;
+    }
+
+    public static bool IsEmpty(this FilterModel source)
+    {
+        if (source == null)
+        {
+            return true;
+        }
+
+        return !source.Filters.Any() &&
+               !source.Orderings.Any() &&
+               !source.Includes.Any() &&
+               string.IsNullOrEmpty(source.Hierarchy) &&
+               source.Page == 1 &&
+               source.PageSize == 10;
+    }
+
+    public static bool HasFilters(this FilterModel source, string field)
+    {
+        if (source?.Filters == null)
+        {
+            return false;
+        }
+
+        return source.Filters.Any(f => f.Field == field) ||
+               source.Filters.Any(f => f.Filters?.Any(nested => nested.Field == field) == true);
+    }
+
+    public static bool HasOrdering(this FilterModel source, string field)
+    {
+        return source?.Orderings?.Any(o => o.Field == field) == true;
+    }
+
+    public static bool HasInclude(this FilterModel source, string path)
+    {
+        return source?.Includes?.Contains(path) == true;
+    }
+
+    public static FilterModel AddOrUpdateFilter(this FilterModel source, string field, FilterOperator op, object value)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        source.Filters.RemoveAll(f => f.Field == field && f.Operator == op);
+        source.Filters.Add(new FilterCriteria(field, op, value));
+
+        return source;
+    }
+
+    public static FilterModel RemoveFilter(this FilterModel source, string field, FilterOperator op)
+    {
+        if (source?.Filters == null)
+        {
+            return source;
+        }
+
+        source.Filters.RemoveAll(f => f.Field == field && f.Operator == op);
+        foreach (var filter in source.Filters.Where(f => f.Filters?.Any() == true))
+        {
+            filter.Filters.RemoveAll(f => f.Field == field && f.Operator == op);
+        }
+
+        return source;
+    }
+
+    public static FilterModel SetHierarchy(this FilterModel source, string path, int? maxDepth = null)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        source.Hierarchy = path;
+        if (maxDepth.HasValue)
+        {
+            source.HierarchyMaxDepth = maxDepth.Value;
+        }
+
+        return source;
+    }
+
+    public static FilterModel ReplaceOrdering(this FilterModel source, string field, OrderDirection direction)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        source.Orderings.RemoveAll(o => o.Field == field);
+        source.Orderings.Add(new FilterOrderCriteria { Field = field, Direction = direction });
+
+        return source;
+    }
+
+    public static FilterCriteria GetFilter(this FilterModel source, string field, FilterOperator op)
+    {
+        if (source?.Filters == null)
+        {
+            return null;
+        }
+
+        return source.Filters.FirstOrDefault(f => f.Field == field && f.Operator == op) ??
+               source.Filters
+                   .Where(f => f.Filters?.Any() == true)
+                   .SelectMany(f => f.Filters)
+                   .FirstOrDefault(f => f.Field == field && f.Operator == op);
+    }
+
+    public static IEnumerable<FilterCriteria> GetFilters(this FilterModel source, string field)
+    {
+        if (source?.Filters == null)
+        {
+            return Enumerable.Empty<FilterCriteria>();
+        }
+
+        return GetFiltersRecursive(source.Filters, field);
+    }
+
+    private static IEnumerable<FilterCriteria> GetFiltersRecursive(IEnumerable<FilterCriteria> filters, string field)
+    {
+        if (filters == null)
+        {
+            yield break;
+        }
+
+        foreach (var filter in filters)
+        {
+            if (filter.Field == field)
+            {
+                yield return filter;
+            }
+
+            if (filter.Filters?.Any() == true)
+            {
+                foreach (var nestedFilter in GetFiltersRecursive(filter.Filters, field))
+                {
+                    yield return nestedFilter;
+                }
+            }
+        }
+    }
+
+    public static FilterOrderCriteria GetOrdering(this FilterModel source, string field)
+    {
+        return source?.Orderings?.FirstOrDefault(o => o.Field == field);
+    }
+
+    //public static FilterModel Clone(this FilterModel source)
+    //{
+    //    if (source == null)
+    //    {
+    //        return null;
+    //    }
+
+    //    return JsonSerializer.Deserialize<FilterModel>(JsonSerializer.Serialize(source));
+    //}
+
+    public static FilterModel WithoutTracking(this FilterModel source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        source.NoTracking = true;
+        return source;
+    }
+
+    public static FilterModel WithPaging(this FilterModel source, int page, int pageSize)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        source.Page = page > 0 ? page : 1;
+        source.PageSize = pageSize > 0 ? pageSize : 10;
+        return source;
+    }
+
+    public static FilterModel WithDefaultPaging(this FilterModel source)
+    {
+        return source.WithPaging(1, 10);
+    }
+
+    public static string ToQueryString(this FilterModel source)
+    {
+        if (source == null)
+        {
+            return string.Empty;
+        }
+
+        var dict = new Dictionary<string, string>
+        {
+            ["page"] = source.Page.ToString(),
+            ["pageSize"] = source.PageSize.ToString(),
+            ["noTracking"] = source.NoTracking.ToString()
+        };
+
+        if (source.Orderings?.Any() == true)
+        {
+            dict["orderings"] = JsonSerializer.Serialize(source.Orderings);
+        }
+
+        if (source.Filters?.Any() == true)
+        {
+            dict["filters"] = JsonSerializer.Serialize(source.Filters);
+        }
+
+        if (source.Includes?.Any() == true)
+        {
+            dict["includes"] = JsonSerializer.Serialize(source.Includes);
+        }
+
+        if (!string.IsNullOrEmpty(source.Hierarchy))
+        {
+            dict["hierarchy"] = source.Hierarchy;
+            dict["hierarchyMaxDepth"] = source.HierarchyMaxDepth.ToString();
+        }
+
+        return string.Join("&", dict.Select(kvp => $"{HttpUtility.UrlEncode(kvp.Key)}={HttpUtility.UrlEncode(kvp.Value)}"));
+    }
+
+    public static FilterModel FromQueryString(string queryString)
+    {
+        if (string.IsNullOrEmpty(queryString))
+        {
+            return new FilterModel();
+        }
+
+        var dict = HttpUtility.ParseQueryString(queryString);
+        var result = new FilterModel();
+
+        if (int.TryParse(dict["page"], out var page))
+        {
+            result.Page = page;
+        }
+
+        if (int.TryParse(dict["pageSize"], out var pageSize))
+        {
+            result.PageSize = pageSize;
+        }
+
+        if (bool.TryParse(dict["noTracking"], out var noTracking))
+        {
+            result.NoTracking = noTracking;
+        }
+
+        var orderings = dict["orderings"];
+        if (!string.IsNullOrEmpty(orderings))
+        {
+            result.Orderings = JsonSerializer.Deserialize<List<FilterOrderCriteria>>(orderings);
+        }
+
+        var filters = dict["filters"];
+        if (!string.IsNullOrEmpty(filters))
+        {
+            result.Filters = JsonSerializer.Deserialize<List<FilterCriteria>>(filters);
+        }
+
+        var includes = dict["includes"];
+        if (!string.IsNullOrEmpty(includes))
+        {
+            result.Includes = JsonSerializer.Deserialize<List<string>>(includes);
+        }
+
+        result.Hierarchy = dict["hierarchy"];
+        if (int.TryParse(dict["hierarchyMaxDepth"], out var maxDepth))
+        {
+            result.HierarchyMaxDepth = maxDepth;
+        }
+
+        return result;
+    }
+
+    public static IDictionary<string, object> ToDictionary(this FilterModel source)
+    {
+        if (source == null)
+        {
+            return new Dictionary<string, object>();
+        }
+
+        return new Dictionary<string, object>
+        {
+            ["page"] = source.Page,
+            ["pageSize"] = source.PageSize,
+            ["noTracking"] = source.NoTracking,
+            ["orderings"] = source.Orderings,
+            ["filters"] = source.Filters,
+            ["includes"] = source.Includes,
+            ["hierarchy"] = source.Hierarchy,
+            ["hierarchyMaxDepth"] = source.HierarchyMaxDepth
+        };
     }
 }

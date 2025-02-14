@@ -5,16 +5,21 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Provides extension methods for Entity Framework queries.
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
-    ///    Includes the hierarchy if the options specify a hierarchy.
+    /// Includes the hierarchy if the options specify a hierarchy.
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    public static IQueryable<TEntity> HierarchyIf<TEntity>(this IQueryable<TEntity> source, IFindOptions<TEntity> options)
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source queryable.</param>
+    /// <param name="options">The find options containing hierarchy settings.</param>
+    /// <returns>The queryable with included hierarchy.</returns>
+    public static IQueryable<TEntity> HierarchyIf<TEntity>(
+        this IQueryable<TEntity> source,
+        IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
         if (options is null || options?.HasHierarchy() == false)
@@ -22,24 +27,21 @@ public static partial class Extensions
             return source;
         }
 
-        var query = source.Include(e => options.Hierarchy.Expression);
-        for (var i = 1; i < options.Hierarchy.MaxDepth; i++)
-        {
-            query = query.ThenInclude(e => options.Hierarchy.Expression);
-        }
+        var propertyName = GetPropertyNameFromExpression(options.Hierarchy.Expression);
+        var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
 
-        return query;
+        return source.Include(path);
     }
 
     /// <summary>
-    ///   Includes the hierarchy if the options specify a hierarchy.
+    /// Includes the hierarchy if the options specify a hierarchy.
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    /// <typeparam name="TDatabaseEntity"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="options"></param>
-    /// <param name="mapper"></param>
-    /// <returns></returns>
+    /// <typeparam name="TEntity">The domain entity type.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The database entity type.</typeparam>
+    /// <param name="source">The source queryable.</param>
+    /// <param name="options">The find options containing hierarchy settings.</param>
+    /// <param name="mapper">The entity mapper.</param>
+    /// <returns>The queryable with included hierarchy.</returns>
     public static IQueryable<TDatabaseEntity> HierarchyIf<TEntity, TDatabaseEntity>(
         this IQueryable<TDatabaseEntity> source,
         IFindOptions<TEntity> options,
@@ -54,13 +56,27 @@ public static partial class Extensions
             return source;
         }
 
-        var expr = mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Hierarchy.Expression);
-        var query = source.Include(e => expr);
-        for (var i = 1; i < options.Hierarchy.MaxDepth; i++)
+        var expression = mapper.MapExpression<Expression<Func<TDatabaseEntity, object>>>(options.Hierarchy.Expression);
+        var propertyName = GetPropertyNameFromExpression(expression);
+        var path = string.Join(".", Enumerable.Repeat(propertyName, options.Hierarchy.MaxDepth));
+
+        return source.Include(path);
+    }
+
+    private static string GetPropertyNameFromExpression<TSource, TProperty>(Expression<Func<TSource, TProperty>> expression)
+    {
+        if (expression.Body is UnaryExpression unaryExpression)
         {
-            query = query.ThenInclude(e => expr);
+            if (unaryExpression.Operand is MemberExpression memberExpression)
+            {
+                return memberExpression.Member.Name;
+            }
+        }
+        else if (expression.Body is MemberExpression memberExpression)
+        {
+            return memberExpression.Member.Name;
         }
 
-        return query;
+        throw new ArgumentException("Expression must be a property access", nameof(expression));
     }
 }

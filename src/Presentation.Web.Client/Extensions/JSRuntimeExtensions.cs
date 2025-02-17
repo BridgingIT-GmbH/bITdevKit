@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.JSInterop;
+using static System.Net.Mime.MediaTypeNames;
 
 [ExcludeFromCodeCoverage]
 public static class JsRuntimeExtensions
@@ -60,6 +61,11 @@ public static class JsRuntimeExtensions
     public static async Task CopyToClipboardAsync(this IJSRuntime source, string text)
     {
         await source.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+
+    public static async Task NavigateTo(this IJSRuntime source, string url, string target = "_blank")
+    {
+        await source.InvokeVoidAsync("window.open", url, target);
     }
 
     /// <summary>

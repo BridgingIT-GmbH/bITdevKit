@@ -18,6 +18,7 @@ public class EnvironmentExtensionsTests
 
     private void ResetEnvironmentVariables()
     {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER", null);
         Environment.SetEnvironmentVariable("KUBERNETES_SERVICE_HOST", null);
         Environment.SetEnvironmentVariable(AZURE_WEBSITES_ENV, null);

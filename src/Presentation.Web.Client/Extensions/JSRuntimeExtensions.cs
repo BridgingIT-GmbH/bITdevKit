@@ -22,9 +22,51 @@ public static class JsRuntimeExtensions
     /// <example>
     ///     LogAsync("data", myData) //same as console.log('data', myData)
     /// </example>
-    public static async Task LogAsync(this IJSRuntime source, params object[] args)
+    public static async Task ConsoleLogAsync(this IJSRuntime source, params object[] args)
     {
         await source.InvokeVoidAsync("console.log", args);
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleInfoAsync(this IJSRuntime source, params object[] args)
+    {
+        await source.InvokeVoidAsync("console.info", args);
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleWarnAsync(this IJSRuntime source, params object[] args)
+    {
+        await source.InvokeVoidAsync("console.warn", args);
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleErrorAsync(this IJSRuntime source, params object[] args)
+    {
+        await source.InvokeVoidAsync("console.error", args);
     }
 
     /// <summary>

@@ -70,6 +70,20 @@ public static class JsRuntimeExtensions
     }
 
     /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleExceptionAsync(this IJSRuntime source, Exception exception)
+    {
+        await source.InvokeVoidAsync("console.error", $"Exception: {exception}");
+    }
+
+    /// <summary>
     ///     Calls "console.table" on the client passing the args along with it.
     /// </summary>
     /// <example>

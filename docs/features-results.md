@@ -1223,6 +1223,40 @@ await result.Match(
     failure: "Invalid");
 ```
 
+- **HandleAsync**: Execute async actions with full async handlers
+
+```csharp
+await result.HandleAsync(
+    async (success, ct) => await ProcessSuccessAsync(success, ct),
+    async (failure, ct) => await ProcessFailureAsync(failure, ct));
+```
+
+- **HandleAsync (mixed)**: Mix of sync/async handlers
+
+```csharp
+await result.HandleAsync(
+    async (success, ct) => await ProcessSuccessAsync(success, ct),
+    failure => Console.WriteLine($"Failure: {failure}"));
+```
+
+Key differences from Match:
+- Handlers are actions (void/Task) rather than functions returning values
+- Returns the original Result for fluent chaining
+- Maintains result context through the chain
+
+Example usage in workflow:
+
+```csharp
+await result
+    .HandleAsync(
+        async (success, ct) => await LogSuccessAsync(success, ct),
+        async (failure, ct) => await LogFailureAsync(failure, ct))
+    .TapAsync(async (user, ct) => await _cache.StoreUserAsync(user))
+    .EnsureAsync(
+        async (user, ct) => await CheckUserStatusAsync(user),
+        new Error("Invalid status"));
+```
+
 ### Usage Example
 
 > Clean validation, external integration and transformation flow with automatic error propagation.

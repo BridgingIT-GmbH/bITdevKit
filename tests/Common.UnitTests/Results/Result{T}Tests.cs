@@ -1033,4 +1033,148 @@ public class ResultValueTests
         convertedFailureResult.ShouldContainMessage("Failure");
         convertedFailureResult.ShouldContainError<Error>();
     }
+
+    [Fact]
+    public void Handle_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var value = this.faker.Random.Int(1, 100);
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result<int>.Success(value);
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: v =>
+            {
+                successExecuted = true;
+                v.ShouldBe(value);
+            },
+            onFailure: _ => failureExecuted = true);
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Handle_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result<int>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: _ => successExecuted = true,
+            onFailure: errors =>
+            {
+                failureExecuted = true;
+                errors.Count.ShouldBe(1);
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var value = this.faker.Random.Int(1, 100);
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result<int>.Success(value);
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: async (v, ct) =>
+            {
+                await Task.Delay(10, ct);
+                successExecuted = true;
+                v.ShouldBe(value);
+            },
+            onFailure: async (errors, ct) =>
+            {
+                await Task.Delay(10, ct);
+                failureExecuted = true;
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HandleAsync_MixedHandlers_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result<int>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: (v, ct) => Task.FromResult(successExecuted = true),
+            onFailure: errors =>
+            {
+                failureExecuted = true;
+                errors.Count.ShouldBe(1);
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithCancellation_CancelsOperation()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
+        var sut = Result<int>.Success(42);
+        cts.Cancel();
+
+        // Act/Assert
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await sut.HandleAsync(
+                async (_, ct) =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                async (_, ct) =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                cts.Token);
+        });
+    }
+
+    [Fact]
+    public void Handle_MaintainsMessagesAndErrors()
+    {
+        // Arrange
+        var message = this.faker.Random.Words();
+        var sut = Result<int>.Success(42)
+            .WithMessage(message);
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: _ => { },
+            onFailure: _ => { });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage(message);
+        result.Value.ShouldBe(42);
+    }
 }

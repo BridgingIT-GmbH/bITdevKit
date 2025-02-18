@@ -637,4 +637,179 @@ public class ResultTests
         // Assert
         result.ShouldBe(successValue);
     }
+
+    [Fact]
+    public void Handle_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result.Success();
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: () => successExecuted = true,
+            onFailure: _ => failureExecuted = true);
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Handle_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: () => successExecuted = true,
+            onFailure: errors => failureExecuted = true);
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Handle_ReturnsOriginalResult()
+    {
+        // Arrange
+        var message = this.faker.Random.Words();
+        var sut = Result.Success(message);
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: () => { },
+            onFailure: _ => { });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage(message);
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result.Success();
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: ct => 
+            {
+                successExecuted = true;
+                return Task.CompletedTask;
+            },
+            onFailure: (errors, ct) =>
+            {
+                failureExecuted = true;
+                return Task.CompletedTask;
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: ct =>
+            {
+                successExecuted = true;
+                return Task.CompletedTask;
+            },
+            onFailure: (errors, ct) =>
+            {
+                failureExecuted = true;
+                return Task.CompletedTask;
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HandleAsync_MixedHandlers_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = Result.Success();
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: ct =>
+            {
+                successExecuted = true;
+                return Task.CompletedTask;
+            },
+            onFailure: _ => failureExecuted = true);
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithCancellation_CancelsOperation()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
+        var sut = Result.Success();
+        cts.Cancel();
+
+        // Act/Assert
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await sut.HandleAsync(
+                async ct =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                async (_, ct) =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                cts.Token);
+        });
+    }
+
+    [Fact]
+    public async Task HandleAsync_ReturnsOriginalResult()
+    {
+        // Arrange
+        var message = this.faker.Random.Words();
+        var sut = Result.Success(message);
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: _ => Task.CompletedTask,
+            onFailure: (_, _) => Task.CompletedTask);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage(message);
+    }
 }

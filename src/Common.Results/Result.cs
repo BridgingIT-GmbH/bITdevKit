@@ -543,7 +543,7 @@ public readonly partial struct Result : IResult
     /// Determines the Result based on a success condition.
     /// </summary>
     /// <example>
-    /// bool IsValid(string email) => email.Contains("@");
+    /// bool IsValid(string email) => email.contains("@");
     /// var result = Result.SuccessIf(IsValid(email), new ValidationError("Invalid email"));
     /// </example>
     public static Result SuccessIf(bool isSuccess, IResultError error = null)
@@ -758,6 +758,155 @@ public readonly partial struct Result : IResult
         return this.IsSuccess
             ? Task.FromResult(onSuccess())
             : onFailure(this.Errors, cancellationToken);
+    }
+
+    /// <summary>
+    /// Executes different actions based on the Result's success state.
+    /// </summary>
+    /// <param name="onSuccess">Action to execute if the Result is successful.</param>
+    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    ///
+    /// result.Handle(
+    ///     onSuccess: () => Console.WriteLine("Operation succeeded"),
+    ///     onFailure: errors => Console.WriteLine($"Failed with {errors.Count} errors")
+    /// );
+    /// </code>
+    /// </example>
+    public Result Handle(
+        Action onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (this.IsSuccess)
+        {
+            onSuccess();
+            return this;
+        }
+        else
+        {
+            onFailure(this.Errors);
+            return this;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different actions based on the Result's success state.
+    /// </summary>
+    /// <param name="onSuccess">Async function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    ///
+    /// await result.HandleAsync(
+    ///     async ct => await LogSuccessAsync(ct),
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<Result> HandleAsync(
+        Func<CancellationToken, Task> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (this.IsSuccess)
+        {
+            await onSuccess(cancellationToken);
+            return this;
+        }
+        else
+        {
+            await onFailure(this.Errors, cancellationToken);
+            return this;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler.
+    /// </summary>
+    /// <param name="onSuccess">Async function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    ///
+    /// await result.HandleAsync(
+    ///     async ct => await LogSuccessAsync(ct),
+    ///     errors => Console.WriteLine($"Failed with {errors.Count} errors"),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<Result> HandleAsync(
+        Func<CancellationToken, Task> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (this.IsSuccess)
+        {
+            await onSuccess(cancellationToken);
+            return this;
+        }
+        else
+        {
+            onFailure(this.Errors);
+            return this;
+        }
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler.
+    /// </summary>
+    /// <param name="onSuccess">Synchronous function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success();
+    ///
+    /// await result.HandleAsync(
+    ///     () => Console.WriteLine("Operation succeeded"),
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<Result> HandleAsync(
+        Action onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (this.IsSuccess)
+        {
+            onSuccess();
+            return this;
+        }
+        else
+        {
+            await onFailure(this.Errors, cancellationToken);
+            return this;
+        }
     }
 
     /// <summary>

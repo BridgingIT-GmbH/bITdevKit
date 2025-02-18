@@ -415,4 +415,157 @@ public class ResultPagedTests
         var result3 = ResultPaged<PersonStub>.Success(this.values, 5, 1, 10);
         result3.TotalPages.ShouldBe(1);
     }
+
+    [Fact]
+    public void Handle_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: value =>
+            {
+                successExecuted = true;
+                value.Count().ShouldBe(this.values.Count());
+            },
+            onFailure: _ => failureExecuted = true);
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+        result.CurrentPage.ShouldBe(this.page);
+        result.PageSize.ShouldBe(this.pageSize);
+        result.TotalCount.ShouldBe(this.count);
+    }
+
+    [Fact]
+    public void Handle_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = ResultPaged<PersonStub>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: _ => successExecuted = true,
+            onFailure: errors =>
+            {
+                failureExecuted = true;
+                errors.Count.ShouldBe(1);
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithSuccess_ExecutesSuccessAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: async (value, ct) =>
+            {
+                await Task.Delay(10, ct);
+                successExecuted = true;
+                value.Count().ShouldBe(this.values.Count());
+            },
+            onFailure: async (errors, ct) =>
+            {
+                await Task.Delay(10, ct);
+                failureExecuted = true;
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        successExecuted.ShouldBeTrue();
+        failureExecuted.ShouldBeFalse();
+        result.CurrentPage.ShouldBe(this.page);
+        result.PageSize.ShouldBe(this.pageSize);
+        result.TotalCount.ShouldBe(this.count);
+    }
+
+    [Fact]
+    public async Task HandleAsync_MixedHandlers_WithFailure_ExecutesFailureAction()
+    {
+        // Arrange
+        var successExecuted = false;
+        var failureExecuted = false;
+        var sut = ResultPaged<PersonStub>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = await sut.HandleAsync(
+            onSuccess: async (value, ct) =>
+            {
+                await Task.Delay(10, ct);
+                successExecuted = true;
+            },
+            onFailure: errors =>
+            {
+                failureExecuted = true;
+                errors.Count.ShouldBe(1);
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        successExecuted.ShouldBeFalse();
+        failureExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithCancellation_CancelsOperation()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+        cts.Cancel();
+
+        // Act/Assert
+        await Should.ThrowAsync<OperationCanceledException>(async () =>
+        {
+            await sut.HandleAsync(
+                async (_, ct) =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                async (_, ct) =>
+                {
+                    await Task.Delay(1000, ct);
+                },
+                cts.Token);
+        });
+    }
+
+    [Fact]
+    public void Handle_PreservesPaginationMetadata()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.Handle(
+            onSuccess: _ => { },
+            onFailure: _ => { });
+
+        // Assert
+        result.CurrentPage.ShouldBe(this.page);
+        result.PageSize.ShouldBe(this.pageSize);
+        result.TotalCount.ShouldBe(this.count);
+        result.TotalPages.ShouldBe((int)Math.Ceiling(this.count / (double)this.pageSize));
+        result.HasNextPage.ShouldBeTrue();
+        result.HasPreviousPage.ShouldBeTrue();
+    }
 }

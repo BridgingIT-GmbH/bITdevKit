@@ -12,8 +12,8 @@ using System.Text.Json.Serialization;
 ///     Converts enumeration values to and from their JSON representation using System.Text.Json.
 /// </summary>
 /// <typeparam name="TEnumeration">The enumeration type to be converted.</typeparam>
-public class EnumerationSystemTextJsonConverter<TEnumeration>
-    : EnumerationSystemTextJsonConverter<TEnumeration, int, string>
+public class EnumerationJsonConverter<TEnumeration>
+    : EnumerationJsonConverter<TEnumeration, int, string>
     where TEnumeration : IEnumeration
 { }
 
@@ -23,8 +23,8 @@ public class EnumerationSystemTextJsonConverter<TEnumeration>
 /// </summary>
 /// <typeparam name="TEnumeration">The enumeration type to be converted.</typeparam>
 /// <typeparam name="TValue">The type of the enumeration value.</typeparam>
-public class EnumerationSystemTextJsonConverter<TEnumeration, TValue>
-    : EnumerationSystemTextJsonConverter<TEnumeration, int, TValue>
+public class EnumerationJsonConverter<TEnumeration, TValue>
+    : EnumerationJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
     where TValue : IComparable
 { }
@@ -36,7 +36,7 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TValue>
 /// <typeparam name="TEnumeration">The enumeration type to convert.</typeparam>
 /// <typeparam name="TId">The type of the identifier.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : JsonConverter<TEnumeration>
+public class EnumerationJsonConverter<TEnumeration, TId, TValue> : JsonConverter<TEnumeration>
     where TEnumeration : IEnumeration<TId, TValue>
     where TId : IComparable
     where TValue : IComparable
@@ -63,9 +63,6 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : Jso
     /// <summary>
     ///     Writes the JSON representation of the specified Enumeration object.
     /// </summary>
-    /// <typeparam name="TEnumeration">The type of the Enumeration.</typeparam>
-    /// <typeparam name="TId">The type of the Enumeration ID.</typeparam>
-    /// <typeparam name="TValue">The type of the Enumeration Value.</typeparam>
     /// <param name="writer">The writer to which the JSON will be written.</param>
     /// <param name="value">The Enumeration object to write as JSON.</param>
     /// <param name="options">Options to control the serialization behavior.</param>
@@ -262,5 +259,80 @@ public class EnumerationSystemTextJsonConverter<TEnumeration, TId, TValue> : Jso
         {
             throw new JsonException($"Unsupported ID type: {value.GetType()}");
         }
+    }
+}
+
+public class EnumerationCollectionJsonConverter<TEnumeration>
+    : EnumerationCollectionJsonConverter<TEnumeration, int, string>
+    where TEnumeration : IEnumeration
+{ }
+
+public class EnumerationCollectionJsonConverter<TEnumeration, TValue>
+    : EnumerationCollectionJsonConverter<TEnumeration, int, TValue>
+    where TEnumeration : IEnumeration<TValue>
+    where TValue : IComparable
+{ }
+
+public class EnumerationCollectionJsonConverter<TEnumeration, TId, TValue>
+    : JsonConverter<ICollection<TEnumeration>>
+    where TEnumeration : IEnumeration<TId, TValue>
+    where TId : IComparable
+    where TValue : IComparable
+{
+    private readonly EnumerationJsonConverter<TEnumeration, TId, TValue> itemConverter;
+
+    public EnumerationCollectionJsonConverter()
+    {
+        this.itemConverter = new EnumerationJsonConverter<TEnumeration, TId, TValue>();
+    }
+
+    public override ICollection<TEnumeration> Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        if (reader.TokenType != JsonTokenType.StartArray)
+        {
+            throw new JsonException("Expected start of array.");
+        }
+
+        var items = new List<TEnumeration>();
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndArray)
+            {
+                break;
+            }
+
+            var item = this.itemConverter.Read(ref reader, typeof(TEnumeration), options);
+            if (item != null)
+            {
+                items.Add(item);
+            }
+        }
+
+        return items;
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        ICollection<TEnumeration> value,
+        JsonSerializerOptions options)
+    {
+        if (value == null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        writer.WriteStartArray();
+
+        foreach (var item in value)
+        {
+            this.itemConverter.Write(writer, item, options);
+        }
+
+        writer.WriteEndArray();
     }
 }

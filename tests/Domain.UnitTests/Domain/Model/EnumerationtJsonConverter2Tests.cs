@@ -5,14 +5,14 @@ using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
-public class EnumerationSystemTextJsonConverter2Tests
+public class EnumerationtJsonConverter2Tests
 {
     private readonly JsonSerializerOptions options;
 
-    public EnumerationSystemTextJsonConverter2Tests()
+    public EnumerationtJsonConverter2Tests()
     {
         this.options = new JsonSerializerOptions { WriteIndented = true };
-        this.options.Converters.Add(new EnumerationSystemTextJsonConverter<StubUserRoles2, StubRoleDetails>());
+        this.options.Converters.Add(new EnumerationJsonConverter<StubUserRoles2, StubRoleDetails>());
     }
 
     [Fact]

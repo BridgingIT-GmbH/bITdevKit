@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-public class SystemInfo
+public class SystemModule
 {
-    public IDictionary<string, object> Request { get; set; }
-
-    public IDictionary<string, string> Runtime { get; set; }
+    public string Name { get; set; }
+    public bool Enabled { get; set; }
+    public bool IsRegistered { get; set; }
+    public int Priority { get; set; }
 }

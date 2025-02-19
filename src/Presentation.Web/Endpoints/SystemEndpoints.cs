@@ -56,7 +56,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         {
             group.MapGet("modules", this.GetModules)
                 //.AllowAnonymous()
-                .Produces<IEnumerable<IModule>>()
+                .Produces<IEnumerable<SystemModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -122,9 +122,10 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         return Results.Ok(result);
     }
 
-    public IResult GetModules(IEnumerable<IModule> modules)
+    public IResult GetModules(IEnumerable<SystemModule> modules)
     {
-        return Results.Ok(modules);
+        return Results.Ok(modules.Select(e =>
+        new SystemModule { Enabled = e.Enabled, IsRegistered = e.IsRegistered, Name = e.Name, Priority = e.Priority }));
     }
 
     private static bool IsLocal(HttpRequest source)

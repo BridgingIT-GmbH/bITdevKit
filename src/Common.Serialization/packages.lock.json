@@ -2,6 +2,12 @@
   "version": 2,
   "dependencies": {
     "net9.0": {
+      "CsvHelper": {
+        "type": "Direct",
+        "requested": "[33.0.1, )",
+        "resolved": "33.0.1",
+        "contentHash": "fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ=="
+      },
       "Ensure.That": {
         "type": "Direct",
         "requested": "[10.1.0, )",

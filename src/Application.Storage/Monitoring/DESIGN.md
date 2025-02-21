@@ -174,7 +174,7 @@ sequenceDiagram
 The watcher is started only if the storage provider supports real-time watching (`SupportsRealTimeWatching` is `true`) and `UseOnDemandOnly` is not specified in the location configuration. Otherwise, the location relies solely on on-demand scanning.
 
 ### Scanner-based Flow with Behaviors
-The scanner actively compares the current filesystem state with previously stored events, using the configured change detection strategy to identify modifications while providing progress information through behaviors.
+The scanner actively compares the current storage state with previously stored events, using the configured change detection strategy to identify modifications while providing progress information through behaviors.
 
 ```mermaid
 sequenceDiagram
@@ -225,6 +225,18 @@ sequenceDiagram
     deactivate MS
 ```
 
+### Processing Rate Limiting
+The Processing Pipeline uses rate limiting to control the rate at which events are dequeued from the unlimited in-memory queue and processed sequentially. This stabilizes resource usage by throttling processing, not enqueueing, via two parameters: `EventsPerSecond` (steady-state rate, e.g., 100 events/second) and `MaxBurstSize` (burst capacity, e.g., 1000 events). Configured per location, it employs a token bucket model—processing events up to the burst size, then at the specified rate. Retries, if configured per processor, occur within the rate limit’s token allocation; exhausted retries mark the event as failed, storing the status without re-queueing.
+
+**Example Configuration:**
+```csharp
+options.RateLimit
+    .WithEventsPerSecond(100)  // 100 events/second
+    .WithMaxBurstSize(1000);   // Burst of 1000 events
+```
+
+For 1200 events in one second, 1000 process immediately, and 200 queue, processed over 2 seconds. The queue may grow if production exceeds processing, relying on memory availability.
+
 ## Core Interfaces
 
 ### Monitoring Behavior
@@ -246,6 +258,10 @@ The change detection strategy pattern enables flexible implementations for deter
 public interface IChangeDetector
 {
     ChangeDetectionStrategy Strategy { get; }
+    /// <summary>
+    /// Determines if a file has changed. Strategies should use FileMetadata.LastModified for timestamp comparison
+    /// (falling back to DetectionTime if null) and FileMetadata.Length or GetChecksumAsync for checksum-based verification.
+    /// </summary>
     Task<bool> HasChangedAsync(FileMetadata currentFile, FileEvent lastEvent, CancellationToken token);
 }
 ```
@@ -274,6 +290,8 @@ public interface IFileStorageProvider : IDisposable
     Task<FileMetadata> GetFileInfoAsync(string path, CancellationToken token);
     /// <summary>
     /// Lists files matching the search pattern under the specified path. For cloud storage, supports continuation tokens for scalability.
+    /// Callers (e.g., Scanner) should iterate using the returned NextContinuationToken until null, re-invoking ListFilesAsync
+    /// with the token to retrieve subsequent pages. If cancelled mid-scan, returns partial results up to the last completed page.
     /// </summary>
     /// <param name="path">The base path (e.g., directory or container prefix).</param>
     /// <param name="searchPattern">Pattern to filter files (e.g., "*.txt").</param>
@@ -293,7 +311,10 @@ public interface IFileStorageProvider : IDisposable
     Task DeleteDirectoryAsync(string path, bool recursive, CancellationToken token);
     Task<IEnumerable<string>> ListDirectoriesAsync(string path, string searchPattern, bool recursive, CancellationToken token);
 
-    // Health Check
+    /// <summary>
+    /// Checks connectivity and basic access to the storage location (e.g., container or share existence).
+    /// Returns false if the location is unreachable or permissions are insufficient, triggering a health alert.
+    /// </summary>
     Task<bool> CheckHealthAsync(CancellationToken token);
 }
 ```
@@ -304,10 +325,10 @@ The event storage interface focuses solely on event persistence and retrieval. I
 ```csharp
 public interface IFileEventStore
 {
-    Task<FileEvent> GetFileEventAsync(Guid id);
-    Task<FileEvent> GetFileEventAsync(string filePath);
-    Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName, int page, int pageSize);
-    Task StoreEventAsync(FileEvent fileEvent);
+    Task<FileMetadata> GetFileEventAsync(Guid id);
+    Task<FileMetadata> GetFileEventAsync(string filePath);
+    Task<List<FileMetadata>> GetFileEventsForLocationAsync(string locationName, int page, int pageSize);
+    Task StoreEventAsync(FileMetadata fileEvent);
     Task StoreProcessingResultAsync(ProcessingResult result);
 }
 ```
@@ -353,7 +374,8 @@ public class MonitoringService
     // Core operations
     /// <summary>
     /// Starts the monitoring service, initializing all configured locations.
-    /// Real-time watchers are started only for locations where the provider supports it and UseOnDemandOnly is not specified.
+    /// Real-time watchers are started only if the provider’s SupportsRealTimeWatching is true
+    /// and UseOnDemandOnly is not specified (false takes precedence over true).
     /// </summary>
     Task StartAsync(CancellationToken token);
     Task StopAsync(CancellationToken token);
@@ -528,6 +550,11 @@ public class LocalFileStorageProvider : IFileStorageProvider
     }
 
     // ... Implement other methods (WriteFileAsync, DeleteFileAsync, etc.)
+    public async Task<bool> CheckHealthAsync(CancellationToken token)
+    {
+        return await Task.FromResult(Directory.Exists(_rootPath));
+    }
+
     public void Dispose() { }
 }
 ```
@@ -600,6 +627,19 @@ public class AzureBlobStorageProvider : IFileStorageProvider
     }
 
     // ... Implement other methods (WriteFileAsync, DeleteFileAsync, etc.)
+    public async Task<bool> CheckHealthAsync(CancellationToken token)
+    {
+        try
+        {
+            await _containerClient.ExistsAsync(token);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public void Dispose() { }
 }
 ```
@@ -631,28 +671,6 @@ builder.Services.AddFileMonitoring(monitoring =>
     });
 });
 ```
-
-### Processing Rate Limiting
-
-The Processing Pipeline uses rate limiting to control the rate at which events are dequeued from the unlimited in-memory queue and processed sequentially. This stabilizes resource usage by throttling processing, not enqueueing, via two parameters: `EventsPerSecond` (steady-state rate, e.g., 100 events/second) and `MaxBurstSize` (burst capacity, e.g., 1000 events). Configured per location, it employs a token bucket model—processing events up to the burst size, then at the specified rate.
-
-**Example Configuration:**
-```csharp
-builder.Services.AddFileMonitoring(monitoring =>
-{
-    monitoring
-        .UseShare("Documents", "\\\\server\\docs", options =>
-        {
-            options.FilePattern = "*.pdf";
-            options.RateLimit
-                .WithEventsPerSecond(100)  // Process 100 events per second
-                .WithMaxBurstSize(1000);   // Allow a burst of 1000 events
-            options.UseProcessor<FileReadProcessor>();
-        });
-});
-```
-
-For 1200 events in one second, 1000 process immediately, and 200 queue, processed over 2 seconds. This ensures reliable handling but may grow the queue if production exceeds processing, relying on memory availability.
 
 ## Design Boundaries and Constraints
 
@@ -693,5 +711,67 @@ Queue operation has clear constraints:
 - Rate-limited processing
 - No persistence requirements
 - Clear capacity handling
+- Queue size can be monitored via `MonitoringService.GetQueueSize`; significant growth indicates a need to adjust `EventsPerSecond`, `MaxBurstSize`, or investigate producer rates.
 
 Through these design decisions and implementation guidelines, the system maintains clear boundaries while providing robust file monitoring capabilities across diverse storage types.
+
+## File Structure
+
+```plaintext
+BridgingIT.DevKit.Application.Storage/
+├── Models/                     # Core data structures
+│   ├── FileEvent.cs           # File change event
+│   ├── ProcessingResult.cs    # Processing outcome
+│   ├── ScanContext.cs         # Scan operation context
+│   ├── ScanError.cs           # Scan error details
+│   ├── FileMetadata.cs        # File metadata
+│   ├── StorageDocument.cs     # Durable document
+│   ├── ScanState.cs           # Enum: Scan states
+│   ├── ChangeDetectionStrategy.cs # Enum: Detection strategies
+│   ├── FileEventType.cs       # Enum: Event types
+│   ├── ProcessingStatus.cs    # Enum: Processing status
+│   └── FileEventSource.cs     # Enum: Event sources
+│
+├── Behaviors/                 # Monitoring behaviors
+│   ├── IMonitoringBehavior.cs # Behavior contract
+│   ├── LoggingBehavior.cs     # Logs scan operations
+│   └── MetricsBehavior.cs     # Collects metrics
+│
+├── EventStore/                # Event storage
+│   ├── IFileEventStore.cs     # Event persistence contract
+│   ├── InMemoryFileEventStore.cs # In-memory event store
+│   └── EntityFrameworkFileEventStore.cs # EF Core event store
+│
+├── Processors/                # Event processors
+│   ├── IFileEventProcessor.cs # Processor contract
+│   └── LoggingFileEventProcessor.cs # Logs events (replaced SimpleProcessor)
+│
+├── Storage/                   # File storage providers
+│   ├── IFileStorageProvider.cs # Storage abstraction
+│   ├── InMemoryFileStorageProvider.cs # In-memory storage
+│   ├── LocalFileStorageProvider.cs    # Local file system storage
+│   └── AzureBlobStorageProvider.cs    # Azure Blob Storage with latest SDK
+│
+├── ChangeDetection/           # Change detection strategies
+│   ├── IChangeDetector.cs     # Detection contract
+│   ├── TimestampChangeDetector.cs # Timestamp-based detection
+│   └── ChecksumChangeDetector.cs  # Checksum-based detection
+│
+├── Configuration/             # Fluent setup options
+│   ├── LocationOptions.cs     # Options for UseShare
+│   ├── RateLimitOptions.cs    # Rate limit settings
+│   └── MonitoringBuilder.cs   # Fluent builder for MonitoringService
+│
+├── Extensions/                # Extension methods
+│   ├── FileStorageProviderExtensions.cs # Text, object, StorageDocument extensions
+│   └──
+ializerExtensions.cs       # CSV serialization extensions
+│
+├── Tests/                     # Integration-style unit tests
+│   ├── MonitoringServiceTests.cs      # Monitoring workflows
+│   ├── StorageTests.cs                # Storage provider tests
+│   ├── EventStoreTests.cs             # Event store tests
+│   └── ChangeDetectionTests.cs        # Change detection tests
+│
+└── MonitoringService.cs       # Central service with fluent API
+```

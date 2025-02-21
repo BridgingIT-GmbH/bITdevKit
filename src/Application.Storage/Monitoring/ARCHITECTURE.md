@@ -2,7 +2,7 @@
 
 [TOC]
 
-> The File Monitoring System provides robust file change monitoring across various storage types. Changes can be detected through two distinct mechanisms: real-time watching and on-demand scanning. Events from both sources flow through a common processing pipeline, ensuring consistent handling regardless of the detection method. The system is designed for reliability, extensibility, and clear operational boundaries.
+> The File Monitoring System provides robust file change monitoring across various storage types. Changes can be detected through two distinct mechanisms: real-time watching and on-demand scanning. Events from both sources flow through a common processing pipeline, with extensible behaviors providing monitoring and insight capabilities. The system is designed for reliability, extensibility, and clear operational boundaries.
 
 ## Architectural Component Overview
 The system is composed of several key component groups that work together to provide comprehensive file monitoring capabilities. Each group has specific responsibilities and clear interfaces with other components, ensuring a modular and maintainable architecture.
@@ -32,7 +32,14 @@ graph TD
             EQ[Unlimited In-Memory Queue]
             RLD[Rate Limited Processing]
             EP[Event Processing]
+            BH[Behavior System]
         end
+    end
+
+    subgraph Behaviors[Monitoring Behaviors]
+        LG[Logging Behavior]
+        MT[Metrics Behavior]
+        CB[Custom Behaviors]
     end
 
     subgraph Data[Data Storage]
@@ -41,18 +48,17 @@ graph TD
     end
 
     subgraph Operations[Operational Features]
-        MT[Native .NET Meters]
         HC[Health Checks]
         CE[Custom Events]
     end
 
     FB[Fluent Builder] --> LC[Location Configuration]
     LC --> SP
-    LC -- Optional --> SW
+    LC -- Optional (Configurable) --> SW
     LC --> SC
     LC --> PP
     LC --> BL
-    
+
     Locations --> SP
     SP --> CD
     SW -. Optional .-> MS
@@ -61,13 +67,18 @@ graph TD
     BL --> MS
     MS --> PP
     PP --> DB
-    MS --> MT
+    MS --> BH
+    BH --> LG
+    BH --> MT
+    BH --> CB
     MS --> HC
     MS --> CE
 
     classDef optional fill:#f9f,stroke:#333,stroke-dasharray: 5 5;
-    class SW optional;
+    class SW,CB optional;
 ```
+
+The Storage Watcher (SW) is optional and configurable per location. By default, it is enabled, but can be disabled using the UseOnDemandOnly option during location configuration, restricting the location to on-demand scanning via the Scanner (SC).
 
 ## Core Components
 
@@ -78,9 +89,28 @@ Key responsibilities include:
 - Location lifecycle management and control through pause, resume, and restart operations
 - Event queue handling with rate-limited processing
 - Processing coordination across multiple locations
+- Behavior system coordination
 - Health monitoring and status reporting
 - Operational controls for runtime configuration
-- Custom event publishing for external integration
+
+### Behavior System
+The behavior system provides extensible monitoring and insight capabilities through a plug-in architecture. Behaviors receive notifications about scan operations and can provide various monitoring, logging, and analysis capabilities.
+
+Key aspects:
+- Plug-in architecture for monitoring operations
+- Rich context sharing between behaviors
+- Clear lifecycle events (start, detection, completion)
+- Built-in behaviors for common needs
+- Custom behavior support
+
+#### ScanContext
+The ScanContext provides rich contextual information about ongoing scan operations:
+- Unique scan identifier for correlation
+- Location and timing information
+- Progress tracking and state management
+- Error collection and handling
+- Performance metrics collection
+- Extensible properties for behavior communication
 
 ### Change Detection
 The system employs two fundamentally different approaches to change detection, each serving specific use cases while ensuring consistent event generation. This dual approach provides flexibility in how changes are detected while maintaining uniform event processing.
@@ -90,7 +120,7 @@ File system watchers provide immediate change detection through system notificat
 - File system event-based detection requiring no active polling
 - Direct event generation without state comparison
 - Immediate notification of changes
-- Optional per location with default enabled state
+- Optional per location with default enabled state, configurable via the UseOnDemandOnly option to disable real-time watching and restrict to on-demand scanning
 
 #### Scanners (On-demand)
 Scanners actively inspect the file system and compare with known state:
@@ -99,6 +129,7 @@ Scanners actively inspect the file system and compare with known state:
 - Change detection through configured strategy
 - Event generation for detected differences
 - Support for startup and on-demand scanning
+- Integration with behavior system for progress tracking
 
 ### Processing Pipeline
 The event processing pipeline ensures reliable and controlled handling of all detected changes. It implements rate limiting and sequential processing to maintain system stability while providing clear tracking and error handling capabilities.
@@ -125,7 +156,7 @@ Responsibilities:
 The system provides comprehensive operational features through standard .NET interfaces, ensuring easy integration with existing monitoring and management systems.
 
 Key features:
-- Native .NET meters for performance metrics
+- Behavior-based monitoring and metrics
 - Standard health checks for monitoring
 - Rich event publication for external integration
 - Comprehensive operational control interfaces
@@ -149,33 +180,34 @@ sequenceDiagram
     W->>MS: FileEventArgs
     MS->>MS: Create FileEvent
     MS->>BL: Apply Blacklist
-    
+
     alt Not Blacklisted
         BL->>Q: Enqueue FileEvent
         Note over MS: Raise FileEventReceived
-        
+
         loop Rate Limited Processing
             Q->>P: Process FileEvent
             Note over MS: Raise BeforeProcessing
-            
+
             alt Processing Success
                 P->>S: Store Completed Status
             else Processing Failed
                 P->>S: Store Failed Status
             end
-            
+
             Note over MS: Raise AfterProcessing
         end
     end
 ```
 
-### Scanning Flow
-The scanner provides systematic change detection through state comparison:
+### Scanning Flow with Behaviors
+The scanner provides systematic change detection with behavior integration:
 
 ```mermaid
 sequenceDiagram
     participant MS as MonitoringService
     participant SC as Scanner
+    participant BH as Behaviors
     participant SP as StorageProvider
     participant CD as ChangeDetector
     participant ST as FileEventStore
@@ -184,38 +216,36 @@ sequenceDiagram
     participant P as Processors
     participant S as Storage
 
-    Note over MS: ScanStarted Event
-    
+    MS->>MS: Create ScanContext
+    MS->>BH: OnScanStarted
+
     loop For Each File
         SC->>SP: Get File Info
         SC->>ST: Get Last FileEvent
         SC->>CD: Check For Changes
-        
+
         alt Change Detected
             CD->>MS: Create FileEvent
+            MS->>BH: OnFileDetected
             MS->>BL: Apply Blacklist
-            
+
             alt Not Blacklisted
                 BL->>Q: Enqueue FileEvent
-                Note over MS: Raise FileEventReceived
-                
+
                 loop Rate Limited Processing
                     Q->>P: Process FileEvent
-                    Note over MS: Raise BeforeProcessing
-                    
+
                     alt Processing Success
                         P->>S: Store Completed Status
                     else Processing Failed
                         P->>S: Store Failed Status
                     end
-                    
-                    Note over MS: Raise AfterProcessing
                 end
             end
         end
     end
-    
-    Note over MS: ScanCompleted Event
+
+    MS->>BH: OnScanCompleted
 ```
 
 ## Design Principles
@@ -226,6 +256,7 @@ Component independence is a fundamental principle:
 - Each location operates completely independently
 - Storage providers are self-contained
 - Processors handle specific, focused tasks
+- Behaviors operate independently
 - Clear component boundaries and interfaces
 
 ### Reliability
@@ -234,19 +265,22 @@ The system prioritizes reliable operation:
 - Comprehensive error handling
 - Optional retry policies where appropriate
 - Complete status tracking
+- Independent behavior operation
 
 ### Observability
 Comprehensive monitoring is built into the system:
-- Native .NET metrics for performance monitoring
+- Behavior-based monitoring system
 - Standard health checks for system status
 - Rich event publishing for external integration
 - Clear operational insights
+- Extensible metrics collection
 
 ### Extensibility
 The system is designed for extension:
 - Custom storage provider implementation
 - New change detection strategies
 - Additional event processors
+- Custom behavior implementation
 - Event handler integration
 
 ## System Boundaries
@@ -257,11 +291,12 @@ The system maintains clear processing boundaries:
 - Rate-limited queue processing
 - No parallel execution
 - Clear retry policies and limits
+- Behavior independence
 
 ### Storage Boundaries
 Storage is focused and limited:
 - Event and result persistence only
-- No metrics storage (uses .NET meters)
+- No metrics storage (handled by behaviors)
 - Efficient state tracking
 - Clear lookup capabilities
 
@@ -272,15 +307,23 @@ Queue operation is well-defined:
 - No persistence requirements
 - Clear capacity handling
 
+### Behavior Boundaries
+Behavior operation is well-defined:
+- Independent operation
+- No direct storage access
+- Clear lifecycle events
+- Controlled state sharing
+- Non-blocking operation
+
 ## Operational Capabilities
-The system provides comprehensive operational features:
 
 ### Monitoring
 Built-in monitoring capabilities:
-- Native .NET meters for metrics
+- Behavior-based metrics collection
 - Standard health checks
 - Queue inspection interfaces
 - Status tracking and reporting
+- Custom monitoring extension
 
 ### Control
 Runtime control features:
@@ -288,6 +331,7 @@ Runtime control features:
 - Processor enable/disable capabilities
 - Queue management functions
 - Health verification interfaces
+- Behavior management
 
 ### Event Publication
 Rich event publication for integration:
@@ -295,5 +339,118 @@ Rich event publication for integration:
 - Processing status updates
 - Error notifications
 - Operational state changes
+- Behavior events
 
-Through these architectural decisions and clear boundaries, the system provides robust file monitoring capabilities while maintaining reliability, extensibility, and operational excellence.
+## Appendix A: Built-in Behaviors
+
+### LoggingBehavior
+The LoggingBehavior provides structured logging for scan operations:
+
+```csharp
+public class LoggingBehavior : IMonitoringBehavior
+{
+    private readonly ILogger<LoggingBehavior> logger;
+
+    public LoggingBehavior(ILogger<LoggingBehavior> logger)
+    {
+        this.logger = logger;
+    }
+
+    public void OnScanStarted(ScanContext context)
+    {
+        using var scope = logger.BeginScope(new Dictionary<string, object>
+        {
+            ["CorrelationId"] = context.ScanId,
+            ["LocationName"] = context.LocationName
+        });
+
+        logger.LogInformation(
+            "Started scanning location: {LocationName}. Start time: {StartTime}. Scan ID: {ScanId}",
+            context.LocationName,
+            context.StartTime,
+            context.ScanId);
+    }
+
+    public void OnFileDetected(ScanContext context, FileEvent fileEvent)
+    {
+        using var scope = logger.BeginScope(new Dictionary<string, object>
+        {
+            ["CorrelationId"] = context.ScanId,
+            ["LocationName"] = context.LocationName
+        });
+
+        logger.LogDebug(
+            "Found change in {Path} of type {EventType}. Total changes: {TotalChanges}",
+            fileEvent.FilePath,
+            fileEvent.EventType,
+            context.DetectedChanges);
+    }
+
+    public void OnScanCompleted(ScanContext context, TimeSpan duration)
+    {
+        using var scope = logger.BeginScope(new Dictionary<string, object>
+        {
+            ["CorrelationId"] = context.ScanId,
+            ["LocationName"] = context.LocationName
+        });
+
+        logger.LogInformation(
+            "Scan completed. Location: {LocationName}, Duration: {Duration}, Total changes: {TotalChanges}, Scan ID: {ScanId}",
+            context.LocationName,
+            duration,
+            context.DetectedChanges,
+            context.ScanId);
+    }
+}
+```
+
+### MetricsBehavior
+The MetricsBehavior collects performance metrics during scan operations:
+
+```csharp
+public class MetricsBehavior : IMonitoringBehavior
+{
+    private readonly Meter meter;
+    private readonly Counter<long> scanStarted;
+    private readonly Counter<long> changesDetected;
+    private readonly Histogram<double> scanDuration;
+    private readonly ObservableGauge<int> activeScanCount;
+    private readonly ConcurrentDictionary<Guid, DateTime> activeScanTimes = new();
+
+    public MetricsBehavior()
+    {
+        meter = new Meter("FileMonitoring");
+        scanStarted = meter.CreateCounter<long>("file_monitoring.scans.started");
+        changesDetected = meter.CreateCounter<long>("file_monitoring.changes.detected");
+        scanDuration = meter.CreateHistogram<double>("file_monitoring.scan.duration", "ms");
+        activeScanCount = meter.CreateObservableGauge<int>(
+            "file_monitoring.scans.active",
+            () => activeScanTimes.Count);
+    }
+
+    public void OnScanStarted(ScanContext context)
+    {
+        scanStarted.Add(1);
+        activeScanTimes.TryAdd(context.ScanId, DateTime.UtcNow);
+
+        meter.CreateObservableGauge(
+            $"file_monitoring.scan.progress.{context.ScanId}",
+            () => context.GetProgress());
+    }
+
+    public void OnFileDetected(ScanContext context, FileEvent fileEvent)
+    {
+        changesDetected.Add(1);
+    }
+
+    public void OnScanCompleted(ScanContext context, TimeSpan duration)
+    {
+        scanDuration.Record(duration.TotalMilliseconds);
+        activeScanTimes.TryRemove(context.ScanId, out _);
+
+        meter.RemoveInstrument($"file_monitoring.scan.progress.{context.ScanId}");
+    }
+}
+```
+
+Through these architectural decisions and clear boundaries, the system provides robust file monitoring capabilities while maintaining reliability, extensibility, and operational excellence. The behavior system ensures comprehensive monitoring and analysis capabilities that can be extended for specific needs.

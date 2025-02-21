@@ -1,10 +1,12 @@
 # File Monitoring System - Technical Design
 
-> The File Monitoring System's technical design focuses on clear interfaces, well-defined responsibilities, and efficient implementation patterns. The system uses modern .NET features for metrics and health monitoring while maintaining clear boundaries around core file monitoring functionality.
+> The File Monitoring System's technical design focuses on clear interfaces, well-defined responsibilities, and efficient implementation patterns. The system uses modern .NET features for metrics and health monitoring while maintaining clear boundaries around core file monitoring functionality, with extensible behaviors providing rich monitoring capabilities.
 
 [TOC]
 
-## Core Entity Model
+## Core Entity Models
+
+### File Event Model
 The file event model forms the foundation of the system, capturing all necessary information about file changes and their processing state. The model supports both persistent state through the Items dictionary and maintains clear relationships between events and their processing outcomes.
 
 ```mermaid
@@ -45,6 +47,48 @@ classDiagram
     FileEvent "1" --> "*" ProcessingResult
 ```
 
+### Scan Context Model
+The scan context model provides rich contextual information about scan operations, enabling behavior-based monitoring and analysis.
+
+```mermaid
+classDiagram
+    class ScanContext {
+        +Guid ScanId
+        +string LocationName
+        +DateTime StartTime
+        +int ProcessedItems
+        +int DetectedChanges
+        +ScanState State
+        +Dictionary~FileEventType,int~ ChangesByType
+        +List~ScanError~ Errors
+        +Dictionary~string,object~ Properties
+        +void IncrementProcessed()
+        +void IncrementChanges(FileEventType type)
+        +void AddError(string message, Exception ex)
+        +decimal GetProgress()
+        +TimeSpan GetCurrentDuration()
+        +void Complete()
+        +void Fail(string reason)
+    }
+
+    class ScanError {
+        +string Message
+        +Exception Exception
+        +DateTime Timestamp
+    }
+
+    class ScanState {
+        <<enumeration>>
+        Starting
+        InProgress
+        Completing
+        Completed
+        Failed
+    }
+
+    ScanContext "1" --> "*" ScanError
+```
+
 ## Event Detection and Processing Flows
 The system implements two distinct approaches for detecting and handling file changes. Each flow is optimized for its specific use case while ensuring consistent event processing through the pipeline.
 
@@ -61,13 +105,15 @@ sequenceDiagram
     participant P as Processors
     participant ST as FileEventStore
 
-    %% Startup with Watcher
+        %% Startup with Watcher (if enabled)
     App->>MS: StartAsync
     activate MS
     MS->>Loc: Initialize Location
     Loc->>Q: Create Queue
-    Loc->>W: StartWatchingAsync
-    activate W
+    alt RealTimeEnabled
+        Loc->>W: StartWatchingAsync
+        activate W
+    end
 
     %% Start Processing
     MS->>MS: Start Processing Task
@@ -106,14 +152,16 @@ sequenceDiagram
     deactivate MS
 ```
 
-### Scanner-based Flow
-The scanner actively compares the current filesystem state with previously stored events, using the configured change detection strategy to identify modifications. This approach ensures thorough change detection, especially useful after system downtime.
+The watcher is started only if real-time watching is enabled for the location (default behavior). If UseOnDemandOnly is specified in the location configuration, the watcher initialization is skipped, and the location relies solely on on-demand scanning.
+
+### Scanner-based Flow with Behaviors
+The scanner actively compares the current filesystem state with previously stored events, using the configured change detection strategy to identify modifications while providing progress information through behaviors.
 
 ```mermaid
 sequenceDiagram
     participant App as Application
     participant MS as MonitoringService
-    participant Loc as LocationHandler
+    participant BH as Behaviors
     participant S as Scanner
     participant CD as ChangeDetector
     participant Q as EventQueue
@@ -123,34 +171,10 @@ sequenceDiagram
     %% Startup Scanner Mode
     App->>MS: StartAsync
     activate MS
-    MS->>Loc: Initialize Location
-    Loc->>Q: Create Queue
+    MS->>MS: Create ScanContext
+    MS->>BH: OnScanStarted
 
-    %% Start Processing
-    MS->>MS: Start Processing Task
-
-    loop Rate Limited Processing
-        Q->>MS: Dequeue Event
-
-        alt Event Available
-            MS->>MS: Raise BeforeProcessing
-
-            loop For Each Processor
-                MS->>P: ProcessAsync
-                alt Processing Success
-                    MS->>ST: Store Result
-                else Processing Failed with Retry
-                    MS->>P: Retry Processing
-                    MS->>ST: Store Final Result
-                end
-            end
-
-            MS->>MS: Raise AfterProcessing
-        end
-    end
-
-    %% Manual Scan Operation
-    App->>MS: ScanLocationAsync
+    %% Start Scanning
     MS->>S: ScanAsync
 
     loop For Each File
@@ -159,10 +183,22 @@ sequenceDiagram
 
         alt Change Detected
             S->>MS: Create FileEvent
+            MS->>BH: OnFileDetected
             MS->>Q: EnqueueAsync
-            MS->>MS: Raise FileEventReceived
+
+            loop Rate Limited Processing
+                Q->>P: Process FileEvent
+                alt Processing Success
+                    P->>ST: Store Result
+                else Processing Failed with Retry
+                    P->>ST: Store Final Result
+                end
+            end
         end
     end
+
+    MS->>BH: OnScanCompleted
+    MS-->>App: Return ScanContext
 
     %% Shutdown
     App->>MS: StopAsync
@@ -171,6 +207,18 @@ sequenceDiagram
 ```
 
 ## Core Interfaces
+
+### Monitoring Behavior
+The behavior interface defines the contract for implementing monitoring behaviors that track and analyze scan operations.
+
+```csharp
+public interface IMonitoringBehavior
+{
+    void OnScanStarted(ScanContext context);
+    void OnFileDetected(ScanContext context, FileEvent fileEvent);
+    void OnScanCompleted(ScanContext context, TimeSpan duration);
+}
+```
 
 ### Change Detection
 The change detection strategy pattern enables flexible implementations for determining file changes. Strategies can leverage the storage provider when needed, for example to calculate checksums.
@@ -266,8 +314,15 @@ The monitoring service provides comprehensive control over the system's operatio
 public class MonitoringService
 {
     // Core operations
+    /// <summary>
+    /// Starts the monitoring service, initializing all configured locations.
+    /// Real-time watchers are started only for locations without UseOnDemandOnly specified.
+    /// </summary>
     Task StartAsync(CancellationToken token);
     Task StopAsync(CancellationToken token);
+
+    // Scanning operations
+    Task<ScanContext> ScanLocationAsync(string locationName, CancellationToken token);
 
     // Location control
     Task RestartLocationAsync(string locationName, CancellationToken token);
@@ -300,12 +355,70 @@ public class MonitoringService
     event EventHandler<ProcessorCompletedEventArgs> ProcessorCompleted;
     event EventHandler<ProcessorErrorEventArgs> ProcessorError;
     event EventHandler<LocationStatusChangedEventArgs> LocationStatusChanged;
-    event EventHandler<ScanStartedEventArgs> ScanStarted;
-    event EventHandler<ScanCompletedEventArgs> ScanCompleted;
 }
 ```
 
 ## Implementation Guidelines
+
+### Behavior Implementation
+Behaviors should follow these guidelines to ensure reliable operation:
+
+Behavior Guidelines:
+- Single, focused monitoring responsibility
+- Non-blocking operation wherever possible
+- Proper error handling without affecting scan operation
+- Efficient resource usage and cleanup
+- Clear documentation of collected metrics
+- Thread-safe state management
+- Proper usage of ScanContext properties
+
+Example behavior implementation:
+
+```csharp
+public class MetricsBehavior : IMonitoringBehavior
+{
+    private readonly Meter meter;
+    private readonly Counter<long> scanStarted;
+    private readonly Counter<long> changesDetected;
+    private readonly Histogram<double> scanDuration;
+    private readonly ObservableGauge<int> activeScanCount;
+    private readonly ConcurrentDictionary<Guid, DateTime> activeScanTimes = new();
+
+    public MetricsBehavior()
+    {
+        meter = new Meter("FileMonitoring");
+        scanStarted = meter.CreateCounter<long>("file_monitoring.scans.started");
+        changesDetected = meter.CreateCounter<long>("file_monitoring.changes.detected");
+        scanDuration = meter.CreateHistogram<double>("file_monitoring.scan.duration", "ms");
+        activeScanCount = meter.CreateObservableGauge<int>(
+            "file_monitoring.scans.active",
+            () => activeScanTimes.Count);
+    }
+
+    public void OnScanStarted(ScanContext context)
+    {
+        scanStarted.Add(1);
+        activeScanTimes.TryAdd(context.ScanId, DateTime.UtcNow);
+
+        meter.CreateObservableGauge(
+            $"file_monitoring.scan.progress.{context.ScanId}",
+            () => context.GetProgress());
+    }
+
+    public void OnFileDetected(ScanContext context, FileEvent fileEvent)
+    {
+        changesDetected.Add(1);
+    }
+
+    public void OnScanCompleted(ScanContext context, TimeSpan duration)
+    {
+        scanDuration.Record(duration.TotalMilliseconds);
+        activeScanTimes.TryRemove(context.ScanId, out _);
+
+        meter.RemoveInstrument($"file_monitoring.scan.progress.{context.ScanId}");
+    }
+}
+```
 
 ### Change Detection Strategy Implementation
 When implementing a new change detection strategy, follow these guidelines to ensure reliable operation:
@@ -338,7 +451,34 @@ Processor Guidelines:
 - Document retry requirements
 - Proper context usage for state
 
+### Location Configuration Guidelines
+
+When configuring locations, consider the following:
+- Real-Time Watching: Enabled by default. Use UseOnDemandOnly() to disable watchers and restrict to on-demand scanning.
+- Consistency: Ensure the detection strategy (e.g., timestamp or checksum) aligns with the intended use case, whether real-time or on-demand.
+Example:
+```csharp
+builder.Services.AddFileMonitoring(monitoring =>
+{
+    monitoring.UseShare("ManualScan", "\\\\server\\manual", options =>
+    {
+        options.FilePattern = "*.log";
+        options.UseOnDemandOnly(); // Explicitly on-demand only
+    });
+});
+
 ## Design Boundaries and Constraints
+
+### Behavior Boundaries
+Behaviors must operate within clear constraints:
+
+Behavior Constraints:
+- Read-only access to scan context
+- Non-blocking operation required
+- Independent operation from other behaviors
+- No direct storage access
+- Clear cleanup of resources
+- Thread-safe state management
 
 ### Processing Boundaries
 The system enforces clear processing boundaries:
@@ -354,7 +494,7 @@ Storage focuses solely on event data:
 
 Storage Constraints:
 - Event and result storage only
-- No metrics storage (use .NET meters)
+- No metrics storage (use behaviors)
 - Clear lookup patterns
 - Efficient state tracking
 

@@ -2,7 +2,7 @@
 
 [TOC]
 
-> The File Monitoring System provides robust file change monitoring across various storage types. Changes can be detected through two distinct mechanisms: real-time watching and on-demand scanning. Events from both sources flow through a common processing pipeline, with extensible behaviors providing monitoring and insight capabilities. The system is designed for reliability, extensibility, and clear operational boundaries.
+> The File Monitoring System provides robust file change monitoring across various storage types, including traditional file shares and cloud storage systems like Azure Blob Storage. Changes can be detected through two distinct mechanisms: real-time watching (where supported) and on-demand scanning. Events from both sources flow through a common processing pipeline, with extensible behaviors providing monitoring and insight capabilities. The system is designed for reliability, extensibility, and clear operational boundaries.
 
 ## Architectural Component Overview
 The system is composed of several key component groups that work together to provide comprehensive file monitoring capabilities. Each group has specific responsibilities and clear interfaces with other components, ensuring a modular and maintainable architecture.
@@ -78,25 +78,25 @@ graph TD
     class SW,CB optional;
 ```
 
-The Storage Watcher (SW) is optional and configurable per location. By default, it is enabled, but can be disabled using the UseOnDemandOnly option during location configuration, restricting the location to on-demand scanning via the Scanner (SC).
+The `Storage Watcher (SW)` is optional and configurable per location. By default, it is enabled if supported by the provider (`SupportsRealTimeWatching` is `true`) and not disabled via `UseOnDemandOnly`. The `Storage Provider (SP)` abstracts both file shares and cloud storage, using `FileMetadata` for file information and supporting scalable listing operations with continuation tokens.
 
 ## Core Components
 
 ### Monitoring Service
 The Monitoring Service acts as the central orchestrator of the system, managing all aspects of file monitoring and event processing. It provides comprehensive control and insight into the system's operation through various interfaces and events. The service maintains independence between locations while ensuring consistent processing and reliable operation.
 
-Key responsibilities include:
+**Key Responsibilities:**
 - Location lifecycle management and control through pause, resume, and restart operations
 - Event queue handling with rate-limited processing
 - Processing coordination across multiple locations
 - Behavior system coordination
 - Health monitoring and status reporting
-- Operational controls for runtime configuration
+- Operational controls for runtime configuration, including enabling/disabling real-time watching based on provider support and configuration
 
 ### Behavior System
 The behavior system provides extensible monitoring and insight capabilities through a plug-in architecture. Behaviors receive notifications about scan operations and can provide various monitoring, logging, and analysis capabilities.
 
-Key aspects:
+**Key Aspects:**
 - Plug-in architecture for monitoring operations
 - Rich context sharing between behaviors
 - Clear lifecycle events (start, detection, completion)
@@ -104,7 +104,7 @@ Key aspects:
 - Custom behavior support
 
 #### ScanContext
-The ScanContext provides rich contextual information about ongoing scan operations:
+The `ScanContext` provides rich contextual information about ongoing scan operations:
 - Unique scan identifier for correlation
 - Location and timing information
 - Progress tracking and state management
@@ -120,13 +120,13 @@ File system watchers provide immediate change detection through system notificat
 - File system event-based detection requiring no active polling
 - Direct event generation without state comparison
 - Immediate notification of changes
-- Optional per location with default enabled state, configurable via the UseOnDemandOnly option to disable real-time watching and restrict to on-demand scanning
+- Optional per location, enabled by default if the storage provider’s `SupportsRealTimeWatching` is `true`, configurable via the `UseOnDemandOnly` option to disable real-time watching and restrict to on-demand scanning
 
 #### Scanners (On-demand)
-Scanners actively inspect the file system and compare with known state:
-- Systematic traversal of configured locations
+Scanners actively inspect the storage system and compare with known state:
+- Systematic traversal of configured locations, using scalable listing with continuation tokens where necessary
 - State comparison with previously stored events
-- Change detection through configured strategy
+- Change detection through configured strategy using `FileMetadata`
 - Event generation for detected differences
 - Support for startup and on-demand scanning
 - Integration with behavior system for progress tracking
@@ -134,7 +134,7 @@ Scanners actively inspect the file system and compare with known state:
 ### Processing Pipeline
 The event processing pipeline ensures reliable and controlled handling of all detected changes. It implements rate limiting and sequential processing to maintain system stability while providing clear tracking and error handling capabilities.
 
-Core features:
+**Core Features:**
 - In-memory queue with unlimited capacity
 - Rate-limited processing with configurable thresholds
 - Strictly sequential event processing
@@ -145,7 +145,7 @@ Core features:
 ### Storage Layer
 The storage layer focuses solely on maintaining file event history and processing results. It provides efficient access to historical data while maintaining clear boundaries around what is persisted.
 
-Responsibilities:
+**Responsibilities:**
 - File event persistence with full state
 - Processing result storage
 - Efficient event lookup by id or path
@@ -155,7 +155,7 @@ Responsibilities:
 ### Operational Features
 The system provides comprehensive operational features through standard .NET interfaces, ensuring easy integration with existing monitoring and management systems.
 
-Key features:
+**Key Features:**
 - Behavior-based monitoring and metrics
 - Standard health checks for monitoring
 - Rich event publication for external integration
@@ -164,11 +164,11 @@ Key features:
 ## Event Flows
 
 ### Real-time Watching Flow
-The watcher-based detection provides immediate notification of file system changes:
+The watcher-based detection provides immediate notification of file system changes where supported by the storage provider:
 
 ```mermaid
 sequenceDiagram
-    participant FS as FileSystem
+    participant FS as StorageSystem
     participant W as Watcher
     participant MS as MonitoringService
     participant BL as Blacklist
@@ -200,8 +200,10 @@ sequenceDiagram
     end
 ```
 
+**Note**: This flow occurs only for locations where the `Storage Provider` supports real-time watching (`SupportsRealTimeWatching` is `true`) and `UseOnDemandOnly` is not set.
+
 ### Scanning Flow with Behaviors
-The scanner provides systematic change detection with behavior integration:
+The scanner provides systematic change detection with behavior integration, adaptable to both file shares and cloud storage:
 
 ```mermaid
 sequenceDiagram
@@ -220,7 +222,8 @@ sequenceDiagram
     MS->>BH: OnScanStarted
 
     loop For Each File
-        SC->>SP: Get File Info
+        SC->>SP: ListFilesAsync (with continuation)
+        SC->>SP: Get FileMetadata
         SC->>ST: Get Last FileEvent
         SC->>CD: Check For Changes
 
@@ -248,13 +251,15 @@ sequenceDiagram
     MS->>BH: OnScanCompleted
 ```
 
+**Note**: The scanner uses `ListFilesAsync` with continuation tokens to handle large-scale cloud storage listings efficiently, while functioning seamlessly for local file systems without pagination.
+
 ## Design Principles
 The system is built on key design principles that ensure reliable operation, clear boundaries, and maintainable code.
 
 ### Independence
 Component independence is a fundamental principle:
 - Each location operates completely independently
-- Storage providers are self-contained
+- Storage providers are self-contained, supporting diverse storage types
 - Processors handle specific, focused tasks
 - Behaviors operate independently
 - Clear component boundaries and interfaces
@@ -277,7 +282,7 @@ Comprehensive monitoring is built into the system:
 
 ### Extensibility
 The system is designed for extension:
-- Custom storage provider implementation
+- Custom storage provider implementations for file shares or cloud storage
 - New change detection strategies
 - Additional event processors
 - Custom behavior implementation
@@ -335,7 +340,7 @@ Runtime control features:
 
 ### Event Publication
 Rich event publication for integration:
-- File event notifications
+- File event notifications (real-time where supported)
 - Processing status updates
 - Error notifications
 - Operational state changes
@@ -344,7 +349,7 @@ Rich event publication for integration:
 ## Appendix A: Built-in Behaviors
 
 ### LoggingBehavior
-The LoggingBehavior provides structured logging for scan operations:
+The `LoggingBehavior` provides structured logging for scan operations:
 
 ```csharp
 public class LoggingBehavior : IMonitoringBehavior
@@ -405,7 +410,7 @@ public class LoggingBehavior : IMonitoringBehavior
 ```
 
 ### MetricsBehavior
-The MetricsBehavior collects performance metrics during scan operations:
+The `MetricsBehavior` collects performance metrics during scan operations:
 
 ```csharp
 public class MetricsBehavior : IMonitoringBehavior
@@ -453,4 +458,4 @@ public class MetricsBehavior : IMonitoringBehavior
 }
 ```
 
-Through these architectural decisions and clear boundaries, the system provides robust file monitoring capabilities while maintaining reliability, extensibility, and operational excellence. The behavior system ensures comprehensive monitoring and analysis capabilities that can be extended for specific needs.
+Through these architectural decisions and clear boundaries, the system provides robust file monitoring capabilities across diverse storage types, maintaining reliability, extensibility, and operational excellence. The behavior system ensures comprehensive monitoring and analysis capabilities that can be extended for specific needs.

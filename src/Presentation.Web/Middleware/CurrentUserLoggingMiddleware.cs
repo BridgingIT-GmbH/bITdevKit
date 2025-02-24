@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 public class CurrentUserLoggingMiddleware
 {
     private const string UserIdKey = "UserId";
+    private const string UserRolesKey = "UserRoles";
     private readonly ILogger logger;
     private readonly RequestDelegate next;
 
@@ -39,10 +40,14 @@ public class CurrentUserLoggingMiddleware
         if (currentUserAccessor != null)
         {
             userId = currentUserAccessor.UserId;
-
             if (!string.IsNullOrEmpty(userId))
             {
                 httpContext.Response.Headers.AddOrUpdate(UserIdKey, userId);
+
+                if (currentUserAccessor.Roles != null)
+                {
+                    httpContext.Response.Headers.AddOrUpdate(UserRolesKey, string.Join(",", currentUserAccessor.Roles));
+                }
             }
         }
 
@@ -53,6 +58,7 @@ public class CurrentUserLoggingMiddleware
                 [UserIdKey] = userId,
             }))
             {
+                //this.logger.LogInformation("User {UserId} has roles {UserRoles}", userId, currentUserAccessor.Roles);
                 await this.next(httpContext); // continue pipeline
             }
         }

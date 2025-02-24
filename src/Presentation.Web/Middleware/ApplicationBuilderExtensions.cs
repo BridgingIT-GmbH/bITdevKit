@@ -82,11 +82,14 @@ public static class ApplicationBuilderExtensions
     ///    Adds middleware for providing the current user id to each HTTP request.
     /// </summary>
     /// <param name="app"></param>
-    public static IApplicationBuilder UseCurrentUserLogging(this IApplicationBuilder app)
+    public static IApplicationBuilder UseCurrentUserLogging(this IApplicationBuilder app, bool enabled = true)
     {
         EnsureArg.IsNotNull(app, nameof(app));
 
-        app.UseMiddleware<CurrentUserLoggingMiddleware>();
+        if(enabled)
+        {
+            app.UseMiddleware<CurrentUserLoggingMiddleware>();
+        }
 
         return app;
     }

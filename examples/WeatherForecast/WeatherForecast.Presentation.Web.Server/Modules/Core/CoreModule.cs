@@ -77,7 +77,7 @@ public class CoreModule : WebModuleBase
             .WithHealthChecks()
             .WithDatabaseMigratorService();
 
-        services.AddAuthorization(o =>
+        services.AddAuthorization2(o =>
         {
             o.WithEntityPermissions<CoreDbContext>(o =>
             {

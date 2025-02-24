@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 /// </summary>
 public static partial class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAuthorization(
+    public static IServiceCollection AddAuthorization2(
         this IServiceCollection services,
         Action<AuthorizationOptionsBuilder> configure, IConfiguration configuration = null)
     {

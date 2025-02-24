@@ -27,7 +27,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         services.AddSingleton(fixture.Context);
         services.AddSingleton(this.loggerFactory);
 
-        services.AddAuthorization(o =>
+        services.AddAuthorization2(o =>
             o.WithEntityPermissions<StubDbContext>(e =>
             {
                 //e.AddEntity<PersonStub>() for non hierarchical entities

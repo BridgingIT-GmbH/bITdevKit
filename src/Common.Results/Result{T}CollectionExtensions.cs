@@ -3771,26 +3771,3 @@ public static class ResultCollectionExtensions
 
     #endregion
 }
-
-public class ProcessingOptions
-{
-    public bool ContinueOnItemFailure { get; set; } = true;
-
-    public int? MaxFailures { get; set; }
-
-    public bool IncludeFailedItems { get; set; }
-
-    public static ProcessingOptions Default => new()
-    {
-        ContinueOnItemFailure = true,
-        MaxFailures = null,
-        IncludeFailedItems = false
-    };
-
-    public static ProcessingOptions Strict => new()
-    {
-        ContinueOnItemFailure = false,
-        MaxFailures = 0,
-        IncludeFailedItems = false
-    };
-}

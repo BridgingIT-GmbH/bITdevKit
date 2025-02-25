@@ -216,12 +216,10 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         employeePermissions.ShouldContain(p => p.Permission == Permission.Delete);
 
         // Verify actual permission checks
-        var hasListPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], Permission.List);
+        var hasListPermission = await this.evaluator.HasPermissionAsync(userId, [], Permission.List);
         hasListPermission.ShouldBeTrue("Should have type-wide list permission");
 
-        var hasWritePermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Write);
+        var hasWritePermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Write);
         hasWritePermission.ShouldBeTrue("Should have inherited write permission");
     }
 
@@ -320,16 +318,13 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         finalEmployeePermissions.ShouldContain(p => p.Permission == Permission.Read);
 
         // Verify specific permissions are properly revoked
-        var hasListPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], Permission.List);
+        var hasListPermission = await this.evaluator.HasPermissionAsync(userId, [], Permission.List);
         hasListPermission.ShouldBeFalse("Type-wide List permission should be revoked");
 
-        var hasWritePermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Write);
+        var hasWritePermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Write);
         hasWritePermission.ShouldBeFalse("Write permission should be revoked");
 
-        var hasReadPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Read);
+        var hasReadPermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
         hasReadPermission.ShouldBeTrue("Should still have inherited Read permission from CEO");
     }
 

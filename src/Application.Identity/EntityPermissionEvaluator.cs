@@ -33,9 +33,9 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string permission, bool bypassCache = false)
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        return await this.HasPermissionAsync(userId, roles, entity?.Id, permission, bypassCache);
+        return await this.HasPermissionAsync(userId, roles, entity?.Id, permission, bypassCache, cancellationToken);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false)
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         var entityType = typeof(TEntity).FullName;
 
@@ -64,7 +64,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         }
 
         // Check actual direct permissions
-        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, entityId, permission);
+        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, entityId, permission, cancellationToken);
         if (hasPermission)
         {
             TypedLogger.LogPermissionGranted(this.logger, Constants.LogKey, entityType, entityId?.ToString(), permission, userId, "Direct");
@@ -77,10 +77,10 @@ public partial class EntityPermissionEvaluator<TEntity>(
         var entityTypeConfiguration = this.options.GetEntityTypeConfiguration<TEntity>();
         if (entityTypeConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
-            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId);
+            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
             foreach (var parentId in parentIds)
             {
-                var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission);
+                var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission, cancellationToken);
                 if (hasParentPermission)
                 {
                     TypedLogger.LogPermissionGrantedFromParent(this.logger, Constants.LogKey, entityType, entityId?.ToString(), permission, userId, $"Parent:{parentId}");
@@ -120,7 +120,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the user has the permission.</returns>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false) // wildcard permission
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false, CancellationToken cancellationToken = default) // wildcard permission
     {
         var entityType = typeof(TEntity).FullName;
 
@@ -138,7 +138,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         }
 
         // Check type-wide permissions through provider
-        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, permission);
+        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, permission, cancellationToken);
         if (hasPermission)
         {
             TypedLogger.LogPermissionGranted(this.logger, Constants.LogKey, entityType, null, permission, userId, "Direct");
@@ -170,12 +170,9 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entity">The entity to get permissions for.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(
-        string userId,
-        string[] roles,
-        TEntity entity)
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, TEntity entity, CancellationToken cancellationToken = default)
     {
-        return await this.GetPermissionsAsync(userId, roles, entity?.Id);
+        return await this.GetPermissionsAsync(userId, roles, entity?.Id, cancellationToken);
     }
 
     /// <summary>
@@ -184,13 +181,13 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entityId">The entity id to get permissions for.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, object entityId)
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, object entityId, CancellationToken cancellationToken = default)
     {
         var entityType = typeof(TEntity).FullName;
         var result = new List<EntityPermissionInfo>();
 
         // Get direct user permissions
-        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, entityId);
+        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, entityId, cancellationToken);
         foreach (var permission in directPermissions)
         {
             result.Add(new EntityPermissionInfo
@@ -208,7 +205,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         {
             foreach (var role in roles)
             {
-                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, entityId);
+                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, entityId, cancellationToken);
                 foreach (var permission in rolePermissions)
                 {
                     result.Add(new EntityPermissionInfo
@@ -227,11 +224,11 @@ public partial class EntityPermissionEvaluator<TEntity>(
         var entityConfiguration = this.options.GetEntityTypeConfiguration<TEntity>();
         if (entityConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
-            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId);
+            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
             foreach (var parentId in parentIds)
             {
                 // Get parent direct permissions
-                var parentDirectPermissions = await provider.GetUserPermissionsAsync(userId, entityType, parentId);
+                var parentDirectPermissions = await provider.GetUserPermissionsAsync(userId, entityType, parentId, cancellationToken);
                 foreach (var permission in parentDirectPermissions)
                 {
                     result.Add(new EntityPermissionInfo
@@ -249,7 +246,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                 {
                     foreach (var role in roles)
                     {
-                        var parentRolePermissions = await provider.GetRolePermissionsAsync(role, entityType, parentId);
+                        var parentRolePermissions = await provider.GetRolePermissionsAsync(role, entityType, parentId, cancellationToken);
                         foreach (var permission in parentRolePermissions)
                         {
                             result.Add(new EntityPermissionInfo
@@ -293,13 +290,13 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles) // wildcard permission
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, CancellationToken cancellationToken = default) // wildcard permission
     {
         var entityType = typeof(TEntity).FullName;
         var result = new List<EntityPermissionInfo>();
 
         // Get direct user type-wide permissions
-        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, null);
+        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, null, cancellationToken);
         foreach (var permission in directPermissions)
         {
             result.Add(new EntityPermissionInfo
@@ -317,7 +314,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         {
             foreach (var role in roles)
             {
-                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, null);
+                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, null, cancellationToken);
                 foreach (var permission in rolePermissions)
                 {
                     result.Add(new EntityPermissionInfo

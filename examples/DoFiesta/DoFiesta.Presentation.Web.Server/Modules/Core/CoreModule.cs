@@ -47,7 +47,7 @@ public class CoreModule : WebModuleBase
                 .Enabled(environment?.IsDevelopment() == true));
 
         // permissions
-        services.AddAuthorization2(o =>
+        services.AddEntityAuthorization(o =>
         {
             o.WithEntityPermissions<CoreDbContext>(o =>
             {

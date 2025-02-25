@@ -1,7 +1,7 @@
 # Entity Permissions Feature Documentation
 
 ## Overview
-The `Application.Identity` feature within the `bITDevKit` provides a robust framework for managing entity-level permissions in ASP.NET Core applications. Designed to enforce precise access control on entities such as `Employee`, it supports a range of permissions, including predefined constants like `Permission.Read` and custom strings such as `"Review"`. Configured through a fluent `AddAuthorization` syntax in `Program.cs`, this feature seamlessly integrates with controllers, Minimal APIs, and RESTful endpoints for runtime permission management and evaluation. Leveraging Entity Framework Core for persistence, it also accommodates hierarchical permission inheritance, making it particularly suitable for organizational scenarios.
+The `Application.Identity` feature within the `bITDevKit` provides a robust framework for managing entity-level permissions in ASP.NET Core applications. Designed to enforce precise access control on entities such as `Employee`, it supports a range of permissions, including predefined constants like `Permission.Read` and custom strings such as `"Review"`. Configured through a fluent `AddEntityAuthorization` syntax in `Program.cs`, this feature seamlessly integrates with controllers, Minimal APIs, and RESTful endpoints for runtime permission management and evaluation. Leveraging Entity Framework Core for persistence, it also accommodates hierarchical permission inheritance, making it particularly suitable for organizational scenarios.
 
 ## Challenges
 - **Granular Access Control**: Traditional role-based access control (RBAC) lacks the precision to restrict access to specific entity instances, such as an individual employee record.
@@ -10,7 +10,7 @@ The `Application.Identity` feature within the `bITDevKit` provides a robust fram
 - **Runtime Management**: Developers need effective tools to grant, revoke, and evaluate permissions dynamically during application execution.
 
 ## Solution
-The `Application.Identity` feature addresses these challenges by delivering a unified and developer-friendly system for entity-level permissions. It centralizes configuration within `AddAuthorization`, supporting predefined `Permission` constants (e.g., `Permission.Read`) and custom strings (e.g., `"Review"`), and integrates with ASP.NET Core’s authorization pipeline. Permissions can be applied at the entity type level (wildcard permissions, affecting all instances of an entity type) or restricted to specific entity instances (entity-specific permissions, identified by an ID). Key components include:
+The `Application.Identity` feature addresses these challenges by delivering a unified and developer-friendly system for entity-level permissions. It centralizes configuration within `AddEntityAuthorization`, supporting predefined `Permission` constants (e.g., `Permission.Read`) and custom strings (e.g., `"Review"`), and integrates with ASP.NET Core’s authorization pipeline. Permissions can be applied at the entity type level (wildcard permissions, affecting all instances of an entity type) or restricted to specific entity instances (entity-specific permissions, identified by an ID). Key components include:
 
 - **Entity Permissions**: Defined for specific entities or type-wide using wildcard permissions (e.g., all `Employee` entities) or entity-specific permissions (e.g., a single `Employee` with a given ID), persisted in a database.
 - **Fluent Configuration**: Managed within `Program.cs` for simplicity and consistency across the application.
@@ -76,7 +76,7 @@ Configure in `Program.cs`:
 ```csharp
 using BridgingIT.DevKit.Common;
 
-services.AddAuthorization(o =>
+services.AddEntityAuthorization(o =>
 {
     o.WithEntityPermissions<CoreDbContext>(o =>
     {
@@ -107,7 +107,7 @@ Define permissions using the fluent syntax:
 ```csharp
 using BridgingIT.DevKit.Common;
 
-services.AddAuthorization(o =>
+services.AddEntityAuthorization(o =>
 {
     o.WithEntityPermissions<CoreDbContext>(o =>
     {
@@ -262,7 +262,7 @@ See **API Reference** for evaluation endpoints.
 ```csharp
 using BridgingIT.DevKit.Common;
 
-services.AddAuthorization(o =>
+services.AddEntityAuthorization(o =>
 {
     o.WithEntityPermissions<CoreDbContext>(o =>
     {
@@ -356,7 +356,7 @@ CEO (ceo1)       <- "Read"
 ```csharp
 using BridgingIT.DevKit.Common;
 
-services.AddAuthorization(o =>
+services.AddEntityAuthorization(o =>
 {
     o.WithEntityPermissions<CoreDbContext>(o =>
     {

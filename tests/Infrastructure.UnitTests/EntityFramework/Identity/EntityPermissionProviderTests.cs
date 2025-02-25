@@ -26,7 +26,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         services.AddSingleton(fixture.Context);
         services.AddSingleton(this.loggerFactory);
 
-        services.AddAuthorization2(o =>
+        services.AddEntityAuthorization(o =>
             o.WithEntityPermissions<StubDbContext>(e =>
             {
                 e.AddEntity<PersonStub>();

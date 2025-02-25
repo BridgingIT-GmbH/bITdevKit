@@ -568,46 +568,46 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{LogKey} ef provider - checking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{LogKey} permission provider - checking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogCheckingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} ef provider - checking wildcard permission: {EntityType}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} permission provider - checking wildcard permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogCheckingWildcardPermission(ILogger logger, string logKey, string entityType, string permission, string userId);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} ef provider - getting entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} permission provider - getting entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogGettingEntityIds(ILogger logger, string logKey, string entityType, string permission, string userId);
 
-        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} ef provider - wildcard permission found: {EntityType}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} permission provider - wildcard permission found: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogWildcardPermissionFound(ILogger logger, string logKey, string entityType, string permission, string userId);
 
-        [LoggerMessage(EventId = 5, Level = LogLevel.Debug, Message = "{LogKey} ef provider - found {Count} entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 5, Level = LogLevel.Debug, Message = "{LogKey} permission provider - found {Count} entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogFoundEntityIds(ILogger logger, string logKey, string entityType, string permission, string userId, int count);
 
-        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{LogKey} ef provider - getting hierarchy path: {EntityType}/{EntityId}")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{LogKey} permission provider - getting hierarchy path: {EntityType}/{EntityId}")]
         public static partial void LogGettingHierarchyPath(ILogger logger, string logKey, string entityType, string entityId);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} ef provider - found hierarchy path: {EntityType}/{EntityId}, count={Count}")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} permission provider - found hierarchy path: {EntityType}/{EntityId}, count={Count}")]
         public static partial void LogFoundHierarchyPath(ILogger logger, string logKey, string entityType, string entityId, int count);
 
-        [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "{LogKey} ef provider - granting permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "{LogKey} permission provider - granting permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogGrantingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 11, Level = LogLevel.Debug, Message = "{LogKey} ef provider - revoking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 11, Level = LogLevel.Debug, Message = "{LogKey} permission provider - revoking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogRevokingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 12, Level = LogLevel.Debug, Message = "{LogKey} ef provider - granting role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
+        [LoggerMessage(EventId = 12, Level = LogLevel.Debug, Message = "{LogKey} permission provider - granting role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
         public static partial void LogGrantingRolePermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string roleName);
 
-        [LoggerMessage(EventId = 13, Level = LogLevel.Debug, Message = "{LogKey} ef provider - revoking role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
+        [LoggerMessage(EventId = 13, Level = LogLevel.Debug, Message = "{LogKey} permission provider - revoking role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
         public static partial void LogRevokingRolePermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string roleName);
 
-        [LoggerMessage(EventId = 14, Level = LogLevel.Debug, Message = "{LogKey} ef provider - invalidating permission caches: {EntityType}/{EntityId}, user={UserId}")]
+        [LoggerMessage(EventId = 14, Level = LogLevel.Debug, Message = "{LogKey} permission provider - invalidating permission caches: {EntityType}/{EntityId}, user={UserId}")]
         public static partial void LogInvalidatingCaches(ILogger logger, string logKey, string entityType, string entityId, string userId);
 
-        [LoggerMessage(EventId = 15, Level = LogLevel.Debug, Message = "{LogKey} ef provider - invalidating role permission caches: {EntityType}/{EntityId}, role={RoleName}")]
+        [LoggerMessage(EventId = 15, Level = LogLevel.Debug, Message = "{LogKey} permission provider - invalidating role permission caches: {EntityType}/{EntityId}, role={RoleName}")]
         public static partial void LogInvalidatingRoleCaches(ILogger logger, string logKey, string entityType, string entityId, string roleName);
 
-        [LoggerMessage(EventId = 16, Level = LogLevel.Warning, Message = "{LogKey} ef provider - circular hierarchy detected for {EntityType} with id {EntityId}")]
+        [LoggerMessage(EventId = 16, Level = LogLevel.Warning, Message = "{LogKey} permission provider - circular hierarchy detected for {EntityType} with id {EntityId}")]
         public static partial void LogCircularHierarchyDetected(ILogger logger, string logKey, string entityType, string entityId);
     }
 }

@@ -39,7 +39,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Checks if the user has the specified permission on the given entity.
+    /// Checks if the user/roles has the specified permission on the given entity.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
@@ -113,7 +113,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Checks if the user has the specified permission on the entity type.
+    /// Checks if the user/roles has the specified permission on the entity type.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
@@ -176,7 +176,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Gets the permissions for the user for the given entity id.
+    /// Gets the permissions for the user/roles for the given entity id.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
@@ -286,7 +286,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Gets the permissions for the user on the entity type.
+    /// Gets the permissions for the user/roles on the entity type.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>

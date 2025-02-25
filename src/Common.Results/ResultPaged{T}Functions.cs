@@ -197,7 +197,7 @@ public readonly partial struct ResultPaged<T>
     /// );
     /// // Maintains the same page info even if some items are filtered
     /// </example>
-    public ResultPaged<T> Filter(Func<IEnumerable<T>, bool> predicate, IResultError error)
+    public ResultPaged<T> Filter(Func<IEnumerable<T>, bool> predicate, IResultError error = null)
     {
         if (!this.IsSuccess || predicate is null)
         {
@@ -234,7 +234,7 @@ public readonly partial struct ResultPaged<T>
     /// </example>
     public async Task<ResultPaged<T>> FilterAsync(
         Func<IEnumerable<T>, CancellationToken, Task<bool>> predicate,
-        IResultError error,
+        IResultError error = null,
         CancellationToken cancellationToken = default)
     {
         if (!this.IsSuccess || predicate is null)

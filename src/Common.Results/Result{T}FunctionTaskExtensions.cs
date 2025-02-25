@@ -538,7 +538,7 @@ public static partial class ResultFunctionTaskExtensions
     public static async Task<Result<T>> Filter<T>(
         this Task<Result<T>> resultTask,
         Func<T, bool> predicate,
-        IResultError error)
+        IResultError error = null)
     {
         if (predicate is null)
         {
@@ -582,7 +582,7 @@ public static partial class ResultFunctionTaskExtensions
     public static async Task<Result<T>> FilterAsync<T>(
         this Task<Result<T>> resultTask,
         Func<T, CancellationToken, Task<bool>> predicate,
-        IResultError error,
+        IResultError error = null,
         CancellationToken cancellationToken = default)
     {
         if (predicate is null)

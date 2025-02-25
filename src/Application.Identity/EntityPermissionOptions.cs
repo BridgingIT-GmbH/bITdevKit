@@ -79,7 +79,8 @@ public class EntityPermissionOptions
     /// Configures hierarchical permissions for an entity type.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="parentIdExpression">The expression to get the parent ID.</param>
+    /// <param name="parentIdExpression">The expression to get the parent ID. The property type must match the entity ID type,
+    /// but can be nullable.</param>
     /// <returns>The options instance for chaining.</returns>
     public EntityPermissionOptions AddHierarchicalEntity<TEntity>(
         Expression<Func<TEntity, object>> parentIdExpression, params Permission[] permissions)
@@ -110,12 +111,14 @@ public class EntityPermissionOptions
         }
 
         // Verify that parent ID type matches entity ID type
-        //var idProperty = typeof(TEntity).GetProperty(nameof(IEntity.Id));
         var idPropertyType = GetEntityIdPropertyType<TEntity>();
         var parentProperty = memberExpression.Member as PropertyInfo;
-        if (idPropertyType != parentProperty.PropertyType)
+        var parentPropertyType = parentProperty.PropertyType;
+
+        // Get the underlying type if it's nullable
+        if (idPropertyType != (Nullable.GetUnderlyingType(parentPropertyType) ?? parentPropertyType))
         {
-            throw new ArgumentException($"Parent ID type must match entity ID for type {entityType.Name}");
+            throw new ArgumentException($"Parent ID type must match entity ID type (nullable allowed) for type {entityType.Name}");
         }
 
         this.EntityConfigurations.Add(

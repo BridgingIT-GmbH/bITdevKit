@@ -22,7 +22,7 @@ public class PersonStub : AggregateRoot<Guid>
 
     public int Age { get; set; }
 
-    public Guid ManagerId { get; set; }
+    public Guid? ManagerId { get; set; } // can also be non optional
 }
 
 public class PersonDtoStub //: AggregateRoot<string>

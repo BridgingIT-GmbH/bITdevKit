@@ -614,7 +614,7 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<T> Filter(Func<T, bool> operation, IResultError error)
+    public Result<T> Filter(Func<T, bool> operation, IResultError error = null)
     {
         if (!this.IsSuccess || operation is null)
         {
@@ -661,7 +661,7 @@ public readonly partial struct Result<T>
     /// </example>
     public async Task<Result<T>> FilterAsync(
         Func<T, CancellationToken, Task<bool>> operation,
-        IResultError error,
+        IResultError error = null,
         CancellationToken cancellationToken = default)
     {
         if (!this.IsSuccess || operation is null)

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using Common;
 using Microsoft.AspNetCore.Mvc;
 
-public static class ResultExtensions
+public static class ResultActionExtensions
 {
     public static ActionResult ToOkActionResult(this Result result, IActionResultMapper actionResultMapper = null)
     {

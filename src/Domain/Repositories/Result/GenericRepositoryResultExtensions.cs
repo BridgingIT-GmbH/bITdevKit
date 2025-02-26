@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
@@ -59,6 +60,14 @@ public static class GenericRepositoryResultExtensions
             var updatedEntity = await source.UpdateAsync(entity, cancellationToken).AnyContext();
             return Result<TEntity>.Success(updatedEntity);
         }
+        catch (ConcurrencyException cex)
+        {
+            return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
+        }
+        catch (DBConcurrencyException cex)
+        {
+            return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
+        }
         catch (Exception ex) when (!ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
@@ -83,6 +92,14 @@ public static class GenericRepositoryResultExtensions
         {
             var (upsertedEntity, action) = await source.UpsertAsync(entity, cancellationToken).AnyContext();
             return Result<(TEntity, RepositoryActionResult)>.Success((upsertedEntity, action));
+        }
+        catch (ConcurrencyException cex)
+        {
+            return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
+        }
+        catch (DBConcurrencyException cex)
+        {
+            return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {

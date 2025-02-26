@@ -159,7 +159,13 @@ public static class ExceptionExtensions
         return false;
     }
 
+    /// <summary>
+    ///    Determines whether the given <paramref name="ex" /> is a transient exception.
+    ///    What are transient errors: https://docs.microsoft.com/en-us/azure/architecture/best-practices/transient-faults
+    /// </summary>
+    /// <param name="ex"></param>
+    /// <returns></returns>
     public static bool IsTransientException(this Exception ex) =>
-        ex is DbException or DBConcurrencyException or SocketException or HttpRequestException or TaskCanceledException or TimeoutException;
+        ex is DbException or SocketException or HttpRequestException or TaskCanceledException or TimeoutException;
     // || ex is SqlException || ex is RequestFailedException
 }

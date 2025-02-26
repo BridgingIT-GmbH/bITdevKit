@@ -60,11 +60,7 @@ public static class GenericRepositoryResultExtensions
             var updatedEntity = await source.UpdateAsync(entity, cancellationToken).AnyContext();
             return Result<TEntity>.Success(updatedEntity);
         }
-        catch (ConcurrencyException cex)
-        {
-            return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
-        }
-        catch (DBConcurrencyException cex)
+        catch (Exception cex) when (cex.IsConcurrencyException())
         {
             return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
         }
@@ -93,11 +89,7 @@ public static class GenericRepositoryResultExtensions
             var (upsertedEntity, action) = await source.UpsertAsync(entity, cancellationToken).AnyContext();
             return Result<(TEntity, RepositoryActionResult)>.Success((upsertedEntity, action));
         }
-        catch (ConcurrencyException cex)
-        {
-            return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
-        }
-        catch (DBConcurrencyException cex)
+        catch (Exception cex) when (cex.IsConcurrencyException())
         {
             return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
         }
@@ -178,4 +170,8 @@ public static class GenericRepositoryResultExtensions
             return Result<RepositoryActionResult>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
+
+    public static bool IsConcurrencyException(this Exception ex) =>
+        ex is DBConcurrencyException || ex is ConcurrencyException ||
+        ex.GetType().Name == "DbUpdateConcurrencyException" || ex.GetType().Name == "OptimisticConcurrencyException"; // check for EF Core by string
 }

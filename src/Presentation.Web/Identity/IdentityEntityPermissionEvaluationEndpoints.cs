@@ -44,7 +44,7 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         [FromServices] ICurrentUserAccessor currentUserAccessor,
         [FromRoute] string permission, // permissionrequirement
         [FromQuery] string entityType, // fullname required
-        [FromQuery] string entityId) // optional
+        [FromQuery] string entityId) // optional, otherwise type wide
     {
         if (currentUserAccessor?.UserId.IsNullOrEmpty() == true)
         {
@@ -97,7 +97,7 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         [FromServices] EntityPermissionOptions options,
         [FromServices] ICurrentUserAccessor currentUserAccessor,
         [FromQuery] string entityType, // fullname required
-        [FromQuery] string entityId) // optional
+        [FromQuery] string entityId) // optional, otherwise type wide
     {
         if (currentUserAccessor?.UserId.IsNullOrEmpty() == true)
         {

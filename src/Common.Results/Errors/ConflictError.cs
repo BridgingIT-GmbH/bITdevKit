@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class UnauthorizedError(string message = null) : ResultErrorBase(message ?? "Unauthorized")
+public class ConflictError(string message = null) : ResultErrorBase(message ?? "Conflict")
 {
-    public UnauthorizedError() : this(null)
+    public ConflictError() : this(null)
     {
     }
 }

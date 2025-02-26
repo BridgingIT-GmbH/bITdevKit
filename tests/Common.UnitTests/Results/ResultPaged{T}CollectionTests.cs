@@ -5,17 +5,15 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
-using System.Collections;
-
 [UnitTest("Common")]
-public class ResultValueCollectionTests
+public class ResultPagedCollectionTests
 {
     [Fact]
     public void Filter_WithPredicate_FiltersCollection()
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var filteredResult = result.FilterItems(x => x > 2);
@@ -23,6 +21,9 @@ public class ResultValueCollectionTests
         // Assert
         filteredResult.ShouldBeSuccess();
         filteredResult.Value.ShouldBe([3, 4, 5]);
+        filteredResult.TotalCount.ShouldBe(100);
+        filteredResult.CurrentPage.ShouldBe(1);
+        filteredResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -30,7 +31,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var mappedResult = result.MapItems(x => x * 2);
@@ -38,6 +39,9 @@ public class ResultValueCollectionTests
         // Assert
         mappedResult.ShouldBeSuccess();
         mappedResult.Value.ShouldBe([2, 4, 6, 8, 10]);
+        mappedResult.TotalCount.ShouldBe(100);
+        mappedResult.CurrentPage.ShouldBe(1);
+        mappedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -45,7 +49,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
         var sum = 0;
 
         // Act
@@ -54,6 +58,9 @@ public class ResultValueCollectionTests
         // Assert
         forEachResult.ShouldBeSuccess();
         sum.ShouldBe(15);
+        forEachResult.TotalCount.ShouldBe(100);
+        forEachResult.CurrentPage.ShouldBe(1);
+        forEachResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -61,7 +68,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var traversedResult = result.Traverse(x => Result<int>.Success(x * 2));
@@ -69,32 +76,38 @@ public class ResultValueCollectionTests
         // Assert
         traversedResult.ShouldBeSuccess();
         traversedResult.Value.ShouldBe([2, 4, 6, 8, 10]);
+        traversedResult.TotalCount.ShouldBe(100);
+        traversedResult.CurrentPage.ShouldBe(1);
+        traversedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
     public void Bind_WithBinder_BindsEachItem()
     {
         // Arrange
-        var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var values = new List<int> { 1, 2, 3 };
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var boundResult = result.BindItems(x => Result<IEnumerable<int>>.Success([x, x * 2]));
 
         // Assert
         boundResult.ShouldBeSuccess();
-        boundResult.Value.ShouldBe([1, 2, 2, 4, 3, 6, 4, 8, 5, 10]);
+        boundResult.Value.ShouldBe([1, 2, 2, 4, 3, 6]);
+        boundResult.TotalCount.ShouldBe(100);
+        boundResult.CurrentPage.ShouldBe(1);
+        boundResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
     public void Flatten_WithResults_FlattensCollection()
     {
         // Arrange
-        var results = new List<Result<IEnumerable<int>>>
+        var results = new List<ResultPaged<int>>
         {
-            Result<IEnumerable<int>>.Success([1, 2]),
-            Result<IEnumerable<int>>.Success([3, 4]),
-            Result<IEnumerable<int>>.Success([5])
+            ResultPaged<int>.Success([1, 2], 50, 1, 5),
+            ResultPaged<int>.Success([3, 4], 50, 2, 5),
+            ResultPaged<int>.Success([5], 50, 3, 5)
         };
 
         // Act
@@ -103,6 +116,9 @@ public class ResultValueCollectionTests
         // Assert
         flattenedResult.ShouldBeSuccess();
         flattenedResult.Value.ShouldBe([1, 2, 3, 4, 5]);
+        flattenedResult.TotalCount.ShouldBe(150);
+        flattenedResult.CurrentPage.ShouldBe(1);
+        flattenedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -110,7 +126,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var selectedResult = result.SelectMany(x => new List<int> { x, x * 2 });
@@ -118,6 +134,9 @@ public class ResultValueCollectionTests
         // Assert
         selectedResult.ShouldBeSuccess();
         selectedResult.Value.ShouldBe([1, 2, 2, 4, 3, 6]);
+        selectedResult.TotalCount.ShouldBe(100);
+        selectedResult.CurrentPage.ShouldBe(1);
+        selectedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -125,7 +144,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
         var sum = 0;
 
         // Act
@@ -134,6 +153,9 @@ public class ResultValueCollectionTests
         // Assert
         tappedResult.ShouldBeSuccess();
         sum.ShouldBe(15);
+        tappedResult.TotalCount.ShouldBe(100);
+        tappedResult.CurrentPage.ShouldBe(1);
+        tappedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -141,15 +163,18 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
         var actionExecuted = false;
 
         // Act
-        var doResult = result.Do(() => actionExecuted = true);
+        var doResult = result.DoItems(() => actionExecuted = true);
 
         // Assert
         doResult.ShouldBeSuccess();
         actionExecuted.ShouldBeTrue();
+        doResult.TotalCount.ShouldBe(100);
+        doResult.CurrentPage.ShouldBe(1);
+        doResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -157,7 +182,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
         var sum = 0;
 
         // Act
@@ -167,6 +192,9 @@ public class ResultValueCollectionTests
         teeMappedResult.ShouldBeSuccess();
         teeMappedResult.Value.ShouldBe([2, 4, 6, 8, 10]);
         sum.ShouldBe(30);
+        teeMappedResult.TotalCount.ShouldBe(100);
+        teeMappedResult.CurrentPage.ShouldBe(1);
+        teeMappedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -174,7 +202,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var validatedResult = result.ValidateItems(x => x > 0 ? Result<int>.Success(x) : Result<int>.Failure("Invalid value"));
@@ -182,6 +210,9 @@ public class ResultValueCollectionTests
         // Assert
         validatedResult.ShouldBeSuccess();
         validatedResult.Value.ShouldBe(values);
+        validatedResult.TotalCount.ShouldBe(100);
+        validatedResult.CurrentPage.ShouldBe(1);
+        validatedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -189,7 +220,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var ensuredResult = result.EnsureAll(x => x > 0, new Error("All items must be positive"));
@@ -197,6 +228,9 @@ public class ResultValueCollectionTests
         // Assert
         ensuredResult.ShouldBeSuccess();
         ensuredResult.Value.ShouldBe(values);
+        ensuredResult.TotalCount.ShouldBe(100);
+        ensuredResult.CurrentPage.ShouldBe(1);
+        ensuredResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -204,7 +238,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { -1, -2, 3, -4, -5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var ensuredResult = result.EnsureAny(x => x > 0, new Error("At least one item must be positive"));
@@ -212,6 +246,9 @@ public class ResultValueCollectionTests
         // Assert
         ensuredResult.ShouldBeSuccess();
         ensuredResult.Value.ShouldBe(values);
+        ensuredResult.TotalCount.ShouldBe(100);
+        ensuredResult.CurrentPage.ShouldBe(1);
+        ensuredResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -219,7 +256,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var ensuredResult = result.EnsureNotEmpty(new Error("Collection must not be empty"));
@@ -227,6 +264,9 @@ public class ResultValueCollectionTests
         // Assert
         ensuredResult.ShouldBeSuccess();
         ensuredResult.Value.ShouldBe(values);
+        ensuredResult.TotalCount.ShouldBe(100);
+        ensuredResult.CurrentPage.ShouldBe(1);
+        ensuredResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -234,7 +274,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var ensuredResult = result.EnsureCount(5, new Error("Collection must have 5 items"));
@@ -242,6 +282,9 @@ public class ResultValueCollectionTests
         // Assert
         ensuredResult.ShouldBeSuccess();
         ensuredResult.Value.ShouldBe(values);
+        ensuredResult.TotalCount.ShouldBe(100);
+        ensuredResult.CurrentPage.ShouldBe(1);
+        ensuredResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -249,14 +292,17 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5, 6 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 6);
 
         // Act
         var chunkedResult = result.Chunk(2);
 
         // Assert
         chunkedResult.ShouldBeSuccess();
-        chunkedResult.Value.ShouldBe(new List<List<int>> { new List<int> { 1, 2 }, new List<int> { 3, 4 }, new List<int> { 5, 6 } });
+        chunkedResult.Value.ShouldBe(new List<List<int>> { new() { 1, 2 }, new() { 3, 4 }, new() { 5, 6 } });
+        chunkedResult.TotalCount.ShouldBe(100);
+        chunkedResult.CurrentPage.ShouldBe(1);
+        chunkedResult.PageSize.ShouldBe(6);
     }
 
     [Fact]
@@ -264,7 +310,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 2, 3, 4, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 7);
 
         // Act
         var distinctResult = result.DistinctBy(x => x);
@@ -272,6 +318,9 @@ public class ResultValueCollectionTests
         // Assert
         distinctResult.ShouldBeSuccess();
         distinctResult.Value.ShouldBe([1, 2, 3, 4, 5]);
+        distinctResult.TotalCount.ShouldBe(100);
+        distinctResult.CurrentPage.ShouldBe(1);
+        distinctResult.PageSize.ShouldBe(7);
     }
 
     [Fact]
@@ -279,7 +328,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var firstResult = result.First(x => Result<string>.Success(x.ToString()));
@@ -290,30 +339,11 @@ public class ResultValueCollectionTests
     }
 
     [Fact]
-    public void GroupBy_GroupsItemsByKey()
-    {
-        // Arrange
-        var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
-
-        // Act
-        var groupedResult = result.GroupBy(x => x % 2);
-
-        // Assert
-        groupedResult.ShouldBeSuccess();
-        groupedResult.Value.ShouldBe(
-        [
-            new Grouping<int, int>(1, [1, 3, 5]),
-            new Grouping<int, int>(0, [2, 4])
-        ]);
-    }
-
-    [Fact]
     public void Aggregate_AggregatesItems()
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var aggregatedResult = result.Aggregate(0, (acc, x) => acc + x);
@@ -328,7 +358,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 5, 3, 1, 4, 2 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var orderedResult = result.OrderBy(x => x);
@@ -336,6 +366,9 @@ public class ResultValueCollectionTests
         // Assert
         orderedResult.ShouldBeSuccess();
         orderedResult.Value.ShouldBe([1, 2, 3, 4, 5]);
+        orderedResult.TotalCount.ShouldBe(100);
+        orderedResult.CurrentPage.ShouldBe(1);
+        orderedResult.PageSize.ShouldBe(5);
     }
 
     [Fact]
@@ -343,7 +376,7 @@ public class ResultValueCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3, 4, 5 };
-        var result = Result<IEnumerable<int>>.Success(values);
+        var result = ResultPaged<int>.Success(values, 100, 1, 5);
 
         // Act
         var orderedResult = result.OrderByDescending(x => x);
@@ -351,15 +384,29 @@ public class ResultValueCollectionTests
         // Assert
         orderedResult.ShouldBeSuccess();
         orderedResult.Value.ShouldBe([5, 4, 3, 2, 1]);
+        orderedResult.TotalCount.ShouldBe(100);
+        orderedResult.CurrentPage.ShouldBe(1);
+        orderedResult.PageSize.ShouldBe(5);
     }
-}
 
-// Add this class to represent the grouped elements
-public class Grouping<TKey, TElement>(TKey key, IEnumerable<TElement> elements) : IGrouping<TKey, TElement>
-{
-    public TKey Key { get; } = key;
+    [Fact]
+    public void TapItems_ExecutesActionWithPaginationDetails()
+    {
+        // Arrange
+        var values = new List<int> { 1, 2, 3 };
+        var result = ResultPaged<int>.Success(values, 100, 2, 10);
+        var pageInfo = string.Empty;
 
-    public IEnumerator<TElement> GetEnumerator() => elements.GetEnumerator();
+        // Act
+        var tappedResult = result.TapItems(r =>
+            pageInfo = $"Page {r.CurrentPage}/{r.TotalPages} ({r.TotalCount} total)");
 
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        // Assert
+        tappedResult.ShouldBeSuccess();
+        pageInfo.ShouldBe("Page 2/10 (100 total)");
+        tappedResult.Value.ShouldBe(values);
+        tappedResult.TotalCount.ShouldBe(100);
+        tappedResult.CurrentPage.ShouldBe(2);
+        tappedResult.PageSize.ShouldBe(10);
+    }
 }

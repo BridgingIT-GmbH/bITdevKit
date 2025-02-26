@@ -8,49 +8,49 @@ namespace BridgingIT.DevKit.Common;
 using FluentValidation;
 
 /// <summary>
-///     Extension methods for operations on Result{IEnumerable{T}} to enable proper collection handling.
+///     Extension methods for operations on ResultPaged{IEnumerable{T}} to enable proper collection handling.
 /// </summary>
-public static class ResultCollectionExtensions
+public static class ResultPagedCollectionExtensions
 {
     #region Core Collection Filtering Operations
 
     /// <summary>
-    ///     Filters elements in a collection Result based on a predicate.
+    ///     Filters elements in a paged Result based on a predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the collection.</typeparam>
-    /// <param name="result">The Result containing the collection to filter.</param>
+    /// <param name="result">The paged Result containing the collection to filter.</param>
     /// <param name="predicate">The function to test each element for a condition.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the filtered collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the filtered collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic filtering
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Filter(user => user.IsActive);
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .FilterItems(user => user.IsActive);
     ///
     /// // With processing options
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Filter(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .FilterItems(
     ///         user => user.IsActive,
     ///         ProcessingOptions.Strict
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> FilterItems<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> FilterItems<T>(
+        this ResultPaged<T> result,
         Func<T, bool> predicate,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -95,64 +95,68 @@ public static class ResultCollectionExtensions
             var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<T>>.Success(filteredItems)
+                ? ResultPaged<T>.Success(
+                        filteredItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
+                : ResultPaged<T>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Filters elements in a collection Result based on an asynchronous predicate.
+    ///     Filters elements in a paged Result based on an asynchronous predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the collection.</typeparam>
-    /// <param name="result">The Result containing the collection to filter.</param>
+    /// <param name="result">The paged Result containing the collection to filter.</param>
     /// <param name="predicate">The async function to test each element for a condition.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the filtered collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the filtered collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic async filtering
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .FilterAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .FilterItemsAsync(
     ///         async (user, ct) => await IsActiveAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // With processing options
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .FilterAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .FilterItemsAsync(
     ///         async (user, ct) => await IsActiveAsync(user, ct),
     ///         new ProcessingOptions { IncludeFailedItems = true },
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> FilterItemsAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> FilterItemsAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<bool>> predicate,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -202,56 +206,60 @@ public static class ResultCollectionExtensions
             var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<T>>.Success(filteredItems)
+                ? ResultPaged<T>.Success(
+                        filteredItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
+                : ResultPaged<T>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Filters elements in a collection Result task based on a predicate.
+    ///     Filters elements in a paged Result task based on a predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the collection.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection to filter.</param>
+    /// <param name="resultTask">The paged Result task containing the collection to filter.</param>
     /// <param name="predicate">The function to test each element for a condition.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the filtered collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the filtered collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic filtering of task result
-    /// var result = await GetUsersAsync()
-    ///     .Filter(user => user.IsActive);
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .FilterItems(user => user.IsActive);
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .Filter(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .FilterItems(
     ///         user => user.IsActive,
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> FilterItems<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> FilterItems<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, bool> predicate,
         ProcessingOptions options = null)
     {
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -263,48 +271,48 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Filters elements in a collection Result task based on an asynchronous predicate.
+    ///     Filters elements in a paged Result task based on an asynchronous predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the collection.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection to filter.</param>
+    /// <param name="resultTask">The paged Result task containing the collection to filter.</param>
     /// <param name="predicate">The async function to test each element for a condition.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the filtered collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the filtered collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic async filtering of task result
-    /// var result = await GetUsersAsync()
-    ///     .FilterAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .FilterItemsAsync(
     ///         async (user, ct) => await IsActiveAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .FilterAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .FilterItemsAsync(
     ///         async (user, ct) => await IsActiveAsync(user, ct),
     ///         ProcessingOptions.Strict,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> FilterItemsAsync<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> FilterItemsAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, CancellationToken, Task<bool>> predicate,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -316,12 +324,12 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -332,43 +340,43 @@ public static class ResultCollectionExtensions
     #region Collection Mapping Operations
 
     /// <summary>
-    ///     Maps elements in a collection Result by applying a transform function to each element.
+    ///     Maps elements in a paged Result by applying a transform function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the collection to map.</param>
+    /// <param name="result">The paged Result containing the collection to map.</param>
     /// <param name="mapper">The function to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the transformed collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the transformed collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic mapping
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Map(user => new UserDto(user.Id, user.Name));
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .MapItems(user => new UserDto(user.Id, user.Name));
     ///
     /// // Mapping with strict options
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Map(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .MapItems(
     ///         user => new UserDto(user.Id, user.Name),
     ///         ProcessingOptions.Strict
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<TResult>> MapItems<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static ResultPaged<TResult> MapItems<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, TResult> mapper,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -407,65 +415,69 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
+                ? ResultPaged<TResult>.Success(
+                        mappedItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Maps elements in a collection Result by applying an asynchronous transform function to each element.
+    ///     Maps elements in a paged Result by applying an asynchronous transform function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the collection to map.</param>
+    /// <param name="result">The paged Result containing the collection to map.</param>
     /// <param name="mapper">The async function to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the transformed collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the transformed collection or the original errors.</returns>
     /// <example>
     /// <code>
     /// // Basic async mapping
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .MapAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .MapItemsAsync(
     ///         async (user, ct) => await CreateUserDtoAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // Async mapping with options
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .MapAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .MapItemsAsync(
     ///         async (user, ct) => await CreateUserDtoAsync(user, ct),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> MapItemsAsync<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static async Task<ResultPaged<TResult>> MapItemsAsync<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, CancellationToken, Task<TResult>> mapper,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -509,56 +521,60 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
+                ? ResultPaged<TResult>.Success(
+                        mappedItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Maps elements in a collection Result task by applying a transform function to each element.
+    ///     Maps elements in a paged Result task by applying a transform function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection to map.</param>
+    /// <param name="resultTask">The paged Result task containing the collection to map.</param>
     /// <param name="mapper">The function to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the transformed collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the transformed collection or the original errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .Map(user => new UserDto(user.Id, user.Name));
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .MapItems(user => new UserDto(user.Id, user.Name));
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .Map(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .MapItems(
     ///         user => new UserDto(user.Id, user.Name),
     ///         new ProcessingOptions { MaxFailures = 5 }
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> MapItems<TSource, TResult>(
-        this Task<Result<IEnumerable<TSource>>> resultTask,
+    public static async Task<ResultPaged<TResult>> MapItems<TSource, TResult>(
+        this Task<ResultPaged<TSource>> resultTask,
         Func<TSource, TResult> mapper,
         ProcessingOptions options = null)
     {
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -570,48 +586,48 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Maps elements in a collection Result task by applying an asynchronous transform function to each element.
+    ///     Maps elements in a paged Result task by applying an asynchronous transform function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection to map.</param>
+    /// <param name="resultTask">The paged Result task containing the collection to map.</param>
     /// <param name="mapper">The async function to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the transformed collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the transformed collection or the original errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .MapAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .MapItemsAsync(
     ///         async (user, ct) => await CreateUserDtoAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .MapAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .MapItemsAsync(
     ///         async (user, ct) => await CreateUserDtoAsync(user, ct),
     ///         ProcessingOptions.Strict,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> MapItemsAsync<TSource, TResult>(
-        this Task<Result<IEnumerable<TSource>>> resultTask,
+    public static async Task<ResultPaged<TResult>> MapItemsAsync<TSource, TResult>(
+        this Task<ResultPaged<TSource>> resultTask,
         Func<TSource, CancellationToken, Task<TResult>> mapper,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
@@ -623,12 +639,12 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -639,29 +655,29 @@ public static class ResultCollectionExtensions
     #region Collection Iteration Operations
 
     /// <summary>
-    ///     Executes an action on each element in a collection Result without changing the Result.
+    ///     Executes an action on each element in a paged Result without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result containing the collection.</param>
     /// <param name="action">The action to execute on each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>The original Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
+    /// <returns>The original paged Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
     /// <example>
     /// <code>
     /// // Basic foreach
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .ForEach(user => Console.WriteLine($"Processing user: {user.Name}"));
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ForEachItems(user => Console.WriteLine($"Processing user: {user.Name}"));
     ///
     /// // With processing options
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .ForEach(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ForEachItems(
     ///         user => ProcessUser(user),
     ///         ProcessingOptions.Strict
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> ForEach<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> ForEach<T>(
+        this ResultPaged<T> result,
         Action<T> action,
         ProcessingOptions options = null)
     {
@@ -672,7 +688,7 @@ public static class ResultCollectionExtensions
 
         if (action is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -714,18 +730,22 @@ public static class ResultCollectionExtensions
 
             if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(processedItems)
+                return ResultPaged<T>.Failure(processedItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(processedItems)
+            return ResultPaged<T>.Success(
+                    processedItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -733,34 +753,34 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an async action on each element in a collection Result without changing the Result.
+    ///     Executes an async action on each element in a paged Result without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result containing the collection.</param>
     /// <param name="action">The async action to execute on each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
+    /// <returns>The original paged Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
     /// <example>
     /// <code>
     /// // Basic async foreach
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .ForEachAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ForEachItemsAsync(
     ///         async (user, ct) => await LogUserAccessAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // With processing options
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .ForEachAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ForEachItemsAsync(
     ///         async (user, ct) => await ProcessUserAsync(user, ct),
     ///         new ProcessingOptions { MaxFailures = 3 },
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ForEachAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> ForEachAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task> action,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
@@ -772,7 +792,7 @@ public static class ResultCollectionExtensions
 
         if (action is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -819,24 +839,28 @@ public static class ResultCollectionExtensions
 
             if (errors.Count != 0 && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(processedItems)
+                return ResultPaged<T>.Failure(processedItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(processedItems)
+            return ResultPaged<T>.Success(
+                    processedItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError())
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -844,34 +868,34 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an action on each element in a collection Result task without changing the Result.
+    ///     Executes an action on each element in a paged Result task without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task containing the collection.</param>
     /// <param name="action">The action to execute on each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>The original Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
+    /// <returns>The original paged Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .ForEach(user => Console.WriteLine($"Processing user: {user.Name}"));
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .ForEachItems(user => Console.WriteLine($"Processing user: {user.Name}"));
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .ForEach(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .ForEachItems(
     ///         user => LogUserAccess(user),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ForEach<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> ForEach<T>(
+        this Task<ResultPaged<T>> resultTask,
         Action<T> action,
         ProcessingOptions options = null)
     {
         if (action is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -883,47 +907,47 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Executes an async action on each element in a collection Result task without changing the Result.
+    ///     Executes an async action on each element in a paged Result task without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task containing the collection.</param>
     /// <param name="action">The async action to execute on each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
+    /// <returns>The original paged Result if all operations succeeded, or a failure Result if any operations failed beyond the tolerance specified in options.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .ForEachAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .ForEachItemsAsync(
     ///         async (user, ct) => await LogUserAccessAsync(user, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     ///
     /// // With processing options
-    /// var result = await GetUsersAsync()
-    ///     .ForEachAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .ForEachItemsAsync(
     ///         async (user, ct) => await ProcessUserAsync(user, ct),
     ///         ProcessingOptions.Strict,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ForEachAsync<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> ForEachAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, CancellationToken, Task> action,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (action is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -935,12 +959,12 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -951,37 +975,37 @@ public static class ResultCollectionExtensions
     #region Collection Traverse Operations
 
     /// <summary>
-    ///     Traverses a sequence from a Result by applying an operation to each element.
+    ///     Traverses a sequence from a paged Result by applying an operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the sequence to traverse.</param>
+    /// <param name="result">The paged Result containing the sequence to traverse.</param>
     /// <param name="operation">The operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <returns>A paged Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = repository.FindAllResult()
-    ///     .Traverse(
+    /// var result = pagedRepository.FindAllResult()
+    ///     .TraverseItems(
     ///         item => repository.ValidateItem(item),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> Traverse<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> Traverse<T>(
+        this ResultPaged<T> result,
         Func<T, Result<T>> operation,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (operation is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1002,6 +1026,7 @@ public static class ResultCollectionExtensions
                     if (operationResult.IsSuccess)
                     {
                         results.Add(operationResult.Value);
+                        messages.AddRange(operationResult.Messages);
                     }
                     else
                     {
@@ -1047,56 +1072,60 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<T>>.Success(results)
+                ? ResultPaged<T>.Success(
+                        results,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
+                : ResultPaged<T>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Traverses a sequence from a Result by applying an async operation to each element.
+    ///     Traverses a sequence from a paged Result by applying an async operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the sequence to traverse.</param>
+    /// <param name="result">The paged Result containing the sequence to traverse.</param>
     /// <param name="operation">The async operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <returns>A paged Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await repository.FindAllResult()
-    ///     .TraverseAsync(
+    /// var result = await pagedRepository.FindAllResult()
+    ///     .TraverseItemsAsync(
     ///         async (item, ct) => await repository.ValidateItemAsync(item),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> TraverseAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> TraverseAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<Result<T>>> operation,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (operation is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1118,6 +1147,7 @@ public static class ResultCollectionExtensions
                     if (operationResult.IsSuccess)
                     {
                         results.Add(operationResult.Value);
+                        messages.AddRange(operationResult.Messages);
                     }
                     else
                     {
@@ -1167,57 +1197,61 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<T>>.Success(results)
+                ? ResultPaged<T>.Success(
+                        results,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
+                : ResultPaged<T>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Traverses a sequence from a Result task by applying an operation to each element.
+    ///     Traverses a sequence from a paged Result task by applying an operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the sequence to traverse.</param>
+    /// <param name="resultTask">The paged Result task containing the sequence to traverse.</param>
     /// <param name="operation">The operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <returns>A paged Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await repository.FindAllResultAsync()
-    ///     .Traverse(
+    /// var result = await pagedRepository.FindAllResultAsync()
+    ///     .TraverseItems(
     ///         item => repository.ValidateItem(item),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> Traverse<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> Traverse<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, Result<T>> operation,
         ProcessingOptions options = null)
     {
         if (resultTask is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Result task cannot be null"));
         }
 
         if (operation is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1229,47 +1263,46 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Traverses a sequence from a Result task by applying an async operation to each element.
+    ///     Traverses a sequence from a paged Result task by applying an async operation to each element.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the sequence to traverse.</param>
+    /// <param name="resultTask">The paged Result task containing the sequence to traverse.</param>
     /// <param name="operation">The async operation to apply to each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Result containing the processed sequence or all errors encountered.</returns>
+    /// <returns>A paged Result containing the processed sequence or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await repository.FindAllResultAsync()
-    ///     .TraverseAsync(
+    /// var result = await pagedRepository.FindAllResultAsync()
+    ///     .TraverseItemsAsync(
     ///         async (item, ct) => await repository.ValidateItemAsync(item),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> TraverseAsync<T>(
-        // No changes needed in this file for the current task
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> TraverseAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, CancellationToken, Task<Result<T>>> operation,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (resultTask is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Result task cannot be null"));
         }
 
         if (operation is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
@@ -1281,12 +1314,12 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1297,39 +1330,39 @@ public static class ResultCollectionExtensions
     #region Collection Binding Operations
 
     /// <summary>
-    ///     Binds a collection Result to another collection Result by applying a binding function to each element.
+    ///     Binds a paged collection Result to another paged collection Result by applying a binding function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the source collection.</param>
+    /// <param name="result">The paged Result containing the source collection.</param>
     /// <param name="binder">The function to bind each element to a new Result.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the bound collection or all errors encountered.</returns>
+    /// <returns>A new paged Result containing the bound collection or all errors encountered.</returns>
     /// <example>
     /// <code>
     /// // Binding collections
-    /// var result = Result{IEnumerable{Department}}.Success(departments)
-    ///     .Bind(
+    /// var result = ResultPaged{Department}.Success(departments, totalCount, page, pageSize)
+    ///     .BindItems(
     ///         department => GetEmployeesResult(department.Id),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<TResult>> BindItems<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static ResultPaged<TResult> BindItems<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, Result<IEnumerable<TResult>>> binder,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (binder is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1386,58 +1419,62 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(boundItems)
+                ? ResultPaged<TResult>.Success(
+                        boundItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Binds a collection Result to another collection Result asynchronously by applying a binding function to each element.
+    ///     Binds a paged collection Result to another paged collection Result asynchronously by applying a binding function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the source collection.</param>
+    /// <param name="result">The paged Result containing the source collection.</param>
     /// <param name="binder">The async function to bind each element to a new Result.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the bound collection or all errors encountered.</returns>
+    /// <returns>A new paged Result containing the bound collection or all errors encountered.</returns>
     /// <example>
     /// <code>
     /// // Asynchronous binding of collections
-    /// var result = await Result{IEnumerable{Department}}.Success(departments)
-    ///     .BindAsync(
+    /// var result = await ResultPaged{Department}.Success(departments, totalCount, page, pageSize)
+    ///     .BindItemsAsync(
     ///         async (department, ct) => await GetEmployeesResultAsync(department.Id, ct),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> BindItemsAsync<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static async Task<ResultPaged<TResult>> BindItemsAsync<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, CancellationToken, Task<Result<IEnumerable<TResult>>>> binder,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (binder is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1499,58 +1536,62 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(boundItems)
+                ? ResultPaged<TResult>.Success(
+                        boundItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Binds a collection Result task to another collection Result by applying a binding function to each element.
+    ///     Binds a paged collection Result task to another paged collection Result by applying a binding function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the source collection.</param>
+    /// <param name="resultTask">The paged Result task containing the source collection.</param>
     /// <param name="binder">The function to bind each element to a new Result.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the bound collection or all errors encountered.</returns>
+    /// <returns>A new paged Result containing the bound collection or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetDepartmentsAsync()
-    ///     .Bind(
+    /// var result = await GetPagedDepartmentsAsync(page, pageSize)
+    ///     .BindItems(
     ///         department => GetEmployeesResult(department.Id),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> BindItems<TSource, TResult>(
-        this Task<Result<IEnumerable<TSource>>> resultTask,
+    public static async Task<ResultPaged<TResult>> BindItems<TSource, TResult>(
+        this Task<ResultPaged<TSource>> resultTask,
         Func<TSource, Result<IEnumerable<TResult>>> binder,
         ProcessingOptions options = null)
     {
         if (resultTask is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Result task cannot be null"));
         }
 
         if (binder is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1562,47 +1603,47 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Binds a collection Result task to another collection Result asynchronously by applying a binding function to each element.
+    ///     Binds a paged collection Result task to another paged collection Result asynchronously by applying a binding function to each element.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the source collection.</param>
+    /// <param name="resultTask">The paged Result task containing the source collection.</param>
     /// <param name="binder">The async function to bind each element to a new Result.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the bound collection or all errors encountered.</returns>
+    /// <returns>A new paged Result containing the bound collection or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetDepartmentsAsync()
-    ///     .BindAsync(
+    /// var result = await GetPagedDepartmentsAsync(page, pageSize)
+    ///     .BindItemsAsync(
     ///         async (department, ct) => await GetEmployeesResultAsync(department.Id, ct),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> BindItemsAsync<TSource, TResult>(
-        this Task<Result<IEnumerable<TSource>>> resultTask,
+    public static async Task<ResultPaged<TResult>> BindItemsAsync<TSource, TResult>(
+        this Task<ResultPaged<TSource>> resultTask,
         Func<TSource, CancellationToken, Task<Result<IEnumerable<TResult>>>> binder,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (resultTask is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Result task cannot be null"));
         }
 
         if (binder is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Binder cannot be null"));
         }
 
@@ -1614,37 +1655,37 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Flattens a collection of Result collections into a single Result collection.
+    ///     Flattens a collection of paged Result collections into a single paged Result collection.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="results">The collection of Result collections to flatten.</param>
+    /// <param name="results">The collection of paged Result collections to flatten.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing all elements from all Results or all errors encountered.</returns>
+    /// <returns>A new paged Result containing all elements from all Results or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var departmentResults = departments.Select(d => GetEmployeesResult(d.Id));
-    /// var allEmployees = departmentResults.Flatten(ProcessingOptions.Default);
+    /// var departmentResults = departments.Select(d => GetPagedEmployeesResult(d.Id));
+    /// var allEmployees = departmentResults.FlattenItems(ProcessingOptions.Default);
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> Flatten<T>(
-        this IEnumerable<Result<IEnumerable<T>>> results,
+    public static ResultPaged<T> Flatten<T>(
+        this IEnumerable<ResultPaged<T>> results,
         ProcessingOptions options = null)
     {
         if (results is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Results collection cannot be null"));
         }
 
@@ -1656,12 +1697,33 @@ public static class ResultCollectionExtensions
             var messages = new List<string>();
             var failureCount = 0;
 
+            // For pagination metadata, we'll use values from the first successful result
+            // or default values if there are no successful results
+            long totalCount = 0;
+            var currentPage = 1;
+            var pageSize = 10;
+            var metadataSet = false;
+
             foreach (var result in results)
             {
                 if (result.IsSuccess)
                 {
                     flattenedItems.AddRange(result.Value);
                     messages.AddRange(result.Messages);
+
+                    // Set pagination metadata from the first successful result
+                    if (!metadataSet)
+                    {
+                        totalCount = result.TotalCount;
+                        currentPage = result.CurrentPage;
+                        pageSize = result.PageSize;
+                        metadataSet = true;
+                    }
+                    else
+                    {
+                        // Update total count as we process more results
+                        totalCount += result.TotalCount;
+                    }
                 }
                 else
                 {
@@ -1682,50 +1744,54 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<T>>.Success(flattenedItems)
+                ? ResultPaged<T>.Success(
+                        flattenedItems,
+                        totalCount,
+                        currentPage,
+                        pageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<T>>.Failure()
+                : ResultPaged<T>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Flattens a collection of Result collection tasks into a single Result collection.
+    ///     Flattens a collection of paged Result collection tasks into a single paged Result collection.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTasks">The collection of Result collection tasks to flatten.</param>
+    /// <param name="resultTasks">The collection of paged Result collection tasks to flatten.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing all elements from all Results or all errors encountered.</returns>
+    /// <returns>A new paged Result containing all elements from all Results or all errors encountered.</returns>
     /// <example>
     /// <code>
-    /// var departmentTasks = departments.Select(d => GetEmployeesResultAsync(d.Id));
-    /// var allEmployees = await departmentTasks.FlattenAsync(ProcessingOptions.Default, cancellationToken);
+    /// var departmentTasks = departments.Select(d => GetPagedEmployeesResultAsync(d.Id));
+    /// var allEmployees = await departmentTasks.FlattenItemsAsync(ProcessingOptions.Default, cancellationToken);
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> FlattenAsync<T>(
-        this IEnumerable<Task<Result<IEnumerable<T>>>> resultTasks,
+    public static async Task<ResultPaged<T>> FlattenAsync<T>(
+        this IEnumerable<Task<ResultPaged<T>>> resultTasks,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
     {
         if (resultTasks is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Result tasks collection cannot be null"));
         }
 
         try
         {
             options ??= ProcessingOptions.Default;
-            var results = new List<Result<IEnumerable<T>>>();
+            var results = new List<ResultPaged<T>>();
 
             // First await all tasks
             foreach (var task in resultTasks)
@@ -1740,51 +1806,51 @@ public static class ResultCollectionExtensions
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Selects many elements from a collection Result by applying a selector function to each element.
+    ///     Selects many elements from a paged collection Result by applying a selector function to each element.
     ///     This is equivalent to the LINQ SelectMany operation but maintains the Result context.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the source collection.</param>
+    /// <param name="result">The paged Result containing the source collection.</param>
     /// <param name="selector">The function to apply to each element returning a collection.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the flattened collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the flattened collection or the original errors.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Department}}.Success(departments)
-    ///     .SelectMany(
+    /// var result = ResultPaged{Department}.Success(departments, totalCount, page, pageSize)
+    ///     .SelectManyItems(
     ///         department => department.Employees,
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<TResult>> SelectMany<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static ResultPaged<TResult> SelectMany<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, IEnumerable<TResult>> selector,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (selector is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Selector cannot be null"));
         }
 
@@ -1825,48 +1891,52 @@ public static class ResultCollectionExtensions
             var isSuccess = (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(selectedItems)
+                ? ResultPaged<TResult>.Success(
+                        selectedItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Selects many elements from a collection Result task by applying a selector function to each element.
+    ///     Selects many elements from a paged collection Result task by applying a selector function to each element.
     ///     This is equivalent to the LINQ SelectMany operation but maintains the Result context.
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the source collection.</param>
+    /// <param name="resultTask">The paged Result task containing the source collection.</param>
     /// <param name="selector">The function to apply to each element returning a collection.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the flattened collection or the original errors.</returns>
+    /// <returns>A new paged Result containing the flattened collection or the original errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetDepartmentsAsync()
-    ///     .SelectMany(
+    /// var result = await GetPagedDepartmentsAsync(page, pageSize)
+    ///     .SelectManyItems(
     ///         department => department.Employees,
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> SelectMany<TSource, TResult>(
-        this Task<Result<IEnumerable<TSource>>> resultTask,
+    public static async Task<ResultPaged<TResult>> SelectMany<TSource, TResult>(
+        this Task<ResultPaged<TSource>> resultTask,
         Func<TSource, IEnumerable<TResult>> selector,
         ProcessingOptions options = null)
     {
         if (selector is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Selector cannot be null"));
         }
 
@@ -1878,7 +1948,7 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -1889,21 +1959,20 @@ public static class ResultCollectionExtensions
     #region Collection Tap and Do Operations
 
     /// <summary>
-    ///     Executes an action with each element in a collection Result without changing the Result.
-    ///     This differs from ForEach because it returns the exact same Result instance.
+    ///     Executes an action with each element in a paged collection Result without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result containing the collection.</param>
     /// <param name="action">The action to execute on each element.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Tap(user => _logger.LogInformation($"User: {user.Id}, {user.Email}"));
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TapItems(user => _logger.LogInformation($"User: {user.Id}, {user.Email}"));
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> TapItems<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> TapItems<T>(
+        this ResultPaged<T> result,
         Action<T> action)
     {
         if (!result.IsSuccess || action is null)
@@ -1928,25 +1997,24 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an async action with each element in a collection Result without changing the Result.
-    ///     This differs from ForEachAsync because it returns the exact same Result instance.
+    ///     Executes an async action with each element in a paged collection Result without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result containing the collection.</param>
     /// <param name="action">The async action to execute on each element.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .TapAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TapItemsAsync(
     ///         async (user, ct) => await _logger.LogInformationAsync($"User: {user.Id}, {user.Email}", ct),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> TapItemsAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> TapItemsAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
@@ -1988,20 +2056,20 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an action with each element in a collection Result task without changing the Result.
+    ///     Executes an action with each element in a paged collection Result task without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task containing the collection.</param>
     /// <param name="action">The action to execute on each element.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .Tap(user => _logger.LogInformation($"User: {user.Id}, {user.Email}"));
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .TapItems(user => _logger.LogInformation($"User: {user.Id}, {user.Email}"));
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> TapItems<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> TapItems<T>(
+        this Task<ResultPaged<T>> resultTask,
         Action<T> action)
     {
         try
@@ -2011,31 +2079,31 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Executes an async action with each element in a collection Result task without changing the Result.
+    ///     Executes an async action with each element in a paged collection Result task without changing the Result.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task containing the collection.</param>
     /// <param name="action">The async action to execute on each element.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .TapAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .TapItemsAsync(
     ///         async (user, ct) => await _logger.LogInformationAsync($"User: {user.Id}, {user.Email}", ct),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> TapItemsAsync<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> TapItemsAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<T, CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
@@ -2050,7 +2118,7 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2061,42 +2129,43 @@ public static class ResultCollectionExtensions
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the collection to map.</param>
+    /// <param name="result">The paged Result containing the collection to map.</param>
     /// <param name="mapper">The function to transform each element.</param>
     /// <param name="action">The action to execute with each transformed element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>A new Result containing the transformed collection.</returns>
+    /// <returns>A new paged Result containing the transformed collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .TeeMap(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TeeMapItems(
     ///         user => new UserDto(user.Id, user.Name),
-    ///         dto => _logger.LogInformation($"Created DTO for user: {dto.Id}")
+    ///         dto => _logger.LogInformation($"Created DTO for user: {dto.Id}"),
+    ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<TResult>> TeeMapItems<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static ResultPaged<TResult> TeeMapItems<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, TResult> mapper,
         Action<TResult> action,
         ProcessingOptions options = null)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
         if (action is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -2136,16 +2205,20 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
+                ? ResultPaged<TResult>.Success(
+                        mappedItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2156,24 +2229,24 @@ public static class ResultCollectionExtensions
     /// </summary>
     /// <typeparam name="TSource">The type of the source elements.</typeparam>
     /// <typeparam name="TResult">The type of the result elements.</typeparam>
-    /// <param name="result">The Result containing the collection to map.</param>
+    /// <param name="result">The paged Result containing the collection to map.</param>
     /// <param name="mapper">The function to transform each element.</param>
     /// <param name="action">The async action to execute with each transformed element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new Result containing the transformed collection.</returns>
+    /// <returns>A new paged Result containing the transformed collection.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .TeeMapAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TeeMapItemsAsync(
     ///         user => new UserDto(user.Id, user.Name),
     ///         async (dto, ct) => await _cache.StoreUserDtoAsync(dto, ct),
     ///         cancellationToken: cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TResult>>> TeeMapItemsAsync<TSource, TResult>(
-        this Result<IEnumerable<TSource>> result,
+    public static async Task<ResultPaged<TResult>> TeeMapItemsAsync<TSource, TResult>(
+        this ResultPaged<TSource> result,
         Func<TSource, TResult> mapper,
         Func<TResult, CancellationToken, Task> action,
         ProcessingOptions options = null,
@@ -2181,20 +2254,20 @@ public static class ResultCollectionExtensions
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (mapper is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Mapper cannot be null"));
         }
 
         if (action is null)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new Error("Action cannot be null"));
         }
 
@@ -2239,43 +2312,130 @@ public static class ResultCollectionExtensions
                 (!options.MaxFailures.HasValue || failureCount <= options.MaxFailures.Value);
 
             return isSuccess
-                ? Result<IEnumerable<TResult>>.Success(mappedItems)
+                ? ResultPaged<TResult>.Success(
+                        mappedItems,
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
                     .WithErrors(errors)
                     .WithMessages(messages)
-                : Result<IEnumerable<TResult>>.Failure()
+                : ResultPaged<TResult>.Failure()
                     .WithErrors(errors)
                     .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<TResult>>.Failure()
+            return ResultPaged<TResult>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Executes an action without touching the original collection Result.
+    ///     Executes an action on the pagination details without touching the original paged Result.
+    ///     Useful for logging or monitoring pagination information.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements.</typeparam>
+    /// <param name="result">The paged Result.</param>
+    /// <param name="action">The action to execute on the pagination details.</param>
+    /// <returns>The original paged Result unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TapPaginationItems(p => _logger.LogInformation(
+    ///         $"Page {p.CurrentPage} of {p.TotalPages} ({p.TotalCount} total items)"
+    ///     ));
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> TapItems<T>(
+        this ResultPaged<T> result,
+        Action<ResultPaged<T>> action)
+    {
+        if (action is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            action(result);
+            return result;
+        }
+        catch
+        {
+            // Tap should never change the Result, so we ignore any exceptions
+            return result;
+        }
+    }
+
+    /// <summary>
+    ///     Executes an async action on the pagination details without touching the original paged Result.
+    ///     Useful for async logging or monitoring pagination information.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements.</typeparam>
+    /// <param name="result">The paged Result.</param>
+    /// <param name="action">The async action to execute on the pagination details.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original paged Result unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .TapPaginationItemsAsync(
+    ///         async (p, ct) => await _metrics.RecordPaginationAsync(
+    ///             p.CurrentPage, p.TotalPages, p.TotalCount, ct
+    ///         ),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> TapPaginationItemsAsync<T>(
+        this ResultPaged<T> result,
+        Func<ResultPaged<T>, CancellationToken, Task> action,
+        CancellationToken cancellationToken = default)
+    {
+        if (action is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            await action(result, cancellationToken);
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            // Tap should never change the Result, so we ignore any exceptions
+            return result;
+        }
+    }
+
+    /// <summary>
+    ///     Executes an action without touching the original paged collection Result.
     ///     Useful for executing side effects in a chain of operations.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result.</param>
     /// <param name="action">The action to execute.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Do(() => _logger.LogInformation("Starting user processing"))
-    ///     .Map(user => new UserDto(user));
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .DoItems(() => _logger.LogInformation("Starting user processing"))
+    ///     .MapItems(user => new UserDto(user));
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> DoItems<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> DoItems<T>(
+        this ResultPaged<T> result,
         Action action)
     {
         if (action is null)
@@ -2296,25 +2456,25 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an async action without touching the original collection Result.
-    ///     Useful for executing side effects in a chain of operations.
+    ///     Executes an async action without touching the original paged collection Result.
+    ///     Useful for executing async side effects in a chain of operations.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result.</param>
     /// <param name="action">The async action to execute.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .DoAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .DoItemsAsync(
     ///         async (ct) => await _logger.LogInformationAsync("Starting user processing", ct),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> DoItemsAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> DoItemsAsync<T>(
+        this ResultPaged<T> result,
         Func<CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
@@ -2340,64 +2500,64 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Executes an action without touching the original collection Result task.
+    ///     Executes an action without touching the original paged collection Result task.
     ///     Useful for executing side effects in a chain of operations.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task.</param>
     /// <param name="action">The action to execute.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .Do(() => _logger.LogInformation("Starting user processing"))
-    ///     .Map(user => new UserDto(user));
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .DoItems(() => _logger.LogInformation("Starting user processing"))
+    ///     .MapItems(user => new UserDto(user));
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> DoItems<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> DoItems<T>(
+        this Task<ResultPaged<T>> resultTask,
         Action action)
     {
         try
         {
             var result = await resultTask;
-            return result.Do(action);
+            return result.DoItems(action);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Executes an async action without touching the original collection Result task.
-    ///     Useful for executing side effects in a chain of operations.
+    ///     Executes an async action without touching the original paged collection Result task.
+    ///     Useful for executing async side effects in a chain of operations.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="resultTask">The Result task containing the collection.</param>
+    /// <param name="resultTask">The paged Result task.</param>
     /// <param name="action">The async action to execute.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result unchanged.</returns>
+    /// <returns>The original paged Result unchanged.</returns>
     /// <example>
     /// <code>
-    /// var result = await GetUsersAsync()
-    ///     .DoAsync(
+    /// var result = await GetPagedUsersAsync(page, pageSize)
+    ///     .DoItemsAsync(
     ///         async (ct) => await _logger.LogInformationAsync("Starting user processing", ct),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> DoItemsAsync<T>(
-        this Task<Result<IEnumerable<T>>> resultTask,
+    public static async Task<ResultPaged<T>> DoItemsAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
         Func<CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
         try
         {
             var result = await resultTask;
-            return await result.DoAsync(action, cancellationToken);
+            return await result.DoItemsAsync(action, cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -2405,7 +2565,7 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
@@ -2416,17 +2576,17 @@ public static class ResultCollectionExtensions
     #region Collection Validation Operations
 
     /// <summary>
-    ///     Validates each item in a collection using a specified validator function.
+    ///     Validates each item in a paged collection using a specified validator function.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="validator">The function to validate each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Validate(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItems(
     ///         user => user.Email.Contains("@")
     ///             ? Result{User}.Success(user)
     ///             : Result{User}.Failure().WithError(new ValidationError("Invalid email format")),
@@ -2434,8 +2594,8 @@ public static class ResultCollectionExtensions
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> ValidateItems<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> ValidateItems<T>(
+        this ResultPaged<T> result,
         Func<T, Result<T>> validator,
         ProcessingOptions options = null)
     {
@@ -2446,7 +2606,7 @@ public static class ResultCollectionExtensions
 
         if (validator is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -2511,18 +2671,22 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -2530,26 +2694,26 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Validates each item in a collection using a specified async validator function.
+    ///     Validates each item in a paged collection using a specified async validator function.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="validator">The async function to validate each element.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .ValidateAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItemsAsync(
     ///         async (user, ct) => await ValidateUserAsync(user, ct),
     ///         ProcessingOptions.Default,
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ValidateItemsAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> ValidateItemsAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<Result<T>>> validator,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
@@ -2561,7 +2725,7 @@ public static class ResultCollectionExtensions
 
         if (validator is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -2631,23 +2795,27 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -2655,26 +2823,26 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Validates each item in a collection using a predicate function.
+    ///     Validates each item in a paged collection using a predicate function.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="predicate">The predicate function that must return true for valid items.</param>
     /// <param name="errorFactory">The function to create an error for invalid items. If null, a default error is created.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .ValidateWhere(
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItemsWhere(
     ///         user => user.Age >= 18,
     ///         user => new ValidationError($"User {user.Id} is under 18"),
     ///         ProcessingOptions.Default
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> ValidateItemsWhere<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> ValidateItemsWhere<T>(
+        this ResultPaged<T> result,
         Func<T, bool> predicate,
         Func<T, IResultError> errorFactory = null,
         ProcessingOptions options = null)
@@ -2686,7 +2854,7 @@ public static class ResultCollectionExtensions
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -2751,18 +2919,22 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -2770,19 +2942,19 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Validates each item in a collection using an async predicate function.
+    ///     Validates each item in a paged collection using an async predicate function.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="predicate">The async predicate function that must return true for valid items.</param>
     /// <param name="errorFactory">The function to create an error for invalid items. If null, a default error is created.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .ValidateWhereAsync(
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItemsWhereAsync(
     ///         async (user, ct) => await IsUserEligibleAsync(user, ct),
     ///         user => new ValidationError($"User {user.Id} is not eligible"),
     ///         ProcessingOptions.Default,
@@ -2790,8 +2962,8 @@ public static class ResultCollectionExtensions
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ValidateItemsWhereAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> ValidateItemsWhereAsync<T>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<bool>> predicate,
         Func<T, IResultError> errorFactory = null,
         ProcessingOptions options = null,
@@ -2804,7 +2976,7 @@ public static class ResultCollectionExtensions
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -2874,23 +3046,27 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -2898,21 +3074,21 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Validates each item in a collection using a validator from the FluentValidation library.
+    ///     Validates each item in a paged collection using a validator from the FluentValidation library.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="validator">The FluentValidation validator to use.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .ValidateAll(new UserValidator());
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItemsAll(new UserValidator());
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> ValidateItems<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> ValidateItems<T>(
+        this ResultPaged<T> result,
         IValidator<T> validator,
         ProcessingOptions options = null)
     {
@@ -2923,7 +3099,7 @@ public static class ResultCollectionExtensions
 
         if (validator is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -2987,18 +3163,22 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -3006,22 +3186,22 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Validates each item in a collection asynchronously using a validator from the FluentValidation library.
+    ///     Validates each item in a paged collection asynchronously using a validator from the FluentValidation library.
     /// </summary>
     /// <typeparam name="T">The type of the elements to validate.</typeparam>
-    /// <param name="result">The Result containing the collection to validate.</param>
+    /// <param name="result">The paged Result containing the collection to validate.</param>
     /// <param name="validator">The FluentValidation validator to use.</param>
     /// <param name="options">Options for handling partial success scenarios.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The original Result if all validations succeed; otherwise, a failure with validation errors.</returns>
+    /// <returns>The original paged Result if all validations succeed; otherwise, a failure with validation errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{User}}.Success(users)
-    ///     .ValidateAllAsync(new UserValidator(), cancellationToken: cancellationToken);
+    /// var result = await ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ValidateItemsAllAsync(new UserValidator(), cancellationToken: cancellationToken);
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<T>>> ValidateItemsAsync<T>(
-        this Result<IEnumerable<T>> result,
+    public static async Task<ResultPaged<T>> ValidateItemsAsync<T>(
+        this ResultPaged<T> result,
         IValidator<T> validator,
         ProcessingOptions options = null,
         CancellationToken cancellationToken = default)
@@ -3033,7 +3213,7 @@ public static class ResultCollectionExtensions
 
         if (validator is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Validator cannot be null"));
         }
 
@@ -3102,23 +3282,27 @@ public static class ResultCollectionExtensions
 
             if (errors.Any() && (!options.MaxFailures.HasValue || failureCount > options.MaxFailures.Value))
             {
-                return Result<IEnumerable<T>>.Failure(validItems)
+                return ResultPaged<T>.Failure(validItems)
                     .WithErrors(errors)
                     .WithMessages(messages);
             }
 
-            return Result<IEnumerable<T>>.Success(validItems)
+            return ResultPaged<T>.Success(
+                    validItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithErrors(errors)
                 .WithMessages(messages);
         }
         catch (OperationCanceledException)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError());
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message)
                 .WithMessages(result.Messages);
@@ -3130,24 +3314,24 @@ public static class ResultCollectionExtensions
     #region Additional Collection Operations
 
     /// <summary>
-    ///     Ensures that all elements in a collection satisfy a predicate.
+    ///     Ensures that all elements in a paged collection satisfy a predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection to check.</param>
+    /// <param name="result">The paged Result containing the collection to check.</param>
     /// <param name="predicate">The condition that must be true for all elements.</param>
     /// <param name="error">The error to return if the predicate fails for any element.</param>
-    /// <returns>The original Result if all elements satisfy the predicate; otherwise, a failure.</returns>
+    /// <returns>The original paged Result if all elements satisfy the predicate; otherwise, a failure.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Order}}.Success(orders)
-    ///     .EnsureAll(
+    /// var result = ResultPaged{Order}.Success(orders, totalCount, page, pageSize)
+    ///     .EnsureAllItems(
     ///         order => order.Total > 0,
     ///         new ValidationError("All orders must have a positive total")
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> EnsureAll<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> EnsureAll<T>(
+        this ResultPaged<T> result,
         Func<T, bool> predicate,
         IResultError error)
     {
@@ -3158,7 +3342,7 @@ public static class ResultCollectionExtensions
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -3166,7 +3350,7 @@ public static class ResultCollectionExtensions
         {
             if (!result.Value.All(predicate))
             {
-                return Result<IEnumerable<T>>.Failure(result.Value)
+                return ResultPaged<T>.Failure(result.Value)
                     .WithError(error)
                     .WithMessages(result.Messages);
             }
@@ -3175,31 +3359,31 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Ensures that at least one element in a collection satisfies a predicate.
+    ///     Ensures that at least one element in a paged collection satisfies a predicate.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection to check.</param>
+    /// <param name="result">The paged Result containing the collection to check.</param>
     /// <param name="predicate">The condition that must be true for at least one element.</param>
     /// <param name="error">The error to return if the predicate fails for all elements.</param>
-    /// <returns>The original Result if any element satisfies the predicate; otherwise, a failure.</returns>
+    /// <returns>The original paged Result if any element satisfies the predicate; otherwise, a failure.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{PaymentMethod}}.Success(paymentMethods)
-    ///     .EnsureAny(
+    /// var result = ResultPaged{PaymentMethod}.Success(paymentMethods, totalCount, page, pageSize)
+    ///     .EnsureAnyItems(
     ///         method => method.IsActive,
     ///         new ValidationError("At least one active payment method is required")
     ///     );
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> EnsureAny<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> EnsureAny<T>(
+        this ResultPaged<T> result,
         Func<T, bool> predicate,
         IResultError error)
     {
@@ -3210,7 +3394,7 @@ public static class ResultCollectionExtensions
 
         if (predicate is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Predicate cannot be null"));
         }
 
@@ -3218,7 +3402,7 @@ public static class ResultCollectionExtensions
         {
             if (!result.Value.Any(predicate))
             {
-                return Result<IEnumerable<T>>.Failure(result.Value)
+                return ResultPaged<T>.Failure(result.Value)
                     .WithError(error)
                     .WithMessages(result.Messages);
             }
@@ -3227,27 +3411,27 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Ensures that the collection is not empty.
+    ///     Ensures that the paged collection is not empty.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection to check.</param>
+    /// <param name="result">The paged Result containing the collection to check.</param>
     /// <param name="error">The error to return if the collection is empty.</param>
-    /// <returns>The original Result if the collection contains elements; otherwise, a failure.</returns>
+    /// <returns>The original paged Result if the collection contains elements; otherwise, a failure.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Product}}.Success(products)
-    ///     .EnsureNotEmpty(new ValidationError("No products found"));
+    /// var result = ResultPaged{Product}.Success(products, totalCount, page, pageSize)
+    ///     .EnsureNotEmptyItems(new ValidationError("No products found"));
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> EnsureNotEmpty<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> EnsureNotEmpty<T>(
+        this ResultPaged<T> result,
         IResultError error)
     {
         if (!result.IsSuccess)
@@ -3259,7 +3443,7 @@ public static class ResultCollectionExtensions
         {
             if (!result.Value.Any())
             {
-                return Result<IEnumerable<T>>.Failure(result.Value)
+                return ResultPaged<T>.Failure(result.Value)
                     .WithError(error)
                     .WithMessages(result.Messages);
             }
@@ -3268,28 +3452,28 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Ensures that the collection contains exactly a specified number of elements.
+    ///     Ensures that the paged collection contains exactly a specified number of elements.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection to check.</param>
+    /// <param name="result">The paged Result containing the collection to check.</param>
     /// <param name="count">The exact number of expected elements.</param>
     /// <param name="error">The error to return if the count doesn't match.</param>
-    /// <returns>The original Result if the collection contains exactly the specified number of elements; otherwise, a failure.</returns>
+    /// <returns>The original paged Result if the collection contains exactly the specified number of elements; otherwise, a failure.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Seat}}.Success(selectedSeats)
-    ///     .EnsureCount(2, new ValidationError("Exactly 2 seats must be selected"));
+    /// var result = ResultPaged{Seat}.Success(selectedSeats, totalCount, page, pageSize)
+    ///     .EnsureCountItems(2, new ValidationError("Exactly 2 seats must be selected"));
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> EnsureCount<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> EnsureCount<T>(
+        this ResultPaged<T> result,
         int count,
         IResultError error)
     {
@@ -3303,7 +3487,7 @@ public static class ResultCollectionExtensions
             var actualCount = result.Value.Count();
             if (actualCount != count)
             {
-                return Result<IEnumerable<T>>.Failure(result.Value)
+                return ResultPaged<T>.Failure(result.Value)
                     .WithError(error)
                     .WithMessage($"Expected {count} items, but found {actualCount}")
                     .WithMessages(result.Messages);
@@ -3313,24 +3497,24 @@ public static class ResultCollectionExtensions
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure(result.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Chunks a collection into smaller collections of a specified size.
+    ///     Chunks a paged collection into smaller collections of a specified size.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <param name="result">The Result containing the collection to chunk.</param>
+    /// <param name="result">The paged Result containing the collection to chunk.</param>
     /// <param name="size">The size of each chunk.</param>
-    /// <returns>A new Result containing chunks of the original collection.</returns>
+    /// <returns>A new paged Result containing chunks of the original collection.</returns>
     /// <example>
     /// <code>
-    /// // Break a large collection into smaller batches for processing
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .Chunk(100);
+    /// // Break a large paged collection into smaller batches for processing
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .ChunkItems(100);
     ///
     /// foreach (var batch in result.Value)
     /// {
@@ -3338,20 +3522,20 @@ public static class ResultCollectionExtensions
     /// }
     /// </code>
     /// </example>
-    public static Result<IEnumerable<IEnumerable<T>>> Chunk<T>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<IEnumerable<T>> Chunk<T>(
+        this ResultPaged<T> result,
         int size)
     {
         if (!result.IsSuccess)
         {
-            return Result<IEnumerable<IEnumerable<T>>>.Failure()
+            return ResultPaged<IEnumerable<T>>.Failure()
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
         }
 
         if (size <= 0)
         {
-            return Result<IEnumerable<IEnumerable<T>>>.Failure()
+            return ResultPaged<IEnumerable<T>>.Failure()
                 .WithError(new Error("Chunk size must be greater than zero"));
         }
 
@@ -3371,38 +3555,42 @@ public static class ResultCollectionExtensions
                 currentChunk.Add(item);
             }
 
-            if (currentChunk.Any())
+            if (currentChunk.Count > 0)
             {
                 chunks.Add(currentChunk);
             }
 
-            return Result<IEnumerable<IEnumerable<T>>>.Success(chunks)
+            return ResultPaged<IEnumerable<T>>.Success(
+                    chunks,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<IEnumerable<T>>>.Failure()
+            return ResultPaged<IEnumerable<T>>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Retrieves distinct elements from a collection based on a specified key selector.
+    ///     Retrieves distinct elements from a paged collection based on a specified key selector.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TKey">The type of the key used for distinctness comparison.</typeparam>
-    /// <param name="result">The Result containing the collection.</param>
+    /// <param name="result">The paged Result containing the collection.</param>
     /// <param name="keySelector">The function to extract the key for each element.</param>
-    /// <returns>A new Result containing the distinct elements from the original collection.</returns>
+    /// <returns>A new paged Result containing the distinct elements from the original collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Product}}.Success(products)
-    ///     .DistinctBy(product => product.CategoryId);
+    /// var result = ResultPaged{Product}.Success(products, totalCount, page, pageSize)
+    ///     .DistinctByItems(product => product.CategoryId);
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> DistinctBy<T, TKey>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> DistinctBy<T, TKey>(
+        this ResultPaged<T> result,
         Func<T, TKey> keySelector)
     {
         if (!result.IsSuccess)
@@ -3412,7 +3600,7 @@ public static class ResultCollectionExtensions
 
         if (keySelector is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3423,33 +3611,37 @@ public static class ResultCollectionExtensions
                 .Select(group => group.First())
                 .ToList();
 
-            return Result<IEnumerable<T>>.Success(distinctItems)
+            return ResultPaged<T>.Success(
+                    distinctItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Attempts to execute an operation for each item in a collection until one succeeds.
+    ///     Attempts to execute an operation for each item in a paged collection until one succeeds.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TResult">The type of the result value.</typeparam>
-    /// <param name="result">The Result containing the collection to process.</param>
+    /// <param name="result">The paged Result containing the collection to process.</param>
     /// <param name="operation">The operation to try for each element.</param>
     /// <returns>The first successful Result from any operation, or a failure with all collected errors.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{PaymentMethod}}.Success(paymentMethods)
-    ///     .First(method => ProcessPayment(method, amount));
+    /// var result = ResultPaged{PaymentMethod}.Success(paymentMethods, totalCount, page, pageSize)
+    ///     .FirstItems(method => ProcessPayment(method, amount));
     /// </code>
     /// </example>
     public static Result<TResult> First<T, TResult>(
-        this Result<IEnumerable<T>> result,
+        this ResultPaged<T> result,
         Func<T, Result<TResult>> operation)
     {
         if (!result.IsSuccess)
@@ -3496,25 +3688,25 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Attempts to execute an async operation for each item in a collection until one succeeds.
+    ///     Attempts to execute an async operation for each item in a paged collection until one succeeds.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TResult">The type of the result value.</typeparam>
-    /// <param name="result">The Result containing the collection to process.</param>
+    /// <param name="result">The paged Result containing the collection to process.</param>
     /// <param name="operation">The async operation to try for each element.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The first successful Result from any operation, or a failure with all collected errors.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result{IEnumerable{PaymentMethod}}.Success(paymentMethods)
-    ///     .FirstAsync(
+    /// var result = await ResultPaged{PaymentMethod}.Success(paymentMethods, totalCount, page, pageSize)
+    ///     .FirstItemsAsync(
     ///         async (method, ct) => await ProcessPaymentAsync(method, amount, ct),
     ///         cancellationToken
     ///     );
     /// </code>
     /// </example>
     public static async Task<Result<TResult>> FirstAsync<T, TResult>(
-        this Result<IEnumerable<T>> result,
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<Result<TResult>>> operation,
         CancellationToken cancellationToken = default)
     {
@@ -3579,77 +3771,81 @@ public static class ResultCollectionExtensions
         }
     }
 
+    ///// <summary>
+    /////     Groups elements in a paged collection by a specified key selector.
+    ///// </summary>
+    ///// <typeparam name="T">The type of the elements.</typeparam>
+    ///// <typeparam name="TKey">The type of the grouping key.</typeparam>
+    ///// <param name="result">The paged Result containing the collection to group.</param>
+    ///// <param name="keySelector">The function to extract the key for each element.</param>
+    ///// <returns>A new paged Result containing the grouped elements.</returns>
+    ///// <example>
+    ///// <code>
+    ///// var result = ResultPaged{Order}.Success(orders, totalCount, page, pageSize)
+    /////     .GroupByItems(order => order.CustomerId);
+    /////
+    ///// foreach (var customerGroup in result.Value)
+    ///// {
+    /////     Console.WriteLine($"Customer {customerGroup.Key} has {customerGroup.Count()} orders");
+    ///// }
+    ///// </code>
+    ///// </example>
+    //public static ResultPaged<IEnumerable<IGrouping<TKey, T>>> GroupByItems<T, TKey>(
+    //this ResultPaged<T> result,
+    //Func<T, TKey> keySelector)
+    //{
+    //    if (!result.IsSuccess)
+    //    {
+    //        return ResultPaged<IEnumerable<IGrouping<TKey, T>>>.Failure()
+    //            .WithErrors(result.Errors)
+    //            .WithMessages(result.Messages);
+    //    }
+
+    //    if (keySelector is null)
+    //    {
+    //        return ResultPaged<IEnumerable<IGrouping<TKey, T>>>.Failure()
+    //            .WithError(new Error("Key selector cannot be null"));
+    //    }
+
+    //    try
+    //    {
+    //        var groupedItems = result.Value.GroupBy(keySelector).ToList();
+
+    //        return ResultPaged<IEnumerable<IGrouping<TKey, T>>>.Success(
+    //                groupedItems,
+    //                result.TotalCount,
+    //                result.CurrentPage,
+    //                result.PageSize)
+    //            .WithMessages(result.Messages);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return ResultPaged<IEnumerable<IGrouping<TKey, T>>>.Failure()
+    //            .WithError(new ExceptionError(ex))
+    //            .WithMessage(ex.Message);
+    //    }
+    //}
+
     /// <summary>
-    ///     Groups elements in a collection by a specified key selector.
-    /// </summary>
-    /// <typeparam name="T">The type of the elements.</typeparam>
-    /// <typeparam name="TKey">The type of the grouping key.</typeparam>
-    /// <param name="result">The Result containing the collection to group.</param>
-    /// <param name="keySelector">The function to extract the key for each element.</param>
-    /// <returns>A new Result containing the grouped elements.</returns>
-    /// <example>
-    /// <code>
-    /// var result = Result{IEnumerable{Order}}.Success(orders)
-    ///     .GroupBy(order => order.CustomerId);
-    ///
-    /// foreach (var customerGroup in result.Value)
-    /// {
-    ///     Console.WriteLine($"Customer {customerGroup.Key} has {customerGroup.Count()} orders");
-    /// }
-    /// </code>
-    /// </example>
-    public static Result<IEnumerable<IGrouping<TKey, T>>> GroupBy<T, TKey>(
-        this Result<IEnumerable<T>> result,
-        Func<T, TKey> keySelector)
-    {
-        if (!result.IsSuccess)
-        {
-            return Result<IEnumerable<IGrouping<TKey, T>>>.Failure()
-                .WithErrors(result.Errors)
-                .WithMessages(result.Messages);
-        }
-
-        if (keySelector is null)
-        {
-            return Result<IEnumerable<IGrouping<TKey, T>>>.Failure()
-                .WithError(new Error("Key selector cannot be null"));
-        }
-
-        try
-        {
-            var groupedItems = result.Value.GroupBy(keySelector).ToList();
-
-            return Result<IEnumerable<IGrouping<TKey, T>>>.Success(groupedItems)
-                .WithMessages(result.Messages);
-        }
-        catch (Exception ex)
-        {
-            return Result<IEnumerable<IGrouping<TKey, T>>>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
-    }
-
-    /// <summary>
-    ///     Aggregates the elements of a collection using a specified aggregation function.
+    ///     Aggregates the elements of a paged collection using a specified aggregation function.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TAccumulate">The type of the accumulator value.</typeparam>
-    /// <param name="result">The Result containing the collection to aggregate.</param>
+    /// <param name="result">The paged Result containing the collection to aggregate.</param>
     /// <param name="seed">The initial accumulator value.</param>
     /// <param name="func">The function to apply to each element.</param>
     /// <returns>A new Result containing the aggregated value.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{OrderLine}}.Success(orderLines)
-    ///     .Aggregate(
+    /// var result = ResultPaged{OrderLine}.Success(orderLines, totalCount, page, pageSize)
+    ///     .AggregateItems(
     ///         0.0m,
     ///         (total, line) => total + line.Quantity * line.UnitPrice
     ///     );
     /// </code>
     /// </example>
     public static Result<TAccumulate> Aggregate<T, TAccumulate>(
-        this Result<IEnumerable<T>> result,
+        this ResultPaged<T> result,
         TAccumulate seed,
         Func<TAccumulate, T, TAccumulate> func)
     {
@@ -3682,21 +3878,21 @@ public static class ResultCollectionExtensions
     }
 
     /// <summary>
-    ///     Orders the elements of a collection according to a key.
+    ///     Orders the elements of a paged collection according to a key.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TKey">The type of the ordering key.</typeparam>
-    /// <param name="result">The Result containing the collection to order.</param>
+    /// <param name="result">The paged Result containing the collection to order.</param>
     /// <param name="keySelector">The function to extract the key for each element.</param>
-    /// <returns>A new Result containing the ordered collection.</returns>
+    /// <returns>A new paged Result containing the ordered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{User}}.Success(users)
-    ///     .OrderBy(user => user.LastName);
+    /// var result = ResultPaged{User}.Success(users, totalCount, page, pageSize)
+    ///     .OrderByItems(user => user.LastName);
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> OrderBy<T, TKey>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> OrderBy<T, TKey>(
+        this ResultPaged<T> result,
         Func<T, TKey> keySelector)
     {
         if (!result.IsSuccess)
@@ -3706,7 +3902,7 @@ public static class ResultCollectionExtensions
 
         if (keySelector is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3714,33 +3910,37 @@ public static class ResultCollectionExtensions
         {
             var orderedItems = result.Value.OrderBy(keySelector).ToList();
 
-            return Result<IEnumerable<T>>.Success(orderedItems)
+            return ResultPaged<T>.Success(
+                    orderedItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
     }
 
     /// <summary>
-    ///     Orders the elements of a collection in descending order according to a key.
+    ///     Orders the elements of a paged collection in descending order according to a key.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     /// <typeparam name="TKey">The type of the ordering key.</typeparam>
-    /// <param name="result">The Result containing the collection to order.</param>
+    /// <param name="result">The paged Result containing the collection to order.</param>
     /// <param name="keySelector">The function to extract the key for each element.</param>
-    /// <returns>A new Result containing the ordered collection.</returns>
+    /// <returns>A new paged Result containing the ordered collection.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{IEnumerable{Product}}.Success(products)
-    ///     .OrderByDescending(product => product.Price);
+    /// var result = ResultPaged{Product}.Success(products, totalCount, page, pageSize)
+    ///     .OrderByItemsDescending(product => product.Price);
     /// </code>
     /// </example>
-    public static Result<IEnumerable<T>> OrderByDescending<T, TKey>(
-        this Result<IEnumerable<T>> result,
+    public static ResultPaged<T> OrderByDescending<T, TKey>(
+        this ResultPaged<T> result,
         Func<T, TKey> keySelector)
     {
         if (!result.IsSuccess)
@@ -3750,7 +3950,7 @@ public static class ResultCollectionExtensions
 
         if (keySelector is null)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Key selector cannot be null"));
         }
 
@@ -3758,12 +3958,16 @@ public static class ResultCollectionExtensions
         {
             var orderedItems = result.Value.OrderByDescending(keySelector).ToList();
 
-            return Result<IEnumerable<T>>.Success(orderedItems)
+            return ResultPaged<T>.Success(
+                    orderedItems,
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Result<IEnumerable<T>>.Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }

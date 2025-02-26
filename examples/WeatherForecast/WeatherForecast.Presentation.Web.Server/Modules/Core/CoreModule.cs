@@ -92,7 +92,7 @@ public class CoreModule : WebModuleBase
             });
 
             o.EnableEvaluationEndpoints();
-            o.EnableManagementEndpoints(c => c.RequiredRoles = [Role.Administrators]);
+            o.EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
         });
 
         // City repository

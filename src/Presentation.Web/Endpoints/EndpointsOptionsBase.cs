@@ -17,7 +17,7 @@ public abstract class EndpointsOptionsBase
 
     public bool ExcludeFromDescription { get; set; }
 
-    public string[] RequiredRoles { get; set; } = []; // roles
+    public string[] RequireRoles { get; set; } = []; // roles
 
-    public string RequiredPolicy { get; set; }
+    public string RequirePolicy { get; set; }
 }

@@ -49,18 +49,18 @@ public abstract class EndpointsBase : IEndpoints
 
         if (options.RequireAuthorization)
         {
-            if (options.RequiredRoles.SafeAny())
+            if (options.RequireRoles.SafeAny())
             {
                 group.RequireAuthorization(
                     new AuthorizeAttribute
                     {
-                        Roles = string.Join(",", options.RequiredRoles.Where(g => !g.IsNullOrEmpty()))
+                        Roles = string.Join(",", options.RequireRoles.Where(g => !g.IsNullOrEmpty()))
                     });
             }
-            else if (!options.RequiredPolicy.IsNullOrEmpty())
+            else if (!options.RequirePolicy.IsNullOrEmpty())
             {
                 group.RequireAuthorization(
-                    new AuthorizeAttribute(options.RequiredPolicy));
+                    new AuthorizeAttribute(options.RequirePolicy));
             }
             else
             {

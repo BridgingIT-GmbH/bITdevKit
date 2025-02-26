@@ -6,9 +6,11 @@
 namespace BridgingIT.DevKit.Common;
 
 [DebuggerDisplay("Rule={Rule.GetType().Name}, Message={Message}")]
-public class RuleError(IRule rule) : ResultErrorBase(rule?.Message)
+public class RuleExceptionError(IRule rule, Exception exception) : ResultErrorBase(rule?.Message)
 {
     public IRule Rule { get; } = rule;
+
+    public Exception Exception { get; } = exception;
 
     public override void Throw()
     {

@@ -14,7 +14,7 @@ public static class ResultErrorExtensions
     /// <param name="errors">The IReadOnlyList of IResultError to check.</param>
     /// <returns>True if an error of type T exists in the list; otherwise, false.</returns>
     public static bool Has<TError>(this IReadOnlyList<IResultError> errors)
-        where TError : class, IResultError
+         where TError : class, IResultError
     {
         if (errors?.Any() != true)
         {
@@ -39,31 +39,5 @@ public static class ResultErrorExtensions
         }
 
         return errors.FirstOrDefault(e => e is TError) as TError;
-    }
-
-    /// <summary>
-    /// Attempts to get the first error of the specified type from the list.
-    /// </summary>
-    /// <typeparam name="TError">The type of error to retrieve, which must implement IResultError.</typeparam>
-    /// <param name="errors">The IReadOnlyList of IResultError to search.</param>
-    /// <param name="error">When this method returns, contains the first error of type T if found; otherwise, default.</param>
-    /// <returns>True if an error of type T was found; otherwise, false.</returns>
-    public static bool TryGet<TError>(this IReadOnlyList<IResultError> errors, out TError error)
-        where TError : class, IResultError
-    {
-        error = default;
-        if (errors?.Any() != true)
-        {
-            return false;
-        }
-
-        var foundError = errors.FirstOrDefault(e => e is TError);
-        if (foundError == null)
-        {
-            return false;
-        }
-
-        error = foundError as TError;
-        return true;
     }
 }

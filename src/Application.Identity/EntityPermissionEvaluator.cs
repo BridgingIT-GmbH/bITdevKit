@@ -26,6 +26,74 @@ public partial class EntityPermissionEvaluator<TEntity>(
     private readonly EntityPermissionOptions options = options ?? new EntityPermissionOptions();
 
     /// <summary>
+    /// Checks if the user has the specified permission on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has the specified permission on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has the specified permission on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, object entityId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, cancellationToken);
+    }
+
+    /// <summary>
     /// Checks if the user has the specified permission on the given entity.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>

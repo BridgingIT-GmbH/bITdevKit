@@ -7,5 +7,5 @@ namespace BridgingIT.DevKit.Application.Identity;
 
 public struct Constants
 {
-    public const string LogKey = "IDN";
+    public const string LogKey = "AID";
 }

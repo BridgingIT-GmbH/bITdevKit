@@ -456,19 +456,19 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted from cache: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted from cache: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionCacheHit(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGranted(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted (default): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted (default): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedDefault(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} evaluator - permission denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} permission evaluator - denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogPermissionDenied(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey}  evaluator - permission granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey}  permission evaluator - granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedFromParent(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
     }
 }

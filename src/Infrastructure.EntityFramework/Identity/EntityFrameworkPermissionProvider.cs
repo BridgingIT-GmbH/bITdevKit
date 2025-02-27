@@ -589,10 +589,10 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} permission provider - found hierarchy path: {EntityType}/{EntityId}, count={Count}")]
         public static partial void LogFoundHierarchyPath(ILogger logger, string logKey, string entityType, string entityId, int count);
 
-        [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "{LogKey} permission provider - granting permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "{LogKey} permission provider - granting user permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogGrantingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 11, Level = LogLevel.Debug, Message = "{LogKey} permission provider - revoking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 11, Level = LogLevel.Debug, Message = "{LogKey} permission provider - revoking user permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogRevokingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
         [LoggerMessage(EventId = 12, Level = LogLevel.Debug, Message = "{LogKey} permission provider - granting role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]

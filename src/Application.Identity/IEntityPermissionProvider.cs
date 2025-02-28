@@ -61,6 +61,30 @@ public interface IEntityPermissionProvider
     Task GrantUserPermissionAsync(string userId, string entityType, object entityId, string permission, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Retrieves all granted permissions for all users and roles for a specific entity (id) or entity type (wildcard).
+    /// </summary>
+    /// <param name="entityType">The type of the entity.</param>
+    /// <param name="entityId">The ID of the specific entity.</param>
+    /// <returns></returns>
+    Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves all granted permissions for all users for a specific entity (id) or entity type (wildcard).
+    /// </summary>
+    /// <param name="entityType">The type of the entity.</param>
+    /// <param name="entityId">The ID of the specific entity.</param>
+    /// <returns></returns>
+    Task<IReadOnlyCollection<EntityPermissionInfo>> GetUsersPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves all granted permissions for all roles for a specific entity (id) or entity type (wildcard).
+    /// </summary>
+    /// <param name="entityType">The type of the entity.</param>
+    /// <param name="entityId">The ID of the specific entity.</param>
+    /// <returns></returns>
+    Task<IReadOnlyCollection<EntityPermissionInfo>> GetRolesPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Revokes a specific permission from a user for a specific entity.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>

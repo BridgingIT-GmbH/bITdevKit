@@ -263,6 +263,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                 Permission = permission,
                 Source = "Direct",
                 //SourceId = entityId,
+                UserId = userId,
                 EntityType = entityType,
                 //EntityId = entity.Id
             });
@@ -281,6 +282,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                         Permission = permission,
                         Source = $"Role:{role}",
                         //SourceId = entityId,
+                        RoleName = role,
                         EntityType = entityType,
                         //EntityId = entity.Id
                     });
@@ -304,6 +306,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                         Permission = permission,
                         Source = $"Parent:Entity:{parentId}",
                         //SourceId = parentId,
+                        UserId = userId,
                         EntityType = entityType,
                         //EntityId = entity.Id
                     });
@@ -322,6 +325,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                                 Permission = permission,
                                 Source = $"Parent:Role:{role}",
                                 //SourceId = parentId,
+                                RoleName = role,
                                 EntityType = entityType,
                                 //EntityId = entity.Id
                             });
@@ -372,6 +376,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                 Permission = permission,
                 Source = "Direct",
                 //SourceId = null,
+                UserId = userId,
                 EntityType = entityType,
                 //EntityId = null  // type-wide permission
             });
@@ -390,6 +395,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                         Permission = permission,
                         Source = $"Role:{role}",
                         //SourceId = null,
+                        RoleName = role,
                         EntityType = entityType,
                         //EntityId = null  // type-wide permission
                     });

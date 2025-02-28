@@ -10,7 +10,6 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -419,6 +418,87 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         {
             await context.SaveChangesAsync(cancellationToken).AnyContext();
         }
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(
+        string entityType,
+        object entityId, CancellationToken cancellationToken = default)
+    {
+        entityType = this.options?.GetEntityTypeConfiguration(entityType, false)?.EntityType?.FullName ?? entityType;
+
+        using var scope = this.serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+        var safeEntityId = entityId?.ToString().EmptyToNull();
+        return await context.EntityPermissions
+            .Where(p => p.EntityType == entityType
+                && (p.EntityId == null || p.EntityId == safeEntityId))
+            .Select(p => new EntityPermissionInfo
+            {
+                UserId = p.UserId,
+                RoleName = p.RoleName,
+                EntityType = p.EntityType,
+                EntityId = p.EntityId,
+                Permission = p.Permission
+            })
+            .ToListAsync(cancellationToken: cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetUsersPermissionsAsync(
+        string entityType,
+        object entityId, CancellationToken cancellationToken = default)
+    {
+        entityType = this.options?.GetEntityTypeConfiguration(entityType, false)?.EntityType?.FullName ?? entityType;
+
+        using var scope = this.serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+        // Get direct user permissions (granted)
+        var safeEntityId = entityId?.ToString().EmptyToNull();
+        var userPermissions = (await context.EntityPermissions
+            .Where(p => p.UserId != null
+                && p.EntityType == entityType
+                && (p.EntityId == null || p.EntityId == safeEntityId))
+            .ToListAsync(cancellationToken: cancellationToken).AnyContext()).Select(e => new EntityPermissionInfo { UserId = e.UserId, EntityId = e.EntityId, EntityType = e.EntityType, RoleName = e.RoleName, Permission = e.Permission });
+
+        // Get wildcard permissions (entityId == null)
+        var wildcardPermissions = (await context.EntityPermissions
+            .Where(p => p.UserId != null
+                && p.EntityType == entityType
+                && p.EntityId == null)
+            .ToListAsync(cancellationToken: cancellationToken).AnyContext()).Select(e => new EntityPermissionInfo { UserId = e.UserId, EntityId = e.EntityId, EntityType = e.EntityType, RoleName = e.RoleName, Permission = e.Permission });
+
+        return [.. userPermissions.Union(wildcardPermissions)]; // Combine and deduplicate
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetRolesPermissionsAsync(
+        string entityType,
+        object entityId, CancellationToken cancellationToken = default)
+    {
+        entityType = this.options?.GetEntityTypeConfiguration(entityType, false)?.EntityType?.FullName ?? entityType;
+
+        using var scope = this.serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+        // Get direct role permissions (granted)
+        var safeEntityId = entityId?.ToString().EmptyToNull();
+        var rolePermissions = (await context.EntityPermissions
+            .Where(p => p.RoleName != null
+                && p.EntityType == entityType
+                && (p.EntityId == null || p.EntityId == safeEntityId))
+            .ToListAsync(cancellationToken: cancellationToken).AnyContext()).Select(e => new EntityPermissionInfo { UserId = e.UserId, EntityId = e.EntityId, EntityType = e.EntityType, RoleName = e.RoleName, Permission = e.Permission });
+
+        // Get wildcard permissions (entityId == null)
+        var wildcardPermissions = (await context.EntityPermissions
+            .Where(p => p.RoleName != null
+                && p.EntityType == entityType
+                && p.EntityId == null)
+            .ToListAsync(cancellationToken: cancellationToken).AnyContext()).Select(e => new EntityPermissionInfo { UserId = e.UserId, EntityId = e.EntityId, EntityType = e.EntityType, RoleName = e.RoleName, Permission = e.Permission });
+
+        return [.. rolePermissions.Union(wildcardPermissions)]; // Combine and deduplicate
     }
 
     /// <inheritdoc/>

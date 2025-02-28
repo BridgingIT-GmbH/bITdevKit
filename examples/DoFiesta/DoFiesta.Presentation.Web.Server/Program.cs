@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 using NSwag.Generation.AspNetCore;
 using BridgingIT.DevKit.Application.JobScheduling;
+using Microsoft.OpenApi.Models;
 
 // ===============================================================================================
 // Create the webhost
@@ -105,7 +106,8 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "Blazor WASM Frontend",
         "blazor-wasm",
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
-        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback")
+        "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
+        "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
     .EnableLoginCard(false));
 
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
@@ -120,8 +122,51 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument(ConfigureOpenApiDocument); // TODO: still needed when all OpenAPI specifications are available in swagger UI?
+builder.Services.AddEndpointsApiExplorer(); // not needed for AddOpenApi(), only needed for SwaggerGen
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("api", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Backend API",
+    });
+
+    // Define OAuth2 with Authorization Code flow (not Implicit)
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.OAuth2,
+        Flows = new OpenApiOAuthFlows
+        {
+            AuthorizationCode = new OpenApiOAuthFlow
+            {
+                AuthorizationUrl = new Uri($"{builder.Configuration["Authentication:Authority"]}/api/_system/identity/connect/authorize"),
+                TokenUrl = new Uri($"{builder.Configuration["Authentication:Authority"]}/api/_system/identity/connect/token"),
+                Scopes = new Dictionary<string, string>
+                {
+                    { "openid", "OpenID Connect scope" },
+                    { "profile", "Profile information" },
+                    { "email", "Email information" }
+                }
+            }
+        }
+    });
+
+    // Add the security requirement to all operations
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "oauth2"
+                }
+            },
+            new[] { "openid", "profile", "email" }
+        }
+    });
+});
 
 // ===============================================================================================
 // Configure the HTTP request pipeline
@@ -149,8 +194,21 @@ app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
 
-app.UseOpenApi();
-app.UseSwaggerUi();
+app.UseSwagger(options => // https://localhost:5001/openapi/api.json
+{
+    options.RouteTemplate = "openapi/{documentName}.json";
+});
+
+app.UseSwaggerUI(c => // https://localhost:5001/openapi
+{
+    c.SwaggerEndpoint("api.json", "Backend API");
+    c.RoutePrefix = "openapi";
+
+    c.OAuthClientId("blazor-wasm");
+    c.OAuthAppName("Backend API - Swagger UI");
+    c.OAuthUsePkce();
+    c.OAuthScopeSeparator(" ");
+});
 
 app.UseStaticFiles();
 app.UseAntiforgery();
@@ -190,12 +248,12 @@ void ConfigureJsonOptions(JsonOptions options)
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 }
 
-void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)
-{
-    settings.DocumentName = "v1";
-    settings.Version = "v1";
-    settings.Title = "Backend API";
-}
+//void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)
+//{
+//    settings.DocumentName = "v1";
+//    settings.Version = "v1";
+//    settings.Title = "Backend API";
+//}
 
 public partial class Program
 {

@@ -317,8 +317,10 @@ var canWrite = await evaluator.HasPermissionAsync("user123", ["Admins"], "emp1",
 | `/users/{userId}`                                 | POST   | Grant user permission       | `curl -X POST ... -d '{"entityType": "EmployeeType", "entityId": "emp1", "permission": "Write"}'` |
 | `/users/{userId}`                                 | DELETE | Revoke user permission      | Same as above                                                |
 | `/users/{userId}/all`                             | DELETE | Revoke all user permissions | `curl -X DELETE .../users/user123/all`                       |
+| `/users?entityType={type}&entityId={id}`          | GET    | Get users permissions        | `curl .../users?entityType=EmployeeType&entityId=emp1` |
 | `/users/{userId}?entityType={type}&entityId={id}` | GET    | Get user permissions        | `curl .../users/user123?entityType=EmployeeType&entityId=emp1` |
 | `/roles/{role}` (same sub-paths as users)         | *      | Role-based equivalents      | Replace `users/user123` with `roles/Admins`                  |
+| `/roles` (same sub-paths as users)                | *      | Role-based equivalents      | Replace `users` with `roles`                  |
 
 ### Evaluation Endpoints
 | Endpoint                                        | Method | Purpose                       | Example Response                                             |

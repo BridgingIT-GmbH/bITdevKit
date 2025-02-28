@@ -11,7 +11,7 @@ public class IdentityEntityPermissionEvaluationEndpointsOptions : EndpointsOptio
 
     public IdentityEntityPermissionEvaluationEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/identity/entities/permissions/evaluate";
+        this.GroupPath = "/api/_system/identity/evaluate/entities/permissions";
         this.GroupTag = "_system/identity";
         this.RequireAuthorization = true;
     }

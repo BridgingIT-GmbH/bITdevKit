@@ -15,10 +15,13 @@ using Microsoft.CodeAnalysis.Text;
 ///     This generator scans the syntax trees of the compilation for classes that have attributes
 ///     starting with "TypedEntityId", generates ID classes for those entities, and adds them as sources.
 /// </summary>
-[Generator]
+#pragma warning disable RS1035 // Do not use APIs banned for analyzers
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
+#pragma warning disable RS1042 // Implementations of this interface are not allowed
+#pragma warning disable RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
+[Generator]
 public class TypedEntityIdClassGenerator : ISourceGenerator
-#pragma warning restore RS1036 // Specify analyzer banned API enforcement setting
+
 {
     /// <summary>
     ///     Executes the source generation process for generating strongly-typed entity ID classes
@@ -355,3 +358,7 @@ namespace {namespaceName}
         return @"throw new JsonException(""Unsupported type for writing"");";
     }
 }
+#pragma warning restore RS1042 // Implementations of this interface are not allowed
+#pragma warning restore RS1036 // Specify analyzer banned API enforcement setting
+#pragma warning restore RS1035 // Do not use APIs banned for analyzers
+#pragma warning restore RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references

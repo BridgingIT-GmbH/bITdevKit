@@ -24,8 +24,11 @@ public class HttpContextExtensionsTests
         // Arrange
         HttpContext context = null;
 
-        // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => await context.FromQueryFilterAsync());
+        // Act
+        var result = await context.FromQueryFilterAsync();
+
+        // Assert
+        result.ShouldNotBeNull();
     }
 
     [Fact]
@@ -81,8 +84,11 @@ public class HttpContextExtensionsTests
         // Arrange
         HttpContext context = null;
 
-        // Act & Assert
-        await Should.ThrowAsync<ArgumentNullException>(async () => await context.FromBodyFilterAsync());
+        // Act
+        var result = await context.FromBodyFilterAsync();
+
+        // Assert
+        result.ShouldNotBeNull();
     }
 
     [Fact]

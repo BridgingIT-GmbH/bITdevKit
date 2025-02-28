@@ -18,7 +18,6 @@ using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
-using NSwag.Generation.AspNetCore;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.OpenApi.Models;
 
@@ -121,52 +120,7 @@ builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
-
-builder.Services.AddEndpointsApiExplorer(); // not needed for AddOpenApi(), only needed for SwaggerGen
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("api", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Version = "v1",
-        Title = "Backend API",
-    });
-
-    // Define OAuth2 with Authorization Code flow (not Implicit)
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.OAuth2,
-        Flows = new OpenApiOAuthFlows
-        {
-            AuthorizationCode = new OpenApiOAuthFlow
-            {
-                AuthorizationUrl = new Uri($"{builder.Configuration["Authentication:Authority"]}/api/_system/identity/connect/authorize"),
-                TokenUrl = new Uri($"{builder.Configuration["Authentication:Authority"]}/api/_system/identity/connect/token"),
-                Scopes = new Dictionary<string, string>
-                {
-                    { "openid", "OpenID Connect scope" },
-                    { "profile", "Profile information" },
-                    { "email", "Email information" }
-                }
-            }
-        }
-    });
-
-    // Add the security requirement to all operations
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "oauth2"
-                }
-            },
-            new[] { "openid", "profile", "email" }
-        }
-    });
-});
+builder.Services.AddSwagger(builder.Configuration);
 
 // ===============================================================================================
 // Configure the HTTP request pipeline
@@ -193,22 +147,7 @@ app.UseProblemDetails();
 app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
-
-app.UseSwagger(options => // https://localhost:5001/openapi/api.json
-{
-    options.RouteTemplate = "openapi/{documentName}.json";
-});
-
-app.UseSwaggerUI(c => // https://localhost:5001/openapi
-{
-    c.SwaggerEndpoint("api.json", "Backend API");
-    c.RoutePrefix = "openapi";
-
-    c.OAuthClientId("blazor-wasm");
-    c.OAuthAppName("Backend API - Swagger UI");
-    c.OAuthUsePkce();
-    c.OAuthScopeSeparator(" ");
-});
+app.UseSwagger("blazor-wasm");
 
 app.UseStaticFiles();
 app.UseAntiforgery();

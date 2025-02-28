@@ -122,38 +122,38 @@
       },
       "Testcontainers.Azurite": {
         "type": "Direct",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "fhTQEO3jp+y9vjwZxXej7betgpupKqgA3hZxLIAGLG0zwahHrZCg8wPOUDF0M8MYVbmhZyvny+vr5JVfuZBx8w==",
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "QiNpIUqkaadim+lSd0+t8iDF20QrwpwjE5WLU4eVNkPiCDFNw9t1CVlphtdaGWMBFZSozNh0GAbJY+07pWkqnA==",
         "dependencies": {
-          "Testcontainers": "4.2.0"
+          "Testcontainers": "4.3.0"
         }
       },
       "Testcontainers.CosmosDb": {
         "type": "Direct",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "/6Rqhe86Sqz/CXDI0KfabIXWGvAV60RG7OTl1FnChXix2A6/3wFe7pHMrXQdFuxFjhq/b2/tF9rDc3Uug1/7Rw==",
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "KpIk1MlBX3Fbvy0Z/aQMfH8vcLH7dnJ/rkC73iPqK45u5e7Qm1/C7P01GE1DPsuIQz9sQ0osgV1SzPl5/r0EVA==",
         "dependencies": {
-          "Testcontainers": "4.2.0"
+          "Testcontainers": "4.3.0"
         }
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "degFDO7d2OOFG++c/jw6CzdmP2W9FprriT7LwLIk5JfVf4w9NmrFqW4FWDq8LUjqBS2OOzpuJWh0zDBWtE1y/Q==",
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "cuFPklU0tcFB0X2KyUNMBoPFMxmUCG793Jj0SNIWni+LG7YgUp3r6T2jbwAWKZHpFS3/Q/SIvpUPfcgB1pAd3g==",
         "dependencies": {
-          "Testcontainers": "4.2.0"
+          "Testcontainers": "4.3.0"
         }
       },
       "Testcontainers.RabbitMq": {
         "type": "Direct",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "i7Wa0TLroxfR8Ezc8niodyqBlw5S1yTQmya+59LoIfIh6+H209dzEmvl81hArZmg+kDaZzre47nokI5v8bFLNg==",
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "R1B0K1CLHUEQNWnwJHVBwlGmPX/F8oUKrvjVScXHI+WYEc2iNRB3lkX7VwPjSbQnsU+/1C2GZFO51mkjzJYtyg==",
         "dependencies": {
-          "Testcontainers": "4.2.0"
+          "Testcontainers": "4.3.0"
         }
       },
       "xunit": {
@@ -187,6 +187,11 @@
           "System.Text.Json": "6.0.10",
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
+      },
+      "BouncyCastle.Cryptography": {
+        "type": "Transitive",
+        "resolved": "2.4.0",
+        "contentHash": "SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ=="
       },
       "Castle.Core": {
         "type": "Transitive",
@@ -811,8 +816,11 @@
       },
       "SSH.NET": {
         "type": "Transitive",
-        "resolved": "2024.1.0",
-        "contentHash": "pyOea9czgC+OwMoetuWtMuwRebOyskKkqTZtODgyEZ5K6JwV+Hh/GFiyYubl93YnEvmvNZeuyWyUDsb3LvBDYA=="
+        "resolved": "2024.2.0",
+        "contentHash": "9r+4UF2P51lTztpd+H7SJywk7WgmlWB//Cm2o96c6uGVZU5r58ys2/cD9pCgTk0zCdSkfflWL1WtqQ9I4IVO9Q==",
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.4.0"
+        }
       },
       "System.AppContext": {
         "type": "Transitive",
@@ -1563,13 +1571,13 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "4.2.0",
-        "contentHash": "GzxvSJQvasxWLty1BWBSIqc3Rmymv5zorLCWWLo5AfoDCXAVQf5GDl7F9wBOWRs7qnuP5bha8FAzSvMotLJeAg==",
+        "resolved": "4.3.0",
+        "contentHash": "1cxsjDE2+rdi/ELOel+NbQhQ7tvaqXG2YDN6nmhDzyAu9baGM2FUENG/3eG7N+ak3nap35RFvxyhIdVBeqNwlA==",
         "dependencies": {
           "Docker.DotNet.Enhanced": "3.126.1",
           "Docker.DotNet.Enhanced.X509": "3.126.1",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.2",
-          "SSH.NET": "2024.1.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "SSH.NET": "2024.2.0",
           "SharpZipLib": "1.4.2"
         }
       },

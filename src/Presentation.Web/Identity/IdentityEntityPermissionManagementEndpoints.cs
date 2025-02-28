@@ -115,7 +115,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{request.EntityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        await provider.GrantUserPermisnAsync(userId, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
+        await provider.GrantUserPermissionAsync(userId, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
 
         return TypedResults.NoContent();
     }

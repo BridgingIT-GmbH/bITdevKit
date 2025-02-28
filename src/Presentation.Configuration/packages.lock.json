@@ -34,11 +34,11 @@
       },
       "Microsoft.Azure.AppConfiguration.AspNetCore": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "eg37WN0sNA4Ctsf43Na95Bmr++O6YmA9GXUXYy39tDh3cxQaJjc4zrYtt/fSMq1Y/ma92xCsgnU+LNKKjClh1g==",
+        "requested": "[8.1.1, )",
+        "resolved": "8.1.1",
+        "contentHash": "NMhJG1JQkDxXN7/tb8Yk2Wt+HeDUe4t2VNi32lZFVFtRvougmoymJnF2PYEdHzZvpCOAZsfgpe56rAIXIiPoIQ==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.AzureAppConfiguration": "8.0.0"
+          "Microsoft.Extensions.Configuration.AzureAppConfiguration": "8.1.1"
         }
       },
       "Microsoft.Net.Compilers.Toolset": {
@@ -133,8 +133,8 @@
       },
       "Microsoft.Extensions.Configuration.AzureAppConfiguration": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "xHqFshIHk+j7RKzCi9tbg1jVl8fQpPwWKIsWlCnDGAbFg7RZp4HhhCyo7J0NSVtoE04m7CRs5I4TMXNxvPuvJQ==",
+        "resolved": "8.1.1",
+        "contentHash": "WEfYB6jwnEFeFRYybau7cL7fdZxI+8apPfvXmzO39iqZyyvBreFk4z6wUY+VooL6cxQn+TBWgprTs/osE0VKpg==",
         "dependencies": {
           "Azure.Data.AppConfiguration": "1.4.1",
           "Azure.Messaging.EventGrid": "4.7.0",

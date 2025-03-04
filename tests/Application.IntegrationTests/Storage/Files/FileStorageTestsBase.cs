@@ -177,6 +177,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.Value.ShouldNotBeNull();
+        result.Value.Path.ShouldBe(path);
     }
 
     public virtual async Task GetFileInfoAsync_NonExistingFile_Fails()
@@ -725,6 +726,57 @@ public abstract class FileStorageTestsBase
         // Assert
         result.IsSuccess.ShouldBeFalse("UncompressFileAsync should fail with non-existent ZIP");
         result.Messages.ShouldContain("File does not exist"); // Adjust based on your IFileStorageProvider implementation
+    }
+
+    public virtual async Task TraverseFilesAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_directory";
+        var progress = new Progress<FileProgress>();
+
+        // Create test files in the directory
+        await provider.CreateDirectoryAsync(path, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(path, "file1.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")), null, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(path, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
+
+        long expectedBytes = 0;
+        var file1Info = await provider.GetFileInfoAsync(Path.Combine(path, "file1.txt"), CancellationToken.None);
+        var file2Info = await provider.GetFileInfoAsync(Path.Combine(path, "subdir/file2.txt"), CancellationToken.None);
+        expectedBytes += file1Info.Value.Length + file2Info.Value.Length;
+
+        // Act
+        var result = await provider.TraverseFilesAsync(path, null, progress, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"TraverseFilesAsync failed: {string.Join(", ", result.Messages)}");
+        result.ShouldContainMessage($"Traversed '{path}' and found 2 files");
+
+        result.Value.Count.ShouldBe(2, "Should find exactly 2 files");
+
+        // Verify file metadata
+        var file1Metadata = result.Value.FirstOrDefault(m => m.Path == $"{path}/file1.txt");
+        var file2Metadata = result.Value.FirstOrDefault(m => m.Path == $"{path}/subdir/file2.txt");
+        file1Metadata.ShouldNotBeNull("File1 metadata should exist");
+        file2Metadata.ShouldNotBeNull("File2 metadata should exist");
+        file1Metadata.Length.ShouldBe(file1Info.Value.Length, "File1 size should match");
+        file2Metadata.Length.ShouldBe(file2Info.Value.Length, "File2 size should match");
+
+        // Test with file action
+        var processedFiles = new List<string>();
+        var processFile = async (string filePath, Stream stream, CancellationToken ct) =>
+        {
+            using var reader = new StreamReader(stream);
+            var content = await reader.ReadToEndAsync(ct);
+            processedFiles.Add(filePath);
+            //this.output.WriteLine($"Processed {filePath}: {content}");
+        };
+        var resultWithAction = await provider.TraverseFilesAsync(path, processFile, progress, CancellationToken.None);
+
+        resultWithAction.ShouldBeSuccess($"TraverseFilesAsync with action failed: {string.Join(", ", resultWithAction.Messages)}");
+        processedFiles.Count.ShouldBe(2, "Should process exactly 2 files");
+        processedFiles.ShouldContain($"{path}/file1.txt", "Should process file1.txt");
+        processedFiles.ShouldContain($"{path}/subdir/file2.txt", "Should process file2.txt");
     }
 
     private string ComputeSha256Hash(byte[] data)

@@ -228,7 +228,6 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
         await base.WriteCompressedFileAsync_Stream_Success();
     }
 
-
     [Fact]
     public override async Task ReadCompressedFileAsync_Success()
     {
@@ -277,4 +276,10 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     //{
     //    await base.UncompressFileAsync_NonExistentZip_Fails();
     //}
+
+    [Fact]
+    public override async Task TraverseFilesAsync_Success()
+    {
+        await base.TraverseFilesAsync_Success();
+    }
 }

@@ -259,4 +259,10 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     //{
     //    await base.UncompressFileAsync_NonExistentZip_Fails();
     //}
+
+    [Fact]
+    public override async Task TraverseFilesAsync_Success()
+    {
+        await base.TraverseFilesAsync_Success();
+    }
 }

@@ -869,6 +869,130 @@ public static class FileStorageProviderExtensions
 
     #endregion
 
+    #region Directory Traversal
+
+    /// <summary>
+    /// Traverses the entire file provider starting from the specified path, collecting all file metadata and optionally executing an action on each file.
+    /// </summary>
+    /// <param name="provider">The IFileStorageProvider instance to traverse.</param>
+    /// <param name="path">The starting path (directory) to begin traversal from.</param>
+    /// <param name="fileAction">An optional action to execute on each file found (e.g., reading or processing the file).</param>
+    /// <param name="progress">An optional progress reporter for tracking files and bytes processed.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A Result containing a List<FileMetadata> of all files found, or an error if the operation fails.</returns>
+    /// <remarks>
+    /// This method recursively traverses directories, collects file metadata, and supports an optional action on each file.
+    /// Progress is reported based on the number of files processed and their sizes using the provided IProgress<FileProgress>.
+    /// </remarks>
+    public static async Task<Result<List<FileMetadata>>> TraverseFilesAsync(this IFileStorageProvider provider, string path, Func<string, Stream, CancellationToken, Task> fileAction = null, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<List<FileMetadata>>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for traversing files");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<List<FileMetadata>>.Failure()
+                .WithError(new FileSystemError("Start path cannot be null or empty", path))
+                .WithMessage("Invalid start path provided for traversing files");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<List<FileMetadata>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled traversing files from '{path}'");
+        }
+
+        try
+        {
+            var fileMetadatas = new List<FileMetadata>();
+            await TraverseDirectoryAsync(provider, path, fileMetadatas, fileAction, progress, cancellationToken);
+
+            progress?.Report(new FileProgress
+            {
+                BytesProcessed = fileMetadatas.Sum(m => m.Length),
+                FilesProcessed = fileMetadatas.Count,
+                TotalFiles = fileMetadatas.Count // Total files are known after traversal
+            });
+
+            return Result<List<FileMetadata>>.Success(fileMetadatas)
+                .WithMessage($"Traversed '{path}' and found {fileMetadatas.Count} files");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<List<FileMetadata>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during file traversal"))
+                .WithMessage($"Cancelled traversing files from '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<List<FileMetadata>>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error traversing files from '{path}'");
+        }
+    }
+
+    private static async Task TraverseDirectoryAsync(IFileStorageProvider provider, string path, List<FileMetadata> fileMetadatas, Func<string, Stream, CancellationToken, Task> fileAction, IProgress<FileProgress> progress, CancellationToken cancellationToken)
+    {
+        // List all paths in the current directory
+        var listResult = await provider.ListFilesAsync(path, "*.*", true, null, cancellationToken);
+        if (listResult.IsFailure)
+        {
+            return; // Skip directories that can't be listed, but continue traversal
+        }
+
+        foreach (var filePath in listResult.Value.Files ?? [])
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new OperationCanceledException("Operation cancelled during file traversal");
+            }
+
+            // Check if the path is a directory using IsDirectoryAsync
+            var isDirectoryResult = await provider.IsDirectoryAsync(filePath, cancellationToken);
+            if (isDirectoryResult.IsSuccess)
+            {
+                // Recursively traverse the subdirectory
+                await TraverseDirectoryAsync(provider, filePath, fileMetadatas, fileAction, progress, cancellationToken);
+            }
+            else
+            {
+                // Process the file (not a directory)
+                var fileInfoResult = await provider.GetFileInfoAsync(filePath, cancellationToken);
+                if (fileInfoResult.IsFailure)
+                {
+                    continue; // Skip files that can't be accessed, but continue with others
+                }
+
+                fileMetadatas.Add(fileInfoResult.Value);
+
+                if (fileAction != null) // Execute optional action on the file if provided
+                {
+                    var readResult = await provider.ReadFileAsync(filePath, progress, cancellationToken);
+                    if (readResult.IsSuccess)
+                    {
+                        await using var fileStream = readResult.Value;
+                        await fileAction(filePath, fileStream, cancellationToken);
+                    }
+                }
+
+                // Report progress for each file
+                progress?.Report(new FileProgress
+                {
+                    BytesProcessed = fileMetadatas.Sum(m => m.Length),
+                    FilesProcessed = fileMetadatas.Count,
+                    TotalFiles = 0 // Total files unknown until traversal completes
+                });
+            }
+        }
+    }
+
+    #endregion
+
     private static void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
     {
         progress?.Report(new FileProgress

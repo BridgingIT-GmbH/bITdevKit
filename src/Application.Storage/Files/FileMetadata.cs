@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using System.Diagnostics;
+
 /// <summary>
 /// Represents metadata for a file or blob, used in IFileStorageProvider operations.
 /// Supports properties like path, size, and last modification time.
 /// </summary>
+[DebuggerDisplay("Path={Path}")]
 public class FileMetadata
 {
     /// <summary>

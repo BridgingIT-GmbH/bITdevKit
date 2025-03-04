@@ -493,6 +493,240 @@ public abstract class FileStorageTestsBase
         result.Value.ShouldContain(d => d == "test/dir1" || d == "test/dir2");
     }
 
+    public virtual async Task WriteCompressedFileAsync_Stream_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_compressed.zip";
+        var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
+        const string password = ""; // Empty password as per your update
+
+        // Act
+        var result = await provider.WriteCompressedFileAsync(path, content, password, null, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
+
+        // Verify the file exists
+        var existsResult = await provider.ExistsAsync(path);
+        existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Read and verify the content
+        var readResult = await provider.ReadCompressedFileAsync(path, password, null, CancellationToken.None);
+        readResult.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", readResult.Messages)}");
+        await using var decompressedStream = readResult.Value;
+        new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
+    }
+
+    public virtual async Task WriteCompressedFileAsync_Directory_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string directoryPath = "test_directory";
+        const string zipPath = "test_directory.zip";
+        const string password = ""; // Empty password as per your update
+
+        // Create test files in the directory
+        await provider.CreateDirectoryAsync(directoryPath, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(directoryPath, "file1.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")), null, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(directoryPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
+
+        // Act
+        var result = await provider.WriteCompressedFileAsync(zipPath, directoryPath, password, null, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync (directory) failed: {string.Join(", ", result.Messages)}");
+
+        // Verify the ZIP file exists
+        var existsResult = await provider.ExistsAsync(zipPath);
+        existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Uncompress and verify content
+        var uncompressResult = await provider.UncompressFileAsync(zipPath, "uncompressed", password, null, CancellationToken.None);
+        uncompressResult.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", uncompressResult.Messages)}");
+
+        // Verify uncompressed files
+        var file1Result = await provider.ReadFileAsync(Path.Combine("uncompressed", "file1.txt"), null, CancellationToken.None);
+        file1Result.IsSuccess.ShouldBeTrue($"File1 should exist and be readable: {string.Join(", ", file1Result.Messages)}");
+        await using var file1Stream = file1Result.Value;
+        new StreamReader(file1Stream).ReadToEnd().ShouldBe("File 1 content");
+
+        var file2Result = await provider.ReadFileAsync(Path.Combine("uncompressed", "subdir/file2.txt"), null, CancellationToken.None);
+        file2Result.IsSuccess.ShouldBeTrue($"File2 should exist and be readable: {string.Join(", ", file2Result.Messages)}");
+        await using var file2Stream = file2Result.Value;
+        new StreamReader(file2Stream).ReadToEnd().ShouldBe("File 2 content");
+    }
+
+    public virtual async Task ReadCompressedFileAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_compressed.zip";
+        var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
+        const string password = "testPassword123";
+
+        await provider.WriteCompressedFileAsync(path, content, password, null, CancellationToken.None);
+
+        // Act
+        var result = await provider.ReadCompressedFileAsync(path, password, null, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Password-protected decompressed and read file at '{path}'");
+        await using var decompressedStream = result.Value;
+        new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
+    }
+
+    public virtual async Task UncompressFileAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string zipPath = "test_directory.zip";
+        const string directoryPath = "test_directory";
+        const string destinationPath = "uncompressed";
+        const string password = "testPassword123";
+
+        // Create test files in the directory
+        await provider.CreateDirectoryAsync(directoryPath, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(directoryPath, "file1.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")), null, CancellationToken.None);
+        await provider.WriteFileAsync(Path.Combine(directoryPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
+
+        // Compress the directory
+        await provider.WriteCompressedFileAsync(zipPath, directoryPath, password, null, CancellationToken.None);
+
+        // Act
+        var result = await provider.UncompressFileAsync(zipPath, destinationPath, password, null, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Password-protected uncompressed file at '{zipPath}' to directory '{destinationPath}'");
+
+        // Verify uncompressed files
+        var file1Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "file1.txt"), null, CancellationToken.None);
+        file1Result.IsSuccess.ShouldBeTrue($"File1 should exist and be readable: {string.Join(", ", file1Result.Messages)}");
+        await using var file1Stream = file1Result.Value;
+        new StreamReader(file1Stream).ReadToEnd().ShouldBe("File 1 content");
+
+        var file2Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "subdir/file2.txt"), null, CancellationToken.None);
+        file2Result.IsSuccess.ShouldBeTrue($"File2 should exist and be readable: {string.Join(", ", file2Result.Messages)}");
+        await using var file2Stream = file2Result.Value;
+        new StreamReader(file2Stream).ReadToEnd().ShouldBe("File 2 content");
+    }
+
+    public virtual async Task WriteEncryptedFileAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_encrypted.bin";
+        var content = new MemoryStream(Encoding.UTF8.GetBytes("Encrypted content"));
+        const string encryptionKey = "testKey123456789012345678901234567890";
+        const string initializationVector = "testIV1234567890123";
+        var progress = new Progress<FileProgress>();
+
+        // Act
+        var result = await provider.WriteEncryptedFileAsync(path, content, encryptionKey, initializationVector, progress, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"WriteEncryptedFileAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Encrypted and wrote file at '{path}'");
+
+        // Verify the file exists
+        var existsResult = await provider.ExistsAsync(path);
+        existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Read and verify the content
+        var readResult = await provider.ReadEncryptedFileAsync(path, encryptionKey, initializationVector, progress, CancellationToken.None);
+        readResult.IsSuccess.ShouldBeTrue($"ReadEncryptedFileAsync failed: {string.Join(", ", readResult.Messages)}");
+        await using var decryptedStream = readResult.Value;
+        new StreamReader(decryptedStream).ReadToEnd().ShouldBe("Encrypted content");
+    }
+
+    public virtual async Task WriteBytesAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_bytes.bin";
+        var bytes = Encoding.UTF8.GetBytes("Byte content");
+        var progress = new Progress<FileProgress>();
+
+        // Act
+        var result = await provider.WriteBytesAsync(path, bytes, progress, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"WriteBytesAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Wrote bytes to file at '{path}'");
+
+        // Verify the file exists
+        var existsResult = await provider.ExistsAsync(path);
+        existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Read and verify the content
+        var readResult = await provider.ReadBytesAsync(path, progress, CancellationToken.None);
+        readResult.IsSuccess.ShouldBeTrue($"ReadBytesAsync failed: {string.Join(", ", readResult.Messages)}");
+        readResult.Value.ShouldBe(bytes);
+    }
+
+    public virtual async Task WriteReadObjectAsync_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string path = "test_object.json";
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" };
+        var progress = new Progress<FileProgress>();
+
+        // Act
+        var result = await provider.WriteFileAsync(path, person, null, progress, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"WriteObjectAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Wrote object to file at '{path}'");
+
+        // Verify the file exists
+        var existsResult = await provider.ExistsAsync(path);
+        existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Read and verify the content
+        var readResult = await provider.ReadFileAsync<PersonStub>(path, null, progress, CancellationToken.None);
+        readResult.IsSuccess.ShouldBeTrue($"ReadObjectAsync failed: {string.Join(", ", readResult.Messages)}");
+        var personRead = readResult.Value;
+        personRead.Id.ShouldBe(person.Id);
+        personRead.FirstName.ShouldBe(person.FirstName);
+        personRead.LastName.ShouldBe(person.LastName);
+        personRead.Age.ShouldBe(person.Age);
+    }
+
+    public virtual async Task WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string zipPath = "test_directory.zip";
+        const string directoryPath = "non_existent_directory";
+        var progress = new Progress<FileProgress>();
+
+        // Act
+        var result = await provider.WriteCompressedFileAsync(zipPath, directoryPath, "testPassword123", progress, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse("WriteCompressedFileAsync should fail with non-existent directory");
+        result.Messages.ShouldContain("Directory does not exist"); // Adjust based on your IFileStorageProvider implementation
+    }
+
+    public virtual async Task UncompressFileAsync_NonExistentZip_Fails()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string zipPath = "non_existent.zip";
+        const string destinationPath = "uncompressed";
+        var progress = new Progress<FileProgress>();
+
+        // Act
+        var result = await provider.UncompressFileAsync(zipPath, destinationPath, "testPassword123", progress, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse("UncompressFileAsync should fail with non-existent ZIP");
+        result.Messages.ShouldContain("File does not exist"); // Adjust based on your IFileStorageProvider implementation
+    }
+
     private string ComputeSha256Hash(byte[] data)
     {
         var hash = SHA256.HashData(data);

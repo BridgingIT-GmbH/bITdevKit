@@ -1204,9 +1204,8 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 if (this.directories.Contains(normalizedPath) || this.files.ContainsKey(normalizedPath))
                 {
-                    return Result.Failure()
-                        .WithError(new FileSystemError("Directory or file already exists", path))
-                        .WithMessage($"Failed to create directory at '{path}'");
+                    return Result.Success()
+                        .WithMessage($"Directory allready exists at '{path}'");
                 }
 
                 // Ensure parent directories exist

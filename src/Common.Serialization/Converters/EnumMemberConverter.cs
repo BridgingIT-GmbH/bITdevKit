@@ -20,7 +20,7 @@ public class EnumMemberConverter<T> : JsonConverter<T> where T : struct, Enum
     public EnumMemberConverter()
     {
         this.nameToEnum = new Dictionary<string, T>(StringComparer.OrdinalIgnoreCase);
-        this.enumToName = new Dictionary<T, string>();
+        this.enumToName = [];
 
         var type = typeof(T);
         var values = Enum.GetValues<T>();

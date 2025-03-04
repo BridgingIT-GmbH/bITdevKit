@@ -17,7 +17,7 @@ public interface IAuthorizationCodeService
 
 public class AuthorizationCodeService : IAuthorizationCodeService
 {
-    private readonly Dictionary<string, AuthorizationCodeModel> authCodes = new();
+    private readonly Dictionary<string, AuthorizationCodeModel> authCodes = [];
 
     public string GenerateCode(FakeUser user, AuthorizeRequest request)
     {

@@ -753,7 +753,8 @@
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.2, )",
           "Polly": "[8.5.2, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
-          "Scrutor": "[4.2.2, 5.0.0)"
+          "Scrutor": "[4.2.2, 5.0.0)",
+          "SharpZipLib": "[1.4.2, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -1459,6 +1460,12 @@
         "requested": "[4.2.0, )",
         "resolved": "4.2.0",
         "contentHash": "gmoWVOvKgbME8TYR+gwMf7osROiWAURterc6Rt2dQyX7wtjZYpqFiA/pY6ztjGQKKV62GGCyOcmtP1UKMHgSmA=="
+      },
+      "SharpZipLib": {
+        "type": "CentralTransitive",
+        "requested": "[1.4.2, )",
+        "resolved": "1.4.2",
+        "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",

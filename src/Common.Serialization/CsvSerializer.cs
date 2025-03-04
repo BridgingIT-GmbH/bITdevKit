@@ -17,7 +17,7 @@ public class CsvSerializer : ISerializer
     private readonly CsvConfiguration config;
     private readonly string dateTimeFormat;
     private readonly CultureInfo culture;
-    private readonly List<Type> classMaps = new();
+    private readonly List<Type> classMaps = [];
 
     public CsvSerializer(CsvSerializerSettings settings = null)
     {

@@ -18,7 +18,7 @@ using System.Linq;
 /// </summary>
 public class FileStorageFactory(IServiceProvider serviceProvider = null)
 {
-    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> providers = new();
+    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> providers = [];
 
     /// <summary>
     /// Creates or retrieves the configured IFileStorageProvider instance for a specific name.

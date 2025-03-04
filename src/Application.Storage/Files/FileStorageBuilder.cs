@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 public class FileStorageBuilder(IServiceProvider serviceProvider = null)
 {
     private IFileStorageProvider provider;
-    private readonly List<Func<IFileStorageProvider, IFileStorageBehavior>> customBehaviors = new();
+    private readonly List<Func<IFileStorageProvider, IFileStorageBehavior>> customBehaviors = [];
     private ServiceLifetime lifetime = ServiceLifetime.Scoped; // Default to Scoped
 
     /// <summary>

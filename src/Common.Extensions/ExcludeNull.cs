@@ -48,7 +48,7 @@ public static partial class Extensions
         where TValue : class
     {
         return source.IsNullOrEmpty()
-            ? new Dictionary<TKey, TValue>()
+            ? []
             : source.Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
     }
@@ -60,8 +60,8 @@ public static partial class Extensions
     public static Stack<T> ExcludeNull<T>(this Stack<T> source) where T : class
     {
         return source == null
-            ? new Stack<T>()
-            : new Stack<T>(source.Where(x => x != null).Reverse());
+            ? []
+            : [.. source.Where(x => x != null).Reverse()];
     }
 
     /// <summary>
@@ -71,8 +71,8 @@ public static partial class Extensions
     public static Queue<T> ExcludeNull<T>(this Queue<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new Queue<T>()
-            : new Queue<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -82,8 +82,8 @@ public static partial class Extensions
     public static LinkedList<T> ExcludeNull<T>(this LinkedList<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new LinkedList<T>()
-            : new LinkedList<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -104,8 +104,8 @@ public static partial class Extensions
     public static HashSet<T> ExcludeNull<T>(this HashSet<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new HashSet<T>()
-            : new HashSet<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -115,8 +115,8 @@ public static partial class Extensions
     public static SortedSet<T> ExcludeNull<T>(this SortedSet<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new SortedSet<T>()
-            : new SortedSet<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -126,8 +126,8 @@ public static partial class Extensions
     public static ObservableCollection<T> ExcludeNull<T>(this ObservableCollection<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new ObservableCollection<T>()
-            : new ObservableCollection<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public static partial class Extensions
     public static ConcurrentBag<T> ExcludeNull<T>(this ConcurrentBag<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new ConcurrentBag<T>()
-            : new ConcurrentBag<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 }

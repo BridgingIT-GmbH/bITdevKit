@@ -57,8 +57,8 @@ public static class RouteHandlerExtensions
     {
         var specificationNodeSchema = new OpenApiSchema
         {
-            OneOf = new List<OpenApiSchema>
-            {
+            OneOf =
+            [
                 new()
                 {
                     Type = "object",
@@ -88,7 +88,7 @@ public static class RouteHandlerExtensions
                         }
                     }
                 }
-            }
+            ]
         };
 
         var filterCriteriaSchema = new OpenApiSchema

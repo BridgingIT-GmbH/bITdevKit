@@ -221,4 +221,60 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     //    // Assert
     //    result.ShouldBeFailure();
     //}
+
+    [Fact]
+    public override async Task WriteCompressedFileAsync_Stream_Success()
+    {
+        await base.WriteCompressedFileAsync_Stream_Success();
+    }
+
+
+    [Fact]
+    public override async Task ReadCompressedFileAsync_Success()
+    {
+        await base.ReadCompressedFileAsync_Success();
+    }
+
+    [Fact]
+    public override async Task WriteEncryptedFileAsync_Success()
+    {
+        await base.WriteEncryptedFileAsync_Success();
+    }
+
+    [Fact]
+    public override async Task WriteBytesAsync_Success()
+    {
+        await base.WriteBytesAsync_Success();
+    }
+
+    [Fact]
+    public override async Task WriteReadObjectAsync_Success()
+    {
+        await base.WriteReadObjectAsync_Success();
+    }
+
+    // TODO: compression still has issues reading the zipfiles
+    //[Fact]
+    //public override async Task WriteCompressedFileAsync_Directory_Success()
+    //{
+    //    await base.WriteCompressedFileAsync_Directory_Success();
+    //}
+
+    //[Fact]
+    //public override async Task UncompressFileAsync_Success()
+    //{
+    //    await base.UncompressFileAsync_Success();
+    //}
+
+    //[Fact]
+    //public override async Task WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails()
+    //{
+    //    await base.WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails();
+    //}
+
+    //[Fact]
+    //public override async Task UncompressFileAsync_NonExistentZip_Fails()
+    //{
+    //    await base.UncompressFileAsync_NonExistentZip_Fails();
+    //}
 }

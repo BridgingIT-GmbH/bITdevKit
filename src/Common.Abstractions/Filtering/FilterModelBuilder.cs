@@ -317,7 +317,7 @@ public static class FilterModelBuilder
         {
             if (condition.HasValue && !condition.Value)
             {
-                return new CustomFilterBuilder(new(), this);
+                return new CustomFilterBuilder([], this);
             }
 
             var customFilter = new FilterCriteria

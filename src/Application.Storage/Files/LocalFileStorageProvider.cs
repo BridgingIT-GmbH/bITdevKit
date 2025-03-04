@@ -21,7 +21,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 {
     private readonly string rootPath;
     private readonly TimeSpan lockTimeout;
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = new();
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = [];
     private bool disposed;
 
     public LocalFileStorageProvider(string rootPath, string locationName, TimeSpan? lockTimeout = null)
@@ -1110,9 +1110,8 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             if (Directory.Exists(fullPath))
             {
-                return Task.FromResult(Result.Failure()
-                    .WithError(new FileSystemError("Directory already exists", path))
-                    .WithMessage($"Failed to create directory at '{path}'"));
+                return Task.FromResult(Result.Success()
+                   .WithMessage($"Directory allready exists at '{path}'"));
             }
 
             Directory.CreateDirectory(fullPath);

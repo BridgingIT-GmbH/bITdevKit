@@ -21,22 +21,9 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
     public LocalFileStorageProvider(string rootPath, string locationName)
         : base(locationName)
     {
+        // TODO: maybe do this on actual usage with an Init() method
         this.rootPath = Path.GetFullPath(rootPath);
         Directory.CreateDirectory(this.rootPath); // Ensure root exists
-    }
-
-    private string GetFullPath(string path) => Path.Combine(this.rootPath, path.Replace("/", "\\").TrimStart('\\'));
-
-    private string GetRelativePath(string fullPath) => fullPath[this.rootPath.Length..].TrimStart('\\').Replace("\\", "/");
-
-    private void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
-    {
-        progress?.Report(new FileProgress
-        {
-            BytesProcessed = bytesProcessed,
-            FilesProcessed = filesProcessed,
-            TotalFiles = totalFiles
-        });
     }
 
     public override Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
@@ -1212,5 +1199,19 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error checking health of local storage at '{this.LocationName}'");
         }
+    }
+
+    private string GetFullPath(string path) => Path.Combine(this.rootPath, path.Replace("/", "\\").TrimStart('\\'));
+
+    private string GetRelativePath(string fullPath) => fullPath[this.rootPath.Length..].TrimStart('\\').Replace("\\", "/");
+
+    private void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
+    {
+        progress?.Report(new FileProgress
+        {
+            BytesProcessed = bytesProcessed,
+            FilesProcessed = filesProcessed,
+            TotalFiles = totalFiles
+        });
     }
 }

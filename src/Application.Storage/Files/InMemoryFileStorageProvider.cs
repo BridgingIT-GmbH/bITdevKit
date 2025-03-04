@@ -20,91 +20,6 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
     private readonly HashSet<string> directories = [];
     private readonly SemaphoreSlim semaphore = new(1, 1);
 
-    private string NormalizePath(string path)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            return string.Empty;
-        }
-
-        return path.Replace('\\', '/')
-            .TrimStart('/')
-            .TrimEnd('/')
-            .ToLowerInvariant();
-    }
-
-    private bool WildcardMatch(string path, string pattern)
-    {
-        if (string.IsNullOrEmpty(pattern)) return true;
-        if (pattern == "*") return true;
-
-        // Normalize both path and pattern to lowercase for case-insensitive matching
-        path = path?.ToLowerInvariant();
-        pattern = pattern?.ToLowerInvariant();
-
-        // Use a recursive or iterative approach to match the pattern with wildcards
-        return MatchPattern(path, pattern, 0, 0);
-
-        bool MatchPattern(string pathStr, string patternStr, int pathIndex, int patternIndex)
-        {
-            // If we've reached the end of both path and pattern, it's a match
-            if (patternIndex == patternStr.Length && pathIndex == pathStr.Length)
-                return true;
-
-            // If we've reached the end of the pattern but not the path, no match
-            if (patternIndex == patternStr.Length)
-                return false;
-
-            // If we've reached the end of the path but not the pattern, check if remaining pattern is all '*'
-            if (pathIndex == pathStr.Length)
-            {
-                for (var i = patternIndex; i < patternStr.Length; i++)
-                {
-                    if (patternStr[i] != '*')
-                        return false;
-                }
-                return true;
-            }
-
-            // Handle '*' wildcard (matches zero or more characters)
-            if (patternStr[patternIndex] == '*')
-            {
-                // Try matching zero characters or skip ahead in path
-                for (var i = 0; i <= pathStr.Length - pathIndex; i++)
-                {
-                    if (MatchPattern(pathStr, patternStr, pathIndex + i, patternIndex + 1))
-                        return true;
-                }
-                return false;
-            }
-
-            // Handle '?' wildcard (matches exactly one character)
-            if (patternStr[patternIndex] == '?')
-            {
-                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
-            }
-
-            // Match regular characters
-            if (pathStr[pathIndex] == patternStr[patternIndex])
-            {
-                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
-            }
-
-            return false;
-        }
-    }
-
-    private string GetParentPath(string path)
-    {
-        if (string.IsNullOrEmpty(path) || !path.Contains('/'))
-        {
-            return string.Empty;
-        }
-        var parts = path.Split('/').ToList();
-        parts.RemoveAt(parts.Count - 1);
-        return string.Join("/", parts);
-    }
-
     public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1528,5 +1443,90 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 this.semaphore.Release();
             }
         }, cancellationToken);
+    }
+
+    private string NormalizePath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return string.Empty;
+        }
+
+        return path.Replace('\\', '/')
+            .TrimStart('/')
+            .TrimEnd('/')
+            .ToLowerInvariant();
+    }
+
+    private bool WildcardMatch(string path, string pattern)
+    {
+        if (string.IsNullOrEmpty(pattern)) return true;
+        if (pattern == "*") return true;
+
+        // Normalize both path and pattern to lowercase for case-insensitive matching
+        path = path?.ToLowerInvariant();
+        pattern = pattern?.ToLowerInvariant();
+
+        // Use a recursive or iterative approach to match the pattern with wildcards
+        return MatchPattern(path, pattern, 0, 0);
+
+        bool MatchPattern(string pathStr, string patternStr, int pathIndex, int patternIndex)
+        {
+            // If we've reached the end of both path and pattern, it's a match
+            if (patternIndex == patternStr.Length && pathIndex == pathStr.Length)
+                return true;
+
+            // If we've reached the end of the pattern but not the path, no match
+            if (patternIndex == patternStr.Length)
+                return false;
+
+            // If we've reached the end of the path but not the pattern, check if remaining pattern is all '*'
+            if (pathIndex == pathStr.Length)
+            {
+                for (var i = patternIndex; i < patternStr.Length; i++)
+                {
+                    if (patternStr[i] != '*')
+                        return false;
+                }
+                return true;
+            }
+
+            // Handle '*' wildcard (matches zero or more characters)
+            if (patternStr[patternIndex] == '*')
+            {
+                // Try matching zero characters or skip ahead in path
+                for (var i = 0; i <= pathStr.Length - pathIndex; i++)
+                {
+                    if (MatchPattern(pathStr, patternStr, pathIndex + i, patternIndex + 1))
+                        return true;
+                }
+                return false;
+            }
+
+            // Handle '?' wildcard (matches exactly one character)
+            if (patternStr[patternIndex] == '?')
+            {
+                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
+            }
+
+            // Match regular characters
+            if (pathStr[pathIndex] == patternStr[patternIndex])
+            {
+                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
+            }
+
+            return false;
+        }
+    }
+
+    private string GetParentPath(string path)
+    {
+        if (string.IsNullOrEmpty(path) || !path.Contains('/'))
+        {
+            return string.Empty;
+        }
+        var parts = path.Split('/').ToList();
+        parts.RemoveAt(parts.Count - 1);
+        return string.Join("/", parts);
     }
 }

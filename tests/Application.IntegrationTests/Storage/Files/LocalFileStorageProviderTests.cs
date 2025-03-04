@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
-using Bogus;
 using BridgingIT.DevKit.Application.Storage;
-using Shouldly;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 [IntegrationTest("Storage")]
@@ -21,7 +21,11 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     {
         var tempPath = Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
-        return new LocalFileStorageProvider(tempPath, "TestLocal");
+
+        return new LoggingFileStorageBehavior(
+            new LocalFileStorageProvider(tempPath, "TestLocal"),
+            this.fixture.ServiceProvider.GetRequiredService<ILoggerFactory>());
+        //return new LocalFileStorageProvider(tempPath, "TestLocal");
     }
 
     protected override FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null)

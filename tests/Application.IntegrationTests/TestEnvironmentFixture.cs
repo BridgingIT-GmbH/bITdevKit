@@ -24,7 +24,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public TestEnvironmentFixture()
     {
-        this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(this.Output)));
+        this.Services.AddLogging(c =>
+            c.AddProvider(new XunitLoggerProvider(this.Output)));
 
         this.Network = new NetworkBuilder()
             .WithName(this.NetworkName)

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// A behavior that logs file storage operations, wrapping an IFileStorageProvider for logging before and after operations.
 /// Uses structured logging with TypedLogger for consistent formatting, similar to RepositoryLoggingBehavior.
 /// </summary>
-public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvider, ILoggerFactory loggerFactory, LoggingOptions options)
+public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvider, ILoggerFactory loggerFactory, LoggingOptions options = null)
     : IFileStorageBehavior
 {
     private readonly IFileStorageProvider innerProvider = innerProvider ?? throw new ArgumentNullException(nameof(innerProvider));

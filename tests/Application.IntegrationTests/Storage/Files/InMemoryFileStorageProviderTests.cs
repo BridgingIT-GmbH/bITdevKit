@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
-using Bogus;
 using BridgingIT.DevKit.Application.Storage;
-using Shouldly;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 [IntegrationTest("Storage")]
@@ -19,7 +19,10 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
 
     protected override IFileStorageProvider CreateProvider()
     {
-        return new InMemoryFileStorageProvider("InMemoryTest");
+        return new LoggingFileStorageBehavior(
+            new InMemoryFileStorageProvider("InMemoryTest"),
+            this.fixture.ServiceProvider.GetRequiredService<ILoggerFactory>());
+        //return new InMemoryFileStorageProvider("InMemoryTest");
     }
 
     protected override FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null)

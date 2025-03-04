@@ -1,0 +1,564 @@
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Application.Storage;
+
+using BridgingIT.DevKit.Common;
+
+/// <summary>
+/// Provides a base implementation of IFileStorageProvider with default Result-based methods,
+/// translating exceptions into typed IResultError instances or ExceptionError for unhandled errors.
+/// Intended for inheritance by concrete providers, ensuring testability and consistency.
+/// </summary>
+public abstract class BaseFileStorageProvider(string locationName) : IFileStorageProvider
+{
+    public string LocationName { get; } = locationName ?? throw new ArgumentNullException(nameof(locationName));
+
+    public bool SupportsNotifications { get; }
+
+    public virtual Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("ExistsAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to check existence of file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error checking file existence at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("ReadFileAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to read file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error reading file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("WriteFileAsync must be implemented by concrete providers.");
+        }
+        catch (IOException ex) when (ex is DirectoryNotFoundException or DriveNotFoundException)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Directory or drive not found", path, ex))
+                .WithMessage($"Failed to write file at '{path}' due to directory/drive issue"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error writing file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("DeleteFileAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to delete file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error deleting file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("GetChecksumAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result<string>.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to compute checksum for file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<string>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<string>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error computing checksum for file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("GetFileInfoAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to retrieve metadata for file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error retrieving metadata for file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("SetFileMetadataAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to set metadata for file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error setting metadata for file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var currentMetadata = GetFileInfoAsync(path, cancellationToken).Result;
+            if (currentMetadata.IsFailure)
+            {
+                return Task.FromResult(Result<FileMetadata>.Failure()
+                    .WithErrors(currentMetadata.Errors)
+                    .WithMessages(currentMetadata.Messages));
+            }
+
+            var updatedMetadata = metadataUpdate(currentMetadata.Value);
+            var setResult = SetFileMetadataAsync(path, updatedMetadata, cancellationToken).Result;
+            if (setResult.IsFailure)
+            {
+                return Task.FromResult(Result<FileMetadata>.Failure()
+                    .WithErrors(setResult.Errors)
+                    .WithMessages(setResult.Messages));
+            }
+
+            return Task.FromResult(Result<FileMetadata>.Success(updatedMetadata)
+                .WithMessage($"Updated metadata for file at '{path}'"));
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to update metadata for file at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<FileMetadata>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error updating metadata for file at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
+        string path, string searchPattern, bool recursive, string continuationToken = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("ListFilesAsync must be implemented by concrete providers.");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Failed to list files in '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error listing files in '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("CopyFileAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Source file not found", sourcePath, ex))
+                .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", sourcePath, ex))
+                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'"));
+        }
+    }
+
+    public virtual Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("RenameFileAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("File not found", oldPath, ex))
+                .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", oldPath, ex))
+                .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'"));
+        }
+    }
+
+    public virtual Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("MoveFileAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Source file not found", sourcePath, ex))
+                .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", sourcePath, ex))
+                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'"));
+        }
+    }
+
+    public virtual Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("CopyFilesAsync must be implemented by concrete providers.");
+        }
+        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
+        {
+            var failedPaths = filePairs.Select(p => p.SourcePath).ToList();
+            return Task.FromResult(Result.Failure()
+                .WithError(new PartialOperationError("Partial copy failure", failedPaths, ex))
+                .WithMessage("Failed to copy some files due to file system issues"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage("Unexpected error copying multiple files"));
+        }
+    }
+
+    public virtual Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("MoveFilesAsync must be implemented by concrete providers.");
+        }
+        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
+        {
+            var failedPaths = filePairs.Select(p => p.SourcePath).ToList();
+            return Task.FromResult(Result.Failure()
+                .WithError(new PartialOperationError("Partial move failure", failedPaths, ex))
+                .WithMessage("Failed to move some files due to file system issues"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage("Unexpected error moving multiple files"));
+        }
+    }
+
+    public virtual Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("DeleteFilesAsync must be implemented by concrete providers.");
+        }
+        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PartialOperationError("Partial delete failure", paths, ex))
+                .WithMessage("Failed to delete some files due to file system issues"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage("Unexpected error deleting multiple files"));
+        }
+    }
+
+    public virtual Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            throw new NotImplementedException("IsDirectoryAsync must be implemented by concrete providers.");
+        }
+        catch (DirectoryNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Directory not found", path, ex))
+                .WithMessage($"Failed to check if '{path}' is a directory"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for path '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error checking directory at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("CreateDirectoryAsync must be implemented by concrete providers.");
+        }
+        catch (IOException ex) when (ex is DirectoryNotFoundException or DriveNotFoundException)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Parent directory or drive not found", path, ex))
+                .WithMessage($"Failed to create directory at '{path}' due to directory/drive issue"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for path '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error creating directory at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("DeleteDirectoryAsync must be implemented by concrete providers.");
+        }
+        catch (DirectoryNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Directory not found", path, ex))
+                .WithMessage($"Failed to delete directory at '{path}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for path '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error deleting directory at '{path}'"));
+        }
+    }
+
+    public virtual Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
+        string path, string searchPattern, bool recursive, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("ListDirectoriesAsync must be implemented by concrete providers.");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<IEnumerable<string>>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Failed to list directories in '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<IEnumerable<string>>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error listing directories in '{path}'"));
+        }
+    }
+
+    public virtual Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("CheckHealthAsync must be implemented by concrete providers.");
+        }
+        catch (IOException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("Storage connectivity issue", LocationName, ex))
+                .WithMessage($"Failed to check health of storage at '{LocationName}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", LocationName, ex))
+                .WithMessage($"Permission denied for storage at '{LocationName}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error checking health of storage at '{LocationName}'"));
+        }
+    }
+
+    private void ReportProgress(IProgress<FileProgress> progress, string path, long bytes, int files)
+    {
+        if (progress != null)
+        {
+            var metadata = GetFileInfoAsync(path, CancellationToken.None).Result.Value; // Simplified for example
+            progress.Report(new FileProgress
+            {
+                BytesProcessed = bytes,
+                FilesProcessed = files,
+                TotalFiles = 1 // Adjust for multiple files in bulk operations
+            });
+        }
+    }
+}

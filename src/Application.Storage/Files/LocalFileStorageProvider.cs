@@ -6,100 +6,138 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// A local file system implementation of IFileStorageProvider for file operations on disk.
+/// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
 /// </summary>
-public class LocalFileStorageProvider : BaseFileStorageProvider
+public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 {
     private readonly string rootPath;
+    private readonly TimeSpan lockTimeout;
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = new();
+    private bool disposed;
 
-    public LocalFileStorageProvider(string rootPath, string locationName)
+    public LocalFileStorageProvider(string rootPath, string locationName, TimeSpan? lockTimeout = null)
         : base(locationName)
     {
-        // TODO: maybe do this on actual usage with an Init() method
         this.rootPath = Path.GetFullPath(rootPath);
+        this.lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30); // Default timeout of 30 seconds
         Directory.CreateDirectory(this.rootPath); // Ensure root exists
     }
 
-    public override Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
+                .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled checking existence of file at '{path}'"));
+                .WithMessage($"Cancelled checking existence of file at '{path}'");
         }
 
         var fullPath = this.GetFullPath(path);
-        var exists = File.Exists(fullPath);
-        if (!exists)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new NotFoundError("File not found")));
-        }
-
-        var length = exists ? new FileInfo(fullPath).Length : 0;
-        this.ReportProgress(progress, path, length, 1);
-
-        return Task.FromResult(Result.Success()
-            .WithMessage($"Checked existence of file at '{path}'"));
-    }
-
-    public override Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
-        }
-
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled reading file at '{path}'"));
-        }
-
-        var fullPath = this.GetFullPath(path);
-        if (!File.Exists(fullPath))
-        {
-            return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new FileSystemError("File not found", path))
-                .WithMessage($"Failed to read file at '{path}'"));
-        }
+        var semaphore = this.GetSemaphore(fullPath);
 
         try
         {
-            var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-            var length = new FileInfo(fullPath).Length;
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for checking existence of file at '{path}'");
+            }
+
+            var exists = File.Exists(fullPath);
+            if (!exists)
+            {
+                return Result.Failure()
+                    .WithError(new NotFoundError("File not found"));
+            }
+
+            var length = exists ? new FileInfo(fullPath).Length : 0;
             this.ReportProgress(progress, path, length, 1);
-            return Task.FromResult(Result<Stream>.Success(stream)
-                .WithMessage($"Read file at '{path}'"));
+
+            return Result.Success()
+                .WithMessage($"Checked existence of file at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        finally
         {
-            return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'"));
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
-        catch (Exception ex)
+    }
+
+    public override async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path))
         {
-            return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error reading file at '{path}'"));
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled reading file at '{path}'");
+        }
+
+        var fullPath = this.GetFullPath(path);
+        var semaphore = this.GetSemaphore(fullPath);
+
+        try
+        {
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for reading file at '{path}'");
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to read file at '{path}'");
+            }
+
+            try
+            {
+                var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+                var length = new FileInfo(fullPath).Length;
+                this.ReportProgress(progress, path, length, 1);
+                return Result<Stream>.Success(stream)
+                    .WithMessage($"Read file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error reading file at '{path}'");
+            }
+        }
+        finally
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
     }
 
@@ -119,122 +157,134 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 .WithMessage("Invalid content provided for writing");
         }
 
-        //if (cancellationToken.IsCancellationRequested)
-        //{
-        //    return Result.Failure()
-        //        .WithError(new OperationCancelledError("Operation cancelled"))
-        //        .WithMessage($"Cancelled writing file at '{path}'");
-        //}
-
         var fullPath = this.GetFullPath(path);
-        var directory = Path.GetDirectoryName(fullPath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
+        var semaphore = this.GetSemaphore(fullPath);
 
         try
         {
-            await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
-            var bytesRead = 0L;
-            var buffer = new byte[4096];
-            int read;
-            while ((read = await content.ReadAsync(buffer, cancellationToken)) > 0)
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    throw new OperationCanceledException("Write operation cancelled");
-                }
-
-                await fs.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-                bytesRead += read;
-                this.ReportProgress(progress, path, bytesRead, 1); // Report bytes processed for single file
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for writing file at '{path}'");
             }
 
-            return Result.Success()
-                .WithMessage($"Wrote file at '{path}'");
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            try
+            {
+                await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
+                var bytesRead = 0L;
+                var buffer = new byte[4096];
+                int read;
+                while ((read = await content.ReadAsync(buffer, cancellationToken)) > 0)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException("Write operation cancelled");
+                    }
+
+                    await fs.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                    bytesRead += read;
+                    this.ReportProgress(progress, path, bytesRead, 1);
+                }
+
+                return Result.Success()
+                    .WithMessage($"Wrote file at '{path}'");
+            }
+            catch (OperationCanceledException)
+            {
+                return Result.Failure()
+                    .WithError(new OperationCancelledError("Operation cancelled during write"))
+                    .WithMessage($"Cancelled writing file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (IOException ex)
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Disk or file system error", path, ex))
+                    .WithMessage($"Failed to write file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error writing file at '{path}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during write"))
-                .WithMessage($"Cancelled writing file at '{path}'");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'");
-        }
-        catch (IOException ex)
-        {
-            return Result.Failure()
-                .WithError(new FileSystemError("Disk or file system error", path, ex))
-                .WithMessage($"Failed to write file at '{path}'");
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error writing file at '{path}'");
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
     }
 
-    public override Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
+                .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled deleting file at '{path}'"));
+                .WithMessage($"Cancelled deleting file at '{path}'");
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!File.Exists(fullPath))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("File not found", path))
-                .WithMessage($"Failed to delete file at '{path}'"));
-        }
-
-        //if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
-        //{
-        //    return Task.FromResult(Result.Failure()
-        //        .WithError(new ExceptionError(new TimeoutException("Operation timed out due to concurrent access")))
-        //        .WithMessage($"Failed to acquire lock for deleting file at '{path}'"));
-        //}
+        var semaphore = this.GetSemaphore(fullPath);
 
         try
         {
-            File.Delete(fullPath);
-            this.ReportProgress(progress, path, 0, 1); // Report minimal progress for deletion
-            return Task.FromResult(Result.Success()
-                .WithMessage($"Deleted file at '{path}'"));
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for deleting file at '{path}'");
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to delete file at '{path}'");
+            }
+
+            try
+            {
+                File.Delete(fullPath);
+                this.ReportProgress(progress, path, 0, 1);
+                return Result.Success()
+                    .WithMessage($"Deleted file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error deleting file at '{path}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during delete"))
-                .WithMessage($"Cancelled deleting file at '{path}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error deleting file at '{path}'"));
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
     }
 
@@ -242,170 +292,197 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
     {
         if (string.IsNullOrEmpty(path))
         {
-            return await Task.FromResult(Result<string>.Failure()
+            return Result<string>.Failure()
                 .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
+                .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return await Task.FromResult(Result<string>.Failure()
+            return Result<string>.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled computing checksum for file at '{path}'"));
+                .WithMessage($"Cancelled computing checksum for file at '{path}'");
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!File.Exists(fullPath))
-        {
-            return await Task.FromResult(Result<string>.Failure()
-                .WithError(new FileSystemError("File not found", path))
-                .WithMessage($"Failed to compute checksum for file at '{path}'"));
-        }
+        var semaphore = this.GetSemaphore(fullPath);
 
         try
         {
-            using var sha256 = SHA256.Create();
-            await using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-            var hash = Convert.ToBase64String(sha256.ComputeHash(stream));
-            var length = new FileInfo(fullPath).Length;
-
-            return await Task.FromResult(Result<string>.Success(hash)
-                .WithMessage($"Computed checksum for file at '{path}'"));
-        }
-        catch (OperationCanceledException)
-        {
-            return await Task.FromResult(Result<string>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during checksum computation"))
-                .WithMessage($"Cancelled computing checksum for file at '{path}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return await Task.FromResult(Result<string>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'"));
-        }
-        catch (Exception ex)
-        {
-            return await Task.FromResult(Result<string>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error computing checksum for file at '{path}'"));
-        }
-    }
-
-    public override Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
-        }
-
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled retrieving metadata for file at '{path}'"));
-        }
-
-        var fullPath = this.GetFullPath(path);
-        if (!File.Exists(fullPath))
-        {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new FileSystemError("File not found", path))
-                .WithMessage($"Failed to retrieve metadata for file at '{path}'"));
-        }
-
-        try
-        {
-            var info = new FileInfo(fullPath);
-            var metadata = new FileMetadata
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                Path = path,
-                Length = info.Length,
-                LastModified = info.LastWriteTimeUtc
-            };
-            return Task.FromResult(Result<FileMetadata>.Success(metadata)
-                .WithMessage($"Retrieved metadata for file at '{path}' from disk"));
+                return Result<string>.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for computing checksum at '{path}'");
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                return Result<string>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to compute checksum for file at '{path}'");
+            }
+
+            try
+            {
+                using var sha256 = SHA256.Create();
+                await using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+                var hash = Convert.ToBase64String(await sha256.ComputeHashAsync(stream, cancellationToken));
+                return Result<string>.Success(hash)
+                    .WithMessage($"Computed checksum for file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<string>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error computing checksum for file at '{path}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during metadata retrieval"))
-                .WithMessage($"Cancelled retrieving metadata for file at '{path}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error retrieving metadata for file at '{path}'"));
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
     }
 
-    public override Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
+    public override async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Task.FromResult(Result.Failure()
+            return Result<FileMetadata>.Failure()
                 .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<FileMetadata>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled retrieving metadata for file at '{path}'");
+        }
+
+        var fullPath = this.GetFullPath(path);
+        var semaphore = this.GetSemaphore(fullPath);
+
+        try
+        {
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for retrieving metadata at '{path}'");
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to retrieve metadata for file at '{path}'");
+            }
+
+            try
+            {
+                var info = new FileInfo(fullPath);
+                var metadata = new FileMetadata
+                {
+                    Path = path,
+                    Length = info.Length,
+                    LastModified = info.LastWriteTimeUtc
+                };
+                return Result<FileMetadata>.Success(metadata)
+                    .WithMessage($"Retrieved metadata for file at '{path}' from disk");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error retrieving metadata for file at '{path}'");
+            }
+        }
+        finally
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
+        }
+    }
+
+    public override async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
         }
 
         if (metadata == null)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new ArgumentError("Metadata cannot be null"))
-                .WithMessage("Invalid metadata provided"));
+                .WithMessage("Invalid metadata provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled setting metadata for file at '{path}'"));
+                .WithMessage($"Cancelled setting metadata for file at '{path}'");
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!File.Exists(fullPath))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("File not found", path))
-                .WithMessage($"Failed to set metadata for file at '{path}'"));
-        }
+        var semaphore = this.GetSemaphore(fullPath);
 
         try
         {
-            // Local file systems typically don't support direct metadata updates; simulate by updating LastModified
-            if (metadata.LastModified.HasValue)
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                File.SetLastWriteTimeUtc(fullPath, metadata.LastModified.Value);
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for setting metadata at '{path}'");
             }
-            return Task.FromResult(Result.Success()
-                .WithMessage($"Set metadata for file at '{path}'"));
+
+            if (!File.Exists(fullPath))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to set metadata for file at '{path}'");
+            }
+
+            try
+            {
+                if (metadata.LastModified.HasValue)
+                {
+                    File.SetLastWriteTimeUtc(fullPath, metadata.LastModified.Value);
+                }
+                return Result.Success()
+                    .WithMessage($"Set metadata for file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error setting metadata for file at '{path}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during metadata set"))
-                .WithMessage($"Cancelled setting metadata for file at '{path}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
-                .WithMessage($"Permission denied for file at '{path}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error setting metadata for file at '{path}'"));
+            this.ReleaseSemaphore(fullPath, semaphore);
         }
     }
 
@@ -433,6 +510,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
+
         if (!File.Exists(fullPath))
         {
             return Result<FileMetadata>.Failure()
@@ -461,12 +539,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
             return Result<FileMetadata>.Success(updatedMetadata)
                 .WithMessage($"Updated metadata for file at '{path}'");
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<FileMetadata>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during metadata update"))
-                .WithMessage($"Cancelled updating metadata for file at '{path}'");
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -500,15 +572,16 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!Directory.Exists(fullPath))
-        {
-            return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new FileSystemError("Directory not found", path))
-                .WithMessage($"Failed to list files in '{path}'"));
-        }
-
+        // Note: Directory listing doesn't lock individual files, so no semaphore is used here
         try
         {
+            if (!Directory.Exists(fullPath))
+            {
+                return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
+                        .WithError(new FileSystemError("Directory not found", path))
+                        .WithMessage($"Failed to list files in '{path}'"));
+            }
+
             var files = Directory.EnumerateFiles(fullPath, searchPattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
                 .Select(f => this.GetRelativePath(f)) // Returns whole paths relative to rootPath (e.g., "test/file1.txt")
                 .Order()
@@ -521,12 +594,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
             return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success((pagedFiles, nextToken))
                 .WithMessage($"Listed files in '{path}' with pattern '{searchPattern}'"));
-        }
-        catch (OperationCanceledException)
-        {
-            return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during file listing"))
-                .WithMessage($"Cancelled listing files in '{path}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -542,200 +609,255 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
     }
 
-    public override Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath ?? destinationPath}"))
-                .WithMessage("Invalid paths provided"));
+                .WithMessage("Invalid paths provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'"));
+                .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'");
         }
 
         var fullSource = this.GetFullPath(sourcePath);
         var fullDest = this.GetFullPath(destinationPath);
-        if (!File.Exists(fullSource))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Source file not found", sourcePath))
-                .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'"));
-        }
+        var sourceSemaphore = this.GetSemaphore(fullSource);
+        var destSemaphore = this.GetSemaphore(fullDest);
 
         try
         {
-            var directory = Path.GetDirectoryName(fullDest);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            if (!await sourceSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                Directory.CreateDirectory(directory);
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for source file access"))
+                    .WithMessage($"Failed to acquire lock for copying file from '{sourcePath}'");
             }
 
-            File.Copy(fullSource, fullDest, true);
-            var length = new FileInfo(fullSource).Length;
-            this.ReportProgress(progress, sourcePath, length, 1); // Report bytes processed for single file
-            return Task.FromResult(Result.Success()
-                .WithMessage($"Copied file from '{sourcePath}' to '{destinationPath}'"));
+            if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for destination file access"))
+                    .WithMessage($"Failed to acquire lock for copying file to '{destinationPath}'");
+            }
+
+            if (!File.Exists(fullSource))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Source file not found", sourcePath))
+                    .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'");
+            }
+
+            try
+            {
+                var directory = Path.GetDirectoryName(fullDest);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.Copy(fullSource, fullDest, true);
+                var length = new FileInfo(fullSource).Length;
+                this.ReportProgress(progress, sourcePath, length, 1);
+                return Result.Success()
+                    .WithMessage($"Copied file from '{sourcePath}' to '{destinationPath}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", sourcePath, ex))
+                    .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'");
+            }
+            catch (IOException ex)
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
+                    .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during copy"))
-                .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", sourcePath, ex))
-                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
-        }
-        catch (IOException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
-                .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'"));
+            this.ReleaseSemaphore(fullSource, sourceSemaphore);
+            this.ReleaseSemaphore(fullDest, destSemaphore);
         }
     }
 
-    public override Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(oldPath) || string.IsNullOrEmpty(newPath))
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{oldPath ?? newPath}"))
-                .WithMessage("Invalid paths provided"));
+                .WithMessage("Invalid paths provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'"));
+                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'");
         }
 
         var fullOld = this.GetFullPath(oldPath);
         var fullNew = this.GetFullPath(newPath);
-        if (!File.Exists(fullOld))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("File not found", oldPath))
-                .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'"));
-        }
+        var oldSemaphore = this.GetSemaphore(fullOld);
+        var newSemaphore = this.GetSemaphore(fullNew);
 
         try
         {
-            var directory = Path.GetDirectoryName(fullNew);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            if (!await oldSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                Directory.CreateDirectory(directory);
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for old file access"))
+                    .WithMessage($"Failed to acquire lock for renaming file from '{oldPath}'");
             }
 
-            File.Move(fullOld, fullNew, true);
-            var length = new FileInfo(fullNew).Length;
-            this.ReportProgress(progress, oldPath, length, 1); // Report bytes processed for single file
+            if (!await newSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for new file access"))
+                    .WithMessage($"Failed to acquire lock for renaming file to '{newPath}'");
+            }
 
-            return Task.FromResult(Result.Success()
-                .WithMessage($"Renamed file from '{oldPath}' to '{newPath}'"));
+            if (!File.Exists(fullOld))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("File not found", oldPath))
+                    .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
+            }
+
+            try
+            {
+                var directory = Path.GetDirectoryName(fullNew);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.Move(fullOld, fullNew, true);
+                var length = new FileInfo(fullNew).Length;
+                this.ReportProgress(progress, oldPath, length, 1);
+                return Result.Success()
+                    .WithMessage($"Renamed file from '{oldPath}' to '{newPath}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", oldPath, ex))
+                    .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'");
+            }
+            catch (IOException ex)
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Disk or file system error", oldPath, ex))
+                    .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during rename"))
-                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", oldPath, ex))
-                .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'"));
-        }
-        catch (IOException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Disk or file system error", oldPath, ex))
-                .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'"));
+            this.ReleaseSemaphore(fullOld, oldSemaphore);
+            this.ReleaseSemaphore(fullNew, newSemaphore);
         }
     }
 
-    public override Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath ?? destinationPath}"))
-                .WithMessage("Invalid paths provided"));
+                .WithMessage("Invalid paths provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'"));
+                .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'");
         }
 
         var fullSource = this.GetFullPath(sourcePath);
         var fullDest = this.GetFullPath(destinationPath);
-        if (!File.Exists(fullSource))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Source file not found", sourcePath))
-                .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'"));
-        }
+        var sourceSemaphore = this.GetSemaphore(fullSource);
+        var destSemaphore = this.GetSemaphore(fullDest);
 
         try
         {
-            var directory = Path.GetDirectoryName(fullDest);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            if (!await sourceSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
-                Directory.CreateDirectory(directory);
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for source file access"))
+                    .WithMessage($"Failed to acquire lock for moving file from '{sourcePath}'");
             }
 
-            File.Move(fullSource, fullDest, true);
-            var length = new FileInfo(fullDest).Length;
-            this.ReportProgress(progress, sourcePath, length, 1); // Report bytes processed for single file
+            if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for destination file access"))
+                    .WithMessage($"Failed to acquire lock for moving file to '{destinationPath}'");
+            }
 
-            return Task.FromResult(Result.Success()
-                .WithMessage($"Moved file from '{sourcePath}' to '{destinationPath}'"));
+            if (!File.Exists(fullSource))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Source file not found", sourcePath))
+                    .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'");
+            }
+
+            try
+            {
+                var directory = Path.GetDirectoryName(fullDest);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.Move(fullSource, fullDest, true);
+                var length = new FileInfo(fullDest).Length;
+                this.ReportProgress(progress, sourcePath, length, 1);
+                return Result.Success()
+                    .WithMessage($"Moved file from '{sourcePath}' to '{destinationPath}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", sourcePath, ex))
+                    .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'");
+            }
+            catch (IOException ex)
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
+                    .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'");
+            }
         }
-        catch (OperationCanceledException)
+        finally
         {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during move"))
-                .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'"));
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", sourcePath, ex))
-                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
-        }
-        catch (IOException ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
-                .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'"));
-        }
-        catch (Exception ex)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'"));
+            this.ReleaseSemaphore(fullSource, sourceSemaphore);
+            this.ReleaseSemaphore(fullDest, destSemaphore);
         }
     }
 
@@ -781,7 +903,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 filesProcessed++;
                 var metadata = await this.GetFileInfoAsync(source, cancellationToken);
                 totalBytes += metadata.Value.Length;
-                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles); // Report bytes and file progress
+                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
             }
 
             if (failedPaths.Count != 0)
@@ -793,12 +915,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
             return Result.Success()
                 .WithMessage($"Copied all {totalFiles} files");
-        }
-        catch (OperationCanceledException)
-        {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during batch copy"))
-                .WithMessage("Cancelled copying multiple files");
         }
         catch (Exception ex)
         {
@@ -850,7 +966,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 filesProcessed++;
                 var metadata = await this.GetFileInfoAsync(dest, cancellationToken);
                 totalBytes += metadata.Value.Length;
-                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles); // Report bytes and file progress
+                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
             }
 
             if (failedPaths.Count != 0)
@@ -862,12 +978,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
             return Result.Success()
                 .WithMessage($"Moved all {totalFiles} files");
-        }
-        catch (OperationCanceledException)
-        {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during batch move"))
-                .WithMessage("Cancelled moving multiple files");
         }
         catch (Exception ex)
         {
@@ -919,7 +1029,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
                 filesProcessed++;
                 totalBytes += metadata.Value.Length;
-                this.ReportProgress(progress, path, totalBytes, filesProcessed, totalFiles); // Report bytes and file progress
+                this.ReportProgress(progress, path, totalBytes, filesProcessed, totalFiles);
             }
 
             if (failedPaths.Count != 0)
@@ -931,12 +1041,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
 
             return Result.Success()
                 .WithMessage($"Deleted all {totalFiles} files");
-        }
-        catch (OperationCanceledException)
-        {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during batch delete"))
-                .WithMessage("Cancelled deleting multiple files");
         }
         catch (Exception ex)
         {
@@ -963,15 +1067,25 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
-        var isDirectory = Directory.Exists(fullPath);
-        if (!isDirectory)
+        // No file-specific lock needed for directory check
+        try
+        {
+            var isDirectory = Directory.Exists(fullPath);
+            if (!isDirectory)
+            {
+                return Task.FromResult(Result.Failure()
+                    .WithError(new NotFoundError("Directory not found")));
+            }
+
+            return Task.FromResult(Result.Success()
+                .WithMessage($"Checked if '{path}' is a directory"));
+        }
+        catch (Exception ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new NotFoundError("Directory not found")));
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error checking if '{path}' is a directory"));
         }
-
-        return Task.FromResult(Result.Success()
-            .WithMessage($"Checked if '{path}' is a directory"));
     }
 
     public override Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
@@ -991,24 +1105,20 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
-        if (Directory.Exists(fullPath))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Directory already exists", path))
-                .WithMessage($"Failed to create directory at '{path}'"));
-        }
-
+        // No file-specific lock needed for directory creation
         try
         {
+            if (Directory.Exists(fullPath))
+            {
+                return Task.FromResult(Result.Failure()
+                    .WithError(new FileSystemError("Directory already exists", path))
+                    .WithMessage($"Failed to create directory at '{path}'"));
+            }
+
             Directory.CreateDirectory(fullPath);
+
             return Task.FromResult(Result.Success()
                 .WithMessage($"Created directory at '{path}'"));
-        }
-        catch (OperationCanceledException)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during directory creation"))
-                .WithMessage($"Cancelled creating directory at '{path}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -1047,24 +1157,19 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!Directory.Exists(fullPath))
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Directory not found", path))
-                .WithMessage($"Failed to delete directory at '{path}'"));
-        }
-
+        // No file-specific lock needed for directory deletion
         try
         {
+            if (!Directory.Exists(fullPath))
+            {
+                return Task.FromResult(Result.Failure()
+                    .WithError(new FileSystemError("Directory not found", path))
+                    .WithMessage($"Failed to delete directory at '{path}'"));
+            }
+
             Directory.Delete(fullPath, recursive);
             return Task.FromResult(Result.Success()
                 .WithMessage($"Deleted directory at '{path}'"));
-        }
-        catch (OperationCanceledException)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during directory deletion"))
-                .WithMessage($"Cancelled deleting directory at '{path}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -1104,28 +1209,23 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
         }
 
         var fullPath = this.GetFullPath(path);
-        if (!Directory.Exists(fullPath))
-        {
-            return Task.FromResult(Result<IEnumerable<string>>.Failure()
-                .WithError(new FileSystemError("Directory not found", path))
-                .WithMessage($"Failed to list directories in '{path}'"));
-        }
-
+        // No file-specific lock needed for directory listing
         try
         {
+            if (!Directory.Exists(fullPath))
+            {
+                return Task.FromResult(Result<IEnumerable<string>>.Failure()
+                    .WithError(new FileSystemError("Directory not found", path))
+                    .WithMessage($"Failed to list directories in '{path}'"));
+            }
+
             var directories = Directory.EnumerateDirectories(fullPath, searchPattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                .Select(d => this.GetRelativePath(d)) // Returns whole paths relative to rootPath (e.g., "test/dir1")
+                .Select(d => this.GetRelativePath(d))
                 .Order()
                 .ToList();
 
             return Task.FromResult(Result<IEnumerable<string>>.Success(directories)
                 .WithMessage($"Listed directories in '{path}' with pattern '{searchPattern}'"));
-        }
-        catch (OperationCanceledException)
-        {
-            return Task.FromResult(Result<IEnumerable<string>>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during directory listing"))
-                .WithMessage($"Cancelled listing directories in '{path}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -1157,10 +1257,10 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 .WithMessage($"Failed to check health of local storage at '{this.LocationName}'");
         }
 
+        //var testPath = Path.Combine(this.rootPath, "healthcheck.txt");
+        //var fullTestPath = this.GetFullPath("healthcheck.txt");
         try
         {
-            // Test write/read to ensure disk is accessible
-            var testPath = Path.Combine(this.rootPath, "healthcheck.txt");
             await using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("Health Check")))
             {
                 var writeResult = await this.WriteFileAsync("healthcheck.txt", stream, null, cancellationToken);
@@ -1181,12 +1281,6 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
             return Result.Success()
                 .WithMessage($"Local storage at '{this.LocationName}' is healthy");
         }
-        catch (OperationCanceledException)
-        {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during health check"))
-                .WithMessage($"Cancelled checking health of local storage at '{this.LocationName}'");
-        }
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
@@ -1199,6 +1293,47 @@ public class LocalFileStorageProvider : BaseFileStorageProvider
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error checking health of local storage at '{this.LocationName}'");
         }
+    }
+
+    // Helper methods for semaphore management
+    private SemaphoreSlim GetSemaphore(string path)
+    {
+        return this.fileLocks.GetOrAdd(path, _ => new SemaphoreSlim(1, 1));
+    }
+
+    private void ReleaseSemaphore(string path, SemaphoreSlim semaphore)
+    {
+        semaphore.Release();
+        if (semaphore.CurrentCount == 1)
+        {
+            this.fileLocks.TryRemove(path, out _);
+        }
+    }
+
+    // Dispose pattern to clean up resources
+    public void Dispose()
+    {
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (this.disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            foreach (var semaphore in this.fileLocks.Values)
+            {
+                semaphore.Dispose();
+            }
+            this.fileLocks.Clear();
+        }
+
+        this.disposed = true;
     }
 
     private string GetFullPath(string path) => Path.Combine(this.rootPath, path.Replace("/", "\\").TrimStart('\\'));

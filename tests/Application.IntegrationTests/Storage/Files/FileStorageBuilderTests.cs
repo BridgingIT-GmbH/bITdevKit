@@ -34,7 +34,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory").Build();
+        var provider = builder.UseInMemoryProvider("TestInMemory").Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -52,7 +52,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseLocal(tempPath, "TestLocal").Build();
+        var provider = builder.UseLocalProvider(tempPath, "TestLocal").Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -68,7 +68,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory").WithLogging().Build();
+        var provider = builder.UseInMemoryProvider("TestInMemory").WithLoggingBehavior().Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -85,7 +85,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory").WithCaching().Build();
+        var provider = builder.UseInMemoryProvider("TestInMemory").WithCachingBehavior().Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -102,7 +102,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory").WithRetry().Build();
+        var provider = builder.UseInMemoryProvider("TestInMemory").WithRetryBehavior().Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -119,8 +119,8 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory")
-            .WithCustomBehavior(p => new CustomBehavior(p))
+        var provider = builder.UseInMemoryProvider("TestInMemory")
+            .WithBehavior(p => new CustomBehavior(p))
             .Build();
 
         // Assert
@@ -138,7 +138,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory")
+        var provider = builder.UseInMemoryProvider("TestInMemory")
             .WithLifetime(ServiceLifetime.Transient)
             .Build();
 
@@ -172,7 +172,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.Use<CustomFileStorageProvider>().Build();
+        var provider = builder.UseProvider<CustomFileStorageProvider>().Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -189,7 +189,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.Use(customProvider).Build();
+        var provider = builder.UseProvider(customProvider).Build();
 
         // Assert
         provider.ShouldNotBeNull();
@@ -204,7 +204,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder();
 
         // Act & Assert
-        Should.Throw<InvalidOperationException>(() => builder.Use<CustomFileStorageProvider>().Build())
+        Should.Throw<InvalidOperationException>(() => builder.UseProvider<CustomFileStorageProvider>().Build())
             .Message.ShouldContain("Service provider is required to resolve a custom provider type");
     }
 
@@ -216,7 +216,7 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act & Assert
-        Should.Throw<ArgumentNullException>(() => builder.Use(null).Build())
+        Should.Throw<ArgumentNullException>(() => builder.UseProvider(null).Build())
             .ParamName.ShouldBe("provider");
     }
 
@@ -228,10 +228,10 @@ public partial class FileStorageBuilderTests(ITestOutputHelper output, TestEnvir
         var builder = new FileStorageBuilder(services);
 
         // Act
-        var provider = builder.UseInMemory("TestInMemory")
-            .WithLogging()
-            .WithCaching()
-            .WithRetry()
+        var provider = builder.UseInMemoryProvider("TestInMemory")
+            .WithLoggingBehavior()
+            .WithCachingBehavior()
+            .WithRetryBehavior()
             .Build();
 
         // Assert

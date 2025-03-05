@@ -118,7 +118,7 @@ public static partial class ServiceCollectionExtensions
     {
         //services.AddLogging();
         //services.AddMemoryCache();
-        services.AddScoped(sp =>
+        services.AddScoped<IFileStorageFactory>(sp =>
         {
             var factory = new FileStorageFactory(sp);
             configure?.Invoke(factory);

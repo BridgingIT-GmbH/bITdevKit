@@ -12,7 +12,7 @@ using Xunit;
 
 [IntegrationTest("Storage")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
+public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
@@ -26,23 +26,61 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
     }
 
     [Fact]
+    public void AddFileStorage_Registration()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddFileStorage(c => c
+            .WithProvider("inMemory", builder =>
+                {
+                    builder.UseInMemoryProvider("TestInMemory")
+                        .WithLoggingBehavior() // behavior
+                        .WithBehavior(p => new CustomBehavior(p)) // behavior
+                        .WithLifetime(ServiceLifetime.Transient);
+                })
+            .WithProvider("local", builder =>
+            {
+                builder.UseLocalProvider(
+                    Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString()),
+                    "TestLocal")
+                    .WithLoggingBehavior() // behavior
+                    .WithLifetime(ServiceLifetime.Singleton);
+            }, ServiceLifetime.Singleton));
+
+        var services = serviceCollection.BuildServiceProvider(); ;
+        var factory = services.GetRequiredService<IFileStorageFactory>();
+
+        // Act & Assert - InMemory (Transient)
+        var inMemoryProvider = factory.CreateProvider("inMemory");
+        inMemoryProvider.ShouldNotBeNull();
+        //inMemoryProvider.ShouldBeOfType<InMemoryFileStorageProvider>();
+        inMemoryProvider.LocationName.ShouldBe("TestInMemory");
+
+        // Act & Assert - Local (Singleton)
+        var localProvider = factory.CreateProvider("local");
+        localProvider.ShouldNotBeNull();
+        //localProvider.ShouldBeOfType<LocalFileStorageProvider>();
+        localProvider.LocationName.ShouldBe("TestLocal");
+    }
+
+    [Fact]
     public void Factory_RegistersMultipleProviders_Succeeds()
     {
         // Arrange
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("TestInMemory")
+            builder.UseInMemoryProvider("TestInMemory")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
-        factory.RegisterProvider("local", builder =>
+        factory.WithProvider("local", builder =>
         {
             var tempPath = Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);
-            builder.UseLocal(tempPath, "TestLocal")
+            builder.UseLocalProvider(tempPath, "TestLocal")
                 .WithLifetime(ServiceLifetime.Singleton);
         }, ServiceLifetime.Singleton);
 
@@ -66,12 +104,12 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("TestInMemory")
-                .WithLogging()
-                .WithCaching()
-                .WithRetry()
+            builder.UseInMemoryProvider("TestInMemory")
+                .WithLoggingBehavior()
+                .WithCachingBehavior()
+                .WithRetryBehavior()
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
@@ -96,15 +134,15 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("TestInMemory")
+            builder.UseInMemoryProvider("TestInMemory")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
         // Act
         var initialProvider = factory.CreateProvider("inMemory");
-        factory.RegisterCustomBehavior("inMemory", (p, sp) => new CustomBehavior(p));
+        factory.WithBehavior("inMemory", (p, sp) => new CustomBehavior(p));
         var providerWithCustomBehavior = factory.CreateProvider("inMemory");
 
         // Assert
@@ -123,9 +161,9 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("InMemoryTest")
+            builder.UseInMemoryProvider("InMemoryTest")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
@@ -145,15 +183,15 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory1", builder =>
+        factory.WithProvider("inMemory1", builder =>
         {
-            builder.UseInMemory("InMemory1")
+            builder.UseInMemoryProvider("InMemory1")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
-        factory.RegisterProvider("inMemory2", builder =>
+        factory.WithProvider("inMemory2", builder =>
         {
-            builder.UseInMemory("InMemory2")
+            builder.UseInMemoryProvider("InMemory2")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
@@ -169,9 +207,9 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("TestInMemory")
+            builder.UseInMemoryProvider("TestInMemory")
                 .WithLifetime(ServiceLifetime.Singleton);
         }, ServiceLifetime.Singleton);
 
@@ -204,16 +242,16 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var services = this.CreateServiceProvider();
         var factory = new FileStorageFactory(services);
 
-        factory.RegisterProvider("inMemory", builder =>
+        factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("TestInMemory")
+            builder.UseInMemoryProvider("TestInMemory")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient);
 
         // Act & Assert
-        Should.Throw<ArgumentException>(() => factory.RegisterProvider("inMemory", builder =>
+        Should.Throw<ArgumentException>(() => factory.WithProvider("inMemory", builder =>
         {
-            builder.UseInMemory("AnotherInMemory")
+            builder.UseInMemoryProvider("AnotherInMemory")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient))
             .Message.ShouldContain("A provider with name 'inMemory' is already registered");
@@ -227,9 +265,9 @@ public partial class FileStorageFactoryTests(ITestOutputHelper output, TestEnvir
         var factory = new FileStorageFactory(services);
 
         // Act & Assert
-        Should.Throw<ArgumentException>(() => factory.RegisterProvider(null, builder =>
+        Should.Throw<ArgumentException>(() => factory.WithProvider(null, builder =>
         {
-            builder.UseInMemory("TestInMemory")
+            builder.UseInMemoryProvider("TestInMemory")
                 .WithLifetime(ServiceLifetime.Transient);
         }, ServiceLifetime.Transient))
             .Message.ShouldContain("Provider name cannot be null or empty");

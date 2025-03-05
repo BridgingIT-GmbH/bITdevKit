@@ -38,7 +38,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// </summary>
     /// <param name="locationName">The name of the storage location (e.g., "InMemoryTest").</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder UseInMemory(string locationName = "InMemory")
+    public FileStorageBuilder UseInMemoryProvider(string locationName = "InMemory")
     {
         this.provider = new InMemoryFileStorageProvider(locationName);
         return this;
@@ -51,7 +51,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// <param name="rootPath">The root directory path for local storage (e.g., "C:\\Storage").</param>
     /// <param name="locationName">The name of the storage location (e.g., "LocalStorage").</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder UseLocal(string rootPath, string locationName = "Local")
+    public FileStorageBuilder UseLocalProvider(string rootPath, string locationName = "Local")
     {
         this.provider = new LocalFileStorageProvider(rootPath, locationName);
         return this;
@@ -64,7 +64,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// <typeparam name="TProvider">The type of the IFileStorageProvider implementation to use (must implement IFileStorageProvider).</typeparam>
     /// <returns>The builder instance for chaining.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the provider type cannot be resolved or created via the service provider.</exception>
-    public FileStorageBuilder Use<TProvider>()
+    public FileStorageBuilder UseProvider<TProvider>()
         where TProvider : IFileStorageProvider
     {
         if (serviceProvider == null)
@@ -87,7 +87,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// <param name="provider">The IFileStorageProvider instance to use.</param>
     /// <returns>The builder instance for chaining.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the provider is null.</exception>
-    public FileStorageBuilder Use(IFileStorageProvider provider)
+    public FileStorageBuilder UseProvider(IFileStorageProvider provider)
     {
         this.provider = provider ?? throw new ArgumentNullException(nameof(provider));
         return this;
@@ -99,7 +99,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// </summary>
     /// <param name="options">Optional logging configuration (defaults to LogLevel.Information).</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder WithLogging(LoggingOptions options = null)
+    public FileStorageBuilder WithLoggingBehavior(LoggingOptions options = null)
     {
         if (this.provider == null)
         {
@@ -117,7 +117,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// </summary>
     /// <param name="options">Optional caching configuration (defaults to 10-minute duration).</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder WithCaching(CachingOptions options = null)
+    public FileStorageBuilder WithCachingBehavior(CachingOptions options = null)
     {
         if (this.provider == null)
         {
@@ -135,7 +135,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// </summary>
     /// <param name="options">Optional retry configuration (defaults to 3 retries).</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder WithRetry(RetryOptions options = null)
+    public FileStorageBuilder WithRetryBehavior(RetryOptions options = null)
     {
         if (this.provider == null)
         {
@@ -153,7 +153,7 @@ public class FileStorageBuilder(IServiceProvider serviceProvider = null)
     /// </summary>
     /// <param name="behaviorFactory">A factory function that creates an IFileStorageBehavior instance from the current provider.</param>
     /// <returns>The builder instance for chaining.</returns>
-    public FileStorageBuilder WithCustomBehavior(Func<IFileStorageProvider, IFileStorageBehavior> behaviorFactory)
+    public FileStorageBuilder WithBehavior(Func<IFileStorageProvider, IFileStorageBehavior> behaviorFactory)
     {
         if (this.provider == null)
         {

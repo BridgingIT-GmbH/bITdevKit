@@ -17,6 +17,7 @@ using System.Linq;
 /// Example: `var factory = new FileStorageFactory(services); var provider = factory.CreateProvider<InMemoryFileStorageProvider>();`
 /// </summary>
 public class FileStorageFactory(IServiceProvider serviceProvider = null)
+    : IFileStorageFactory
 {
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> providers = [];
 
@@ -78,7 +79,7 @@ public class FileStorageFactory(IServiceProvider serviceProvider = null)
     /// <param name="configure">Action to configure the FileStorageBuilder for this provider.</param>
     /// <param name="lifetime">The service lifetime for the provider (Scoped, Singleton, or Transient).</param>
     /// <exception cref="ArgumentException">Thrown if the name is null, empty, or already registered.</exception>
-    public void RegisterProvider(string name, Action<FileStorageBuilder> configure, ServiceLifetime lifetime)
+    public IFileStorageFactory WithProvider(string name, Action<FileStorageBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -108,6 +109,8 @@ public class FileStorageFactory(IServiceProvider serviceProvider = null)
             default:
                 throw new ArgumentException($"Unsupported lifetime: {lifetime}", nameof(lifetime));
         }
+
+        return this;
     }
 
     /// <summary>
@@ -117,7 +120,7 @@ public class FileStorageFactory(IServiceProvider serviceProvider = null)
     /// <param name="providerName">The name of the provider to apply the behavior to (null for all providers).</param>
     /// <param name="behaviorFactory">A factory function that creates an IFileStorageBehavior instance from the provider and service provider.</param>
     /// <exception cref="KeyNotFoundException">Thrown if the specified provider name is not registered.</exception>
-    public void RegisterCustomBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory)
+    public IFileStorageFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory)
     {
         ArgumentNullException.ThrowIfNull(behaviorFactory);
 
@@ -143,5 +146,7 @@ public class FileStorageFactory(IServiceProvider serviceProvider = null)
             var newProvider = behaviorFactory(currentProvider, serviceProvider);
             this.providers.TryUpdate(providerName, new Lazy<IFileStorageProvider>(() => newProvider, providerLazy.IsValueCreated ? LazyThreadSafetyMode.None : LazyThreadSafetyMode.ExecutionAndPublication), providerLazy);
         }
+
+        return this;
     }
 }

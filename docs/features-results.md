@@ -1685,13 +1685,12 @@ Here’s the updated appendix with `MapHttpOkAll` added to the list of mapping met
 
 # Appendix E: Mapping Results to HTTP Responses (Minimal API)
 
-The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>`, and `ResultPaged<T>` objects from
-a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These methods convert operation outcomes into appropriate HTTP results, supporting success, errors, and custom handling.
+The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>`, and `ResultPaged<T>` instance to HTTP responses in ASP.NET Core minimal APIs. These methods convert operation outcomes into appropriate HTTP results, supporting success, errors, and custom handling.
 
 ## Mapping Methods
 
 ### MapHttpNoContent
-- **Description**: Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
+- Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new DeleteCommand(id));
@@ -1700,7 +1699,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `204 No Content`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpOk<T> (Generic)
-- **Description**: Maps a `Result<T>` to a response with a value (e.g., GET).
+- Maps a `Result<T>` to a response with a value (e.g., GET).
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
@@ -1709,7 +1708,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `200 OK` with `T`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpOk (Non-Generic)
-- **Description**: Maps a non-generic `Result` to a simple success response.
+- Maps a non-generic `Result` to a simple success response.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new SimpleOperationCommand());
@@ -1718,16 +1717,16 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `200 OK`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpOkAll<T>
-- **Description**: Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
+- Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOkAll(logger);
   ```
-- **Outcomes**: `200 OK` with `T`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- **Outcomes**: `200 OK` with `IEnumerable<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpCreated<T>
-- **Description**: Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
+- Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new CreateItemCommand(item));
@@ -1738,7 +1737,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `201 Created` with `T` and `Location`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpAccepted and MapHttpAccepted<T>
-- **Description**: Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
+- Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new StartLongRunningTaskCommand());
@@ -1747,7 +1746,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpOkPaged<T>
-- **Description**: Maps a `ResultPaged<T>` to a paginated data response.
+- Maps a `ResultPaged<T>` to a paginated data response.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new GetPagedItemsQuery(page: 1, pageSize: 10));
@@ -1756,7 +1755,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: `200 OK` with `PagedResponse<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttpFile
-- **Description**: Maps a `Result<FileContent>` to a file download response.
+- Maps a `Result<FileContent>` to a file download response.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new GetFileCommand(id));
@@ -1765,7 +1764,7 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
 - **Outcomes**: File download, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 ### MapHttp<TSuccess, ...> (Generic)
-- **Description**: Flexible mapping for custom success and error types.
+- Flexible mapping for custom success and error types.
 - **Usage**: 
   ```csharp
   var response = await mediator.Send(new CustomOperationCommand());

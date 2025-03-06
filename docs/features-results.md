@@ -1678,3 +1678,114 @@ Avoid using Either for simple boolean conditions or null checks, as these scenar
 ## Technical Considerations
 
 Either is implemented as a value type, providing thread-safety and immutability by design. It's memory-efficient and supports both synchronous and asynchronous operations. The implementation ensures that you can't accidentally access the wrong type without explicitly handling both cases, providing robust type safety at compile time.
+
+Here’s the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
+
+---
+
+# Appendix: Mapping Results to HTTP Responses (Minimal API)
+
+The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>`, and `ResultPaged<T>` objects from
+a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These methods convert operation outcomes into appropriate HTTP results, supporting success, errors, and custom handling.
+
+## Mapping Methods
+
+### MapHttpNoContent
+- **Description**: Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new DeleteCommand(id));
+  return response.Result.MapHttpNoContent(logger);
+  ```
+- **Outcomes**: `204 No Content`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpOk<T> (Generic)
+- **Description**: Maps a `Result<T>` to a response with a value (e.g., GET).
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new GetItemQuery(id));
+  return response.Result.MapHttpOk(logger);
+  ```
+- **Outcomes**: `200 OK` with `T`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpOk (Non-Generic)
+- **Description**: Maps a non-generic `Result` to a simple success response.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new SimpleOperationCommand());
+  return response.Result.MapHttpOk(logger);
+  ```
+- **Outcomes**: `200 OK`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpOkAll<T>
+- **Description**: Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new GetItemQuery(id));
+  return response.Result.MapHttpOkAll(logger);
+  ```
+- **Outcomes**: `200 OK` with `T`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpCreated<T>
+- **Description**: Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new CreateItemCommand(item));
+  return response.Result.MapHttpCreated($"/api/items/{response.Result.Value.Id}", logger);
+  // OR with factory:
+  return response.Result.MapHttpCreated(value => $"/api/items/{value.Id}", logger);
+  ```
+- **Outcomes**: `201 Created` with `T` and `Location`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpAccepted and MapHttpAccepted<T>
+- **Description**: Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new StartLongRunningTaskCommand());
+  return response.Result.MapHttpAccepted("/api/status/123", logger);
+  // OR generic:
+  var responseT = await mediator.Send(new StartTaskWithResultCommand());
+  return responseT.Result.MapHttpAccepted("/api/status/123", logger);
+  ```
+- **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpOkPaged<T>
+- **Description**: Maps a `ResultPaged<T>` to a paginated data response.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new GetPagedItemsQuery(page: 1, pageSize: 10));
+  return response.Result.MapHttpOkPaged(logger);
+  ```
+- **Outcomes**: `200 OK` with `PagedResponse<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttpFile
+- **Description**: Maps a `Result<FileContent>` to a file download response.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new GetFileCommand(id));
+  return response.Result.MapHttpFile(logger);
+  ```
+- **Outcomes**: File download, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+
+### MapHttp<TSuccess, ...> (Generic)
+- **Description**: Flexible mapping for custom success and error types.
+- **Usage**: 
+  ```csharp
+  var response = await mediator.Send(new CustomOperationCommand());
+  return response.Result.MapHttp<Created<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
+      value => TypedResults.Created("/api/custom", value), logger);
+  ```
+- **Outcomes**: Depends on types; errors typically `500 Problem`.
+
+## Custom Error Handling
+- **Registering Handlers**: Override defaults with `RegisterErrorHandler<TError>`.
+  ```csharp
+  ResultMapHttpExtensions.RegisterErrorHandler<ValidationError>((logger, result) => 
+      TypedResults.Problem(detail: result.ToString(), statusCode: 422, title: "Validation Failed"));
+  ```
+- **Behavior**: Specific methods wrap unrecognized custom results in `ProblemHttpResult`; generic `MapHttp` uses `MapError<TProblem>`.
+
+## Notes
+- **Usage Context**: These methods are designed for minimal API endpoints.
+- **Logging**: Pass an optional `ILogger` for debug/error logging.
+- **Error Precedence**: First matching error type determines the response.

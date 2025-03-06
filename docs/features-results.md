@@ -1743,9 +1743,6 @@ a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These method
   ```csharp
   var response = await mediator.Send(new StartLongRunningTaskCommand());
   return response.Result.MapHttpAccepted("/api/status/123", logger);
-  // OR generic:
-  var responseT = await mediator.Send(new StartTaskWithResultCommand());
-  return responseT.Result.MapHttpAccepted("/api/status/123", logger);
   ```
 - **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 

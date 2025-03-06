@@ -1683,7 +1683,7 @@ Here’s the updated appendix with `MapHttpOkAll` added to the list of mapping met
 
 ---
 
-# Appendix: Mapping Results to HTTP Responses (Minimal API)
+# Appendix E: Mapping Results to HTTP Responses (Minimal API)
 
 The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>`, and `ResultPaged<T>` objects from
 a `Result` instance to HTTP responses in ASP.NET Core minimal APIs. These methods convert operation outcomes into appropriate HTTP results, supporting success, errors, and custom handling.

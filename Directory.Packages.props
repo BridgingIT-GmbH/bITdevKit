@@ -3,33 +3,30 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Label="dev dependencies">
+    <PackageVersion Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.CosmosDb" Version="9.0.0" />
+    <PackageVersion Include="AspNetcore.HealthChecks.Publisher.Seq" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Sqlite" Version="9.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
-    <PackageVersion Include="AspNetcore.HealthChecks.Publisher.Seq" Version="9.0.0" />
     <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="AutoMapper.Extensions.ExpressionMapping" Version="7.0.2" />
     <PackageVersion Include="Azure.Data.Tables" Version="12.10.0" />
-    <PackageVersion Include="Azure.Identity" Version="1.13.2" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.13.2" />
     <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.18.4" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.3.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.23.0" />
     <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
-    <PackageVersion Include="Bogus" Version="35.6.2" />
     <PackageVersion Include="CsvHelper" Version="33.0.1" />
     <PackageVersion Include="Dapper" Version="2.1.66" />
     <PackageVersion Include="DotPulsar" Version="3.5.0" />
-    <PackageVersion Include="Dumpify" Version="0.6.6" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
-    <PackageVersion Include="FluentAssertions.Web" Version="1.8.0" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageVersion Include="Humanizer.Core" Version="2.14.1" />
@@ -51,7 +48,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.1.1" />
     <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.47.1" />
@@ -61,8 +57,8 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Client" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.2" />
@@ -83,18 +79,12 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.2" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.4.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.50.0" />
-    <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.50.0" />
-    <PackageVersion Include="MinVer" Version="6.0.0" />
     <PackageVersion Include="MudBlazor" Version="8.3.0" />
-    <PackageVersion Include="NBuilder" Version="6.1.0" />
-    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NewId" Version="4.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NSwag.ApiDescription.Client" Version="14.2.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.2.0" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.2.0" />
-    <PackageVersion Include="NewId" Version="4.0.1" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OpenTelemetry" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
@@ -127,26 +117,38 @@
     <PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0" />
     <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.19" />
     <PackageVersion Include="SharpZipLib" Version="1.4.2" />
-    <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.3.1" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Data.SQLite" Version="1.0.119" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.2" />
+    <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="9.0.2" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
     <PackageVersion Include="System.Net.Http.Json" Version="9.0.2" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+  </ItemGroup>
+  <ItemGroup Label="test dependencies">
+    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageVersion Include="Bogus" Version="35.6.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Dumpify" Version="0.6.6" />
+    <PackageVersion Include="FluentAssertions.Web" Version="1.8.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.50.0" />
+    <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.50.0" />
+    <PackageVersion Include="MinVer" Version="6.0.0" />
+    <PackageVersion Include="NBuilder" Version="6.1.0" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.Azurite" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.CosmosDb" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.RabbitMq" Version="4.3.0" />
-    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.23" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.abstractions" Version="2.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
-    <PackageVersion Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
-    <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="9.0.2" />
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.23" />
   </ItemGroup>
   <ItemGroup Label="set the compiler toolset to a specific version">
     <PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="4.13.0" />

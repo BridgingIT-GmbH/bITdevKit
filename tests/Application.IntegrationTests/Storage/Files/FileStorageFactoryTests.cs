@@ -26,7 +26,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     }
 
     [Fact]
-    public void AddFileStorage_Registration()
+    public void AddFileStorage_RegistersMultipleProviders_Succeeds()
     {
         // Arrange
         var serviceCollection = new ServiceCollection();

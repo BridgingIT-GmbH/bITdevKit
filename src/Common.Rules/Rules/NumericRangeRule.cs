@@ -23,6 +23,6 @@ public class NumericRangeRule<T>(T value, T min, T max)
     /// Executes the specific rule defined in the derived class.
     /// </summary>
     /// <returns>A <c>Result</c> object representing the success or failure of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0);
 }

@@ -20,7 +20,7 @@ public class EndsWithRule(string value, string suffix, StringComparison comparis
     /// Executes a rule and returns a result indicating success or failure.
     /// </summary>
     /// <returns>A Result object indicating the outcome of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value) &&
             value.EndsWith(suffix, comparison));
 }

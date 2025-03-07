@@ -20,7 +20,7 @@ public class UserEmailMustBeUniqueRule : AsyncRuleBase
 
     public override string Message => "User should be unique (email)";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         return Result.SuccessIf(!(await this.repository.FindAllAsync(UserSpecifications.ForEmail(this.user.Email),
             cancellationToken: cancellationToken)).SafeAny());

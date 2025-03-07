@@ -25,6 +25,6 @@ public class TimeRelativeRule(TimeOnly value, TimeUnit unit, int amount, DateTim
     /// <returns>
     /// A Result object containing the outcome of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.IsInRelativeRange(unit, amount, direction));
 }

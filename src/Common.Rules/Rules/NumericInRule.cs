@@ -23,7 +23,7 @@ public class NumericInRule<T>(T value, IEnumerable<T> allowedValues)
     /// Executes the rule to produce a result.
     /// </summary>
     /// <returns>The result of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(allowedValues.Any(allowed =>
             value.CompareTo(allowed) == 0));
 }

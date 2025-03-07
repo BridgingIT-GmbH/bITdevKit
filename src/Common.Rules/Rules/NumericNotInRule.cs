@@ -28,6 +28,6 @@ public class NumericNotInRule<T>(T value, IEnumerable<T> disallowedValues)
     /// Executes a validation rule.
     /// </summary>
     /// <returns>Result indicating success or failure of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(disallowedValues.All(disallowed => value.CompareTo(disallowed) != 0));
 }

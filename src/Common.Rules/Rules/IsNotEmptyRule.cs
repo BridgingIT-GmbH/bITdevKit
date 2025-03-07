@@ -19,7 +19,7 @@ public class IsNotEmptyRule(string value) : RuleBase
     /// Executes a rule, returning a result indicating success or failure.
     /// </summary>
     /// <returns>A Result object representing the outcome of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value));
 }
 
@@ -37,6 +37,6 @@ public class IsNotEmptyRule<T>(IEnumerable<T> value) : RuleBase
     /// Executes a rule, returning a result indicating success or failure.
     /// </summary>
     /// <returns>A Result object representing the outcome of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!value.IsNullOrEmpty());
 }

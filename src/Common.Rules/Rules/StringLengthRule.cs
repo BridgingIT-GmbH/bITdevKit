@@ -25,6 +25,6 @@ public class StringLengthRule(string value, int minLength, int maxLength) : Rule
     /// <param name="rule">The rule to be executed.</param>
     /// <param name="context">The context in which the rule should be executed.</param>
     /// <return>A boolean indicating whether the rule executed successfully or not.</return>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value?.Length >= minLength && value?.Length <= maxLength);
 }

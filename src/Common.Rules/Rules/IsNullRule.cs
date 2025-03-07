@@ -20,6 +20,6 @@ public class IsNullRule<T>(T value) : RuleBase
     /// Executes a validation rule.
     /// </summary>
     /// <returns>A Result indicating the outcome of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value is null);
 }

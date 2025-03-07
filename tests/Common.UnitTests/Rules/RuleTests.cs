@@ -554,7 +554,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 // Helper class for testing async rules
 public class TestAsyncRule(bool shouldSucceed) : AsyncRuleBase
 {
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         await Task.Delay(10, cancellationToken); // Simulate async work

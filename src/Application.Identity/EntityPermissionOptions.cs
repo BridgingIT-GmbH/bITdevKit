@@ -62,7 +62,7 @@ public class EntityPermissionOptions
     {
         var entityType = typeof(TEntity);
 
-        if (this.EntityConfigurations.Any(c => c.EntityType == entityType))
+        if (this.EntityConfigurations.SafeAny(c => c.EntityType == entityType))
         {
             throw new InvalidOperationException($"Entity type {entityType.Name} already configured");
         }
@@ -88,7 +88,7 @@ public class EntityPermissionOptions
     {
         var entityType = typeof(TEntity);
 
-        if (this.EntityConfigurations.Any(c => c.EntityType == typeof(TEntity)))
+        if (this.EntityConfigurations.SafeAny(c => c.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException(
                 $"Entity type {typeof(TEntity).Name} allready configured");
@@ -137,7 +137,7 @@ public class EntityPermissionOptions
     public EntityPermissionOptions AddDefaultPermissions<TEntity>(params Permission[] permissions)
         where TEntity : class, IEntity
     {
-        if (!this.EntityConfigurations.Any(c => c.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(c => c.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException(
                 $"Entity type {typeof(TEntity).Name} must be configured using AddEntity before adding default permissions");
@@ -168,7 +168,7 @@ public class EntityPermissionOptions
         where TEntity : class, IEntity
         where TEValuator : class, IEntityPermissionEvaluator<TEntity>
     {
-        if (!this.EntityConfigurations.Any(e => e.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(e => e.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException($"Entity type {typeof(TEntity).Name} must be configured using AddEntity before adding a custom evaluator");
         }
@@ -229,7 +229,7 @@ public class EntityPermissionOptions
     public EntityTypeConfiguration GetEntityTypeConfiguration<TEntity>()
         where TEntity : class, IEntity
     {
-        if (!this.EntityConfigurations.Any(e => e.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(e => e.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException($"Entity type {typeof(TEntity).Name} not valid");
         }

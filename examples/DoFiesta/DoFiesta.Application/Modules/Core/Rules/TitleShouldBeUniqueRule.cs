@@ -19,7 +19,7 @@ public class TitleShouldBeUniqueRule(string title, IGenericRepository<TodoItem> 
 {
     public override string Message { get; } = "Title should not be used allready";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         return await repository
             .CountResultAsync(e => e.Title == title, cancellationToken) // use expression instead of specification

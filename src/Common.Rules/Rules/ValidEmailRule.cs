@@ -36,7 +36,7 @@ public partial class ValidEmailRule(string value) : RuleBase
     /// Executes a given business rule, performing its associated action.
     /// </summary>
     /// <returns>Returns true if the rule execution is successful; otherwise, false.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         if (string.IsNullOrWhiteSpace(value))
         {

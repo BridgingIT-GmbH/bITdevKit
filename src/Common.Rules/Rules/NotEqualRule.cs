@@ -20,6 +20,6 @@ public class NotEqualRule<T>(T value, T other) : RuleBase
     /// Executes the validation rule, returning a success result if the rule passes and a failure result if it does not.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating the success or failure of the rule.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!EqualityComparer<T>.Default.Equals(value, other));
 }

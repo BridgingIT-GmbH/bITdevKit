@@ -32,7 +32,7 @@ public abstract class DefaultEntityPermissionProviderBase<TEntity> : IDefaultEnt
     protected abstract void ConfigurePermissions(DefaultPermissionConfiguration config);
 
     /// <inheritdoc/>
-    public HashSet<string> GetDefaultPermissions() => this.permissions;
+    public HashSet<string> GetDefaultPermissions() => this.permissions ?? [];
 
     /// <summary>
     /// Configuration class for setting up default permissions.

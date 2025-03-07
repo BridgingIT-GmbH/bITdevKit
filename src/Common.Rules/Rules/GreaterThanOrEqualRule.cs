@@ -25,6 +25,6 @@ public class GreaterThanOrEqualRule<T>(T value, T other)
     /// <returns>
     /// A result indicating the success or failure of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.CompareTo(other) >= 0);
 }

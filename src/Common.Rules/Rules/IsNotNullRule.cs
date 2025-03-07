@@ -24,6 +24,6 @@ public class IsNotNullRule<T>(T value) : RuleBase
     /// </summary>
     /// <param name="rule">The business rule to be executed as an Action delegate.</param>
     /// <param name="context">The context or parameters required by the rule to operate.</param>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value is not null);
 }

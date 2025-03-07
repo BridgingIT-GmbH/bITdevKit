@@ -23,7 +23,7 @@ public class DoesNotContainRule(string value, string substring, StringComparison
     /// <returns>
     /// A Result object indicating the success or failure of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(string.IsNullOrEmpty(value) ||
             !value.Contains(substring, comparison));
 }

@@ -26,7 +26,7 @@ public class AnyRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
     /// <typeparam name="TResult">The type of the result produced by the rule.</typeparam>
     /// <param name="rule">The rule instance to execute.</param>
     /// <returns>The result of executing the rule.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         if (collection?.Any() != true)
         {

@@ -35,6 +35,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permission, bypassCache, cancellationToken);
     }
 
@@ -48,6 +49,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permission, bypassCache, cancellationToken);
     }
 
@@ -60,6 +62,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permission, bypassCache, cancellationToken);
     }
 
@@ -70,6 +73,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, cancellationToken);
     }
 
@@ -80,6 +84,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, object entityId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, cancellationToken);
     }
 
@@ -90,6 +95,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, cancellationToken);
     }
 
@@ -146,7 +152,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         if (entityTypeConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
             var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
-            foreach (var parentId in parentIds)
+            foreach (var parentId in parentIds.SafeNull())
             {
                 var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission, cancellationToken);
                 if (hasParentPermission)
@@ -162,7 +168,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
 
         if (defaultProviders?.Any() == true) // Check default providers if available
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
                 if (defaultProvider.GetDefaultPermissions().Contains(permission))
                 {
@@ -217,9 +223,9 @@ public partial class EntityPermissionEvaluator<TEntity>(
         // Check default providers
         if (defaultProviders?.Any() == true)
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
-                if (defaultProvider.GetDefaultPermissions().Contains(permission))
+                if (defaultProvider.GetDefaultPermissions()?.Contains(permission) == true)
                 {
                     TypedLogger.LogPermissionGrantedDefault(this.logger, Constants.LogKey, entityType, null, permission, userId, $"Default:{defaultProvider.GetType().PrettyName()}");
                     this.UpdateCache(userId, entityType, null, permission, $"Default:{defaultProvider.GetType().PrettyName()}");
@@ -256,7 +262,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
 
         // Get direct user permissions
         var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, entityId, cancellationToken);
-        foreach (var permission in directPermissions)
+        foreach (var permission in directPermissions.SafeNull())
         {
             result.Add(new EntityPermissionInfo
             {
@@ -275,7 +281,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
             foreach (var role in roles)
             {
                 var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, entityId, cancellationToken);
-                foreach (var permission in rolePermissions)
+                foreach (var permission in rolePermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -299,7 +305,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
             {
                 // Get parent direct permissions
                 var parentDirectPermissions = await provider.GetUserPermissionsAsync(userId, entityType, parentId, cancellationToken);
-                foreach (var permission in parentDirectPermissions)
+                foreach (var permission in parentDirectPermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -318,7 +324,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
                     foreach (var role in roles)
                     {
                         var parentRolePermissions = await provider.GetRolePermissionsAsync(role, entityType, parentId, cancellationToken);
-                        foreach (var permission in parentRolePermissions)
+                        foreach (var permission in parentRolePermissions.SafeNull())
                         {
                             result.Add(new EntityPermissionInfo
                             {
@@ -340,7 +346,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         {
             foreach (var defaultProvider in defaultProviders)
             {
-                foreach (var permission in defaultProvider.GetDefaultPermissions())
+                foreach (var permission in defaultProvider.GetDefaultPermissions().SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -369,7 +375,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
 
         // Get direct user type-wide permissions
         var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, null, cancellationToken);
-        foreach (var permission in directPermissions)
+        foreach (var permission in directPermissions.SafeNull())
         {
             result.Add(new EntityPermissionInfo
             {
@@ -388,7 +394,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
             foreach (var role in roles)
             {
                 var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, null, cancellationToken);
-                foreach (var permission in rolePermissions)
+                foreach (var permission in rolePermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -406,10 +412,10 @@ public partial class EntityPermissionEvaluator<TEntity>(
         // Get default permissions
         if (defaultProviders?.Any() == true)
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
                 var defaultPermissions = defaultProvider.GetDefaultPermissions();
-                foreach (var permission in defaultPermissions)
+                foreach (var permission in defaultPermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {

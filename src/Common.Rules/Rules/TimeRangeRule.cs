@@ -30,6 +30,6 @@ public class TimeRangeRule(TimeOnly value, TimeOnly start, TimeOnly end, bool in
     /// <returns>
     /// A result object indicating the success or failure of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.IsInRange(start, end, inclusive));
 }

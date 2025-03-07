@@ -9,7 +9,7 @@ public class MenuForHostMustExistRule(IGenericRepository<Menu> repository, HostI
 {
     public override string Message => "Menu for host must exist";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var menu = await repository.FindOneAsync(menuId, cancellationToken: cancellationToken);
 

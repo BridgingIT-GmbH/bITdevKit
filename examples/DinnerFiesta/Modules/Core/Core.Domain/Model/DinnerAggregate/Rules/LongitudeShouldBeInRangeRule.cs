@@ -21,7 +21,7 @@ public class LongitudeShouldBeInRangeRule : RuleBase
 
     public override string Message => "Longitude should be between -180 and 180";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(this.value is null || (this.value >= -180 && this.value <= 180));
     }

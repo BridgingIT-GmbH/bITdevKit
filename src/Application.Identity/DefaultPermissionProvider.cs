@@ -23,5 +23,5 @@ public class DefaultPermissionProvider<TEntity>(EntityPermissionOptions options)
     /// Gets the set of default permissions for the entity type.
     /// </summary>
     /// <returns>A set of default permissions.</returns>
-    public HashSet<string> GetDefaultPermissions() => this.permissions;
+    public HashSet<string> GetDefaultPermissions() => this.permissions ?? [];
 }

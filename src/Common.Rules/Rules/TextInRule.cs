@@ -29,7 +29,7 @@ public class TextInRule(
     /// <returns>
     /// A Result indicating whether the rule was successfully executed.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(allowedValues.Any(allowed =>
             string.Equals(value, allowed, comparison)));
 }

@@ -13,7 +13,7 @@ public class CountryShouldBeKnown(string value) : RuleBase
 
     public override string Message => $"Country should be one of the following: {string.Join(", ", this.countries)}";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(!string.IsNullOrEmpty(value) && this.countries.Contains(value));
     }

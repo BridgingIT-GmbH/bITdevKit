@@ -20,7 +20,7 @@ public class StartsWithRule(string value, string prefix, StringComparison compar
     /// Executes the rule and returns the result.
     /// </summary>
     /// <returns>Success if the rule is satisfied; otherwise, an error result.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value) &&
             value.StartsWith(prefix, comparison));
 }

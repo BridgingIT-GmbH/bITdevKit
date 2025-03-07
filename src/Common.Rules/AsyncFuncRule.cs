@@ -30,6 +30,6 @@ public class AsyncFuncRule(Func<CancellationToken, Task<bool>> predicate, string
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Result"/> that indicates whether the predicate was satisfied.</returns>
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken) =>
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken) =>
         Result.SuccessIf(await predicate(cancellationToken));
 }

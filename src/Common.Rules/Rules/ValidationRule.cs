@@ -23,7 +23,7 @@ public class ValidationRule<T>(T instance, IValidator<T> validator) : RuleBase
     /// <param name="ruleId">Identifier of the rule to be executed.</param>
     /// <param name="parameters">Parameters required for the rule execution.</param>
     /// <returns>A boolean indicating if the rule execution was successful.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         var validationResult = validator.Validate(instance);
 

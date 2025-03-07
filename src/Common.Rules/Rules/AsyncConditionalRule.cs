@@ -29,7 +29,7 @@ public class AsyncConditionalRule : AsyncRuleBase
     /// </summary>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <returns>A task representing the result of the rule execution.</returns>
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!await this.condition(cancellationToken).ConfigureAwait(false))
         {

@@ -29,7 +29,7 @@ public class FullTextSearchRule(
     /// <param name="rule">The rule to be executed.</param>
     /// <param name="context">The context in which the rule is executed.</param>
     /// <returns>True if the rule is executed successfully, otherwise false.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         if (string.IsNullOrWhiteSpace(searchTerms))
         {

@@ -20,7 +20,7 @@ public class HostUserMustBeUniqueRule : AsyncRuleBase
 
     public override string Message => "Host UserId should be unique";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         return Result.SuccessIf(!(await this.repository.FindAllAsync(
             HostSpecifications.ForUser(this.userId),

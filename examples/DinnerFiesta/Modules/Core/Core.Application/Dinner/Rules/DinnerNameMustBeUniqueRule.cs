@@ -9,7 +9,7 @@ public class DinnerNameMustBeUniqueRule(IGenericRepository<Dinner> repository, s
 {
     public override string Message => "Name should be unique";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         return Result.SuccessIf(!(await repository.FindAllAsync(DinnerSpecifications.ForName(name),
             cancellationToken: cancellationToken)).SafeAny());

@@ -22,7 +22,7 @@ public class DoesNotStartWithRule(string value, string prefix, StringComparison 
     /// <param name="rule">The business rule to execute.</param>
     /// <param name="context">The context in which the rule is executed.</param>
     /// <return>Returns the result of the rule execution.</return>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(string.IsNullOrEmpty(value) ||
             !value.StartsWith(prefix, comparison));
 }

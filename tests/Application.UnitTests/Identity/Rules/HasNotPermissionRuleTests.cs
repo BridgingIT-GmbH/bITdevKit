@@ -17,21 +17,21 @@ using BridgingIT.DevKit.Application.Identity;
 public class HasNotPermissionRuleTests
 {
     private readonly ICurrentUserAccessor userAccessor;
-    private readonly IEntityPermissionEvaluator<TestEntity> permissionEvaluator;
+    private readonly IEntityPermissionEvaluator<TestEntity> evaluator;
 
     public HasNotPermissionRuleTests()
     {
         this.userAccessor = Substitute.For<ICurrentUserAccessor>();
-        this.permissionEvaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
+        this.evaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
     }
 
     [Fact]
     public async Task EntityWide_NoPermission_ReturnsSuccess()
     {
         // Arrange
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, "Read", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, "Read", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(false));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, "Read");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, "Read");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -45,9 +45,9 @@ public class HasNotPermissionRuleTests
     public async Task EntityWide_HasPermission_ReturnsFailure()
     {
         // Arrange
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, typeof(TestEntity), "Read", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, "Read", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(true));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, "Read");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, "Read");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -62,9 +62,9 @@ public class HasNotPermissionRuleTests
     {
         // Arrange
         var entity = new TestEntity();
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, entity, "Write", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, entity, "Write", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(false));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, entity, "Write");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entity, "Write");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -79,9 +79,9 @@ public class HasNotPermissionRuleTests
     {
         // Arrange
         var entity = new TestEntity();
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, entity, "Write", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, entity, "Write", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(true));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, entity, "Write");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entity, "Write");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -96,9 +96,9 @@ public class HasNotPermissionRuleTests
     {
         // Arrange
         var entityId = Guid.NewGuid();
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, entityId, "Delete", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, entityId, "Delete", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(false));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, entityId, "Delete");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entityId, "Delete");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -113,9 +113,9 @@ public class HasNotPermissionRuleTests
     {
         // Arrange
         var entityId = Guid.NewGuid();
-        this.permissionEvaluator.HasPermissionAsync(this.userAccessor, entityId, "Delete", cancellationToken: Arg.Any<CancellationToken>())
+        this.evaluator.HasPermissionAsync(this.userAccessor, entityId, "Delete", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(true));
-        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, entityId, "Delete");
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entityId, "Delete");
 
         // Act
         var result = await rule.ExecuteAsync(CancellationToken.None);
@@ -126,18 +126,10 @@ public class HasNotPermissionRuleTests
     }
 
     [Fact]
-    public void Constructor_NullPermission_ThrowsArgumentException()
-    {
-        // Act & Assert
-        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, null))
-            .Message.ShouldContain("permission");
-    }
-
-    [Fact]
     public void Constructor_NullEntity_ThrowsArgumentException()
     {
         // Act & Assert
-        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, null, "Read"))
+        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, null, "Read"))
             .Message.ShouldContain("entity");
     }
 
@@ -145,7 +137,122 @@ public class HasNotPermissionRuleTests
     public void Constructor_NullEntityId_ThrowsArgumentException()
     {
         // Act & Assert
-        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.permissionEvaluator, (object)null, "Read"))
+        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, (object)null, "Read"))
             .Message.ShouldContain("entityId");
+    }
+
+    [Fact]
+    public async Task EntityWide_NoPermissions_ReturnsSuccess()
+    {
+        // Arrange
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<object>(), Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, ["Read", "Write"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task EntityWide_HasAnyPermission_ReturnsFailure()
+    {
+        // Arrange
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, ["Read", "Write"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(e => e.Message == "Unauthorized: User must not have any of [Read, Write] permissions for entity TestEntity");
+    }
+
+    [Fact]
+    public async Task EntitySpecific_NoPermissions_ReturnsSuccess()
+    {
+        // Arrange
+        var entity = new TestEntity();
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<TestEntity>(), Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entity, ["Read", "Write"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task EntitySpecific_HasAnyPermission_ReturnsFailureWithMessage()
+    {
+        // Arrange
+        var entity = new TestEntity();
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<TestEntity>(), Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entity, ["Read", "Write"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(e => e.Message == $"Unauthorized: User must not have any of [Read, Write] permissions for entity TestEntity with id {entity.Id}");
+    }
+
+    [Fact]
+    public async Task IdSpecific_NoPermissions_ReturnsSuccess()
+    {
+        // Arrange
+        var entityId = Guid.NewGuid();
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<object>(), Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entityId, ["Read", "Delete"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task IdSpecific_HasAnyPermission_ReturnsFailureWithMessage()
+    {
+        // Arrange
+        var entityId = Guid.NewGuid();
+        this.evaluator.HasPermissionAsync(this.userAccessor, Arg.Any<object>(), Arg.Any<string[]>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var rule = new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, entityId, ["Read", "Delete"]);
+
+        // Act
+        var result = await rule.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(e => e.Message == $"Unauthorized: User must not have any of [Read, Delete] permissions for entity TestEntity with id {entityId}");
+    }
+
+    [Fact]
+    public void Constructor_NullPermissionsArray_ThrowsArgumentException()
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, (string[])null))
+            .Message.ShouldContain("permissions");
+    }
+
+    [Fact]
+    public void Constructor_EmptyPermissionsArray_ThrowsArgumentException()
+    {
+        // Act & Assert
+        Should.Throw<ArgumentException>(() => new HasNotPermissionRule<TestEntity>(this.userAccessor, this.evaluator, []));
     }
 }

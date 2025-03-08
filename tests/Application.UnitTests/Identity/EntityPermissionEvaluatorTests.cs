@@ -145,7 +145,7 @@ public class EntityPermissionEvaluatorTests
         this.provider.GetRolePermissionsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<object>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Array.Empty<string>() as IReadOnlyCollection<string>));
         var evaluator = new EntityPermissionEvaluator<TestEntity>(
-            this.loggerFactory, this.provider, Enumerable.Empty<IDefaultEntityPermissionProvider<TestEntity>>(), null, new EntityPermissionOptions().AddEntity<TestEntity>());
+            this.loggerFactory, this.provider, [], null, new EntityPermissionOptions().AddEntity<TestEntity>());
 
         // Act
         var permissions = await evaluator.GetPermissionsAsync(this.userAccessor, entityId);
@@ -164,5 +164,141 @@ public class EntityPermissionEvaluatorTests
         // Act & Assert
         Should.Throw<ArgumentNullException>(() => evaluator.HasPermissionAsync(null, "Read"))
             .ParamName.ShouldBe("currentUserAccessor");
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_EntityWide_AnyPermissionGranted_ReturnsTrue()
+    {
+        // Arrange
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, "Read", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], this.cacheProvider, this.options);
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, ["Read", "Write"]);
+
+        // Assert
+        result.ShouldBeTrue();
+        this.cacheProvider.Received().Set(Arg.Any<string>(), Arg.Any<EntityPermissionCacheEntry>(), Arg.Any<TimeSpan>());
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_EntityWide_NoPermissionsGranted_ReturnsFalse()
+    {
+        // Arrange
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        this.defaultProvider.GetDefaultPermissions().Returns([]);
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], null, new EntityPermissionOptions());
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, ["Read", "Write"]);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_EntitySpecific_AnyPermissionGranted_ReturnsTrue()
+    {
+        // Arrange
+        var entity = new TestEntity();
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, entity.Id, "Write", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], this.cacheProvider, this.options);
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, entity, ["Read", "Write"]);
+
+        // Assert
+        result.ShouldBeTrue();
+        this.cacheProvider.Received().Set(Arg.Any<string>(), Arg.Any<EntityPermissionCacheEntry>(), Arg.Any<TimeSpan>());
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_EntitySpecific_NoPermissionsGranted_ReturnsFalse()
+    {
+        // Arrange
+        var entity = new TestEntity();
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, entity.Id, Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        this.defaultProvider.GetDefaultPermissions().Returns([]);
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], null, new EntityPermissionOptions().AddEntity<TestEntity>());
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, entity, ["Read", "Write"]);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_IdSpecific_AnyPermissionGranted_ReturnsTrue()
+    {
+        // Arrange
+        var entityId = Guid.NewGuid();
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, entityId, "Delete", Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], this.cacheProvider, this.options);
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, entityId, ["Read", "Delete"]);
+
+        // Assert
+        result.ShouldBeTrue();
+        this.cacheProvider.Received().Set(Arg.Any<string>(), Arg.Any<EntityPermissionCacheEntry>(), Arg.Any<TimeSpan>());
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_IdSpecific_NoPermissionsGranted_ReturnsFalse()
+    {
+        // Arrange
+        var entityId = Guid.NewGuid();
+        this.provider.HasPermissionAsync("user123", Arg.Any<string[]>(), typeof(TestEntity).FullName, entityId, Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(false));
+        this.defaultProvider.GetDefaultPermissions().Returns([]);
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], null, new EntityPermissionOptions().AddEntity<TestEntity>());
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, entityId, ["Read", "Delete"]);
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_EmptyPermissionsArray_ReturnsFalse()
+    {
+        // Arrange
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], this.cacheProvider, this.options);
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, []);
+
+        // Assert
+        result.ShouldBeFalse();
+        await this.provider.DidNotReceive().HasPermissionAsync(Arg.Any<string>(), Arg.Any<string[]>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task HasPermissionAsync_NullPermissionsArray_ReturnsFalse()
+    {
+        // Arrange
+        var evaluator = new EntityPermissionEvaluator<TestEntity>(
+            this.loggerFactory, this.provider, [this.defaultProvider], this.cacheProvider, this.options);
+
+        // Act
+        var result = await evaluator.HasPermissionAsync(this.userAccessor, (string[])null);
+
+        // Assert
+        result.ShouldBeFalse();
+        await this.provider.DidNotReceive().HasPermissionAsync(Arg.Any<string>(), Arg.Any<string[]>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 }

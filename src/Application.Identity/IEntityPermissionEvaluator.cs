@@ -70,6 +70,61 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false, CancellationToken cancellationToken = default); // wildcard permission
 
     /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the given entity.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the given entity.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    Task<bool> HasPermissionAsync(string userId, string[] roles, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets the permissions for the user on the entity type.
     /// </summary>
     /// <param name="currentUserAccessor">The accessor for the current user</param>

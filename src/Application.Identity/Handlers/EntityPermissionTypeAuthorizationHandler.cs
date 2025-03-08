@@ -13,22 +13,19 @@ using Microsoft.Extensions.Logging;
 
 public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
     ILoggerFactory loggerFactory,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TEntity> permissionEvaluator)
+    ICurrentUserAccessor userAccessor,
+    IEntityPermissionEvaluator<TEntity> evaluator)
     : AuthorizationHandler<EntityPermissionRequirement, Type>
     where TEntity : class, IEntity
 {
     private readonly ILogger<EntityPermissionTypeAuthorizationHandler<TEntity>> logger =
         loggerFactory.CreateLogger<EntityPermissionTypeAuthorizationHandler<TEntity>>();
 
-    protected override async Task HandleRequirementAsync(
-        AuthorizationHandlerContext context,
-        EntityPermissionRequirement requirement,
-        Type resourceType)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, Type entityType)
     {
-        TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permission);
+        TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
-        var userId = currentUserAccessor.UserId;
+        var userId = userAccessor.UserId;
         if (string.IsNullOrEmpty(userId))
         {
             TypedLogger.LogNoUserIdentified(this.logger, Constants.LogKey);
@@ -41,21 +38,18 @@ public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
             return;
         }
 
-        if (resourceType == null)
+        if (entityType == null)
         {
             return;
         }
 
-        if (resourceType != typeof(TEntity))
+        if (entityType != typeof(TEntity))
         {
             return;
         }
 
         // Call the type-wide permission check
-        if (await permissionEvaluator.HasPermissionAsync(
-            userId,
-            currentUserAccessor.Roles,
-            requirement.Permission))
+        if (await evaluator.HasPermissionAsync(userAccessor, requirement.Permissions))
         {
             context.Succeed(requirement);
         }
@@ -63,8 +57,8 @@ public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (type) - check permission requirement: permission={Permission}")]
-        public static partial void LogAuthHandler(ILogger logger, string logKey, string permission);
+        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (type) - check permission requirement: permissions={Permissions}")]
+        public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
         [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for type permission check")]
         public static partial void LogNoUserIdentified(ILogger logger, string logKey);

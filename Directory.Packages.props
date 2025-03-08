@@ -164,8 +164,9 @@
     <PackageVersion Include="System.Runtime.Caching" Version="9.0.2" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.6.0" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
     <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageVersion Include="System.Formats.Asn1" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
   </ItemGroup>
 </Project>

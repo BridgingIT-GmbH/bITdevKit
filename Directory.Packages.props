@@ -6,6 +6,7 @@
   <ItemGroup Label="dev dependencies">
     <PackageVersion Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.CosmosDb" Version="9.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageVersion Include="AspNetcore.HealthChecks.Publisher.Seq" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Sqlite" Version="9.0.0" />
@@ -82,6 +83,7 @@
     <PackageVersion Include="MudBlazor" Version="8.3.0" />
     <PackageVersion Include="NewId" Version="4.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="NSwag.ApiDescription.Client" Version="14.2.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.2.0" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.2.0" />

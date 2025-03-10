@@ -1,42 +1,38 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
-namespace Microsoft.Extensions.DependencyInjection;
+﻿namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
-using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Npgsql;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
 public static class ServiceCollectionExtensions
 {
-    public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
+    public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
-        Builder<SqlServerOptionsBuilder, SqlServerOptions> optionsBuilder,
-        Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder = null,
+        Builder<PostgresOptionsBuilder, PostgresOptions> optionsBuilder,
+        Action<NpgsqlDbContextOptionsBuilder> postgresOptionsBuilder = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
-        return services.AddSqlServerDbContext<TContext>(
-            optionsBuilder(new SqlServerOptionsBuilder()).Build(), sqlServerOptionsBuilder, lifetime);
+        return services.AddPostgresDbContext<TContext>(
+            optionsBuilder(new PostgresOptionsBuilder()).Build(), postgresOptionsBuilder, lifetime);
     }
 
-    public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
+    public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
-        SqlServerOptions options,
-        Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder = null,
+        PostgresOptions options,
+        Action<NpgsqlDbContextOptionsBuilder> postgresOptionsBuilder = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
         EnsureArg.IsNotNull(options, nameof(options));
         EnsureArg.IsNotNullOrEmpty(options.ConnectionString, nameof(options.ConnectionString));
-        sqlServerOptionsBuilder ??= c => { };
+        postgresOptionsBuilder ??= c => { };
 
         if (options.CommandLoggerEnabled)
         {
@@ -45,17 +41,26 @@ public static class ServiceCollectionExtensions
 
         RegisterInterceptors(services, options, lifetime);
 
-        services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
+        var connectionString = options.ConnectionString;
+        if (!string.IsNullOrEmpty(options.SearchPath))
+        {
+            var builder = new NpgsqlConnectionStringBuilder(options.ConnectionString);
+            builder.SearchPath = options.SearchPath;
+            connectionString = builder.ConnectionString;
+        }
 
-        return new SqlServerDbContextBuilderContext<TContext>(services,
+        services.AddDbContext<TContext>(ConfigureDbContext(services, options, connectionString, postgresOptionsBuilder), lifetime);
+
+        return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,
-            connectionString: options.ConnectionString,
-            provider: Provider.SqlServer);
+            connectionString: connectionString,
+            provider: Provider.Postgres);
 
         static Action<IServiceProvider, DbContextOptionsBuilder> ConfigureDbContext(
             IServiceCollection services,
-            SqlServerOptions options,
-            Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder)
+            PostgresOptions options,
+            string connectionString,
+            Action<NpgsqlDbContextOptionsBuilder> postgresOptionsBuilder)
         {
             return (sp, o) =>
             {
@@ -66,11 +71,19 @@ public static class ServiceCollectionExtensions
 
                 if (options.MigrationsEnabled)
                 {
-                    sqlServerOptionsBuilder(new SqlServerDbContextOptionsBuilder(o).MigrationsAssembly(
-                        options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name));
+                    var npgBuilder = new NpgsqlDbContextOptionsBuilder(o)
+                        .MigrationsAssembly(options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name);
+                    postgresOptionsBuilder(npgBuilder);
+
                     if (options.MigrationsSchemaEnabled)
                     {
-                        var schema = options.MigrationsSchemaName ?? typeof(TContext).Name.ToLowerInvariant().Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
+                        var schema = options.MigrationsSchemaName;
+                        if (string.IsNullOrEmpty(schema))
+                        {
+                            schema = typeof(TContext).Name.ToLowerInvariant()
+                                .Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
+                        }
+
                         if (!string.IsNullOrEmpty(schema))
                         {
                             if (schema.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
@@ -78,25 +91,26 @@ public static class ServiceCollectionExtensions
                             {
                                 schema = schema.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
-
-                            sqlServerOptionsBuilder(
-                                new SqlServerDbContextOptionsBuilder(o).MigrationsHistoryTable("__MigrationsHistory", schema));
+                            npgBuilder.MigrationsHistoryTable("__MigrationsHistory", schema);
                         }
                     }
                 }
 
-                o.UseSqlServer(options.ConnectionString, sqlServerOptionsBuilder);
-                //o.UseExceptionProcessor();
+                o.UseNpgsql(connectionString, npg =>
+                {
+                    postgresOptionsBuilder(npg);
+                    //if (options.MaxPoolSize.HasValue) npg.MaxPoolSize(options.MaxPoolSize.Value);
+                    //if (options.ConnectionIdleLifetime.HasValue) npg.ConnectionIdleLifetime(options.ConnectionIdleLifetime.Value);
+                });
 
                 if (options.LoggerEnabled)
                 {
-                    o.UseLoggerFactory(services.BuildServiceProvider().GetRequiredService<ILoggerFactory>());
+                    o.UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>());
                     o.EnableSensitiveDataLogging(options.SensitiveDataLoggingEnabled);
                 }
 
                 if (options.SimpleLoggerEnabled)
                 {
-                    // https://learn.microsoft.com/en-us/ef/core/logging-events-diagnostics/simple-logging
                     o.LogTo(Console.WriteLine,
                         [DbLoggerCategory.Database.Command.Name],
                         options.SimpleLoggerLevel,
@@ -109,33 +123,28 @@ public static class ServiceCollectionExtensions
                 {
                     o.UseMemoryCache(options.MemoryCache);
                 }
-
-                o.ConfigureWarnings(o => o.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS));
             };
         }
     }
 
-    public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
+    public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,
-        Action<SqlServerDbContextOptionsBuilder> sqlServerOptionsBuilder = null,
+        Action<NpgsqlDbContextOptionsBuilder> postgresOptionsBuilder = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
-        services.AddDbContext<TContext>(o => o.UseSqlServer(connectionString, sqlServerOptionsBuilder), lifetime);
+        services.AddDbContext<TContext>(o => o.UseNpgsql(connectionString, postgresOptionsBuilder), lifetime);
 
-        return new SqlServerDbContextBuilderContext<TContext>(services,
+        return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,
             connectionString: connectionString,
-            provider: Provider.SqlServer);
+            provider: Provider.Postgres);
     }
 
-    private static void RegisterInterceptors(
-        IServiceCollection services,
-        SqlServerOptions options,
-        ServiceLifetime lifetime)
+    private static void RegisterInterceptors(IServiceCollection services, PostgresOptions options, ServiceLifetime lifetime)
     {
         foreach (var interceptorType in options.InterceptorTypes.SafeNull())
         {
@@ -143,15 +152,12 @@ public static class ServiceCollectionExtensions
             {
                 case ServiceLifetime.Singleton:
                     services.TryAddSingleton(interceptorType);
-
                     break;
                 case ServiceLifetime.Transient:
                     services.TryAddTransient(interceptorType);
-
                     break;
                 default:
                     services.TryAddScoped(interceptorType);
-
                     break;
             }
         }

@@ -6,31 +6,14 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using Configuration;
+using EntityFrameworkCore;
 
-public class DbContextBuilderContext<TContext>(
+public class PostgresDbContextBuilderContext<TContext>(
     IServiceCollection services,
     ServiceLifetime lifetime = ServiceLifetime.Scoped,
     IConfiguration configuration = null,
     string connectionString = null,
     Provider provider = Provider.SqlServer)
+    : DbContextBuilderContext<TContext>(services, lifetime, configuration, connectionString, provider)
     where TContext : DbContext
-{
-    public IServiceCollection Services { get; } = services;
-
-    public ServiceLifetime Lifetime { get; } = lifetime;
-
-    public IConfiguration Configuration { get; } = configuration;
-
-    public string ConnectionString { get; } = connectionString;
-
-    public Provider Provider { get; } = provider;
-}
-
-public enum Provider
-{
-    SqlServer,
-    Sqlite,
-    InMemory,
-    Cosmos,
-    Postgres
-}
+{ }

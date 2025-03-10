@@ -71,9 +71,7 @@ public static class ServiceCollectionExtensions
                         options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name));
                     if (options.MigrationsSchemaEnabled)
                     {
-                        var schema = options.MigrationsSchemaName ??
-                            typeof(TContext).Name.ToLowerInvariant()
-                                .Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
+                        var schema = options.MigrationsSchemaName ?? typeof(TContext).Name.ToLowerInvariant().Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
                         if (!string.IsNullOrEmpty(schema))
                         {
                             if (schema.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
@@ -82,9 +80,8 @@ public static class ServiceCollectionExtensions
                                 schema = schema.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
 
-                            sqlServerOptionsBuilder(new SqlServerDbContextOptionsBuilder(o).MigrationsHistoryTable(
-                                "__MigrationsHistory",
-                                schema));
+                            sqlServerOptionsBuilder(
+                                new SqlServerDbContextOptionsBuilder(o).MigrationsHistoryTable("__MigrationsHistory", schema));
                         }
                     }
                 }

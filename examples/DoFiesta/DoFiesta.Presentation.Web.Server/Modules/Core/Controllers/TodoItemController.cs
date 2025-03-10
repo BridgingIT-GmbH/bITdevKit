@@ -23,6 +23,29 @@ public class TodoItemController( // TODO: move to minimal endpoints
     IMediator mediator,
     IAuthorizationService authorizationService) : ControllerBase
 {
+    //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Read))]
+    [HttpGet]
+    [Route("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<TodoItemModel>> GetById(string id)
+    {
+        var authResult = await authorizationService.AuthorizeAsync(
+            this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Read));
+        if (!authResult.Succeeded)
+        {
+            return this.Unauthorized();
+        }
+
+        var response = await mediator.Send(
+            new TodoItemFindOneQuery(id)).AnyContext();
+
+        return response.Result.ToOkActionResult();
+    }
+
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.List))]
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -46,7 +69,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
         // }
 
         var response = await mediator.Send(
-            new TodoItemFindAllQuery(filter)).AnyContext();
+            new TodoItemFindAllQuery { Filter = filter }).AnyContext();
 
         return response.Result.ToOkActionResult();
     }
@@ -74,34 +97,11 @@ public class TodoItemController( // TODO: move to minimal endpoints
         // }
 
         var response = await mediator.Send(
-            new TodoItemFindAllQuery(filter)).AnyContext();
+            new TodoItemFindAllQuery { Filter = filter }).AnyContext();
 
         return response.Result.ToOkActionResult();
     }
-
-    //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Read))]
-    [HttpGet]
-    [Route("{id}")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<ActionResult<TodoItemModel>> GetById(string id)
-    {
-        var authResult = await authorizationService.AuthorizeAsync(
-            this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Read));
-        if (!authResult.Succeeded)
-        {
-            return this.Unauthorized();
-        }
-
-        var response = await mediator.Send(
-            new TodoItemFindOneQuery(id)).AnyContext();
-
-        return response.Result.ToOkActionResult();
-    }
-
+    
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Write))]
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -118,7 +118,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
         }
 
         var response = await mediator.Send(
-            new TodoItemCreateCommand(model)).AnyContext();
+            new TodoItemCreateCommand { Model = model }).AnyContext();
         this.Response.Headers.AddOrUpdate(HttpHeaderKeys.EntityId, response.Result.IsSuccess ? response.Result.Value.Id : null);
 
         return response.Result.ToCreatedActionResult();
@@ -141,7 +141,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
         }
 
         var response = await mediator.Send(
-            new TodoItemUpdateCommand(model)).AnyContext();
+            new TodoItemUpdateCommand{ Model = model }).AnyContext();
 
         return response.Result.ToUpdatedActionResult();
     }

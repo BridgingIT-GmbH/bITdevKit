@@ -16,10 +16,10 @@ using Microsoft.Extensions.Logging;
 // QUERY ===============================
 //
 
-public class TodoItemFindAllQuery(FilterModel filter = null)
+public class TodoItemFindAllQuery
     : QueryRequestBase<Result<IEnumerable<TodoItemModel>>>/*, ICacheQuery*/
 {
-    public FilterModel Filter { get; } = filter;
+    public FilterModel Filter { get; set; }
 
     //CacheQueryOptions ICacheQuery.Options => new() { Key = $"application_{nameof(TodoItemFindAllQuery)}", SlidingExpiration = new TimeSpan(0, 0, 30) };
 }

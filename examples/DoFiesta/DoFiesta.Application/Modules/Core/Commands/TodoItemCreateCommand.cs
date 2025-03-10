@@ -17,10 +17,10 @@ using Microsoft.Extensions.Logging;
 // COMMAND ===============================
 //
 
-public class TodoItemCreateCommand(TodoItemModel model) : CommandRequestBase<Result<TodoItemModel>>,
+public class TodoItemCreateCommand : CommandRequestBase<Result<TodoItemModel>>,
     ICacheInvalidateCommand
 {
-    public TodoItemModel Model { get; } = model;
+    public TodoItemModel Model { get; set; }
 
     CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
 

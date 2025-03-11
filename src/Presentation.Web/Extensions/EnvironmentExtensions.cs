@@ -13,9 +13,8 @@ public static class EnvironmentExtensions
     private const string AZURE_FUNCTIONS_ENV = "AZURE_FUNCTIONS_ENVIRONMENT";
     private const string AZURE_WEBSITES_ENV = "WEBSITE_SITE_NAME";
 
-    // Static methods
     public static bool IsDocker()
-        => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        => Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true"; // https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-environment-variables#dotnet_running_in_container-and-dotnet_running_in_containers
 
     public static bool IsKubernetes()
         => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST"));
@@ -32,7 +31,6 @@ public static class EnvironmentExtensions
     public static bool IsContainerized()
         => IsDocker() || IsKubernetes();
 
-    // Extension methods
     public static bool IsDocker(this IHostEnvironment env)
         => IsDocker();
 

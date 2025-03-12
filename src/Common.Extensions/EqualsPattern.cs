@@ -18,7 +18,7 @@ public static partial class Extensions
     /// <param name="ignoreCase">Ignore case.</param>
     /// <returns>true if equal, otherwhise false.</returns>
     [DebuggerStepThrough]
-    public static bool EqualsPattern(this string source, string pattern, bool ignoreCase = true)
+    public static bool Match(this string source, string pattern, bool ignoreCase = true)
     {
         if (source is null && pattern is null)
         {
@@ -51,7 +51,7 @@ public static partial class Extensions
     /// <param name="ignoreCase">Ignore case.</param>
     /// <returns>true if equal, otherwhise false.</returns>
     [DebuggerStepThrough]
-    public static bool EqualsPatternAny(this string source, IEnumerable<string> patterns, bool ignoreCase = true)
+    public static bool MatchAny(this string source, IEnumerable<string> patterns, bool ignoreCase = true)
     {
         if (source is null && patterns is null)
         {
@@ -70,7 +70,7 @@ public static partial class Extensions
                 continue;
             }
 
-            if (source.EqualsPattern(pattern, ignoreCase))
+            if (source.Match(pattern, ignoreCase))
             {
                 return true;
             }

@@ -594,7 +594,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 var filesList = this.files
                     .Where(f => f.Key.StartsWith(normalizedPath + "/", StringComparison.OrdinalIgnoreCase) || f.Key == normalizedPath)
-                    .Where(f => f.Key.EqualsPattern(searchPattern))
+                    .Where(f => f.Key.Match(searchPattern))
                     .Select(f => f.Key)
                     //.Select(f => f.Key.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(f => !string.IsNullOrEmpty(f))
@@ -1368,7 +1368,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 var directoriesList = this.directories
                     .Where(d => d.StartsWith(normalizedPath, StringComparison.OrdinalIgnoreCase))
-                    .Where(d => d.EqualsPattern(searchPattern))
+                    .Where(d => d.Match(searchPattern))
                     //.Select(d => d.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(d => !string.IsNullOrEmpty(d))
                     .Distinct()

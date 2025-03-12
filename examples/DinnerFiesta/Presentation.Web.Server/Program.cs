@@ -303,13 +303,13 @@ void ConfigureTracing(TracerProviderBuilder provider)
         {
             options.RecordException = true;
             options.Filter = context =>
-                !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
+                !context.Request.Path.ToString().MatchAny(new RequestLoggingOptions().PathBlackListPatterns);
         })
         .AddHttpClientInstrumentation(options =>
         {
             options.RecordException = true;
             options.FilterHttpRequestMessage = request =>
-                !request.RequestUri.PathAndQuery.EqualsPatternAny(
+                !request.RequestUri.PathAndQuery.MatchAny(
                     new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
         })
         .AddSqlClientInstrumentation(options =>

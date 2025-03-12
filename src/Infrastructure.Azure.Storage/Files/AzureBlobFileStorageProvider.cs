@@ -572,7 +572,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
                 // Apply search pattern if specified
                 if (string.IsNullOrEmpty(searchPattern) ||
-                    Path.GetFileName(blobPath).EqualsPattern(searchPattern))
+                    Path.GetFileName(blobPath).Match(searchPattern))
                 {
                     files.Add(blobPath);
                 }
@@ -801,7 +801,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             // Apply search pattern if specified
             var result = string.IsNullOrEmpty(searchPattern)
                 ? directories
-                : directories.Where(dir =>  Path.GetFileName(dir.TrimEnd('/')).EqualsPattern(searchPattern));
+                : directories.Where(dir =>  Path.GetFileName(dir.TrimEnd('/')).Match(searchPattern));
 
             return Result<IEnumerable<string>>.Success(result);
         }

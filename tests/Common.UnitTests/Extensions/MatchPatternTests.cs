@@ -6,147 +6,147 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Extensions;
 
 [UnitTest("Common")]
-public class EqualsPatternTests
+public class MatchPatternTests
 {
     [Fact]
-    public void EqualsPattern_Misc_ReturnsExpected()
+    public void Match_Misc_ReturnsExpected()
     {
-        Assert.True("Test".EqualsPattern("*"));
-        Assert.True("Test".EqualsPattern("Test"));
-        Assert.False("Test1".EqualsPattern("Test"));
-        Assert.False("Test".EqualsPattern("test", false));
-        Assert.True("Test".EqualsPattern("Test", false));
-        Assert.True("1234Test".EqualsPattern("*Test"));
-        Assert.False("Test123".EqualsPattern("test*", false));
-        Assert.True("Test234".EqualsPattern("Test*", false));
-        Assert.True("Test1".EqualsPattern("Test*"));
-        Assert.False("1Test1".EqualsPattern("Test*"));
-        Assert.True("1Test1".EqualsPattern("*Test*"));
-        Assert.True("³[]³}{]}{]}³1Test1³²[²³{[]²³$&%/$&%".EqualsPattern("*Test*"));
-        Assert.True("Te\\asd[\\w]st".EqualsPattern("Te\\asd[\\w]st"));
+        Assert.True("Test".Match("*"));
+        Assert.True("Test".Match("Test"));
+        Assert.False("Test1".Match("Test"));
+        Assert.False("Test".Match("test", false));
+        Assert.True("Test".Match("Test", false));
+        Assert.True("1234Test".Match("*Test"));
+        Assert.False("Test123".Match("test*", false));
+        Assert.True("Test234".Match("Test*", false));
+        Assert.True("Test1".Match("Test*"));
+        Assert.False("1Test1".Match("Test*"));
+        Assert.True("1Test1".Match("*Test*"));
+        Assert.True("³[]³}{]}{]}³1Test1³²[²³{[]²³$&%/$&%".Match("*Test*"));
+        Assert.True("Te\\asd[\\w]st".Match("Te\\asd[\\w]st"));
     }
 
     [Fact]
-    public void EqualsPattern_SourceIsNullAndPatternIsNull_ReturnsTrue()
+    public void Match_SourceIsNullAndPatternIsNull_ReturnsTrue()
     {
         // Arrange
         const string source = null;
         const string pattern = null;
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_SourceIsNullAndPatternIsNotNull_ReturnsFalse()
+    public void Match_SourceIsNullAndPatternIsNotNull_ReturnsFalse()
     {
         // Arrange
         const string source = null;
         const string pattern = "abc";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeFalse();
     }
 
     [Fact]
-    public void EqualsPattern_SourceIsNotNullAndPatternIsNull_ReturnsFalse()
+    public void Match_SourceIsNotNullAndPatternIsNull_ReturnsFalse()
     {
         // Arrange
         const string source = "abc";
         const string pattern = null;
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeFalse();
     }
 
     [Fact]
-    public void EqualsPattern_PatternMatches_ReturnsTrue()
+    public void Match_PatternMatches_ReturnsTrue()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "abc*def";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternDoesNotMatch_ReturnsFalse()
+    public void Match_PatternDoesNotMatch_ReturnsFalse()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "xyz*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeFalse();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithMultipleWildcards_MatchesCorrectly()
+    public void Match_PatternWithMultipleWildcards_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef123";
         const string pattern = "abc*ef*123";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithLeadingWildcards_MatchesCorrectly()
+    public void Match_PatternWithLeadingWildcards_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef123";
         const string pattern = "*ef123";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithTrailingWildcards_MatchesCorrectly()
+    public void Match_PatternWithTrailingWildcards_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef123";
         const string pattern = "abc*ef*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardOnly_MatchesAnySource()
+    public void Match_PatternWithWildcardOnly_MatchesAnySource()
     {
         // Arrange
         const string source = "abcdef123";
         const string pattern = "*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
@@ -160,7 +160,7 @@ public class EqualsPatternTests
         IEnumerable<string> patterns = null;
 
         // Act
-        var result = source.EqualsPatternAny(patterns);
+        var result = source.MatchAny(patterns);
 
         // Assert
         result.ShouldBeTrue();
@@ -174,7 +174,7 @@ public class EqualsPatternTests
         IEnumerable<string> patterns = null;
 
         // Act
-        var result = source.EqualsPatternAny(patterns);
+        var result = source.MatchAny(patterns);
 
         // Assert
         result.ShouldBeFalse();
@@ -188,7 +188,7 @@ public class EqualsPatternTests
         IEnumerable<string> patterns = new List<string> { "xyz*", "def*" };
 
         // Act
-        var result = source.EqualsPatternAny(patterns);
+        var result = source.MatchAny(patterns);
 
         // Assert
         result.ShouldBeFalse();
@@ -202,77 +202,77 @@ public class EqualsPatternTests
         IEnumerable<string> patterns = new List<string> { "xyz*", "abc*" };
 
         // Act
-        var result = source.EqualsPatternAny(patterns);
+        var result = source.MatchAny(patterns);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardAtBeginning_MatchesCorrectly()
+    public void Match_PatternWithWildcardAtBeginning_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "*def";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardAtEnd_MatchesCorrectly()
+    public void Match_PatternWithWildcardAtEnd_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "abc*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardsAtBothEnds_MatchesCorrectly()
+    public void Match_PatternWithWildcardsAtBothEnds_MatchesCorrectly()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "*bc*ef*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeTrue();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardOnlyAtBeginning_DoesNotMatch()
+    public void Match_PatternWithWildcardOnlyAtBeginning_DoesNotMatch()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "*abc";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeFalse();
     }
 
     [Fact]
-    public void EqualsPattern_PatternWithWildcardOnlyAtEnd_DoesNotMatch()
+    public void Match_PatternWithWildcardOnlyAtEnd_DoesNotMatch()
     {
         // Arrange
         const string source = "abcdef";
         const string pattern = "def*";
 
         // Act
-        var result = source.EqualsPattern(pattern);
+        var result = source.Match(pattern);
 
         // Assert
         result.ShouldBeFalse();

@@ -48,7 +48,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
 
             try
             {
-                var exists = this.files.ContainsKey(normalizedPath) || this.directories.Contains(normalizedPath); // Report progress for existence check (minimal operation)
+                var exists = this.files.ContainsKey(normalizedPath) || this.directories.Contains(normalizedPath); 
                 if (!exists)
                 {
                     return Result.Failure()
@@ -594,7 +594,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 var filesList = this.files
                     .Where(f => f.Key.StartsWith(normalizedPath + "/", StringComparison.OrdinalIgnoreCase) || f.Key == normalizedPath)
-                    .Where(f => this.WildcardMatch(f.Key, searchPattern))
+                    .Where(f => f.Key.EqualsPattern(searchPattern))
                     .Select(f => f.Key)
                     //.Select(f => f.Key.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(f => !string.IsNullOrEmpty(f))
@@ -1368,7 +1368,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 var directoriesList = this.directories
                     .Where(d => d.StartsWith(normalizedPath, StringComparison.OrdinalIgnoreCase))
-                    .Where(d => this.WildcardMatch(d, searchPattern))
+                    .Where(d => d.EqualsPattern(searchPattern))
                     //.Select(d => d.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(d => !string.IsNullOrEmpty(d))
                     .Distinct()
@@ -1455,67 +1455,6 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             .TrimStart('/')
             .TrimEnd('/')
             .ToLowerInvariant();
-    }
-
-    private bool WildcardMatch(string path, string pattern)
-    {
-        if (string.IsNullOrEmpty(pattern)) return true;
-        if (pattern == "*") return true;
-
-        // Normalize both path and pattern to lowercase for case-insensitive matching
-        path = path?.ToLowerInvariant();
-        pattern = pattern?.ToLowerInvariant();
-
-        // Use a recursive or iterative approach to match the pattern with wildcards
-        return MatchPattern(path, pattern, 0, 0);
-
-        bool MatchPattern(string pathStr, string patternStr, int pathIndex, int patternIndex)
-        {
-            // If we've reached the end of both path and pattern, it's a match
-            if (patternIndex == patternStr.Length && pathIndex == pathStr.Length)
-                return true;
-
-            // If we've reached the end of the pattern but not the path, no match
-            if (patternIndex == patternStr.Length)
-                return false;
-
-            // If we've reached the end of the path but not the pattern, check if remaining pattern is all '*'
-            if (pathIndex == pathStr.Length)
-            {
-                for (var i = patternIndex; i < patternStr.Length; i++)
-                {
-                    if (patternStr[i] != '*')
-                        return false;
-                }
-                return true;
-            }
-
-            // Handle '*' wildcard (matches zero or more characters)
-            if (patternStr[patternIndex] == '*')
-            {
-                // Try matching zero characters or skip ahead in path
-                for (var i = 0; i <= pathStr.Length - pathIndex; i++)
-                {
-                    if (MatchPattern(pathStr, patternStr, pathIndex + i, patternIndex + 1))
-                        return true;
-                }
-                return false;
-            }
-
-            // Handle '?' wildcard (matches exactly one character)
-            if (patternStr[patternIndex] == '?')
-            {
-                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
-            }
-
-            // Match regular characters
-            if (pathStr[pathIndex] == patternStr[patternIndex])
-            {
-                return MatchPattern(pathStr, patternStr, pathIndex + 1, patternIndex + 1);
-            }
-
-            return false;
-        }
     }
 
     private string GetParentPath(string path)

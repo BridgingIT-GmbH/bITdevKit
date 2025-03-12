@@ -11,9 +11,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using global::Azure.Storage;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
+using global::Azure.Storage.Blobs;
 using global::Azure.Storage.Blobs.Models;
 
 /// <summary>
@@ -24,7 +24,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     private readonly string connectionString;
     private readonly Lazy<BlobServiceClient> lazyBlobServiceClient;
     private readonly string containerName;
-    private readonly bool createContainerIfNotExists;
+    private readonly bool ensureContainer;
     private bool disposed;
 
     /// <summary>
@@ -33,26 +33,19 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     /// <param name="connectionString">The Azure Storage connection string.</param>
     /// <param name="containerName">The name of the blob container.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
-    /// <param name="createContainerIfNotExists">Whether to create the container if it doesn't exist.</param>
+    /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
     public AzureBlobStorageProvider(
         string locationName,
         string connectionString,
         string containerName,
-        bool createContainerIfNotExists = true) : base(locationName)
+        bool ensureContainer = true) : base(locationName)
     {
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            throw new ArgumentException("Connection string cannot be null or empty", nameof(connectionString));
-        }
-
-        if (string.IsNullOrEmpty(containerName))
-        {
-            throw new ArgumentException("Container name cannot be null or empty", nameof(containerName));
-        }
+        ArgumentNullException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
+        ArgumentNullException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
 
         this.connectionString = connectionString;
         this.containerName = containerName;
-        this.createContainerIfNotExists = createContainerIfNotExists;
+        this.ensureContainer = ensureContainer;
 
         // Initialize BlobServiceClient lazily
         this.lazyBlobServiceClient = new Lazy<BlobServiceClient>(
@@ -63,17 +56,18 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     /// <summary>
     /// Initializes a new instance of AzureBlobStorageProvider with a pre-configured BlobServiceClient.
     /// </summary>
-    /// <param name="blobServiceClient">A pre-configured Azure Blob Service client.</param>
+    /// <param name="client">A pre-configured Azure Blob Service client.</param>
     /// <param name="containerName">The name of the blob container.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
-    /// <param name="createContainerIfNotExists">Whether to create the container if it doesn't exist.</param>
+    /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
     public AzureBlobStorageProvider(
         string locationName,
-        BlobServiceClient blobServiceClient,
+        BlobServiceClient client,
         string containerName,
-        bool createContainerIfNotExists = true) : base(locationName)
+        bool ensureContainer = true) : base(locationName)
     {
-        ArgumentNullException.ThrowIfNull(blobServiceClient);
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
 
         if (string.IsNullOrEmpty(containerName))
         {
@@ -81,70 +75,74 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
         }
 
         this.containerName = containerName;
-        this.createContainerIfNotExists = createContainerIfNotExists;
+        this.ensureContainer = ensureContainer;
 
         // Initialize with provided BlobServiceClient
-        this.lazyBlobServiceClient = new Lazy<BlobServiceClient>(() => blobServiceClient);
+        this.lazyBlobServiceClient = new Lazy<BlobServiceClient>(() => client);
     }
 
-    private BlobServiceClient BlobServiceClient => this.lazyBlobServiceClient.Value;
-
-    private async Task<BlobContainerClient> GetContainerClientAsync()
-    {
-        var containerClient = this.BlobServiceClient.GetBlobContainerClient(this.containerName);
-
-        if (this.createContainerIfNotExists)
-        {
-            await containerClient.CreateIfNotExistsAsync();
-        }
-
-        return containerClient;
-    }
-
-    private string NormalizePath(string path)
-    {
-        return path?.Replace('\\', '/').TrimStart('/');
-    }
-
-    private bool MatchesPattern(string fileName, string pattern)
-    {
-        // Simple wildcard matching for search patterns
-        if (pattern == "*")
-        {
-            return true;
-        }
-
-        // Handle *.ext pattern
-        if (pattern.StartsWith("*") && pattern.Length > 1)
-        {
-            var ext = pattern[1..];
-            return fileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // Handle exact match
-        return string.Equals(fileName, pattern, StringComparison.OrdinalIgnoreCase);
-    }
+    private BlobServiceClient Client => this.lazyBlobServiceClient.Value;
 
     /// <inheritdoc />
     public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled checking existence of file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
             var blobClient = containerClient.GetBlobClient(this.NormalizePath(path));
 
             var exists = await blobClient.ExistsAsync(cancellationToken);
-            return Result.SuccessIf(exists.Value);
+            if (!exists.Value)
+            {
+                return Result.Failure()
+                    .WithError(new NotFoundError("File not found"));
+            }
+
+            // Report progress if needed
+            this.ReportProgress(progress, path, 0, 1);
+
+            return Result.Success()
+                .WithMessage($"Checked existence of file at '{path}'");
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Failed to check if blob exists: {ex.Message}");
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to check if blob exists at '{path}'");
         }
     }
 
     /// <inheritdoc />
     public override async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled reading file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
@@ -152,31 +150,71 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
             if (!await blobClient.ExistsAsync(cancellationToken))
             {
-                return Result<Stream>.Failure($"File '{path}' not found");
+                return Result<Stream>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to read file at '{path}'");
             }
 
-            var downloadInfo = await blobClient.DownloadAsync(cancellationToken);
-            var memoryStream = new MemoryStream();
+            try
+            {
+                var downloadInfo = await blobClient.DownloadAsync(cancellationToken);
+                var memoryStream = new MemoryStream();
 
-            // Setup progress reporting
-            //var totalBytes = downloadInfo.Value.ContentLength;
-            //var downloadedBytes = 0L;
+                // Copy the content to memory stream
+                await downloadInfo.Value.Content.CopyToAsync(memoryStream, 81920, cancellationToken);
+                memoryStream.Position = 0;
 
-            await downloadInfo.Value.Content.CopyToAsync(memoryStream, 81920, cancellationToken);
-            //bytesRead => ReportProgress(progress, path, downloadedBytes += bytesRead, totalBytes)); // CopyToAsync has no read action
+                // Report progress if needed
+                this.ReportProgress(progress, path, memoryStream.Length, 1);
 
-            memoryStream.Position = 0;
-            return Result<Stream>.Success(memoryStream);
+                return Result<Stream>.Success(memoryStream)
+                    .WithMessage($"Read file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error reading file at '{path}'");
+            }
         }
         catch (Exception ex)
         {
-            return Result<Stream>.Failure($"Failed to read file: {ex.Message}");
+            return Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to read file at '{path}'");
         }
     }
 
     /// <inheritdoc />
     public override async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (content == null)
+        {
+            return Result.Failure()
+                .WithError(new ArgumentError("Content stream cannot be null"))
+                .WithMessage("Invalid content provided for writing");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled writing file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
@@ -187,23 +225,51 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             var options = new BlobUploadOptions
             {
                 ProgressHandler = new Progress<long>(uploadedBytes =>
-                    this.ReportProgress(progress, path, uploadedBytes, totalBytes))
+                    this.ReportProgress(progress, path, uploadedBytes, 1))
             };
 
             await blobClient.UploadAsync(content, options, cancellationToken);
-            return Result.Success();
+
+            return Result.Success()
+                .WithMessage($"Wrote file at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during write"))
+                .WithMessage($"Cancelled writing file at '{path}'");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Failed to write file: {ex.Message}");
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to write file at '{path}'");
         }
     }
-
-    // Additional method implementations for AzureBlobStorageProvider
 
     /// <inheritdoc />
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled deleting file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
@@ -211,23 +277,57 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
             if (!await blobClient.ExistsAsync(cancellationToken))
             {
-                return Result.Failure($"File '{path}' not found");
+                return Result.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to delete file at '{path}'");
             }
 
-            await blobClient.DeleteAsync(cancellationToken: cancellationToken);
-            this.ReportProgress(progress, path, 0, 1, 1);
+            try
+            {
+                await blobClient.DeleteAsync(cancellationToken: cancellationToken);
+                this.ReportProgress(progress, path, 0, 1);
 
-            return Result.Success();
+                return Result.Success()
+                    .WithMessage($"Deleted file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error deleting file at '{path}'");
+            }
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Failed to delete file: {ex.Message}");
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to delete file at '{path}'");
         }
     }
 
     /// <inheritdoc />
     public override async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<string>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<string>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled computing checksum for file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
@@ -235,28 +335,64 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
             if (!await blobClient.ExistsAsync(cancellationToken))
             {
-                return Result<string>.Failure($"File '{path}' not found");
+                return Result<string>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to compute checksum for file at '{path}'");
             }
 
-            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
-
-            // Azure stores MD5 hash for blobs
-            if (properties.Value.ContentHash?.Length > 0)
+            try
             {
-                return Result<string>.Success(Convert.ToBase64String(properties.Value.ContentHash));
-            }
+                var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
-            return Result<string>.Failure("MD5 hash not available for this blob");
+                if (properties.Value.ContentHash?.Length > 0)
+                {
+                    var hash = Convert.ToBase64String(properties.Value.ContentHash);
+                    return Result<string>.Success(hash)
+                        .WithMessage($"Computed checksum for file at '{path}'");
+                }
+
+                return Result<string>.Failure()
+                    .WithError(new FileSystemError("MD5 hash not available for this blob", path))
+                    .WithMessage($"Failed to compute checksum for file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<string>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error computing checksum for file at '{path}'");
+            }
         }
         catch (Exception ex)
         {
-            return Result<string>.Failure($"Failed to get checksum: {ex.Message}");
+            return Result<string>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to compute checksum for file at '{path}'");
         }
     }
 
     /// <inheritdoc />
     public override async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<FileMetadata>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<FileMetadata>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled retrieving metadata for file at '{path}'");
+        }
+
         try
         {
             var containerClient = await this.GetContainerClientAsync();
@@ -264,23 +400,67 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
             if (!await blobClient.ExistsAsync(cancellationToken))
             {
-                return Result<FileMetadata>.Failure($"File '{path}' not found");
+                return Result<FileMetadata>.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to retrieve metadata for file at '{path}'");
             }
 
-            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
-
-            var metadata = new FileMetadata
+            try
             {
-                Path = path,
-                Length = properties.Value.ContentLength,
-                LastModified = properties.Value.LastModified.DateTime,
-            };
+                var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+                var metadata = new FileMetadata
+                {
+                    Path = path,
+                    Length = properties.Value.ContentLength,
+                    LastModified = properties.Value.LastModified.DateTime
+                };
 
-            return Result<FileMetadata>.Success(metadata);
+                return Result<FileMetadata>.Success(metadata)
+                    .WithMessage($"Retrieved metadata for file at '{path}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}'");
+            }
+            catch (Exception ex)
+            {
+                return Result<FileMetadata>.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error retrieving metadata for file at '{path}'");
+            }
         }
         catch (Exception ex)
         {
-            return Result<FileMetadata>.Failure($"Failed to get file info: {ex.Message}");
+            return Result<FileMetadata>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Failed to retrieve metadata for file at '{path}'");
+        }
+    }
+
+    /// <inheritdoc />
+    public override async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Check if we can access the container
+            var containerClient = await this.GetContainerClientAsync();
+            await containerClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+            return Result.Success()
+                .WithMessage($"Azure Blob Storage at '{this.LocationName}' is healthy");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", this.containerName, ex))
+                .WithMessage($"Permission denied for Azure Blob Storage at '{this.LocationName}'");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Health check failed for Azure Blob Storage at '{this.LocationName}'");
         }
     }
 
@@ -349,8 +529,8 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
     /// <inheritdoc />
     public override async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
-    string path, string searchPattern = null, bool recursive = false,
-    string continuationToken = null, CancellationToken cancellationToken = default)
+        string path, string searchPattern = null, bool recursive = false,
+        string continuationToken = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -392,7 +572,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
                 // Apply search pattern if specified
                 if (string.IsNullOrEmpty(searchPattern) ||
-                    this.MatchesPattern(Path.GetFileName(blobPath), searchPattern))
+                    Path.GetFileName(blobPath).EqualsPattern(searchPattern))
                 {
                     files.Add(blobPath);
                 }
@@ -451,115 +631,6 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     public override async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.RenameFileAsync(sourcePath, destinationPath, progress, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public override async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var errors = new List<string>();
-            var totalFiles = filePairs.Count();
-            var processedFiles = 0;
-
-            foreach (var (sourcePath, destinationPath) in filePairs)
-            {
-                var result = await this.CopyFileAsync(sourcePath, destinationPath, null, cancellationToken);
-                if (!result.IsSuccess)
-                {
-                    errors.Add($"Failed to copy '{sourcePath}' to '{destinationPath}': {result}");
-                }
-
-                processedFiles++;
-                this.ReportProgress(progress, "Batch copy operation", 0, processedFiles, totalFiles);
-            }
-
-            if (errors.Count != 0)
-            {
-                return Result.Failure($"Some files failed to copy: {string.Join("; ", errors.ToString(", "))}");
-            }
-
-            return Result.Success();
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure($"Failed to copy files: {ex.Message}");
-        }
-    }
-
-    /// <inheritdoc />
-    public override async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var copyResult = await this.CopyFilesAsync(filePairs, progress, cancellationToken);
-            if (!copyResult.IsSuccess)
-            {
-                return copyResult;
-            }
-
-            var errors = new List<string>();
-            var totalFiles = filePairs.Count();
-            var processedFiles = 0;
-
-            foreach (var (sourcePath, _) in filePairs)
-            {
-                var result = await this.DeleteFileAsync(sourcePath, null, cancellationToken);
-                if (!result.IsSuccess)
-                {
-                    errors.Add($"Failed to delete source file '{sourcePath}' after copying: {result}");
-                }
-
-                processedFiles++;
-                this.ReportProgress(progress, "Batch move operation", 0, processedFiles, totalFiles);
-            }
-
-            if (errors.Count != 0)
-            {
-                return Result.Failure($"Some source files failed to delete after copying: {string.Join("; ", errors.ToString(", "))}");
-            }
-
-            return Result.Success();
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure($"Failed to move files: {ex.Message}");
-        }
-    }
-
-    /// <inheritdoc />
-    public override async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var errors = new List<string>();
-            var pathsList = paths.ToList();
-            var totalFiles = pathsList.Count;
-            var processedFiles = 0;
-
-            foreach (var path in pathsList)
-            {
-                var result = await this.DeleteFileAsync(path, null, cancellationToken);
-                if (!result.IsSuccess)
-                {
-                    errors.Add($"Failed to delete '{path}': {result}");
-                }
-
-                processedFiles++;
-                this.ReportProgress(progress, "Batch delete operation", 0, processedFiles, totalFiles);
-            }
-
-            if (errors.Count != 0)
-            {
-                return Result.Failure($"Some files failed to delete: {string.Join("; ", errors.ToString(", "))}");
-            }
-
-            return Result.Success();
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure($"Failed to delete files: {ex.Message}");
-        }
     }
 
     /// <inheritdoc />
@@ -730,7 +801,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             // Apply search pattern if specified
             var result = string.IsNullOrEmpty(searchPattern)
                 ? directories
-                : directories.Where(dir => this.MatchesPattern(Path.GetFileName(dir.TrimEnd('/')), searchPattern));
+                : directories.Where(dir =>  Path.GetFileName(dir.TrimEnd('/')).EqualsPattern(searchPattern));
 
             return Result<IEnumerable<string>>.Success(result);
         }
@@ -748,16 +819,41 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
         public string NextMarker { get; } = continuationToken;
     }
 
-    // Update the ReportProgress method to match the signature in your code
-    private void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
+    private async Task<BlobContainerClient> GetContainerClientAsync()
     {
-        progress?.Report(new FileProgress
+        var client = this.Client.GetBlobContainerClient(this.containerName);
+
+        if (this.ensureContainer)
         {
-            BytesProcessed = bytesProcessed,
-            FilesProcessed = filesProcessed,
-            TotalFiles = totalFiles
-        });
+            await client.CreateIfNotExistsAsync();
+        }
+
+        return client;
     }
+
+    private string NormalizePath(string path)
+    {
+        return path?.Replace('\\', '/').TrimStart('/');
+    }
+
+    //private bool MatchesPattern(string fileName, string pattern)
+    //{
+    //    // Simple wildcard matching for search patterns
+    //    if (pattern == "*")
+    //    {
+    //        return true;
+    //    }
+
+    //    // Handle *.ext pattern
+    //    if (pattern.StartsWith("*") && pattern.Length > 1)
+    //    {
+    //        var ext = pattern[1..];
+    //        return fileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase);
+    //    }
+
+    //    // Handle exact match
+    //    return string.Equals(fileName, pattern, StringComparison.OrdinalIgnoreCase);
+    //}
 
     /// <inheritdoc />
     public void Dispose()
@@ -784,21 +880,5 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
         }
 
         this.disposed = true;
-    }
-
-    /// <inheritdoc />
-    public override async async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            // Check if we can access the container
-            var containerClient = await this.GetContainerClientAsync();
-            await containerClient.GetPropertiesAsync(cancellationToken: cancellationToken);
-            return Result.Success();
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure($"Health check failed: {ex.Message}");
-        }
     }
 }

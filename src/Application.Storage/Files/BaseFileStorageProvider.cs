@@ -354,68 +354,192 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
-    public virtual Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (filePairs?.Any() != true)
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("No file pairs provided", ""))
+                .WithMessage("Invalid file pairs for copy operation");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage("Cancelled copying multiple files");
+        }
+
         try
         {
-            // Placeholder for concrete implementation
-            throw new NotImplementedException("CopyFilesAsync must be implemented by concrete providers.");
-        }
-        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
-        {
-            var failedPaths = filePairs.Select(p => p.SourcePath).ToList();
-            return Task.FromResult(Result.Failure()
-                .WithError(new PartialOperationError("Partial copy failure", failedPaths, ex))
-                .WithMessage("Failed to copy some files due to file system issues"));
+            var failedPaths = new List<string>();
+            long totalBytes = 0;
+            long filesProcessed = 0;
+            var totalFiles = filePairs.Count();
+
+            foreach (var (source, dest) in filePairs)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Result.Failure()
+                        .WithError(new OperationCancelledError("Operation cancelled during batch copy"))
+                        .WithMessage($"Cancelled copying files after processing {filesProcessed}/{totalFiles}");
+                }
+
+                var result = await this.CopyFileAsync(source, dest, progress, cancellationToken);
+                if (result.IsFailure)
+                {
+                    failedPaths.Add(source);
+                    continue;
+                }
+
+                filesProcessed++;
+                var metadata = await this.GetFileInfoAsync(source, cancellationToken);
+                totalBytes += metadata.Value.Length;
+                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
+            }
+
+            if (failedPaths.Count != 0)
+            {
+                return Result.Failure()
+                    .WithError(new PartialOperationError("Partial copy failure", failedPaths))
+                    .WithMessage($"Copied {filesProcessed}/{totalFiles} files, {failedPaths.Count} failed");
+            }
+
+            return Result.Success()
+                .WithMessage($"Copied all {totalFiles} files");
         }
         catch (Exception ex)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage("Unexpected error copying multiple files"));
+                .WithMessage("Unexpected error copying multiple files");
         }
     }
 
-    public virtual Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (paths?.Any() != true)
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("No paths provided", ""))
+                .WithMessage("Invalid paths for delete operation");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage("Cancelled deleting multiple files");
+        }
+
         try
         {
-            // Placeholder for concrete implementation
-            throw new NotImplementedException("MoveFilesAsync must be implemented by concrete providers.");
-        }
-        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
-        {
-            var failedPaths = filePairs.Select(p => p.SourcePath).ToList();
-            return Task.FromResult(Result.Failure()
-                .WithError(new PartialOperationError("Partial move failure", failedPaths, ex))
-                .WithMessage("Failed to move some files due to file system issues"));
+            var failedPaths = new List<string>();
+            long totalBytes = 0;
+            long filesProcessed = 0;
+            var totalFiles = paths.Count();
+
+            foreach (var path in paths)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Result.Failure()
+                        .WithError(new OperationCancelledError("Operation cancelled during batch delete"))
+                        .WithMessage($"Cancelled deleting files after processing {filesProcessed}/{totalFiles}");
+                }
+
+                var metadata = await this.GetFileInfoAsync(path, cancellationToken);
+                var result = await this.DeleteFileAsync(path, progress, cancellationToken);
+                if (result.IsFailure)
+                {
+                    failedPaths.Add(path);
+                    continue;
+                }
+
+                filesProcessed++;
+                totalBytes += metadata.Value.Length;
+                this.ReportProgress(progress, path, totalBytes, filesProcessed, totalFiles);
+            }
+
+            if (failedPaths.Count != 0)
+            {
+                return Result.Failure()
+                    .WithError(new PartialOperationError("Partial delete failure", failedPaths))
+                    .WithMessage($"Deleted {filesProcessed}/{totalFiles} files, {failedPaths.Count} failed");
+            }
+
+            return Result.Success()
+                .WithMessage($"Deleted all {totalFiles} files");
         }
         catch (Exception ex)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage("Unexpected error moving multiple files"));
+                .WithMessage("Unexpected error deleting multiple files");
         }
     }
 
-    public virtual Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
+        if (filePairs?.Any() != true)
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("No file pairs provided", ""))
+                .WithMessage("Invalid file pairs for move operation");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage("Cancelled moving multiple files");
+        }
+
         try
         {
-            // Placeholder for concrete implementation
-            throw new NotImplementedException("DeleteFilesAsync must be implemented by concrete providers.");
-        }
-        catch (Exception ex) when (ex is AggregateException agg ? agg.InnerExceptions.Any(e => e is FileNotFoundException or UnauthorizedAccessException) : false)
-        {
-            return Task.FromResult(Result.Failure()
-                .WithError(new PartialOperationError("Partial delete failure", paths, ex))
-                .WithMessage("Failed to delete some files due to file system issues"));
+            var failedPaths = new List<string>();
+            long totalBytes = 0;
+            long filesProcessed = 0;
+            var totalFiles = filePairs.Count();
+
+            foreach (var (source, dest) in filePairs)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Result.Failure()
+                        .WithError(new OperationCancelledError("Operation cancelled during batch move"))
+                        .WithMessage($"Cancelled moving files after processing {filesProcessed}/{totalFiles}");
+                }
+
+                var result = await this.MoveFileAsync(source, dest, progress, cancellationToken);
+                if (result.IsFailure)
+                {
+                    failedPaths.Add(source);
+                    continue;
+                }
+
+                filesProcessed++;
+                var metadata = await this.GetFileInfoAsync(dest, cancellationToken);
+                totalBytes += metadata.Value.Length;
+                this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
+            }
+
+            if (failedPaths.Count != 0)
+            {
+                return Result.Failure()
+                    .WithError(new PartialOperationError("Partial move failure", failedPaths))
+                    .WithMessage($"Moved {filesProcessed}/{totalFiles} files, {failedPaths.Count} failed");
+            }
+
+            return Result.Success()
+                .WithMessage($"Moved all {totalFiles} files");
         }
         catch (Exception ex)
         {
-            return Task.FromResult(Result.Failure()
+            return Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage("Unexpected error deleting multiple files"));
+                .WithMessage("Unexpected error moving multiple files");
         }
     }
 
@@ -548,17 +672,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
-    private void ReportProgress(IProgress<FileProgress> progress, string path, long bytes, int files)
+    public virtual void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
     {
-        if (progress != null)
+        progress?.Report(new FileProgress
         {
-            var metadata = GetFileInfoAsync(path, CancellationToken.None).Result.Value; // Simplified for example
-            progress.Report(new FileProgress
-            {
-                BytesProcessed = bytes,
-                FilesProcessed = files,
-                TotalFiles = 1 // Adjust for multiple files in bulk operations
-            });
-        }
+            BytesProcessed = bytesProcessed,
+            FilesProcessed = filesProcessed,
+            TotalFiles = totalFiles
+        });
     }
 }

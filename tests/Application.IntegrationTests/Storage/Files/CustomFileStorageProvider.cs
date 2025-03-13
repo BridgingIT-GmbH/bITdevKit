@@ -38,7 +38,7 @@ public class CustomFileStorageProvider : IFileStorageProvider
         return Task.FromResult(Result<string>.Failure().WithError(new FileSystemError("Not implemented")));
     }
 
-    public Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result<FileMetadata>.Failure().WithError(new FileSystemError("Not implemented")));
     }

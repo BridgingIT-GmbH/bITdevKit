@@ -101,10 +101,10 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
-    public async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogInfo(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
-        var result = await this.innerProvider.GetFileInfoAsync(path, cancellationToken);
+        var result = await this.innerProvider.GetFileMetadataAsync(path, cancellationToken);
         if (result.IsSuccess)
         {
             this.logger.LogInformation("{LogKey} file storage: successfully retrieved metadata for file at '{Path}'", Constants.LogKey, path);

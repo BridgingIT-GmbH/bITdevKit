@@ -344,7 +344,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         }, cancellationToken);
     }
 
-    public override async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -629,12 +629,12 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         }, cancellationToken);
     }
 
-    public override async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath} -> {destinationPath}"))
+                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{path} -> {destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -642,10 +642,10 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'");
+                .WithMessage($"Cancelled copying file from '{path}' to '{destinationPath}'");
         }
 
-        var normalizedSource = this.NormalizePath(sourcePath);
+        var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
         return await Task.Run(() =>
         {
@@ -653,7 +653,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(new TimeoutException("Operation timed out due to concurrent access")))
-                    .WithMessage($"Failed to acquire lock for copying file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Failed to acquire lock for copying file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -661,8 +661,8 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 if (!this.files.TryGetValue(normalizedSource, out var content))
                 {
                     return Result.Failure()
-                        .WithError(new FileSystemError("Source file not found", sourcePath))
-                        .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'");
+                        .WithError(new FileSystemError("Source file not found", path))
+                        .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'");
                 }
 
                 // Update directories for destination
@@ -682,19 +682,19 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 this.files[normalizedDest] = content;
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
-                    .WithMessage($"Copied file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Copied file from '{path}' to '{destinationPath}'");
             }
             catch (OperationCanceledException)
             {
                 return Result.Failure()
                     .WithError(new OperationCancelledError("Operation cancelled during file copy"))
-                    .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Cancelled copying file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Unexpected error copying file from '{path}' to '{destinationPath}'");
             }
             finally
             {
@@ -703,12 +703,12 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         }, cancellationToken);
     }
 
-    public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(oldPath) || string.IsNullOrEmpty(newPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{oldPath} -> {newPath}"))
+                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{path} -> {destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -716,18 +716,18 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'");
+                .WithMessage($"Cancelled renaming file from '{path}' to '{destinationPath}'");
         }
 
-        var normalizedOld = this.NormalizePath(oldPath);
-        var normalizedNew = this.NormalizePath(newPath);
+        var normalizedOld = this.NormalizePath(path);
+        var normalizedNew = this.NormalizePath(destinationPath);
         return await Task.Run(() =>
         {
             if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(new TimeoutException("Operation timed out due to concurrent access")))
-                    .WithMessage($"Failed to acquire lock for renaming file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Failed to acquire lock for renaming file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -735,8 +735,8 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 if (!this.files.TryGetValue(normalizedOld, out var content))
                 {
                     return Result.Failure()
-                        .WithError(new FileSystemError("Source file not found", oldPath))
-                        .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
+                        .WithError(new FileSystemError("Source file not found", path))
+                        .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'");
                 }
 
                 // Update directories for new path
@@ -757,19 +757,19 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 this.files[normalizedNew] = content;
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
-                    .WithMessage($"Renamed file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Renamed file from '{path}' to '{destinationPath}'");
             }
             catch (OperationCanceledException)
             {
                 return Result.Failure()
                     .WithError(new OperationCancelledError("Operation cancelled during file rename"))
-                    .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Cancelled renaming file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Unexpected error renaming file from '{path}' to '{destinationPath}'");
             }
             finally
             {
@@ -778,12 +778,12 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         }, cancellationToken);
     }
 
-    public override async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath} -> {destinationPath}"))
+                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{path} -> {destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -791,10 +791,10 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'");
+                .WithMessage($"Cancelled moving file from '{path}' to '{destinationPath}'");
         }
 
-        var normalizedSource = this.NormalizePath(sourcePath);
+        var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
         return await Task.Run(() =>
         {
@@ -802,7 +802,7 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(new TimeoutException("Operation timed out due to concurrent access")))
-                    .WithMessage($"Failed to acquire lock for moving file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Failed to acquire lock for moving file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -810,8 +810,8 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 if (!this.files.TryGetValue(normalizedSource, out var content))
                 {
                     return Result.Failure()
-                        .WithError(new FileSystemError("Source file not found", sourcePath))
-                        .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'");
+                        .WithError(new FileSystemError("Source file not found", path))
+                        .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'");
                 }
 
                 // Update directories for destination
@@ -832,19 +832,19 @@ public class InMemoryFileStorageProvider(string locationName = "InMemory")
                 this.files[normalizedDest] = content;
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
-                    .WithMessage($"Moved file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Moved file from '{path}' to '{destinationPath}'");
             }
             catch (OperationCanceledException)
             {
                 return Result.Failure()
                     .WithError(new OperationCancelledError("Operation cancelled during file move"))
-                    .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Cancelled moving file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Unexpected error moving file from '{path}' to '{destinationPath}'");
             }
             finally
             {

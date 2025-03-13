@@ -172,7 +172,7 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(path, stream, null, CancellationToken.None);
 
         // Act
-        var result = await provider.GetFileInfoAsync(path, CancellationToken.None);
+        var result = await provider.GetFileMetadataAsync(path, CancellationToken.None);
 
         // Assert
         result.ShouldBeSuccess();
@@ -187,7 +187,7 @@ public abstract class FileStorageTestsBase
         const string path = "nonexistent/file.txt";
 
         // Act
-        var result = await provider.GetFileInfoAsync(path, CancellationToken.None);
+        var result = await provider.GetFileMetadataAsync(path, CancellationToken.None);
 
         // Assert
         result.ShouldBeFailure();
@@ -279,6 +279,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.Value.Files.ShouldNotBeNull();
+        result.Value.Files.ShouldNotBeEmpty();
         result.Value.Files.ShouldContain(f => f == "test/file1.txt" || f == "test/file2.txt");
         result.Value.Files.ShouldNotContain("test/file3.md");
     }
@@ -741,8 +742,8 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(Path.Combine(path, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
 
         long expectedBytes = 0;
-        var file1Info = await provider.GetFileInfoAsync(Path.Combine(path, "file1.txt"), CancellationToken.None);
-        var file2Info = await provider.GetFileInfoAsync(Path.Combine(path, "subdir/file2.txt"), CancellationToken.None);
+        var file1Info = await provider.GetFileMetadataAsync(Path.Combine(path, "file1.txt"), CancellationToken.None);
+        var file2Info = await provider.GetFileMetadataAsync(Path.Combine(path, "subdir/file2.txt"), CancellationToken.None);
         expectedBytes += file1Info.Value.Length + file2Info.Value.Length;
 
         // Act

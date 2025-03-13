@@ -2371,6 +2371,7 @@
         "dependencies": {
           "Azure.Data.Tables": "[12.10.0, )",
           "Azure.Storage.Blobs": "[12.23.0, )",
+          "Azure.Storage.Files.Shares": "[12.15.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
@@ -2617,6 +2618,16 @@
         "dependencies": {
           "Azure.Storage.Common": "12.22.0",
           "System.Text.Json": "6.0.10"
+        }
+      },
+      "Azure.Storage.Files.Shares": {
+        "type": "CentralTransitive",
+        "requested": "[12.15.0, )",
+        "resolved": "12.15.0",
+        "contentHash": "eX+jUCenE6+YA5GDwEx5Q6MtzrlK2jGEsFxlVcEXjEyvSO42cJ+ZLCzlLtmoB0RD8SPUOde5+1nFKqblGwHIdw==",
+        "dependencies": {
+          "Azure.Storage.Common": "12.16.0",
+          "System.Text.Json": "4.7.2"
         }
       },
       "CsvHelper": {

@@ -350,7 +350,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
-    public override async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -520,7 +520,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         try
         {
-            var currentMetadata = await this.GetFileInfoAsync(path, cancellationToken);
+            var currentMetadata = await this.GetFileMetadataAsync(path, cancellationToken);
             if (currentMetadata.IsFailure)
             {
                 return Result<FileMetadata>.Failure()
@@ -609,12 +609,12 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
-    public override async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath ?? destinationPath}"))
+                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{path ?? destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -622,10 +622,10 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled copying file from '{sourcePath}' to '{destinationPath}'");
+                .WithMessage($"Cancelled copying file from '{path}' to '{destinationPath}'");
         }
 
-        var fullSource = this.GetFullPath(sourcePath);
+        var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
         var sourceSemaphore = this.GetSemaphore(fullSource);
         var destSemaphore = this.GetSemaphore(fullDest);
@@ -636,7 +636,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for source file access"))
-                    .WithMessage($"Failed to acquire lock for copying file from '{sourcePath}'");
+                    .WithMessage($"Failed to acquire lock for copying file from '{path}'");
             }
 
             if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
@@ -649,8 +649,8 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             if (!File.Exists(fullSource))
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("Source file not found", sourcePath))
-                    .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'");
+                    .WithError(new FileSystemError("Source file not found", path))
+                    .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -663,27 +663,27 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 
                 File.Copy(fullSource, fullDest, true);
                 var length = new FileInfo(fullSource).Length;
-                this.ReportProgress(progress, sourcePath, length, 1);
+                this.ReportProgress(progress, path, length, 1);
                 return Result.Success()
-                    .WithMessage($"Copied file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Copied file from '{path}' to '{destinationPath}'");
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", sourcePath, ex))
-                    .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'");
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
-                    .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'");
+                    .WithError(new FileSystemError("Disk or file system error", path, ex))
+                    .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Unexpected error copying file from '{path}' to '{destinationPath}'");
             }
         }
         finally
@@ -693,12 +693,12 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
-    public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(oldPath) || string.IsNullOrEmpty(newPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{oldPath ?? newPath}"))
+                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{path ?? destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -706,11 +706,11 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'");
+                .WithMessage($"Cancelled renaming file from '{path}' to '{destinationPath}'");
         }
 
-        var fullOld = this.GetFullPath(oldPath);
-        var fullNew = this.GetFullPath(newPath);
+        var fullOld = this.GetFullPath(path);
+        var fullNew = this.GetFullPath(destinationPath);
         var oldSemaphore = this.GetSemaphore(fullOld);
         var newSemaphore = this.GetSemaphore(fullNew);
 
@@ -720,21 +720,21 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for old file access"))
-                    .WithMessage($"Failed to acquire lock for renaming file from '{oldPath}'");
+                    .WithMessage($"Failed to acquire lock for renaming file from '{path}'");
             }
 
             if (!await newSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for new file access"))
-                    .WithMessage($"Failed to acquire lock for renaming file to '{newPath}'");
+                    .WithMessage($"Failed to acquire lock for renaming file to '{destinationPath}'");
             }
 
             if (!File.Exists(fullOld))
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("File not found", oldPath))
-                    .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -747,27 +747,27 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 
                 File.Move(fullOld, fullNew, true);
                 var length = new FileInfo(fullNew).Length;
-                this.ReportProgress(progress, oldPath, length, 1);
+                this.ReportProgress(progress, path, length, 1);
                 return Result.Success()
-                    .WithMessage($"Renamed file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Renamed file from '{path}' to '{destinationPath}'");
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", oldPath, ex))
-                    .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'");
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("Disk or file system error", oldPath, ex))
-                    .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
+                    .WithError(new FileSystemError("Disk or file system error", path, ex))
+                    .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'");
+                    .WithMessage($"Unexpected error renaming file from '{path}' to '{destinationPath}'");
             }
         }
         finally
@@ -777,12 +777,12 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
-    public override async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(destinationPath))
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{sourcePath ?? destinationPath}"))
+                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{path ?? destinationPath}"))
                 .WithMessage("Invalid paths provided");
         }
 
@@ -790,10 +790,10 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled moving file from '{sourcePath}' to '{destinationPath}'");
+                .WithMessage($"Cancelled moving file from '{path}' to '{destinationPath}'");
         }
 
-        var fullSource = this.GetFullPath(sourcePath);
+        var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
         var sourceSemaphore = this.GetSemaphore(fullSource);
         var destSemaphore = this.GetSemaphore(fullDest);
@@ -804,7 +804,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             {
                 return Result.Failure()
                     .WithError(new TimeoutError("Timeout waiting for source file access"))
-                    .WithMessage($"Failed to acquire lock for moving file from '{sourcePath}'");
+                    .WithMessage($"Failed to acquire lock for moving file from '{path}'");
             }
 
             if (!await destSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
@@ -817,8 +817,8 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             if (!File.Exists(fullSource))
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("Source file not found", sourcePath))
-                    .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'");
+                    .WithError(new FileSystemError("Source file not found", path))
+                    .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'");
             }
 
             try
@@ -831,27 +831,27 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 
                 File.Move(fullSource, fullDest, true);
                 var length = new FileInfo(fullDest).Length;
-                this.ReportProgress(progress, sourcePath, length, 1);
+                this.ReportProgress(progress, path, length, 1);
                 return Result.Success()
-                    .WithMessage($"Moved file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Moved file from '{path}' to '{destinationPath}'");
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", sourcePath, ex))
-                    .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'");
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
             {
                 return Result.Failure()
-                    .WithError(new FileSystemError("Disk or file system error", sourcePath, ex))
-                    .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'");
+                    .WithError(new FileSystemError("Disk or file system error", path, ex))
+                    .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'");
             }
             catch (Exception ex)
             {
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'");
+                    .WithMessage($"Unexpected error moving file from '{path}' to '{destinationPath}'");
             }
         }
         finally

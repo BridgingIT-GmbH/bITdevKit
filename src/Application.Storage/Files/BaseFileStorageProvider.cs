@@ -153,7 +153,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
-    public virtual Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public virtual Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -211,7 +211,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
     {
         try
         {
-            var currentMetadata = GetFileInfoAsync(path, cancellationToken).Result;
+            var currentMetadata = GetFileMetadataAsync(path, cancellationToken).Result;
             if (currentMetadata.IsFailure)
             {
                 return Task.FromResult(Result<FileMetadata>.Failure()
@@ -273,7 +273,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
-    public virtual Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -283,24 +283,24 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (FileNotFoundException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Source file not found", sourcePath, ex))
-                .WithMessage($"Failed to copy file from '{sourcePath}' to '{destinationPath}'"));
+                .WithError(new FileSystemError("Source file not found", path, ex))
+                .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", sourcePath, ex))
-                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
         {
             return Task.FromResult(Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error copying file from '{sourcePath}' to '{destinationPath}'"));
+                .WithMessage($"Unexpected error copying file from '{path}' to '{destinationPath}'"));
         }
     }
 
-    public virtual Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -310,24 +310,24 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (FileNotFoundException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("File not found", oldPath, ex))
-                .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'"));
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", oldPath, ex))
-                .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'"));
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
         {
             return Task.FromResult(Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'"));
+                .WithMessage($"Unexpected error renaming file from '{path}' to '{destinationPath}'"));
         }
     }
 
-    public virtual Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -337,20 +337,20 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (FileNotFoundException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Source file not found", sourcePath, ex))
-                .WithMessage($"Failed to move file from '{sourcePath}' to '{destinationPath}'"));
+                .WithError(new FileSystemError("Source file not found", path, ex))
+                .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", sourcePath, ex))
-                .WithMessage($"Permission denied for file at '{sourcePath}' or '{destinationPath}'"));
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
         {
             return Task.FromResult(Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error moving file from '{sourcePath}' to '{destinationPath}'"));
+                .WithMessage($"Unexpected error moving file from '{path}' to '{destinationPath}'"));
         }
     }
 
@@ -394,7 +394,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
                 }
 
                 filesProcessed++;
-                var metadata = await this.GetFileInfoAsync(source, cancellationToken);
+                var metadata = await this.GetFileMetadataAsync(source, cancellationToken);
                 totalBytes += metadata.Value.Length;
                 this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
             }
@@ -449,7 +449,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
                         .WithMessage($"Cancelled deleting files after processing {filesProcessed}/{totalFiles}");
                 }
 
-                var metadata = await this.GetFileInfoAsync(path, cancellationToken);
+                var metadata = await this.GetFileMetadataAsync(path, cancellationToken);
                 var result = await this.DeleteFileAsync(path, progress, cancellationToken);
                 if (result.IsFailure)
                 {
@@ -520,7 +520,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
                 }
 
                 filesProcessed++;
-                var metadata = await this.GetFileInfoAsync(dest, cancellationToken);
+                var metadata = await this.GetFileMetadataAsync(dest, cancellationToken);
                 totalBytes += metadata.Value.Length;
                 this.ReportProgress(progress, source, totalBytes, filesProcessed, totalFiles);
             }

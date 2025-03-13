@@ -21,6 +21,16 @@
           "System.Text.Json": "6.0.10"
         }
       },
+      "Azure.Storage.Files.Shares": {
+        "type": "Direct",
+        "requested": "[12.15.0, )",
+        "resolved": "12.15.0",
+        "contentHash": "eX+jUCenE6+YA5GDwEx5Q6MtzrlK2jGEsFxlVcEXjEyvSO42cJ+ZLCzlLtmoB0RD8SPUOde5+1nFKqblGwHIdw==",
+        "dependencies": {
+          "Azure.Storage.Common": "12.16.0",
+          "System.Text.Json": "4.7.2"
+        }
+      },
       "Ensure.That": {
         "type": "Direct",
         "requested": "[10.1.0, )",

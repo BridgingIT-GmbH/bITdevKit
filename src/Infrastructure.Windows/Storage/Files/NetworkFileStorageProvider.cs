@@ -76,9 +76,9 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.GetChecksumAsync(path, cancellationToken));
     }
 
-    public override async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
-        return await this.impersonationService.ExecuteImpersonatedAsync(() => base.GetFileInfoAsync(path, cancellationToken));
+        return await this.impersonationService.ExecuteImpersonatedAsync(() => base.GetFileMetadataAsync(path, cancellationToken));
     }
 
     public override async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)

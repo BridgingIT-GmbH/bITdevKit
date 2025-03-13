@@ -13,71 +13,72 @@ using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
-using global::Azure.Storage.Blobs;
-using global::Azure.Storage.Blobs.Models;
+using global::Azure;
+using global::Azure.Storage.Files.Shares;
+using global::Azure.Storage.Files.Shares.Models;
 using System.Security.Cryptography;
 
 /// <summary>
-/// File storage provider that uses Azure Blob Storage.
+/// File storage provider that uses Azure Files via the REST API.
 /// </summary>
-public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
+public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposable
 {
     private readonly string connectionString;
-    private readonly Lazy<BlobServiceClient> lazyBlobServiceClient;
-    private readonly string containerName;
-    private readonly bool ensureContainer;
+    private readonly Lazy<ShareServiceClient> lazyShareServiceClient;
+    private readonly string shareName;
+    private readonly bool ensureShare;
     private bool disposed;
 
     /// <summary>
-    /// Initializes a new instance of AzureBlobStorageProvider with a connection string.
+    /// Initializes a new instance of AzureFilesFileStorageProvider with a connection string.
     /// </summary>
     /// <param name="connectionString">The Azure Storage connection string.</param>
-    /// <param name="containerName">The name of the blob container.</param>
+    /// <param name="shareName">The name of the file share.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
-    /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
-    public AzureBlobFileStorageProvider(
+    /// <param name="ensureShare">Whether to create the share if it doesn't exist.</param>
+    public AzureFilesFileStorageProvider(
         string locationName,
         string connectionString,
-        string containerName,
-        bool ensureContainer = true) : base(locationName)
+        string shareName,
+        bool ensureShare = true) : base(locationName)
     {
         ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
-        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentException.ThrowIfNullOrEmpty(shareName, nameof(shareName));
 
         this.connectionString = connectionString;
-        this.containerName = containerName;
-        this.ensureContainer = ensureContainer;
+        this.shareName = shareName;
+        this.ensureShare = ensureShare;
 
-        // Initialize BlobServiceClient lazily
-        this.lazyBlobServiceClient = new Lazy<BlobServiceClient>(
-            () => new BlobServiceClient(connectionString),
+        // Initialize ShareServiceClient lazily
+        this.lazyShareServiceClient = new Lazy<ShareServiceClient>(
+            () => new ShareServiceClient(connectionString),
             LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     /// <summary>
-    /// Initializes a new instance of AzureBlobStorageProvider with a pre-configured BlobServiceClient.
+    /// Initializes a new instance of AzureFilesFileStorageProvider with a pre-configured ShareServiceClient.
     /// </summary>
-    /// <param name="client">A pre-configured Azure Blob Service client.</param>
-    /// <param name="containerName">The name of the blob container.</param>
+    /// <param name="client">A pre-configured Azure Files Share Service client.</param>
+    /// <param name="shareName">The name of the file share.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
-    /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
-    public AzureBlobFileStorageProvider(
+    /// <param name="ensureShare">Whether to create the share if it doesn't exist.</param>
+    public AzureFilesFileStorageProvider(
         string locationName,
-        BlobServiceClient client,
-        string containerName,
-        bool ensureContainer = true) : base(locationName)
+        ShareServiceClient client,
+        string shareName,
+        bool ensureShare = true) : base(locationName)
     {
         ArgumentNullException.ThrowIfNull(client, nameof(client));
-        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentException.ThrowIfNullOrEmpty(shareName, nameof(shareName));
 
-        this.containerName = containerName;
-        this.ensureContainer = ensureContainer;
+        this.shareName = shareName;
+        this.ensureShare = ensureShare;
 
-        // Initialize with provided BlobServiceClient
-        this.lazyBlobServiceClient = new Lazy<BlobServiceClient>(() => client);
+        // Initialize with provided ShareServiceClient
+        this.lazyShareServiceClient = new Lazy<ShareServiceClient>(() => client);
     }
 
-    private BlobServiceClient Client => this.lazyBlobServiceClient.Value;
+    private ShareServiceClient Client => this.lazyShareServiceClient.Value;
 
     public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
@@ -96,25 +97,26 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            var exists = await blobClient.ExistsAsync(cancellationToken);
+            var exists = await fileClient.ExistsAsync(cancellationToken);
             if (!exists.Value)
             {
                 return Result.Failure()
                     .WithError(new NotFoundError("File not found"));
             }
 
-            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+            var properties = await fileClient.GetPropertiesAsync(cancellationToken);
             this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
 
             return Result.Success()
                 .WithMessage($"Checked existence of file at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -145,41 +147,33 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result<Stream>.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to read file at '{path}'");
             }
 
-            try
-            {
-                var downloadInfo = await blobClient.DownloadAsync(cancellationToken);
-                var memoryStream = new MemoryStream();
-                await downloadInfo.Value.Content.CopyToAsync(memoryStream, 81920, cancellationToken);
-                memoryStream.Position = 0;
-                this.ReportProgress(progress, path, memoryStream.Length, 1);
+            var downloadInfo = await fileClient.DownloadAsync(cancellationToken: cancellationToken);
+            var memoryStream = new MemoryStream();
+            await downloadInfo.Value.Content.CopyToAsync(memoryStream, cancellationToken);
+            memoryStream.Position = 0;
+            this.ReportProgress(progress, path, memoryStream.Length, 1);
 
-                return Result<Stream>.Success(memoryStream)
-                    .WithMessage($"Read file at '{path}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result<Stream>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}'");
-            }
-            catch (Exception ex)
-            {
-                return Result<Stream>.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error reading file at '{path}'");
-            }
+            return Result<Stream>.Success(memoryStream)
+                .WithMessage($"Read file at '{path}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
@@ -213,22 +207,31 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            var bytesWritten = 0L;
-            var options = new BlobUploadOptions
+            // Ensure parent directories exist
+            var directoryPath = Path.GetDirectoryName(normalizedPath);
+            if (!string.IsNullOrEmpty(directoryPath))
             {
-                ProgressHandler = new Progress<long>(bytes =>
-                {
-                    bytesWritten = bytes;
-                    this.ReportProgress(progress, path, bytes, 1);
-                })
-            };
+                var dirClient = shareClient.GetDirectoryClient(directoryPath);
+                await dirClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+            }
 
-            await blobClient.UploadAsync(content, options, cancellationToken);
+            var bytesWritten = 0L;
+            var fileSize = content.Length > 0 ? content.Length : 1024; // Default size if unknown
+            await fileClient.CreateAsync(fileSize, cancellationToken: cancellationToken);
+
+            content.Position = 0;
+            await fileClient.UploadAsync(content, new Progress<long>(bytes =>
+            {
+                bytesWritten = bytes;
+                this.ReportProgress(progress, path, bytes, 1);
+            }), cancellationToken);
+
             this.ReportProgress(progress, path, bytesWritten, 1);
 
             return Result.Success()
@@ -240,7 +243,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
                 .WithError(new OperationCancelledError("Operation cancelled during write"))
                 .WithMessage($"Cancelled writing file at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -271,38 +274,30 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to delete file at '{path}'");
             }
 
-            try
-            {
-                await blobClient.DeleteAsync(cancellationToken: cancellationToken);
-                this.ReportProgress(progress, path, 0, 1);
+            await fileClient.DeleteAsync(cancellationToken);
+            this.ReportProgress(progress, path, 0, 1);
 
-                return Result.Success()
-                    .WithMessage($"Deleted file at '{path}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}'");
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error deleting file at '{path}'");
-            }
+            return Result.Success()
+                .WithMessage($"Deleted file at '{path}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
@@ -329,41 +324,30 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result<string>.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to compute checksum for file at '{path}'");
             }
 
-
-
-            try
-            {
-                // Compute SHA256 manually to match Local and test expectations
-                var downloadInfo = await blobClient.DownloadAsync(cancellationToken);
-                using var sha256 = SHA256.Create();
-                var hash = Convert.ToBase64String(await sha256.ComputeHashAsync(downloadInfo.Value.Content, cancellationToken));
-                return Result<string>.Success(hash)
-                    .WithMessage($"Computed checksum for file at '{path}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result<string>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}'");
-            }
-            catch (Exception ex)
-            {
-                return Result<string>.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error computing checksum for file at '{path}'");
-            }
+            var downloadInfo = await fileClient.DownloadAsync(cancellationToken: cancellationToken);
+            using var sha256 = SHA256.Create();
+            var hash = Convert.ToBase64String(await sha256.ComputeHashAsync(downloadInfo.Value.Content, cancellationToken));
+            return Result<string>.Success(hash)
+                .WithMessage($"Computed checksum for file at '{path}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result<string>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
@@ -390,50 +374,42 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result<FileMetadata>.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to retrieve metadata for file at '{path}'");
             }
 
-            try
+            var properties = await fileClient.GetPropertiesAsync(cancellationToken);
+            var metadata = new FileMetadata
             {
-                var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
-                var metadata = new FileMetadata
-                {
-                    Path = path,
-                    Length = properties.Value.ContentLength,
-                    LastModified = properties.Value.LastModified.UtcDateTime
-                };
+                Path = path,
+                Length = properties.Value.ContentLength,
+                LastModified = properties.Value.LastModified.UtcDateTime
+            };
 
-                // Check custom metadata for LastModified override
-                if (properties.Value.Metadata.TryGetValue("LastModified", out var lastModifiedStr) &&
-                    DateTime.TryParse(lastModifiedStr, out var lastModified))
-                {
-                    metadata.LastModified = lastModified;
-                }
+            // Check custom metadata for LastModified override
+            if (properties.Value.Metadata.TryGetValue("LastModified", out var lastModifiedStr) &&
+                DateTime.TryParse(lastModifiedStr, out var lastModified))
+            {
+                metadata.LastModified = lastModified;
+            }
 
-                return Result<FileMetadata>.Success(metadata)
-                    .WithMessage($"Retrieved metadata for file at '{path}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result<FileMetadata>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}'");
-            }
-            catch (Exception ex)
-            {
-                return Result<FileMetadata>.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error retrieving metadata for file at '{path}'");
-            }
+            return Result<FileMetadata>.Success(metadata)
+                .WithMessage($"Retrieved metadata for file at '{path}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result<FileMetadata>.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
@@ -467,43 +443,34 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to set metadata for file at '{path}'");
             }
 
-            try
+            var blobMetadata = new Dictionary<string, string>();
+            if (metadata.LastModified.HasValue)
             {
-                // Azure doesn't support setting LastModified directly; store in metadata
-                var blobMetadata = new Dictionary<string, string>();
-                if (metadata.LastModified.HasValue)
-                {
-                    blobMetadata["LastModified"] = metadata.LastModified.Value.ToString("O");
-                }
+                blobMetadata["LastModified"] = metadata.LastModified.Value.ToString("O");
+            }
 
-                await blobClient.SetMetadataAsync(blobMetadata, cancellationToken: cancellationToken);
-                return Result.Success()
-                    .WithMessage($"Set metadata for file at '{path}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}'");
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error setting metadata for file at '{path}'");
-            }
+            await fileClient.SetMetadataAsync(blobMetadata, cancellationToken);
+            return Result.Success()
+                .WithMessage($"Set metadata for file at '{path}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
         {
@@ -537,12 +504,13 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetRootDirectoryClient();
+        var fileClient = directoryClient.GetFileClient(normalizedPath);
 
         try
         {
-            var blobClient = containerClient.GetBlobClient(normalizedPath);
-            if (!await blobClient.ExistsAsync(cancellationToken))
+            if (!await fileClient.ExistsAsync(cancellationToken))
             {
                 return Result<FileMetadata>.Failure()
                     .WithError(new FileSystemError("File not found", path))
@@ -569,7 +537,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             return Result<FileMetadata>.Success(updatedMetadata)
                 .WithMessage($"Updated metadata for file at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<FileMetadata>.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -601,36 +569,64 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var prefix = string.IsNullOrEmpty(normalizedPath) ? string.Empty : $"{normalizedPath}"; // omit last / here
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetDirectoryClient(normalizedPath);
 
         try
         {
-            var resultSegment = containerClient.GetBlobsAsync(
-                traits: BlobTraits.None, states: BlobStates.None, prefix: prefix, cancellationToken: cancellationToken)
-                .AsPages(continuationToken, 100); // Match Local's PageSize
-
-            var page = await resultSegment.FirstOrDefaultAsync(cancellationToken: cancellationToken);
-            if (page == null || page.Values?.Count == 0)
+            if (!await directoryClient.ExistsAsync(cancellationToken))
             {
                 return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success(([], null))
                     .WithMessage($"Listed files in '{path}' with pattern '{searchPattern}'");
             }
 
-            var files = page.Values
-                .Select(blob => blob.Name)
-                //.Select(name => name.StartsWith(prefix) ? name[prefix.Length..] : name)
-                .Where(name => recursive || !name.Contains('/'))
-                .Where(name => string.IsNullOrEmpty(searchPattern) || Path.GetFileName(name).Match(searchPattern))
-                .Order()
-                .ToList();
+            var files = new List<string>();
+            var pageSize = 100; // Match Local's PageSize
+            var items = directoryClient.GetFilesAndDirectoriesAsync(
+                prefix: null,
+                cancellationToken: cancellationToken)
+                .AsPages(continuationToken, pageSize);
 
-            var nextToken = page.ContinuationToken != null && files.Count == 100 ? page.ContinuationToken : null;
+            var page = await items.FirstOrDefaultAsync(cancellationToken);
+            if (page == null || page.Values.Count == 0)
+            {
+                return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success(([], null))
+                    .WithMessage($"Listed files in '{path}' with pattern '{searchPattern}'");
+            }
 
-            return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success((files, nextToken))
+            foreach (var item in page.Values)
+            {
+                if (item.IsDirectory)
+                {
+                    if (recursive)
+                    {
+                        var subResult = await this.ListFilesAsync(
+                            Path.Combine(normalizedPath, item.Name),
+                            searchPattern,
+                            true,
+                            null,
+                            cancellationToken);
+                        if (subResult.IsSuccess)
+                        {
+                            files.AddRange(subResult.Value.Files);
+                        }
+                    }
+                    continue;
+                }
+
+                var filePath = Path.Combine(normalizedPath, item.Name);
+                if (string.IsNullOrEmpty(searchPattern) || Path.GetFileName(filePath).Match(searchPattern))
+                {
+                    files.Add(filePath);
+                }
+            }
+
+            var nextToken = page.ContinuationToken != null && files.Count >= pageSize ? page.ContinuationToken : null;
+
+            return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success((files.Order(), nextToken))
                 .WithMessage($"Listed files in '{path}' with pattern '{searchPattern}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -662,42 +658,53 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var sourceFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedSource);
+        var destFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedDest);
 
         try
         {
-            var sourceBlob = containerClient.GetBlobClient(normalizedSource);
-            var destBlob = containerClient.GetBlobClient(normalizedDest);
-
-            if (!await sourceBlob.ExistsAsync(cancellationToken))
+            if (!await sourceFileClient.ExistsAsync(cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new FileSystemError("Source file not found", path))
                     .WithMessage($"Failed to copy file from '{path}' to '{destinationPath}'");
             }
 
-            try
+            // Ensure destination directory exists
+            var destDirectoryPath = Path.GetDirectoryName(normalizedDest);
+            if (!string.IsNullOrEmpty(destDirectoryPath))
             {
-                var operation = await destBlob.StartCopyFromUriAsync(sourceBlob.Uri, cancellationToken: cancellationToken);
-                await operation.WaitForCompletionAsync(cancellationToken);
-                var properties = await destBlob.GetPropertiesAsync(new BlobRequestConditions(), cancellationToken);
-                this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
+                var destDirClient = shareClient.GetDirectoryClient(destDirectoryPath);
+                await destDirClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+            }
 
-                return Result.Success()
-                    .WithMessage($"Copied file from '{path}' to '{destinationPath}'");
-            }
-            catch (UnauthorizedAccessException ex)
+            var properties = await sourceFileClient.GetPropertiesAsync(cancellationToken);
+            await destFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
+            var copyInfo = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
+
+            // Poll for copy completion
+            ShareFileProperties destProperties;
+            do
             {
-                return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error copying file from '{path}' to '{destinationPath}'");
-            }
+                await Task.Delay(500, cancellationToken); // Poll every 500ms
+                destProperties = await destFileClient.GetPropertiesAsync(cancellationToken);
+                if (destProperties.CopyStatus == CopyStatus.Failed)
+                {
+                    throw new RequestFailedException($"Copy operation failed with status: {destProperties.CopyStatusDescription}");
+                }
+            } while (destProperties.CopyStatus == CopyStatus.Pending);
+
+            this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
+
+            return Result.Success()
+                .WithMessage($"Copied file from '{path}' to '{destinationPath}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
         }
         catch (Exception ex)
         {
@@ -707,71 +714,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
-    public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrEmpty(oldPath) || string.IsNullOrEmpty(newPath))
-        {
-            return Result.Failure()
-                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{oldPath ?? newPath}"))
-                .WithMessage("Invalid paths provided");
-        }
-
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return Result.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled renaming file from '{oldPath}' to '{newPath}'");
-        }
-
-        var normalizedOld = this.NormalizePath(oldPath);
-        var normalizedNew = this.NormalizePath(newPath);
-        var containerClient = await this.GetContainerClientAsync();
-
-        try
-        {
-            var oldBlob = containerClient.GetBlobClient(normalizedOld);
-            var newBlob = containerClient.GetBlobClient(normalizedNew);
-
-            if (!await oldBlob.ExistsAsync(cancellationToken))
-            {
-                return Result.Failure()
-                    .WithError(new FileSystemError("File not found", oldPath))
-                    .WithMessage($"Failed to rename file from '{oldPath}' to '{newPath}'");
-            }
-
-            try
-            {
-                var operation = await newBlob.StartCopyFromUriAsync(oldBlob.Uri, cancellationToken: cancellationToken);
-                await operation.WaitForCompletionAsync(cancellationToken);
-                await oldBlob.DeleteAsync(cancellationToken: cancellationToken);
-                var properties = await newBlob.GetPropertiesAsync(new BlobRequestConditions(), cancellationToken);
-                this.ReportProgress(progress, oldPath, properties.Value.ContentLength, 1);
-
-                return Result.Success()
-                    .WithMessage($"Renamed file from '{oldPath}' to '{newPath}'");
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Result.Failure()
-                    .WithError(new PermissionError("Access denied", oldPath, ex))
-                    .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'");
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'");
-            }
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error renaming file from '{oldPath}' to '{newPath}'");
-        }
-    }
-
-    public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
         {
@@ -784,48 +727,134 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled moving file from '{path}' to '{destinationPath}'");
+                .WithMessage($"Cancelled renaming file from '{path}' to '{destinationPath}'");
         }
 
         var normalizedOld = this.NormalizePath(path);
         var normalizedNew = this.NormalizePath(destinationPath);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var oldFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedOld);
+        var newFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedNew);
 
         try
         {
-            var oldBlob = containerClient.GetBlobClient(normalizedOld);
-            var newBlob = containerClient.GetBlobClient(normalizedNew);
+            if (!await oldFileClient.ExistsAsync(cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("File not found", path))
+                    .WithMessage($"Failed to rename file from '{path}' to '{destinationPath}'");
+            }
 
-            if (!await oldBlob.ExistsAsync(cancellationToken))
+            // Ensure new directory exists
+            var newDirectoryPath = Path.GetDirectoryName(normalizedNew);
+            if (!string.IsNullOrEmpty(newDirectoryPath))
+            {
+                var newDirClient = shareClient.GetDirectoryClient(newDirectoryPath);
+                await newDirClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+            }
+
+            var properties = await oldFileClient.GetPropertiesAsync(cancellationToken);
+            await newFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
+            var copyInfo = await newFileClient.StartCopyAsync(oldFileClient.Uri, cancellationToken: cancellationToken);
+
+            // Poll for copy completion
+            ShareFileProperties newProperties;
+            do
+            {
+                await Task.Delay(500, cancellationToken); // Poll every 500ms
+                newProperties = await newFileClient.GetPropertiesAsync(cancellationToken);
+                if (newProperties.CopyStatus == CopyStatus.Failed)
+                {
+                    throw new RequestFailedException($"Copy operation failed with status: {newProperties.CopyStatusDescription}");
+                }
+            } while (newProperties.CopyStatus == CopyStatus.Pending);
+
+            await oldFileClient.DeleteAsync(cancellationToken);
+            this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
+
+            return Result.Success()
+                .WithMessage($"Renamed file from '{path}' to '{destinationPath}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error renaming file from '{path}' to '{destinationPath}'");
+        }
+    }
+
+    public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Source or destination path cannot be null or empty", $"{path ?? destinationPath}"))
+                .WithMessage("Invalid paths provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled moving file from '{path}' to '{destinationPath}'");
+        }
+
+        var normalizedSource = this.NormalizePath(path);
+        var normalizedDest = this.NormalizePath(destinationPath);
+        var shareClient = await this.GetShareClientAsync();
+        var sourceFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedSource);
+        var destFileClient = shareClient.GetRootDirectoryClient().GetFileClient(normalizedDest);
+
+        try
+        {
+            if (!await sourceFileClient.ExistsAsync(cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new FileSystemError("File not found", path))
                     .WithMessage($"Failed to move file from '{path}' to '{destinationPath}'");
             }
 
-            try
+            // Ensure destination directory exists
+            var destDirectoryPath = Path.GetDirectoryName(normalizedDest);
+            if (!string.IsNullOrEmpty(destDirectoryPath))
             {
-                var operation = await newBlob.StartCopyFromUriAsync(oldBlob.Uri, cancellationToken: cancellationToken);
-                await operation.WaitForCompletionAsync(cancellationToken);
-                await oldBlob.DeleteAsync(cancellationToken: cancellationToken);
-                var properties = await newBlob.GetPropertiesAsync(new BlobRequestConditions(), cancellationToken);
-                this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
+                var destDirClient = shareClient.GetDirectoryClient(destDirectoryPath);
+                await destDirClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+            }
 
-                return Result.Success()
-                    .WithMessage($"Moved file from '{path}' to '{destinationPath}'");
-            }
-            catch (UnauthorizedAccessException ex)
+            var properties = await sourceFileClient.GetPropertiesAsync(cancellationToken);
+            await destFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
+            var copyInfo = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
+
+            // Poll for copy completion
+            ShareFileProperties destProperties;
+            do
             {
-                return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
-                    .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure()
-                    .WithError(new ExceptionError(ex))
-                    .WithMessage($"Unexpected error moving file from '{path}' to '{destinationPath}'");
-            }
+                await Task.Delay(500, cancellationToken); // Poll every 500ms
+                destProperties = await destFileClient.GetPropertiesAsync(cancellationToken);
+                if (destProperties.CopyStatus == CopyStatus.Failed)
+                {
+                    throw new RequestFailedException($"Copy operation failed with status: {destProperties.CopyStatusDescription}");
+                }
+            } while (destProperties.CopyStatus == CopyStatus.Pending);
+
+            await sourceFileClient.DeleteAsync(cancellationToken);
+            this.ReportProgress(progress, path, properties.Value.ContentLength, 1);
+
+            return Result.Success()
+                .WithMessage($"Moved file from '{path}' to '{destinationPath}'");
+        }
+        catch (RequestFailedException ex) when (ex.Status == 403)
+        {
+            return Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
         }
         catch (Exception ex)
         {
@@ -852,14 +881,13 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetDirectoryClient(normalizedPath);
 
         try
         {
-            var prefix = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
-            var blobItems = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: cancellationToken);
-            var exists = await blobItems.AnyAsync(cancellationToken: cancellationToken);
-            if (!exists)
+            var exists = await directoryClient.ExistsAsync(cancellationToken);
+            if (!exists.Value)
             {
                 return Result.Failure()
                     .WithError(new NotFoundError("Directory not found"));
@@ -868,7 +896,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             return Result.Success()
                 .WithMessage($"Checked if '{path}' is a directory");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -899,19 +927,16 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetDirectoryClient(normalizedPath);
 
         try
         {
-            var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
-            var blobClient = containerClient.GetBlobClient(directoryPath + ".directory");
-            using var emptyContent = new MemoryStream();
-            await blobClient.UploadAsync(emptyContent, true, cancellationToken);
-
+            await directoryClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
             return Result.Success()
                 .WithMessage($"Created directory at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -942,36 +967,34 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetDirectoryClient(normalizedPath);
 
         try
         {
-            var blobItems = containerClient.GetBlobsAsync(prefix: directoryPath, cancellationToken: cancellationToken);
-            var blobs = await blobItems.ToListAsync(cancellationToken);
-            if (!blobs.Any())
+            if (!await directoryClient.ExistsAsync(cancellationToken))
             {
                 return Result.Failure()
                     .WithError(new FileSystemError("Directory not found", path))
                     .WithMessage($"Failed to delete directory at '{path}'");
             }
 
-            if (!recursive && blobs.Count > 1) // More than just a marker blob
+            if (!recursive)
             {
-                return Result.Failure()
-                    .WithError(new FileSystemError("Directory not empty", path))
-                    .WithMessage($"Failed to delete directory at '{path}'");
+                var items = directoryClient.GetFilesAndDirectoriesAsync(cancellationToken: cancellationToken);
+                if (await items.AnyAsync(cancellationToken))
+                {
+                    return Result.Failure()
+                        .WithError(new FileSystemError("Directory not empty", path))
+                        .WithMessage($"Failed to delete directory at '{path}'");
+                }
             }
 
-            foreach (var blob in blobs)
-            {
-                await containerClient.DeleteBlobAsync(blob.Name, cancellationToken: cancellationToken);
-            }
-
+            await directoryClient.DeleteAsync(cancellationToken);
             return Result.Success()
                 .WithMessage($"Deleted directory at '{path}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -1002,38 +1025,46 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var prefix = string.IsNullOrEmpty(normalizedPath) ? string.Empty : normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
+        var directoryClient = shareClient.GetDirectoryClient(normalizedPath);
 
         try
         {
-            var blobItems = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: cancellationToken);
-            var directories = new HashSet<string>();
-
-            await foreach (var blob in blobItems)
+            if (!await directoryClient.ExistsAsync(cancellationToken))
             {
-                var relativePath = blob.Name.StartsWith(prefix) ? blob.Name[prefix.Length..] : blob.Name;
-                var segments = relativePath.Split('/');
+                return Result<IEnumerable<string>>.Failure()
+                    .WithError(new FileSystemError("Directory not found", path))
+                    .WithMessage($"Failed to list directories in '{path}'");
+            }
 
-                if (segments.Length > 1)
+            var directories = new HashSet<string>();
+            await foreach (var item in directoryClient.GetFilesAndDirectoriesAsync(cancellationToken: cancellationToken))
+            {
+                if (!item.IsDirectory)
                 {
-                    var currentPath = string.Empty;
-                    for (var i = 0; i < segments.Length - 1 && (recursive || i == 0); i++)
+                    continue;
+                }
+
+                var dirPath = Path.Combine(normalizedPath, item.Name);
+                if (string.IsNullOrEmpty(searchPattern) || Path.GetFileName(dirPath).Match(searchPattern))
+                {
+                    directories.Add(dirPath);
+                }
+
+                if (recursive)
+                {
+                    var subDirs = await this.ListDirectoriesAsync(dirPath, searchPattern, true, cancellationToken);
+                    if (subDirs.IsSuccess)
                     {
-                        currentPath = string.IsNullOrEmpty(currentPath) ? segments[i] : $"{currentPath}/{segments[i]}";
-                        directories.Add(prefix + currentPath);
+                        directories.UnionWith(subDirs.Value);
                     }
                 }
             }
 
-            var result = string.IsNullOrEmpty(searchPattern)
-                ? directories
-                : directories.Where(dir => Path.GetFileName(dir.TrimEnd('/')).Match(searchPattern));
-
-            return Result<IEnumerable<string>>.Success(result.Order())
+            return Result<IEnumerable<string>>.Success(directories.Order())
                 .WithMessage($"Listed directories in '{path}' with pattern '{searchPattern}'");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<IEnumerable<string>>.Failure()
                 .WithError(new PermissionError("Access denied", path, ex))
@@ -1053,14 +1084,14 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             return Result.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled checking health of Azure Blob Storage at '{this.LocationName}'");
+                .WithMessage($"Cancelled checking health of Azure Files storage at '{this.LocationName}'");
         }
 
-        var containerClient = await this.GetContainerClientAsync();
+        var shareClient = await this.GetShareClientAsync();
 
         try
         {
-            await containerClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+            await shareClient.GetPropertiesAsync(cancellationToken);
 
             await using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("Health Check")))
             {
@@ -1080,30 +1111,30 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             }
 
             return Result.Success()
-                .WithMessage($"Azure Blob storage at '{this.LocationName}' is healthy");
+                .WithMessage($"Azure Files storage at '{this.LocationName}' is healthy");
         }
-        catch (UnauthorizedAccessException ex)
+        catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", this.containerName, ex))
-                .WithMessage($"Permission denied for Azure Blob Storage at '{this.LocationName}'");
+                .WithError(new PermissionError("Access denied", this.shareName, ex))
+                .WithMessage($"Permission denied for Azure Files storage at '{this.LocationName}'");
         }
         catch (Exception ex)
         {
             return Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error checking health of Azure Blob Storage at '{this.LocationName}'");
+                .WithMessage($"Unexpected error checking health of Azure Files storage at '{this.LocationName}'");
         }
     }
 
-    private async Task<BlobContainerClient> GetContainerClientAsync()
+    private async Task<ShareClient> GetShareClientAsync()
     {
-        var containerClient = this.Client.GetBlobContainerClient(this.containerName);
-        if (this.ensureContainer)
+        var shareClient = this.Client.GetShareClient(this.shareName);
+        if (this.ensureShare)
         {
-            await containerClient.CreateIfNotExistsAsync(cancellationToken: CancellationToken.None);
+            await shareClient.CreateIfNotExistsAsync(cancellationToken: CancellationToken.None);
         }
-        return containerClient;
+        return shareClient;
     }
 
     private string NormalizePath(string path)
@@ -1126,7 +1157,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         if (disposing)
         {
-            // No additional resources to dispose since BlobServiceClient doesn't implement IDisposable
+            // No additional resources to dispose since ShareServiceClient doesn't implement IDisposable
         }
 
         this.disposed = true;

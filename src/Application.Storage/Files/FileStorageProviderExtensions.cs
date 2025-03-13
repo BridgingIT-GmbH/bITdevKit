@@ -193,7 +193,7 @@ public static class FileStorageProviderExtensions
                         .WithMessage($"Cancelled compressing directory '{contentPath}' after processing {filesProcessed}/{totalFiles} files");
                 }
 
-                var fileInfoResult = await provider.GetFileInfoAsync(file, cancellationToken);
+                var fileInfoResult = await provider.GetFileMetadataAsync(file, cancellationToken);
                 if (fileInfoResult.IsFailure)
                 {
                     continue; // Skip files that can't be accessed, but continue with others
@@ -962,31 +962,34 @@ public static class FileStorageProviderExtensions
             else
             {
                 // Process the file (not a directory)
-                var fileInfoResult = await provider.GetFileInfoAsync(filePath, cancellationToken);
+                var fileInfoResult = await provider.GetFileMetadataAsync(filePath, cancellationToken);
                 if (fileInfoResult.IsFailure)
                 {
                     continue; // Skip files that can't be accessed, but continue with others
                 }
 
-                fileMetadatas.Add(fileInfoResult.Value);
-
-                if (fileAction != null) // Execute optional action on the file if provided
+                if (fileInfoResult.Value?.Path?.EndsWith(".directory") == false)
                 {
-                    var readResult = await provider.ReadFileAsync(filePath, progress, cancellationToken);
-                    if (readResult.IsSuccess)
+                    fileMetadatas.Add(fileInfoResult.Value);
+
+                    if (fileAction != null) // Execute optional action on the file if provided
                     {
-                        await using var fileStream = readResult.Value;
-                        await fileAction(filePath, fileStream, cancellationToken);
+                        var readResult = await provider.ReadFileAsync(filePath, progress, cancellationToken);
+                        if (readResult.IsSuccess)
+                        {
+                            await using var fileStream = readResult.Value;
+                            await fileAction(filePath, fileStream, cancellationToken);
+                        }
                     }
-                }
 
-                // Report progress for each file
-                progress?.Report(new FileProgress
-                {
-                    BytesProcessed = fileMetadatas.Sum(m => m.Length),
-                    FilesProcessed = fileMetadatas.Count,
-                    TotalFiles = 0 // Total files unknown until traversal completes
-                });
+                    // Report progress for each file
+                    progress?.Report(new FileProgress
+                    {
+                        BytesProcessed = fileMetadatas.Sum(m => m.Length),
+                        FilesProcessed = fileMetadatas.Count,
+                        TotalFiles = 0 // Total files unknown until traversal completes
+                    });
+                }
             }
         }
     }

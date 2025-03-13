@@ -108,7 +108,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
-    public async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"info_{path}";
         if (this.cache.TryGetValue(cacheKey, out FileMetadata cachedMetadata))
@@ -117,7 +117,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 .WithMessage($"Cached metadata for file at '{path}'");
         }
 
-        var result = await this.InnerProvider.GetFileInfoAsync(path, cancellationToken);
+        var result = await this.InnerProvider.GetFileMetadataAsync(path, cancellationToken);
         if (result.IsSuccess)
         {
             this.cache.Set(cacheKey, result.Value, this.options.CacheDuration);

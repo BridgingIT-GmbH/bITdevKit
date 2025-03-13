@@ -179,11 +179,11 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
-    public async Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         try
         {
-            return await this.ExecuteWithRetryAsync(() => this.innerProvider.GetFileInfoAsync(path, cancellationToken), "info", path, cancellationToken);
+            return await this.ExecuteWithRetryAsync(() => this.innerProvider.GetFileMetadataAsync(path, cancellationToken), "info", path, cancellationToken);
         }
         catch (InvalidOperationException ex)
         {

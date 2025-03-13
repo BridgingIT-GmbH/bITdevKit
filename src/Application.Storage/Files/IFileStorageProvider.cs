@@ -84,7 +84,7 @@ public interface IFileStorageProvider
     /// <param name="path">The path to the file (e.g., "folder/file.txt").</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result containing the metadata on success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</returns>
-    Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default);
+    Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sets metadata for the file or blob at the specified path, returning a Result with success or errors.
@@ -124,34 +124,34 @@ public interface IFileStorageProvider
     /// Copies a file or blob from the source path to the destination path, returning a Result with success or errors.
     /// Example: `var result = await provider.CopyFileAsync("folder/source.txt", "folder/dest.txt", null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine("File copied");`
     /// </summary>
-    /// <param name="sourcePath">The source path to copy from (e.g., "folder/source.txt").</param>
+    /// <param name="path">The source path to copy from (e.g., "folder/source.txt").</param>
     /// <param name="destinationPath">The destination path to copy to (e.g., "folder/destination.txt").</param>
     /// <param name="progress">Optional progress reporter for tracking bytes and files processed.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</returns>
-    Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
+    Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Renames a file or blob from the old path to the new path, returning a Result with success or errors.
     /// Example: `var result = await provider.RenameFileAsync("folder/old.txt", "folder/new.txt", null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine("File renamed");`
     /// </summary>
-    /// <param name="oldPath">The current path of the file (e.g., "folder/old.txt").</param>
-    /// <param name="newPath">The new path for the file (e.g., "folder/new.txt").</param>
+    /// <param name="path">The current path of the file (e.g., "folder/old.txt").</param>
+    /// <param name="destinationPath">The new path for the file (e.g., "folder/new.txt").</param>
     /// <param name="progress">Optional progress reporter for tracking bytes and files processed.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</returns>
-    Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
+    Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Moves a file or blob from the source path to the destination path, returning a Result with success or errors.
     /// Example: `var result = await provider.MoveFileAsync("folder/source.txt", "folder/dest.txt", null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine("File moved");`
     /// </summary>
-    /// <param name="sourcePath">The source path to move from (e.g., "folder/source.txt").</param>
+    /// <param name="path">The source path to move from (e.g., "folder/source.txt").</param>
     /// <param name="destinationPath">The destination path to move to (e.g., "folder/destination.txt").</param>
     /// <param name="progress">Optional progress reporter for tracking bytes and files processed.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</returns>
-    Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
+    Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Copies multiple files or blobs from source paths to destination paths, returning a Result with success or errors.
@@ -220,8 +220,7 @@ public interface IFileStorageProvider
     /// <param name="recursive">Whether to include subdirectories.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result containing the directory list on success or failure with typed errors (e.g., AccessDeniedError, FileSystemError).</returns>
-    Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
-        string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<string>>> ListDirectoriesAsync(string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks connectivity and basic access to the storage location, returning a Result with success or errors.

@@ -32,8 +32,8 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
     public Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default) =>
         this.innerProvider.GetChecksumAsync(path, cancellationToken);
 
-    public Task<Result<FileMetadata>> GetFileInfoAsync(string path, CancellationToken cancellationToken = default) =>
-        this.innerProvider.GetFileInfoAsync(path, cancellationToken);
+    public Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default) =>
+        this.innerProvider.GetFileMetadataAsync(path, cancellationToken);
 
     public Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default) =>
         this.innerProvider.SetFileMetadataAsync(path, metadata, cancellationToken);

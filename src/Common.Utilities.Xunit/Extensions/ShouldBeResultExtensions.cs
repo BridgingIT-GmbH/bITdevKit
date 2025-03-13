@@ -5,11 +5,13 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Shouldly;
 
 public static class ShouldBeResultExtensions
 {
+    [DebuggerStepThrough]
     public static void ShouldBeSuccess([DoesNotReturnIf(false)] this IResult actual, string customMessage = null)
     {
         if (!actual.IsSuccess)
@@ -18,6 +20,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldBeFailure([DoesNotReturnIf(false)] this IResult actual, string customMessage = null)
     {
         if (actual.IsSuccess)
@@ -26,6 +29,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldContainMessage(
         [DoesNotReturnIf(false)] this IResult actual,
         string expected,
@@ -38,6 +42,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldNotContainMessage(
         [DoesNotReturnIf(false)] this IResult actual,
         string expected,
@@ -50,6 +55,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldContainMessages([DoesNotReturnIf(false)] this IResult actual, string customMessage = null)
     {
         if (actual.Messages.IsNullOrEmpty())
@@ -58,6 +64,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldNotContainMessages(
         [DoesNotReturnIf(false)] this IResult actual,
         string customMessage = null)
@@ -68,6 +75,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldContainError<TError>(
         [DoesNotReturnIf(false)] this IResult actual,
         string customMessage = null)
@@ -79,6 +87,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldNotContainError<TError>(
         [DoesNotReturnIf(false)] this IResult actual,
         string customMessage = null)
@@ -90,6 +99,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldBeValue<T>(
         [DoesNotReturnIf(false)] this Result<T> actual,
         T expected,
@@ -102,6 +112,7 @@ public static class ShouldBeResultExtensions
         }
     }
 
+    [DebuggerStepThrough]
     public static void ShouldNotBeValue<T>(
         [DoesNotReturnIf(false)] this Result<T> actual,
         T expected,

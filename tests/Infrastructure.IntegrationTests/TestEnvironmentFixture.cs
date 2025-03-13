@@ -69,8 +69,12 @@ public class TestEnvironmentFixture : IAsyncLifetime
         //     .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
-            .WithNetworkAliases(this.NetworkName)
-            .Build();
+                .WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
+                .WithCommand("--skipApiVersionCheck")
+                .Build();
+        //new AzuriteBuilder()
+        //    .WithNetworkAliases(this.NetworkName)
+        //    .Build();
 
         //this.RabbitMQContainer = new RabbitMqBuilder()
         //    .WithNetworkAliases(this.NetworkName)
@@ -133,19 +137,16 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await this.Network.CreateAsync()
-            .AnyContext();
+        await this.Network.CreateAsync().AnyContext();
 
-        await this.SqlContainer.StartAsync()
-            .AnyContext();
+        await this.SqlContainer.StartAsync().AnyContext();
 
         if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
             //await this.CosmosContainer.StartAsync().AnyContext(); // not started due to issues with the typedid cosmos tests
         }
 
-        await this.AzuriteContainer.StartAsync()
-            .AnyContext();
+        await this.AzuriteContainer.StartAsync().AnyContext();
 
         //await this.RabbitMQContainer.StartAsync().AnyContext();
     }

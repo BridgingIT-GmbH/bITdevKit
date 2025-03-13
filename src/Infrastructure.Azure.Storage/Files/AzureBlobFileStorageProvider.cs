@@ -19,7 +19,7 @@ using global::Azure.Storage.Blobs.Models;
 /// <summary>
 /// File storage provider that uses Azure Blob Storage.
 /// </summary>
-public class AzureBlobStorageProvider : BaseFileStorageProvider
+public class AzureBlobFileStorageProvider : BaseFileStorageProvider
 {
     private readonly string connectionString;
     private readonly Lazy<BlobServiceClient> lazyBlobServiceClient;
@@ -34,14 +34,14 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     /// <param name="containerName">The name of the blob container.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
     /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
-    public AzureBlobStorageProvider(
+    public AzureBlobFileStorageProvider(
         string locationName,
         string connectionString,
         string containerName,
         bool ensureContainer = true) : base(locationName)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
-        ArgumentNullException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
+        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
 
         this.connectionString = connectionString;
         this.containerName = containerName;
@@ -60,14 +60,14 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     /// <param name="containerName">The name of the blob container.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
     /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
-    public AzureBlobStorageProvider(
+    public AzureBlobFileStorageProvider(
         string locationName,
         BlobServiceClient client,
         string containerName,
         bool ensureContainer = true) : base(locationName)
     {
         ArgumentNullException.ThrowIfNull(client, nameof(client));
-        ArgumentNullException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
 
         if (string.IsNullOrEmpty(containerName))
         {
@@ -219,8 +219,6 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
         {
             var containerClient = await this.GetContainerClientAsync();
             var blobClient = containerClient.GetBlobClient(this.NormalizePath(path));
-
-            // Setup progress reporting
             var totalBytes = content.Length;
             var options = new BlobUploadOptions
             {
@@ -538,12 +536,11 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             path = this.NormalizePath(path);
             var prefix = string.IsNullOrEmpty(path) ? string.Empty : $"{path}/";
 
-            var resultSegment = containerClient.GetBlobsAsync(traits: BlobTraits.None, states: BlobStates.None, prefix: prefix, cancellationToken: cancellationToken)
-                .AsPages(continuationToken);
+            var resultSegment = containerClient.GetBlobsAsync(
+                traits: BlobTraits.None, states: BlobStates.None, prefix: prefix, cancellationToken: cancellationToken).AsPages(continuationToken);
             var page = await resultSegment.FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-            // If no results found, return empty collection
-            if (page == null)
+            if (page == null) // nothing found
             {
                 return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success(([], null));
             }
@@ -552,9 +549,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             foreach (var blob in page.Values)
             {
                 var blobPath = blob.Name;
-
-                // If path is specified, remove the prefix from the blob path to get relative path
-                if (!string.IsNullOrEmpty(prefix) && blobPath.StartsWith(prefix))
+                if (!string.IsNullOrEmpty(prefix) && blobPath.StartsWith(prefix)) // GetRelativePath
                 {
                     blobPath = blobPath[prefix.Length..];
                 }
@@ -618,10 +613,10 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
     /// <inheritdoc />
     public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        var copyResult = await this.CopyFileAsync(oldPath, newPath, progress, cancellationToken);
-        if (!copyResult.IsSuccess)
+        var result = await this.CopyFileAsync(oldPath, newPath, progress, cancellationToken);
+        if (result.IsFailure)
         {
-            return copyResult;
+            return result;
         }
 
         return await this.DeleteFileAsync(oldPath, progress, cancellationToken);
@@ -640,11 +635,8 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
         {
             var containerClient = await this.GetContainerClientAsync();
             var normalizedPath = this.NormalizePath(path);
-
-            // In blob storage, directories are virtual
             if (string.IsNullOrEmpty(normalizedPath))
             {
-                // Root is always treated as directory
                 return Result.Success();
             }
 
@@ -652,10 +644,8 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
             var blobItems = containerClient.GetBlobsAsync(prefix: directoryPath, cancellationToken: cancellationToken);
 
-            // See if there's at least one blob with this prefix
-            var hasAtLeastOne = await blobItems.AnyAsync(cancellationToken: cancellationToken);
-
-            return Result.SuccessIf(hasAtLeastOne);
+            return Result.SuccessIf(
+                await blobItems.AnyAsync(cancellationToken: cancellationToken));
         }
         catch (Exception ex)
         {
@@ -671,7 +661,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             var containerClient = await this.GetContainerClientAsync();
 
             // Directories in blob storage are virtual, they don't need explicit creation
-            // However, it's common practice to create an empty blob as a directory marker
+            // it's common practice to create an empty blob as a directory marker
             var normalizedPath = this.NormalizePath(path);
             var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
             var blobClient = containerClient.GetBlobClient(directoryPath + ".directory");
@@ -700,12 +690,9 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             // List all blobs in this directory
             var blobItems = containerClient.GetBlobsAsync(prefix: directoryPath, cancellationToken: cancellationToken);
 
-            // Check if there are any blobs
             var blobs = await blobItems.ToListAsync(cancellationToken);
-
             if (blobs.Count == 0)
             {
-                // No blobs found with this prefix
                 return Result.Failure($"Directory '{path}' not found or empty");
             }
 
@@ -753,19 +740,14 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
             // List all blobs with the prefix
             var blobItems = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: cancellationToken);
-
-            // Extract directories from blob paths
             var directories = new HashSet<string>();
-            await foreach (var blob in blobItems)
+            await foreach (var blob in blobItems) // Extract directories from blob paths
             {
-                // Skip the prefix itself
                 var relativePath = blob.Name;
                 if (prefix.Length > 0)
                 {
                     relativePath = blob.Name[prefix.Length..];
                 }
-
-                // Extract directory parts
                 var segments = relativePath.Split('/');
 
                 if (recursive)
@@ -801,7 +783,7 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
             // Apply search pattern if specified
             var result = string.IsNullOrEmpty(searchPattern)
                 ? directories
-                : directories.Where(dir =>  Path.GetFileName(dir.TrimEnd('/')).Match(searchPattern));
+                : directories.Where(dir => Path.GetFileName(dir.TrimEnd('/')).Match(searchPattern));
 
             return Result<IEnumerable<string>>.Success(result);
         }
@@ -821,14 +803,14 @@ public class AzureBlobStorageProvider : BaseFileStorageProvider
 
     private async Task<BlobContainerClient> GetContainerClientAsync()
     {
-        var client = this.Client.GetBlobContainerClient(this.containerName);
+        var containerClient = this.Client.GetBlobContainerClient(this.containerName);
 
         if (this.ensureContainer)
         {
-            await client.CreateIfNotExistsAsync();
+            await containerClient.CreateIfNotExistsAsync();
         }
 
-        return client;
+        return containerClient;
     }
 
     private string NormalizePath(string path)

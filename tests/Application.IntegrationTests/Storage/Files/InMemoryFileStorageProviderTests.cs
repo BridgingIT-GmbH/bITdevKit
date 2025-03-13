@@ -22,7 +22,6 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
         return new LoggingFileStorageBehavior(
             new InMemoryFileStorageProvider("InMemoryTest"),
             this.fixture.ServiceProvider.GetRequiredService<ILoggerFactory>());
-        //return new InMemoryFileStorageProvider("InMemoryTest");
     }
 
     protected override FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null)

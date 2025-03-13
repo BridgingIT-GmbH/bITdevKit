@@ -1935,6 +1935,31 @@
           "Microsoft.AspNetCore.Authorization": "[9.0.2, )"
         }
       },
+      "BridgingIT.DevKit.Application.IntegrationTests": {
+        "type": "Project",
+        "dependencies": {
+          "Bogus": "[35.6.2, )",
+          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities.Xunit": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Azure.Cosmos": "[3.47.1, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[9.0.2, )",
+          "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.2, )",
+          "Microsoft.NET.Test.Sdk": "[17.13.0, )",
+          "NBuilder": "[6.1.0, )",
+          "NSubstitute": "[5.3.0, )",
+          "Shouldly": "[4.3.0, )",
+          "Testcontainers.Azurite": "[4.3.0, )",
+          "Testcontainers.CosmosDb": "[4.3.0, )",
+          "Testcontainers.MsSql": "[4.3.0, )",
+          "Testcontainers.RabbitMq": "[4.3.0, )",
+          "xunit": "[2.9.3, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Messaging": {
         "type": "Project",
         "dependencies": {
@@ -1946,6 +1971,23 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Humanizer.Core": "[2.14.1, )",
+          "Polly": "[8.5.2, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Queries": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[2.14.1, )",
+          "MediatR": "[12.4.1, )",
+          "Microsoft.Extensions.Caching.Abstractions": "[9.0.2, )",
           "Polly": "[8.5.2, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }

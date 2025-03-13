@@ -583,7 +583,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             }
 
             var files = Directory.EnumerateFiles(fullPath, searchPattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                .Select(f => this.GetRelativePath(f)) // Returns whole paths relative to rootPath (e.g., "test/file1.txt")
+                .Select(this.GetRelativePath) // Returns whole paths relative to rootPath (e.g., "test/file1.txt")
                 .Order()
                 .ToList();
 
@@ -1030,7 +1030,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
             }
 
             var directories = Directory.EnumerateDirectories(fullPath, searchPattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                .Select(d => this.GetRelativePath(d))
+                .Select(this.GetRelativePath)
                 .Order()
                 .ToList();
 

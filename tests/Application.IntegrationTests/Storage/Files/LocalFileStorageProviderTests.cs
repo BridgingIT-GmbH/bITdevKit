@@ -25,7 +25,6 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
         return new LoggingFileStorageBehavior(
             new LocalFileStorageProvider(tempPath, "TestLocal"),
             this.fixture.ServiceProvider.GetRequiredService<ILoggerFactory>());
-        //return new LocalFileStorageProvider(tempPath, "TestLocal");
     }
 
     protected override FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null)

@@ -45,8 +45,12 @@ public class TestEnvironmentFixture : IAsyncLifetime
                 .Build();
 
         this.AzuriteContainer = new AzuriteBuilder()
-            .WithNetworkAliases(this.NetworkName)
-            .Build();
+                .WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
+                .WithCommand("--skipApiVersionCheck")
+                .Build();
+        //new AzuriteBuilder()
+        //    .WithNetworkAliases(this.NetworkName)
+        //    .Build();
 
         //this.RabbitMQContainer = new RabbitMqBuilder()
         //    .WithNetworkAliases(this.NetworkName)

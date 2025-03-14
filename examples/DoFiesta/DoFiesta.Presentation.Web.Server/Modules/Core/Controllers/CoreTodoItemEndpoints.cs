@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.Controllers;
 
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Presentation;
@@ -96,7 +97,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
     private static async Task<Results<Ok<IEnumerable<TodoItemModel>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindAll(
         HttpContext context,
-        [FromServices] IMediator mediator,
+        [FromServices] IMediator mediator,        
         CancellationToken cancellationToken = default)
     {
         return (await mediator.Send(

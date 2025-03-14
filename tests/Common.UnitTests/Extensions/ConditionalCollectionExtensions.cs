@@ -179,35 +179,6 @@ public class ConditionalCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddIfNotDefault_WithNonDefaultPerson_AddsPerson()
-    {
-        // Arrange
-        var people = new List<PersonStub>();
-        var person = new PersonStub("John", "Doe", "john.doe@example.com", 30);
-
-        // Act
-        people.AddIfNotDefault(person);
-
-        // Assert
-        people.ShouldContain(person);
-        people.Count.ShouldBe(1);
-    }
-
-    [Fact]
-    public void AddIfNotDefault_WithDefaultPerson_DoesNotAdd()
-    {
-        // Arrange
-        var people = new List<PersonStub>();
-        PersonStub person = null; // Default for reference type
-
-        // Act
-        people.AddIfNotDefault(person);
-
-        // Assert
-        people.ShouldBeEmpty();
-    }
-
-    [Fact]
     public void AddIfAll_WithAllTrue_AddsPerson()
     {
         // Arrange

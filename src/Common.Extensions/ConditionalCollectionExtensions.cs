@@ -165,37 +165,6 @@ public static class ConditionalCollectionExtensions
     }
 
     /// <summary>
-    /// Adds an item to the collection if it is not the default value for its type.
-    /// If the collection is null, returns silently without adding.
-    /// </summary>
-    /// <typeparam name="T">The type of items in the collection.</typeparam>
-    /// <param name="collection">The collection to add to, or null.</param>
-    /// <param name="item">The item to add.</param>
-    /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
-    /// <example>
-    /// var orderItems = new List<Item>();
-    /// Item item = null;
-    /// orderItems.AddIfNotDefault(item); // Won’t add because it’s null (default for reference type)
-    /// item = new Item { Price = 10.0m };
-    /// orderItems.AddIfNotDefault(item); // Adds because it’s not null
-    /// orderItems = null;
-    /// orderItems.AddIfNotDefault(item); // Does nothing and returns null silently
-    /// </example>
-    public static ICollection<T> AddIfNotDefault<T>(this ICollection<T> collection, T item)
-    {
-        if (collection == null)
-        {
-            return null;
-        }
-
-        if (!EqualityComparer<T>.Default.Equals(item, default))
-        {
-            collection.Add(item);
-        }
-        return collection;
-    }
-
-    /// <summary>
     /// Adds an item to the collection if all specified conditions are true.
     /// If the collection is null, returns silently without adding.
     /// </summary>

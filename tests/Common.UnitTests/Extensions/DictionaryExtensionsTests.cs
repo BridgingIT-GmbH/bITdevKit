@@ -300,4 +300,354 @@ public class DictionaryExtensionsTests
         // Assert
         result.ShouldBeFalse();
     }
+
+    [Fact]
+    public void AddIf_ConditionTrue_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIf(1, "one", true);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+        result.ShouldBeSameAs(sut); // Chaining returns same instance
+    }
+
+    [Fact]
+    public void AddIf_ConditionFalse_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIf(1, "one", false);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+        result.ShouldBeSameAs(sut);
+    }
+
+    [Fact]
+    public void AddIf_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIf(1, "one", true);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddIfWithPredicate_PredicateTrue_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIf(1, "one", v => v.Length > 2);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfWithPredicate_PredicateFalse_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIf(1, "one", v => v.Length > 3);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AddIfWithPredicate_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIf(1, "one", v => v.Length > 2);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddIfWithPredicate_NullPredicate_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(() => sut.AddIf(1, "one", (Func<string, bool>)null));
+    }
+
+    [Fact]
+    public void AddIfNotNull_ValueNotNull_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfNotNull(1, "one");
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfNotNull_ValueNull_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfNotNull(1, (string)null);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AddIfNotNull_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIfNotNull(1, "one");
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddRangeIf_ConditionTrue_AddsItems()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+        var items = new Dictionary<int, string> { { 1, "one" }, { 2, "two" } };
+
+        // Act
+        var result = sut.AddRangeIf(items, true);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(2);
+        sut[1].ShouldBe("one");
+        sut[2].ShouldBe("two");
+    }
+
+    [Fact]
+    public void AddRangeIf_ConditionFalse_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+        var items = new Dictionary<int, string> { { 1, "one" }, { 2, "two" } };
+
+        // Act
+        var result = sut.AddRangeIf(items, false);
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AddRangeIf_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+        var items = new Dictionary<int, string> { { 1, "one" } };
+
+        // Act
+        var result = sut.AddRangeIf(items, true);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddRangeIf_NullItems_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act & Assert
+        Should.Throw<ArgumentNullException>(() => sut.AddRangeIf(null, true));
+    }
+
+    [Fact]
+    public void AddIfUnique_KeyNotExists_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfUnique(1, "one");
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfUnique_KeyExists_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string> { { 1, "one" } };
+
+        // Act
+        var result = sut.AddIfUnique(1, "new one");
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one"); // Original value preserved
+    }
+
+    [Fact]
+    public void AddIfUnique_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIfUnique(1, "one");
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddIfAll_AllPredicatesTrue_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAll(1, "one", v => v.Length > 2, v => v.StartsWith("o"));
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfAll_AnyPredicateFalse_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAll(1, "one", v => v.Length > 2, v => v.StartsWith("x"));
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AddIfAll_EmptyPredicates_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAll(1, "one");
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfAll_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIfAll(1, "one", v => v.Length > 2);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddIfAny_AnyPredicateTrue_AddsItem()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAny(1, "one", v => v.Length > 3, v => v.Contains("n"));
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.Count.ShouldBe(1);
+        sut[1].ShouldBe("one");
+    }
+
+    [Fact]
+    public void AddIfAny_NoPredicateTrue_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAny(1, "one", v => v.Length > 3, v => v.StartsWith("x"));
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void AddIfAny_NullDictionary_ReturnsNull()
+    {
+        // Arrange
+        IDictionary<int, string> sut = null;
+
+        // Act
+        var result = sut.AddIfAny(1, "one", v => v.Length > 2);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public void AddIfAny_EmptyPredicates_DoesNotAdd()
+    {
+        // Arrange
+        var sut = new Dictionary<int, string>();
+
+        // Act
+        var result = sut.AddIfAny(1, "one");
+
+        // Assert
+        result.ShouldNotBeNull();
+        sut.ShouldBeEmpty();
+    }
 }

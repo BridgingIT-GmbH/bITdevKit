@@ -10,7 +10,7 @@ using System.Diagnostics;
 public static partial class Extensions
 {
     /// <summary>
-    ///     Safeky compares the source to the value string.
+    ///     Safely compares the source to the value string.
     /// </summary>
     /// <param name="source">the source string.</param>
     /// <param name="value">the value string to compare to.</param>

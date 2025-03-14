@@ -27,7 +27,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .WithTags("Core.TodoItems");
 
         // GET single TodoItem
-        group.MapGet("/{id:guid}", TodoItemFindOne)
+        group.MapGet("/{id:guid}", TodoItemFindOne).RequireEntityPermission<TodoItem>(Permission.Read)
             .WithName("Core.TodoItems.GetById")
             .WithFilterSchema()
             .Produces<TodoItem>(StatusCodes.Status200OK)
@@ -37,7 +37,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // GET all TodoItems
-        group.MapGet("/", TodoItemFindAll)
+        group.MapGet("/", TodoItemFindAll).RequireEntityPermission<TodoItem>(Permission.List)
             .WithName("Core.TodoItems.GetAll")
             .WithFilterSchema()
             .Produces<IEnumerable<TodoItem>>(StatusCodes.Status200OK)
@@ -46,7 +46,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // GET sarch TodoItems
-        group.MapPost("search", TodoItemSearch)
+        group.MapPost("search", TodoItemSearch).RequireEntityPermission<TodoItem>(Permission.List)
             .WithName("Core.TodoItems.Search")
             .WithFilterSchema()
             .Produces<IEnumerable<TodoItem>>(StatusCodes.Status200OK)
@@ -55,7 +55,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // POST new TodoItem
-        group.MapPost("/", TodoItemCreate)
+        group.MapPost("/", TodoItemCreate).RequireEntityPermission<TodoItem>(Permission.Write)
             .WithName("Core.TodoItems.Create")
             .Produces<TodoItem>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -64,7 +64,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             //.RequireEntityPermission<TodoItem>(Permission.Write);
 
         // PUT update TodoItem
-        group.MapPut("/{id:guid}", TodoItemUpdate)
+        group.MapPut("/{id:guid}", TodoItemUpdate).RequireEntityPermission<TodoItem>(Permission.Write)
             .WithName("Core.TodoItems.Update")
             .Produces<TodoItem>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
@@ -74,7 +74,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             //.RequireEntityPermission<TodoItem>(Permission.Write);
 
         // DELETE TodoItem
-        group.MapDelete("/{id:guid}", TodoItemDelete)
+        group.MapDelete("/{id:guid}", TodoItemDelete).RequireEntityPermission<TodoItem>(Permission.Delete)
             .WithName("Core.TodoItems.Delete")
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
@@ -97,7 +97,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
     private static async Task<Results<Ok<IEnumerable<TodoItemModel>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindAll(
         HttpContext context,
-        [FromServices] IMediator mediator,        
+        [FromServices] IMediator mediator,
         CancellationToken cancellationToken = default)
     {
         return (await mediator.Send(

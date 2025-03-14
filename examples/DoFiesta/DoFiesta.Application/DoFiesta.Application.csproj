@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Caching\Common.Caching.csproj" />

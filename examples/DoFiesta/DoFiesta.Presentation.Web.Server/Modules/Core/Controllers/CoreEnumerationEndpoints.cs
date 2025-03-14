@@ -26,8 +26,8 @@ public class CoreEnumerationEndpoints : EndpointsBase
             .MapGroup("api/core/enumerations").RequireAuthorization()
             .WithTags("Core.Enumerations");
 
-        // GET single TodoItem
-        group.MapGet("/{id:guid}", TodoItemFindOne)
+        // GET all Enumerations
+        group.MapGet("/{id:guid}", EnumerationsFindAll)
             .WithName("Core.Enumerations.GetAll")
             .WithFilterSchema()
             .Produces<TodoItem>(StatusCodes.Status200OK)
@@ -37,7 +37,7 @@ public class CoreEnumerationEndpoints : EndpointsBase
             .ProducesProblem(StatusCodes.Status500InternalServerError);
     }
 
-    private static Results<Ok<EnumerationModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> TodoItemFindOne(
+    private static Results<Ok<EnumerationModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> EnumerationsFindAll(
         HttpContext context,
         [FromServices] IMediator mediator,
         [FromRoute] string id,

@@ -430,10 +430,11 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
+        // Get direct and wildcard permissions
         var safeEntityId = entityId?.ToString().EmptyToNull();
         return await context.EntityPermissions
-            .Where(p => p.EntityType == entityType
-                && (p.EntityId == null || p.EntityId == safeEntityId))
+            .Where(p => p.EntityType == entityType)
+            .WhereExpressionIf(p => p.EntityId == null || p.EntityId == safeEntityId, safeEntityId != null)
             .Select(p => new EntityPermissionInfo
             {
                 UserId = p.UserId,

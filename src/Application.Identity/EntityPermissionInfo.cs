@@ -10,7 +10,7 @@ using System.Diagnostics;
 /// <summary>
 /// Represents detailed information about a permission granted to a specific entity.
 /// </summary>
-[DebuggerDisplay("{EntityType} [{Permission}] from {Source} [{SourceId}]")]
+[DebuggerDisplay("{EntityType} [{Permission}] user={UserId}, role={RoleName}")]
 public class EntityPermissionInfo : IEquatable<EntityPermissionInfo>
 {
     /// <summary>
@@ -164,5 +164,22 @@ public class EntityPermissionInfo : IEquatable<EntityPermissionInfo>
     private int GetStringHashCode(string value)
     {
         return value?.GetHashCode(StringComparison.Ordinal) ?? 0;
+    }
+
+    public override string ToString()
+    {
+        var entityAndPermission = $"{this.EntityType} [{this.Permission}]";
+
+        if (!string.IsNullOrEmpty(this.UserId) && string.IsNullOrEmpty(this.RoleName))
+        {
+            return $"{entityAndPermission} User={this.UserId}";
+        }
+
+        if (!string.IsNullOrEmpty(this.RoleName) && string.IsNullOrEmpty(this.UserId))
+        {
+            return $"{entityAndPermission} Role={this.RoleName}";
+        }
+
+        return $"{entityAndPermission} user={this.UserId}, role={this.RoleName}";
     }
 }

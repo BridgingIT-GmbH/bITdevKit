@@ -37,7 +37,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.Read));
         if (!authResult.Succeeded)
         {
-            return this.Unauthorized();
+            return this.Unauthorized("read permission needed");
         }
 
         var response = await mediator.Send(
@@ -56,7 +56,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.List));
         if (!authResult.Succeeded)
         {
-            return this.Unauthorized();
+            return this.Unauthorized("list permission needed");
         }
 
         // Example filter model:
@@ -84,7 +84,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.List));
         if (!authResult.Succeeded)
         {
-            return this.Unauthorized();
+            return this.Unauthorized("list permission needed");
         }
 
         // Example filter model:

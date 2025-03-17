@@ -1400,4 +1400,278 @@ public static class ResultPagedExtensions
                 .WithMessages(result.Messages);
         }
     }
+
+    /// <summary>
+    /// Executes different functions based on the result's success state.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The ResultPaged to match.</param>
+    /// <param name="onSuccess">Function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Function to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// var message = result.Match(
+    ///     onSuccess: r => $"Found {r.TotalCount} users across {r.TotalPages} pages",
+    ///     onFailure: errors => $"Failed with {errors.Count} errors"
+    /// );
+    /// </code>
+    /// </example>
+    public static TResult Match<T, TResult>(
+        this ResultPaged<T> result,
+        Func<ResultPaged<T>, TResult> onSuccess,
+        Func<IReadOnlyList<IResultError>, TResult> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? onSuccess(result)
+            : onFailure(result.Errors);
+    }
+
+    /// <summary>
+    /// Returns different values based on the result's success state.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The ResultPaged to match.</param>
+    /// <param name="success">Value to return if successful.</param>
+    /// <param name="failure">Value to return if failed.</param>
+    /// <returns>Either the success or failure value.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// var status = result.Match(
+    ///     success: "Users retrieved successfully",
+    ///     failure: "Failed to retrieve users"
+    /// );
+    /// </code>
+    /// </example>
+    public static TResult Match<T, TResult>(
+        this ResultPaged<T> result,
+        TResult success,
+        TResult failure)
+    {
+        return result.IsSuccess ? success : failure;
+    }
+
+    /// <summary>
+    /// Asynchronously executes different functions based on the result's success state.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The ResultPaged to match.</param>
+    /// <param name="onSuccess">Async function to execute if successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// var status = await result.MatchAsync(
+    ///     async (r, ct) => await FormatSuccessMessageAsync(r, ct),
+    ///     async (errors, ct) => await FormatErrorMessageAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> MatchAsync<T, TResult>(
+        this ResultPaged<T> result,
+        Func<ResultPaged<T>, CancellationToken, Task<TResult>> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? await onSuccess(result, cancellationToken)
+            : await onFailure(result.Errors, cancellationToken);
+    }
+
+    /// <summary>
+    /// Executes different actions based on the ResultPaged's success state.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The ResultPaged to handle.</param>
+    /// <param name="onSuccess">Action to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The original ResultPaged instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// result.Handle(
+    ///     onSuccess: users => {
+    ///         Console.WriteLine($"Processing {users.Count()} users from page {result.CurrentPage}");
+    ///         foreach(var user in users) {
+    ///             Console.WriteLine($"User: {user.Name}");
+    ///         }
+    ///     },
+    ///     onFailure: errors => Console.WriteLine($"Failed with {errors.Count} errors")
+    /// );
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> Handle<T>(
+        this ResultPaged<T> result,
+        Action<IEnumerable<T>> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            onSuccess(result.Value);
+            return result;
+        }
+        else
+        {
+            onFailure(result.Errors);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different actions based on the ResultPaged's success state.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The ResultPaged to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// await result.HandleAsync(
+    ///     async (users, ct) => {
+    ///         foreach(var user in users) {
+    ///             await LogUserAccessAsync(user, ct);
+    ///         }
+    ///     },
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this ResultPaged<T> result,
+        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            await onSuccess(result.Value, cancellationToken);
+            return result;
+        }
+        else
+        {
+            await onFailure(result.Errors, cancellationToken);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The ResultPaged to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// await result.HandleAsync(
+    ///     async (users, ct) => {
+    ///         foreach(var user in users) {
+    ///             await ProcessUserAsync(user, ct);
+    ///         }
+    ///     },
+    ///     errors => Console.WriteLine($"Failed with {errors.Count} errors"),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this ResultPaged<T> result,
+        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            await onSuccess(result.Value, cancellationToken);
+            return result;
+        }
+        else
+        {
+            onFailure(result.Errors);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The ResultPaged to handle.</param>
+    /// <param name="onSuccess">Synchronous function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+    ///
+    /// await result.HandleAsync(
+    ///     users => {
+    ///         foreach(var user in users) {
+    ///             Console.WriteLine($"Processing user: {user.Name}");
+    ///         }
+    ///     },
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this ResultPaged<T> result,
+        Action<IEnumerable<T>> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            onSuccess(result.Value);
+            return result;
+        }
+        else
+        {
+            await onFailure(result.Errors, cancellationToken);
+            return result;
+        }
+    }
 }

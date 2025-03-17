@@ -1720,6 +1720,336 @@ public static partial class ResultPagedFunctionTaskExtensions
         }
     }
 
+    /// <summary>
+    /// Executes different functions based on the result's success state from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to match.</param>
+    /// <param name="onSuccess">Function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Function to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if an error occurs during pattern matching.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// var message = await resultTask.Match(
+    ///     onSuccess: r => $"Found {r.TotalCount} users across {r.TotalPages} pages",
+    ///     onFailure: errors => $"Failed with {errors.Count} errors"
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> Match<T, TResult>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<ResultPaged<T>, TResult> onSuccess,
+        Func<IReadOnlyList<IResultError>, TResult> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return result.Match(onSuccess, onFailure);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error during pattern matching", ex);
+        }
+    }
+
+    /// <summary>
+    /// Returns different values based on the result's success state from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to match.</param>
+    /// <param name="success">Value to return if successful.</param>
+    /// <param name="failure">Value to return if failed.</param>
+    /// <returns>Either the success or failure value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if an error occurs during pattern matching.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// var status = await resultTask.Match(
+    ///     success: "Users retrieved successfully",
+    ///     failure: "Failed to retrieve users"
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> Match<T, TResult>(
+        this Task<ResultPaged<T>> resultTask,
+        TResult success,
+        TResult failure)
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.Match(success, failure);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error during pattern matching", ex);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different functions based on the result's success state from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to match.</param>
+    /// <param name="onSuccess">Async function to execute if successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <exception cref="OperationCanceledException">Thrown if the operation is cancelled.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// var status = await resultTask.MatchAsync(
+    ///     async (r, ct) => await FormatSuccessMessageAsync(r, ct),
+    ///     async (errors, ct) => await FormatErrorMessageAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> MatchAsync<T, TResult>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<ResultPaged<T>, CancellationToken, Task<TResult>> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return await result.MatchAsync(onSuccess, onFailure, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw; // Propagate cancellation
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error during pattern matching", ex);
+        }
+    }
+
+    /// <summary>
+    /// Executes different actions based on the ResultPaged's success state from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
+    /// <param name="onSuccess">Action to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The original ResultPaged wrapped in a Task.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// await resultTask.Handle(
+    ///     onSuccess: users => {
+    ///         Console.WriteLine($"Processing {users.Count()} users from page {result.CurrentPage}");
+    ///         foreach(var user in users) {
+    ///             Console.WriteLine($"User: {user.Name}");
+    ///         }
+    ///     },
+    ///     onFailure: errors => Console.WriteLine($"Failed with {errors.Count} errors")
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> Handle<T>(
+        this Task<ResultPaged<T>> resultTask,
+        Action<IEnumerable<T>> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                onSuccess(result.Value);
+            }
+            else
+            {
+                onFailure(result.Errors);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly());
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different actions based on the ResultPaged's success state from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// await resultTask.HandleAsync(
+    ///     async (users, ct) => {
+    ///         foreach(var user in users) {
+    ///             await LogUserAccessAsync(user, ct);
+    ///         }
+    ///     },
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                await onSuccess(result.Value, cancellationToken);
+            }
+            else
+            {
+                await onFailure(result.Errors, cancellationToken);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            await onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly(), cancellationToken);
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// await resultTask.HandleAsync(
+    ///     async (users, ct) => {
+    ///         foreach(var user in users) {
+    ///             await ProcessUserAsync(user, ct);
+    ///         }
+    ///     },
+    ///     errors => Console.WriteLine($"Failed with {errors.Count} errors"),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                await onSuccess(result.Value, cancellationToken);
+            }
+            else
+            {
+                onFailure(result.Errors);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly());
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler from a Task<ResultPaged{T}>.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
+    /// <param name="onSuccess">Synchronous function to execute if the Result is successful, receiving the values.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original ResultPaged instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+    /// await resultTask.HandleAsync(
+    ///     users => {
+    ///         foreach(var user in users) {
+    ///             Console.WriteLine($"Processing user: {user.Name}");
+    ///         }
+    ///     },
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> HandleAsync<T>(
+        this Task<ResultPaged<T>> resultTask,
+        Action<IEnumerable<T>> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                onSuccess(result.Value);
+            }
+            else
+            {
+                await onFailure(result.Errors, cancellationToken);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            await onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly(), cancellationToken);
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
     ///// <summary>
     ///// Applies an operation to each item in a page collection while maintaining error context.
     ///// Useful for scenarios where individual item operations might fail independently.

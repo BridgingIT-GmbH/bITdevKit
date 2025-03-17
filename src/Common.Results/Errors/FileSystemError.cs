@@ -8,26 +8,13 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents an error related to file system operations, such as file not found or disk issues.
 /// </summary>
-public class FileSystemError : ResultErrorBase
+public class FileSystemError(string message, string path = null, Exception innerException = null) : ResultErrorBase(message ?? "File system operation failed")
 {
-    public string Path { get; }
-    public Exception InnerException { get; }
-
-    public FileSystemError(string message, string path = null, Exception innerException = null)
-        : base(message ?? "File system operation failed")
-    {
-        this.Path = path;
-        this.InnerException = innerException;
-    }
+    public string Path { get; } = path;
+    public Exception InnerException { get; } = innerException;
 }
 
-public class ArgumentError : ResultErrorBase
+public class ArgumentError(string argument = null) : ResultErrorBase(argument ?? "Argument error")
 {
-    public string Argument { get; }
-
-    public ArgumentError(string argument = null, Exception innerException = null)
-        : base(argument ?? "Argument error")
-    {
-        this.Argument = argument;
-    }
+    public string Argument { get; } = argument;
 }

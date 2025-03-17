@@ -11,7 +11,7 @@ using FluentValidation.Internal;
 /// <summary>
 ///     Extension methods for Task<Result<T>> to enable proper chaining.
 /// </summary>
-public static partial class ResultFunctionTaskExtensions
+public static partial class ResultTaskExtensions
 {
     /// <summary>
     ///     Maps the successful value of a Result task using the provided mapping function.

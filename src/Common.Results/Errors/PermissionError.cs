@@ -8,15 +8,8 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents an error due to insufficient permissions for a file system operation.
 /// </summary>
-public class PermissionError : ResultErrorBase
+public class PermissionError(string message, string path, Exception innerException = null) : ResultErrorBase(message ?? "Permission denied")
 {
-    public string Path { get; }
-    public Exception InnerException { get; }
-
-    public PermissionError(string message, string path, Exception innerException = null)
-        : base(message ?? "Permission denied")
-    {
-        this.Path = path;
-        this.InnerException = innerException;
-    }
+    public string Path { get; } = path;
+    public Exception InnerException { get; } = innerException;
 }

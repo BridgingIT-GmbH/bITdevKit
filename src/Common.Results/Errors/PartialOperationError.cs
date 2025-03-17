@@ -8,15 +8,8 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents an error where only a partial set of operations succeeded, such as in bulk file operations.
 /// </summary>
-public class PartialOperationError : ResultErrorBase
+public class PartialOperationError(string message, IEnumerable<string> failedPaths, Exception innerException = null) : ResultErrorBase(message ?? "Partial operation failure")
 {
-    public IEnumerable<string> FailedPaths { get; }
-    public Exception InnerException { get; }
-
-    public PartialOperationError(string message, IEnumerable<string> failedPaths, Exception innerException = null)
-        : base(message ?? "Partial operation failure")
-    {
-        this.FailedPaths = failedPaths ?? Enumerable.Empty<string>();
-        this.InnerException = innerException;
-    }
+    public IEnumerable<string> FailedPaths { get; } = failedPaths ?? [];
+    public Exception InnerException { get; } = innerException;
 }

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public static partial class ResultFunctionTaskExtensions
+public static partial class ResultTaskExtensions
 {
     /// <summary>
     ///     Ensures that a condition is met for the Result task.

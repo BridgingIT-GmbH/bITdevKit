@@ -1549,4 +1549,363 @@ public static class ResultExtensions
                 .WithMessages(result.Messages);
         }
     }
+
+    /// <summary>
+    /// Executes different functions based on the Result's success state.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The Result to match.</param>
+    /// <param name="onSuccess">Function to execute if the Result is successful, receiving the value.</param>
+    /// <param name="onFailure">Function to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// // Pattern matching with different return types
+    /// string message = result.Match(
+    ///     onSuccess: user => $"Found user: {user.Name}",
+    ///     onFailure: errors => $"Failed with {errors.Count} errors"
+    /// );
+    ///
+    /// // Pattern matching with complex logic
+    /// var apiResponse = result.Match(
+    ///     onSuccess: user => new ApiResponse
+    ///     {
+    ///         Data = user,
+    ///         Status = 200
+    ///     },
+    ///     onFailure: errors => new ApiResponse
+    ///     {
+    ///         Errors = errors.Select(e => e.Message).ToList(),
+    ///         Status = 400
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
+    public static TResult Match<TResult, T>(
+        this Result<T> result,
+        Func<T, TResult> onSuccess,
+        Func<IReadOnlyList<IResultError>, TResult> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? onSuccess(result.Value)
+            : onFailure(result.Errors);
+    }
+
+    /// <summary>
+    /// Returns different values based on the Result's success state.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The Result to match.</param>
+    /// <param name="success">Value to return if successful.</param>
+    /// <param name="failure">Value to return if failed.</param>
+    /// <returns>Either the success or failure value.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// // Simple value matching
+    /// string status = result.Match(
+    ///     success: "User is valid",
+    ///     failure: "User is invalid"
+    /// );
+    ///
+    /// // Status code matching
+    /// int statusCode = result.Match(
+    ///     success: 200,
+    ///     failure: 400
+    /// );
+    /// </code>
+    /// </example>
+    public static TResult Match<TResult, T>(
+        this Result<T> result,
+        TResult success,
+        TResult failure)
+    {
+        return result.IsSuccess ? success : failure;
+    }
+
+    /// <summary>
+    /// Asynchronously executes different functions based on the Result's success state.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The Result to match.</param>
+    /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
+    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// var response = await result.MatchAsync(
+    ///     async (user, ct) =>
+    ///     {
+    ///         await _userService.LogAccessAsync(user, ct);
+    ///         return new SuccessResponse(user);
+    ///     },
+    ///     async (errors, ct) =>
+    ///     {
+    ///         await _logger.LogErrorsAsync(errors, ct);
+    ///         return new ErrorResponse(errors);
+    ///     },
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> MatchAsync<TResult, T>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task<TResult>> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? await onSuccess(result.Value, cancellationToken)
+            : await onFailure(result.Errors, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The Result to match.</param>
+    /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
+    /// <param name="onFailure">Synchronous function to execute if failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// var message = await result.MatchAsync(
+    ///     async (user, ct) =>
+    ///     {
+    ///         await _userService.UpdateLastLoginAsync(user, ct);
+    ///         return $"Updated login time for {user.Name}";
+    ///     },
+    ///     errors => $"Login failed: {errors.First().Message}",
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> MatchAsync<TResult, T>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task<TResult>> onSuccess,
+        Func<IReadOnlyList<IResultError>, TResult> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? await onSuccess(result.Value, cancellationToken)
+            : onFailure(result.Errors);
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <param name="result">The Result to match.</param>
+    /// <param name="onSuccess">Synchronous function to execute if successful, receiving the value.</param>
+    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the result of either the success or failure function.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Failure()
+    ///     .WithError(new ValidationError("Invalid email"));
+    ///
+    /// var response = await result.MatchAsync(
+    ///     user => new SuccessResponse(user),
+    ///     async (errors, ct) =>
+    ///     {
+    ///         await _errorService.LogValidationErrorsAsync(errors, ct);
+    ///         return new ErrorResponse(await FormatErrorsAsync(errors, ct));
+    ///     },
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<TResult> MatchAsync<TResult, T>(
+        this Result<T> result,
+        Func<T, TResult> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        return result.IsSuccess
+            ? onSuccess(result.Value)
+            : await onFailure(result.Errors, cancellationToken);
+    }
+
+    /// <summary>
+    /// Executes different actions based on the Result's success state.
+    /// </summary>
+    /// <param name="result">The Result to handle.</param>
+    /// <param name="onSuccess">Action to execute if the Result is successful, receiving the value.</param>
+    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// result.Handle(
+    ///     onSuccess: user => Console.WriteLine($"User: {user.Name}"),
+    ///     onFailure: errors => Console.WriteLine($"Failed with {errors.Count} errors")
+    /// );
+    /// </code>
+    /// </example>
+    public static Result<T> Handle<T>(
+        this Result<T> result,
+        Action<T> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            onSuccess(result.Value);
+            return result;
+        }
+        else
+        {
+            onFailure(result.Errors);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different actions based on the Result's success state.
+    /// </summary>
+    /// <param name="result">The Result to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the value.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// await result.HandleAsync(
+    ///     async (user, ct) => await LogUserAccessAsync(user, ct),
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> HandleAsync<T>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            await onSuccess(result.Value, cancellationToken);
+            return result;
+        }
+        else
+        {
+            await onFailure(result.Errors, cancellationToken);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler.
+    /// </summary>
+    /// <param name="result">The Result to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the value.</param>
+    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// await result.HandleAsync(
+    ///     async (user, ct) => await LogUserAccessAsync(user, ct),
+    ///     errors => Console.WriteLine($"Failed with {errors.Count} errors"),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> HandleAsync<T>(
+        this Result<T> result,
+        Func<T, CancellationToken, Task> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            await onSuccess(result.Value, cancellationToken);
+            return result;
+        }
+        else
+        {
+            onFailure(result.Errors);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler.
+    /// </summary>
+    /// <param name="result">The Result to handle.</param>
+    /// <param name="onSuccess">Synchronous function to execute if the Result is successful, receiving the value.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user);
+    ///
+    /// await result.HandleAsync(
+    ///     user => Console.WriteLine($"User: {user.Name}"),
+    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> HandleAsync<T>(
+        this Result<T> result,
+        Action<T> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        if (result.IsSuccess)
+        {
+            onSuccess(result.Value);
+            return result;
+        }
+        else
+        {
+            await onFailure(result.Errors, cancellationToken);
+            return result;
+        }
+    }
 }

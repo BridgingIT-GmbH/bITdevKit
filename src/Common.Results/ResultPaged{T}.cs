@@ -22,7 +22,7 @@
 /// }
 /// </example>
 [DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages} {FirstMessageOrError}")]
-public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
+public readonly partial struct ResultPaged<T> : IResultPaged<T>
 {
     private readonly bool success;
     private readonly ValueList<string> messages;
@@ -119,7 +119,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// <summary>
     /// Gets the collection of values for the current page.
     /// </summary>
-    public IEnumerable<T> Value => this.value ?? Array.Empty<T>();
+    public IEnumerable<T> Value => this.value ?? [];
 
     /// <summary>
     /// Gets the collection of messages associated with the result.
@@ -217,7 +217,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// </example>
     public static ResultPaged<T> Failure()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false);
+        return new ResultPaged<T>([], false);
     }
 
     /// <summary>
@@ -250,7 +250,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     public static ResultPaged<T> Failure<TError>()
         where TError : IResultError, new()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithError<TError>();
     }
 
@@ -267,7 +267,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        var result = new ResultPaged<T>(Array.Empty<T>(), false)
+        var result = new ResultPaged<T>([], false)
             .WithMessage(message);
 
         return error is null ? result : result.WithError(error);
@@ -288,7 +288,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         IEnumerable<string> messages,
         IEnumerable<IResultError> errors = null)
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessages(messages)
             .WithErrors(errors);
     }
@@ -306,7 +306,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessage(message)
             .WithError<TError>();
     }
@@ -324,7 +324,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     public static ResultPaged<T> Failure<TError>(IEnumerable<string> messages)
         where TError : IResultError, new()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessages(messages)
             .WithError<TError>();
     }
@@ -555,233 +555,8 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         return this.WithError(Activator.CreateInstance<TError>());
     }
-
     /// <summary>
-    /// Executes different functions based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var message = result.Match(
-    ///     onSuccess: r => $"Found {r.TotalCount} users across {r.TotalPages} pages",
-    ///     onFailure: errors => $"Failed with {errors.Count} errors"
-    /// );
-    /// </example>
-    public TResult Match<TResult>(
-        Func<ResultPaged<T>, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? onSuccess(this)
-            : onFailure(this.Errors);
-    }
-
-    /// <summary>
-    /// Returns different values based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var status = result.Match(
-    ///     success: "Users retrieved successfully",
-    ///     failure: "Failed to retrieve users"
-    /// );
-    /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        return this.IsSuccess ? success : failure;
-    }
-
-    /// <summary>
-    /// Asynchronously executes different functions based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var status = await result.MatchAsync(
-    ///     async (r, ct) => await FormatSuccessMessageAsync(r, ct),
-    ///     async (errors, ct) => await FormatErrorMessageAsync(errors, ct),
-    ///     cancellationToken
-    /// );
-    /// </example>
-    public Task<TResult> MatchAsync<TResult>(
-        Func<ResultPaged<T>, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? onSuccess(this, cancellationToken)
-            : onFailure(this.Errors, cancellationToken);
-    }
-
-    /// <summary>
-    /// Executes different actions based on the ResultPaged's success state.
-    /// </summary>
-    /// <param name="onSuccess">Action to execute if the Result is successful, receiving the values.</param>
-    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
-    /// <returns>The original ResultPaged instance.</returns>
-    /// <example>
-    /// <code>
-    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
-    ///
-    /// result.Handle(
-    ///     onSuccess: users => {
-    ///         Console.WriteLine($"Processing {users.Count()} users from page {result.CurrentPage}");
-    ///         foreach(var user in users) {
-    ///             Console.WriteLine($"User: {user.Name}");
-    ///         }
-    ///     },
-    ///     onFailure: errors => Console.WriteLine($"Failed with {errors.Count} errors")
-    /// );
-    /// </code>
-    /// </example>
-    public ResultPaged<T> Handle(
-        Action<IEnumerable<T>> onSuccess,
-        Action<IReadOnlyList<IResultError>> onFailure)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        if (this.IsSuccess)
-        {
-            onSuccess(this.Value);
-            return this;
-        }
-        else
-        {
-            onFailure(this.Errors);
-            return this;
-        }
-    }
-
-    /// <summary>
-    /// Asynchronously executes different actions based on the ResultPaged's success state.
-    /// </summary>
-    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
-    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the original ResultPaged instance.</returns>
-    /// <example>
-    /// <code>
-    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
-    ///
-    /// await result.HandleAsync(
-    ///     async (users, ct) => {
-    ///         foreach(var user in users) {
-    ///             await LogUserAccessAsync(user, ct);
-    ///         }
-    ///     },
-    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public async Task<ResultPaged<T>> HandleAsync(
-        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        if (this.IsSuccess)
-        {
-            await onSuccess(this.Value, cancellationToken);
-            return this;
-        }
-        else
-        {
-            await onFailure(this.Errors, cancellationToken);
-            return this;
-        }
-    }
-
-    /// <summary>
-    /// Asynchronously executes a success function with a synchronous failure handler.
-    /// </summary>
-    /// <param name="onSuccess">Async function to execute if the Result is successful, receiving the values.</param>
-    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the original ResultPaged instance.</returns>
-    /// <example>
-    /// <code>
-    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
-    ///
-    /// await result.HandleAsync(
-    ///     async (users, ct) => {
-    ///         foreach(var user in users) {
-    ///             await ProcessUserAsync(user, ct);
-    ///         }
-    ///     },
-    ///     errors => Console.WriteLine($"Failed with {errors.Count} errors"),
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public async Task<ResultPaged<T>> HandleAsync(
-        Func<IEnumerable<T>, CancellationToken, Task> onSuccess,
-        Action<IReadOnlyList<IResultError>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        if (this.IsSuccess)
-        {
-            await onSuccess(this.Value, cancellationToken);
-            return this;
-        }
-        else
-        {
-            onFailure(this.Errors);
-            return this;
-        }
-    }
-
-    /// <summary>
-    /// Executes a synchronous success function with an async failure handler.
-    /// </summary>
-    /// <param name="onSuccess">Synchronous function to execute if the Result is successful, receiving the values.</param>
-    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the original ResultPaged instance.</returns>
-    /// <example>
-    /// <code>
-    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
-    ///
-    /// await result.HandleAsync(
-    ///     users => {
-    ///         foreach(var user in users) {
-    ///             Console.WriteLine($"Processing user: {user.Name}");
-    ///         }
-    ///     },
-    ///     async (errors, ct) => await LogErrorsAsync(errors, ct),
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public async Task<ResultPaged<T>> HandleAsync(
-        Action<IEnumerable<T>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        if (this.IsSuccess)
-        {
-            onSuccess(this.Value);
-            return this;
-        }
-        else
-        {
-            await onFailure(this.Errors, cancellationToken);
-            return this;
-        }
-    }
-
-    /// <summary>
-    /// Converts to a regular Result.
+    /// Converts a generic ResultPaged{T} to a non-generic Result.
     /// </summary>
     /// <example>
     /// var result = resultPaged.For();
@@ -790,7 +565,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("Operation successful");
     /// }
     /// </example>
-    public Result For()
+    public Result Unwrap()
     {
         var result = this;
 
@@ -811,7 +586,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
 
         return this.Match(
             _ => ResultPaged<TOutput>.Success(
-                    Array.Empty<TOutput>(),
+                    [],
                     result.TotalCount,
                     result.CurrentPage,
                     result.PageSize)
@@ -866,7 +641,9 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// Result baseResult = resultPaged; // Implicitly converts
     /// </example>
     public static implicit operator Result(ResultPaged<T> result) =>
-        result.For();
+        result.Match(
+            _ => Result.Success().WithMessages(result.Messages).WithErrors(result.Errors),
+            _ => Result.Failure().WithMessages(result.Messages).WithErrors(result.Errors));
 
     /// <summary>
     /// Implicit conversion to Result{IEnumerable{TValue}}.
@@ -956,10 +733,9 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable()
+        errors = [.. this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
-            .Cast<TError>()
-            .ToList();
+            .Cast<TError>()];
 
         return errors.Any();
     }
@@ -995,10 +771,9 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        return this.errors.AsEnumerable()
+        return [.. this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
-            .Cast<TError>()
-            .ToList();
+            .Cast<TError>()];
     }
 
     /// <summary>

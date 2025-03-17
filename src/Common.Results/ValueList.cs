@@ -142,7 +142,7 @@ public readonly struct ValueList<T>
     {
         return this.count switch
         {
-            0 => Array.Empty<T>(),                    // Empty: return cached empty array
+            0 => [],                    // Empty: return cached empty array
             1 => new[] { this.item1 },                // One item: single-element array
             2 => new[] { this.item1, this.item2 },    // Two items: two-element array
             _ => this.overflow                        // Three or more: return list

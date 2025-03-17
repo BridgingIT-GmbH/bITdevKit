@@ -76,13 +76,65 @@ public interface IResult
 }
 
 /// <summary>
-///     Represents the result of an operation, encapsulating messages, errors,
-///     and the success or failure state.
+/// Represents the result of an operation, encapsulating messages, errors and the success or failure state.
 /// </summary>
-public interface IResult<out TValue> : IResult
+public interface IResult<out T> : IResult
 {
     /// <summary>
-    ///     Gets the values associated with the result.
+    /// Represents a read-only property that retrieves a value of type T. The value cannot be modified.
     /// </summary>
-    TValue Value { get; }
+    T Value { get; }
+
+    //IResult Unwrap();
+
+    //IResult<TOutput> ToResult<TOutput>();
+
+    //IResult<TOutput> ToResult<TOutput>(TOutput value);
+}
+
+/// <summary>
+/// Represents a paged result that can be enumerated. It extends a result interface to include pagination functionality.
+/// </summary>
+public interface IResultPaged<out T> : IResult
+{
+    /// <summary>
+    /// Retrieves a collection of values of type T. The collection is enumerable, allowing iteration over its elements.
+    /// </summary>
+    IEnumerable<T> Value { get; }
+
+    /// <summary>
+    /// Gets the current page number (1-based).
+    /// </summary>
+    int CurrentPage { get; }
+
+    /// <summary>
+    /// Gets the total number of pages based on total count and page size.
+    /// </summary>
+    int TotalPages { get; }
+
+    /// <summary>
+    /// Gets the total count of items across all pages.
+    /// </summary>
+    long TotalCount { get; }
+
+    /// <summary>
+    /// Gets the number of items per page.
+    /// </summary>
+    int PageSize { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether there is a previous page available.
+    /// </summary>
+    bool HasPreviousPage { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether there is a next page available.
+    /// </summary>
+    bool HasNextPage { get; }
+
+    //IResult Unwrap();
+
+    //IResultPaged<TOutput> For<TOutput>();
+
+    //IResultPaged<TOutput> For<TOutput>(IEnumerable<TOutput> values);
 }

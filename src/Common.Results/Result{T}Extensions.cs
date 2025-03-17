@@ -3,7 +3,7 @@ namespace BridgingIT.DevKit.Common;
 using FluentValidation;
 using FluentValidation.Internal;
 
-public static class ResultExtensions
+public static class ResultTExtensions
 {
     /// <summary>
     ///     Maps a successful Result{T} to a Result{TNew} using the provided mapping function.

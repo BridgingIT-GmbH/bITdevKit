@@ -10,7 +10,7 @@ using FluentValidation;
 /// <summary>
 ///     Extension methods for operations on Result{IEnumerable{T}} to enable proper collection handling.
 /// </summary>
-public static class ResultCollectionExtensions // TODO: needs to be refactored as extension methods on IResult<T> (covariance support due to interface (out))
+public static class ResultTCollectionExtensions // TODO: needs to be refactored as extension methods on IResult<T> (covariance support due to interface (out))
 {
     #region Core Collection Filtering Operations
 

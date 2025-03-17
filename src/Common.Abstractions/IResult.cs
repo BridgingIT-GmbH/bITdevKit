@@ -73,6 +73,19 @@ public interface IResult
     /// <returns>True if the result contains one or more errors of the specified type; otherwise, false.</returns>
     bool TryGetErrors<TError>(out IEnumerable<TError> errors)
         where TError : class, IResultError;
+
+    //IResult WithMessage(string message);
+
+    //IResult WithMessages(IEnumerable<string> messages);
+
+    //IResult WithError(IResultError error);
+
+    //IResult WithError(Exception ex);
+
+    //IResult WithErrors(IEnumerable<IResultError> errors);
+
+    //IResult WithError<TError>()
+    //    where TError : IResultError, new();
 }
 
 /// <summary>
@@ -90,6 +103,19 @@ public interface IResult<out T> : IResult
     //IResult<TOutput> ToResult<TOutput>();
 
     //IResult<TOutput> ToResult<TOutput>(TOutput value);
+
+    //new IResult<T> WithMessage(string message);
+
+    //new IResult<T> WithMessages(IEnumerable<string> messages);
+
+    //new IResult<T> WithError(IResultError error);
+
+    //new IResult<T> WithError(Exception ex);
+
+    //new IResult<T> WithErrors(IEnumerable<IResultError> errors);
+
+    //new IResult<T> WithError<TError>()
+    //    where TError : IResultError, new();
 }
 
 /// <summary>
@@ -137,4 +163,17 @@ public interface IResultPaged<out T> : IResult
     //IResultPaged<TOutput> For<TOutput>();
 
     //IResultPaged<TOutput> For<TOutput>(IEnumerable<TOutput> values);
+
+    //new IResultPaged<T> WithMessage(string message);
+
+    //new IResultPaged<T> WithMessages(IEnumerable<string> messages);
+
+    //new IResultPaged<T> WithError(IResultError error);
+
+    //new IResultPaged<T> WithError(Exception ex);
+
+    //new IResultPaged<T> WithErrors(IEnumerable<IResultError> errors);
+
+    //new IResultPaged<T> WithError<TError>()
+    //    where TError : IResultError, new();
 }

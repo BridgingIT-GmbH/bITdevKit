@@ -1720,137 +1720,137 @@ public static partial class ResultPagedFunctionTaskExtensions
         }
     }
 
-    /// <summary>
-    /// Applies an operation to each item in a page collection while maintaining error context.
-    /// Useful for scenarios where individual item operations might fail independently.
-    /// </summary>
-    /// <typeparam name="T">The type of the source value.</typeparam>
-    /// <typeparam name="TOutput">The type of the output value.</typeparam>
-    /// <param name="resultTask">The ResultPaged task to process.</param>
-    /// <param name="operation">The operation to apply to each item.</param>
-    /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
-    /// <example>
-    /// <code>
-    /// // Process users with individual error handling
-    /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
-    ///     .Collect(user =>
-    ///     {
-    ///         try
-    ///         {
-    ///             var processed = userProcessor.Process(user);
-    ///             return Result{ProcessedUser}.Success(processed);
-    ///         }
-    ///         catch (QuotaExceededException)
-    ///         {
-    ///             return Result{ProcessedUser}.Failure()
-    ///                 .WithError(new ValidationError(
-    ///                     $"Quota exceeded for user {user.Id}",
-    ///                     nameof(user.Quota)));
-    ///         }
-    ///         catch (Exception ex)
-    ///         {
-    ///             return Result{ProcessedUser}.Failure()
-    ///                 .WithError(new Error($"Processing failed: {ex.Message}"));
-    ///         }
-    ///     });
-    /// </code>
-    /// </example>
-    public static async Task<ResultPaged<TOutput>> Collect<T, TOutput>(
-        this Task<ResultPaged<T>> resultTask,
-        Func<T, Result<TOutput>> operation)
-    {
-        if (operation is null)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
+    ///// <summary>
+    ///// Applies an operation to each item in a page collection while maintaining error context.
+    ///// Useful for scenarios where individual item operations might fail independently.
+    ///// </summary>
+    ///// <typeparam name="T">The type of the source value.</typeparam>
+    ///// <typeparam name="TOutput">The type of the output value.</typeparam>
+    ///// <param name="resultTask">The ResultPaged task to process.</param>
+    ///// <param name="operation">The operation to apply to each item.</param>
+    ///// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
+    ///// <example>
+    ///// <code>
+    ///// // Process users with individual error handling
+    ///// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    /////     .Collect(user =>
+    /////     {
+    /////         try
+    /////         {
+    /////             var processed = userProcessor.Process(user);
+    /////             return Result{ProcessedUser}.Success(processed);
+    /////         }
+    /////         catch (QuotaExceededException)
+    /////         {
+    /////             return Result{ProcessedUser}.Failure()
+    /////                 .WithError(new ValidationError(
+    /////                     $"Quota exceeded for user {user.Id}",
+    /////                     nameof(user.Quota)));
+    /////         }
+    /////         catch (Exception ex)
+    /////         {
+    /////             return Result{ProcessedUser}.Failure()
+    /////                 .WithError(new Error($"Processing failed: {ex.Message}"));
+    /////         }
+    /////     });
+    ///// </code>
+    ///// </example>
+    //public static async Task<ResultPaged<TOutput>> Collect<T, TOutput>(
+    //    this Task<ResultPaged<T>> resultTask,
+    //    Func<T, Result<TOutput>> operation)
+    //{
+    //    if (operation is null)
+    //    {
+    //        return ResultPaged<TOutput>.Failure()
+    //            .WithError(new Error("Operation cannot be null"));
+    //    }
 
-        try
-        {
-            var result = await resultTask;
+    //    try
+    //    {
+    //        var result = await resultTask;
 
-            return result.Collect(operation);
-        }
-        catch (Exception ex)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    //        return result.Collect(operation);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return ResultPaged<TOutput>.Failure()
+    //            .WithError(Result.Settings.ExceptionErrorFactory(ex))
+    //            .WithMessage(ex.Message);
+    //    }
+    //}
 
-    /// <summary>
-    /// Asynchronously applies an operation to each item in a page collection while maintaining error context.
-    /// </summary>
-    /// <typeparam name="T">The type of the source value.</typeparam>
-    /// <typeparam name="TOutput">The type of the output value.</typeparam>
-    /// <param name="resultTask">The ResultPaged task to process.</param>
-    /// <param name="operation">The async operation to apply to each item.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
-    /// <example>
-    /// <code>
-    /// // Process users with external service integration
-    /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
-    ///     .CollectAsync(async (user, ct) =>
-    ///     {
-    ///         try
-    ///         {
-    ///             // Verify user permissions
-    ///             var permissions = await permissionService
-    ///                 .GetPermissionsAsync(user.Id, ct);
-    ///
-    ///             if (!permissions.Contains("process"))
-    ///                 return Result{ProcessedUser}.Failure()
-    ///                     .WithError(new ValidationError(
-    ///                         "User lacks processing permission",
-    ///                         nameof(user.Permissions)));
-    ///
-    ///             // Process user with external service
-    ///             var enrichedData = await externalService
-    ///                 .EnrichUserDataAsync(user, ct);
-    ///
-    ///             var processed = await userProcessor
-    ///                 .ProcessAsync(user, enrichedData, ct);
-    ///
-    ///             return Result{ProcessedUser}.Success(processed);
-    ///         }
-    ///         catch (ServiceException ex)
-    ///         {
-    ///             return Result{ProcessedUser}.Failure()
-    ///                 .WithError(new ExternalServiceError(ex.Message));
-    ///         }
-    ///     },
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    public static async Task<ResultPaged<TOutput>> CollectAsync<T, TOutput>(
-        this Task<ResultPaged<T>> resultTask,
-        Func<T, CancellationToken, Task<Result<TOutput>>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
+    ///// <summary>
+    ///// Asynchronously applies an operation to each item in a page collection while maintaining error context.
+    ///// </summary>
+    ///// <typeparam name="T">The type of the source value.</typeparam>
+    ///// <typeparam name="TOutput">The type of the output value.</typeparam>
+    ///// <param name="resultTask">The ResultPaged task to process.</param>
+    ///// <param name="operation">The async operation to apply to each item.</param>
+    ///// <param name="cancellationToken">Token to cancel the operation.</param>
+    ///// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
+    ///// <example>
+    ///// <code>
+    ///// // Process users with external service integration
+    ///// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    /////     .CollectAsync(async (user, ct) =>
+    /////     {
+    /////         try
+    /////         {
+    /////             // Verify user permissions
+    /////             var permissions = await permissionService
+    /////                 .GetPermissionsAsync(user.Id, ct);
+    /////
+    /////             if (!permissions.Contains("process"))
+    /////                 return Result{ProcessedUser}.Failure()
+    /////                     .WithError(new ValidationError(
+    /////                         "User lacks processing permission",
+    /////                         nameof(user.Permissions)));
+    /////
+    /////             // Process user with external service
+    /////             var enrichedData = await externalService
+    /////                 .EnrichUserDataAsync(user, ct);
+    /////
+    /////             var processed = await userProcessor
+    /////                 .ProcessAsync(user, enrichedData, ct);
+    /////
+    /////             return Result{ProcessedUser}.Success(processed);
+    /////         }
+    /////         catch (ServiceException ex)
+    /////         {
+    /////             return Result{ProcessedUser}.Failure()
+    /////                 .WithError(new ExternalServiceError(ex.Message));
+    /////         }
+    /////     },
+    /////     cancellationToken);
+    ///// </code>
+    ///// </example>
+    //public static async Task<ResultPaged<TOutput>> CollectAsync<T, TOutput>(
+    //    this Task<ResultPaged<T>> resultTask,
+    //    Func<T, CancellationToken, Task<Result<TOutput>>> operation,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    if (operation is null)
+    //    {
+    //        return ResultPaged<TOutput>.Failure()
+    //            .WithError(new Error("Operation cannot be null"));
+    //    }
 
-        try
-        {
-            var result = await resultTask;
+    //    try
+    //    {
+    //        var result = await resultTask;
 
-            return await result.CollectAsync(operation, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(new OperationCancelledError());
-        }
-        catch (Exception ex)
-        {
-            return ResultPaged<TOutput>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
+    //        return await result.CollectAsync(operation, cancellationToken);
+    //    }
+    //    catch (OperationCanceledException)
+    //    {
+    //        return ResultPaged<TOutput>.Failure()
+    //            .WithError(new OperationCancelledError());
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return ResultPaged<TOutput>.Failure()
+    //            .WithError(Result.Settings.ExceptionErrorFactory(ex))
+    //            .WithMessage(ex.Message);
+    //    }
+    //}
 }

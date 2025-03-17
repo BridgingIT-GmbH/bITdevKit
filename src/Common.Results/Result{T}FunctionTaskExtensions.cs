@@ -1007,7 +1007,6 @@ public static partial class ResultFunctionTaskExtensions
     /// <summary>
     ///     Transforms a sequence Result task by applying an operation to each element.
     /// </summary>
-    /// <typeparam name="T">The type of the source sequence.</typeparam>
     /// <typeparam name="TInput">The type of the input elements.</typeparam>
     /// <typeparam name="TOutput">The type of the output elements.</typeparam>
     /// <param name="resultTask">The Result task containing the sequence to process.</param>
@@ -1019,11 +1018,9 @@ public static partial class ResultFunctionTaskExtensions
     ///     .Collect(user => ValidateAndTransformUser(user));
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TOutput>>> Collect<T, TInput, TOutput>(
-        this Task<Result<T>> resultTask,
+    public static async Task<Result<IEnumerable<TOutput>>> Collect<TInput, TOutput>(
+        this Task<Result<IEnumerable<TInput>>> resultTask,
         Func<TInput, Result<TOutput>> operation)
-        where T : IEnumerable<TInput>
-        where TInput : IEnumerable<TOutput>
     {
         if (operation is null)
         {
@@ -1034,7 +1031,6 @@ public static partial class ResultFunctionTaskExtensions
         try
         {
             var result = await resultTask;
-
             return result.Collect(operation);
         }
         catch (Exception ex)
@@ -1048,7 +1044,6 @@ public static partial class ResultFunctionTaskExtensions
     /// <summary>
     ///     Transforms a sequence Result task by applying an async operation to each element.
     /// </summary>
-    /// <typeparam name="T">The type of the source sequence.</typeparam>
     /// <typeparam name="TInput">The type of the input elements.</typeparam>
     /// <typeparam name="TOutput">The type of the output elements.</typeparam>
     /// <param name="resultTask">The Result task containing the sequence to process.</param>
@@ -1064,12 +1059,10 @@ public static partial class ResultFunctionTaskExtensions
     ///     );
     /// </code>
     /// </example>
-    public static async Task<Result<IEnumerable<TOutput>>> CollectAsync<T, TInput, TOutput>(
-        this Task<Result<T>> resultTask,
+    public static async Task<Result<IEnumerable<TOutput>>> CollectAsync<TInput, TOutput>(
+        this Task<Result<IEnumerable<TInput>>> resultTask,
         Func<TInput, CancellationToken, Task<Result<TOutput>>> operation,
         CancellationToken cancellationToken = default)
-        where T : IEnumerable<TInput>
-        where TInput : IEnumerable<TOutput>
     {
         if (operation is null)
         {
@@ -1080,7 +1073,6 @@ public static partial class ResultFunctionTaskExtensions
         try
         {
             var result = await resultTask;
-
             return await result.CollectAsync(operation, cancellationToken);
         }
         catch (OperationCanceledException)

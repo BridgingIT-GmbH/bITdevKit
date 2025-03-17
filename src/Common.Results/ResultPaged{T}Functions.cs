@@ -1,8 +1,3 @@
-// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
@@ -12,7 +7,7 @@ using FluentValidation.Internal;
 /// Represents the result of an operation, which can either be a success or a failure.
 /// Contains functional methods to better work with success and failure results and their values, as well as construct results from actions or tasks.
 /// </summary>
-public readonly partial struct ResultPaged<T>
+public static class ResultPagedExtensions
 {
     /// <summary>
     /// Maps the page collection to a new type while preserving pagination information.
@@ -21,33 +16,32 @@ public readonly partial struct ResultPaged<T>
     /// var userDtos = pagedUsers.Map(users => users.Select(u => new UserDto(u)));
     /// // Preserves page count, current page, and page size
     /// </example>
-    public ResultPaged<TNew> Map<TNew>(Func<IEnumerable<T>, IEnumerable<TNew>> mapper)
+    public static ResultPaged<TNew> Map<T, TNew>(this ResultPaged<T> result, Func<IEnumerable<T>, IEnumerable<TNew>> mapper)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValues = mapper(this.Value);
-
+            var newValues = mapper(result.Value);
             return ResultPaged<TNew>.Success(
                     newValues,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -62,42 +56,42 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<TNew>> MapAsync<TNew>(
+    public static async Task<ResultPaged<TNew>> MapAsync<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<IEnumerable<TNew>>> mapper,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValues = await mapper(this.Value, cancellationToken);
-
+            var newValues = await mapper(result.Value, cancellationToken);
             return ResultPaged<TNew>.Success(
                     newValues,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -115,29 +109,28 @@ public readonly partial struct ResultPaged<T>
     ///         : ResultPaged{User}.Failure("No active users found")
     /// );
     /// </example>
-    public ResultPaged<TNew> Bind<TNew>(Func<IEnumerable<T>, ResultPaged<TNew>> binder)
+    public static ResultPaged<TNew> Bind<T, TNew>(this ResultPaged<T> result, Func<IEnumerable<T>, ResultPaged<TNew>> binder)
     {
-        if (!this.IsSuccess || binder is null)
+        if (!result.IsSuccess || binder is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var result = binder(this.Value);
-
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = binder(result.Value);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -152,38 +145,38 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<TNew>> BindAsync<TNew>(
+    public static async Task<ResultPaged<TNew>> BindAsync<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<ResultPaged<TNew>>> binder,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || binder is null)
+        if (!result.IsSuccess || binder is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var result = await binder(this.Value, cancellationToken);
-
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = await binder(result.Value, cancellationToken);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -197,28 +190,28 @@ public readonly partial struct ResultPaged<T>
     /// );
     /// // Maintains the same page info even if some items are filtered
     /// </example>
-    public ResultPaged<T> Filter(Func<IEnumerable<T>, bool> predicate, IResultError error = null)
+    public static ResultPaged<T> Filter<T>(this ResultPaged<T> result, Func<IEnumerable<T>, bool> predicate, IResultError error = null)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            return predicate(this.Value)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return predicate(result.Value)
+                ? result
+                : ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -232,38 +225,39 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> FilterAsync(
+    public static async Task<ResultPaged<T>> FilterAsync<T>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<bool>> predicate,
         IResultError error = null,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            return await predicate(this.Value, cancellationToken)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return await predicate(result.Value, cancellationToken)
+                ? result
+                : ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -287,17 +281,17 @@ public readonly partial struct ResultPaged<T>
     /// Preserves the original error/message state. Returns the original result if input
     /// is in error state or predicate is null.
     /// </remarks>
-    public ResultPaged<T> Filter(Func<T, bool> predicate)
+    public static ResultPaged<T> Filter<T>(this ResultPaged<T> result, Func<T, bool> predicate)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             var filteredValues = new List<T>();
-            foreach (var item in this.Value)
+            foreach (var item in result.Value)
             {
                 if (predicate(item))
                 {
@@ -305,15 +299,15 @@ public readonly partial struct ResultPaged<T>
                 }
             }
 
-            return Success(filteredValues)
-                    .WithErrors(this.Errors)
-                    .WithMessages(this.Messages);
+            return ResultPaged<T>.Success(filteredValues)
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -341,19 +335,20 @@ public readonly partial struct ResultPaged<T>
     /// Handles cancellation and preserves error/message state. Returns original result
     /// if input is in error state or predicate is null.
     /// </remarks>
-    public async Task<ResultPaged<T>> FilterAsync(
-    Func<T, CancellationToken, Task<bool>> predicate,
-    CancellationToken cancellationToken = default)
+    public static async Task<ResultPaged<T>> FilterAsync<T>(
+        this ResultPaged<T> result,
+        Func<T, CancellationToken, Task<bool>> predicate,
+        CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             var filteredValues = new List<T>();
-            foreach (var item in this.Value)
+            foreach (var item in result.Value)
             {
                 if (await predicate(item, cancellationToken))
                 {
@@ -361,21 +356,21 @@ public readonly partial struct ResultPaged<T>
                 }
             }
 
-            return Success(filteredValues)
-                    .WithErrors(this.Errors)
-                    .WithMessages(this.Messages);
+            return ResultPaged<T>.Success(filteredValues)
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -388,36 +383,36 @@ public readonly partial struct ResultPaged<T>
     ///     new ValidationError($"Page size cannot exceed {maxPageSize}")
     /// );
     /// </example>
-    public ResultPaged<T> Ensure(Func<IEnumerable<T>, bool> predicate, IResultError error)
+    public static ResultPaged<T> Ensure<T>(this ResultPaged<T> result, Func<IEnumerable<T>, bool> predicate, IResultError error)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (predicate is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            return predicate(this.Value)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return predicate(result.Value)
+                ? result
+                : ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Ensure condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -431,46 +426,47 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> EnsureAsync(
+    public static async Task<ResultPaged<T>> EnsureAsync<T>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<bool>> predicate,
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (predicate is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            return await predicate(this.Value, cancellationToken)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return await predicate(result.Value, cancellationToken)
+                ? result
+                : ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Ensure condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -483,28 +479,28 @@ public readonly partial struct ResultPaged<T>
     ///     new ValidationError("Page contains blocked users")
     /// );
     /// </example>
-    public ResultPaged<T> Unless(Func<IEnumerable<T>, bool> predicate, IResultError error)
+    public static ResultPaged<T> Unless<T>(this ResultPaged<T> result, Func<IEnumerable<T>, bool> predicate, IResultError error)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            return predicate(this.Value)
-                ? Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return predicate(result.Value)
+                ? ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(this.Messages)
-                : this;
+                    .WithMessages(result.Messages)
+                : result;
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -518,38 +514,39 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> UnlessAsync(
+    public static async Task<ResultPaged<T>> UnlessAsync<T>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<bool>> predicate,
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || predicate is null)
+        if (!result.IsSuccess || predicate is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            return await predicate(this.Value, cancellationToken)
-                ? Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return await predicate(result.Value, cancellationToken)
+                ? ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(this.Messages)
-                : this;
+                    .WithMessages(result.Messages)
+                : result;
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -566,25 +563,24 @@ public readonly partial struct ResultPaged<T>
     ///     )
     /// );
     /// </example>
-    public ResultPaged<T> Tap(Action<IEnumerable<T>> operation)
+    public static ResultPaged<T> Tap<T>(this ResultPaged<T> result, Action<IEnumerable<T>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            operation(this.Value);
-
-            return this;
+            operation(result.Value);
+            return result;
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -601,34 +597,34 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> TapAsync(
+    public static async Task<ResultPaged<T>> TapAsync<T>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            await operation(this.Value, cancellationToken);
-
-            return this;
+            await operation(result.Value, cancellationToken);
+            return result;
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -645,36 +641,36 @@ public readonly partial struct ResultPaged<T>
     ///     )
     /// );
     /// </example>
-    public ResultPaged<TNew> TeeMap<TNew>(
+    public static ResultPaged<TNew> TeeMap<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, IEnumerable<TNew>> mapper,
         Action<IEnumerable<TNew>> operation)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValues = mapper(this.Value);
+            var newValues = mapper(result.Value);
             operation?.Invoke(newValues);
-
             return ResultPaged<TNew>.Success(
                     newValues,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -688,55 +684,56 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<TNew>> TeeMapAsync<TNew>(
+    public static async Task<ResultPaged<TNew>> TeeMapAsync<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, IEnumerable<TNew>> mapper,
         Func<IEnumerable<TNew>, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValues = mapper(this.Value);
-
+            var newValues = mapper(result.Value);
             if (operation is not null)
             {
                 await operation(newValues, cancellationToken);
             }
-
             return ResultPaged<TNew>.Success(
                     newValues,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     /// Maps both success and failure cases simultaneously while preserving pagination metadata.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new result value.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="onSuccess">Function to transform the collection if successful.</param>
     /// <param name="onFailure">Function to transform the errors if failed.</param>
     /// <returns>A new ResultPaged with either the transformed collection or transformed errors.</returns>
@@ -749,58 +746,59 @@ public readonly partial struct ResultPaged<T>
     ///     );
     /// </code>
     /// </example>
-    public ResultPaged<TNew> BiMap<TNew>(
+    public static ResultPaged<TNew> BiMap<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, IEnumerable<TNew>> onSuccess,
         Func<IReadOnlyList<IResultError>, IEnumerable<IResultError>> onFailure)
     {
-        if (this.IsSuccess)
+        if (result.IsSuccess)
         {
             if (onSuccess is null)
             {
                 return ResultPaged<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("Success mapper is null"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
             try
             {
                 return ResultPaged<TNew>.Success(
-                        onSuccess(this.Value),
-                        this.TotalCount,
-                        this.CurrentPage,
-                        this.PageSize)
-                    .WithErrors(this.Errors)
-                    .WithMessages(this.Messages);
+                        onSuccess(result.Value),
+                        result.TotalCount,
+                        result.CurrentPage,
+                        result.PageSize)
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
             catch (Exception ex)
             {
                 return ResultPaged<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
 
         if (onFailure is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(onFailure(this.Errors))
-                .WithMessages(this.Messages);
+                .WithErrors(onFailure(result.Errors))
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -815,42 +813,43 @@ public readonly partial struct ResultPaged<T>
     ///         : ResultChooseOption<IEnumerable<User>>.None()
     /// );
     /// </example>
-    public ResultPaged<TNew> Choose<TNew>(
+    public static ResultPaged<TNew> Choose<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, ResultChooseOption<IEnumerable<TNew>>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var option = operation(this.Value);
+            var option = operation(result.Value);
 
             if (!option.TryGetValue(out var values))
             {
                 return ResultPaged<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("No values were chosen"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
             return ResultPaged<TNew>.Success(
                     values,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -869,50 +868,51 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<TNew>> ChooseAsync<TNew>(
+    public static async Task<ResultPaged<TNew>> ChooseAsync<T, TNew>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<ResultChooseOption<IEnumerable<TNew>>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var option = await operation(this.Value, cancellationToken);
+            var option = await operation(result.Value, cancellationToken);
 
             if (!option.TryGetValue(out var values))
             {
                 return ResultPaged<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("No values were chosen"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
             return ResultPaged<TNew>.Success(
                     values,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return ResultPaged<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -925,24 +925,23 @@ public readonly partial struct ResultPaged<T>
     ///     return (users, totalCount: _repository.GetTotalCount());
     /// });
     /// </example>
-    public static ResultPaged<T> Try(
+    public static ResultPaged<T> Try<T>(
         Func<(IEnumerable<T> Values, long TotalCount)> operation)
     {
         if (operation is null)
         {
-            return Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
         try
         {
             var (values, totalCount) = operation();
-
-            return Success(values, totalCount);
+            return ResultPaged<T>.Success(values, totalCount);
         }
         catch (Exception ex)
         {
-            return Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
@@ -961,64 +960,62 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public static async Task<ResultPaged<T>> TryAsync(
+    public static async Task<ResultPaged<T>> TryAsync<T>(
         Func<CancellationToken, Task<(IEnumerable<T> Values, long TotalCount)>> operation,
         CancellationToken cancellationToken = default)
     {
         if (operation is null)
         {
-            return Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new Error("Operation cannot be null"));
         }
 
         try
         {
             var (values, totalCount) = await operation(cancellationToken);
-
-            return Success(values, totalCount);
+            return ResultPaged<T>.Success(values, totalCount);
         }
         catch (OperationCanceledException)
         {
-            return Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(new OperationCancelledError())
                 .WithMessage("Operation was cancelled");
         }
         catch (Exception ex)
         {
-            return Failure()
+            return ResultPaged<T>.Failure()
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
 
-    public ResultPaged<TOutput> Collect<TOutput>(Func<T, Result<TOutput>> operation)
+    public static ResultPaged<TOutput> Collect<T, TOutput>(this ResultPaged<T> result, Func<T, Result<TOutput>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return ResultPaged<TOutput>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         var results = new List<TOutput>();
         var errors = new List<IResultError>();
         var messages = new List<string>();
 
-        foreach (var item in this.Value)
+        foreach (var item in result.Value)
         {
             try
             {
-                var result = operation(item);
-                if (result.IsSuccess)
+                var newResult = operation(item);
+                if (newResult.IsSuccess)
                 {
-                    results.Add(result.Value);
+                    results.Add(newResult.Value);
                 }
                 else
                 {
-                    errors.AddRange(result.Errors);
+                    errors.AddRange(newResult.Errors);
                 }
-
-                messages.AddRange(result.Messages);
+                messages.AddRange(newResult.Messages);
             }
             catch (Exception ex)
             {
@@ -1032,10 +1029,10 @@ public readonly partial struct ResultPaged<T>
                 .WithMessages(messages)
             : ResultPaged<TOutput>.Success(
                     results,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
-                .WithErrors(errors)
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
+                .WithErrors(result.Errors)
                 .WithMessages(messages);
     }
 
@@ -1048,41 +1045,40 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<TOutput>> CollectAsync<TOutput>(
+    public static async Task<ResultPaged<TOutput>> CollectAsync<T, TOutput>(
+        this ResultPaged<T> result,
         Func<T, CancellationToken, Task<Result<TOutput>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return ResultPaged<TOutput>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         var results = new List<TOutput>();
         var errors = new List<IResultError>();
         var messages = new List<string>();
 
-        foreach (var item in this.Value)
+        foreach (var item in result.Value)
         {
             try
             {
-                var result = await operation(item, cancellationToken);
-                if (result.IsSuccess)
+                var newResult = await operation(item, cancellationToken);
+                if (newResult.IsSuccess)
                 {
-                    results.Add(result.Value);
+                    results.Add(newResult.Value);
                 }
                 else
                 {
-                    errors.AddRange(result.Errors);
+                    errors.AddRange(newResult.Errors);
                 }
-
-                messages.AddRange(result.Messages);
+                messages.AddRange(newResult.Messages);
             }
             catch (OperationCanceledException)
             {
                 errors.Add(new OperationCancelledError());
-
                 break;
             }
             catch (Exception ex)
@@ -1097,9 +1093,9 @@ public readonly partial struct ResultPaged<T>
                 .WithMessages(messages)
             : ResultPaged<TOutput>.Success(
                     results,
-                    this.TotalCount,
-                    this.CurrentPage,
-                    this.PageSize)
+                    result.TotalCount,
+                    result.CurrentPage,
+                    result.PageSize)
                 .WithMessages(messages);
     }
 
@@ -1111,26 +1107,26 @@ public readonly partial struct ResultPaged<T>
     ///     .AndThen(users => ValidatePageSize(users))
     ///     .AndThen(users => ProcessUserPage(users, CurrentPage));
     /// </example>
-    public ResultPaged<T> AndThen(Func<IEnumerable<T>, ResultPaged<T>> operation)
+    public static ResultPaged<T> AndThen<T>(this ResultPaged<T> result, Func<IEnumerable<T>, ResultPaged<T>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            var result = operation(this.Value);
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = operation(result.Value);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -1148,36 +1144,36 @@ public readonly partial struct ResultPaged<T>
     ///         cancellationToken
     ///     );
     /// </example>
-    public async Task<ResultPaged<T>> AndThenAsync(
+    public static async Task<ResultPaged<T>> AndThenAsync<T>(
+        this ResultPaged<T> result,
         Func<IEnumerable<T>, CancellationToken, Task<ResultPaged<T>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            var result = await operation(this.Value, cancellationToken);
-
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = await operation(result.Value, cancellationToken);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -1195,27 +1191,26 @@ public readonly partial struct ResultPaged<T>
     ///     );
     /// });
     /// </example>
-    public ResultPaged<T> OrElse(Func<ResultPaged<T>> fallback)
+    public static ResultPaged<T> OrElse<T>(this ResultPaged<T> result, Func<ResultPaged<T>> fallback)
     {
-        if (this.IsSuccess || fallback is null)
+        if (result.IsSuccess || fallback is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            var result = fallback();
-
-            return result
-                //.WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = fallback();
+            return newResult
+                //.WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -1232,36 +1227,36 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> OrElseAsync(
+    public static async Task<ResultPaged<T>> OrElseAsync<T>(
+        this ResultPaged<T> result,
         Func<CancellationToken, Task<ResultPaged<T>>> fallback,
         CancellationToken cancellationToken = default)
     {
-        if (this.IsSuccess || fallback is null)
+        if (result.IsSuccess || fallback is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            var result = await fallback(cancellationToken);
-
-            return result
-                //.WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = await fallback(cancellationToken);
+            return newResult
+                //.WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -1279,27 +1274,28 @@ public readonly partial struct ResultPaged<T>
     ///
     /// var result = pagedUsers.ValidateEach(new UserValidator());
     /// </example>
-    public ResultPaged<T> Validate(
+    public static ResultPaged<T> Validate<T>(
+        this ResultPaged<T> result,
         IValidator<T> validator,
         Action<ValidationStrategy<T>> options = null)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (validator is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Validator cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
             var errors = new List<IResultError>();
-            foreach (var item in this.Value)
+            foreach (var item in result.Value)
             {
                 var validationResult = options is null
                     ? validator.Validate(item)
@@ -1313,20 +1309,20 @@ public readonly partial struct ResultPaged<T>
 
             if (errors.Any())
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithErrors(errors)
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
-            return this;
+            return result;
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages)
+                .WithMessages(result.Messages)
                 .WithMessage("Validation failed due to an error");
         }
     }
@@ -1343,27 +1339,28 @@ public readonly partial struct ResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public async Task<ResultPaged<T>> ValidateAsync(
+    public static async Task<ResultPaged<T>> ValidateAsync<T>(
+        this ResultPaged<T> result,
         IValidator<T> validator,
         Action<ValidationStrategy<T>> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (validator is null)
         {
-            return Failure(this.Value)
+            return ResultPaged<T>.Failure(result.Value)
                 .WithError(new Error("Validator cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
             var errors = new List<IResultError>();
-            foreach (var item in this.Value)
+            foreach (var item in result.Value)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -1379,28 +1376,28 @@ public readonly partial struct ResultPaged<T>
 
             if (errors.Any())
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return ResultPaged<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithErrors(errors)
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
-            return this;
+            return result;
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 }

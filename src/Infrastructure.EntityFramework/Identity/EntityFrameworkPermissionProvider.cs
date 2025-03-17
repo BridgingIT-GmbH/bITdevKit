@@ -47,20 +47,6 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         this.options = options ?? new EntityPermissionOptions();
     }
 
-    private static IHierarchyQueryProvider GetQueryProvider(string providerName)
-    {
-        return providerName switch
-        {
-            "Microsoft.EntityFrameworkCore.InMemory" => new InMemoryHierarchyQueryProvider(),
-            "Microsoft.EntityFrameworkCore.SqlServer" => new SqlServerHierarchyQueryProvider(),
-            "Microsoft.EntityFrameworkCore.Sqlite" => new SqliteHierarchyQueryProvider(),
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => new PostgreSqlHierarchyQueryProvider(),
-            _ => throw new NotSupportedException(
-                $"Database provider {providerName} is not supported for hierarchical queries. " +
-                $"Supported providers are: SQL Server, PostgreSQL, SQLite, and InMemory")
-        };
-    }
-
     /// <inheritdoc/>
     public async Task<bool> HasPermissionAsync(
         string userId,
@@ -562,6 +548,20 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .ToListAsync(cancellationToken: cancellationToken).AnyContext();
 
         return [.. rolePermissions.Union(wildcardPermissions)]; // Combine and deduplicate
+    }
+
+    private static IHierarchyQueryProvider GetQueryProvider(string providerName)
+    {
+        return providerName switch
+        {
+            "Microsoft.EntityFrameworkCore.InMemory" => new InMemoryHierarchyQueryProvider(),
+            "Microsoft.EntityFrameworkCore.SqlServer" => new SqlServerHierarchyQueryProvider(),
+            "Microsoft.EntityFrameworkCore.Sqlite" => new SqliteHierarchyQueryProvider(),
+            "Npgsql.EntityFrameworkCore.PostgreSQL" => new PostgreSqlHierarchyQueryProvider(),
+            _ => throw new NotSupportedException(
+                $"Database provider {providerName} is not supported for hierarchical queries. " +
+                $"Supported providers are: SQL Server, PostgreSQL, SQLite, and InMemory")
+        };
     }
 
     private async Task InvalidatePermissionCachesAsync(string userId, string entityType, object entityId, CancellationToken cancellationToken = default)

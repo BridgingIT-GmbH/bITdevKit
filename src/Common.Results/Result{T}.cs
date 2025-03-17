@@ -1286,6 +1286,82 @@ public readonly partial struct Result<T> : IResult<T>
     }
 
     /// <summary>
+    ///     Creates a Result from an operation, handling any exceptions that occur.
+    /// </summary>
+    /// <param name="operation">The operation to execute.</param>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{int}.Try(() => int.Parse("42")); // Success(42)
+    /// </code>
+    /// </example>
+    public static Result<T> Try(Func<T> operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = operation();
+
+            return Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <param name="operation">The async operation to execute.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result representing the outcome of the async operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result{User}.TryAsync(
+    ///     async ct => await repository.GetUserAsync(userId, ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> TryAsync(
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = await operation(cancellationToken);
+
+            return Success(result);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Converts a generic Result{T} to a non-generic Result.
     /// </summary>
     /// <returns>A non-generic Result with the same success state, messages, and errors.</returns>

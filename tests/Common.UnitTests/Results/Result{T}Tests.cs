@@ -212,7 +212,7 @@ public class ResultValueTests
         var result = Result<IEnumerable<PersonStub>>.Success(persons);
 
         // Act
-        var collected = await result.CollectAsync<PersonStub, int>(async (p, ct) =>
+        var collected = await result.CollectAsync(async (p, ct) =>
         {
             await Task.Delay(10, ct);
 
@@ -276,7 +276,7 @@ public class ResultValueTests
         var result = Result<IEnumerable<PersonStub>>.Success(persons);
 
         // Act
-        var collected = await result.CollectAsync<PersonStub, int>(async (p, ct) =>
+        var collected = await result.CollectAsync(async (p, ct) =>
         {
             await Task.Delay(10, ct);
 

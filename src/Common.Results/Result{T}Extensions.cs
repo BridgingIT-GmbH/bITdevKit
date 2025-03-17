@@ -1,23 +1,16 @@
-// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
 using FluentValidation.Internal;
 
-/// <summary>
-/// Represents the result of an operation, which can either be a success or a failure.
-/// Contains functional methods to better work with success and failure results and their values, as well as construct results from actions or tasks.
-/// </summary>
-public readonly partial struct Result<T>
+public static class ResultExtensions
 {
     /// <summary>
     ///     Maps a successful Result{T} to a Result{TNew} using the provided mapping function.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type to map to.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="mapper">The function to map the value.</param>
     /// <returns>A new Result containing the mapped value or the original errors.</returns>
     /// <example>
@@ -26,36 +19,37 @@ public readonly partial struct Result<T>
     /// var stringResult = intResult.Map(x => x.ToString()); // Result{string}.Success("42")
     /// </code>
     /// </example>
-    public Result<TNew> Map<TNew>(Func<T, TNew> mapper)
+    public static Result<TNew> Map<T, TNew>(this Result<T> result, Func<T, TNew> mapper)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValue = mapper(this.Value);
-
+            var newValue = mapper(result.Value);
             return Result<TNew>.Success(newValue)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously maps a successful Result{T} to a Result{TNew} using the provided mapping function.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type to map to.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="mapper">The async function to map the value.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A new Result containing the mapped value or the original errors.</returns>
@@ -68,45 +62,47 @@ public readonly partial struct Result<T>
     /// );
     /// </code>
     /// </example>
-    public async Task<Result<TNew>> MapAsync<TNew>(
+    public static async Task<Result<TNew>> MapAsync<T, TNew>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<TNew>> mapper,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValue = await mapper(this.Value, cancellationToken);
-
+            var newValue = await mapper(result.Value, cancellationToken);
             return Result<TNew>.Success(newValue)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Binds a successful Result{T} to another Result{TNew} using the provided binding function.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new Result value.</typeparam>
+    /// <param name="result">The source result to bind.</param>
     /// <param name="binder">The function to bind the value to a new Result.</param>
     /// <returns>The bound Result or a failure containing the original errors.</returns>
     /// <example>
@@ -117,36 +113,37 @@ public readonly partial struct Result<T>
     ///         : Result{string}.Failure("Value must be positive"));
     /// </code>
     /// </example>
-    public Result<TNew> Bind<TNew>(Func<T, Result<TNew>> binder)
+    public static Result<TNew> Bind<T, TNew>(this Result<T> result, Func<T, Result<TNew>> binder)
     {
-        if (!this.IsSuccess || binder is null)
+        if (!result.IsSuccess || binder is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var result = binder(this.Value);
-
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = binder(result.Value);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously binds a successful Result{T} to another Result{TNew}.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new Result value.</typeparam>
+    /// <param name="result">The source result to bind.</param>
     /// <param name="binder">The async function to bind the value to a new Result.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The bound Result or a failure containing the original errors.</returns>
@@ -159,78 +156,84 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<TNew>> BindAsync<TNew>(
+    public static async Task<Result<TNew>> BindAsync<T, TNew>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<Result<TNew>>> binder,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || binder is null)
+        if (!result.IsSuccess || binder is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var result = await binder(this.Value, cancellationToken);
-
-            return result
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            var newResult = await binder(result.Value, cancellationToken);
+            return newResult
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     /// Throws a <see cref="ResultException"/> if the current result is a failure.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <returns>The current result if it is successful.</returns>
     /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
-    public Result<T> ThrowIfFailed()
+    public static Result<T> ThrowIfFailed<T>(this Result<T> result)
     {
-        if (this.IsSuccess)
+        if (result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
-        throw new ResultException(this);
+        throw new ResultException(result);
     }
 
     /// <summary>
     /// Throws an exception of type TException if the result is a failure.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <returns>The current Result if it indicates success.</returns>
     /// <exception>Thrown if the result indicates a failure.
     ///     <cref>TException</cref>
     /// </exception>
-    public Result<T> ThrowIfFailed<TException>()
+    public static Result<T> ThrowIfFailed<T, TException>(this Result<T> result)
         where TException : Exception
     {
-        if (this.IsSuccess)
+        if (result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
-        throw ((TException)Activator.CreateInstance(typeof(TException), this.Errors.FirstOrDefault()?.Message, this))!;
+        throw ((TException)Activator.CreateInstance(typeof(TException), result.Errors.FirstOrDefault()?.Message, result))!;
     }
 
     /// <summary>
     ///     Ensures that a condition is met for the contained value, converting to a failure if not.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="predicate">The condition that must be true for the contained value.</param>
     /// <param name="error">The error to return if the predicate fails.</param>
     /// <returns>The original result if successful and predicate is met; otherwise, a failure with the specified error.</returns>
@@ -240,44 +243,47 @@ public readonly partial struct Result<T>
     ///     .Ensure(x => x > 0, new Error("Value must be positive"));
     /// </code>
     /// </example>
-    public Result<T> Ensure(
+    public static Result<T> Ensure<T>(
+        this Result<T> result,
         Func<T, bool> predicate,
         IResultError error)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (predicate is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            return predicate(this.Value)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return predicate(result.Value)
+                ? result
+                : Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously ensures that a condition is met for the contained value.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="predicate">The async condition that must be true for the contained value.</param>
     /// <param name="error">The error to return if the predicate fails.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -292,122 +298,47 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> EnsureAsync(
+    public static async Task<Result<T>> EnsureAsync<T>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<bool>> predicate,
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (predicate is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Predicate cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            return await predicate(this.Value, cancellationToken)
-                ? this
-                : Failure(this.Value)
-                    .WithErrors(this.Errors)
+            return await predicate(result.Value, cancellationToken)
+                ? result
+                : Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
-        }
-    }
-
-    /// <summary>
-    ///     Creates a Result from an operation, handling any exceptions that occur.
-    /// </summary>
-    /// <param name="operation">The operation to execute.</param>
-    /// <returns>A Result representing the outcome of the operation.</returns>
-    /// <example>
-    /// <code>
-    /// var result = Result{int}.Try(() => int.Parse("42")); // Success(42)
-    /// </code>
-    /// </example>
-    public static Result<T> Try(Func<T> operation)
-    {
-        if (operation is null)
-        {
-            return Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var result = operation();
-
-            return Success(result);
-        }
-        catch (Exception ex)
-        {
-            return Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
-
-    /// <summary>
-    ///     Creates a Result from an async operation, handling any exceptions that occur.
-    /// </summary>
-    /// <param name="operation">The async operation to execute.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Result representing the outcome of the async operation.</returns>
-    /// <example>
-    /// <code>
-    /// var result = await Result{User}.TryAsync(
-    ///     async ct => await repository.GetUserAsync(userId, ct),
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public static async Task<Result<T>> TryAsync(
-        Func<CancellationToken, Task<T>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var result = await operation(cancellationToken);
-
-            return Success(result);
-        }
-        catch (OperationCanceledException)
-        {
-            return Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessage("Operation was cancelled");
-        }
-        catch (Exception ex)
-        {
-            return Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -415,6 +346,8 @@ public readonly partial struct Result<T>
     ///     Executes an action with the current value if the result is successful, without changing the result.
     ///     Useful for performing side effects like logging or monitoring.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="operation">The action to execute with the successful value.</param>
     /// <returns>The original Result instance.</returns>
     /// <example>
@@ -424,31 +357,32 @@ public readonly partial struct Result<T>
     ///     .Tap(user => _metrics.IncrementUserRetrievals());
     /// </code>
     /// </example>
-    public Result<T> Tap(Action<T> operation)
+    public static Result<T> Tap<T>(this Result<T> result, Action<T> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            operation(this.Value);
-
-            return this;
+            operation(result.Value);
+            return result;
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously executes an action with the current value if the result is successful.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="operation">The async action to execute with the successful value.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A Task containing the original Result instance.</returns>
@@ -461,34 +395,34 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> TapAsync(
+    public static async Task<Result<T>> TapAsync<T>(
+        this Result<T> result,
         Func<T, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            await operation(this.Value, cancellationToken);
-
-            return this;
+            await operation(result.Value, cancellationToken);
+            return result;
         }
         catch (OperationCanceledException)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -496,7 +430,9 @@ public readonly partial struct Result<T>
     ///     Maps a success value while performing a side effect, useful for logging or monitoring during transformations.
     ///     Both the mapping and the side effect only occur if the Result is successful.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new result value.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="mapper">The function to transform the value.</param>
     /// <param name="operation">The action to perform with the transformed value.</param>
     /// <returns>A new Result containing the transformed value.</returns>
@@ -509,32 +445,32 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<TNew> TeeMap<TNew>(
+    public static Result<TNew> TeeMap<T, TNew>(
+        this Result<T> result,
         Func<T, TNew> mapper,
         Action<TNew> operation)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValue = mapper(this.Value);
+            var newValue = mapper(result.Value);
             operation?.Invoke(newValue);
-
             return Result<TNew>.Success(newValue)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -542,7 +478,9 @@ public readonly partial struct Result<T>
     ///     Asynchronously maps a success value while performing a side effect.
     ///     Both the mapping and the side effect only occur if the Result is successful.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new result value.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="mapper">The function to transform the value.</param>
     /// <param name="operation">The async action to perform with the transformed value.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -557,44 +495,43 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<TNew>> TeeMapAsync<TNew>(
+    public static async Task<Result<TNew>> TeeMapAsync<T, TNew>(
+        this Result<T> result,
         Func<T, TNew> mapper,
         Func<TNew, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || mapper is null)
+        if (!result.IsSuccess || mapper is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var newValue = mapper(this.Value);
-
+            var newValue = mapper(result.Value);
             if (operation is not null)
             {
                 await operation(newValue, cancellationToken);
             }
-
             return Result<TNew>.Success(newValue)
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -602,6 +539,8 @@ public readonly partial struct Result<T>
     ///     Filters a successful result based on a predicate condition.
     ///     Converts to failure if the predicate is not met.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to filter.</param>
     /// <param name="operation">The condition that must be true for the result to remain successful.</param>
     /// <param name="error">The error to return if the predicate fails.</param>
     /// <returns>The original result if successful and predicate is met; otherwise, a failure with the specified error.</returns>
@@ -614,37 +553,39 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<T> Filter(Func<T, bool> operation, IResultError error = null)
+    public static Result<T> Filter<T>(this Result<T> result, Func<T, bool> operation, IResultError error = null)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (!operation(this.Value))
+            if (!operation(result.Value))
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Asynchronously filters a successful result based on a predicate condition.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to filter.</param>
     /// <param name="operation">The async condition that must be true for the result to remain successful.</param>
     /// <param name="error">The error to return if the predicate fails.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -659,47 +600,50 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> FilterAsync(
+    public static async Task<Result<T>> FilterAsync<T>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<bool>> operation,
         IResultError error = null,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (!await operation(this.Value, cancellationToken))
+            if (!await operation(result.Value, cancellationToken))
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Converts a successful result to a failure if the specified predicate is met (inverse of Filter).
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="operation">The condition that must be false for the result to remain successful.</param>
     /// <param name="error">The error to return if the predicate succeeds.</param>
     /// <returns>The original result if successful and predicate is not met; otherwise, a failure with the specified error.</returns>
@@ -712,37 +656,39 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<T> Unless(Func<T, bool> operation, IResultError error)
+    public static Result<T> Unless<T>(this Result<T> result, Func<T, bool> operation, IResultError error)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (operation(this.Value))
+            if (operation(result.Value))
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Asynchronously converts a successful result to a failure if the specified predicate is met.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="operation">The async condition that must be false for the result to remain successful.</param>
     /// <param name="error">The error to return if the predicate succeeds.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -757,47 +703,50 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> UnlessAsync(
+    public static async Task<Result<T>> UnlessAsync<T>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<bool>> operation,
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (await operation(this.Value, cancellationToken))
+            if (await operation(result.Value, cancellationToken))
             {
-                return Failure(this.Value)
-                    .WithErrors(this.Errors)
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Unless condition met"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Chains a new operation if the current Result is successful, providing access to the previous Result's value.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to chain.</param>
     /// <param name="operation">The operation to execute if successful, with access to the previous value.</param>
     /// <returns>The original Result if successful.</returns>
     /// <example>
@@ -807,31 +756,33 @@ public readonly partial struct Result<T>
     ///     .AndThen(user => SaveUser(user));
     /// </code>
     /// </example>
-    public Result<T> AndThen(Action<T> operation)
+    public static Result<T> AndThen<T>(this Result<T> result, Action<T> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            operation(this.Value);
+            operation(result.Value);
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Chains a new async operation if the current Result is successful, providing access to the previous Result's value.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to chain.</param>
     /// <param name="operation">The async operation to execute if successful, with access to the previous value.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The original Result if successful.</returns>
@@ -844,40 +795,43 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> AndThenAsync(
+    public static async Task<Result<T>> AndThenAsync<T>(
+        this Result<T> result,
         Func<T, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            await operation(this.Value, cancellationToken);
+            await operation(result.Value, cancellationToken);
         }
         catch (OperationCanceledException)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError("Operation was cancelled"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
-        return this;
+        return result;
     }
 
     /// <summary>
     ///     Provides a fallback value in case of failure.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="operation">Function to provide an alternative value if this result is a failure.</param>
     /// <returns>The original result if successful; otherwise, a success with the fallback value.</returns>
     /// <example>
@@ -886,33 +840,33 @@ public readonly partial struct Result<T>
     ///     .OrElse(() => User.GetDefaultUser());
     /// </code>
     /// </example>
-    public Result<T> OrElse(Func<T> operation)
+    public static Result<T> OrElse<T>(this Result<T> result, Func<T> operation)
     {
-        if (this.IsSuccess || operation is null)
+        if (result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             var fallbackValue = operation();
-
-            return Success(fallbackValue)
-                //.WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            return Result<T>.Success(fallbackValue)
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Provides an async fallback value in case of failure.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
     /// <param name="operation">Async function to provide an alternative value if this result is a failure.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The original result if successful; otherwise, a success with the fallback value.</returns>
@@ -925,42 +879,43 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> OrElseAsync(
+    public static async Task<Result<T>> OrElseAsync<T>(
+        this Result<T> result,
         Func<CancellationToken, Task<T>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (this.IsSuccess || operation is null)
+        if (result.IsSuccess || operation is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             var fallbackValue = await operation(cancellationToken);
-
-            return Success(fallbackValue)
-                //.WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+            return Result<T>.Success(fallbackValue)
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure()
-                .WithErrors(this.Errors)
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Executes an operation in the chain without transforming the value.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="action">The action to execute.</param>
     /// <returns>The original Result.</returns>
     /// <example>
@@ -970,31 +925,32 @@ public readonly partial struct Result<T>
     ///     .Then(user => ProcessUser(user));
     /// </code>
     /// </example>
-    public Result<T> Do(Action action)
+    public static Result<T> Do<T>(this Result<T> result, Action action)
     {
-        if (!this.IsSuccess || action is null)
+        if (!result.IsSuccess || action is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             action();
-
-            return this;
+            return result;
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Executes an async operation in the chain without transforming the value.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="action">The async action to execute.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The original Result.</returns>
@@ -1007,41 +963,43 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> DoAsync(
+    public static async Task<Result<T>> DoAsync<T>(
+        this Result<T> result,
         Func<CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || action is null)
+        if (!result.IsSuccess || action is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
             await action(cancellationToken);
-
-            return this;
+            return result;
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Maps both success and failure cases simultaneously.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the new result value.</typeparam>
+    /// <param name="result">The source result to map.</param>
     /// <param name="onSuccess">Function to transform the value if successful.</param>
     /// <param name="onFailure">Function to transform the errors if failed.</param>
     /// <returns>A new Result with either the transformed value or transformed errors.</returns>
@@ -1054,61 +1012,64 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<TNew> BiMap<TNew>(
+    public static Result<TNew> BiMap<T, TNew>(
+        this Result<T> result,
         Func<T, TNew> onSuccess,
         Func<IReadOnlyList<IResultError>, IEnumerable<IResultError>> onFailure)
     {
-        if (this.IsSuccess)
+        if (result.IsSuccess)
         {
             if (onSuccess is null)
             {
                 return Result<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("Success mapper is null"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
 
             try
             {
-                return Result<TNew>.Success(onSuccess(this.Value))
-                    .WithErrors(this.Errors)
-                    .WithMessages(this.Messages);
+                return Result<TNew>.Success(onSuccess(result.Value))
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
             catch (Exception ex)
             {
                 return Result<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
             }
         }
 
         if (onFailure is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
             return Result<TNew>.Failure()
-                .WithErrors(onFailure(this.Errors))
-                .WithMessages(this.Messages);
+                .WithErrors(onFailure(result.Errors))
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Maps a Result's value to a new Result with an optional value, filtering out None cases.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the resulting value.</typeparam>
+    /// <param name="result">The source result to choose from.</param>
     /// <param name="operation">Function that returns Some value for items to keep, None for items to filter out.</param>
     /// <returns>A new Result containing the chosen value if successful, or the original errors if not.</returns>
     /// <example>
@@ -1119,39 +1080,40 @@ public readonly partial struct Result<T>
     ///         : Option{UserDto}.None());
     /// </code>
     /// </example>
-    public Result<TNew> Choose<TNew>(Func<T, ResultChooseOption<TNew>> operation)
+    public static Result<TNew> Choose<T, TNew>(this Result<T> result, Func<T, ResultChooseOption<TNew>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var option = operation(this.Value);
-
+            var option = operation(result.Value);
             return option.TryGetValue(out var value)
-                ? Result<TNew>.Success(value).WithMessages(this.Messages)
+                ? Result<TNew>.Success(value).WithMessages(result.Messages)
                 : Result<TNew>.Failure()
-                 .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("No value was chosen"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously maps a Result's value to a new Result with an optional value, filtering out None cases.
     /// </summary>
+    /// <typeparam name="T">The type of the source result value.</typeparam>
     /// <typeparam name="TNew">The type of the resulting value.</typeparam>
+    /// <param name="result">The source result to choose from.</param>
     /// <param name="operation">Async function that returns Some value for items to keep, None for items to filter out.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A new Result containing the chosen value if successful, or the original errors if not.</returns>
@@ -1166,49 +1128,50 @@ public readonly partial struct Result<T>
     ///     }, cancellationToken);
     /// </code>
     /// </example>
-    public async Task<Result<TNew>> ChooseAsync<TNew>(
+    public static async Task<Result<TNew>> ChooseAsync<T, TNew>(
+        this Result<T> result,
         Func<T, CancellationToken, Task<ResultChooseOption<TNew>>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
         try
         {
-            var option = await operation(this.Value, cancellationToken);
-
+            var option = await operation(result.Value, cancellationToken);
             return option.TryGetValue(out var value)
-                ? Result<TNew>.Success(value).WithMessages(this.Messages)
+                ? Result<TNew>.Success(value).WithMessages(result.Messages)
                 : Result<TNew>.Failure()
-                    .WithErrors(this.Errors)
+                    .WithErrors(result.Errors)
                     .WithError(new Error("No value was chosen"))
-                    .WithMessages(this.Messages);
+                    .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     For Result{IEnumerable{T}}, applies a transformation to each element while maintaining the Result context.
     /// </summary>
-    /// <typeparam name="TOutput">The type of the output elements.</typeparam>
     /// <typeparam name="TInput">The type of the input elements.</typeparam>
+    /// <typeparam name="TOutput">The type of the output elements.</typeparam>
+    /// <param name="result">The source result containing the collection.</param>
     /// <param name="operation">The transformation function to apply to each element.</param>
     /// <returns>A new Result containing the transformed elements or all encountered errors.</returns>
     /// <example>
@@ -1217,43 +1180,43 @@ public readonly partial struct Result<T>
     ///     .Collect(user => ValidateAndTransformUser(user));
     /// </code>
     /// </example>
-    public Result<IEnumerable<TOutput>> Collect<TInput, TOutput>(Func<TInput, Result<TOutput>> operation)
-    // where TInput : IEnumerable<TOutput>
+    public static Result<IEnumerable<TOutput>> Collect<TInput, TOutput>(
+        this Result<IEnumerable<TInput>> result,
+        Func<TInput, Result<TOutput>> operation)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
-        if (this.Value is null)
+        if (result.Value is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Source sequence is null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         var results = new List<TOutput>();
         var errors = new List<IResultError>();
         var messages = new List<string>();
 
-        foreach (var item in (IEnumerable<TInput>)this.Value)
+        foreach (var item in result.Value)
         {
             try
             {
-                var result = operation(item);
-                if (result.IsSuccess)
+                var newResult = operation(item);
+                if (newResult.IsSuccess)
                 {
-                    results.Add(result.Value);
+                    results.Add(newResult.Value);
                 }
                 else
                 {
-                    errors.AddRange(result.Errors);
+                    errors.AddRange(newResult.Errors);
                 }
-
-                messages.AddRange(result.Messages);
+                messages.AddRange(newResult.Messages);
             }
             catch (Exception ex)
             {
@@ -1263,19 +1226,20 @@ public readonly partial struct Result<T>
 
         return errors.Any()
             ? Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithErrors(errors)
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results)
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithMessages(messages);
     }
 
     /// <summary>
     ///     Asynchronously transforms each element in a collection while maintaining the Result context.
     /// </summary>
-    /// <typeparam name="TOutput">The type of the output elements.</typeparam>
     /// <typeparam name="TInput">The type of the input elements.</typeparam>
+    /// <typeparam name="TOutput">The type of the output elements.</typeparam>
+    /// <param name="result">The source result containing the collection.</param>
     /// <param name="operation">The async transformation function to apply to each element.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A new Result containing the transformed elements or all encountered errors.</returns>
@@ -1288,50 +1252,48 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<IEnumerable<TOutput>>> CollectAsync<TInput, TOutput>(
-            Func<TInput, CancellationToken, Task<Result<TOutput>>> operation,
-            CancellationToken cancellationToken = default)
-    //where TInput : IEnumerable<TOutput>
+    public static async Task<Result<IEnumerable<TOutput>>> CollectAsync<TInput, TOutput>(
+        this Result<IEnumerable<TInput>> result,
+        Func<TInput, CancellationToken, Task<Result<TOutput>>> operation,
+        CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || operation is null)
+        if (!result.IsSuccess || operation is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
-                .WithMessages(this.Messages);
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
-        if (this.Value is null)
+        if (result.Value is null)
         {
             return Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Source sequence is null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         var results = new List<TOutput>();
         var errors = new List<IResultError>();
         var messages = new List<string>();
 
-        foreach (var item in (IEnumerable<TInput>)this.Value)
+        foreach (var item in result.Value)
         {
             try
             {
-                var result = await operation(item, cancellationToken);
-                if (result.IsSuccess)
+                var newResult = await operation(item, cancellationToken);
+                if (newResult.IsSuccess)
                 {
-                    results.Add(result.Value);
+                    results.Add(newResult.Value);
                 }
                 else
                 {
-                    errors.AddRange(result.Errors);
+                    errors.AddRange(newResult.Errors);
                 }
-
-                messages.AddRange(result.Messages);
+                messages.AddRange(newResult.Messages);
             }
             catch (OperationCanceledException)
             {
                 errors.Add(new OperationCancelledError());
-
                 break;
             }
             catch (Exception ex)
@@ -1342,17 +1304,19 @@ public readonly partial struct Result<T>
 
         return errors.Any()
             ? Result<IEnumerable<TOutput>>.Failure()
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithErrors(errors)
                 .WithMessages(messages)
             : Result<IEnumerable<TOutput>>.Success(results)
-                .WithErrors(this.Errors)
+                .WithErrors(result.Errors)
                 .WithMessages(messages);
     }
 
     /// <summary>
     ///     Executes an action only if a condition is met, without changing the Result.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="condition">The condition to check.</param>
     /// <param name="action">The action to execute if condition is met.</param>
     /// <returns>The original Result.</returns>
@@ -1365,34 +1329,35 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<T> Switch(Func<T, bool> condition, Action<T> action)
+    public static Result<T> Switch<T>(this Result<T> result, Func<T, bool> condition, Action<T> action)
     {
-        if (!this.IsSuccess || condition is null || action is null)
+        if (!result.IsSuccess || condition is null || action is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (condition(this.Value))
+            if (condition(result.Value))
             {
-                action(this.Value);
+                action(result.Value);
             }
-
-            return this;
+            return result;
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Executes an async action only if a condition is met, without changing the Result.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
     /// <param name="condition">The condition to check.</param>
     /// <param name="action">The async action to execute if condition is met.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -1407,44 +1372,46 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> SwitchAsync(
+    public static async Task<Result<T>> SwitchAsync<T>(
+        this Result<T> result,
         Func<T, bool> condition,
         Func<T, CancellationToken, Task> action,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess || condition is null || action is null)
+        if (!result.IsSuccess || condition is null || action is null)
         {
-            return this;
+            return result;
         }
 
         try
         {
-            if (condition(this.Value))
+            if (condition(result.Value))
             {
-                await action(this.Value, cancellationToken);
+                await action(result.Value, cancellationToken);
             }
-
-            return this;
+            return result;
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Validates the successful value of a Result using a specified FluentValidation validator.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to validate.</param>
     /// <param name="validator">The FluentValidation validator to use.</param>
     /// <param name="options">Optional validation strategy options to apply.</param>
     /// <returns>The original Result if validation succeeds; otherwise, a failure Result.</returns>
@@ -1462,51 +1429,54 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public Result<T> Validate(
+    public static Result<T> Validate<T>(
+        this Result<T> result,
         IValidator<T> validator,
         Action<ValidationStrategy<T>> options = null)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (validator is null)
         {
-            return Failure(this.Value)
+            return Result<T>.Failure(result.Value)
                 .WithError(new Error("Validator cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
             var validationResult = options is null
-                ? validator.Validate(this.Value)
-                : validator.Validate(this.Value, options);
+                ? validator.Validate(result.Value)
+                : validator.Validate(result.Value, options);
 
             if (validationResult.IsValid)
             {
-                return this;
+                return result;
             }
 
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new FluentValidationError(validationResult))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
     /// <summary>
     ///     Asynchronously validates the successful value of a Result using a specified FluentValidation validator.
     /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to validate.</param>
     /// <param name="validator">The FluentValidation validator to use.</param>
     /// <param name="options">Optional validation strategy options to apply.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -1528,54 +1498,55 @@ public readonly partial struct Result<T>
     ///     );
     /// </code>
     /// </example>
-    public async Task<Result<T>> ValidateAsync(
+    public static async Task<Result<T>> ValidateAsync<T>(
+        this Result<T> result,
         IValidator<T> validator,
         Action<ValidationStrategy<T>> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (!this.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return this;
+            return result;
         }
 
         if (validator is null)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new Error("Validator cannot be null"))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
 
         try
         {
             var validationResult = options is null
-                ? await validator.ValidateAsync(this.Value, cancellationToken)
-                : await validator.ValidateAsync(this.Value, options, cancellationToken);
+                ? await validator.ValidateAsync(result.Value, cancellationToken)
+                : await validator.ValidateAsync(result.Value, options, cancellationToken);
 
             if (validationResult.IsValid)
             {
-                return this;
+                return result;
             }
 
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new FluentValidationError(validationResult))
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (OperationCanceledException)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
         catch (Exception ex)
         {
-            return Failure(this.Value)
-                .WithErrors(this.Errors)
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage("Validation failed due to an error")
-                .WithMessages(this.Messages);
+                .WithMessages(result.Messages);
         }
     }
 }

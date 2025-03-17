@@ -80,7 +80,7 @@ public static partial class ServiceCollectionExtensions
     {
         //services.AddLogging();
         //services.AddMemoryCache();
-        services.AddScoped<IFileStorageFactory>(sp =>
+        services.AddSingleton<IFileStorageFactory>(sp =>
         {
             var factory = new FileStorageFactory(sp);
             configure?.Invoke(factory);

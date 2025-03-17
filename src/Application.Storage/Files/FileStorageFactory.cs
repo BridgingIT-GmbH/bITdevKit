@@ -11,29 +11,19 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Linq;
 
-/// <summary>
-/// A factory that creates and manages multiple configured IFileStorageProvider instances,
-/// supporting runtime configuration, custom behaviors, configurable lifetimes, and provider type lookup.
-/// Example: `var factory = new FileStorageFactory(services); var provider = factory.CreateProvider<InMemoryFileStorageProvider>();`
-/// </summary>
 public class FileStorageFactory : IFileStorageFactory
 {
     private readonly IServiceProvider serviceProvider;
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = new();
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new();
 
-    public FileStorageFactory(IServiceProvider serviceProvider = null)
+    public FileStorageFactory(IServiceProvider serviceProvider)
     {
-        this.serviceProvider = serviceProvider;
+        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        this.scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
     }
 
-    /// <summary>
-    /// Creates or retrieves the configured IFileStorageProvider instance for a specific name.
-    /// Example: `var provider = factory.CreateProvider("local"); var result = await provider.ExistsAsync("folder/file.txt", null, CancellationToken.None);`
-    /// </summary>
-    /// <param name="name">The name of the provider configuration.</param>
-    /// <returns>The configured IFileStorageProvider instance.</returns>
-    /// <exception cref="KeyNotFoundException">Thrown if no provider is registered for the specified name.</exception>
     public IFileStorageProvider CreateProvider(string name)
     {
         if (!this.providerConfigs.TryGetValue(name, out var config))
@@ -50,18 +40,7 @@ public class FileStorageFactory : IFileStorageFactory
         };
     }
 
-    /// <summary>
-    /// Creates or retrieves the first configured IFileStorageProvider instance of the specified implementation type,
-    /// or throws an exception if multiple providers of the same type exist without unique names.
-    /// Example: `var provider = factory.CreateProvider<InMemoryFileStorageProvider>(); var result = await provider.ExistsAsync("test/file.txt", null, CancellationToken.None);`
-    /// </summary>
-    /// <typeparam name="TProvider">The type of the IFileStorageProvider implementation (e.g., InMemoryFileStorageProvider, LocalFileStorageProvider).</typeparam>
-    /// <returns>The first configured IFileStorageProvider instance of the specified type.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if no provider of the specified type is registered, or if multiple providers of the same type exist
-    /// without unique names, causing ambiguity.
-    /// </exception>
-    public IFileStorageProvider CreateProvider<TProvider>() where TProvider : IFileStorageProvider
+    public IFileStorageProvider CreateProvider<TImplementation>() where TImplementation : IFileStorageProvider
     {
         var matchingProviders = this.providerConfigs
             .Select(kvp => (Name: kvp.Key, Config: kvp.Value))
@@ -72,30 +51,23 @@ public class FileStorageFactory : IFileStorageFactory
                 ServiceLifetime.Transient => this.CreateTransientProvider(x.Config),
                 _ => throw new ArgumentException($"Unsupported lifetime: {x.Config.Lifetime}", nameof(x.Config.Lifetime))
             }))
-            .Where(x => x.Provider is TProvider)
+            .Where(x => x.Provider is TImplementation)
             .ToList();
 
         if (matchingProviders.Count == 0)
         {
-            throw new InvalidOperationException($"No file storage provider of type {typeof(TProvider).Name} is registered.");
+            throw new InvalidOperationException($"No file storage provider of type {typeof(TImplementation).Name} is registered.");
         }
 
         if (matchingProviders.Count > 1)
         {
             var providerNames = string.Join(", ", matchingProviders.Select(x => x.Name));
-            throw new InvalidOperationException($"Multiple file storage providers of type {typeof(TProvider).Name} are registered with names: {providerNames}. Please specify a provider name using CreateProvider(string) to resolve ambiguity.");
+            throw new InvalidOperationException($"Multiple file storage providers of type {typeof(TImplementation).Name} are registered with names: {providerNames}. Please specify a provider name using CreateProvider(string) to resolve ambiguity.");
         }
 
         return matchingProviders.First().Provider;
     }
 
-    /// <summary>
-    /// Configures a new provider with the specified name and builder configuration.
-    /// Example: `factory.RegisterProvider("local", builder => builder.UseLocal("C:\\Storage", "LocalStorage").WithLogging().WithLifetime(ServiceLifetime.Singleton);`
-    /// </summary>
-    /// <param name="name">The unique name for the provider configuration.</param>
-    /// <param name="configure">Action to configure the FileStorageBuilder for this provider.</param>
-    /// <exception cref="ArgumentException">Thrown if the name is null, empty, or already registered.</exception>
     public IFileStorageFactory RegisterProvider(string name, Action<FileStorageBuilder> configure)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -116,20 +88,12 @@ public class FileStorageFactory : IFileStorageFactory
         return this;
     }
 
-    /// <summary>
-    /// Registers a custom behavior for all providers or a specific provider.
-    /// Example: `factory.WithBehavior("local", (p, sp) => new CustomBehavior(p));`
-    /// </summary>
-    /// <param name="providerName">The name of the provider to apply the behavior to (null for all providers).</param>
-    /// <param name="behaviorFactory">A factory function that creates an IFileStorageBehavior instance from the provider and service provider.</param>
-    /// <exception cref="KeyNotFoundException">Thrown if the specified provider name is not registered.</exception>
     public IFileStorageFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory)
     {
         ArgumentNullException.ThrowIfNull(behaviorFactory);
 
         if (providerName == null)
         {
-            // Apply to all providers
             foreach (var kvp in this.providerConfigs)
             {
                 var currentProvider = this.CreateProvider(kvp.Key);
@@ -138,12 +102,10 @@ public class FileStorageFactory : IFileStorageFactory
                 {
                     this.singletonProviders.TryUpdate(kvp.Key, new Lazy<IFileStorageProvider>(() => newProvider, LazyThreadSafetyMode.ExecutionAndPublication), this.singletonProviders[kvp.Key]);
                 }
-                // For Scoped and Transient, the behavior is applied at creation time in CreateProvider
             }
         }
         else
         {
-            // Apply to a specific provider
             if (!this.providerConfigs.TryGetValue(providerName, out var config))
             {
                 throw new KeyNotFoundException($"No file storage provider registered with name '{providerName}'.");
@@ -155,7 +117,6 @@ public class FileStorageFactory : IFileStorageFactory
             {
                 this.singletonProviders.TryUpdate(providerName, new Lazy<IFileStorageProvider>(() => newProvider, LazyThreadSafetyMode.ExecutionAndPublication), this.singletonProviders[providerName]);
             }
-            // For Scoped and Transient, the behavior is applied at creation time in CreateProvider
         }
 
         return this;
@@ -174,14 +135,15 @@ public class FileStorageFactory : IFileStorageFactory
 
     private IFileStorageProvider CreateScopedProvider((ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors) config)
     {
-        var provider = config.ProviderFactory(this.serviceProvider);
-        return this.ApplyBehaviors(provider, config.Behaviors);
+        using var scope = this.scopeFactory.CreateScope();
+        var scopedProvider = config.ProviderFactory(scope.ServiceProvider);
+        return this.ApplyBehaviors(scopedProvider, config.Behaviors);
     }
 
     private IFileStorageProvider CreateTransientProvider((ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors) config)
     {
-        var provider = config.ProviderFactory(this.serviceProvider);
-        return this.ApplyBehaviors(provider, config.Behaviors);
+        var transientProvider = config.ProviderFactory(this.serviceProvider);
+        return this.ApplyBehaviors(transientProvider, config.Behaviors);
     }
 
     private IFileStorageProvider ApplyBehaviors(IFileStorageProvider provider, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors)
@@ -194,9 +156,6 @@ public class FileStorageFactory : IFileStorageFactory
         return decoratedProvider;
     }
 
-    /// <summary>
-    /// Nested builder class for configuring a provider fluently.
-    /// </summary>
     public class FileStorageBuilder
     {
         private readonly FileStorageFactory factory;
@@ -215,63 +174,42 @@ public class FileStorageFactory : IFileStorageFactory
 
         public List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors => this.behaviors;
 
-        /// <summary>
-        /// Configures an in-memory storage provider.
-        /// </summary>
         public FileStorageBuilder UseInMemory(string locationName)
         {
             this.ProviderFactory = (sp) => new InMemoryFileStorageProvider(locationName);
             return this;
         }
 
-        /// <summary>
-        /// Configures a local file system storage provider.
-        /// </summary>
         public FileStorageBuilder UseLocal(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null)
         {
             this.ProviderFactory = (sp) => new LocalFileStorageProvider(locationName, rootPath, ensureRoot, lockTimeout);
             return this;
         }
 
-        /// <summary>
-        /// Adds a logging behavior to the provider.
-        /// </summary>
         public FileStorageBuilder WithLogging(LoggingOptions options = null)
         {
             this.behaviors.Add((p, sp) => new LoggingFileStorageBehavior(p, sp.GetRequiredService<ILoggerFactory>(), options));
             return this;
         }
 
-        /// <summary>
-        /// Adds a retry behavior to the provider.
-        /// </summary>
         public FileStorageBuilder WithRetry(RetryOptions options = null)
         {
             this.behaviors.Add((p, sp) => new RetryFileStorageBehavior(p, sp.GetRequiredService<ILoggerFactory>(), options));
             return this;
         }
 
-        /// <summary>
-        /// Adds a caching behavior to the provider.
-        /// </summary>
         public FileStorageBuilder WithCaching(CachingOptions options = null)
         {
             this.behaviors.Add((p, sp) => new CachingFileStorageBehavior(p, sp.GetRequiredService<IMemoryCache>(), options));
             return this;
         }
 
-        /// <summary>
-        /// Adds a custom behavior to the provider.
-        /// </summary>
         public FileStorageBuilder WithBehavior(Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider> behaviorFactory)
         {
             this.behaviors.Add(behaviorFactory ?? throw new ArgumentNullException(nameof(behaviorFactory)));
             return this;
         }
 
-        /// <summary>
-        /// Sets the lifetime for the provider and its behaviors.
-        /// </summary>
         public FileStorageBuilder WithLifetime(ServiceLifetime lifetime)
         {
             this.lifetime = lifetime;

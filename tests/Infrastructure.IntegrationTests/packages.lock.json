@@ -1934,6 +1934,7 @@
           "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities.Xunit": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.Azure.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.Windows": "[1.0.0, )",

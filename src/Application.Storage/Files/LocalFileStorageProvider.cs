@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -17,6 +18,7 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
 /// </summary>
+[DebuggerDisplay("LocationName={LocationName}, Path={rootPath}")]
 public class LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
     private readonly string rootPath = Path.GetFullPath(rootPath);

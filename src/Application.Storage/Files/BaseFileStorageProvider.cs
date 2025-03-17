@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using System.Diagnostics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
@@ -12,6 +13,7 @@ using BridgingIT.DevKit.Common;
 /// translating exceptions into typed IResultError instances or ExceptionError for unhandled errors.
 /// Intended for inheritance by concrete providers, ensuring testability and consistency.
 /// </summary>
+[DebuggerDisplay("LocationName={LocationName}")]
 public abstract class BaseFileStorageProvider(string locationName) : IFileStorageProvider
 {
     public string LocationName { get; } = locationName ?? throw new ArgumentNullException(nameof(locationName));

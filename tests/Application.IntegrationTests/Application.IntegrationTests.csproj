@@ -48,6 +48,7 @@
     <ProjectReference Include="..\..\src\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Windows\Infrastructure.Windows.csproj" />

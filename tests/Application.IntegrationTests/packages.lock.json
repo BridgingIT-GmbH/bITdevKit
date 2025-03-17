@@ -188,6 +188,15 @@
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
+      "Azure.Storage.Common": {
+        "type": "Transitive",
+        "resolved": "12.22.0",
+        "contentHash": "0Vm30bRpQ0fcswB0xQMhKAOSXnRygnF2f/029uPaIDLaj1/yfX4jmU0fFjJe9ojGEj/vlAmsApCEOyL9if6zHg==",
+        "dependencies": {
+          "Azure.Core": "1.44.1",
+          "System.IO.Hashing": "6.0.0"
+        }
+      },
       "BouncyCastle.Cryptography": {
         "type": "Transitive",
         "resolved": "2.4.0",
@@ -1029,6 +1038,11 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "Rfm2jYCaUeGysFEZjDe7j1R4x6Z6BzumS/vUT5a1AA/AWJuGX71PoGB0RmpyX3VmrGqVnAwtfMn39OHR8Y/5+g=="
+      },
       "System.Linq": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1840,6 +1854,17 @@
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.2, )"
         }
       },
+      "BridgingIT.DevKit.Infrastructure.Azure.Storage": {
+        "type": "Project",
+        "dependencies": {
+          "Azure.Data.Tables": "[12.10.0, )",
+          "Azure.Storage.Blobs": "[12.23.0, )",
+          "Azure.Storage.Files.Shares": "[12.15.0, )",
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
@@ -1894,6 +1919,15 @@
           "Microsoft.Extensions.Options": "6.0.0"
         }
       },
+      "Azure.Data.Tables": {
+        "type": "CentralTransitive",
+        "requested": "[12.10.0, )",
+        "resolved": "12.10.0",
+        "contentHash": "fW6873rvhpAYUGXzu7JmbfSkYfppvfkKkiZqifSyOVJ0SsAWBMqHWL9VbUPsApP3DWTwakpU35nfpKTPqvFVww==",
+        "dependencies": {
+          "Azure.Core": "1.44.1"
+        }
+      },
       "Azure.Identity": {
         "type": "CentralTransitive",
         "requested": "[1.13.2, )",
@@ -1905,6 +1939,26 @@
           "Microsoft.Identity.Client.Extensions.Msal": "4.67.2",
           "System.Memory": "4.5.5",
           "System.Threading.Tasks.Extensions": "4.5.4"
+        }
+      },
+      "Azure.Storage.Blobs": {
+        "type": "CentralTransitive",
+        "requested": "[12.23.0, )",
+        "resolved": "12.23.0",
+        "contentHash": "wokJ5KX/iViQQ32xyCu69+Ter0aR4B9QQ+oR9NCpc/WPIanxnDErrmFfdmE7K8ZdccjHkvE/wEnqJxaF1+5wFg==",
+        "dependencies": {
+          "Azure.Storage.Common": "12.22.0",
+          "System.Text.Json": "6.0.10"
+        }
+      },
+      "Azure.Storage.Files.Shares": {
+        "type": "CentralTransitive",
+        "requested": "[12.15.0, )",
+        "resolved": "12.15.0",
+        "contentHash": "eX+jUCenE6+YA5GDwEx5Q6MtzrlK2jGEsFxlVcEXjEyvSO42cJ+ZLCzlLtmoB0RD8SPUOde5+1nFKqblGwHIdw==",
+        "dependencies": {
+          "Azure.Storage.Common": "12.16.0",
+          "System.Text.Json": "4.7.2"
         }
       },
       "CsvHelper": {

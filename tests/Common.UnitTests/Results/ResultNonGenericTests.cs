@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
 [UnitTest("Common")]
-public class ResultTests
+public class ResultNonGenericTests
 {
     private readonly Faker faker = new();
 
@@ -469,14 +469,14 @@ public class ResultTests
     }
 
     [Fact]
-    public void Try_WithSuccessfulOperation_ReturnsSuccessResult()
+    public void From_WithSuccessfulOperation_ReturnsSuccessResult()
     {
         // Arrange
         var operationExecuted = false;
         Action operation = () => operationExecuted = true;
 
         // Act
-        var result = Result.Try(operation);
+        var result = Result.From(operation);
 
         // Assert
         result.ShouldBeSuccess();
@@ -484,7 +484,7 @@ public class ResultTests
     }
 
     [Fact]
-    public async Task TryAsync_WithSuccessfulOperation_ReturnsSuccessResult()
+    public async Task FromAsync_WithSuccessfulOperation_ReturnsSuccessResult()
     {
         // Arrange
         var operationExecuted = false;
@@ -495,7 +495,7 @@ public class ResultTests
         };
 
         // Act
-        var result = await Result.TryAsync(operation);
+        var result = await Result.FromAsync(operation);
 
         // Assert
         result.ShouldBeSuccess();

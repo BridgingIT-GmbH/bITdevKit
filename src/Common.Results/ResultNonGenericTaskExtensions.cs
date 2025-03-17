@@ -5,8 +5,529 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public static partial class ResultTaskExtensions
+public static partial class ResultNonGenericTaskExtensions
 {
+    /// <summary>
+    /// Throws an exception if the Result task indicates failure.
+    /// </summary>
+    /// <param name="resultTask">The Result task to check.</param>
+    /// <returns>The original Result if it represents a success; otherwise, throws an exception.</returns>
+    /// <exception cref="ResultException">Thrown if the Result indicates failure and no specific error is present to throw.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .ThrowIfFailed();
+    /// </code>
+    /// </example>
+    public static async Task<Result> ThrowIfFailed(this Task<Result> resultTask)
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed();
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Throws a specified exception if the Result task indicates a failure.
+    /// </summary>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="resultTask">The Result task to check.</param>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception cref="TException">Thrown if the Result indicates a failure.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .ThrowIfFailed{InvalidOperationException}();
+    /// </code>
+    /// </example>
+    public static async Task<Result> ThrowIfFailed<TException>(this Task<Result> resultTask)
+        where TException : Exception
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed<TException>();
+        }
+        catch (TException)
+        {
+            throw; // Propagate the specified exception
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Maps a successful Result task to a Result{T} using the provided value.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="resultTask">The Result task to map.</param>
+    /// <param name="value">The value to map to.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var stringResult = await GetSystemStatusAsync()
+    ///     .Map("System ready"); // Result{string}.Success("System ready")
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Map<T>(this Task<Result> resultTask, T value)
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.Map(value);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Maps a successful Result task to a Result{T} using the provided mapping function.
+    /// </summary>
+    /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="resultTask">The Result task to map.</param>
+    /// <param name="mapper">The function to map the value.</param>
+    /// <returns>A new Result containing the mapped value or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var stringResult = await GetSystemStatusAsync()
+    ///     .Map(() => "System ready"); // Result{string}.Success("System ready")
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Map<T>(this Task<Result> resultTask, Func<T> mapper)
+    {
+        if (mapper is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Mapper cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.Map(mapper);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes different actions based on the Result task's success state.
+    /// </summary>
+    /// <param name="resultTask">The Result task to handle.</param>
+    /// <param name="onSuccess">Action to execute if the Result is successful.</param>
+    /// <param name="onFailure">Action to execute if the Result failed, receiving the errors.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .Handle(
+    ///         onSuccess: () => Console.WriteLine("System operational"),
+    ///         onFailure: errors => Console.WriteLine($"System failed: {errors.Count} errors")
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> Handle(
+        this Task<Result> resultTask,
+        Action onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return result.Handle(onSuccess, onFailure);
+        }
+        catch (Exception ex)
+        {
+            onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly());
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes different actions based on the Result task's success state.
+    /// </summary>
+    /// <param name="resultTask">The Result task to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .HandleAsync(
+    ///         async (ct) => await LogSuccessAsync(ct),
+    ///         async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> HandleAsync(
+        this Task<Result> resultTask,
+        Func<CancellationToken, Task> onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return await result.HandleAsync(onSuccess, onFailure, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            await onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly(), cancellationToken);
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously executes a success function with a synchronous failure handler from a Task{Result}.
+    /// </summary>
+    /// <param name="resultTask">The Result task to handle.</param>
+    /// <param name="onSuccess">Async function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Synchronous function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .HandleAsync(
+    ///         async (ct) => await LogSuccessAsync(ct),
+    ///         errors => Console.WriteLine($"Failed with {errors.Count} errors"),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> HandleAsync(
+        this Task<Result> resultTask,
+        Func<CancellationToken, Task> onSuccess,
+        Action<IReadOnlyList<IResultError>> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return await result.HandleAsync(onSuccess, onFailure, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly());
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Executes a synchronous success function with an async failure handler from a Task{Result}.
+    /// </summary>
+    /// <param name="resultTask">The Result task to handle.</param>
+    /// <param name="onSuccess">Synchronous function to execute if the Result is successful.</param>
+    /// <param name="onFailure">Async function to execute if the Result failed, receiving the errors.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Task containing the original Result instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .HandleAsync(
+    ///         () => Console.WriteLine("Operation succeeded"),
+    ///         async (errors, ct) => await LogErrorsAsync(errors, ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> HandleAsync(
+        this Task<Result> resultTask,
+        Action onSuccess,
+        Func<IReadOnlyList<IResultError>, CancellationToken, Task> onFailure,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        ArgumentNullException.ThrowIfNull(onFailure);
+
+        try
+        {
+            var result = await resultTask;
+            return await result.HandleAsync(onSuccess, onFailure, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            await onFailure(new[] { Result.Settings.ExceptionErrorFactory(ex) }.ToList().AsReadOnly(), cancellationToken);
+            return await resultTask; // Return the original result despite the exception
+        }
+    }
+
+    /// <summary>
+    /// Chains a new operation on a successful Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to chain from.</param>
+    /// <param name="operation">The operation to execute if successful.</param>
+    /// <returns>A new Result with the operation result or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetSystemStatusAsync()
+    ///     .AndThen(() => ValidateSystem());
+    /// </code>
+    /// </example>
+    public static async Task<Result> AndThen(
+        this Task<Result> resultTask,
+        Func<Result> operation)
+    {
+        if (operation is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.AndThen(operation);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Chains a new async operation on a successful Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to chain from.</param>
+    /// <param name="operation">The async operation to execute if successful.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A new Result with the operation result or the original errors.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetSystemStatusAsync()
+    ///     .AndThenAsync(
+    ///         async (ct) => await ValidateSystemAsync(ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> AndThenAsync(
+        this Task<Result> resultTask,
+        Func<CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.AndThenAsync(operation, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes an operation in the chain without transforming the value of a Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to execute the action on.</param>
+    /// <param name="action">The action to execute.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .Do(() => InitializeSystem());
+    /// </code>
+    /// </example>
+    public static async Task<Result> Do(this Task<Result> resultTask, Action action)
+    {
+        if (action is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.Do(action);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes an async operation in the chain without transforming the value of a Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to execute the action on.</param>
+    /// <param name="action">The async action to execute.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .DoAsync(
+    ///         async ct => await InitializeSystemAsync(ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> DoAsync(
+        this Task<Result> resultTask,
+        Func<CancellationToken, Task> action,
+        CancellationToken cancellationToken = default)
+    {
+        if (action is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.DoAsync(action, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes an action only if a condition is met, without changing the Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to switch on.</param>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The action to execute if condition is met.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .Switch(
+    ///         () => isAdmin,
+    ///         () => _logger.LogInfo("Admin access")
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> Switch(
+        this Task<Result> resultTask,
+        Func<bool> condition,
+        Action action)
+    {
+        if (condition is null || action is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Condition or action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.Switch(condition, action);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes an async action only if a condition is met, without changing the Result task.
+    /// </summary>
+    /// <param name="resultTask">The Result task to switch on.</param>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The async action to execute if condition is met.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetSystemStatusAsync()
+    ///     .SwitchAsync(
+    ///         () => isAdmin,
+    ///         async (ct) => await NotifyAdminAsync(ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> SwitchAsync(
+        this Task<Result> resultTask,
+        Func<bool> condition,
+        Func<CancellationToken, Task> action,
+        CancellationToken cancellationToken = default)
+    {
+        if (condition is null || action is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Condition or action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.SwitchAsync(condition, action, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
     /// <summary>
     ///     Ensures that a condition is met for the Result task.
     /// </summary>

@@ -6,6 +6,44 @@ using FluentValidation.Internal;
 public static class ResultTExtensions
 {
     /// <summary>
+    /// Throws a <see cref="ResultException"/> if the current result is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <returns>The current result if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
+    public static Result<T> ThrowIfFailed<T>(this Result<T> result)
+    {
+        if (result.IsSuccess)
+        {
+            return result;
+        }
+
+        throw new ResultException(result);
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the result is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception>Thrown if the result indicates a failure.
+    ///     <cref>TException</cref>
+    /// </exception>
+    public static Result<T> ThrowIfFailed<T, TException>(this Result<T> result)
+        where TException : Exception
+    {
+        if (result.IsSuccess)
+        {
+            return result;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), result.Errors.FirstOrDefault()?.Message, result))!;
+    }
+
+    /// <summary>
     ///     Maps a successful Result{T} to a Result{TNew} using the provided mapping function.
     /// </summary>
     /// <typeparam name="T">The type of the source result value.</typeparam>
@@ -189,44 +227,6 @@ public static class ResultTExtensions
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
         }
-    }
-
-    /// <summary>
-    /// Throws a <see cref="ResultException"/> if the current result is a failure.
-    /// </summary>
-    /// <typeparam name="T">The type of the result value.</typeparam>
-    /// <param name="result">The result to check.</param>
-    /// <returns>The current result if it is successful.</returns>
-    /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
-    public static Result<T> ThrowIfFailed<T>(this Result<T> result)
-    {
-        if (result.IsSuccess)
-        {
-            return result;
-        }
-
-        throw new ResultException(result);
-    }
-
-    /// <summary>
-    /// Throws an exception of type TException if the result is a failure.
-    /// </summary>
-    /// <typeparam name="T">The type of the result value.</typeparam>
-    /// <typeparam name="TException">The type of exception to throw.</typeparam>
-    /// <param name="result">The result to check.</param>
-    /// <returns>The current Result if it indicates success.</returns>
-    /// <exception>Thrown if the result indicates a failure.
-    ///     <cref>TException</cref>
-    /// </exception>
-    public static Result<T> ThrowIfFailed<T, TException>(this Result<T> result)
-        where TException : Exception
-    {
-        if (result.IsSuccess)
-        {
-            return result;
-        }
-
-        throw ((TException)Activator.CreateInstance(typeof(TException), result.Errors.FirstOrDefault()?.Message, result))!;
     }
 
     /// <summary>

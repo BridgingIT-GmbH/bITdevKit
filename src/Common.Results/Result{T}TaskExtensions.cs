@@ -14,6 +14,154 @@ using FluentValidation.Internal;
 public static partial class ResultTTaskExtensions
 {
     /// <summary>
+    /// Throws a <see cref="ResultException"/> if the Result task indicates failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to check.</param>
+    /// <returns>The current Result if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current Result is a failure.</exception>
+    /// <example>
+    /// <code>
+    /// await GetUserAsync(userId)
+    ///     .ThrowIfFailed();
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> ThrowIfFailed<T>(this Task<Result<T>> resultTask)
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed();
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the Result task is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="resultTask">The Result task to check.</param>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception cref="TException">Thrown if the Result indicates a failure.</exception>
+    /// <example>
+    /// <code>
+    /// await GetUserAsync(userId)
+    ///     .ThrowIfFailed{InvalidOperationException}();
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> ThrowIfFailed<T, TException>(this Task<Result<T>> resultTask)
+        where TException : Exception
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed<T>();
+        }
+        catch (TException)
+        {
+            throw; // Propagate the specified exception
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Executes an action only if a condition is met, without changing the Result task.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to switch on.</param>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The action to execute if condition is met.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetUserAsync(userId)
+    ///     .Switch(
+    ///         user => user.IsAdmin,
+    ///         user => _logger.LogInfo($"Admin {user.Name} accessed the system")
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Switch<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, bool> condition,
+        Action<T> action)
+    {
+        if (condition is null || action is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Condition or action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.Switch(condition, action);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Executes an async action only if a condition is met, without changing the Result task.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to switch on.</param>
+    /// <param name="condition">The condition to check.</param>
+    /// <param name="action">The async action to execute if condition is met.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original Result wrapped in a Task.</returns>
+    /// <example>
+    /// <code>
+    /// await GetUserAsync(userId)
+    ///     .SwitchAsync(
+    ///         user => user.IsAdmin,
+    ///         async (user, ct) => await NotifyAdminLoginAsync(user),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> SwitchAsync<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, bool> condition,
+        Func<T, CancellationToken, Task> action,
+        CancellationToken cancellationToken = default)
+    {
+        if (condition is null || action is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Condition or action cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.SwitchAsync(condition, action, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     ///     Maps the successful value of a Result task using the provided mapping function.
     /// </summary>
     /// <typeparam name="T">The type of the source value.</typeparam>

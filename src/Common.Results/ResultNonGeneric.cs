@@ -194,6 +194,83 @@ public readonly partial struct Result : IResult
     public IReadOnlyList<IResultError> Errors => this.errors.AsEnumerable().ToList().AsReadOnly();
 
     /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.From(() => {
+    ///     userRepository.DeleteAll();
+    /// });
+    /// </code>
+    /// </example>
+    public static Result From(Action operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            operation();
+
+            return Success();
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <param name="operation">The async operation to execute.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.FromAsync(
+    ///     async ct => await DeleteAllUsersAsync(ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result> FromAsync(
+        Func<CancellationToken, Task> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            await operation(cancellationToken);
+
+            return Success();
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Creates a new successful Result.
     /// </summary>
     /// <example>

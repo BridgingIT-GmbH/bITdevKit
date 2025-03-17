@@ -14,6 +14,196 @@ using FluentValidation.Internal;
 public static partial class ResultPagedFunctionTaskExtensions
 {
     /// <summary>
+    /// Throws a <see cref="ResultException"/> if the ResultPaged task indicates failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The ResultPaged task to check.</param>
+    /// <returns>The current ResultPaged if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current ResultPaged is a failure.</exception>
+    /// <example>
+    /// <code>
+    /// await GetPagedUsersAsync(pageNumber, pageSize)
+    ///     .ThrowIfFailed();
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> ThrowIfFailed<T>(this Task<ResultPaged<T>> resultTask)
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed();
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the ResultPaged task is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="resultTask">The ResultPaged task to check.</param>
+    /// <returns>The current ResultPaged if it indicates success.</returns>
+    /// <exception cref="TException">Thrown if the ResultPaged indicates a failure.</exception>
+    /// <example>
+    /// <code>
+    /// await GetPagedUsersAsync(pageNumber, pageSize)
+    ///     .ThrowIfFailed<InvalidOperationException>();
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> ThrowIfFailed<T, TException>(this Task<ResultPaged<T>> resultTask)
+        where TException : Exception
+    {
+        try
+        {
+            var result = await resultTask;
+            return result.ThrowIfFailed<T>();
+        }
+        catch (TException)
+        {
+            throw; // Propagate the specified exception
+        }
+        catch (Exception ex)
+        {
+            throw new ResultException("Error while checking result status", ex);
+        }
+    }
+
+    /// <summary>
+    /// Applies an operation to each item in a page collection while maintaining error context.
+    /// Useful for scenarios where individual item operations might fail independently.
+    /// </summary>
+    /// <typeparam name="T">The type of the source value.</typeparam>
+    /// <typeparam name="TOutput">The type of the output value.</typeparam>
+    /// <param name="resultTask">The ResultPaged task to process.</param>
+    /// <param name="operation">The operation to apply to each item.</param>
+    /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
+    /// <example>
+    /// <code>
+    /// // Process users with individual error handling
+    /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    ///     .Collect(user =>
+    ///     {
+    ///         try
+    ///         {
+    ///             var processed = userProcessor.Process(user);
+    ///             return Result<ProcessedUser>.Success(processed);
+    ///         }
+    ///         catch (QuotaExceededException)
+    ///         {
+    ///             return Result<ProcessedUser>.Failure()
+    ///                 .WithError(new ValidationError(
+    ///                     $"Quota exceeded for user {user.Id}",
+    ///                     nameof(user.Quota)));
+    ///         }
+    ///         catch (Exception ex)
+    ///         {
+    ///             return Result<ProcessedUser>.Failure()
+    ///                 .WithError(new Error($"Processing failed: {ex.Message}"));
+    ///         }
+    ///     });
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<TOutput>> Collect<T, TOutput>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<T, Result<TOutput>> operation)
+    {
+        if (operation is null)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.Collect(operation);
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously applies an operation to each item in a page collection while maintaining error context.
+    /// </summary>
+    /// <typeparam name="T">The type of the source value.</typeparam>
+    /// <typeparam name="TOutput">The type of the output value.</typeparam>
+    /// <param name="resultTask">The ResultPaged task to process.</param>
+    /// <param name="operation">The async operation to apply to each item.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
+    /// <example>
+    /// <code>
+    /// // Process users with external service integration
+    /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    ///     .CollectAsync(async (user, ct) =>
+    ///     {
+    ///         try
+    ///         {
+    ///             // Verify user permissions
+    ///             var permissions = await permissionService
+    ///                 .GetPermissionsAsync(user.Id, ct);
+    ///
+    ///             if (!permissions.Contains("process"))
+    ///                 return Result<ProcessedUser>.Failure()
+    ///                     .WithError(new ValidationError(
+    ///                         "User lacks processing permission",
+    ///                         nameof(user.Permissions)));
+    ///
+    ///             // Process user with external service
+    ///             var enrichedData = await externalService
+    ///                 .EnrichUserDataAsync(user, ct);
+    ///
+    ///             var processed = await userProcessor
+    ///                 .ProcessAsync(user, enrichedData, ct);
+    ///
+    ///             return Result<ProcessedUser>.Success(processed);
+    ///         }
+    ///         catch (ServiceException ex)
+    ///         {
+    ///             return Result<ProcessedUser>.Failure()
+    ///                 .WithError(new ExternalServiceError(ex.Message));
+    ///         }
+    ///     },
+    ///     cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<TOutput>> CollectAsync<T, TOutput>(
+        this Task<ResultPaged<T>> resultTask,
+        Func<T, CancellationToken, Task<Result<TOutput>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.CollectAsync(operation, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<TOutput>.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Maps the successful value of a ResultPaged task using the provided mapping function.
     /// Preserves pagination metadata in the transformed result.
     /// </summary>

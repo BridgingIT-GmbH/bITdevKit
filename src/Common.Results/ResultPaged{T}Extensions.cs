@@ -10,6 +10,44 @@ using FluentValidation.Internal;
 public static class ResultPagedExtensions
 {
     /// <summary>
+    /// Throws a <see cref="ResultException"/> if the current result is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <returns>The current result if it is successful.</returns>
+    /// <exception cref="ResultException">Thrown if the current result is a failure.</exception>
+    public static ResultPaged<T> ThrowIfFailed<T>(this ResultPaged<T> result)
+    {
+        if (result.IsSuccess)
+        {
+            return result;
+        }
+
+        throw new ResultException(result);
+    }
+
+    /// <summary>
+    /// Throws an exception of type TException if the result is a failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TException">The type of exception to throw.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <returns>The current Result if it indicates success.</returns>
+    /// <exception>Thrown if the result indicates a failure.
+    ///     <cref>TException</cref>
+    /// </exception>
+    public static ResultPaged<T> ThrowIfFailed<T, TException>(this ResultPaged<T> result)
+        where TException : Exception
+    {
+        if (result.IsSuccess)
+        {
+            return result;
+        }
+
+        throw ((TException)Activator.CreateInstance(typeof(TException), result.Errors.FirstOrDefault()?.Message, result))!;
+    }
+
+    /// <summary>
     /// Maps the page collection to a new type while preserving pagination information.
     /// </summary>
     /// <example>
@@ -913,79 +951,6 @@ public static class ResultPagedExtensions
                 .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
-        }
-    }
-
-    /// <summary>
-    /// Tries to perform an operation on the current page collection.
-    /// </summary>
-    /// <example>
-    /// var result = ResultPaged{User}.Try(() => {
-    ///     var users = _repository.GetPagedUsers(page, pageSize);
-    ///     return (users, totalCount: _repository.GetTotalCount());
-    /// });
-    /// </example>
-    public static ResultPaged<T> Try<T>(
-        Func<(IEnumerable<T> Values, long TotalCount)> operation)
-    {
-        if (operation is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var (values, totalCount) = operation();
-            return ResultPaged<T>.Success(values, totalCount);
-        }
-        catch (Exception ex)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
-        }
-    }
-
-    /// <summary>
-    /// Asynchronously tries to perform an operation that returns a paged collection.
-    /// </summary>
-    /// <example>
-    /// var result = await ResultPaged{User}.TryAsync(
-    ///     async ct => {
-    ///         var users = await _repository.GetPagedUsersAsync(page, pageSize, ct);
-    ///         var count = await _repository.GetTotalCountAsync(ct);
-    ///         return (users, count);
-    ///     },
-    ///     cancellationToken
-    /// );
-    /// </example>
-    public static async Task<ResultPaged<T>> TryAsync<T>(
-        Func<CancellationToken, Task<(IEnumerable<T> Values, long TotalCount)>> operation,
-        CancellationToken cancellationToken = default)
-    {
-        if (operation is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Operation cannot be null"));
-        }
-
-        try
-        {
-            var (values, totalCount) = await operation(cancellationToken);
-            return ResultPaged<T>.Success(values, totalCount);
-        }
-        catch (OperationCanceledException)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new OperationCancelledError())
-                .WithMessage("Operation was cancelled");
-        }
-        catch (Exception ex)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessage(ex.Message);
         }
     }
 

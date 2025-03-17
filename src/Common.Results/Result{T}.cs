@@ -258,6 +258,83 @@ public readonly partial struct Result<T> : IResult<T>
             () => Success().WithMessages(result.Messages).WithErrors(result.Errors),
             _ => Failure().WithMessages(result.Messages).WithErrors(result.Errors));
 
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.From(() => {
+    ///     userRepository.DeleteAll();
+    /// });
+    /// </code>
+    /// </example>
+    public static Result<T> From(Func<T> operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = operation();
+
+            return Success(value);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <param name="operation">The async operation to execute.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.FromAsync(
+    ///     async ct => await DeleteAllUsersAsync(ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> FromAsync(
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = await operation(cancellationToken);
+
+            return Success(value);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
     // /// <summary>
     // /// Implicitly converts a Result{T} to a Result{TOutput}.
     // /// </summary>

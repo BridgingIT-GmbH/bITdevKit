@@ -134,6 +134,79 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
         this.errors.AsEnumerable().ToList().AsReadOnly();
 
     /// <summary>
+    /// Tries to perform an operation on the current page collection.
+    /// </summary>
+    /// <example>
+    /// var result = ResultPaged{User}.Try(() => {
+    ///     var users = _repository.GetPagedUsers(page, pageSize);
+    ///     return (users, totalCount: _repository.GetTotalCount());
+    /// });
+    /// </example>
+    public static ResultPaged<T> From(
+        Func<(IEnumerable<T> Values, long TotalCount)> operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var (values, totalCount) = operation();
+            return Success(values, totalCount, 1, values.Count());
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously tries to perform an operation that returns a paged collection.
+    /// </summary>
+    /// <example>
+    /// var result = await ResultPaged{User}.TryAsync(
+    ///     async ct => {
+    ///         var users = await _repository.GetPagedUsersAsync(page, pageSize, ct);
+    ///         var count = await _repository.GetTotalCountAsync(ct);
+    ///         return (users, count);
+    ///     },
+    ///     cancellationToken
+    /// );
+    /// </example>
+    public static async Task<ResultPaged<T>> FromAsync(
+        Func<CancellationToken, Task<(IEnumerable<T> Values, long TotalCount)>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var (values, totalCount) = await operation(cancellationToken);
+            return Success(values, 1, values.Count());
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Creates a successful paged result with the specified values and pagination details.
     /// </summary>
     /// <example>
@@ -146,11 +219,7 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
     ///     pageSize: 10
     /// );
     /// </example>
-    public static ResultPaged<T> Success(
-        IEnumerable<T> values,
-        long count = 0,
-        int page = 1,
-        int pageSize = 10)
+    public static ResultPaged<T> Success(IEnumerable<T> values, long count = 0, int page = 1, int pageSize = 10)
     {
         return new ResultPaged<T>(values, true, count, page, pageSize);
     }

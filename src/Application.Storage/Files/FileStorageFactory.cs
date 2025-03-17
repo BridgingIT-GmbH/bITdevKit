@@ -11,18 +11,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Linq;
 
-public class FileStorageFactory : IFileStorageFactory
+public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorageFactory
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly IServiceScopeFactory scopeFactory;
+    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
     private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = new();
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new();
-
-    public FileStorageFactory(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        this.scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-    }
 
     public IFileStorageProvider CreateProvider(string name)
     {
@@ -156,19 +150,13 @@ public class FileStorageFactory : IFileStorageFactory
         return decoratedProvider;
     }
 
-    public class FileStorageBuilder
+    public class FileStorageBuilder(FileStorageFactory factory, string providerName)
     {
-        private readonly FileStorageFactory factory;
-        private readonly string providerName;
+        private readonly FileStorageFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        private readonly string providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
         private ServiceLifetime lifetime = ServiceLifetime.Scoped;
         private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = new();
         public Func<IServiceProvider, IFileStorageProvider> ProviderFactory;
-
-        public FileStorageBuilder(FileStorageFactory factory, string providerName)
-        {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
-        }
 
         public ServiceLifetime Lifetime => this.lifetime;
 

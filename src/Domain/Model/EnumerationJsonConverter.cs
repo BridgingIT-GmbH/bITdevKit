@@ -52,23 +52,90 @@ public class EnumerationJsonConverter<TEnumeration, TId, TValue> : JsonConverter
 
     private static object ReadValue(ref Utf8JsonReader reader, Type type)
     {
-        if (type == typeof(bool)) return reader.GetBoolean();
-        if (type == typeof(byte)) return reader.GetByte();
-        if (type == typeof(sbyte)) return reader.GetSByte();
-        if (type == typeof(char)) return (char)reader.GetUInt16();
-        if (type == typeof(decimal)) return reader.GetDecimal();
-        if (type == typeof(double)) return reader.GetDouble();
-        if (type == typeof(float)) return reader.GetSingle();
-        if (type == typeof(int)) return reader.GetInt32();
-        if (type == typeof(uint)) return reader.GetUInt32();
-        if (type == typeof(long)) return reader.GetInt64();
-        if (type == typeof(ulong)) return reader.GetUInt64();
-        if (type == typeof(short)) return reader.GetInt16();
-        if (type == typeof(ushort)) return reader.GetUInt16();
-        if (type == typeof(string)) return reader.GetString();
-        if (type == typeof(Guid)) return reader.GetGuid();
-        if (type == typeof(DateTime)) return reader.GetDateTime();
-        if (type == typeof(DateTimeOffset)) return reader.GetDateTimeOffset();
+        if (type == typeof(bool))
+        {
+            return reader.GetBoolean();
+        }
+
+        if (type == typeof(byte))
+        {
+            return reader.GetByte();
+        }
+
+        if (type == typeof(sbyte))
+        {
+            return reader.GetSByte();
+        }
+
+        if (type == typeof(char))
+        {
+            return (char)reader.GetUInt16();
+        }
+
+        if (type == typeof(decimal))
+        {
+            return reader.GetDecimal();
+        }
+
+        if (type == typeof(double))
+        {
+            return reader.GetDouble();
+        }
+
+        if (type == typeof(float))
+        {
+            return reader.GetSingle();
+        }
+
+        if (type == typeof(int))
+        {
+            return reader.GetInt32();
+        }
+
+        if (type == typeof(uint))
+        {
+            return reader.GetUInt32();
+        }
+
+        if (type == typeof(long))
+        {
+            return reader.GetInt64();
+        }
+
+        if (type == typeof(ulong))
+        {
+            return reader.GetUInt64();
+        }
+
+        if (type == typeof(short))
+        {
+            return reader.GetInt16();
+        }
+
+        if (type == typeof(ushort))
+        {
+            return reader.GetUInt16();
+        }
+
+        if (type == typeof(string))
+        {
+            return reader.GetString();
+        }
+
+        if (type == typeof(Guid))
+        {
+            return reader.GetGuid();
+        }
+
+        if (type == typeof(DateTime))
+        {
+            return reader.GetDateTime();
+        }
+
+        if (type == typeof(DateTimeOffset))
+        {
+            return reader.GetDateTimeOffset();
+        }
 
         throw new JsonException($"Unsupported ID type: {type}");
     }

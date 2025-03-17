@@ -19,7 +19,11 @@ public class EnumConverter : JsonConverter
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        if (reader.TokenType == JsonToken.Null) return null;
+        if (reader.TokenType == JsonToken.Null)
+        {
+            return null;
+        }
+
         var value = reader.Value.ToString();
         foreach (var field in objectType.GetFields())
         {

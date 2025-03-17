@@ -20,21 +20,31 @@ Configure `FileStorage` using `Microsoft.Extensions.DependencyInjection` with th
 
 ```csharp
 services.AddFileStorage(c => c
-    .WithProvider("inMemory", builder =>
+    .RegisterProvider("inMemory", builder =>
     {
-        builder.UseInMemoryProvider("TestInMemory")
-            .WithLoggingBehavior()
-            .WithBehavior(p => new CustomBehavior(p))
-            .WithLifetime(ServiceLifetime.Transient);
+        builder.UseInMemory("TestInMemory")
+               .WithLogging()
+               .WithLifetime(ServiceLifetime.Transient);
     })
-    .WithProvider("local", builder =>
+    .RegisterProvider("local", builder =>
     {
-        builder.UseLocalProvider(
-            Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString()),
-            "TestLocal")
-            .WithLoggingBehavior()
-            .WithLifetime(ServiceLifetime.Singleton);
-    }, ServiceLifetime.Singleton));
+        builder.UseLocal(Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString()), "TestLocal")
+               .WithLogging()
+               .WithLifetime(ServiceLifetime.Singleton);
+    })
+    .RegisterProvider("network", builder =>
+    {
+        builder.UseWindowsNetwork(@"\\server\docs", "NetworkStorage", "username", "password", "domain")
+               .WithLogging()
+               .WithRetry(new RetryOptions { MaxRetries = 3 })
+               .WithLifetime(ServiceLifetime.Singleton);
+    })
+    .RegisterProvider("azureBlob", builder =>
+    {
+        builder.UseAzureBlob("connection-string", "container-name", "AzureBlobStorage")
+               .WithCaching(new CachingOptions { CacheDuration = TimeSpan.FromMinutes(10) })
+               .WithLifetime(ServiceLifetime.Scoped);
+    }));
 
 // Use the factory to resolve providers
 public class FileService
@@ -46,15 +56,15 @@ public class FileService
         this.factory = factory;
     }
 
-    public async Task<Result> ProcessFileAsync(string path, string providerName = "local")
+    public async Task<Result> ProcessFileAsync(string path)
     {
-        var provider = factory.CreateProvider(providerName);
+        var provider = factory.CreateProvider("local");
         return await provider.WriteFileAsync(path, new MemoryStream(Encoding.UTF8.GetBytes("Test content")), null, CancellationToken.None);
     }
 }
 ```
 
-This registers “inMemory” and “local” providers with behaviors and lifetimes, resolved by `IFileStorageFactory`.
+This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by `IFileStorageFactory`.
 
 ### Using Providers
 The `IFileStorageProvider` interface defines core file operations, returning `Result` or `Result<T>` for error handling and messaging. Use the factory-resolved provider to perform operations:
@@ -213,4 +223,4 @@ errorResult.Messages.ShouldContain("Directory does not exist");
 - Leverage Extensions: Use `FileStorageProviderExtensions` for advanced operations.
 - Handle Results: Check `Result.IsSuccess` and inspect `Messages` or `Errors`.
 - Report Progress: Use `IProgress<FileProgress>` for feedback.
-- Test Across Providers: Verify with `InMemoryFileStorageProvider`, `LocalFileStorageProvider`, and custom providers.
+- Test Across Providers: Verify with `InMemoryFileStorageProvider`, `LocalFileStorageProvider`, `NetworkFileStorageProvider`, `AzureBlobFileStorageProvider`, and custom providers.

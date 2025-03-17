@@ -17,19 +17,27 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
 /// </summary>
-public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
+public class LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
-    private readonly string rootPath;
-    private readonly TimeSpan lockTimeout;
+    private readonly string rootPath = Path.GetFullPath(rootPath);
+    private readonly TimeSpan lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30);
     private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = [];
     private bool disposed;
+    private bool initialized;
 
-    public LocalFileStorageProvider(string rootPath, string locationName, TimeSpan? lockTimeout = null)
-        : base(locationName)
+    private void Initialize()
     {
-        this.rootPath = Path.GetFullPath(rootPath);
-        this.lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30); // Default timeout of 30 seconds
-        Directory.CreateDirectory(this.rootPath); // Ensure root exists
+        if (this.initialized)
+        {
+            return;
+        }
+
+        if (ensureRoot && !Directory.Exists(this.rootPath))
+        {
+            Directory.CreateDirectory(this.rootPath); // Ensure root exists
+        }
+
+        this.initialized = true;
     }
 
     public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
@@ -60,6 +68,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for checking existence of file at '{path}'");
             }
 
+            this.Initialize();
             var exists = File.Exists(fullPath);
             if (!exists)
             {
@@ -107,6 +116,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for reading file at '{path}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullPath))
             {
                 return Result<Stream>.Failure()
@@ -169,6 +179,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for writing file at '{path}'");
             }
 
+            this.Initialize();
             var directory = Path.GetDirectoryName(fullPath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
@@ -255,6 +266,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for deleting file at '{path}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullPath))
             {
                 return Result.Failure()
@@ -316,6 +328,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for computing checksum at '{path}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullPath))
             {
                 return Result<string>.Failure()
@@ -378,6 +391,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for retrieving metadata at '{path}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullPath))
             {
                 return Result<FileMetadata>.Failure()
@@ -451,6 +465,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for setting metadata at '{path}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullPath))
             {
                 return Result.Failure()
@@ -511,6 +526,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         var fullPath = this.GetFullPath(path);
 
+        this.Initialize();
         if (!File.Exists(fullPath))
         {
             return Result<FileMetadata>.Failure()
@@ -575,6 +591,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         // Note: Directory listing doesn't lock individual files, so no semaphore is used here
         try
         {
+            this.Initialize();
             if (!Directory.Exists(fullPath))
             {
                 return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
@@ -646,6 +663,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for copying file to '{destinationPath}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullSource))
             {
                 return Result.Failure()
@@ -730,6 +748,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for renaming file to '{destinationPath}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullOld))
             {
                 return Result.Failure()
@@ -814,6 +833,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                     .WithMessage($"Failed to acquire lock for moving file to '{destinationPath}'");
             }
 
+            this.Initialize();
             if (!File.Exists(fullSource))
             {
                 return Result.Failure()
@@ -881,6 +901,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         // No file-specific lock needed for directory check
         try
         {
+            this.Initialize();
             var isDirectory = Directory.Exists(fullPath);
             if (!isDirectory)
             {
@@ -919,6 +940,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         // No file-specific lock needed for directory creation
         try
         {
+            this.Initialize();
             if (Directory.Exists(fullPath))
             {
                 return Task.FromResult(Result.Success()
@@ -970,6 +992,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         // No file-specific lock needed for directory deletion
         try
         {
+            this.Initialize();
             if (!Directory.Exists(fullPath))
             {
                 return Task.FromResult(Result.Failure()
@@ -1022,6 +1045,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
         // No file-specific lock needed for directory listing
         try
         {
+            this.Initialize();
             if (!Directory.Exists(fullPath))
             {
                 return Task.FromResult(Result<IEnumerable<string>>.Failure()
@@ -1060,6 +1084,7 @@ public class LocalFileStorageProvider : BaseFileStorageProvider, IDisposable
                 .WithMessage($"Cancelled checking health of local storage at '{this.LocationName}'");
         }
 
+        this.Initialize();
         if (!Directory.Exists(this.rootPath))
         {
             return Result.Failure()

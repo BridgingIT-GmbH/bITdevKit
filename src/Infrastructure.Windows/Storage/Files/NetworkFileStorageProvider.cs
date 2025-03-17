@@ -26,14 +26,11 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
     /// <summary>
     /// Initializes a new instance of NetworkFileStorageProvider with the specified network share path and impersonation service.
     /// </summary>
-    /// <param name="rootPath">The UNC path to the network share (e.g., \\server\share).</param>
     /// <param name="locationName">The logical name of the storage location.</param>
+    /// <param name="rootPath">The UNC path to the network share (e.g., \\server\share).</param>
     /// <param name="impersonationService">The Windows impersonation service to use.</param>
-    public NetworkFileStorageProvider(
-        string rootPath,
-        string locationName,
-        IWindowsImpersonationService impersonationService)
-        : base(rootPath, locationName)
+    public NetworkFileStorageProvider(string locationName, string rootPath, IWindowsImpersonationService impersonationService)
+        : base(locationName, rootPath, false)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -46,13 +43,13 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
     /// <summary>
     /// Initializes a new instance of NetworkFileStorageProvider with the specified network share path and credentials.
     /// </summary>
-    /// <param name="rootPath">The UNC path to the network share (e.g., \\server\share).</param>
     /// <param name="locationName">The logical name of the storage location.</param>
+    /// <param name="rootPath">The UNC path to the network share (e.g., \\server\share).</param>
     /// <param name="username">The username for authentication (e.g., domain\username).</param>
     /// <param name="password">The password for authentication.</param>
     /// <param name="domain">The domain for authentication (optional, defaults to the local machine).</param>
-    public NetworkFileStorageProvider(string rootPath, string locationName = null, string username = null, string password = null, string domain = null)
-        : this(rootPath, locationName, new WindowsImpersonationService(username, password, domain))
+    public NetworkFileStorageProvider(string locationName, string rootPath, string username = null, string password = null, string domain = null)
+        : this(locationName, rootPath, new WindowsImpersonationService(username, password, domain))
     {
     }
 

@@ -39,8 +39,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
         // Arrange & Act
         var provider = new NetworkFileStorageProvider(
-            this.path,
             "TestLocation",
+            this.path,
             this.impersonationService);
 
         // Assert
@@ -56,8 +56,8 @@ public class NetworkFileStorageProviderTests : IDisposable
         {
             // Arrange & Act - This might throw if credentials can't be validated
             var provider = new NetworkFileStorageProvider(
-                this.path,
                 "TestLocation",
+                this.path,
                 "user",
                 "pass",
                 "domain");
@@ -91,8 +91,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
             // Arrange
             var provider = new NetworkFileStorageProvider(
-                this.path,
                 "TestLocation",
+                this.path,
                 this.impersonationService);
 
             // Create a test file
@@ -131,8 +131,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
         // Arrange
         var provider = new NetworkFileStorageProvider(
-            this.path,
             "TestLocation",
+            this.path,
             this.impersonationService);
 
         // Create test files
@@ -158,8 +158,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
         // Arrange
         var provider = new NetworkFileStorageProvider(
-            this.path,
             "TestLocation",
+            this.path,
             this.impersonationService);
 
         // Act
@@ -190,8 +190,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
             // Arrange
             var provider = new NetworkFileStorageProvider(
-                this.path,
                 "TestLocation",
+                this.path,
                 this.impersonationService);
 
             var testFilePath = "content-test.txt";
@@ -234,8 +234,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
             // Arrange
             var provider = new NetworkFileStorageProvider(
-                this.path,
                 "TestLocation",
+                this.path,
                 this.impersonationService);
 
             var testFilePath = "write-test.txt";
@@ -284,8 +284,8 @@ public class NetworkFileStorageProviderTests : IDisposable
 
             // Create provider with real impersonation
             var provider = new NetworkFileStorageProvider(
-                this.path,
                 "TestLocation",
+                this.path,
                 impersonationService);
 
             // Create and read a file

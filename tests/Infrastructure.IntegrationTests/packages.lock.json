@@ -1936,6 +1936,7 @@
           "BridgingIT.DevKit.Common.Utilities.Xunit": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.Windows": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Azure.Cosmos": "[3.47.1, )",
           "Microsoft.EntityFrameworkCore.Relational": "[9.0.2, )",
@@ -2363,6 +2364,13 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "RabbitMQ.Client": "[6.8.1, 7.0.0)"
+        }
+      },
+      "BridgingIT.DevKit.Infrastructure.Windows": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
         }
       },
       "AspNetCore.HealthChecks.AzureStorage": {

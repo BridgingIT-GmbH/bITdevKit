@@ -24,16 +24,6 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
             this.fixture.ServiceProvider.GetRequiredService<ILoggerFactory>());
     }
 
-    protected override FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override FileStorageFactory CreateFactory(IServiceProvider serviceProvider = null)
-    {
-        throw new NotImplementedException();
-    }
-
     [Fact]
     public override async Task ExistsAsync_ExistingFile_FileFound()
     {

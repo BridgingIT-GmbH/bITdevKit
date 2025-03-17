@@ -12,8 +12,7 @@ using System.Security.Cryptography;
 public abstract class FileStorageTestsBase
 {
     protected abstract IFileStorageProvider CreateProvider();
-    protected abstract FileStorageBuilder CreateBuilder(IServiceProvider serviceProvider = null);
-    protected abstract FileStorageFactory CreateFactory(IServiceProvider serviceProvider = null);
+    //protected abstract FileStorageFactory CreateFactory(IServiceProvider serviceProvider = null);
 
     public virtual async Task ExistsAsync_ExistingFile_FileFound()
     {

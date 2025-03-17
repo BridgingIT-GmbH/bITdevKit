@@ -13,7 +13,7 @@ using BridgingIT.DevKit.Common;
 /// An in-memory implementation of IFileStorageProvider for testing or ephemeral storage, supporting both files and directories.
 /// Maintains a dictionary of files and a hash set of directories, ensuring thread-safe operations and hierarchical structure.
 /// </summary>
-public class InMemoryFileStorageProvider(string locationName = "InMemory")
+public class InMemoryFileStorageProvider(string locationName)
     : BaseFileStorageProvider(locationName)
 {
     private readonly Dictionary<string, byte[]> files = [];

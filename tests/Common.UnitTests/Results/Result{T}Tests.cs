@@ -865,7 +865,10 @@ public class ResultValueTests
                     foreach (var person in persons)
                     {
                         var exists = await database.PersonExistsAsync(person.Email, ct);
-                        if (!exists || !person.Locations.Any()) return false;
+                        if (!exists || !person.Locations.Any())
+                        {
+                            return false;
+                        }
                     }
 
                     return true;

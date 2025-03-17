@@ -1868,6 +1868,13 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.2, )"
         }
       },
+      "BridgingIT.DevKit.Infrastructure.Windows": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "AspNetCore.HealthChecks.SqlServer": {
         "type": "CentralTransitive",
         "requested": "[9.0.0, )",

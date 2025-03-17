@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
-using Microsoft.Extensions.DependencyInjection;
 
 public interface IFileStorageFactory
 {
@@ -14,7 +13,7 @@ public interface IFileStorageFactory
 
     IFileStorageProvider CreateProvider<TImplementation>() where TImplementation : IFileStorageProvider;
 
-    IFileStorageFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory);
+    IFileStorageFactory RegisterProvider(string name, Action<FileStorageFactory.FileStorageBuilder> configure);
 
-    IFileStorageFactory WithProvider(string name, Action<FileStorageBuilder> configure, ServiceLifetime lifetime);
+    IFileStorageFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory);
 }

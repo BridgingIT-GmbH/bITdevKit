@@ -53,7 +53,9 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
     protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
+        {
             return Task.CompletedTask;
+        }
 
         var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
         {

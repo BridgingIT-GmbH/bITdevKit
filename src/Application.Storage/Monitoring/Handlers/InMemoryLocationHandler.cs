@@ -19,7 +19,7 @@ public class InMemoryLocationHandler(
 {
     private readonly InMemoryFileStorageProvider inMemoryProvider = provider as InMemoryFileStorageProvider ?? throw new ArgumentException("InMemoryLocationHandler requires InMemoryFileStorageProvider.");
 
-    public override async Task StartAsync(CancellationToken token)
+    public override async Task StartAsync(CancellationToken token = default)
     {
         await base.StartAsync(token);
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
@@ -34,7 +34,7 @@ public class InMemoryLocationHandler(
         }
     }
 
-    public override async Task PauseAsync()
+    public override async Task PauseAsync(CancellationToken token = default)
     {
         await base.PauseAsync();
         if (!this.isPaused)
@@ -45,7 +45,7 @@ public class InMemoryLocationHandler(
         }
     }
 
-    public override async Task ResumeAsync()
+    public override async Task ResumeAsync(CancellationToken token = default)
     {
         await base.ResumeAsync();
         if (this.isPaused)
@@ -56,14 +56,14 @@ public class InMemoryLocationHandler(
         }
     }
 
-    public override async Task StopAsync(CancellationToken token)
+    public override async Task StopAsync(CancellationToken token = default)
     {
         this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
         this.isPaused = false;
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(CancellationToken token)
+    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default)
     {
         var context = new ScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
@@ -123,6 +123,16 @@ public class InMemoryLocationHandler(
 
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
+
+        if (waitForProcessing && timeout != TimeSpan.Zero)
+        {
+            await this.WaitForQueueEmptyAsync(timeout);
+        }
+        else if (waitForProcessing)
+        {
+            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5)); // Default timeout if none specified
+        }
+
         return context;
     }
 

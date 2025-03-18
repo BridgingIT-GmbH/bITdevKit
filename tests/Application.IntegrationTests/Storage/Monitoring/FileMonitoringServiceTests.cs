@@ -386,25 +386,25 @@ public class FileMonitoringServiceTests
         var serviceProvider = services.BuildServiceProvider();
         var sut = serviceProvider.GetRequiredService<IFileMonitoringService>();
         var store = serviceProvider.GetRequiredService<IFileEventStore>();
-        var handler = serviceProvider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "Docs");
+        //var handler = serviceProvider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "Docs");
 
         // Act: Scan the large tree structure
         await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
-        var scanContext = await sut.ScanLocationAsync("Docs", CancellationToken.None);
-        Console.WriteLine($"Scan detected {scanContext.Events.Count} changes"); // Assuming DetectedChanges
-        await handler.WaitForQueueEmptyAsync(TimeSpan.FromSeconds(90)); // Wait up to 90s for all events as the event processing (from queue) runs in the background
+        var scanContext = await sut.ScanLocationAsync("Docs", waitForProcessing: true, timeout: TimeSpan.FromSeconds(90), CancellationToken.None);
+        //await handler.WaitForQueueEmptyAsync(TimeSpan.FromSeconds(90)); // Wait up to 90s for all events as the event processing (from queue) runs in the background
         stopwatch.Stop();
+        Console.WriteLine($"Scan detected {scanContext.Events.Count} changes"); // Assuming DetectedChanges
 
         // Assert
         scanContext.Events.Count.ShouldBe(actualFiles); // Match actual files on disk
         var allEvents = await store.GetFileEventsForLocationAsync("Docs");
-        allEvents.Count.ShouldBe(actualFiles); // Match actual files on disk (should be 7800)
+        allEvents.Count.ShouldBe(actualFiles); 
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
         Console.WriteLine($"Scanned {allEvents.Count} files in {stopwatch.ElapsedMilliseconds}ms");
 
         var scanTimeMs = stopwatch.ElapsedMilliseconds;
-        scanTimeMs.ShouldBeLessThan(15000); // Adjusted threshold: 15s for 7800 files
+        scanTimeMs.ShouldBeLessThan(15000); 
 
         // Cleanup (optional)
         // await sut.StopAsync(CancellationToken.None);

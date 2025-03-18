@@ -14,11 +14,12 @@ public interface ILocationHandler
 {
     IFileStorageProvider Provider { get; }
     LocationOptions Options { get; }
-    Task StartAsync(CancellationToken token);
-    Task StopAsync(CancellationToken token);
-    Task<ScanContext> ScanAsync(CancellationToken token);
-    Task PauseAsync();
-    Task ResumeAsync();
+    Task StartAsync(CancellationToken token = default);
+    Task StopAsync(CancellationToken token = default);
+    Task<ScanContext> ScanAsync(CancellationToken token = default);
+    Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default);
+    Task PauseAsync(CancellationToken token = default);
+    Task ResumeAsync(CancellationToken token = default);
     Task<LocationStatus> GetStatusAsync();
     int GetQueueSize();
     Task<bool> IsQueueEmptyAsync();

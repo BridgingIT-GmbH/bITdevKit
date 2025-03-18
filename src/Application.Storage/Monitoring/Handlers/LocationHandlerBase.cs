@@ -85,7 +85,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous start operation.</returns>
-    public virtual Task StartAsync(CancellationToken token)
+    public virtual Task StartAsync(CancellationToken token = default)
     {
         this.loggerTyped.LogInformationStartingHandler(this.options.LocationName);
         this.cts = new CancellationTokenSource();
@@ -101,7 +101,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    public virtual async Task StopAsync(CancellationToken token)
+    public virtual async Task StopAsync(CancellationToken token = default)
     {
         this.loggerTyped.LogInformationStoppingHandler(this.options.LocationName);
         //this.cts.Cancel();
@@ -121,14 +121,27 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the scan if needed.</param>
     /// <returns>A ScanContext object with the scan results.</returns>
-    public abstract Task<ScanContext> ScanAsync(CancellationToken token);
+    public virtual async Task<ScanContext> ScanAsync(CancellationToken token = default)
+    {
+        return await this.ScanAsync(waitForProcessing: false, timeout: TimeSpan.Zero, token: token);
+    }
+
+    /// <summary>
+    /// Performs an on-demand scan of the location asynchronously.
+    /// Detects changes by comparing current state with stored events and enqueues them.
+    /// </summary>
+    /// <param name="waitForProcessing">Indicates whether to wait for the scan to complete before returning.</param>
+    /// <param name="timeout">Specifies the maximum duration to wait for the scan to complete.</param>
+    /// <param name="token">Used to signal cancellation of the scan operation if needed.</param>
+    /// <returns>Provides a task that, when completed, contains the context of the scan.</returns>
+    public abstract Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.
     /// Temporarily halts the processing pipeline without stopping real-time watching.
     /// </summary>
     /// <returns>A task representing the asynchronous pause operation.</returns>
-    public virtual Task PauseAsync()
+    public virtual Task PauseAsync(CancellationToken token = default)
     {
         this.loggerTyped.LogInformationPausingHandler(this.options.LocationName);
         this.isPaused = true;
@@ -141,7 +154,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// Restarts the processing pipeline if previously paused.
     /// </summary>
     /// <returns>A task representing the asynchronous resume operation.</returns>
-    public virtual Task ResumeAsync()
+    public virtual Task ResumeAsync(CancellationToken token = default)
     {
         this.loggerTyped.LogInformationResumingHandler(this.options.LocationName);
         this.isPaused = false;
@@ -188,11 +201,14 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// <returns>A task that completes when the queue is empty or the timeout is reached.</returns>
     public async Task WaitForQueueEmptyAsync(TimeSpan timeout)
     {
-        var start = DateTimeOffset.UtcNow;
-
-        while (this.eventQueue.Count > 0 && DateTimeOffset.UtcNow - start < timeout)
+        var startTime = DateTimeOffset.UtcNow;
+        while (!this.eventQueue.IsCompleted && this.eventQueue.Count > 0)
         {
-            await Task.Delay(100);
+            if (DateTimeOffset.UtcNow - startTime >= timeout && timeout != TimeSpan.Zero)
+            {
+                throw new TimeoutException($"Queue did not empty within {timeout.TotalSeconds} seconds.");
+            }
+            await Task.Delay(100); // Poll every 100ms
         }
     }
 

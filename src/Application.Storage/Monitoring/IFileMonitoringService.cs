@@ -39,7 +39,19 @@ public interface IFileMonitoringService
     /// <param name="locationName">The name of the location to scan (e.g., "Docs").</param>
     /// <param name="token">The cancellation token to stop the scan if needed.</param>
     /// <returns>A ScanContext object containing the results of the scan operation.</returns>
-    Task<ScanContext> ScanLocationAsync(string locationName, CancellationToken token);
+    Task<ScanContext> ScanLocationAsync(string locationName, CancellationToken token = default);
+
+    /// <summary>
+    /// Triggers an on-demand scan for a specific location asynchronously.
+    /// Compares the current state with historical data to detect changes and enqueue events.
+    /// </summary>
+    /// <param name="locationName">Specifies the name of the location to be scanned.</param>
+    /// <param name="waitForProcessing">Indicates whether to wait for the scan to complete before returning.</param>
+    /// <param name="timeout">Sets the maximum duration to wait for the scan to complete.</param>
+    /// <param name="token">Allows for cancellation of the scan operation if needed.</param>
+    /// <returns>Returns the context of the scan, which includes details about the scan events.</returns>
+    /// <exception cref="KeyNotFoundException">Thrown when no handler is found for the specified location name.</exception>
+    Task<ScanContext> ScanLocationAsync(string locationName, bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default);
 
     /// <summary>
     /// Pauses monitoring for a specific location asynchronously.

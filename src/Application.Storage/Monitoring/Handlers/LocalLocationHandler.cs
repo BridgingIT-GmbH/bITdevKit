@@ -32,7 +32,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
-    public override async Task StartAsync(CancellationToken token)
+    public override async Task StartAsync(CancellationToken token = default)
     {
         await base.StartAsync(token);
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
@@ -45,7 +45,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
-    public override async Task PauseAsync()
+    public override async Task PauseAsync(CancellationToken token = default)
     {
         if (this.fileSystemWatcher != null && !this.isPaused)
         {
@@ -54,7 +54,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
-    public override async Task ResumeAsync()
+    public override async Task ResumeAsync(CancellationToken token = default)
     {
         if (this.fileSystemWatcher != null && this.isPaused)
         {
@@ -63,7 +63,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
-    public override async Task StopAsync(CancellationToken token)
+    public override async Task StopAsync(CancellationToken token = default)
     {
         if (this.fileSystemWatcher != null)
         {
@@ -75,7 +75,7 @@ public class LocalLocationHandler : LocationHandlerBase
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(CancellationToken token)
+    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default)
     {
         var context = new ScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
@@ -136,6 +136,16 @@ public class LocalLocationHandler : LocationHandlerBase
 
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
+
+        if (waitForProcessing && timeout != TimeSpan.Zero)
+        {
+            await this.WaitForQueueEmptyAsync(timeout);
+        }
+        else if (waitForProcessing)
+        {
+            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5)); // Default timeout if none specified
+        }
+
         return context;
     }
 

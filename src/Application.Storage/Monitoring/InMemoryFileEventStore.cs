@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 /// </summary>
 public class InMemoryFileEventStore : IFileEventStore
 {
-    private readonly ConcurrentDictionary<string, List<FileEvent>> events = new();
+    private readonly ConcurrentDictionary<string, List<FileEvent>> events = [];
 
     public Task<FileEvent> GetFileEventAsync(string filePath)
     {
@@ -43,7 +43,7 @@ public class InMemoryFileEventStore : IFileEventStore
     {
         this.events.AddOrUpdate(
             fileEvent.FilePath,
-            _ => new List<FileEvent> { fileEvent },
+            _ => [fileEvent],
             (_, list) => { list.Add(fileEvent); return list; });
         return Task.CompletedTask;
     }

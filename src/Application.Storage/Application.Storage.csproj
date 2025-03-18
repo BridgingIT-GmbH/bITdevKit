@@ -24,10 +24,4 @@
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Files\Behaviors\" />
-    <Folder Include="Files\Processors\" />
-    <Folder Include="Monitoring\Processors\" />
-  </ItemGroup>
-
 </Project>

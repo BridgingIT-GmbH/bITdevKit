@@ -18,7 +18,7 @@ public class LocationOptions(string name)
     public bool UseOnDemandOnly { get; set; }
     public RateLimitOptions RateLimit { get; } = new();
     public List<Type> LocationProcessorBehaviors { get; } = [];
-    public List<ProcessorConfig> ProcessorConfigs { get; } = [];
+    public List<ProcessorConfiguration> ProcessorConfigs { get; } = [];
 
     public LocationOptions WithProcessorBehavior<TBehavior>() where TBehavior : IProcessorBehavior
     {
@@ -26,24 +26,32 @@ public class LocationOptions(string name)
         return this;
     }
 
-    public ProcessorConfig UseProcessor<TProcessor>() where TProcessor : IFileEventProcessor
+    public ProcessorConfiguration UseProcessor<TProcessor>(Action<ProcessorConfiguration> configure = null)
+        where TProcessor : IFileEventProcessor
     {
-        var config = new ProcessorConfig { ProcessorType = typeof(TProcessor) };
+        var config = new ProcessorConfiguration { ProcessorType = typeof(TProcessor) };
+        configure?.Invoke(config);
         this.ProcessorConfigs.Add(config);
 
         return config;
     }
 }
 
-public class ProcessorConfig
+public class ProcessorConfiguration
 {
     public Type ProcessorType { get; set; }
-
     public List<Type> BehaviorTypes { get; } = [];
+    public Action<object> Configure { get; set; } // Delegate to configure the processor instance
 
-    public ProcessorConfig WithBehavior<TBehavior>() where TBehavior : IProcessorBehavior
+    public ProcessorConfiguration WithBehavior<TBehavior>() where TBehavior : IProcessorBehavior
     {
         this.BehaviorTypes.Add(typeof(TBehavior));
+        return this;
+    }
+
+    public ProcessorConfiguration WithConfiguration(Action<object> configure)
+    {
+        this.Configure = configure;
         return this;
     }
 }
@@ -55,7 +63,7 @@ public class RateLimitOptions
     public int MaxBurstSize { get; set; } = 1000;
 }
 
-internal class RateLimiter(int eventsPerSecond, int maxBurstSize)
+public class RateLimiter(int eventsPerSecond, int maxBurstSize)
 {
     private readonly double tokensPerSecond = eventsPerSecond;
     private double currentTokens = maxBurstSize;

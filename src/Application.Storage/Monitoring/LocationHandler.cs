@@ -294,13 +294,20 @@ public class LocationHandler
 
     private List<IFileEventProcessor> BuildProcessorChain(LocationOptions options)
     {
+        return this.BuildProcessorChainWithConfig(options);
+    }
+
+    internal List<IFileEventProcessor> BuildProcessorChainWithConfig(LocationOptions options)
+    {
         var chain = new List<IFileEventProcessor>();
         foreach (var processorConfig in options.ProcessorConfigs)
         {
-            if (Factory.Create(processorConfig.ProcessorType, this.serviceProvider) is IFileEventProcessor processor)
+            var processor = Factory.Create(processorConfig.ProcessorType, this.serviceProvider) as IFileEventProcessor;
+            if (processor != null)
             {
                 processor.IsEnabled = true;
-                // Apply location-level behaviors
+                processorConfig.Configure?.Invoke(processor); // Apply configuration
+
                 foreach (var behaviorType in options.LocationProcessorBehaviors)
                 {
                     if (Factory.Create(behaviorType, this.serviceProvider) is IProcessorBehavior behavior)
@@ -308,7 +315,6 @@ public class LocationHandler
                         processor = new BehaviorDecorator(processor, behavior);
                     }
                 }
-                // Apply per-processor behaviors
                 foreach (var behaviorType in processorConfig.BehaviorTypes)
                 {
                     if (Factory.Create(behaviorType, this.serviceProvider) is IProcessorBehavior behavior)
@@ -333,11 +339,11 @@ public class LocationHandler
 
             await this.rateLimiter.WaitForTokenAsync(token);
             var context = new ProcessingContext { FileEvent = fileEvent };
+            context.SetItem("StorageProvider", this.provider); // Add provider to context
 
             foreach (var processor in this.processors.Where(p => p.IsEnabled))
             {
                 var result = await this.ExecuteProcessorAsync(processor, context, token);
-
                 await this.store.StoreEventAsync(fileEvent);
                 await this.store.StoreProcessingResultAsync(new ProcessingResult
                 {

@@ -38,17 +38,3 @@ public interface IFileEventProcessor
     /// <returns>A task representing the asynchronous processing operation.</returns>
     Task ProcessAsync(ProcessingContext context, CancellationToken token);
 }
-
-/// <summary>
-/// Represents the context for processing a FileEvent, passed through the processor chain.
-/// </summary>
-public class ProcessingContext
-{
-    /// <summary>
-    /// Gets or sets the FileEvent being processed.
-    /// Contains details like EventType, FilePath, and Checksum.
-    /// </summary>
-    public FileEvent FileEvent { get; set; }
-
-    // Additional properties can be added later (e.g., retry count, custom data)
-}

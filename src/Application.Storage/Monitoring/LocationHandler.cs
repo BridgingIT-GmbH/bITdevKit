@@ -4,6 +4,7 @@ namespace BridgingIT.DevKit.Application.FileMonitoring;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 /// Manages file change detection and event processing for a specific storage location.
 /// Integrates real-time watching, on-demand scanning, and a processor chain with rate limiting.
 /// </summary>
+[DebuggerDisplay("Name={options.Name}")]
 public class LocationHandler
 {
     private readonly ILogger<LocationHandler> logger;
@@ -30,6 +32,7 @@ public class LocationHandler
     private CancellationTokenSource cts;
     private Task processingTask;
     private bool isPaused;
+    private FileSystemWatcher fileSystemWatcher;
 
     /// <summary>
     /// Initializes a new instance of the LocationHandler.
@@ -78,7 +81,7 @@ public class LocationHandler
         this.loggerTyped.LogInformationStartingHandler(this.options.Name);
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
-            // Placeholder for real-time watching setup (e.g., FileSystemWatcher)
+            this.SetupFileSystemWatcher();
             this.loggerTyped.LogInformationRealTimeStarted(this.options.Name);
         }
 
@@ -102,6 +105,13 @@ public class LocationHandler
     {
         this.loggerTyped.LogInformationStoppingHandler(this.options.Name);
         this.cts.Cancel();
+
+        if (this.fileSystemWatcher != null)
+        {
+            this.fileSystemWatcher.EnableRaisingEvents = false;
+            this.fileSystemWatcher.Dispose();
+            this.fileSystemWatcher = null;
+        }
 
         if (this.processingTask != null)
         {
@@ -290,6 +300,85 @@ public class LocationHandler
         }
         processor.IsEnabled = false;
         this.loggerTyped.LogInformationProcessorDisabled(this.options.Name, processorName);
+        return Task.CompletedTask;
+    }
+
+    private void SetupFileSystemWatcher()
+    {
+        if (this.provider is LocalFileStorageProvider localProvider)
+        {
+            this.fileSystemWatcher = new FileSystemWatcher
+            {
+                Path = localProvider.RootPath,
+                Filter = this.options.FilePattern,
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
+                IncludeSubdirectories = true
+            };
+
+            this.fileSystemWatcher.Created += async (s, e) => await this.OnFileCreated(e);
+            this.fileSystemWatcher.Changed += async (s, e) => await this.OnFileChanged(e);
+            this.fileSystemWatcher.Deleted += async (s, e) => await this.OnFileDeleted(e);
+            this.fileSystemWatcher.EnableRaisingEvents = true;
+        }
+    }
+
+    private async Task OnFileCreated(FileSystemEventArgs e)
+    {
+        if (this.provider is LocalFileStorageProvider localProvider)
+        {
+            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
+            var metadata = await this.provider.GetFileMetadataAsync(relativePath, CancellationToken.None);
+            var checksum = await this.provider.GetChecksumAsync(relativePath, CancellationToken.None);
+            var fileEvent = new FileEvent
+            {
+                LocationName = this.options.Name,
+                FilePath = relativePath,
+                EventType = FileEventType.Added,
+                FileSize = metadata.Value.Length,
+                LastModified = metadata.Value.LastModified,
+                Checksum = checksum.Value,
+                DetectionTime = DateTimeOffset.UtcNow
+            };
+            this.eventQueue.Add(fileEvent);
+        }
+    }
+
+    private async Task OnFileChanged(FileSystemEventArgs e)
+    {
+        if (this.provider is LocalFileStorageProvider localProvider)
+        {
+            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
+            var metadata = await this.provider.GetFileMetadataAsync(relativePath, CancellationToken.None);
+            var checksum = await this.provider.GetChecksumAsync(relativePath, CancellationToken.None);
+            var fileEvent = new FileEvent
+            {
+                LocationName = this.options.Name,
+                FilePath = relativePath,
+                EventType = FileEventType.Changed,
+                FileSize = metadata.Value.Length,
+                LastModified = metadata.Value.LastModified,
+                Checksum = checksum.Value,
+                DetectionTime = DateTimeOffset.UtcNow
+            };
+            this.eventQueue.Add(fileEvent);
+        }
+    }
+
+    private Task OnFileDeleted(FileSystemEventArgs e)
+    {
+        if (this.provider is LocalFileStorageProvider localProvider)
+        {
+            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
+            var fileEvent = new FileEvent
+            {
+                LocationName = this.options.Name,
+                FilePath = relativePath,
+                EventType = FileEventType.Deleted,
+                DetectionTime = DateTimeOffset.UtcNow
+            };
+            this.eventQueue.Add(fileEvent);
+        }
+
         return Task.CompletedTask;
     }
 

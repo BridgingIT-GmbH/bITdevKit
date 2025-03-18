@@ -22,6 +22,13 @@ public class InMemoryFileEventStore : IFileEventStore
             : null);
     }
 
+    public Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath)
+    {
+        return Task.FromResult(this.events.TryGetValue(filePath, out var fileEvents)
+            ? fileEvents.OrderByDescending(e => e.DetectionTime).AsEnumerable()
+            : null);
+    }
+
     public Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
     {
         var result = this.events.Values.SelectMany(e => e).Where(e => e.LocationName == locationName).ToList();

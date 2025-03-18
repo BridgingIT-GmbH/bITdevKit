@@ -40,7 +40,9 @@ public class LocationOptions(string name)
 public class ProcessorConfiguration
 {
     public Type ProcessorType { get; set; }
+
     public List<Type> BehaviorTypes { get; } = [];
+
     public Action<object> Configure { get; set; } // Delegate to configure the processor instance
 
     public ProcessorConfiguration WithBehavior<TBehavior>() where TBehavior : IProcessorBehavior

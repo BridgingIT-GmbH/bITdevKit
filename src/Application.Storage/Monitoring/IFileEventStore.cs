@@ -15,6 +15,13 @@ public interface IFileEventStore
     Task<FileEvent> GetFileEventAsync(string filePath);
 
     /// <summary>
+    /// Retrieves a collection of file events related to a specified file.
+    /// </summary>
+    /// <param name="filePath">Specifies the location of the file for which events are being retrieved.</param>
+    /// <returns>Returns a task that resolves to an enumerable collection of file events.</returns>
+    Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath);
+
+    /// <summary>
     /// Retrieves all FileEvents for a specific location.
     /// </summary>
     /// <param name="locationName">The name of the monitored location.</param>

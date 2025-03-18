@@ -3,33 +3,37 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Application.FileMonitoring;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 /// <summary>
 /// Implements IFileEventStore using EF Core, storing FileEvent instances as FileEventEntity in a DbContext.
 /// Requires a TContext that implements IFileMonitoringContext for compatibility with existing application DbContexts.
 /// </summary>
 /// <typeparam name="TContext">The DbContext type, must implement IFileMonitoringContext.</typeparam>
-public class EntityFrameworkFileEventStore<TContext> : IFileEventStore
+/// <remarks>
+/// Initializes a new instance of the EntityFrameworkFileEventStore with the specified DbContext.
+/// </remarks>
+/// <param name="context">The DbContext instance implementing IFileMonitoringContext.</param>
+public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEventStore
     where TContext : DbContext, IFileMonitoringContext
 {
-    private readonly TContext context;
-
-    /// <summary>
-    /// Initializes a new instance of the EntityFrameworkFileEventStore with the specified DbContext.
-    /// </summary>
-    /// <param name="context">The DbContext instance implementing IFileMonitoringContext.</param>
-    public EntityFrameworkFileEventStore(TContext context)
-    {
-        this.context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<FileEvent> GetFileEventAsync(string filePath)
     {
-        var entity = await context.FileEvents
+        var entity = await this.context.FileEvents
             .OrderByDescending(e => e.DetectionTime)
             .FirstOrDefaultAsync(e => e.FilePath == filePath);
-        return MapToDomain(entity);
+
+        return this.MapToDomain(entity);
+    }
+
+    public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath)
+    {
+        var entities = await this.context.FileEvents
+            .Where(e => e.FilePath == filePath)
+            .OrderByDescending(e => e.DetectionTime).ToListAsync();
+
+        return entities.Select(this.MapToDomain);
     }
 
     /// <summary>
@@ -39,10 +43,10 @@ public class EntityFrameworkFileEventStore<TContext> : IFileEventStore
     /// <returns>A list of file events mapped to the domain model.</returns>
     public async Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
     {
-        var entities = await context.FileEvents
+        var entities = await this.context.FileEvents
             .Where(e => e.LocationName == locationName)
             .ToListAsync();
-        return entities.Select(MapToDomain).ToList();
+        return entities.Select(this.MapToDomain).ToList();
     }
 
     /// <summary>
@@ -52,7 +56,7 @@ public class EntityFrameworkFileEventStore<TContext> : IFileEventStore
     /// <returns>A list of file paths that are currently present at the specified location.</returns>
     public async Task<List<string>> GetPresentFilesAsync(string locationName)
     {
-        return await context.FileEvents
+        return await this.context.FileEvents
             .Where(e => e.LocationName == locationName)
             .GroupBy(e => e.FilePath)
             .Select(g => new
@@ -72,9 +76,9 @@ public class EntityFrameworkFileEventStore<TContext> : IFileEventStore
     /// <returns>This method does not return a value.</returns>
     public async Task StoreEventAsync(FileEvent fileEvent)
     {
-        var entity = MapToEntity(fileEvent);
-        context.FileEvents.Add(entity);
-        await context.SaveChangesAsync();
+        var entity = this.MapToEntity(fileEvent);
+        this.context.FileEvents.Add(entity);
+        await this.context.SaveChangesAsync();
     }
 
     /// <summary>

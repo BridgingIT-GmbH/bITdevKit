@@ -115,6 +115,40 @@ public class ProcessorTests
     }
 
     [Fact]
+    public async Task LoggingProcessorBehavior_LogsBeforeAndAfterProcessing()
+    {
+        // Arrange
+        var logger = new TestLogger<LoggingProcessorBehavior>();
+        var sut = new LoggingProcessorBehavior(logger);
+        var fileEvent = new FileEvent
+        {
+            LocationName = "Docs",
+            FilePath = "test.txt",
+            EventType = FileEventType.Added
+        };
+        var context = new ProcessingContext(fileEvent);
+        var successResult = Result<bool>.Success(true);
+        var failureResult = Result<bool>.Failure().WithError(new ExceptionError(new Exception("Failed")));
+
+        // Act - Success Case
+        await sut.BeforeProcessAsync(context, CancellationToken.None);
+        await sut.AfterProcessAsync(context, successResult, CancellationToken.None);
+
+        // Assert - Success Case
+        logger.Messages.ShouldContain(m => m.Contains("starting processing") && m.Contains("test.txt"));
+        logger.Messages.ShouldContain(m => m.Contains("completed processing") && m.Contains("test.txt"));
+
+        // Act - Failure Case
+        logger.Messages.Clear();
+        await sut.BeforeProcessAsync(context, CancellationToken.None);
+        await sut.AfterProcessAsync(context, failureResult, CancellationToken.None);
+
+        // Assert - Failure Case
+        logger.Messages.ShouldContain(m => m.Contains("starting processing") && m.Contains("test.txt"));
+        logger.Messages.ShouldContain(m => m.Contains("failed processing") && m.Contains("Failed"));
+    }
+
+    [Fact]
     public async Task LocationHandler_ProcessesEventWithChain()
     {
         // Arrange
@@ -150,12 +184,10 @@ public class ProcessorTests
 
         // Act
         await sut.StartAsync(CancellationToken.None);
-
-        // Using reflection to access private eventQueue for testing purposes
         var eventQueueField = typeof(LocationHandler).GetField("eventQueue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         var eventQueue = eventQueueField.GetValue(sut) as BlockingCollection<FileEvent>;
         eventQueue.Add(fileEvent); // Simulate event
-        await Task.Delay(300); // Allow processing
+        await Task.Delay(500); // Allow processing
         //await sut.StopAsync(CancellationToken.None);
 
         // Assert
@@ -164,6 +196,42 @@ public class ProcessorTests
         var storedEvent = await store.GetFileEventAsync("test.txt");
         storedEvent.ShouldNotBeNull();
         storedEvent.FilePath.ShouldBe("test.txt");
+    }
+
+    [Fact]
+    public void FluentApi_RegistersComponentsCorrectly()
+    {
+        // Arrange
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                //.WithBehavior<LoggingBehavior>()
+                .UseLocal("Docs", "C:\\Docs", options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.WithProcessorBehavior<LoggingProcessorBehavior>();
+                    options.UseProcessor<FileLoggerProcessor>();
+                    options.UseProcessor<FileMoverProcessor>(config =>
+                        config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = "C:\\MovedDocs"))
+                        .WithBehavior<RetryProcessorBehavior>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+
+        // Act
+        var monitoringService = provider.GetService<IFileMonitoringService>();
+        var handlers = provider.GetServices<LocationHandler>();
+        //var behaviors = provider.GetServices<IMonitoringBehavior>();
+        var store = provider.GetService<IFileEventStore>();
+
+        // Assert
+        monitoringService.ShouldNotBeNull();
+        handlers.ShouldHaveSingleItem();
+        handlers.First().Options.Name.ShouldBe("Docs");
+        //behaviors.ShouldContain(b => b.GetType() == typeof(LoggingProcessorBehavior));
+        store.ShouldNotBeNull();
+        store.ShouldBeOfType<InMemoryFileEventStore>();
     }
 }
 

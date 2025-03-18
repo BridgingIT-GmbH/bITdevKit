@@ -2,7 +2,6 @@
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,12 +20,12 @@ using Microsoft.Extensions.Logging;
 /// <param name="behaviors">The global monitoring behaviors for scan observability.</param>
 public class FileMonitoringService(
     ILogger<FileMonitoringService> logger,
-    IEnumerable<LocationHandler> handlers,
+    IEnumerable<LocationHandler> handlers = null,
     IEnumerable<IMonitoringBehavior> behaviors = null) : IFileMonitoringService
 {
     private readonly ILogger<FileMonitoringService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly TypedLogger loggerTyped = new TypedLogger(logger); // Strongly-typed logger for efficiency
-    private readonly ConcurrentDictionary<string, LocationHandler> handlers = [.. handlers?.ToDictionary(h => h.Options.Name) ?? throw new ArgumentNullException(nameof(handlers))];
+    private readonly IEnumerable<LocationHandler> handlers = handlers ?? [];
     private readonly IEnumerable<IMonitoringBehavior> behaviors = behaviors ?? [];
     private bool isStarted = false;
 
@@ -44,8 +43,8 @@ public class FileMonitoringService(
             return;
         }
 
-        this.loggerTyped.LogInformationStartingService(this.handlers.Count);
-        foreach (var handler in this.handlers.Values)
+        this.loggerTyped.LogInformationStartingService(this.handlers.Count());
+        foreach (var handler in this.handlers)
         {
             await handler.StartAsync(token);
         }
@@ -67,8 +66,8 @@ public class FileMonitoringService(
             return;
         }
 
-        this.loggerTyped.LogInformationStoppingService(this.handlers.Count);
-        foreach (var handler in this.handlers.Values)
+        this.loggerTyped.LogInformationStoppingService(this.handlers.Count());
+        foreach (var handler in this.handlers)
         {
             await handler.StopAsync(token);
         }
@@ -85,7 +84,8 @@ public class FileMonitoringService(
     /// <returns>A ScanContext object containing the results of the scan operation.</returns>
     public async Task<ScanContext> ScanLocationAsync(string locationName, CancellationToken token)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -114,7 +114,8 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous pause operation.</returns>
     public async Task PauseLocationAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -132,7 +133,8 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous resume operation.</returns>
     public async Task ResumeLocationAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -151,7 +153,8 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous restart operation.</returns>
     public async Task RestartLocationAsync(string locationName, CancellationToken token)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -170,7 +173,8 @@ public class FileMonitoringService(
     /// <returns>A LocationStatus object with the location's current state.</returns>
     public async Task<LocationStatus> GetLocationStatusAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -189,7 +193,7 @@ public class FileMonitoringService(
         var statuses = new Dictionary<string, LocationStatus>();
         foreach (var handler in this.handlers)
         {
-            statuses[handler.Key] = await handler.Value.GetStatusAsync();
+            statuses[handler.Options.Name] = await handler.GetStatusAsync();
         }
         return statuses;
     }
@@ -201,7 +205,8 @@ public class FileMonitoringService(
     /// <returns>True if the location is active; false otherwise.</returns>
     public async Task<bool> IsLocationActiveAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -218,8 +223,8 @@ public class FileMonitoringService(
     /// <returns>True if the service is healthy; false otherwise.</returns>
     public async Task<bool> IsHealthyAsync()
     {
-        this.loggerTyped.LogDebugCheckingHealth(this.handlers.Count);
-        foreach (var handler in this.handlers.Values)
+        this.loggerTyped.LogDebugCheckingHealth(this.handlers.Count());
+        foreach (var handler in this.handlers)
         {
             var status = await handler.GetStatusAsync();
             if (!status.IsActive && !status.IsPaused)
@@ -239,7 +244,8 @@ public class FileMonitoringService(
     /// <returns>The number of pending events in the queue.</returns>
     public int GetQueueSize(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -255,7 +261,8 @@ public class FileMonitoringService(
     /// <returns>True if the queue is empty; false otherwise.</returns>
     public async Task<bool> IsQueueEmptyAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -273,7 +280,8 @@ public class FileMonitoringService(
     /// <returns>A task that completes when the queue is empty or the timeout is reached.</returns>
     public async Task WaitForQueueEmptyAsync(string locationName, TimeSpan timeout)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -290,7 +298,8 @@ public class FileMonitoringService(
     /// <returns>A list of active processor names.</returns>
     public async Task<IEnumerable<string>> GetActiveProcessorsAsync(string locationName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -308,7 +317,8 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous enable operation.</returns>
     public async Task EnableProcessorAsync(string locationName, string processorName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");
@@ -327,7 +337,8 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous disable operation.</returns>
     public async Task DisableProcessorAsync(string locationName, string processorName)
     {
-        if (!this.handlers.TryGetValue(locationName, out var handler))
+        var handler = this.handlers.FirstOrDefault(h => h.Options.Name == locationName);
+        if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
             throw new KeyNotFoundException($"Location '{locationName}' not found.");

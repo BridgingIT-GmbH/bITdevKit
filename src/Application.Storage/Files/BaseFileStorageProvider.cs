@@ -18,7 +18,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
 {
     public string LocationName { get; } = locationName ?? throw new ArgumentNullException(nameof(locationName));
 
-    public bool SupportsNotifications { get; }
+    public virtual bool SupportsNotifications { get; }
 
     public virtual Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {

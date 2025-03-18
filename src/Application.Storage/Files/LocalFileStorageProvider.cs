@@ -21,11 +21,14 @@ using BridgingIT.DevKit.Common;
 [DebuggerDisplay("LocationName={LocationName}, Path={rootPath}")]
 public class LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
-    private readonly string rootPath = Path.GetFullPath(rootPath);
     private readonly TimeSpan lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30);
     private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = [];
     private bool disposed;
     private bool initialized;
+
+    public string RootPath { get { return Path.GetFullPath(rootPath); } }
+
+    public override bool SupportsNotifications { get; } = true;
 
     private void Initialize()
     {
@@ -34,9 +37,9 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             return;
         }
 
-        if (ensureRoot && !Directory.Exists(this.rootPath))
+        if (ensureRoot && !Directory.Exists(this.RootPath))
         {
-            Directory.CreateDirectory(this.rootPath); // Ensure root exists
+            Directory.CreateDirectory(this.RootPath); // Ensure root exists
         }
 
         this.initialized = true;
@@ -1087,10 +1090,10 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         this.Initialize();
-        if (!Directory.Exists(this.rootPath))
+        if (!Directory.Exists(this.RootPath))
         {
             return Result.Failure()
-                .WithError(new FileSystemError("Root directory not found", this.rootPath))
+                .WithError(new FileSystemError("Root directory not found", this.RootPath))
                 .WithMessage($"Failed to check health of local storage at '{this.LocationName}'");
         }
 
@@ -1121,7 +1124,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", this.rootPath, ex))
+                .WithError(new PermissionError("Access denied", this.RootPath, ex))
                 .WithMessage($"Permission denied for local storage at '{this.LocationName}'");
         }
         catch (Exception ex)
@@ -1173,7 +1176,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         this.disposed = true;
     }
 
-    private string GetFullPath(string path) => Path.Combine(this.rootPath, path.Replace("/", "\\").TrimStart('\\'));
+    private string GetFullPath(string path) => Path.Combine(this.RootPath, path.Replace("/", "\\").TrimStart('\\'));
 
-    private string GetRelativePath(string fullPath) => fullPath[this.rootPath.Length..].TrimStart('\\').Replace("\\", "/");
+    private string GetRelativePath(string fullPath) => fullPath[this.RootPath.Length..].TrimStart('\\').Replace("\\", "/");
 }

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Presentation.Web.IdentityProvider;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions

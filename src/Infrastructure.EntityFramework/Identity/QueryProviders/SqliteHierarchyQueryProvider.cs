@@ -4,9 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
-
-using BridgingIT.DevKit.Application.Identity;
-
 public class SqliteHierarchyQueryProvider : IHierarchyQueryProvider
 {
     public string CreatePathQuery(string schema, string tableName, string idColumn, string parentIdColumn)

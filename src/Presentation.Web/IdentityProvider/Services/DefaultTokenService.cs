@@ -10,7 +10,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using BridgingIT.DevKit.Common;
-using Microsoft.IdentityModel.Tokens;
 
 public class DefaultTokenService(FakeIdentityProviderEndpointsOptions options) : TokenServiceBase(options)
 {

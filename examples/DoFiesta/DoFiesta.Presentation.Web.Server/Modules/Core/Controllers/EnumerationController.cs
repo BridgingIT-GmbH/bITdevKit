@@ -7,12 +7,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using System.Net;
 using Application.Modules.Core;
-using BridgingIT.DevKit.Application.Identity;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using BridgingIT.DevKit.Presentation;
-using Common;
-using DevKit.Presentation.Web;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

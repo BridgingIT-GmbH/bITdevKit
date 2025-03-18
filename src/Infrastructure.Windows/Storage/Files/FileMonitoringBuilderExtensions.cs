@@ -2,7 +2,6 @@
 namespace BridgingIT.DevKit.Infrastructure.Windows.Storage;
 
 using BridgingIT.DevKit.Application.FileMonitoring;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Provides extension methods for configuring Windows-specific storage in the FileMonitoring system.
@@ -46,7 +45,7 @@ public static class FileMonitoringBuilderExtensions
 
         var options = new LocationOptions(name);
         configure(options);
-        builder.RegisterLocation(name, options, () => new NetworkFileStorageProvider(name, path, impersonationService));
+        builder.RegisterLocation(name, options, () => new NetworkFileStorageProvider(name, path, impersonationService), locationHandlerType: null);
         return builder;
     }
 }

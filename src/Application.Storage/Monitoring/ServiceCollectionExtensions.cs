@@ -1,11 +1,13 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/ServiceCollectionExtensions.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
-using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 /// <summary>
 /// Provides extension methods for IServiceCollection to configure the FileMonitoring system.

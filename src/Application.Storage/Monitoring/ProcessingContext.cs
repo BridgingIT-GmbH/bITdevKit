@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/ProcessingContext.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
@@ -13,8 +17,6 @@ using System.Collections.Generic;
 /// <param name="fileEvent">The FileEvent being processed, if available.</param>
 public class ProcessingContext(FileEvent fileEvent = null)
 {
-    private readonly IDictionary<string, object> items = new Dictionary<string, object>();
-
     /// <summary>
     /// Gets or sets the FileEvent being processed.
     /// Contains details like EventType, FilePath, and Checksum.
@@ -25,7 +27,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// Gets the dictionary of custom items stored in the context.
     /// Allows processors and behaviors to share data during processing.
     /// </summary>
-    public IDictionary<string, object> Items => this.items;
+    public IDictionary<string, object> Items { get; } = new Dictionary<string, object>();
 
     /// <summary>
     /// Retrieves an item from the context by key, casting it to the specified type.
@@ -36,7 +38,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <returns>The item cast to type T, or default(T) if not found or invalid.</returns>
     public T GetItem<T>(string key)
     {
-        if (this.items.TryGetValue(key, out var value) && value is T typedValue)
+        if (this.Items.TryGetValue(key, out var value) && value is T typedValue)
         {
             return typedValue;
         }
@@ -53,7 +55,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <exception cref="InvalidCastException">Thrown if the value can't be cast to T.</exception>
     public T GetItemOrThrow<T>(string key)
     {
-        if (!this.items.TryGetValue(key, out var value))
+        if (!this.Items.TryGetValue(key, out var value))
         {
             throw new KeyNotFoundException($"Item with key '{key}' not found in ProcessingContext.");
         }
@@ -73,7 +75,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <returns>True if the item was found and cast successfully; false otherwise.</returns>
     public bool TryGetItem<T>(string key, out T value)
     {
-        if (this.items.TryGetValue(key, out var rawValue) && rawValue is T typedValue)
+        if (this.Items.TryGetValue(key, out var rawValue) && rawValue is T typedValue)
         {
             value = typedValue;
             return true;
@@ -91,7 +93,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <param name="value">The value to store.</param>
     public void SetItem<T>(string key, T value)
     {
-        this.items[key] = value;
+        this.Items[key] = value;
     }
 
     /// <summary>
@@ -101,7 +103,7 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <returns>True if the key exists; false otherwise.</returns>
     public bool HasItem(string key)
     {
-        return this.items.ContainsKey(key);
+        return this.Items.ContainsKey(key);
     }
 
     /// <summary>
@@ -110,6 +112,6 @@ public class ProcessingContext(FileEvent fileEvent = null)
     /// <param name="key">The key of the item to remove.</param>
     public void RemoveItem(string key)
     {
-        this.items.Remove(key);
+        this.Items.Remove(key);
     }
 }

@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.JSInterop;
-using static System.Net.Mime.MediaTypeNames;
 
 [ExcludeFromCodeCoverage]
 public static class JsRuntimeExtensions

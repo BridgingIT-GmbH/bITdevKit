@@ -6,7 +6,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 #pragma warning disable SA1200 // Using directives should be placed correctly
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Azure.Monitor.OpenTelemetry.Exporter;

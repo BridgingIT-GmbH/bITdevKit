@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Net;
-using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages;
 using Microsoft.AspNetCore.Authentication;
@@ -16,7 +15,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public class FakeIdentityProviderEndpoints(

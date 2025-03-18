@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/IFileMonitoringService.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
@@ -168,7 +172,9 @@ public class FileEventReceivedEventArgs(FileEvent fileEvent) : EventArgs
 public class ProcessingErrorEventArgs(FileEvent fileEvent, string processorName, Exception exception) : EventArgs
 {
     public FileEvent FileEvent { get; } = fileEvent;
+
     public string ProcessorName { get; } = processorName;
+
     public Exception Exception { get; } = exception;
 }
 
@@ -178,9 +184,13 @@ public class ProcessingErrorEventArgs(FileEvent fileEvent, string processorName,
 public class LocationStatus
 {
     public string LocationName { get; set; }
+
     public bool IsActive { get; set; }
+
     public bool IsPaused { get; set; }
+
     public int QueueSize { get; set; }
+
     public DateTimeOffset LastScanTime { get; set; }
 }
 
@@ -190,7 +200,10 @@ public class LocationStatus
 public class ScanContext
 {
     public string LocationName { get; set; }
+
     public DateTimeOffset StartTime { get; set; } = DateTimeOffset.UtcNow;
+
     public DateTimeOffset? EndTime { get; set; }
-    public List<FileEvent> DetectedChanges { get; set; } = [];
+
+    public List<FileEvent> Events { get; set; } = [];
 }

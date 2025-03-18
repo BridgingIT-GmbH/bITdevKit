@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation.Web.IdentityProvider;
 
 public class FakeIdentityProviderEndpointsOptionsBuilder
 {

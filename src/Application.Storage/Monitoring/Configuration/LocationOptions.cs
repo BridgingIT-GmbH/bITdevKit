@@ -1,23 +1,29 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/LocationHandler.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.FileMonitoring;
 
 /// <summary>
 /// Configures options for a monitored location.
 /// </summary>
 public class LocationOptions(string name)
 {
-    public string Name { get; } = name;
+    public string LocationName { get; } = name;
+
     public string FilePattern { get; set; } = "*.*";
+
     public bool UseOnDemandOnly { get; set; }
-    public RateLimitOptions RateLimit { get; } = new();
+
+    public RateLimitOptions RateLimit { get; set; } = RateLimitOptions.MediumSpeed;
+
     public List<Type> LocationProcessorBehaviors { get; } = [];
+
     public List<ProcessorConfiguration> ProcessorConfigs { get; } = [];
 
     public LocationOptions WithProcessorBehavior<TBehavior>() where TBehavior : IProcessorBehavior
@@ -58,11 +64,40 @@ public class ProcessorConfiguration
     }
 }
 
-public class RateLimitOptions
+public class RateLimitOptions(int eventsPerSecond, int maxBurstSize)
 {
-    public int EventsPerSecond { get; set; } = 100;
+    public int EventsPerSecond { get; set; } = eventsPerSecond;
 
-    public int MaxBurstSize { get; set; } = 1000;
+    public int MaxBurstSize { get; set; } = maxBurstSize;
+
+    /// <summary>
+    /// Low processing speed: 100 events/sec with a 1000 event burst.
+    /// Suitable for lightweight or resource-constrained scenarios.
+    /// </summary>
+    public static RateLimitOptions LowSpeed => new(100, 1000);
+
+    /// <summary>
+    /// Medium processing speed: 1000 events/sec with a 5000 event burst.
+    /// Balanced for typical workloads with moderate event volumes.
+    /// </summary>
+    public static RateLimitOptions MediumSpeed => new(1000, 5000);
+
+    /// <summary>
+    /// High processing speed: 10,000 events/sec with a 10,000 event burst.
+    /// Ideal for high-throughput scenarios like large scans.
+    /// </summary>
+    public static RateLimitOptions HighSpeed => new(10000, 10000);
+
+    /// <summary>
+    /// Unrestricted processing speed: 1,000,000 events/sec with a 1,000,000 event burst.
+    /// For testing or scenarios where maximum speed is needed with no throttling.
+    /// </summary>
+    public static RateLimitOptions Unrestricted => new(1000000, 1000000);
+
+    /// <summary>
+    /// Default processing speed: 100 events/sec with 1000 burst.
+    /// </summary>
+    public static RateLimitOptions Default => new(100, 1000);
 }
 
 public class RateLimiter(int eventsPerSecond, int maxBurstSize)

@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/FileMonitoringBuilder.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
@@ -48,7 +52,7 @@ public class FileMonitoringBuilder
     /// <param name="path">The local file system path to monitor (e.g., "C:\\Docs").</param>
     /// <param name="configure">An action to configure the LocationOptions (e.g., file pattern, processors).</param>
     /// <returns>The current FileMonitoringBuilder instance for chaining.</returns>
-    public FileMonitoringBuilder UseLocal(string name, string path, Action<LocationOptions> configure)
+    public FileMonitoringBuilder UseLocal(string name, string path, Action<LocationOptions> configure, bool ensureRoot = true)
     {
         EnsureArg.IsNotNullOrEmpty(name, nameof(name));
         EnsureArg.IsNotNullOrEmpty(path, nameof(path));
@@ -56,7 +60,7 @@ public class FileMonitoringBuilder
 
         var options = new LocationOptions(name);
         configure(options);
-        this.RegisterLocation(name, options, () => new LocalFileStorageProvider(name, path));
+        this.RegisterLocation(name, options, () => new LocalFileStorageProvider(name, path, ensureRoot), typeof(LocalLocationHandler));
         return this;
     }
 
@@ -74,11 +78,11 @@ public class FileMonitoringBuilder
 
         var options = new LocationOptions(name);
         configure(options);
-        this.RegisterLocation(name, options, () => new InMemoryFileStorageProvider(name));
+        this.RegisterLocation(name, options, () => new InMemoryFileStorageProvider(name), typeof(InMemoryLocationHandler));
         return this;
     }
 
-    public void RegisterLocation(string name, LocationOptions options, Func<IFileStorageProvider> providerFactory)
+    public void RegisterLocation(string name, LocationOptions options, Func<IFileStorageProvider> providerFactory, Type locationHandlerType)
     {
         foreach (var config in options.ProcessorConfigs)
         {
@@ -93,18 +97,16 @@ public class FileMonitoringBuilder
             this.services.TryAddScoped(behaviorType);
         }
 
-        this.services.AddSingleton(sp =>
+        if (locationHandlerType != null)
         {
-            var handler = new LocationHandler(
-                sp.GetRequiredService<ILogger<LocationHandler>>(),
+            this.services.AddSingleton(sp => Activator.CreateInstance(
+                locationHandlerType,
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(locationHandlerType),
                 providerFactory(),
                 sp.GetRequiredService<IFileEventStore>(),
                 options,
                 sp,
-                sp.GetServices<IMonitoringBehavior>());
-            // Override processor creation with configuration
-            handler.BuildProcessorChainWithConfig(options);
-            return handler;
-        });
+                sp.GetServices<IMonitoringBehavior>()) as ILocationHandler);
+        }
     }
 }

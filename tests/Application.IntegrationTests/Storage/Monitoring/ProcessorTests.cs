@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring.Tests/ProcessorTests.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring.Tests;
 
 using System;
@@ -152,8 +156,10 @@ public class ProcessorTests
     public async Task LocationHandler_ProcessesEventWithChain()
     {
         // Arrange
-        var logger = new NullLogger<LocationHandler>();
-        var provider = this.serviceProvider.GetRequiredService<IFileStorageProvider>();
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+        var logger = new NullLogger<LocalLocationHandler>();
+        var provider = new LocalFileStorageProvider("Docs1", tempFolder);
         var store = this.serviceProvider.GetRequiredService<IFileEventStore>();
         var options = new LocationOptions("Docs")
         {
@@ -170,7 +176,7 @@ public class ProcessorTests
                 }
             }
         };
-        var sut = new LocationHandler(logger, provider, store, options, this.serviceProvider);
+        var sut = new LocalLocationHandler(logger, provider, store, options, this.serviceProvider);
         var fileEvent = new FileEvent
         {
             LocationName = "Docs",
@@ -184,7 +190,7 @@ public class ProcessorTests
 
         // Act
         await sut.StartAsync(CancellationToken.None);
-        var eventQueueField = typeof(LocationHandler).GetField("eventQueue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var eventQueueField = typeof(LocalLocationHandler).GetField("eventQueue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         var eventQueue = eventQueueField.GetValue(sut) as BlockingCollection<FileEvent>;
         eventQueue.Add(fileEvent); // Simulate event
         await Task.Delay(500); // Allow processing
@@ -221,14 +227,14 @@ public class ProcessorTests
 
         // Act
         var monitoringService = provider.GetService<IFileMonitoringService>();
-        var handlers = provider.GetServices<LocationHandler>();
+        var handlers = provider.GetServices<ILocationHandler>();
         //var behaviors = provider.GetServices<IMonitoringBehavior>();
         var store = provider.GetService<IFileEventStore>();
 
         // Assert
         monitoringService.ShouldNotBeNull();
         handlers.ShouldHaveSingleItem();
-        handlers.First().Options.Name.ShouldBe("Docs");
+        handlers.First().Options.LocationName.ShouldBe("Docs");
         //behaviors.ShouldContain(b => b.GetType() == typeof(LoggingProcessorBehavior));
         store.ShouldNotBeNull();
         store.ShouldBeOfType<InMemoryFileEventStore>();

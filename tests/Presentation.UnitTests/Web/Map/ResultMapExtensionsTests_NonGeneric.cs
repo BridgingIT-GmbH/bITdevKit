@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using System;
 using System.Linq;
-using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http;

@@ -1,12 +1,18 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/FileEvent.cs
-namespace BridgingIT.DevKit.Application.FileMonitoring;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
+using System.Diagnostics;
 
 /// <summary>
 /// Represents a file event detected by the FileMonitoring system in the application layer.
 /// This is the domain entity used by FileMonitoringService and processors, distinct from the persistence entity.
 /// </summary>
+[DebuggerDisplay("Path={FilePath}, Location={LocationName}, Type={EventType.ToString()}")]
 public class FileEvent
 {
     /// <summary>
@@ -43,7 +49,7 @@ public class FileEvent
     /// Gets or sets the size of the file in bytes at the time of detection.
     /// Useful for tracking file changes and validation.
     /// </summary>
-    public long FileSize { get; set; }
+    public long? FileSize { get; set; }
 
     /// <summary>
     /// Gets or sets the last modified timestamp of the file, if available.

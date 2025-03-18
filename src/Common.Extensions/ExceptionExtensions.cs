@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Net.Sockets;

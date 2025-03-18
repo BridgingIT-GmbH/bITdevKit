@@ -2,7 +2,6 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
 using BridgingIT.DevKit.Application.FileMonitoring;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Provides extension methods for configuring Azure-specific storage in the FileMonitoring system.
@@ -46,7 +45,8 @@ public static class FileMonitoringBuilderExtensions
 
         var options = new LocationOptions(name);
         configure(options);
-        builder.RegisterLocation(name, options, () => new AzureBlobFileStorageProvider(name, connectionString, containerName));
+        builder.RegisterLocation(name, options, () => new AzureBlobFileStorageProvider(name, connectionString, containerName), locationHandlerType: null);
+
         return builder;
     }
 
@@ -87,7 +87,8 @@ public static class FileMonitoringBuilderExtensions
 
         var options = new LocationOptions(name);
         configure(options);
-        builder.RegisterLocation(name, options, () => new AzureFilesFileStorageProvider(name, connectionString, shareName));
+        builder.RegisterLocation(name, options, () => new AzureFilesFileStorageProvider(name, connectionString, shareName), locationHandlerType: null);
+
         return builder;
     }
 }

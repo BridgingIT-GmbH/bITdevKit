@@ -19,7 +19,6 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 using BridgingIT.DevKit.Application.JobScheduling;
-using Microsoft.OpenApi.Models;
 
 // ===============================================================================================
 // Create the webhost

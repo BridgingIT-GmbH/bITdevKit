@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/SampleProcessorsAndBehaviors.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
@@ -24,15 +28,14 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
         EnsureArg.IsNotNull(context, nameof(context));
         token.ThrowIfCancellationRequested();
 
-        var fileEvent = context.FileEvent;
         this.logger.LogInformation(
             "{LogKey} filemonitoring: file event processed (Location={LocationName}, Path={FilePath}, Type={EventType}, Size={FileSize}, Checksum={Checksum})",
             Constants.LogKey,
-            fileEvent.LocationName,
-            fileEvent.FilePath,
-            fileEvent.EventType,
-            fileEvent.FileSize,
-            fileEvent.Checksum);
+            context.FileEvent.LocationName,
+            context.FileEvent.FilePath,
+            context.FileEvent.EventType,
+            context.FileEvent.FileSize,
+            context.FileEvent.Checksum);
 
         return Task.CompletedTask;
     }

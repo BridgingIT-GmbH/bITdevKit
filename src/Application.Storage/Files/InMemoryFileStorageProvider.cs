@@ -20,6 +20,10 @@ public class InMemoryFileStorageProvider(string locationName)
     private readonly HashSet<string> directories = [];
     private readonly SemaphoreSlim semaphore = new(1, 1);
 
+    public event EventHandler<FileEventArgs> OnFileEvent;
+
+    public override bool SupportsNotifications { get; } = true;
+
     public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -48,7 +52,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
             try
             {
-                var exists = this.files.ContainsKey(normalizedPath) || this.directories.Contains(normalizedPath); 
+                var exists = this.files.ContainsKey(normalizedPath) || this.directories.Contains(normalizedPath);
                 if (!exists)
                 {
                     return Result.Failure()
@@ -160,6 +164,8 @@ public class InMemoryFileStorageProvider(string locationName)
         }
 
         var normalizedPath = this.NormalizePath(path);
+        var exists = await this.ExistsAsync(normalizedPath, null, cancellationToken);
+
         return await Task.Run(() =>
         {
             if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
@@ -188,12 +194,20 @@ public class InMemoryFileStorageProvider(string locationName)
                 var contentBytes = memoryStream.ToArray();
 
                 // Remove if it exists as a directory (file takes precedence)
-                if (this.directories.Contains(normalizedPath))
-                {
-                    this.directories.Remove(normalizedPath);
-                }
-
+                this.directories.Remove(normalizedPath);
                 this.files[normalizedPath] = contentBytes;
+
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedPath,
+                        EventType = !exists ? FileEventType.Added : FileEventType.Changed,
+                        FileSize = contentBytes.Length,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
+
                 progress?.Report(new FileProgress { BytesProcessed = contentBytes.Length }); // Report bytes processed
                 return Result.Success()
                     .WithMessage($"Wrote file at '{path}'");
@@ -251,6 +265,16 @@ public class InMemoryFileStorageProvider(string locationName)
                         .WithError(new FileSystemError("File not found", path))
                         .WithMessage($"Failed to delete file at '{path}'");
                 }
+
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedPath,
+                        EventType = FileEventType.Deleted,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
 
                 // Sync directories: check if parent directories are now empty and can be removed
                 var parentPath = this.GetParentPath(normalizedPath);
@@ -593,14 +617,12 @@ public class InMemoryFileStorageProvider(string locationName)
             try
             {
                 var filesList = this.files
-                    .Where(f => f.Key.StartsWith(normalizedPath + "/", StringComparison.OrdinalIgnoreCase) || f.Key == normalizedPath)
+                    .Where(f => f.Key.StartsWith(normalizedPath/* + "/"*/, StringComparison.OrdinalIgnoreCase) || f.Key == normalizedPath)
                     .Where(f => f.Key.Match(searchPattern))
                     .Select(f => f.Key)
                     //.Select(f => f.Key.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(f => !string.IsNullOrEmpty(f))
-                    .Distinct()
-                    .Order()
-                    .ToList();
+                    .Distinct().Order().ToList();
 
                 if (!recursive)
                 {
@@ -647,7 +669,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
         var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
-        return await Task.Run(() =>
+        return await Task.Run(async () =>
         {
             if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
             {
@@ -677,9 +699,19 @@ public class InMemoryFileStorageProvider(string locationName)
                 }
 
                 // Remove if destination exists as a directory
+                var exists = await this.ExistsAsync(normalizedDest, null, cancellationToken);
                 this.directories.Remove(normalizedDest);
-
                 this.files[normalizedDest] = content;
+
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedDest,
+                        EventType = !exists ? FileEventType.Added : FileEventType.Changed,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
                     .WithMessage($"Copied file from '{path}' to '{destinationPath}'");
@@ -753,8 +785,26 @@ public class InMemoryFileStorageProvider(string locationName)
                 // Remove if new path exists as a directory
                 this.directories.Remove(normalizedNew);
 
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedOld,
+                        EventType = FileEventType.Deleted,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
                 this.files.Remove(normalizedOld);
                 this.files[normalizedNew] = content;
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedNew,
+                        EventType = FileEventType.Added,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
                     .WithMessage($"Renamed file from '{path}' to '{destinationPath}'");
@@ -796,6 +846,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
         var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
+        var exists = await this.ExistsAsync(normalizedDest, null, cancellationToken);
         return await Task.Run(() =>
         {
             if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
@@ -827,9 +878,27 @@ public class InMemoryFileStorageProvider(string locationName)
 
                 // Remove if destination exists as a directory
                 this.directories.Remove(normalizedDest);
-
                 this.files.Remove(normalizedSource);
+
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedSource,
+                        EventType = FileEventType.Deleted,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
                 this.files[normalizedDest] = content;
+                // expose file event
+                this.OnFileEvent?.Invoke(this, new FileEventArgs(
+                    new FileEvent
+                    {
+                        LocationName = this.LocationName,
+                        FilePath = normalizedDest,
+                        EventType = !exists ? FileEventType.Added : FileEventType.Changed,
+                        DetectionTime = DateTimeOffset.UtcNow
+                    }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
                     .WithMessage($"Moved file from '{path}' to '{destinationPath}'");

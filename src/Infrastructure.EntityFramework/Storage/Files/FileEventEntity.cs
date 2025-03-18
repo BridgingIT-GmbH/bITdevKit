@@ -57,7 +57,7 @@ public class FileEventEntity
     /// Gets or sets the size of the file in bytes at the time of detection.
     /// Used for tracking file changes.
     /// </summary>
-    public long FileSize { get; set; }
+    public long? FileSize { get; set; }
 
     /// <summary>
     /// Gets or sets the last modified timestamp of the file, if available.

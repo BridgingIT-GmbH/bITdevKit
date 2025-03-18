@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/IFileEventStore.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 /// <summary>
@@ -13,6 +17,14 @@ public interface IFileEventStore
     /// <param name="filePath">The relative file path to query.</param>
     /// <returns>The latest FileEvent, or null if none exists.</returns>
     Task<FileEvent> GetFileEventAsync(string filePath);
+
+    /// <summary>
+    /// Tetrieves a file event based on a specified location and file path.
+    /// </summary>
+    /// <param name="locationName">Specifies the name of the location where the file is located.</param>
+    /// <param name="filePath">Indicates the path of the file for which the event is being retrieved.</param>
+    /// <returns>Returns a task that represents the asynchronous operation, containing the file event.</returns>
+    Task<FileEvent> GetFileEventAsync(string locationName, string filePath);
 
     /// <summary>
     /// Retrieves a collection of file events related to a specified file.

@@ -1,4 +1,8 @@
-﻿// File: BridgingIT.DevKit.Application.FileMonitoring/LocationHandler.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.FileMonitoring;
 
 using System;
@@ -17,22 +21,22 @@ using Microsoft.Extensions.Logging;
 /// Integrates real-time watching, on-demand scanning, and a processor chain with rate limiting.
 /// </summary>
 [DebuggerDisplay("Name={options.Name}")]
-public class LocationHandler
+public abstract class LocationHandlerBase : ILocationHandler
 {
-    private readonly ILogger<LocationHandler> logger;
+    protected readonly ILogger logger;
     private readonly TypedLogger loggerTyped;
-    private readonly IFileStorageProvider provider;
-    private readonly IFileEventStore store;
-    private readonly LocationOptions options;
-    private readonly IServiceProvider serviceProvider; // For Factory use
-    private readonly IEnumerable<IMonitoringBehavior> behaviors;
-    private readonly List<IFileEventProcessor> processors;
-    private readonly RateLimiter rateLimiter;
-    private readonly BlockingCollection<FileEvent> eventQueue;
-    private CancellationTokenSource cts;
-    private Task processingTask;
-    private bool isPaused;
-    private FileSystemWatcher fileSystemWatcher;
+    protected readonly IFileStorageProvider provider;
+    protected readonly IFileEventStore store;
+    protected readonly LocationOptions options;
+    protected readonly IServiceProvider serviceProvider;
+    protected readonly IEnumerable<IMonitoringBehavior> behaviors;
+    protected readonly BlockingCollection<FileEvent> eventQueue;
+    protected readonly List<IFileEventProcessor> processors;
+    protected readonly RateLimiter rateLimiter;
+
+    protected CancellationTokenSource cts;
+    protected Task processingTask;
+    protected bool isPaused;
 
     /// <summary>
     /// Initializes a new instance of the LocationHandler.
@@ -43,8 +47,8 @@ public class LocationHandler
     /// <param name="options">The configuration options for the location.</param>
     /// <param name="serviceProvider">The service provider for resolving processor and behavior instances via Factory.</param>
     /// <param name="behaviors">The global monitoring behaviors for scan observability.</param>
-    public LocationHandler(
-        ILogger<LocationHandler> logger,
+    public LocationHandlerBase(
+        ILogger logger,
         IFileStorageProvider provider,
         IFileEventStore store,
         LocationOptions options,
@@ -71,28 +75,24 @@ public class LocationHandler
     public LocationOptions Options => this.options;
 
     /// <summary>
+    /// Gets the file storage provider associated with the current instance. It returns an object implementing the
+    /// IFileStorageProvider interface.
+    /// </summary>
+    public IFileStorageProvider Provider => this.provider;
+    /// <summary>
     /// Starts monitoring the location asynchronously.
     /// Initiates real-time watching (if supported) and event processing.
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous start operation.</returns>
-    public async Task StartAsync(CancellationToken token)
+    public virtual Task StartAsync(CancellationToken token)
     {
-        this.loggerTyped.LogInformationStartingHandler(this.options.Name);
-        if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
-        {
-            this.SetupFileSystemWatcher();
-            this.loggerTyped.LogInformationRealTimeStarted(this.options.Name);
-        }
-
+        this.loggerTyped.LogInformationStartingHandler(this.options.LocationName);
         this.cts = new CancellationTokenSource();
         var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, this.cts.Token);
         this.processingTask = Task.Run(() => this.ProcessEventsAsync(linkedCts.Token), linkedCts.Token);
 
-        if (!this.options.UseOnDemandOnly)
-        {
-            await this.ScanAsync(token); // Initial scan to sync state
-        }
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -101,17 +101,10 @@ public class LocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    public async Task StopAsync(CancellationToken token)
+    public virtual async Task StopAsync(CancellationToken token)
     {
-        this.loggerTyped.LogInformationStoppingHandler(this.options.Name);
-        this.cts.Cancel();
-
-        if (this.fileSystemWatcher != null)
-        {
-            this.fileSystemWatcher.EnableRaisingEvents = false;
-            this.fileSystemWatcher.Dispose();
-            this.fileSystemWatcher = null;
-        }
+        this.loggerTyped.LogInformationStoppingHandler(this.options.LocationName);
+        //this.cts.Cancel();
 
         if (this.processingTask != null)
         {
@@ -119,7 +112,7 @@ public class LocationHandler
         }
 
         this.eventQueue.CompleteAdding();
-        this.loggerTyped.LogInformationHandlerStopped(this.options.Name);
+        this.logger.LogInformation($"Handler stopped for location: {this.options.LocationName}");
     }
 
     /// <summary>
@@ -128,79 +121,18 @@ public class LocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the scan if needed.</param>
     /// <returns>A ScanContext object with the scan results.</returns>
-    public async Task<ScanContext> ScanAsync(CancellationToken token)
-    {
-        var context = new ScanContext { LocationName = this.options.Name };
-        this.loggerTyped.LogInformationScanningLocation(this.options.Name);
-        this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
-
-        var presentFiles = await this.store.GetPresentFilesAsync(this.options.Name);
-        var currentFiles = new Dictionary<string, FileMetadata>();
-        string continuationToken = null;
-
-        do
-        {
-            var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, token);
-            foreach (var filePath in result.Value.Files)
-            {
-                var metadataResult = await this.provider.GetFileMetadataAsync(filePath, token);
-                var checksumResult = await this.provider.GetChecksumAsync(filePath, token);
-                if (metadataResult.IsSuccess && checksumResult.IsSuccess)
-                {
-                    var metadata = metadataResult.Value;
-                    currentFiles[filePath] = metadata;
-                    var lastEvent = await this.store.GetFileEventAsync(filePath);
-                    var eventType = this.DetermineEventType(lastEvent, metadata, checksumResult.Value);
-
-                    if (eventType.HasValue)
-                    {
-                        var fileEvent = new FileEvent
-                        {
-                            LocationName = this.options.Name,
-                            FilePath = filePath,
-                            EventType = eventType.Value,
-                            FileSize = metadata.Length,
-                            LastModified = metadata.LastModified,
-                            Checksum = checksumResult.Value
-                        };
-                        this.eventQueue.Add(fileEvent, token);
-                        context.DetectedChanges.Add(fileEvent);
-                        this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
-                    }
-                }
-            }
-            continuationToken = result.Value.NextContinuationToken;
-        } while (continuationToken != null && !token.IsCancellationRequested);
-
-        // Detect deletions
-        foreach (var missingFile in presentFiles.Except(currentFiles.Keys))
-        {
-            var fileEvent = new FileEvent
-            {
-                LocationName = this.options.Name,
-                FilePath = missingFile,
-                EventType = FileEventType.Deleted
-            };
-            this.eventQueue.Add(fileEvent, token);
-            context.DetectedChanges.Add(fileEvent);
-            this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
-        }
-
-        context.EndTime = DateTimeOffset.UtcNow;
-        this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
-        this.loggerTyped.LogInformationScanCompleted(this.options.Name, context.DetectedChanges.Count);
-        return context;
-    }
+    public abstract Task<ScanContext> ScanAsync(CancellationToken token);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.
     /// Temporarily halts the processing pipeline without stopping real-time watching.
     /// </summary>
     /// <returns>A task representing the asynchronous pause operation.</returns>
-    public Task PauseAsync()
+    public virtual Task PauseAsync()
     {
-        this.loggerTyped.LogInformationPausingHandler(this.options.Name);
+        this.loggerTyped.LogInformationPausingHandler(this.options.LocationName);
         this.isPaused = true;
+
         return Task.CompletedTask;
     }
 
@@ -209,10 +141,11 @@ public class LocationHandler
     /// Restarts the processing pipeline if previously paused.
     /// </summary>
     /// <returns>A task representing the asynchronous resume operation.</returns>
-    public Task ResumeAsync()
+    public virtual Task ResumeAsync()
     {
-        this.loggerTyped.LogInformationResumingHandler(this.options.Name);
+        this.loggerTyped.LogInformationResumingHandler(this.options.LocationName);
         this.isPaused = false;
+
         return Task.CompletedTask;
     }
 
@@ -225,12 +158,13 @@ public class LocationHandler
     {
         var status = new LocationStatus
         {
-            LocationName = this.options.Name,
+            LocationName = this.options.LocationName,
             IsActive = this.processingTask != null && !this.processingTask.IsCompleted,
             IsPaused = this.isPaused,
             QueueSize = this.eventQueue.Count,
             LastScanTime = DateTimeOffset.MinValue // Update with actual scan time if tracked
         };
+
         return Task.FromResult(status);
     }
 
@@ -244,7 +178,8 @@ public class LocationHandler
     /// Checks if the event queue is empty asynchronously.
     /// </summary>
     /// <returns>True if the queue is empty; false otherwise.</returns>
-    public Task<bool> IsQueueEmptyAsync() => Task.FromResult(this.eventQueue.Count == 0);
+    public Task<bool> IsQueueEmptyAsync() =>
+        Task.FromResult(this.eventQueue.Count == 0);
 
     /// <summary>
     /// Waits until the event queue is empty or a timeout occurs asynchronously.
@@ -254,6 +189,7 @@ public class LocationHandler
     public async Task WaitForQueueEmptyAsync(TimeSpan timeout)
     {
         var start = DateTimeOffset.UtcNow;
+
         while (this.eventQueue.Count > 0 && DateTimeOffset.UtcNow - start < timeout)
         {
             await Task.Delay(100);
@@ -277,11 +213,13 @@ public class LocationHandler
         var processor = this.processors.FirstOrDefault(p => p.ProcessorName == processorName);
         if (processor == null)
         {
-            this.loggerTyped.LogWarningProcessorNotFound(this.options.Name, processorName);
+            this.loggerTyped.LogWarningProcessorNotFound(this.options.LocationName, processorName);
             return Task.CompletedTask;
         }
+
         processor.IsEnabled = true;
-        this.loggerTyped.LogInformationProcessorEnabled(this.options.Name, processorName);
+        this.loggerTyped.LogInformationProcessorEnabled(this.options.LocationName, processorName);
+
         return Task.CompletedTask;
     }
 
@@ -295,91 +233,19 @@ public class LocationHandler
         var processor = this.processors.FirstOrDefault(p => p.ProcessorName == processorName);
         if (processor == null)
         {
-            this.loggerTyped.LogWarningProcessorNotFound(this.options.Name, processorName);
+            this.loggerTyped.LogWarningProcessorNotFound(this.options.LocationName, processorName);
             return Task.CompletedTask;
         }
+
         processor.IsEnabled = false;
-        this.loggerTyped.LogInformationProcessorDisabled(this.options.Name, processorName);
-        return Task.CompletedTask;
-    }
-
-    private void SetupFileSystemWatcher()
-    {
-        if (this.provider is LocalFileStorageProvider localProvider)
-        {
-            this.fileSystemWatcher = new FileSystemWatcher
-            {
-                Path = localProvider.RootPath,
-                Filter = this.options.FilePattern,
-                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
-                IncludeSubdirectories = true
-            };
-
-            this.fileSystemWatcher.Created += async (s, e) => await this.OnFileCreated(e);
-            this.fileSystemWatcher.Changed += async (s, e) => await this.OnFileChanged(e);
-            this.fileSystemWatcher.Deleted += async (s, e) => await this.OnFileDeleted(e);
-            this.fileSystemWatcher.EnableRaisingEvents = true;
-        }
-    }
-
-    private async Task OnFileCreated(FileSystemEventArgs e)
-    {
-        if (this.provider is LocalFileStorageProvider localProvider)
-        {
-            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
-            var metadata = await this.provider.GetFileMetadataAsync(relativePath, CancellationToken.None);
-            var checksum = await this.provider.GetChecksumAsync(relativePath, CancellationToken.None);
-            var fileEvent = new FileEvent
-            {
-                LocationName = this.options.Name,
-                FilePath = relativePath,
-                EventType = FileEventType.Added,
-                FileSize = metadata.Value.Length,
-                LastModified = metadata.Value.LastModified,
-                Checksum = checksum.Value,
-                DetectionTime = DateTimeOffset.UtcNow
-            };
-            this.eventQueue.Add(fileEvent);
-        }
-    }
-
-    private async Task OnFileChanged(FileSystemEventArgs e)
-    {
-        if (this.provider is LocalFileStorageProvider localProvider)
-        {
-            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
-            var metadata = await this.provider.GetFileMetadataAsync(relativePath, CancellationToken.None);
-            var checksum = await this.provider.GetChecksumAsync(relativePath, CancellationToken.None);
-            var fileEvent = new FileEvent
-            {
-                LocationName = this.options.Name,
-                FilePath = relativePath,
-                EventType = FileEventType.Changed,
-                FileSize = metadata.Value.Length,
-                LastModified = metadata.Value.LastModified,
-                Checksum = checksum.Value,
-                DetectionTime = DateTimeOffset.UtcNow
-            };
-            this.eventQueue.Add(fileEvent);
-        }
-    }
-
-    private Task OnFileDeleted(FileSystemEventArgs e)
-    {
-        if (this.provider is LocalFileStorageProvider localProvider)
-        {
-            var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
-            var fileEvent = new FileEvent
-            {
-                LocationName = this.options.Name,
-                FilePath = relativePath,
-                EventType = FileEventType.Deleted,
-                DetectionTime = DateTimeOffset.UtcNow
-            };
-            this.eventQueue.Add(fileEvent);
-        }
+        this.loggerTyped.LogInformationProcessorDisabled(this.options.LocationName, processorName);
 
         return Task.CompletedTask;
+    }
+
+    public IEnumerable<IFileEventProcessor> GetProcessors()
+    {
+        return this.processors.AsEnumerable();
     }
 
     private List<IFileEventProcessor> BuildProcessorChain(LocationOptions options)
@@ -387,7 +253,7 @@ public class LocationHandler
         return this.BuildProcessorChainWithConfig(options);
     }
 
-    internal List<IFileEventProcessor> BuildProcessorChainWithConfig(LocationOptions options)
+    protected List<IFileEventProcessor> BuildProcessorChainWithConfig(LocationOptions options)
     {
         var chain = new List<IFileEventProcessor>();
         foreach (var processorConfig in options.ProcessorConfigs)
@@ -396,16 +262,8 @@ public class LocationHandler
             if (processor != null)
             {
                 processor.IsEnabled = true;
-                processorConfig.Configure?.Invoke(processor); // Apply configuration
-
-                foreach (var behaviorType in options.LocationProcessorBehaviors)
-                {
-                    if (Factory.Create(behaviorType, this.serviceProvider) is IProcessorBehavior behavior)
-                    {
-                        processor = new BehaviorDecorator(processor, behavior);
-                    }
-                }
-                foreach (var behaviorType in processorConfig.BehaviorTypes)
+                processorConfig.Configure?.Invoke(processor);
+                foreach (var behaviorType in options.LocationProcessorBehaviors.Concat(processorConfig.BehaviorTypes))
                 {
                     if (Factory.Create(behaviorType, this.serviceProvider) is IProcessorBehavior behavior)
                     {
@@ -418,23 +276,26 @@ public class LocationHandler
         return chain;
     }
 
-    private async Task ProcessEventsAsync(CancellationToken token)
+    protected async Task ProcessEventsAsync(CancellationToken token)
     {
         while (!token.IsCancellationRequested && !this.eventQueue.IsCompleted)
         {
-            if (this.isPaused || this.cts.IsCancellationRequested || !this.eventQueue.TryTake(out var fileEvent, 100, token))
+            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, token))
             {
                 continue;
             }
 
             await this.rateLimiter.WaitForTokenAsync(token);
-            var context = new ProcessingContext { FileEvent = fileEvent };
-            context.SetItem("StorageProvider", this.provider); // Add provider to context
+            var context = new ProcessingContext(fileEvent);
+            context.SetItem("StorageProvider", this.provider);
 
+            // Store the event once, before processing
+            await this.store.StoreEventAsync(fileEvent);
+
+            // Process with all enabled processors
             foreach (var processor in this.processors.Where(p => p.IsEnabled))
             {
                 var result = await this.ExecuteProcessorAsync(processor, context, token);
-                await this.store.StoreEventAsync(fileEvent);
                 await this.store.StoreProcessingResultAsync(new ProcessingResult
                 {
                     FileEventId = fileEvent.Id,
@@ -442,6 +303,11 @@ public class LocationHandler
                     Success = result.IsSuccess,
                     Message = result.IsSuccess ? "Processed successfully" : result.Errors.FirstOrDefault()?.Message
                 });
+            }
+
+            if (!this.processors.Any(p => p.IsEnabled))
+            {
+                this.logger.LogDebug($"{{LogKey}} filemonitoring: No enabled processors for event: {fileEvent.FilePath} in location: {this.options.LocationName}", Constants.LogKey);
             }
         }
     }
@@ -456,18 +322,9 @@ public class LocationHandler
         }
         catch (Exception ex)
         {
-            this.loggerTyped.LogErrorProcessingFailed(this.options.Name, processor.ProcessorName, ex.Message);
+            this.loggerTyped.LogErrorProcessingFailed(this.options.LocationName, processor.ProcessorName, ex.Message);
             return Result<bool>.Failure().WithError(new ExceptionError(ex));
         }
-    }
-
-    private FileEventType? DetermineEventType(FileEvent lastEvent, FileMetadata current, string checksum)
-    {
-        if (lastEvent == null) return FileEventType.Added;
-        if (lastEvent.EventType == FileEventType.Deleted) return FileEventType.Added;
-        if (lastEvent.Checksum != checksum || lastEvent.LastModified != current.LastModified) return FileEventType.Changed;
-
-        return null;
     }
 
     // Behavior decorator to wrap processors with behaviors

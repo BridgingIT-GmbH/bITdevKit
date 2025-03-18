@@ -2,6 +2,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Application.FileMonitoring;
+using BridgingIT.DevKit.Application.Storage;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
@@ -21,6 +22,16 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     public async Task<FileEvent> GetFileEventAsync(string filePath)
     {
         var entity = await this.context.FileEvents
+            .OrderByDescending(e => e.DetectionTime)
+            .FirstOrDefaultAsync(e => e.FilePath == filePath);
+
+        return this.MapToDomain(entity);
+    }
+
+    public async Task<FileEvent> GetFileEventAsync(string locationName, string filePath)
+    {
+        var entity = await this.context.FileEvents
+            .Where(e => e.LocationName == locationName && e.FilePath == filePath)
             .OrderByDescending(e => e.DetectionTime)
             .FirstOrDefaultAsync(e => e.FilePath == filePath);
 

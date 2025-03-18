@@ -320,8 +320,8 @@ public class FileMonitoringServiceTests
         //    .First(h => h.Options.Name == "InMemDocs").Options.ProcessorConfigs[0].ProcessorType;
         var inMemoryProvider = provider.GetServices<ILocationHandler>()
             .First(h => h.Options.LocationName == "InMemDocs").Provider; // Get the InMemoryFileStorageProvider instance
-        using var stream1 = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("InMem Content 1"));
-        using var stream2 = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("InMem Content 2"));
+        using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 1"));
+        using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 2"));
         await inMemoryProvider.WriteFileAsync("file1.txt", stream1, null, CancellationToken.None);
         await inMemoryProvider.WriteFileAsync("file2.txt", stream2, null, CancellationToken.None);
 
@@ -345,7 +345,7 @@ public class FileMonitoringServiceTests
         inMemEvents.Any(e => e.FilePath == "file1.txt").ShouldBeTrue();
         inMemEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
 
-        // Cleanup (optional, following your style)
+        // Cleanup 
         // await sut.StopAsync(CancellationToken.None);
     }
 
@@ -407,6 +407,102 @@ public class FileMonitoringServiceTests
         scanTimeMs.ShouldBeLessThan(15000); 
 
         // Cleanup (optional)
+        // await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_Concurrent_RealTimeLocalAndOnDemandInMemory()
+    {
+        // Arrange
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+        var localFolder = Path.Combine(tempFolder, "LocalDocs");
+        Directory.CreateDirectory(localFolder);
+
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("LocalDocs", localFolder, options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.RateLimit = RateLimitOptions.MediumSpeed; // 1k/s
+                    options.UseProcessor<TestProcessor>();
+                })
+                .UseInMemory("InMemDocs", options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed; // 10k/s
+                    options.UseProcessor<TestProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        // Initial state for InMemDocs
+        var inMemProvider = provider.GetServices<ILocationHandler>()
+            .First(h => h.Options.LocationName == "InMemDocs")
+            .GetType()
+            .GetField("inMemoryProvider", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.GetValue(provider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "InMemDocs")) as InMemoryFileStorageProvider;
+        using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 1"));
+        using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 2"));
+        await inMemProvider.WriteFileAsync("file1.txt", stream1, null, CancellationToken.None);
+        await inMemProvider.WriteFileAsync("file2.txt", stream2, null, CancellationToken.None);
+
+        // Act: Start service and run concurrent operations
+        await sut.StartAsync(CancellationToken.None);
+
+        // Task 1: Real-time file creations in LocalDocs
+        var realTimeTask = Task.Run(async () =>
+        {
+            File.WriteAllText(Path.Combine(localFolder, "file1.txt"), "Local Content 1");
+            await Task.Delay(100); 
+            File.WriteAllText(Path.Combine(localFolder, "file2.txt"), "Local Content 2");
+            await Task.Delay(100);
+        });
+
+        // Task 2: On-demand scan in InMemDocs
+        var scanTask = Task.Run(async () =>
+        {
+            return await sut.ScanLocationAsync("InMemDocs", waitForProcessing: true, timeout: TimeSpan.FromSeconds(30));
+        });
+
+        // Wait for both tasks to complete
+        await Task.WhenAll(realTimeTask, scanTask);
+        //var inMemScanContext = (await scanTask).Events;
+        await Task.Delay(500); 
+
+        // Assert
+        var localEvents = await store.GetFileEventsForLocationAsync("LocalDocs");
+        var inMemEvents = await store.GetFileEventsForLocationAsync("InMemDocs");
+
+        // LocalDocs: Real-time events
+        localEvents.Count.ShouldBe(2); // 2 Added events from file creations
+        localEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+        localEvents.Any(e => e.FilePath == "file1.txt").ShouldBeTrue();
+        localEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
+
+        // InMemDocs: On-demand scan events
+        inMemEvents.Count.ShouldBe(2); // 2 Added events from scan
+        inMemEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+        inMemEvents.Any(e => e.FilePath == "file1.txt").ShouldBeTrue();
+        inMemEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
+        (await scanTask).Events.Count.ShouldBe(2);
+
+        // Processor invocation
+        var localProcessor = provider.GetServices<ILocationHandler>()
+            .First(h => h.Options.LocationName == "LocalDocs")
+            .GetProcessors().OfType<TestProcessor>().First();
+        var inMemProcessor = provider.GetServices<ILocationHandler>()
+            .First(h => h.Options.LocationName == "InMemDocs")
+            .GetProcessors().OfType<TestProcessor>().First();
+        localProcessor.InvocationCount.ShouldBe(2); // 2 real-time events
+        inMemProcessor.InvocationCount.ShouldBe(2); // 2 on-demand events
+
+        // Cleanup 
         // await sut.StopAsync(CancellationToken.None);
     }
 
@@ -499,7 +595,7 @@ public class FileMonitoringServiceTests
         var file4Events = await store.GetFileEventsAsync("file4.txt");
         file4Events.Count().ShouldBe(2); // Added, Deleted
 
-        // Cleanup (optional, following your style)
+        // Cleanup 
         // await sut.StopAsync(CancellationToken.None);
     }
 

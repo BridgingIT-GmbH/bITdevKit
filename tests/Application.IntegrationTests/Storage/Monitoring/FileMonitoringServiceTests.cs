@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Application.FileMonitoring.Tests;
 using System;
 using System.IO;
 using System.Threading;
-using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
@@ -17,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
-public class FileMonitoringServiceTests
+public class FileMonitoringServiceTests(ITestOutputHelper output)
 {
     [Fact]
     public async Task FileMonitoringService_OnDemand_DetectsFileChanges()
@@ -47,7 +46,7 @@ public class FileMonitoringServiceTests
 
         // Act
         await sut.StartAsync(CancellationToken.None);
-        var scanContext = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(100); // Allow processing
 
         // Assert
@@ -92,7 +91,7 @@ public class FileMonitoringServiceTests
 
         // Act: Start and scan to trigger processor
         await sut.StartAsync(CancellationToken.None);
-        var scanContext = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Retrieve the TestProcessor instance from the handler
@@ -143,7 +142,7 @@ public class FileMonitoringServiceTests
 
         // First scan to establish baseline
         await sut.StartAsync(CancellationToken.None);
-        await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Modify file system state
@@ -153,7 +152,7 @@ public class FileMonitoringServiceTests
         File.WriteAllText(file4, "Content 4"); // Add file4
 
         // Act: Second scan to detect changes
-        var scanContext = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert
@@ -240,8 +239,8 @@ public class FileMonitoringServiceTests
 
         // Scan 1: Initial state for both locations
         await sut.StartAsync(CancellationToken.None);
-        var scan1Docs1Context = await sut.ScanLocationAsync("Docs1", CancellationToken.None);
-        var scan1Docs2Context = await sut.ScanLocationAsync("Docs2", CancellationToken.None);
+        var scan1Docs1Context = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
+        var scan1Docs2Context = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert Scan 1
@@ -264,8 +263,8 @@ public class FileMonitoringServiceTests
         File.WriteAllText(file3Docs2, "Docs2 Content 3"); // Add file3
 
         // Scan 2: Detect changes for both locations
-        var scan2Docs1Context = await sut.ScanLocationAsync("Docs1", CancellationToken.None);
-        var scan2Docs2Context = await sut.ScanLocationAsync("Docs2", CancellationToken.None);
+        var scan2Docs1Context = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
+        var scan2Docs2Context = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert Scan 2
@@ -327,8 +326,8 @@ public class FileMonitoringServiceTests
 
         // Act: Scan both locations
         await sut.StartAsync(CancellationToken.None);
-        var localScanContext = await sut.ScanLocationAsync("LocalDocs", CancellationToken.None);
-        var inMemScanContext = await sut.ScanLocationAsync("InMemDocs", CancellationToken.None);
+        var localScanContext = await sut.ScanLocationAsync("LocalDocs", token: CancellationToken.None);
+        var inMemScanContext = await sut.ScanLocationAsync("InMemDocs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert
@@ -369,7 +368,7 @@ public class FileMonitoringServiceTests
         GenerateFolderTree(tempFolder, depth, foldersPerLevel, filesPerFolder);
         stopwatch.Stop();
         var actualFiles = Directory.GetFiles(tempFolder, "*.txt", SearchOption.AllDirectories).Length;
-        Console.WriteLine($"Generated {actualFiles} files in {totalFolders} folders in {stopwatch.ElapsedMilliseconds}ms");
+        output.WriteLine($"Generated {actualFiles} files in {totalFolders} folders in {stopwatch.ElapsedMilliseconds}ms");
 
         var services = new ServiceCollection().AddLogging();
         services.AddFileMonitoring(monitoring =>
@@ -388,26 +387,122 @@ public class FileMonitoringServiceTests
         var store = serviceProvider.GetRequiredService<IFileEventStore>();
         //var handler = serviceProvider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "Docs");
 
+        var progressReports = new List<ScanProgress>();
+        var progress = new Progress<ScanProgress>(report =>
+        {
+            progressReports.Add(report);
+            output.WriteLine($"progress: {report}");
+        });
+
         // Act: Scan the large tree structure
         await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
-        var scanContext = await sut.ScanLocationAsync("Docs", waitForProcessing: true, timeout: TimeSpan.FromSeconds(90), CancellationToken.None);
+        var scanContext = await sut.ScanLocationAsync("Docs", waitForProcessing: true, timeout: TimeSpan.FromSeconds(90), progress, CancellationToken.None);
         //await handler.WaitForQueueEmptyAsync(TimeSpan.FromSeconds(90)); // Wait up to 90s for all events as the event processing (from queue) runs in the background
         stopwatch.Stop();
-        Console.WriteLine($"Scan detected {scanContext.Events.Count} changes"); // Assuming DetectedChanges
+        output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.ElapsedMilliseconds} ms");
 
         // Assert
         scanContext.Events.Count.ShouldBe(actualFiles); // Match actual files on disk
         var allEvents = await store.GetFileEventsForLocationAsync("Docs");
         allEvents.Count.ShouldBe(actualFiles); 
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
-        Console.WriteLine($"Scanned {allEvents.Count} files in {stopwatch.ElapsedMilliseconds}ms");
+        output.WriteLine($"Scanned {allEvents.Count} files in {stopwatch.ElapsedMilliseconds} ms");
+
+        // Verify progress reporting
+        progressReports.Count.ShouldBe(10); // 10% intervals (10) + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe(new[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 });
+        progressReports.First().FilesScanned.ShouldBeGreaterThan(0); // Approx 10% of 7800
+        progressReports.Last().FilesScanned.ShouldBe(actualFiles); // 7800
+        progressReports.Last().TotalFiles.ShouldBe(actualFiles); // 7800
+        progressReports.Last().PercentageComplete.ShouldBe(100.0);
+        progressReports.All(r => r.ElapsedTime >= TimeSpan.Zero).ShouldBeTrue();
+        progressReports.Last().ElapsedTime.ShouldBeGreaterThan(TimeSpan.Zero);
 
         var scanTimeMs = stopwatch.ElapsedMilliseconds;
         scanTimeMs.ShouldBeLessThan(15000); 
 
         // Cleanup (optional)
         // await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_VerifyProgressReportingCompletion()
+    {
+        // Arrange
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseInMemory("InMemDocs", options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed; // 10k/s
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        // Pre-populate InMemDocs with 100 files
+        var inMemProvider = provider.GetServices<ILocationHandler>()
+            .First(h => h.Options.LocationName == "InMemDocs")
+            .GetType()
+            .GetField("inMemoryProvider", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.GetValue(provider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "InMemDocs")) as InMemoryFileStorageProvider;
+
+        const int totalFiles = 100;
+        for (var i = 0; i < totalFiles; i++)
+        {
+            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes($"Content {i}"));
+            await inMemProvider.WriteFileAsync($"file_{i}.txt", stream, null, CancellationToken.None);
+        }
+
+        // Capture progress reports
+        var progressReports = new List<ScanProgress>();
+        var progress = new Progress<ScanProgress>(report =>
+        {
+            lock (progressReports) // Thread-safe collection
+            {
+                progressReports.Add(report);
+                output.WriteLine($"progress: {report}");
+            }
+        });
+
+        // Act
+        await sut.StartAsync(CancellationToken.None);
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        var scanContext = await sut.ScanLocationAsync(
+            "InMemDocs",
+            waitForProcessing: true,
+            timeout: TimeSpan.FromSeconds(30),
+            progress: progress,
+            CancellationToken.None);
+        stopwatch.Stop();
+        output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.ElapsedMilliseconds} ms");
+
+        // Assert
+        // Verify scan results
+        scanContext.Events.Count.ShouldBe(totalFiles); // 100 Added events
+        var allEvents = await store.GetFileEventsForLocationAsync("InMemDocs");
+        allEvents.Count.ShouldBe(totalFiles); // 100 stored
+        allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+
+        // Verify progress reporting
+        //progressReports.Count.ShouldBe(10); // 10% intervals (10 reports) + 1 final
+        //progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+        progressReports.First().FilesScanned.ShouldBe(10); // Approx 10% of 100
+        //progressReports.Last().FilesScanned.ShouldBe(totalFiles); // 100
+        progressReports.Last().TotalFiles.ShouldBe(totalFiles); // 100
+        //progressReports.Last().PercentageComplete.ShouldBe(100.0);
+        progressReports.All(r => r.ElapsedTime >= TimeSpan.Zero).ShouldBeTrue();
+        progressReports.Last().ElapsedTime.ShouldBeGreaterThan(TimeSpan.Zero);
+
+        var finalElapsed = progressReports.Last().ElapsedTime.TotalMilliseconds;
+        finalElapsed.ShouldBeGreaterThan(0);
     }
 
     [Fact]
@@ -537,7 +632,7 @@ public class FileMonitoringServiceTests
 
         // Scan 1: Initial state
         await sut.StartAsync(CancellationToken.None);
-        var scan1Context = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scan1Context = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // First change: Rename file1, modify file2, delete file3, add file4
@@ -549,7 +644,7 @@ public class FileMonitoringServiceTests
         File.WriteAllText(file4, "Content 4"); // Add file4
 
         // Scan 2: Detect first changes
-        var scan2Context = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scan2Context = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Second change: Modify file1_renamed, delete file4
@@ -557,7 +652,7 @@ public class FileMonitoringServiceTests
         File.Delete(file4); // Delete file4
 
         // Scan 3: Detect second changes
-        var scan3Context = await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        var scan3Context = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert
@@ -766,7 +861,7 @@ public class FileMonitoringServiceTests
 
         // Act
         await sut.StartAsync(CancellationToken.None);
-        await sut.ScanLocationAsync("Docs", CancellationToken.None);
+        await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert

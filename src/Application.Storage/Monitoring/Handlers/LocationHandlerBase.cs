@@ -121,9 +121,9 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the scan if needed.</param>
     /// <returns>A ScanContext object with the scan results.</returns>
-    public virtual async Task<ScanContext> ScanAsync(CancellationToken token = default)
+    public virtual async Task<ScanContext> ScanAsync(IProgress<ScanProgress> progress = null, CancellationToken token = default)
     {
-        return await this.ScanAsync(waitForProcessing: false, timeout: TimeSpan.Zero, token: token);
+        return await this.ScanAsync(waitForProcessing: false, timeout: TimeSpan.Zero, progress, token: token);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// <param name="timeout">Specifies the maximum duration to wait for the scan to complete.</param>
     /// <param name="token">Used to signal cancellation of the scan operation if needed.</param>
     /// <returns>Provides a task that, when completed, contains the context of the scan.</returns>
-    public abstract Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default);
+    public abstract Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.

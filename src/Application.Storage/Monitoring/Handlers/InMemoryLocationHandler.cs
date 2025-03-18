@@ -30,13 +30,13 @@ public class InMemoryLocationHandler(
         }
         if (!this.options.UseOnDemandOnly)
         {
-            await this.ScanAsync(token);
+            await this.ScanAsync(null, token);
         }
     }
 
     public override async Task PauseAsync(CancellationToken token = default)
     {
-        await base.PauseAsync();
+        await base.PauseAsync(token);
         if (!this.isPaused)
         {
             this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
@@ -47,7 +47,7 @@ public class InMemoryLocationHandler(
 
     public override async Task ResumeAsync(CancellationToken token = default)
     {
-        await base.ResumeAsync();
+        await base.ResumeAsync(token);
         if (this.isPaused)
         {
             this.inMemoryProvider.OnFileEvent += this.OnInMemoryFileEvent;
@@ -63,14 +63,19 @@ public class InMemoryLocationHandler(
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, CancellationToken token = default)
+    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default)
     {
+        var startTime = DateTimeOffset.UtcNow;
         var context = new ScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
 
         var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName); // based on past events
         var currentFiles = new Dictionary<string, FileMetadata>();
         string continuationToken = null;
+        var filesScanned = 0;
+        var lastReportedPercentage = 0;
+        var initialFiles = (await this.inMemoryProvider.ListFilesAsync("/", this.options.FilePattern, true, null, token)).Value.Files.ToList();
+        var estimatedTotalFiles = initialFiles.Count;
 
         do
         {
@@ -101,6 +106,19 @@ public class InMemoryLocationHandler(
                         this.eventQueue.Add(fileEvent, token);
                         context.Events.Add(fileEvent);
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+
+                        filesScanned++;
+                        int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+                        if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0) // Report at 10% intervals
+                        {
+                            lastReportedPercentage = currentPercentage;
+                            progress?.Report(new ScanProgress
+                            {
+                                FilesScanned = filesScanned,
+                                TotalFiles = estimatedTotalFiles,
+                                ElapsedTime = DateTimeOffset.UtcNow - startTime
+                            });
+                        }
                     }
                 }
             }
@@ -119,6 +137,19 @@ public class InMemoryLocationHandler(
             this.eventQueue.Add(fileEvent, token);
             context.Events.Add(fileEvent);
             this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+
+            filesScanned++;
+            int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+            if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
+            {
+                lastReportedPercentage = currentPercentage;
+                progress?.Report(new ScanProgress
+                {
+                    FilesScanned = filesScanned,
+                    TotalFiles = estimatedTotalFiles,
+                    ElapsedTime = DateTimeOffset.UtcNow - startTime
+                });
+            }
         }
 
         context.EndTime = DateTimeOffset.UtcNow;
@@ -131,6 +162,17 @@ public class InMemoryLocationHandler(
         else if (waitForProcessing)
         {
             await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5)); // Default timeout if none specified
+        }
+
+        int finalPercentage = 100;
+        if (finalPercentage > lastReportedPercentage)
+        {
+            progress?.Report(new ScanProgress
+            {
+                FilesScanned = filesScanned,
+                TotalFiles = filesScanned, // Exact count
+                ElapsedTime = context.EndTime.Value - startTime
+            });
         }
 
         return context;

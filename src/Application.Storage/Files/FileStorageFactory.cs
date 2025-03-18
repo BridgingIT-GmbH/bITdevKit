@@ -15,8 +15,8 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-    private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = new();
-    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new();
+    private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = [];
+    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = [];
 
     public IFileStorageProvider CreateProvider(string name)
     {
@@ -155,7 +155,7 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
         private readonly FileStorageFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
         private readonly string providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
         private ServiceLifetime lifetime = ServiceLifetime.Scoped;
-        private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = new();
+        private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = [];
         public Func<IServiceProvider, IFileStorageProvider> ProviderFactory;
 
         public ServiceLifetime Lifetime => this.lifetime;

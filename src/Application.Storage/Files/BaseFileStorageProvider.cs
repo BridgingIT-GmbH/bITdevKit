@@ -213,7 +213,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
     {
         try
         {
-            var currentMetadata = GetFileMetadataAsync(path, cancellationToken).Result;
+            var currentMetadata = this.GetFileMetadataAsync(path, cancellationToken).Result;
             if (currentMetadata.IsFailure)
             {
                 return Task.FromResult(Result<FileMetadata>.Failure()
@@ -222,7 +222,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
             }
 
             var updatedMetadata = metadataUpdate(currentMetadata.Value);
-            var setResult = SetFileMetadataAsync(path, updatedMetadata, cancellationToken).Result;
+            var setResult = this.SetFileMetadataAsync(path, updatedMetadata, cancellationToken).Result;
             if (setResult.IsFailure)
             {
                 return Task.FromResult(Result<FileMetadata>.Failure()
@@ -657,20 +657,20 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (IOException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new FileSystemError("Storage connectivity issue", LocationName, ex))
-                .WithMessage($"Failed to check health of storage at '{LocationName}'"));
+                .WithError(new FileSystemError("Storage connectivity issue", this.LocationName, ex))
+                .WithMessage($"Failed to check health of storage at '{this.LocationName}'"));
         }
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", LocationName, ex))
-                .WithMessage($"Permission denied for storage at '{LocationName}'"));
+                .WithError(new PermissionError("Access denied", this.LocationName, ex))
+                .WithMessage($"Permission denied for storage at '{this.LocationName}'"));
         }
         catch (Exception ex)
         {
             return Task.FromResult(Result.Failure()
                 .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error checking health of storage at '{LocationName}'"));
+                .WithMessage($"Unexpected error checking health of storage at '{this.LocationName}'"));
         }
     }
 

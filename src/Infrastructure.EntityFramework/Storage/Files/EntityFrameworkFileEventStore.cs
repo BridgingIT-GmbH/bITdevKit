@@ -1,0 +1,120 @@
+﻿// File: BridgingIT.DevKit.Infrastructure.EntityFramework/EntityFrameworkFileEventStore.cs
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
+
+using BridgingIT.DevKit.Application.FileMonitoring;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+
+/// <summary>
+/// Implements IFileEventStore using EF Core, storing FileEvent instances as FileEventEntity in a DbContext.
+/// Requires a TContext that implements IFileMonitoringContext for compatibility with existing application DbContexts.
+/// </summary>
+/// <typeparam name="TContext">The DbContext type, must implement IFileMonitoringContext.</typeparam>
+public class EntityFrameworkFileEventStore<TContext> : IFileEventStore
+    where TContext : DbContext, IFileMonitoringContext
+{
+    private readonly TContext context;
+
+    /// <summary>
+    /// Initializes a new instance of the EntityFrameworkFileEventStore with the specified DbContext.
+    /// </summary>
+    /// <param name="context">The DbContext instance implementing IFileMonitoringContext.</param>
+    public EntityFrameworkFileEventStore(TContext context)
+    {
+        this.context = context ?? throw new ArgumentNullException(nameof(context));
+    }
+
+    public async Task<FileEvent> GetFileEventAsync(string filePath)
+    {
+        var entity = await context.FileEvents
+            .OrderByDescending(e => e.DetectionTime)
+            .FirstOrDefaultAsync(e => e.FilePath == filePath);
+        return MapToDomain(entity);
+    }
+
+    /// <summary>
+    /// Retrieves a list of file events associated with a specific location asynchronously.
+    /// </summary>
+    /// <param name="locationName">Specifies the name of the location for which file events are being retrieved.</param>
+    /// <returns>A list of file events mapped to the domain model.</returns>
+    public async Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
+    {
+        var entities = await context.FileEvents
+            .Where(e => e.LocationName == locationName)
+            .ToListAsync();
+        return entities.Select(MapToDomain).ToList();
+    }
+
+    /// <summary>
+    /// Retrieves a list of file paths that are present at a specified location, excluding deleted files.
+    /// </summary>
+    /// <param name="locationName">Specifies the location to filter the file events.</param>
+    /// <returns>A list of file paths that are currently present at the specified location.</returns>
+    public async Task<List<string>> GetPresentFilesAsync(string locationName)
+    {
+        return await context.FileEvents
+            .Where(e => e.LocationName == locationName)
+            .GroupBy(e => e.FilePath)
+            .Select(g => new
+            {
+                FilePath = g.Key,
+                LatestEvent = g.OrderByDescending(e => e.DetectionTime).First()
+            })
+            .Where(x => x.LatestEvent.EventType != (int)FileEventType.Deleted)
+            .Select(x => x.FilePath)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// Stores a file event in the database asynchronously. It maps the provided event to an entity and saves it.
+    /// </summary>
+    /// <param name="fileEvent">An object representing the details of the file event to be stored.</param>
+    /// <returns>This method does not return a value.</returns>
+    public async Task StoreEventAsync(FileEvent fileEvent)
+    {
+        var entity = MapToEntity(fileEvent);
+        context.FileEvents.Add(entity);
+        await context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Stores the processing result asynchronously, with current implementation logging or skipping persistence.
+    /// </summary>
+    /// <param name="result">Contains the outcome of a processing operation to be stored or logged.</param>
+    /// <returns>Completes a task indicating the operation has finished.</returns>
+    public async Task StoreProcessingResultAsync(ProcessingResult result)
+    {
+        // Placeholder: ProcessingResult storage not yet fully defined.
+        // For now, we'll log it or skip persistence until Step 7 clarifies requirements.
+        // If persisted, it could be a separate DbSet or embedded in FileEventEntity.
+        await Task.CompletedTask;
+    }
+
+    private FileEvent MapToDomain(FileEventEntity entity) =>
+        entity == null
+            ? null
+            : new FileEvent
+            {
+                Id = entity.Id,
+                LocationName = entity.LocationName,
+                FilePath = entity.FilePath,
+                EventType = (FileEventType)entity.EventType,
+                DetectionTime = entity.DetectionTime,
+                FileSize = entity.FileSize,
+                LastModified = entity.LastModified,
+                Checksum = entity.Checksum
+            };
+
+    private FileEventEntity MapToEntity(FileEvent fileEvent) =>
+        new FileEventEntity
+        {
+            Id = fileEvent.Id,
+            LocationName = fileEvent.LocationName,
+            FilePath = fileEvent.FilePath,
+            EventType = (int)fileEvent.EventType,
+            DetectionTime = fileEvent.DetectionTime,
+            FileSize = fileEvent.FileSize,
+            LastModified = fileEvent.LastModified,
+            Checksum = fileEvent.Checksum
+        };
+}

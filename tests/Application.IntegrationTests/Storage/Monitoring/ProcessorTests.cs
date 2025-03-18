@@ -1,0 +1,183 @@
+﻿// File: BridgingIT.DevKit.Application.FileMonitoring.Tests/ProcessorTests.cs
+namespace BridgingIT.DevKit.Application.FileMonitoring.Tests;
+
+using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Shouldly;
+using Xunit;
+
+public class ProcessorTests
+{
+    private readonly IServiceProvider serviceProvider;
+
+    public ProcessorTests()
+    {
+        var services = new ServiceCollection()
+            .AddLogging()
+            .AddScoped<IFileStorageProvider>(sp => new InMemoryFileStorageProvider("TestInMemory"))
+            .AddScoped<IFileEventStore, InMemoryFileEventStore>();
+        this.serviceProvider = services.BuildServiceProvider();
+    }
+
+    [Fact]
+    public async Task FileLoggerProcessor_LogsEventDetails()
+    {
+        // Arrange
+        var logger = new TestLogger<FileLoggerProcessor>();
+        var sut = new FileLoggerProcessor(logger);
+        var fileEvent = new FileEvent
+        {
+            LocationName = "Docs",
+            FilePath = "test.txt",
+            EventType = FileEventType.Added,
+            FileSize = 100,
+            LastModified = DateTimeOffset.UtcNow,
+            Checksum = "abc123"
+        };
+        var context = new ProcessingContext(fileEvent);
+
+        // Act
+        await sut.ProcessAsync(context, CancellationToken.None);
+
+        // Assert
+        logger.Messages.ShouldContain(m => m.Contains("file event processed") && m.Contains("test.txt"));
+        logger.Messages.ShouldContain(m => m.Contains("Location=Docs"));
+        logger.Messages.ShouldContain(m => m.Contains("Type=Added"));
+    }
+
+    [Fact]
+    public async Task FileMoverProcessor_MovesFileToDestination()
+    {
+        // Arrange
+        var logger = new NullLogger<FileMoverProcessor>();
+        var sut = new FileMoverProcessor(logger) { DestinationRoot = "MovedDocs" };
+        var provider = this.serviceProvider.GetRequiredService<IFileStorageProvider>();
+        await provider.WriteFileAsync("test.txt", new MemoryStream(new byte[100]), null, CancellationToken.None);
+        var fileEvent = new FileEvent
+        {
+            LocationName = "Docs",
+            FilePath = "test.txt",
+            EventType = FileEventType.Added,
+            FileSize = 100,
+            LastModified = DateTimeOffset.UtcNow,
+            Checksum = "abc123"
+        };
+        var context = new ProcessingContext(fileEvent);
+        context.SetItem("StorageProvider", provider);
+
+        // Act
+        await sut.ProcessAsync(context, CancellationToken.None);
+
+        // Assert
+        var existsInSource = await provider.ExistsAsync("test.txt", null, CancellationToken.None);
+        var existsInDest = await provider.ExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
+        existsInSource.ShouldBeFailure();
+        existsInDest.ShouldBeSuccess();
+    }
+
+    [Fact]
+    public async Task RetryProcessorBehavior_RetriesOnFailure()
+    {
+        // Arrange
+        var logger = new TestLogger<RetryProcessorBehavior>();
+        var sut = new RetryProcessorBehavior(logger, maxAttempts: 3, initialDelay: TimeSpan.FromMilliseconds(50));
+        var fileEvent = new FileEvent
+        {
+            LocationName = "Docs",
+            FilePath = "test.txt",
+            EventType = FileEventType.Added
+        };
+        var context = new ProcessingContext(fileEvent);
+        var failureResult = Result<bool>.Failure().WithError(new ExceptionError(new Exception("Processing failed")));
+
+        // Act & Assert First Attempt
+        await Should.ThrowAsync<RetryException>(() => sut.AfterProcessAsync(context, failureResult, CancellationToken.None));
+        context.GetItem<int>("RetryAttempt").ShouldBe(1);
+
+        // Act & Assert Second Attempt
+        await Task.Delay(75); // Wait for first delay (50ms)
+        await Should.ThrowAsync<RetryException>(() => sut.AfterProcessAsync(context, failureResult, CancellationToken.None));
+        context.GetItem<int>("RetryAttempt").ShouldBe(2);
+
+        // Act & Assert Third Attempt (Max Reached)
+        await Task.Delay(125); // Wait for second delay (100ms)
+        await sut.AfterProcessAsync(context, failureResult, CancellationToken.None);
+        context.GetItem<int>("RetryAttempt").ShouldBe(2); // No further increment
+        logger.Messages.ShouldContain(m => m.Contains("Max retry attempts (3) reached"));
+    }
+
+    [Fact]
+    public async Task LocationHandler_ProcessesEventWithChain()
+    {
+        // Arrange
+        var logger = new NullLogger<LocationHandler>();
+        var provider = this.serviceProvider.GetRequiredService<IFileStorageProvider>();
+        var store = this.serviceProvider.GetRequiredService<IFileEventStore>();
+        var options = new LocationOptions("Docs")
+        {
+            FilePattern = "*.txt",
+            UseOnDemandOnly = true,
+            ProcessorConfigs =
+            {
+                new ProcessorConfiguration { ProcessorType = typeof(FileLoggerProcessor) },
+                new ProcessorConfiguration
+                {
+                    ProcessorType = typeof(FileMoverProcessor),
+                    Configure = p => ((FileMoverProcessor)p).DestinationRoot = "MovedDocs",
+                    BehaviorTypes = { typeof(RetryProcessorBehavior) }
+                }
+            }
+        };
+        var sut = new LocationHandler(logger, provider, store, options, this.serviceProvider);
+        var fileEvent = new FileEvent
+        {
+            LocationName = "Docs",
+            FilePath = "test.txt",
+            EventType = FileEventType.Added,
+            FileSize = 100,
+            LastModified = DateTimeOffset.UtcNow,
+            Checksum = "abc123"
+        };
+        await provider.WriteFileAsync("test.txt", new MemoryStream(new byte[100]), null, CancellationToken.None);
+
+        // Act
+        await sut.StartAsync(CancellationToken.None);
+
+        // Using reflection to access private eventQueue for testing purposes
+        var eventQueueField = typeof(LocationHandler).GetField("eventQueue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var eventQueue = eventQueueField.GetValue(sut) as BlockingCollection<FileEvent>;
+        eventQueue.Add(fileEvent); // Simulate event
+        await Task.Delay(300); // Allow processing
+        //await sut.StopAsync(CancellationToken.None);
+
+        // Assert
+        var movedExists = await provider.ExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
+        movedExists.ShouldBeSuccess();
+        var storedEvent = await store.GetFileEventAsync("test.txt");
+        storedEvent.ShouldNotBeNull();
+        storedEvent.FilePath.ShouldBe("test.txt");
+    }
+}
+
+// Simple in-memory logger for testing
+public class TestLogger<T> : ILogger<T>
+{
+    public List<string> Messages { get; } = new();
+
+    public IDisposable BeginScope<TState>(TState state) => null;
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    {
+        this.Messages.Add(formatter(state, exception));
+    }
+}

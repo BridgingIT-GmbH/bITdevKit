@@ -26,7 +26,8 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
 
         var fileEvent = context.FileEvent;
         this.logger.LogInformation(
-            "File event processed: Location={LocationName}, Path={FilePath}, Type={EventType}, Size={FileSize}, Checksum={Checksum}",
+            "{LogKey} filemonitoring: file event processed (Location={LocationName}, Path={FilePath}, Type={EventType}, Size={FileSize}, Checksum={Checksum})",
+            Constants.LogKey,
             fileEvent.LocationName,
             fileEvent.FilePath,
             fileEvent.EventType,
@@ -35,11 +36,4 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
 
         return Task.CompletedTask;
     }
-}
-
-/// <summary>
-/// Custom exception to signal a retry operation within the RetryProcessorBehavior.
-/// </summary>
-public class RetryException(string message) : Exception(message)
-{
 }

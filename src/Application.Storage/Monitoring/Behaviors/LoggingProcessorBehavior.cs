@@ -20,7 +20,8 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
         token.ThrowIfCancellationRequested();
 
         this.logger.LogDebug(
-            "Starting processing for file event: Location={LocationName}, Path={FilePath}, Type={EventType}",
+            "{LogKey} filemonitoring: starting processing for file event (Location={LocationName}, Path={FilePath}, Type={EventType})",
+            Constants.LogKey,
             context.FileEvent.LocationName,
             context.FileEvent.FilePath,
             context.FileEvent.EventType);
@@ -37,7 +38,8 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
         if (result.IsSuccess)
         {
             this.logger.LogDebug(
-                "Completed processing for file event: Location={LocationName}, Path={FilePath}, Type={EventType}",
+                "{LogKey} filemonitoring: completed processing for file event (Location={LocationName}, Path={FilePath}, Type={EventType})",
+                Constants.LogKey,
                 context.FileEvent.LocationName,
                 context.FileEvent.FilePath,
                 context.FileEvent.EventType);
@@ -45,7 +47,8 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
         else
         {
             this.logger.LogWarning(
-                "Failed processing for file event: Location={LocationName}, Path={FilePath}, Type={EventType}, Error={ErrorMessage}",
+                "{LogKey} filemonitoring: failed processing for file event (Location={LocationName}, Path={FilePath}, Type={EventType}, Error={ErrorMessage})",
+                Constants.LogKey,
                 context.FileEvent.LocationName,
                 context.FileEvent.FilePath,
                 context.FileEvent.EventType,

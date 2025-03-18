@@ -10,11 +10,9 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// Moves files to a specified destination directory based on the file event, preserving the original structure.
 /// </summary>
-public class FileMoverProcessor : IFileEventProcessor
+public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEventProcessor
 {
-    private readonly ILogger<FileMoverProcessor> logger;
-
-    public FileMoverProcessor(ILogger<FileMoverProcessor> logger) => this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ILogger<FileMoverProcessor> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public string ProcessorName => nameof(FileMoverProcessor);
 
@@ -27,6 +25,7 @@ public class FileMoverProcessor : IFileEventProcessor
     public async Task ProcessAsync(ProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
+
         if (string.IsNullOrEmpty(this.DestinationRoot))
         {
             throw new InvalidOperationException("DestinationRoot must be configured for FileMoverProcessor.");
@@ -54,7 +53,8 @@ public class FileMoverProcessor : IFileEventProcessor
             if (moveResult.IsSuccess)
             {
                 this.logger.LogInformation(
-                    "File moved successfully: {SourcePath} to {DestinationPath}",
+                    "{LogKey} filemonitoring: file moved successfully {SourcePath} to {DestinationPath}",
+                    Constants.LogKey,
                     fileEvent.FilePath,
                     destinationPath);
             }
@@ -67,7 +67,8 @@ public class FileMoverProcessor : IFileEventProcessor
         {
             this.logger.LogError(
                 ex,
-                "Failed to move file: {SourcePath} to {DestinationPath}",
+                "{LogKey} filemonitoring: failed to move file {SourcePath} to {DestinationPath}",
+                Constants.LogKey,
                 fileEvent.FilePath,
                 destinationPath);
             throw;

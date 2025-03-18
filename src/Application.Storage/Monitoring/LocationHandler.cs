@@ -107,6 +107,7 @@ public class LocationHandler
         {
             await this.processingTask;
         }
+
         this.eventQueue.CompleteAdding();
         this.loggerTyped.LogInformationHandlerStopped(this.options.Name);
     }
@@ -332,7 +333,7 @@ public class LocationHandler
     {
         while (!token.IsCancellationRequested && !this.eventQueue.IsCompleted)
         {
-            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, token))
+            if (this.isPaused || this.cts.IsCancellationRequested || !this.eventQueue.TryTake(out var fileEvent, 100, token))
             {
                 continue;
             }

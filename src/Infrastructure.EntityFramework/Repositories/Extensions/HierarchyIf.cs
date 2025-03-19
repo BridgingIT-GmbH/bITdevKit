@@ -22,7 +22,7 @@ public static partial class Extensions
         IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
-        if (options is null || options?.HasHierarchy() == false)
+        if (options is null || options?.HasHierarchy() == false && options.Hierarchy.MaxDepth > 0)
         {
             return source;
         }
@@ -64,7 +64,7 @@ public static partial class Extensions
     {
         EnsureArg.IsNotNull(mapper, nameof(mapper));
 
-        if (options is null || options?.HasHierarchy() == false)
+        if (options is null || options?.HasHierarchy() == false && options.Hierarchy.MaxDepth > 0)
         {
             return source;
         }

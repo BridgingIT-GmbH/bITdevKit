@@ -15,7 +15,7 @@ public class LocalLocationHandler : LocationHandlerBase
 {
     private FileSystemWatcher fileSystemWatcher;
     private readonly Dictionary<string, (FileEvent Event, DateTimeOffset Timestamp)> eventBuffer = [];
-    private readonly TimeSpan debounceInterval = TimeSpan.FromMilliseconds(50);
+    private readonly TimeSpan debounceInterval = TimeSpan.FromMilliseconds(200);
 
     public LocalLocationHandler(
         ILogger logger,

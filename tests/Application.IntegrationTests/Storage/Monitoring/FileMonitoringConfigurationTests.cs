@@ -15,8 +15,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
+[IntegrationTest("Application")]
+[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class FileMonitoringConfigurationTests
 {
+    private readonly ITestOutputHelper output;
+
+    public FileMonitoringConfigurationTests(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
+
     [Fact]
     public void FluentApi_AddFileMonitoring_RegistersComponentsCorrectly()
     {

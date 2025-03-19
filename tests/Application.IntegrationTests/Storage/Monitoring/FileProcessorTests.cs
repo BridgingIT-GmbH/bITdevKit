@@ -18,17 +18,21 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Shouldly;
 using Xunit;
 
+[IntegrationTest("Application")]
+[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class FileProcessorTests
 {
     private readonly IServiceProvider serviceProvider;
+    private readonly ITestOutputHelper output;
 
-    public FileProcessorTests()
+    public FileProcessorTests(ITestOutputHelper output)
     {
         var services = new ServiceCollection()
             .AddLogging()
             .AddScoped<IFileStorageProvider>(sp => new InMemoryFileStorageProvider("TestInMemory"))
             .AddScoped<IFileEventStore, InMemoryFileEventStore>();
         this.serviceProvider = services.BuildServiceProvider();
+        this.output = output;
     }
 
     [Fact]

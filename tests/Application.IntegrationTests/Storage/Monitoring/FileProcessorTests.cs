@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.FileMonitoring.Tests;
+namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
 using System.Collections.Concurrent;
@@ -18,11 +18,11 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Shouldly;
 using Xunit;
 
-public class ProcessorTests
+public class FileProcessorTests
 {
     private readonly IServiceProvider serviceProvider;
 
-    public ProcessorTests()
+    public FileProcessorTests()
     {
         var services = new ServiceCollection()
             .AddLogging()

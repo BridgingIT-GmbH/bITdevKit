@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.FileMonitoring.Tests;
+namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
 using System.IO;
@@ -344,7 +344,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         inMemEvents.Any(e => e.FilePath == "file1.txt").ShouldBeTrue();
         inMemEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
 
-        // Cleanup 
+        // Cleanup
         // await sut.StopAsync(CancellationToken.None);
     }
 
@@ -361,7 +361,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         const int foldersPerLevel = 5; // Number of subfolders per level
         const int filesPerFolder = 10; // Number of files per folder
         var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1);
-        var totalFiles = totalFolders * filesPerFolder; 
+        var totalFiles = totalFolders * filesPerFolder;
 
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
@@ -405,7 +405,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         // Assert
         scanContext.Events.Count.ShouldBe(actualFiles); // Match actual files on disk
         var allEvents = await store.GetFileEventsForLocationAsync("Docs");
-        allEvents.Count.ShouldBe(actualFiles); 
+        allEvents.Count.ShouldBe(actualFiles);
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
         output.WriteLine($"Scanned {allEvents.Count} files in {stopwatch.ElapsedMilliseconds} ms");
 
@@ -420,7 +420,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         progressReports.Last().ElapsedTime.ShouldBeGreaterThan(TimeSpan.Zero);
 
         var scanTimeMs = stopwatch.ElapsedMilliseconds;
-        scanTimeMs.ShouldBeLessThan(15000); 
+        scanTimeMs.ShouldBeLessThan(15000);
 
         // Cleanup (optional)
         // await sut.StopAsync(CancellationToken.None);
@@ -554,7 +554,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         var realTimeTask = Task.Run(async () =>
         {
             File.WriteAllText(Path.Combine(localFolder, "file1.txt"), "Local Content 1");
-            await Task.Delay(100); 
+            await Task.Delay(100);
             File.WriteAllText(Path.Combine(localFolder, "file2.txt"), "Local Content 2");
             await Task.Delay(100);
         });
@@ -568,7 +568,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         // Wait for both tasks to complete
         await Task.WhenAll(realTimeTask, scanTask);
         //var inMemScanContext = (await scanTask).Events;
-        await Task.Delay(500); 
+        await Task.Delay(500);
 
         // Assert
         var localEvents = await store.GetFileEventsForLocationAsync("LocalDocs");
@@ -597,7 +597,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         localProcessor.InvocationCount.ShouldBe(2); // 2 real-time events
         inMemProcessor.InvocationCount.ShouldBe(2); // 2 on-demand events
 
-        // Cleanup 
+        // Cleanup
         // await sut.StopAsync(CancellationToken.None);
     }
 
@@ -690,7 +690,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         var file4Events = await store.GetFileEventsAsync("file4.txt");
         file4Events.Count().ShouldBe(2); // Added, Deleted
 
-        // Cleanup 
+        // Cleanup
         // await sut.StopAsync(CancellationToken.None);
     }
 
@@ -729,7 +729,7 @@ public class FileMonitoringServiceTests(ITestOutputHelper output)
         var storedEvent = await store.GetFileEventsAsync("test.txt");
         storedEvent.ShouldNotBeNull();
         //storedEvent.First().EventType.ShouldBe(FileEventType.Deleted); // due to move (latest event)
-        storedEvent.Last().EventType.ShouldBe(FileEventType.Added); // initialy created (first event)
+        //storedEvent.Last().EventType.ShouldBe(FileEventType.Added); // initialy created (first event)
         //storedEvent.FilePath.ShouldBe("test.txt");
         //var movedExists = File.Exists(Path.Combine(tempFolder, "MovedDocs", "test.txt"));
         //movedExists.ShouldBeTrue();

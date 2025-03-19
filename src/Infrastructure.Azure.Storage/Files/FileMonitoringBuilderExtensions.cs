@@ -1,8 +1,5 @@
 ﻿// File: BridgingIT.DevKit.Infrastructure.Azure.Storage/FileMonitoringBuilderExtensions.cs
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
-
-using BridgingIT.DevKit.Application.FileMonitoring;
-
 /// <summary>
 /// Provides extension methods for configuring Azure-specific storage in the FileMonitoring system.
 /// </summary>

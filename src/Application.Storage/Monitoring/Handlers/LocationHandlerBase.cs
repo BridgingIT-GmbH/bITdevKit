@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.FileMonitoring;
+namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +12,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 

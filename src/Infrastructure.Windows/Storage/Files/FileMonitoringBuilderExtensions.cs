@@ -1,7 +1,11 @@
-﻿// File: BridgingIT.DevKit.Infrastructure.Windows.Storage/FileMonitoringBuilderExtensions.cs
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Infrastructure.Windows.Storage;
 
-using BridgingIT.DevKit.Application.FileMonitoring;
+using BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
 /// Provides extension methods for configuring Windows-specific storage in the FileMonitoring system.

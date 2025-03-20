@@ -12,7 +12,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage.Monitoring;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
@@ -101,18 +100,20 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    public virtual async Task StopAsync(CancellationToken token = default)
+    public virtual Task StopAsync(CancellationToken token = default)
     {
         this.loggerTyped.LogInformationStoppingHandler(this.options.LocationName);
         //this.cts.Cancel();
 
         if (this.processingTask != null)
         {
-            await this.processingTask;
+            //await this.processingTask;
         }
 
         this.eventQueue.CompleteAdding();
         this.logger.LogInformation($"Handler stopped for location: {this.options.LocationName}");
+
+        return Task.CompletedTask;
     }
 
     /// <summary>

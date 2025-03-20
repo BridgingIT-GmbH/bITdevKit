@@ -24,5 +24,10 @@ public enum FileEventType
     /// <summary>
     /// Indicates a file was removed from the monitored location.
     /// </summary>
-    Deleted
+    Deleted,
+
+    /// <summary>
+    /// Indicates a file was unchanged in the monitored location.
+    /// </summary>
+    Unchanged
 }

@@ -6,15 +6,15 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Application.Storage.Monitoring;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
-using System.Text;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -57,6 +57,9 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         scanContext.Events[0].FilePath.ShouldBe("test.txt");
         //var movedExists = File.Exists(Path.Combine(tempFolder, "MovedDocs", "test.txt"));
         //movedExists.ShouldBeTrue();
+
+        // Cleanup(optional)
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -83,10 +86,10 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         // Initial state: Create multiple files
         var files = new[]
         {
-        Path.Combine(tempFolder, "file1.txt"),
-        Path.Combine(tempFolder, "file2.txt"),
-        Path.Combine(tempFolder, "file3.txt")
-    };
+            Path.Combine(tempFolder, "file1.txt"),
+            Path.Combine(tempFolder, "file2.txt"),
+            Path.Combine(tempFolder, "file3.txt")
+        };
         File.WriteAllText(files[0], "Content 1"); // New file
         File.WriteAllText(files[1], "Content 2"); // New file
         File.WriteAllText(files[2], "Content 3"); // New file
@@ -110,7 +113,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allStoredEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
 
         // Cleanup (optional)
-        // await sut.StopAsync(CancellationToken.None);
+         await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -192,7 +195,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         scanContext.Events.ShouldContain(e => e.FilePath == "file4.txt" && e.EventType == FileEventType.Added);
 
         // Cleanup (optional, commented in your style)
-        // await sut.StopAsync(CancellationToken.None);
+         await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -276,10 +279,9 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allDocs2Events.Count.ShouldBe(4); // 2 Added (Scan 1) + 1 Changed, 1 Added (Scan 2)
 
         // Cleanup (optional)
-        // await sut.StopAsync(CancellationToken.None);
+         await sut.StopAsync(CancellationToken.None);
     }
 
-    // File: BridgingIT.DevKit.Application.FileMonitoring.Tests/FileMonitoringOndemandServiceTests.cs
     [Fact]
     public async Task FileMonitoringService_OnDemand_WithLocalAndInMemoryLocations()
     {
@@ -347,10 +349,9 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         inMemEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
 
         // Cleanup
-        // await sut.StopAsync(CancellationToken.None);
+         await sut.StopAsync(CancellationToken.None);
     }
 
-    // File: BridgingIT.DevKit.Application.FileMonitoring.Tests/FileMonitoringServiceTests.cs
     [Fact]
     public async Task FileMonitoringService_OnDemand_PerformanceTestWithLargeTreeStructure()
     {
@@ -430,7 +431,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         scanTimeMs.ShouldBeLessThan(15000);
 
         // Cleanup (optional)
-        // await sut.StopAsync(CancellationToken.None);
+         await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -506,6 +507,9 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         var scanTimeMs = stopwatch.ElapsedMilliseconds;
         scanTimeMs.ShouldBeGreaterThan(4000); // Minimum 5s for 50 files × 100ms
+
+        // Cleanup
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -585,6 +589,9 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         var finalElapsed = progressReports.Last().ElapsedTime.TotalMilliseconds;
         finalElapsed.ShouldBeGreaterThan(0);
+
+        // Cleanup
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -623,8 +630,98 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         storedEvent.EventType.ShouldBe(FileEventType.Added);
         storedEvent.FilePath.ShouldBe("existing.txt");
 
-        //// Cleanup
-        //await sut.StopAsync(CancellationToken.None);
+        // Cleanup
+        await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_EventFiltering()
+    {
+        // Arrange: Create a temporary folder and files
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+
+        // Create 5 files
+        const int totalFiles = 5;
+        for (var i = 0; i < totalFiles; i++)
+        {
+            File.WriteAllText(Path.Combine(tempFolder, $"file_{i}.txt"), $"Content {i}");
+        }
+
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("Docs", tempFolder, options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed;
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        await sut.StartAsync(CancellationToken.None);
+
+        // Step 1: Scan with Added filter
+        var scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(30))
+            .WithEventFilter(FileEventType.Added)
+            .Build();
+        var scanContext = await sut.ScanLocationAsync("Docs", scanOptions, null, CancellationToken.None);
+        output.WriteLine($"Step 1: Scan detected {scanContext.Events.Count} Added events");
+
+        var allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count.ShouldBe(totalFiles); // 5 Added events
+        allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+
+        // Step 2: Scan with Unchanged filter (files unchanged since last scan)
+        scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(30))
+            .WithEventFilter(FileEventType.Unchanged)
+            .Build();
+        scanContext = await sut.ScanLocationAsync("Docs", scanOptions, null, CancellationToken.None);
+        output.WriteLine($"Step 2: Scan detected {scanContext.Events.Count} Unchanged events");
+
+        allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count(e => e.EventType == FileEventType.Unchanged).ShouldBe(totalFiles); // 5 Unchanged events
+        allEvents.Count.ShouldBe(totalFiles * 2); // 5 Added + 5 Unchanged
+
+        // Step 3: Modify one file and scan with Changed filter
+        File.WriteAllText(Path.Combine(tempFolder, "file_0.txt"), "Modified Content");
+        scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(30))
+            .WithEventFilter(FileEventType.Changed)
+            .Build();
+        scanContext = await sut.ScanLocationAsync("Docs", scanOptions, null, CancellationToken.None);
+        output.WriteLine($"Step 3: Scan detected {scanContext.Events.Count} Changed events");
+
+        allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count(e => e.EventType == FileEventType.Changed).ShouldBe(1); // 1 Changed event
+        allEvents.Count.ShouldBe((totalFiles * 2) + 1); // 5 Added + 5 Unchanged + 1 Changed
+
+        // Step 4: Delete one file and scan with Deleted filter
+        File.Delete(Path.Combine(tempFolder, "file_0.txt"));
+        scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(30))
+            .WithEventFilter(FileEventType.Deleted)
+            .Build();
+        scanContext = await sut.ScanLocationAsync("Docs", scanOptions, null, CancellationToken.None);
+        output.WriteLine($"Step 4: Scan detected {scanContext.Events.Count} Deleted events");
+
+        allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count(e => e.EventType == FileEventType.Deleted).ShouldBe(1); // 1 Deleted event
+        allEvents.Count.ShouldBe((totalFiles * 2) + 2); // 5 Added + 5 Unchanged + 1 Changed + 1 Deleted
+
+        // Cleanup
+        await sut.StopAsync(CancellationToken.None);
     }
 
     private static void GenerateFolderTree(string basePath, int depth, int foldersPerLevel, int filesPerFolder)

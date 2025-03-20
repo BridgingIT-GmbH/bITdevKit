@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Application.Storage;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage.Monitoring;
 using Microsoft.Extensions.Logging;
 
 public class InMemoryLocationHandler(
@@ -65,6 +64,7 @@ public class InMemoryLocationHandler(
     {
         this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
         this.isPaused = false;
+
         await base.StopAsync(token);
     }
 
@@ -97,7 +97,7 @@ public class InMemoryLocationHandler(
                     var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath);
                     var eventType = this.DetermineEventType(lastEvent, metadata, checksumResult.Value);
 
-                    if (eventType.HasValue)
+                    if (eventType.HasValue && options.EventFilter.Contains(eventType.Value))
                     {
                         var fileEvent = new FileEvent
                         {
@@ -145,26 +145,30 @@ public class InMemoryLocationHandler(
                 EventType = FileEventType.Deleted,
                 DetectionTime = DateTimeOffset.UtcNow
             };
-            this.eventQueue.Add(fileEvent, token);
-            context.Events.Add(fileEvent);
-            this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
-            filesScanned++;
-            var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
-            if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
+            if (options.EventFilter.Contains(fileEvent.EventType))
             {
-                lastReportedPercentage = currentPercentage;
-                progress?.Report(new ScanProgress
+                this.eventQueue.Add(fileEvent, token);
+                context.Events.Add(fileEvent);
+                this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+
+                filesScanned++;
+                var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+                if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
                 {
-                    FilesScanned = filesScanned,
-                    TotalFiles = estimatedTotalFiles,
-                    ElapsedTime = DateTimeOffset.UtcNow - startTime
-                });
-            }
+                    lastReportedPercentage = currentPercentage;
+                    progress?.Report(new ScanProgress
+                    {
+                        FilesScanned = filesScanned,
+                        TotalFiles = estimatedTotalFiles,
+                        ElapsedTime = DateTimeOffset.UtcNow - startTime
+                    });
+                }
 
-            if (options.DelayPerFile > TimeSpan.Zero)
-            {
-                await Task.Delay(options.DelayPerFile, token);
+                if (options.DelayPerFile > TimeSpan.Zero)
+                {
+                    await Task.Delay(options.DelayPerFile, token);
+                }
             }
         }
 
@@ -205,6 +209,6 @@ public class InMemoryLocationHandler(
         if (lastEvent.EventType == FileEventType.Deleted) return FileEventType.Added;
         if (lastEvent.Checksum != checksum || lastEvent.LastModified != current.LastModified) return FileEventType.Changed;
 
-        return null;
+        return FileEventType.Unchanged;
     }
 }

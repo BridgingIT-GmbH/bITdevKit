@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Storage.Monitoring;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -29,7 +28,7 @@ public class FileMonitoringService(
     IEnumerable<IMonitoringBehavior> behaviors = null) : IFileMonitoringService
 {
     private readonly ILogger<FileMonitoringService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly TypedLogger loggerTyped = new TypedLogger(logger); // Strongly-typed logger for efficiency
+    private readonly TypedLogger loggerTyped = new(logger); // Strongly-typed logger for efficiency
     private readonly IEnumerable<ILocationHandler> handlers = handlers ?? [];
     private readonly IEnumerable<IMonitoringBehavior> behaviors = behaviors ?? [];
     private bool isStarted = false;

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -52,6 +53,7 @@ public class FileMonitoringService(
         {
             await handler.StartAsync(token);
         }
+
         this.isStarted = true;
         this.loggerTyped.LogInformationServiceStarted();
     }
@@ -75,6 +77,7 @@ public class FileMonitoringService(
         {
             await handler.StopAsync(token);
         }
+
         this.isStarted = false;
         this.loggerTyped.LogInformationServiceStopped();
     }
@@ -83,37 +86,13 @@ public class FileMonitoringService(
     /// Triggers an on-demand scan for a specific location asynchronously.
     /// Compares the current state with historical data to detect changes and enqueue events.
     /// </summary>
-    /// <param name="locationName">The name of the location to scan (e.g., "Docs").</param>
-    /// <param name="token">The cancellation token to stop the scan if needed.</param>
-    /// <returns>A ScanContext object containing the results of the scan operation.</returns>
-    public Task<ScanContext> ScanLocationAsync(string locationName, CancellationToken token = default)
-    {
-        return this.ScanLocationAsync(locationName, waitForProcessing: false, timeout: TimeSpan.Zero, progress: null, token: token);
-    }
-
-    /// <summary>
-    /// Triggers an on-demand scan for a specific location asynchronously.
-    /// Compares the current state with historical data to detect changes and enqueue events.
-    /// </summary>
-    /// <param name="locationName">The name of the location to scan (e.g., "Docs").</param>
-    /// <param name="token">The cancellation token to stop the scan if needed.</param>
-    /// <returns>A ScanContext object containing the results of the scan operation.</returns>
-    public Task<ScanContext> ScanLocationAsync(string locationName, IProgress<ScanProgress> progress, CancellationToken token = default)
-    {
-        return this.ScanLocationAsync(locationName, waitForProcessing: false, timeout: TimeSpan.Zero, progress: progress, token: token);
-    }
-
-    /// <summary>
-    /// Triggers an on-demand scan for a specific location asynchronously.
-    /// Compares the current state with historical data to detect changes and enqueue events.
-    /// </summary>
     /// <param name="locationName">Specifies the name of the location to be scanned.</param>
-    /// <param name="waitForProcessing">Indicates whether to wait for the scan to complete before returning.</param>
-    /// <param name="timeout">Sets the maximum duration to wait for the scan to complete.</param>
-    /// <param name="token">Allows for cancellation of the scan operation if needed.</param>
-    /// <returns>Returns the context of the scan, which includes details about the scan events.</returns>
-    /// <exception cref="KeyNotFoundException">Thrown when no handler is found for the specified location name.</exception>
-    public async Task<ScanContext> ScanLocationAsync(string locationName, bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default)
+    /// <param name="options">Provides additional settings for the scan process.</param>
+    /// <param name="progress">Reports the progress of the scan operation.</param>
+    /// <param name="token">Allows for cancellation of the scan operation.</param>
+    /// <returns>Returns the context of the scan after completion.</returns>
+    /// <exception cref="KeyNotFoundException">Thrown when the specified location cannot be found in the handlers.</exception>
+    public async Task<ScanContext> ScanLocationAsync(string locationName, ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default)
     {
         var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
         if (handler == null)
@@ -123,7 +102,7 @@ public class FileMonitoringService(
         }
 
         this.loggerTyped.LogInformationScanningLocation(locationName);
-        var context = await handler.ScanAsync(waitForProcessing, timeout, progress, token);
+        var context = await handler.ScanAsync(options, progress, token);
         this.loggerTyped.LogInformationScanCompleted(locationName, context.Events.Count);
 
         return context;

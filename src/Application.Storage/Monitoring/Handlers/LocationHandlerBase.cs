@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
@@ -118,22 +119,11 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// Performs an on-demand scan of the location asynchronously.
     /// Detects changes by comparing current state with stored events and enqueues them.
     /// </summary>
-    /// <param name="token">The cancellation token to stop the scan if needed.</param>
-    /// <returns>A ScanContext object with the scan results.</returns>
-    public virtual async Task<ScanContext> ScanAsync(IProgress<ScanProgress> progress = null, CancellationToken token = default)
-    {
-        return await this.ScanAsync(waitForProcessing: false, timeout: TimeSpan.Zero, progress, token: token);
-    }
-
-    /// <summary>
-    /// Performs an on-demand scan of the location asynchronously.
-    /// Detects changes by comparing current state with stored events and enqueues them.
-    /// </summary>
-    /// <param name="waitForProcessing">Indicates whether to wait for the scan to complete before returning.</param>
-    /// <param name="timeout">Specifies the maximum duration to wait for the scan to complete.</param>
-    /// <param name="token">Used to signal cancellation of the scan operation if needed.</param>
-    /// <returns>Provides a task that, when completed, contains the context of the scan.</returns>
-    public abstract Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default);
+    /// <param name="options">Specifies the configuration settings for the scan operation.</param>
+    /// <param name="progress">Provides updates on the progress of the scan as it executes.</param>
+    /// <param name="token">Allows for the cancellation of the scan operation if needed.</param>
+    /// <returns>Returns a task that, when completed, provides the context of the scan.</returns>
+    public abstract Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.

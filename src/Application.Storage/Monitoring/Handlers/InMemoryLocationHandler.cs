@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 using Microsoft.Extensions.Logging;
 
 public class InMemoryLocationHandler(
@@ -22,15 +23,18 @@ public class InMemoryLocationHandler(
     public override async Task StartAsync(CancellationToken token = default)
     {
         await base.StartAsync(token);
+
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
             this.inMemoryProvider.OnFileEvent += this.OnInMemoryFileEvent;
             this.isPaused = false;
-            this.logger.LogInformation($"Real-time watching started for in-memory location: {this.options.LocationName}");
+
+            this.logger.LogInformation($"Real-time watching started for location: {this.options.LocationName}");
         }
-        if (!this.options.UseOnDemandOnly)
+
+        if (!this.options.UseOnDemandOnly && this.options.ScanOnStart)
         {
-            await this.ScanAsync(null, token);
+            await this.ScanAsync(null, null, token);
         }
     }
 
@@ -41,7 +45,8 @@ public class InMemoryLocationHandler(
         {
             this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
             this.isPaused = true;
-            this.logger.LogInformation($"Paused real-time watching for in-memory location: {this.options.LocationName}");
+
+            this.logger.LogInformation($"Paused real-time watching for location: {this.options.LocationName}");
         }
     }
 
@@ -52,7 +57,7 @@ public class InMemoryLocationHandler(
         {
             this.inMemoryProvider.OnFileEvent += this.OnInMemoryFileEvent;
             this.isPaused = false;
-            this.logger.LogInformation($"Resumed real-time watching for in-memory location: {this.options.LocationName}");
+            this.logger.LogInformation($"Resumed real-time watching for location: {this.options.LocationName}");
         }
     }
 
@@ -63,8 +68,9 @@ public class InMemoryLocationHandler(
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default)
+    public override async Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default)
     {
+        options ??= ScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
         var context = new ScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
@@ -108,7 +114,7 @@ public class InMemoryLocationHandler(
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
                         filesScanned++;
-                        int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+                        var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
                         if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0) // Report at 10% intervals
                         {
                             lastReportedPercentage = currentPercentage;
@@ -118,6 +124,11 @@ public class InMemoryLocationHandler(
                                 TotalFiles = estimatedTotalFiles,
                                 ElapsedTime = DateTimeOffset.UtcNow - startTime
                             });
+                        }
+
+                        if (options.DelayPerFile > TimeSpan.Zero)
+                        {
+                            await Task.Delay(options.DelayPerFile, token);
                         }
                     }
                 }
@@ -139,7 +150,7 @@ public class InMemoryLocationHandler(
             this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
             filesScanned++;
-            int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+            var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
             if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
             {
                 lastReportedPercentage = currentPercentage;
@@ -150,21 +161,17 @@ public class InMemoryLocationHandler(
                     ElapsedTime = DateTimeOffset.UtcNow - startTime
                 });
             }
+
+            if (options.DelayPerFile > TimeSpan.Zero)
+            {
+                await Task.Delay(options.DelayPerFile, token);
+            }
         }
 
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
 
-        if (waitForProcessing && timeout != TimeSpan.Zero)
-        {
-            await this.WaitForQueueEmptyAsync(timeout);
-        }
-        else if (waitForProcessing)
-        {
-            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5)); // Default timeout if none specified
-        }
-
-        int finalPercentage = 100;
+        const int finalPercentage = 100;
         if (finalPercentage > lastReportedPercentage)
         {
             progress?.Report(new ScanProgress
@@ -173,6 +180,15 @@ public class InMemoryLocationHandler(
                 TotalFiles = filesScanned, // Exact count
                 ElapsedTime = context.EndTime.Value - startTime
             });
+        }
+
+        if (options.WaitForProcessing && options.Timeout != TimeSpan.Zero)
+        {
+            await this.WaitForQueueEmptyAsync(options.Timeout);
+        }
+        else if (options.WaitForProcessing)
+        {
+            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5));
         }
 
         return context;

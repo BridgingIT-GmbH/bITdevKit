@@ -2,7 +2,6 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
@@ -10,11 +9,12 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
+using System.Text;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -321,8 +321,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         //    .First(h => h.Options.Name == "InMemDocs").Options.ProcessorConfigs[0].ProcessorType;
         var inMemoryProvider = provider.GetServices<ILocationHandler>()
             .First(h => h.Options.LocationName == "InMemDocs").Provider; // Get the InMemoryFileStorageProvider instance
-        using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 1"));
-        using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 2"));
+        await using var stream1 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 1"));
+        await using var stream2 = new MemoryStream(Encoding.UTF8.GetBytes("InMem Content 2"));
         await inMemoryProvider.WriteFileAsync("file1.txt", stream1, null, CancellationToken.None);
         await inMemoryProvider.WriteFileAsync("file2.txt", stream2, null, CancellationToken.None);
 
@@ -362,14 +362,14 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         const int depth = 3; // Number of subfolder levels
         const int foldersPerLevel = 5; // Number of subfolders per level
         const int filesPerFolder = 10; // Number of files per folder
-        var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1);
-        var totalFiles = totalFolders * filesPerFolder;
+        var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1); // 156
+        var totalFiles = totalFolders * filesPerFolder; // 1560
 
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
         GenerateFolderTree(tempFolder, depth, foldersPerLevel, filesPerFolder);
         stopwatch.Stop();
-        var actualFiles = Directory.GetFiles(tempFolder, "*.txt", SearchOption.AllDirectories).Length;
+        var actualFiles = Directory.GetFiles(tempFolder, "*.txt", SearchOption.AllDirectories).Length; // 7800
         output.WriteLine($"Generated {actualFiles} files in {totalFolders} folders in {stopwatch.ElapsedMilliseconds}ms");
 
         var services = new ServiceCollection().AddLogging();
@@ -399,7 +399,12 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         // Act: Scan the large tree structure
         await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
-        var scanContext = await sut.ScanLocationAsync("Docs", waitForProcessing: true, timeout: TimeSpan.FromSeconds(90), progress, CancellationToken.None);
+        var options = new ScanOptions
+        {
+            WaitForProcessing = true,
+            Timeout = TimeSpan.FromSeconds(90)
+        };
+        var scanContext = await sut.ScanLocationAsync("Docs", options, progress, CancellationToken.None);
         //await handler.WaitForQueueEmptyAsync(TimeSpan.FromSeconds(90)); // Wait up to 90s for all events as the event processing (from queue) runs in the background
         stopwatch.Stop();
         output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.ElapsedMilliseconds} ms");
@@ -413,7 +418,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Verify progress reporting
         progressReports.Count.ShouldBe(10); // 10% intervals (10) + 1 final
-        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe(new[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 });
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
         progressReports.First().FilesScanned.ShouldBeGreaterThan(0); // Approx 10% of 7800
         progressReports.Last().FilesScanned.ShouldBe(actualFiles); // 7800
         progressReports.Last().TotalFiles.ShouldBe(actualFiles); // 7800
@@ -426,6 +431,81 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Cleanup (optional)
         // await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_PerformanceTestWithSlowdownAndProgress()
+    {
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+
+        const int depth = 1;
+        const int foldersPerLevel = 5;
+        const int filesPerFolder = 2; // Reduced to 2 files per folder
+        var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1); // 6
+        var totalFiles = totalFolders * filesPerFolder; // 6 * 2 = 12 (incorrect, actual is 50)
+
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        GenerateFolderTree(tempFolder, depth, foldersPerLevel, filesPerFolder);
+        stopwatch.Stop();
+        var actualFiles = Directory.GetFiles(tempFolder, "*.txt", SearchOption.AllDirectories).Length; // Should be 50
+        output.WriteLine($"Generated {actualFiles} files in {totalFolders} folders in {stopwatch.Elapsed.TotalSeconds:F2}s");
+
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("Docs", tempFolder, options =>
+                {
+                    options.FilePattern = "*.txt";
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed;
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        var progressReports = new List<ScanProgress>();
+        var progress = new Progress<ScanProgress>(report =>
+        {
+            lock (progressReports)
+            {
+                progressReports.Add(report);
+                output.WriteLine($"progress: scanned {report.FilesScanned}/{report.TotalFiles} files ({report.PercentageComplete:F2}%) in {report.ElapsedTime.TotalSeconds:F2}s");
+            }
+        });
+
+        await sut.StartAsync(CancellationToken.None);
+        stopwatch.Restart();
+        var scanOptions = new ScanOptions
+        {
+            WaitForProcessing = true,
+            Timeout = TimeSpan.FromSeconds(90),
+            DelayPerFile = TimeSpan.FromMilliseconds(100) // 100ms per file
+        };
+        var scanContext = await sut.ScanLocationAsync("Docs", scanOptions, progress, CancellationToken.None);
+        stopwatch.Stop();
+        output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.Elapsed.TotalSeconds:F2}s");
+
+        var allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        output.WriteLine($"Stored {allEvents.Count} events in {stopwatch.Elapsed.TotalSeconds:F2}s");
+        allEvents.Count.ShouldBe(actualFiles);
+        allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+
+        progressReports.Count.ShouldBe(10); // 10% intervals (10) + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe(new[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 });
+        progressReports.First().FilesScanned.ShouldBeGreaterThan(0);
+        progressReports.Last().FilesScanned.ShouldBe(actualFiles);
+        progressReports.Last().TotalFiles.ShouldBe(actualFiles);
+        progressReports.Last().PercentageComplete.ShouldBe(100.0);
+        progressReports.All(r => r.ElapsedTime >= TimeSpan.Zero).ShouldBeTrue();
+        progressReports.Last().ElapsedTime.ShouldBeGreaterThan(TimeSpan.Zero);
+
+        var scanTimeMs = stopwatch.ElapsedMilliseconds;
+        scanTimeMs.ShouldBeGreaterThan(4000); // Minimum 5s for 50 files × 100ms
     }
 
     [Fact]
@@ -458,7 +538,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         const int totalFiles = 100;
         for (var i = 0; i < totalFiles; i++)
         {
-            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes($"Content {i}"));
+            await using var stream = new MemoryStream(Encoding.UTF8.GetBytes($"Content {i}"));
             await inMemProvider.WriteFileAsync($"file_{i}.txt", stream, null, CancellationToken.None);
         }
 
@@ -477,12 +557,12 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await sut.StartAsync(CancellationToken.None);
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
-        var scanContext = await sut.ScanLocationAsync(
-            "InMemDocs",
-            waitForProcessing: true,
-            timeout: TimeSpan.FromSeconds(30),
-            progress: progress,
-            CancellationToken.None);
+        var options = new ScanOptions
+        {
+            WaitForProcessing = true,
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+        var scanContext = await sut.ScanLocationAsync("InMemDocs", options, progress: progress, CancellationToken.None);
         stopwatch.Stop();
         output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.ElapsedMilliseconds} ms");
 

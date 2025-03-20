@@ -20,6 +20,8 @@ public class LocationOptions(string name)
 
     public bool UseOnDemandOnly { get; set; }
 
+    public bool ScanOnStart { get; set; }
+
     public RateLimitOptions RateLimit { get; set; } = RateLimitOptions.MediumSpeed;
 
     public List<Type> LocationProcessorBehaviors { get; } = [];

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 
 public interface ILocationHandler
 {
@@ -16,8 +17,7 @@ public interface ILocationHandler
     LocationOptions Options { get; }
     Task StartAsync(CancellationToken token = default);
     Task StopAsync(CancellationToken token = default);
-    Task<ScanContext> ScanAsync(IProgress<ScanProgress> progress = null, CancellationToken token = default);
-    Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default);
+    Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default);
     Task PauseAsync(CancellationToken token = default);
     Task ResumeAsync(CancellationToken token = default);
     Task<LocationStatus> GetStatusAsync();

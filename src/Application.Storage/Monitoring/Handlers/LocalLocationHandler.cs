@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Storage.Monitoring;
 using Microsoft.Extensions.Logging;
 
 public class LocalLocationHandler : LocationHandlerBase
@@ -35,13 +36,15 @@ public class LocalLocationHandler : LocationHandlerBase
     public override async Task StartAsync(CancellationToken token = default)
     {
         await base.StartAsync(token);
+
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
             await this.StartWatchingAsync(token);
         }
-        if (!this.options.UseOnDemandOnly)
+
+        if (!this.options.UseOnDemandOnly && this.options.ScanOnStart)
         {
-            await this.ScanAsync(null, token);
+            await this.ScanAsync(null, null, token);
         }
     }
 
@@ -75,8 +78,9 @@ public class LocalLocationHandler : LocationHandlerBase
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(bool waitForProcessing = false, TimeSpan timeout = default, IProgress<ScanProgress> progress = null, CancellationToken token = default)
+    public override async Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default)
     {
+        options ??= ScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
         var context = new ScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
@@ -127,7 +131,7 @@ public class LocalLocationHandler : LocationHandlerBase
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
                         filesScanned++;
-                        int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+                        var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
                         if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
                         {
                             lastReportedPercentage = currentPercentage;
@@ -137,6 +141,11 @@ public class LocalLocationHandler : LocationHandlerBase
                                 TotalFiles = estimatedTotalFiles > 0 ? estimatedTotalFiles : filesScanned,
                                 ElapsedTime = DateTimeOffset.UtcNow - startTime
                             });
+                        }
+
+                        if (options.DelayPerFile > TimeSpan.Zero)
+                        {
+                            await Task.Delay(options.DelayPerFile, token);
                         }
                     }
                 }
@@ -158,7 +167,7 @@ public class LocalLocationHandler : LocationHandlerBase
             this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
             filesScanned++;
-            int currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
+            var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
             if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
             {
                 lastReportedPercentage = currentPercentage;
@@ -169,21 +178,17 @@ public class LocalLocationHandler : LocationHandlerBase
                     ElapsedTime = DateTimeOffset.UtcNow - startTime
                 });
             }
+
+            if (options.DelayPerFile > TimeSpan.Zero)
+            {
+                await Task.Delay(options.DelayPerFile, token);
+            }
         }
 
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
 
-        if (waitForProcessing && timeout != TimeSpan.Zero)
-        {
-            await this.WaitForQueueEmptyAsync(timeout);
-        }
-        else if (waitForProcessing)
-        {
-            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5)); // Default timeout if none specified
-        }
-
-        int finalPercentage = 100;
+        const int finalPercentage = 100;
         if (finalPercentage > lastReportedPercentage)
         {
             progress?.Report(new ScanProgress
@@ -192,6 +197,15 @@ public class LocalLocationHandler : LocationHandlerBase
                 TotalFiles = filesScanned,
                 ElapsedTime = context.EndTime.Value - startTime
             });
+        }
+
+        if (options.WaitForProcessing && options.Timeout != TimeSpan.Zero)
+        {
+            await this.WaitForQueueEmptyAsync(options.Timeout);
+        }
+        else if (options.WaitForProcessing)
+        {
+            await this.WaitForQueueEmptyAsync(TimeSpan.FromMinutes(5));
         }
 
         return context;
@@ -212,7 +226,9 @@ public class LocalLocationHandler : LocationHandlerBase
         this.fileSystemWatcher.Deleted += this.OnFileSystemEvent;
         this.fileSystemWatcher.EnableRaisingEvents = true;
         _ = Task.Run(() => this.ProcessBufferedEvents(token), token);
+
         this.logger.LogInformation($"Real-time watching started for location: {this.options.LocationName}");
+
         await Task.CompletedTask;
     }
 

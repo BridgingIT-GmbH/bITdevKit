@@ -77,7 +77,6 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
                 .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
                 .Any(e2 => e2.DetectionTime > e1.DetectionTime));
 
-
         return await latestEvents
             .Where(e => e.EventType != (int)FileEventType.Deleted)
             .Select(e => e.FilePath)

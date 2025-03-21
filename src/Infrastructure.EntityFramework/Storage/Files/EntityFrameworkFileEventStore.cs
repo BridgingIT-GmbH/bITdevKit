@@ -59,7 +59,8 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     {
         var entities = await this.context.FileEvents
             .Where(e => e.LocationName == locationName)
-            .ToListAsync();
+            .OrderByDescending(e => e.DetectionTime).ToListAsync();
+
         return entities.Select(this.MapToDomain).ToList();
     }
 
@@ -70,16 +71,17 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// <returns>A list of file paths that are currently present at the specified location.</returns>
     public async Task<List<string>> GetPresentFilesAsync(string locationName)
     {
-        return await this.context.FileEvents
-            .Where(e => e.LocationName == locationName)
-            .GroupBy(e => e.FilePath)
-            .Select(g => new
-            {
-                FilePath = g.Key,
-                LatestEvent = g.OrderByDescending(e => e.DetectionTime).First()
-            })
-            .Where(x => x.LatestEvent.EventType != (int)FileEventType.Deleted)
-            .Select(x => x.FilePath)
+        var latestEvents = this.context.FileEvents
+            .Where(e1 => e1.LocationName == locationName)
+            .Where(e1 => !this.context.FileEvents
+                .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
+                .Any(e2 => e2.DetectionTime > e1.DetectionTime));
+
+
+        return await latestEvents
+            .Where(e => e.EventType != (int)FileEventType.Deleted)
+            .Select(e => e.FilePath)
+            .Distinct()
             .ToListAsync();
     }
 
@@ -92,6 +94,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     {
         var entity = this.MapToEntity(fileEvent);
         this.context.FileEvents.Add(entity);
+
         await this.context.SaveChangesAsync();
     }
 

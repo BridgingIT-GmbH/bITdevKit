@@ -58,7 +58,7 @@ public class InMemoryFileEventStore : IFileEventStore
     public Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
     {
         var result = this.events.Values.SelectMany(e => e)
-            .Where(e => e.LocationName == locationName).ToList();
+            .Where(e => e.LocationName == locationName).OrderByDescending(e => e.DetectionTime).ToList();
         return Task.FromResult(result);
     }
 
@@ -71,7 +71,8 @@ public class InMemoryFileEventStore : IFileEventStore
             .Select(kv => new
             {
                 FilePath = kv.Key,
-                LatestEvent = kv.Value.Where(e => e.LocationName == locationName)
+                LatestEvent = kv.Value
+                    .Where(e => e.LocationName == locationName)
                     .OrderByDescending(e => e.DetectionTime).FirstOrDefault()
             })
             .Where(x => x.LatestEvent != null && x.LatestEvent.EventType != FileEventType.Deleted)

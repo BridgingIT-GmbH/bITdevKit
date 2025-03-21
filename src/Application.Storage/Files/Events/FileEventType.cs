@@ -14,20 +14,20 @@ public enum FileEventType
     /// <summary>
     /// Indicates a file was newly created or added to the monitored location.
     /// </summary>
-    Added,
+    Added = 0,
 
     /// <summary>
     /// Indicates an existing file was modified (e.g., content or metadata changed).
     /// </summary>
-    Changed,
+    Changed = 1,
 
     /// <summary>
     /// Indicates a file was removed from the monitored location.
     /// </summary>
-    Deleted,
+    Deleted = 2,
 
     /// <summary>
     /// Indicates a file was unchanged in the monitored location.
     /// </summary>
-    Unchanged
+    Unchanged = 3
 }

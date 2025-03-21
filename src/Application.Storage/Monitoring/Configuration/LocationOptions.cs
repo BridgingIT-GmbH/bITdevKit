@@ -45,6 +45,9 @@ public class LocationOptions(string name)
     }
 }
 
+/// <summary>
+/// Configures a processor with a specific type and behaviors. Allows setting up a delegate for custom configuration.
+/// </summary>
 public class ProcessorConfiguration
 {
     public Type ProcessorType { get; set; }
@@ -66,6 +69,11 @@ public class ProcessorConfiguration
     }
 }
 
+/// <summary>
+/// Configures rate limiting options for event processing with specified limits on events per second and burst size.
+/// </summary>
+/// <param name="eventsPerSecond">Defines the maximum number of events that can be processed each second.</param>
+/// <param name="maxBurstSize">Specifies the maximum number of events that can be processed in a single burst.</param>
 public class RateLimitOptions(int eventsPerSecond, int maxBurstSize)
 {
     public int EventsPerSecond { get; set; } = eventsPerSecond;
@@ -102,6 +110,11 @@ public class RateLimitOptions(int eventsPerSecond, int maxBurstSize)
     public static RateLimitOptions Default => new(100, 1000);
 }
 
+/// <summary>
+/// Controls the rate of events processed over time, allowing for bursts of activity up to a specified limit.
+/// </summary>
+/// <param name="eventsPerSecond">Determines the rate at which tokens are generated for processing events.</param>
+/// <param name="maxBurstSize">Sets the maximum number of tokens that can be held at any time for processing events.</param>
 public class RateLimiter(int eventsPerSecond, int maxBurstSize)
 {
     private readonly double tokensPerSecond = eventsPerSecond;

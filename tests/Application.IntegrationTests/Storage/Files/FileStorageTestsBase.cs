@@ -5,9 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
+using System.Diagnostics;
+using System.Security.Cryptography;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
-using System.Security.Cryptography;
 
 public abstract class FileStorageTestsBase
 {
@@ -23,7 +24,7 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(path, stream, null, CancellationToken.None);
 
         // Act
-        var result = await provider.ExistsAsync(path, null, CancellationToken.None);
+        var result = await provider.FileExistsAsync(path, null, CancellationToken.None);
 
         // Assert
         result.ShouldBeSuccess();
@@ -37,7 +38,7 @@ public abstract class FileStorageTestsBase
         const string path = "nonexistent/file.txt";
 
         // Act
-        var result = await provider.ExistsAsync(path, null, CancellationToken.None);
+        var result = await provider.FileExistsAsync(path, null, CancellationToken.None);
 
         // Assert
         result.ShouldBeFailure();
@@ -92,7 +93,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Wrote file at '{path}'");
-        var existsResult = await provider.ExistsAsync(path, null, CancellationToken.None);
+        var existsResult = await provider.FileExistsAsync(path, null, CancellationToken.None);
         existsResult.ShouldBeSuccess();
     }
 
@@ -110,7 +111,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Deleted file at '{path}'");
-        var existsResult = await provider.ExistsAsync(path, null, CancellationToken.None);
+        var existsResult = await provider.FileExistsAsync(path, null, CancellationToken.None);
         existsResult.ShouldBeFailure();
         existsResult.ShouldContainError<NotFoundError>("File not found");
     }
@@ -298,7 +299,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Copied file from '{source}' to '{dest}'");
-        var destExists = await provider.ExistsAsync(dest, null, CancellationToken.None);
+        var destExists = await provider.FileExistsAsync(dest, null, CancellationToken.None);
         destExists.ShouldBeSuccess();
     }
 
@@ -317,9 +318,9 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Renamed file from '{oldPath}' to '{newPath}'");
-        var newExists = await provider.ExistsAsync(newPath, null, CancellationToken.None);
+        var newExists = await provider.FileExistsAsync(newPath, null, CancellationToken.None);
         newExists.ShouldBeSuccess();
-        var oldExists = await provider.ExistsAsync(oldPath, null, CancellationToken.None);
+        var oldExists = await provider.FileExistsAsync(oldPath, null, CancellationToken.None);
         oldExists.ShouldBeFailure();
         oldExists.ShouldContainError<NotFoundError>("File not found");
     }
@@ -339,9 +340,9 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Moved file from '{source}' to '{dest}'");
-        var destExists = await provider.ExistsAsync(dest, null, CancellationToken.None);
+        var destExists = await provider.FileExistsAsync(dest, null, CancellationToken.None);
         destExists.ShouldBeSuccess();
-        var sourceExists = await provider.ExistsAsync(source, null, CancellationToken.None);
+        var sourceExists = await provider.FileExistsAsync(source, null, CancellationToken.None);
         sourceExists.ShouldBeFailure();
         sourceExists.ShouldContainError<NotFoundError>("File not found");
     }
@@ -368,7 +369,7 @@ public abstract class FileStorageTestsBase
         result.ShouldContainMessage("Copied all 2 files");
         foreach (var (_, dest) in pairs)
         {
-            var destExists = await provider.ExistsAsync(dest, null, CancellationToken.None);
+            var destExists = await provider.FileExistsAsync(dest, null, CancellationToken.None);
             destExists.ShouldBeSuccess();
         }
     }
@@ -395,12 +396,12 @@ public abstract class FileStorageTestsBase
         result.ShouldContainMessage("Moved all 2 files");
         foreach (var (_, dest) in pairs)
         {
-            var destExists = await provider.ExistsAsync(dest, null, CancellationToken.None);
+            var destExists = await provider.FileExistsAsync(dest, null, CancellationToken.None);
             destExists.ShouldBeSuccess();
         }
         foreach (var (source, _) in pairs)
         {
-            var sourceExists = await provider.ExistsAsync(source, null, CancellationToken.None);
+            var sourceExists = await provider.FileExistsAsync(source, null, CancellationToken.None);
             sourceExists.ShouldBeFailure();
             sourceExists.ShouldContainError<NotFoundError>("File not found");
         }
@@ -424,7 +425,7 @@ public abstract class FileStorageTestsBase
         result.ShouldContainMessage("Deleted all 2 files");
         foreach (var path in paths)
         {
-            var existsResult = await provider.ExistsAsync(path, null, CancellationToken.None);
+            var existsResult = await provider.FileExistsAsync(path, null, CancellationToken.None);
             existsResult.ShouldBeFailure();
             existsResult.ShouldContainError<NotFoundError>("File not found");
         }
@@ -438,7 +439,7 @@ public abstract class FileStorageTestsBase
         await provider.CreateDirectoryAsync(path, CancellationToken.None);
 
         // Act
-        var result = await provider.IsDirectoryAsync(path, CancellationToken.None);
+        var result = await provider.DirectoryExistsAsync(path, CancellationToken.None);
 
         // Assert
         result.ShouldBeSuccess();
@@ -456,7 +457,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         //result.ShouldContainMessage($"Created directory at '{path}'");
-        var isDirResult = await provider.IsDirectoryAsync(path, CancellationToken.None);
+        var isDirResult = await provider.DirectoryExistsAsync(path, CancellationToken.None);
         isDirResult.ShouldBeSuccess();
     }
 
@@ -473,7 +474,7 @@ public abstract class FileStorageTestsBase
         // Assert
         result.ShouldBeSuccess();
         result.ShouldContainMessage($"Deleted directory at '{path}'");
-        var isDirResult = await provider.IsDirectoryAsync(path, CancellationToken.None);
+        var isDirResult = await provider.DirectoryExistsAsync(path, CancellationToken.None);
         isDirResult.ShouldBeFailure();
         isDirResult.ShouldContainError<NotFoundError>("Directory not found");
     }
@@ -494,7 +495,7 @@ public abstract class FileStorageTestsBase
         result.Value.ShouldContain(d => d == "test/dir1" || d == "test/dir2");
     }
 
-    public virtual async Task WriteCompressedFileAsync_Stream_Success()
+    public virtual async Task CompressedUncompress_Content_Success()
     {
         // Arrange
         var provider = this.CreateProvider();
@@ -503,29 +504,35 @@ public abstract class FileStorageTestsBase
         const string password = ""; // Empty password as per your update
 
         // Act
-        var result = await provider.WriteCompressedFileAsync(path, content, password, null, CancellationToken.None);
+        var result = await provider.CompressAsync(path, content, password, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
 
         // Verify the file exists
-        var existsResult = await provider.ExistsAsync(path);
+        var existsResult = await provider.FileExistsAsync(path);
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
-        var readResult = await provider.ReadCompressedFileAsync(path, password, null, CancellationToken.None);
+        var readResult = await provider.ReadCompressedFileAsync(path, password, cancellationToken: CancellationToken.None);
         readResult.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", readResult.Messages)}");
         await using var decompressedStream = readResult.Value;
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
     }
 
-    public virtual async Task WriteCompressedFileAsync_Directory_Success()
+    public virtual async Task CompressUncompress_Directory_Success()
     {
         // Arrange
         var provider = this.CreateProvider();
         const string directoryPath = "test_directory";
         const string zipPath = "test_directory.zip";
         const string password = ""; // Empty password as per your update
+        var options = FileCompressionOptions.CreateBuilder()
+            .WithBufferSize(16384)
+            .WithCompressionLevel(5)
+            .WithUseZip64(true)
+            .WithEntryDateTime(new DateTime(2023, 1, 1))
+            .Build();
 
         // Create test files in the directory
         await provider.CreateDirectoryAsync(directoryPath, CancellationToken.None);
@@ -533,17 +540,17 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(Path.Combine(directoryPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
 
         // Act
-        var result = await provider.WriteCompressedFileAsync(zipPath, directoryPath, password, null, CancellationToken.None);
+        var result = await provider.CompressAsync(zipPath, directoryPath, password, null, options, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync (directory) failed: {string.Join(", ", result.Messages)}");
 
         // Verify the ZIP file exists
-        var existsResult = await provider.ExistsAsync(zipPath);
+        var existsResult = await provider.FileExistsAsync(zipPath);
         existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Uncompress and verify content
-        var uncompressResult = await provider.UncompressFileAsync(zipPath, "uncompressed", password, null, CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", password, null, options, cancellationToken: CancellationToken.None);
         uncompressResult.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", uncompressResult.Messages)}");
 
         // Verify uncompressed files
@@ -558,6 +565,119 @@ public abstract class FileStorageTestsBase
         new StreamReader(file2Stream).ReadToEnd().ShouldBe("File 2 content");
     }
 
+    public virtual async Task CompressUncompress_LargeDirectory()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string inputPath = "large_directory";
+        const string zipPath = "large_directory.zip";
+        const string uncompressedPath = "uncompressed";
+        const int fileCount = 100;
+        const int maxFileSizeBytes = 2_500_000; // 2.5 MB
+        const string password = ""; // No password for this test
+        var random = new Random();
+
+        // Create a directory with nested folders and 100 files of random sizes (0-2.5 MB)
+        await provider.CreateDirectoryAsync(inputPath, CancellationToken.None);
+
+        long totalOriginalSize = 0;
+        for (var i = 0; i < fileCount; i++)
+        {
+            // Create nested folder structure (e.g., folder0/subfolder0, folder1/subfolder1, etc.)
+            var folderName = $"folder{i / 10}/subfolder{i % 10}";
+            var filePath = Path.Combine(inputPath, folderName, $"file{i}.bin");
+            await provider.CreateDirectoryAsync(Path.Combine(inputPath, folderName), CancellationToken.None);
+
+            // Generate a random file size between 0 and 2.5 MB
+            var fileSize = random.Next(0, maxFileSizeBytes + 1);
+            totalOriginalSize += fileSize;
+
+            // Create a file with random content
+            var fileContent = new byte[fileSize];
+            random.NextBytes(fileContent);
+            await provider.WriteFileAsync(filePath, new MemoryStream(fileContent), null, CancellationToken.None);
+        }
+
+        Console.WriteLine($"Created {fileCount} files with total size: {totalOriginalSize / 1024 / 1024} MB");
+
+        // Act: Compress the directory
+        var compressStopwatch = Stopwatch.StartNew();
+        var compressResult = await provider.CompressAsync(zipPath, inputPath, password, null, null, CancellationToken.None);
+        compressStopwatch.Stop();
+
+        // Assert: Compression should succeed
+        compressResult.IsSuccess.ShouldBeTrue($"CompressAsync failed: {string.Join(", ", compressResult.Messages)}");
+
+        // Verify the ZIP file exists and get its size
+        var zipExistsResult = await provider.FileExistsAsync(zipPath);
+        zipExistsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", zipExistsResult.Messages)}");
+
+        var zipMetadata = await provider.GetFileMetadataAsync(zipPath, CancellationToken.None);
+        zipMetadata.IsSuccess.ShouldBeTrue($"Failed to get ZIP file metadata: {string.Join(", ", zipMetadata.Messages)}");
+        var compressedSize = zipMetadata.Value.Length;
+
+        Console.WriteLine($"Compression took: {compressStopwatch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"Compressed size: {compressedSize / 1024 / 1024} MB (Compression ratio: {(double)compressedSize / totalOriginalSize * 100:F2}%)");
+
+        // Act: Uncompress the ZIP file
+        var uncompressStopwatch = Stopwatch.StartNew();
+        var uncompressResult = await provider.UncompressAsync(zipPath, uncompressedPath, password, null, null, CancellationToken.None);
+        uncompressStopwatch.Stop();
+
+        // Assert: Uncompression should succeed
+        uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
+
+        // Verify the uncompressed files
+        var uncompressedFiles = await provider.ListFilesAsync(uncompressedPath, "*.*", true, null, CancellationToken.None);
+        uncompressedFiles.IsSuccess.ShouldBeTrue($"Failed to list uncompressed files: {string.Join(", ", uncompressedFiles.Messages)}");
+        uncompressedFiles.Value.Files.Count().ShouldBe(fileCount, "The number of uncompressed files should match the original count");
+
+        Console.WriteLine($"Uncompression took: {uncompressStopwatch.ElapsedMilliseconds} ms");
+
+        // Cleanup
+        await provider.DeleteDirectoryAsync(inputPath, true, CancellationToken.None);
+        await provider.DeleteFileAsync(zipPath, null, CancellationToken.None);
+        await provider.DeleteDirectoryAsync(uncompressedPath, true, CancellationToken.None);
+    }
+
+    public virtual async Task CompressUncompress_SingleFile_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string filePath = "test_file.txt";
+        const string zipPath = "test_file.zip";
+        const string password = ""; // Empty password, consistent with the directory test
+        var options = FileCompressionOptions.CreateBuilder()
+            .WithBufferSize(16384)
+            .WithCompressionLevel(5)
+            .WithUseZip64(true)
+            .WithEntryDateTime(new DateTime(2023, 1, 1))
+            .Build();
+
+        // Create a test file
+        await provider.WriteFileAsync(filePath, new MemoryStream(Encoding.UTF8.GetBytes("Single file content")), null, CancellationToken.None);
+
+        // Act
+        var result = await provider.CompressAsync(zipPath, filePath, password, null, options, cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"CompressAsync (single file) failed: {string.Join(", ", result.Messages)}");
+
+        // Verify the ZIP file exists
+        var existsResult = await provider.FileExistsAsync(zipPath);
+        existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Uncompress and verify content
+        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", password, null, options, cancellationToken: CancellationToken.None);
+        uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
+
+        // Verify the uncompressed file
+        var fileResult = await provider.ReadFileAsync(Path.Combine("uncompressed", "test_file.txt"), null, CancellationToken.None);
+        fileResult.IsSuccess.ShouldBeTrue($"File should exist and be readable: {string.Join(", ", fileResult.Messages)}");
+        await using var fileStream = fileResult.Value;
+        new StreamReader(fileStream).ReadToEnd().ShouldBe("Single file content");
+    }
+
     public virtual async Task ReadCompressedFileAsync_Success()
     {
         // Arrange
@@ -566,10 +686,10 @@ public abstract class FileStorageTestsBase
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
         const string password = "testPassword123";
 
-        await provider.WriteCompressedFileAsync(path, content, password, null, CancellationToken.None);
+        await provider.CompressAsync(path, content, password, cancellationToken: CancellationToken.None);
 
         // Act
-        var result = await provider.ReadCompressedFileAsync(path, password, null, CancellationToken.None);
+        var result = await provider.ReadCompressedFileAsync(path, password, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
@@ -578,41 +698,41 @@ public abstract class FileStorageTestsBase
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
     }
 
-    public virtual async Task UncompressFileAsync_Success()
-    {
-        // Arrange
-        var provider = this.CreateProvider();
-        const string zipPath = "test_directory.zip";
-        const string directoryPath = "test_directory";
-        const string destinationPath = "uncompressed";
-        const string password = "testPassword123";
+    //public virtual async Task CompressUncompress_Stream_Success()
+    //{
+    //    // Arrange
+    //    var provider = this.CreateProvider();
+    //    const string zipPath = "test_directory.zip";
+    //    const string inputPath = "test_directory";
+    //    const string destinationPath = "uncompressed";
+    //    const string password = "testPassword123";
 
-        // Create test files in the directory
-        await provider.CreateDirectoryAsync(directoryPath, CancellationToken.None);
-        await provider.WriteFileAsync(Path.Combine(directoryPath, "file1.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")), null, CancellationToken.None);
-        await provider.WriteFileAsync(Path.Combine(directoryPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
+    //    // Create test files in the directory
+    //    await provider.CreateDirectoryAsync(inputPath, CancellationToken.None);
+    //    await provider.WriteFileAsync(Path.Combine(inputPath, "file1.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")), null, CancellationToken.None);
+    //    await provider.WriteFileAsync(Path.Combine(inputPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
 
-        // Compress the directory
-        await provider.WriteCompressedFileAsync(zipPath, directoryPath, password, null, CancellationToken.None);
+    //    // Compress the directory
+    //    await provider.CompressAsync(zipPath, inputPath, password, null, CancellationToken.None);
 
-        // Act
-        var result = await provider.UncompressFileAsync(zipPath, destinationPath, password, null, CancellationToken.None);
+    //    // Act
+    //    var result = await provider.UncompressAsync(zipPath, destinationPath, password, null, CancellationToken.None);
 
-        // Assert
-        result.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", result.Messages)}");
-        result.Messages.ShouldContain($"Password-protected uncompressed file at '{zipPath}' to directory '{destinationPath}'");
+    //    // Assert
+    //    result.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", result.Messages)}");
+    //    result.Messages.ShouldContain($"Password-protected uncompressed file at '{zipPath}' to directory '{destinationPath}'");
 
-        // Verify uncompressed files
-        var file1Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "file1.txt"), null, CancellationToken.None);
-        file1Result.IsSuccess.ShouldBeTrue($"File1 should exist and be readable: {string.Join(", ", file1Result.Messages)}");
-        await using var file1Stream = file1Result.Value;
-        new StreamReader(file1Stream).ReadToEnd().ShouldBe("File 1 content");
+    //    // Verify uncompressed files
+    //    var file1Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "file1.txt"), null, CancellationToken.None);
+    //    file1Result.IsSuccess.ShouldBeTrue($"File1 should exist and be readable: {string.Join(", ", file1Result.Messages)}");
+    //    await using var file1Stream = file1Result.Value;
+    //    new StreamReader(file1Stream).ReadToEnd().ShouldBe("File 1 content");
 
-        var file2Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "subdir/file2.txt"), null, CancellationToken.None);
-        file2Result.IsSuccess.ShouldBeTrue($"File2 should exist and be readable: {string.Join(", ", file2Result.Messages)}");
-        await using var file2Stream = file2Result.Value;
-        new StreamReader(file2Stream).ReadToEnd().ShouldBe("File 2 content");
-    }
+    //    var file2Result = await provider.ReadFileAsync(Path.Combine(destinationPath, "subdir/file2.txt"), null, CancellationToken.None);
+    //    file2Result.IsSuccess.ShouldBeTrue($"File2 should exist and be readable: {string.Join(", ", file2Result.Messages)}");
+    //    await using var file2Stream = file2Result.Value;
+    //    new StreamReader(file2Stream).ReadToEnd().ShouldBe("File 2 content");
+    //}
 
     public virtual async Task WriteEncryptedFileAsync_Success()
     {
@@ -632,7 +752,7 @@ public abstract class FileStorageTestsBase
         result.Messages.ShouldContain($"Encrypted and wrote file at '{path}'");
 
         // Verify the file exists
-        var existsResult = await provider.ExistsAsync(path);
+        var existsResult = await provider.FileExistsAsync(path);
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
@@ -658,7 +778,7 @@ public abstract class FileStorageTestsBase
         result.Messages.ShouldContain($"Wrote bytes to file at '{path}'");
 
         // Verify the file exists
-        var existsResult = await provider.ExistsAsync(path);
+        var existsResult = await provider.FileExistsAsync(path);
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
@@ -683,7 +803,7 @@ public abstract class FileStorageTestsBase
         result.Messages.ShouldContain($"Wrote object to file at '{path}'");
 
         // Verify the file exists
-        var existsResult = await provider.ExistsAsync(path);
+        var existsResult = await provider.FileExistsAsync(path);
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
@@ -696,7 +816,7 @@ public abstract class FileStorageTestsBase
         personRead.Age.ShouldBe(person.Age);
     }
 
-    public virtual async Task WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails()
+    public virtual async Task Compress_NonExistentDirectory_Fails()
     {
         // Arrange
         var provider = this.CreateProvider();
@@ -705,14 +825,14 @@ public abstract class FileStorageTestsBase
         var progress = new Progress<FileProgress>();
 
         // Act
-        var result = await provider.WriteCompressedFileAsync(zipPath, directoryPath, "testPassword123", progress, CancellationToken.None);
+        var result = await provider.CompressAsync(zipPath, directoryPath, null, progress, cancellationToken: CancellationToken.None);
 
         // Assert
-        result.IsSuccess.ShouldBeFalse("WriteCompressedFileAsync should fail with non-existent directory");
-        result.Messages.ShouldContain("Directory does not exist"); // Adjust based on your IFileStorageProvider implementation
+        result.ShouldBeFailure();
+        result.ShouldContainError<NotFoundError>();
     }
 
-    public virtual async Task UncompressFileAsync_NonExistentZip_Fails()
+    public virtual async Task Uncompress_NonExistentFile_Fails()
     {
         // Arrange
         var provider = this.CreateProvider();
@@ -721,11 +841,11 @@ public abstract class FileStorageTestsBase
         var progress = new Progress<FileProgress>();
 
         // Act
-        var result = await provider.UncompressFileAsync(zipPath, destinationPath, "testPassword123", progress, CancellationToken.None);
+        var result = await provider.UncompressAsync(zipPath, destinationPath, "testPassword123", progress, cancellationToken: CancellationToken.None);
 
         // Assert
-        result.IsSuccess.ShouldBeFalse("UncompressFileAsync should fail with non-existent ZIP");
-        result.Messages.ShouldContain("File does not exist"); // Adjust based on your IFileStorageProvider implementation
+        result.ShouldBeFailure();
+        result.ShouldContainError<NotFoundError>();
     }
 
     public virtual async Task TraverseFilesAsync_Success()

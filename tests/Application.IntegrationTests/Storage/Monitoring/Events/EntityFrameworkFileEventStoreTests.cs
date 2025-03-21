@@ -197,7 +197,7 @@ public class EntityFrameworkFileEventStoreTests
         // Arrange
         var context = this.CreateContext();
         var store = new EntityFrameworkFileEventStore<TestDbContext>(context);
-        var result = new ProcessingResult(); // Assuming ProcessingResult exists
+        var result = new FileProcessingResult(); // Assuming ProcessingResult exists
 
         // Act & Assert
         await store.StoreProcessingResultAsync(result); // Should not throw

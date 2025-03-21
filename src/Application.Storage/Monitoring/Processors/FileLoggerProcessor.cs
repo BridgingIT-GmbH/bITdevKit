@@ -23,7 +23,7 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
 
     public IEnumerable<IProcessorBehavior> Behaviors => [];
 
-    public Task ProcessAsync(ProcessingContext context, CancellationToken token)
+    public Task ProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
         token.ThrowIfCancellationRequested();

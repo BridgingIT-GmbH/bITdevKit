@@ -212,18 +212,6 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     //}
 
     [Fact]
-    public override async Task WriteCompressedFileAsync_Stream_Success()
-    {
-        await base.WriteCompressedFileAsync_Stream_Success();
-    }
-
-    [Fact]
-    public override async Task ReadCompressedFileAsync_Success()
-    {
-        await base.ReadCompressedFileAsync_Success();
-    }
-
-    [Fact]
     public override async Task WriteEncryptedFileAsync_Success()
     {
         await base.WriteEncryptedFileAsync_Success();
@@ -241,30 +229,47 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
         await base.WriteReadObjectAsync_Success();
     }
 
-    // TODO: compression still has issues reading the zipfiles
-    //[Fact]
-    //public override async Task WriteCompressedFileAsync_Directory_Success()
-    //{
-    //    await base.WriteCompressedFileAsync_Directory_Success();
-    //}
+    [Fact]
+    public override async Task CompressedUncompress_Content_Success()
+    {
+        await base.CompressedUncompress_Content_Success();
+    }
 
-    //[Fact]
-    //public override async Task UncompressFileAsync_Success()
-    //{
-    //    await base.UncompressFileAsync_Success();
-    //}
+    [Fact]
+    public override async Task ReadCompressedFileAsync_Success()
+    {
+        await base.ReadCompressedFileAsync_Success();
+    }
 
-    //[Fact]
-    //public override async Task WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails()
-    //{
-    //    await base.WriteCompressedFileAsync_Directory_NonExistentDirectory_Fails();
-    //}
+    [Fact]
+    public override async Task CompressUncompress_Directory_Success()
+    {
+        await base.CompressUncompress_Directory_Success();
+    }
 
-    //[Fact]
-    //public override async Task UncompressFileAsync_NonExistentZip_Fails()
-    //{
-    //    await base.UncompressFileAsync_NonExistentZip_Fails();
-    //}
+    [Fact]
+    public override async Task CompressUncompress_LargeDirectory()
+    {
+        await base.CompressUncompress_LargeDirectory();
+    }
+
+    [Fact]
+    public override async Task CompressUncompress_SingleFile_Success()
+    {
+        await base.CompressUncompress_SingleFile_Success();
+    }
+
+    [Fact]
+    public override async Task Compress_NonExistentDirectory_Fails()
+    {
+        await base.Compress_NonExistentDirectory_Fails();
+    }
+
+    [Fact]
+    public override async Task Uncompress_NonExistentFile_Fails()
+    {
+        await base.Uncompress_NonExistentFile_Fails();
+    }
 
     [Fact]
     public override async Task TraverseFilesAsync_Success()

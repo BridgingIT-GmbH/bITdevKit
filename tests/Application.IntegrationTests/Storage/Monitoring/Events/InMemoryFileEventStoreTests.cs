@@ -176,7 +176,7 @@ public class InMemoryFileEventStoreTests
     {
         // Arrange
         var store = new InMemoryFileEventStore();
-        var result = new ProcessingResult(); // Assuming ProcessingResult exists
+        var result = new FileProcessingResult(); // Assuming ProcessingResult exists
 
         // Act & Assert
         await store.StoreProcessingResultAsync(result); // Should not throw

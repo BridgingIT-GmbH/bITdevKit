@@ -91,7 +91,7 @@ public class FileMonitoringService(
     /// <param name="token">Allows for cancellation of the scan operation.</param>
     /// <returns>Returns the context of the scan after completion.</returns>
     /// <exception cref="KeyNotFoundException">Thrown when the specified location cannot be found in the handlers.</exception>
-    public async Task<ScanContext> ScanLocationAsync(string locationName, ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default)
+    public async Task<FileScanContext> ScanLocationAsync(string locationName, FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default)
     {
         var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
         if (handler == null)

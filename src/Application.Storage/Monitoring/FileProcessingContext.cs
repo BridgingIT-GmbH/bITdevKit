@@ -15,7 +15,7 @@ using System.Collections.Generic;
 /// Initializes a new instance of the ProcessingContext with an optional FileEvent.
 /// </remarks>
 /// <param name="fileEvent">The FileEvent being processed, if available.</param>
-public class ProcessingContext(FileEvent fileEvent = null)
+public class FileProcessingContext(FileEvent fileEvent = null)
 {
     /// <summary>
     /// Gets or sets the FileEvent being processed.

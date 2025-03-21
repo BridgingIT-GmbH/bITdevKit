@@ -40,5 +40,5 @@ public interface IFileEventProcessor
     /// <param name="context">The processing context containing the FileEvent and additional data.</param>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous processing operation.</returns>
-    Task ProcessAsync(ProcessingContext context, CancellationToken token);
+    Task ProcessAsync(FileProcessingContext context, CancellationToken token);
 }

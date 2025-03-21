@@ -25,7 +25,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     public async Task<FileEvent> GetFileEventAsync(string filePath)
     {
         var entity = await this.context.FileEvents
-            .OrderByDescending(e => e.DetectionTime)
+            .OrderByDescending(e => e.CreatedDate)
             .FirstOrDefaultAsync(e => e.FilePath == filePath);
 
         return this.MapToDomain(entity);
@@ -35,7 +35,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     {
         var entity = await this.context.FileEvents
             .Where(e => e.LocationName == locationName && e.FilePath == filePath)
-            .OrderByDescending(e => e.DetectionTime)
+            .OrderByDescending(e => e.CreatedDate)
             .FirstOrDefaultAsync(e => e.FilePath == filePath);
 
         return this.MapToDomain(entity);
@@ -45,7 +45,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     {
         var entities = await this.context.FileEvents
             .Where(e => e.FilePath == filePath)
-            .OrderByDescending(e => e.DetectionTime).ToListAsync();
+            .OrderByDescending(e => e.CreatedDate).ToListAsync();
 
         return entities.Select(this.MapToDomain);
     }
@@ -59,7 +59,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     {
         var entities = await this.context.FileEvents
             .Where(e => e.LocationName == locationName)
-            .OrderByDescending(e => e.DetectionTime).ToListAsync();
+            .OrderByDescending(e => e.CreatedDate).ToListAsync();
 
         return entities.Select(this.MapToDomain).ToList();
     }
@@ -75,7 +75,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
             .Where(e1 => e1.LocationName == locationName)
             .Where(e1 => !this.context.FileEvents
                 .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
-                .Any(e2 => e2.DetectionTime > e1.DetectionTime));
+                .Any(e2 => e2.CreatedDate > e1.CreatedDate));
 
         return await latestEvents
             .Where(e => e.EventType != (int)FileEventType.Deleted)
@@ -102,7 +102,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// </summary>
     /// <param name="result">Contains the outcome of a processing operation to be stored or logged.</param>
     /// <returns>Completes a task indicating the operation has finished.</returns>
-    public async Task StoreProcessingResultAsync(ProcessingResult result)
+    public async Task StoreProcessingResultAsync(FileProcessingResult result)
     {
         // Placeholder: ProcessingResult storage not yet fully defined.
         // For now, we'll log it or skip persistence until Step 7 clarifies requirements.
@@ -119,20 +119,20 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
                 LocationName = entity.LocationName,
                 FilePath = entity.FilePath,
                 EventType = (FileEventType)entity.EventType,
-                DetectionTime = entity.DetectionTime,
+                DetectionTime = entity.CreatedDate,
                 FileSize = entity.FileSize,
                 LastModified = entity.LastModified,
                 Checksum = entity.Checksum
             };
 
     private FileEventEntity MapToEntity(FileEvent fileEvent) =>
-        new FileEventEntity
+        new()
         {
             Id = fileEvent.Id,
             LocationName = fileEvent.LocationName,
             FilePath = fileEvent.FilePath,
             EventType = (int)fileEvent.EventType,
-            DetectionTime = fileEvent.DetectionTime,
+            CreatedDate = fileEvent.DetectionTime,
             FileSize = fileEvent.FileSize,
             LastModified = fileEvent.LastModified,
             Checksum = fileEvent.Checksum

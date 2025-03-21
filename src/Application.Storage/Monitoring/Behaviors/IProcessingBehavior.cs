@@ -22,7 +22,7 @@ public interface IProcessorBehavior
     /// <param name="context">The processing context containing the FileEvent.</param>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous pre-processing operation.</returns>
-    Task BeforeProcessAsync(ProcessingContext context, CancellationToken token);
+    Task BeforeProcessAsync(FileProcessingContext context, CancellationToken token);
 
     /// <summary>
     /// Executes after the processor processes the FileEvent.
@@ -32,5 +32,5 @@ public interface IProcessorBehavior
     /// <param name="result">The result of the processing operation (success or failure).</param>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous post-processing operation.</returns>
-    Task AfterProcessAsync(ProcessingContext context, Result<bool> result, CancellationToken token);
+    Task AfterProcessAsync(FileProcessingContext context, Result<bool> result, CancellationToken token);
 }

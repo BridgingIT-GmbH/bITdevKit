@@ -100,7 +100,7 @@ public class InMemoryFileEventStore : IFileEventStore
     /// <summary>
     /// Stores a ProcessingResult (no-op for in-memory store; could be extended).
     /// </summary>
-    public Task StoreProcessingResultAsync(ProcessingResult result)
+    public Task StoreProcessingResultAsync(FileProcessingResult result)
     {
         // No-op for in-memory store; could add concurrent storage if needed
         return Task.CompletedTask;

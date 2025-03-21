@@ -391,7 +391,7 @@ public class TestProcessor : IFileEventProcessor
 
     public int InvocationCount => this.invocationCount; // Public property to check calls
 
-    public Task ProcessAsync(ProcessingContext context, CancellationToken token)
+    public Task ProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         if (context == null || context.FileEvent == null)
         {

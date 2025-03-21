@@ -13,7 +13,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
 {
     private readonly ILogger<LoggingBehavior> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public void OnScanStarted(ScanContext context, CancellationToken cancellationToken = default)
+    public void OnScanStarted(FileScanContext context, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         this.logger.LogInformation("{LogKey} filemonitoring: scan started for location {LocationName} at {StartTime}",
@@ -22,7 +22,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
             context.StartTime);
     }
 
-    public void OnFileDetected(ScanContext context, FileEvent fileEvent, CancellationToken cancellationToken = default)
+    public void OnFileDetected(FileScanContext context, FileEvent fileEvent, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         this.logger.LogInformation("{LogKey} filemonitoring: file detected in location {LocationName} {FilePath} (EventType={EventType}, Size={FileSize}, Checksum={Checksum})",
@@ -34,7 +34,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
             fileEvent.Checksum);
     }
 
-    public void OnScanCompleted(ScanContext context, TimeSpan duration, CancellationToken cancellationToken = default)
+    public void OnScanCompleted(FileScanContext context, TimeSpan duration, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         this.logger.LogInformation("{LogKey} filemonitoring: scan completed for location {LocationName} (Changes=#{ChangeCount}) took -> {TimeElapsed:0.0000} ms",

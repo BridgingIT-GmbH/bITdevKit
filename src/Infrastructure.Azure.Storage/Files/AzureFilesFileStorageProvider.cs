@@ -80,7 +80,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
 
     private ShareServiceClient Client => this.lazyShareServiceClient.Value;
 
-    public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -864,7 +864,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
-    public override async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {

@@ -18,7 +18,7 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
 {
     private readonly ILogger<LoggingProcessorBehavior> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public async Task BeforeProcessAsync(ProcessingContext context, CancellationToken token)
+    public async Task BeforeProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
         token.ThrowIfCancellationRequested();
@@ -33,7 +33,7 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
         await Task.CompletedTask;
     }
 
-    public async Task AfterProcessAsync(ProcessingContext context, Result<bool> result, CancellationToken token)
+    public async Task AfterProcessAsync(FileProcessingContext context, Result<bool> result, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 

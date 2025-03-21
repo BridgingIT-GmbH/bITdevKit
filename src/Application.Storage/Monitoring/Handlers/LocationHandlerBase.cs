@@ -46,7 +46,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// <param name="options">The configuration options for the location.</param>
     /// <param name="serviceProvider">The service provider for resolving processor and behavior instances via Factory.</param>
     /// <param name="behaviors">The global monitoring behaviors for scan observability.</param>
-    public LocationHandlerBase(
+    protected LocationHandlerBase(
         ILogger logger,
         IFileStorageProvider provider,
         IFileEventStore store,
@@ -124,7 +124,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// <param name="progress">Provides updates on the progress of the scan as it executes.</param>
     /// <param name="token">Allows for the cancellation of the scan operation if needed.</param>
     /// <returns>Returns a task that, when completed, provides the context of the scan.</returns>
-    public abstract Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default);
+    public abstract Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.
@@ -292,7 +292,7 @@ public abstract class LocationHandlerBase : ILocationHandler
             }
 
             await this.rateLimiter.WaitForTokenAsync(token);
-            var context = new ProcessingContext(fileEvent);
+            var context = new FileProcessingContext(fileEvent);
             context.SetItem("StorageProvider", this.provider);
 
             // Store the event once, before processing
@@ -302,7 +302,7 @@ public abstract class LocationHandlerBase : ILocationHandler
             foreach (var processor in this.processors.Where(p => p.IsEnabled))
             {
                 var result = await this.ExecuteProcessorAsync(processor, context, token);
-                await this.store.StoreProcessingResultAsync(new ProcessingResult
+                await this.store.StoreProcessingResultAsync(new FileProcessingResult
                 {
                     FileEventId = fileEvent.Id,
                     ProcessorName = processor.ProcessorName,
@@ -318,7 +318,7 @@ public abstract class LocationHandlerBase : ILocationHandler
         }
     }
 
-    private async Task<Result<bool>> ExecuteProcessorAsync(IFileEventProcessor processor, ProcessingContext context, CancellationToken token)
+    private async Task<Result<bool>> ExecuteProcessorAsync(IFileEventProcessor processor, FileProcessingContext context, CancellationToken token)
     {
         try
         {
@@ -342,14 +342,14 @@ public abstract class LocationHandlerBase : ILocationHandler
 
         public IEnumerable<IProcessorBehavior> Behaviors => inner.Behaviors.Concat([behavior]);
 
-        public async Task ProcessAsync(ProcessingContext context, CancellationToken token)
+        public async Task ProcessAsync(FileProcessingContext context, CancellationToken token)
         {
             await behavior.BeforeProcessAsync(context, token);
             var result = await this.ExecuteInnerAsync(context, token);
             await behavior.AfterProcessAsync(context, result, token);
         }
 
-        private async Task<Result<bool>> ExecuteInnerAsync(ProcessingContext context, CancellationToken token)
+        private async Task<Result<bool>> ExecuteInnerAsync(FileProcessingContext context, CancellationToken token)
         {
             try
             {

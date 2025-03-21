@@ -41,7 +41,7 @@ public interface IFileMonitoringService
     /// <param name="progress">Reports the progress of the scan operation.</param>
     /// <param name="token">Allows for cancellation of the scan operation if needed.</param>
     /// <returns>Returns a task that resolves to the scan context for the specified location.</returns>
-    Task<ScanContext> ScanLocationAsync(string locationName, ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default);
+    Task<FileScanContext> ScanLocationAsync(string locationName, FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default);
 
     /// <summary>
     /// Pauses monitoring for a specific location asynchronously.
@@ -194,18 +194,4 @@ public class LocationStatus
     public int QueueSize { get; set; }
 
     public DateTimeOffset LastScanTime { get; set; }
-}
-
-/// <summary>
-/// Represents the context of a scan operation, including detected changes.
-/// </summary>
-public class ScanContext
-{
-    public string LocationName { get; set; }
-
-    public DateTimeOffset StartTime { get; set; } = DateTimeOffset.UtcNow;
-
-    public DateTimeOffset? EndTime { get; set; }
-
-    public List<FileEvent> Events { get; set; } = [];
 }

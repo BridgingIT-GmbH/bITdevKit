@@ -68,14 +68,14 @@ public class InMemoryLocationHandler(
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(
-        ScanOptions options = null,
-        IProgress<ScanProgress> progress = null,
+    public override async Task<FileScanContext> ScanAsync(
+        FileScanOptions options = null,
+        IProgress<FileScanProgress> progress = null,
         CancellationToken token = default)
     {
-        options ??= ScanOptions.Default;
+        options ??= FileScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
-        var context = new ScanContext { LocationName = this.options.LocationName };
+        var context = new FileScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
 
         var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName);
@@ -138,7 +138,7 @@ public class InMemoryLocationHandler(
 
                         while (filesScanned >= nextReportAtFiles && nextPercentage <= 100)
                         {
-                            progress?.Report(new ScanProgress
+                            progress?.Report(new FileScanProgress
                             {
                                 FilesScanned = filesScanned,
                                 TotalFiles = estimatedTotalFiles,
@@ -196,7 +196,7 @@ public class InMemoryLocationHandler(
 
                     while (filesScanned >= nextReportAtFiles && nextPercentage <= 100)
                     {
-                        progress?.Report(new ScanProgress
+                        progress?.Report(new FileScanProgress
                         {
                             FilesScanned = filesScanned,
                             TotalFiles = estimatedTotalFiles,
@@ -229,7 +229,7 @@ public class InMemoryLocationHandler(
 
         if (progress != null)
         {
-            progress.Report(new ScanProgress
+            progress.Report(new FileScanProgress
             {
                 FilesScanned = filesScanned,
                 TotalFiles = filesScanned,
@@ -252,7 +252,7 @@ public class InMemoryLocationHandler(
 
     private void OnInMemoryFileEvent(object sender, FileEventArgs e)
     {
-        this.eventQueue.Add(e.FileEvent);
+        this.eventQueue.Add(e.Event);
     }
 
     private FileEventType? DetermineEventType(FileEvent lastEvent, FileMetadata current, string checksum)

@@ -20,7 +20,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
 
     public virtual bool SupportsNotifications { get; }
 
-    public virtual Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public virtual Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -545,7 +545,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
-    public virtual Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public virtual Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         try
         {

@@ -26,7 +26,7 @@ public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEvent
 
     public string DestinationRoot { get; set; } // Public property for configuration
 
-    public async Task ProcessAsync(ProcessingContext context, CancellationToken token)
+    public async Task ProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 

@@ -17,8 +17,8 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
 
     public IFileStorageProvider InnerProvider => this.innerProvider;
 
-    public Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
-        this.innerProvider.ExistsAsync(path, progress, cancellationToken).ContinueWith(t => t.Result.WithMessage($"Custom behavior applied to existence check for '{path}'"), cancellationToken);
+    public Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
+        this.innerProvider.FileExistsAsync(path, progress, cancellationToken).ContinueWith(t => t.Result.WithMessage($"Custom behavior applied to existence check for '{path}'"), cancellationToken);
 
     public Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.ReadFileAsync(path, progress, cancellationToken);
@@ -62,8 +62,8 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
     public Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.DeleteFilesAsync(paths, progress, cancellationToken);
 
-    public Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default) =>
-        this.innerProvider.IsDirectoryAsync(path, cancellationToken);
+    public Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default) =>
+        this.innerProvider.DirectoryExistsAsync(path, cancellationToken);
 
     public Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default) =>
         this.innerProvider.CreateDirectoryAsync(path, cancellationToken);

@@ -58,5 +58,5 @@ public interface IFileEventStore
     /// Stores the result of processing a FileEvent by a processor.
     /// </summary>
     /// <param name="result">The ProcessingResult to store.</param>
-    Task StoreProcessingResultAsync(ProcessingResult result);
+    Task StoreProcessingResultAsync(FileProcessingResult result);
 }

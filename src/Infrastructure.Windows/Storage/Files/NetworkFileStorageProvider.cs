@@ -123,9 +123,9 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DeleteFilesAsync(paths, progress, cancellationToken));
     }
 
-    public override async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
-        return await this.impersonationService.ExecuteImpersonatedAsync(() => base.IsDirectoryAsync(path, cancellationToken));
+        return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DirectoryExistsAsync(path, cancellationToken));
     }
 
     public override async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)

@@ -24,7 +24,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
     public override bool SupportsNotifications { get; } = true;
 
-    public override async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public override async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {
@@ -52,7 +52,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
             try
             {
-                var exists = this.files.ContainsKey(normalizedPath) || this.directories.Contains(normalizedPath);
+                var exists = this.files.ContainsKey(normalizedPath); // || this.directories.Contains(normalizedPath);
                 if (!exists)
                 {
                     return Result.Failure()
@@ -164,7 +164,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var exists = await this.ExistsAsync(normalizedPath, null, cancellationToken);
+        var exists = await this.FileExistsAsync(normalizedPath, null, cancellationToken);
 
         return await Task.Run(() =>
         {
@@ -699,7 +699,7 @@ public class InMemoryFileStorageProvider(string locationName)
                 }
 
                 // Remove if destination exists as a directory
-                var exists = await this.ExistsAsync(normalizedDest, null, cancellationToken);
+                var exists = await this.FileExistsAsync(normalizedDest, null, cancellationToken);
                 this.directories.Remove(normalizedDest);
                 this.files[normalizedDest] = content;
 
@@ -846,7 +846,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
         var normalizedSource = this.NormalizePath(path);
         var normalizedDest = this.NormalizePath(destinationPath);
-        var exists = await this.ExistsAsync(normalizedDest, null, cancellationToken);
+        var exists = await this.FileExistsAsync(normalizedDest, null, cancellationToken);
         return await Task.Run(() =>
         {
             if (!this.semaphore.Wait(0, cancellationToken)) // Non-blocking check, fail if locked
@@ -1186,7 +1186,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
-    public override async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
         {

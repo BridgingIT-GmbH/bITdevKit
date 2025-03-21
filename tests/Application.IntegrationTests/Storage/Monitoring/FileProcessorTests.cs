@@ -50,7 +50,7 @@ public class FileProcessorTests
             LastModified = DateTimeOffset.UtcNow,
             Checksum = "abc123"
         };
-        var context = new ProcessingContext(fileEvent);
+        var context = new FileProcessingContext(fileEvent);
 
         // Act
         await sut.ProcessAsync(context, CancellationToken.None);
@@ -78,15 +78,15 @@ public class FileProcessorTests
             LastModified = DateTimeOffset.UtcNow,
             Checksum = "abc123"
         };
-        var context = new ProcessingContext(fileEvent);
+        var context = new FileProcessingContext(fileEvent);
         context.SetItem("StorageProvider", provider);
 
         // Act
         await sut.ProcessAsync(context, CancellationToken.None);
 
         // Assert
-        var existsInSource = await provider.ExistsAsync("test.txt", null, CancellationToken.None);
-        var existsInDest = await provider.ExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
+        var existsInSource = await provider.FileExistsAsync("test.txt", null, CancellationToken.None);
+        var existsInDest = await provider.FileExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
         existsInSource.ShouldBeFailure();
         existsInDest.ShouldBeSuccess();
     }
@@ -103,7 +103,7 @@ public class FileProcessorTests
             FilePath = "test.txt",
             EventType = FileEventType.Added
         };
-        var context = new ProcessingContext(fileEvent);
+        var context = new FileProcessingContext(fileEvent);
         var failureResult = Result<bool>.Failure().WithError(new ExceptionError(new Exception("Processing failed")));
 
         // Act & Assert First Attempt
@@ -134,7 +134,7 @@ public class FileProcessorTests
             FilePath = "test.txt",
             EventType = FileEventType.Added
         };
-        var context = new ProcessingContext(fileEvent);
+        var context = new FileProcessingContext(fileEvent);
         var successResult = Result<bool>.Success(true);
         var failureResult = Result<bool>.Failure().WithError(new ExceptionError(new Exception("Failed")));
 
@@ -201,7 +201,7 @@ public class FileProcessorTests
         //await sut.StopAsync(CancellationToken.None);
 
         // Assert
-        var movedExists = await provider.ExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
+        var movedExists = await provider.FileExistsAsync("MovedDocs/test.txt", null, CancellationToken.None);
         movedExists.ShouldBeSuccess();
         var storedEvent = await store.GetFileEventAsync("test.txt");
         storedEvent.ShouldNotBeNull();

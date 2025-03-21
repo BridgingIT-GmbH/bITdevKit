@@ -13,7 +13,7 @@ public class CustomFileStorageProvider : IFileStorageProvider
 
     public bool SupportsNotifications => false;
 
-    public Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
     }
@@ -88,7 +88,7 @@ public class CustomFileStorageProvider : IFileStorageProvider
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
     }
 
-    public Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
     }

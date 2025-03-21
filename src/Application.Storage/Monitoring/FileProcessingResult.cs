@@ -11,7 +11,7 @@ using System;
 /// Represents the result of processing a FileEvent by an IFileEventProcessor.
 /// Captures the outcome (success/failure) and additional details for storage and auditing.
 /// </summary>
-public class ProcessingResult
+public class FileProcessingResult
 {
     /// <summary>
     /// Gets or sets the unique identifier for the processing result.

@@ -5,7 +5,17 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-public class FileEventArgs(FileEvent fileEvent)
+using System.Diagnostics;
+
+/// <summary>
+/// Represents event arguments containing information about a file event.
+/// Used for event handling in the file monitoring system.
+/// </summary>
+[DebuggerDisplay("Path={Event.FilePath}, Location={Event.LocationName}, Type={Event.EventType.ToString()}")]
+public class FileEventArgs(FileEvent @event)
 {
-    public FileEvent FileEvent { get; } = fileEvent;
+    /// <summary>
+    /// Gets the file event information associated with this event.
+    /// </summary>
+    public FileEvent Event { get; } = @event;
 }

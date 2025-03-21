@@ -393,8 +393,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var store = serviceProvider.GetRequiredService<IFileEventStore>();
         //var handler = serviceProvider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "Docs");
 
-        var progressReports = new List<ScanProgress>();
-        var progress = new Progress<ScanProgress>(report =>
+        var progressReports = new List<FileScanProgress>();
+        var progress = new Progress<FileScanProgress>(report =>
         {
             progressReports.Add(report);
             output.WriteLine($"progress: {report}");
@@ -403,7 +403,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         // Act: Scan the large tree structure
         await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
-        var options = new ScanOptions
+        var options = new FileScanOptions
         {
             WaitForProcessing = true,
             Timeout = TimeSpan.FromSeconds(90)
@@ -472,8 +472,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
-        var progressReports = new List<ScanProgress>();
-        var progress = new Progress<ScanProgress>(report =>
+        var progressReports = new List<FileScanProgress>();
+        var progress = new Progress<FileScanProgress>(report =>
         {
             lock (progressReports)
             {
@@ -484,7 +484,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
-        var scanOptions = new ScanOptions
+        var scanOptions = new FileScanOptions
         {
             WaitForProcessing = true,
             Timeout = TimeSpan.FromSeconds(90),
@@ -550,8 +550,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         }
 
         // Capture progress reports
-        var progressReports = new List<ScanProgress>();
-        var progress = new Progress<ScanProgress>(report =>
+        var progressReports = new List<FileScanProgress>();
+        var progress = new Progress<FileScanProgress>(report =>
         {
             lock (progressReports) // Thread-safe collection
             {
@@ -564,7 +564,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await sut.StartAsync(CancellationToken.None);
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
-        var options = new ScanOptions
+        var options = new FileScanOptions
         {
             WaitForProcessing = true,
             Timeout = TimeSpan.FromSeconds(30)
@@ -670,7 +670,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter
-        var scanOptions = ScanOptionsBuilder.Create()
+        var scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Added)
@@ -683,7 +683,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
 
         // Step 2: Scan with Unchanged filter (files unchanged since last scan)
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Unchanged)
@@ -697,7 +697,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Step 3: Modify one file and scan with Changed filter
         File.WriteAllText(Path.Combine(tempFolder, "file_0.txt"), "Modified Content");
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Changed)
@@ -711,7 +711,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Step 4: Delete one file and scan with Deleted filter
         File.Delete(Path.Combine(tempFolder, "file_0.txt"));
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Deleted)
@@ -770,7 +770,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter
-        var scanOptions = ScanOptionsBuilder.Create()
+        var scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Added)
@@ -783,7 +783,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
 
         // Step 2: Scan with Unchanged filter (files unchanged since last scan)
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Unchanged)
@@ -797,7 +797,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Step 3: Modify one file and scan with Changed filter
         File.WriteAllText(Path.Combine(tempFolder, "file_0.txt"), "Modified Content");
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Changed)
@@ -811,7 +811,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Step 4: Delete one file and scan with Deleted filter
         File.Delete(Path.Combine(tempFolder, "file_0.txt"));
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             .WithEventFilter(FileEventType.Deleted)
@@ -859,8 +859,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter, .log files only, batch size 5, 5% intervals, skip checksum, max 50 files
-        var progressReports = new List<ScanProgress>();
-        var progress = new Progress<ScanProgress>(report =>
+        var progressReports = new List<FileScanProgress>();
+        var progress = new Progress<FileScanProgress>(report =>
         {
             lock (progressReports)
             {
@@ -869,7 +869,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             }
         });
 
-        var scanOptions = ScanOptionsBuilder.Create()
+        var scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(60))
             .WithDelayPerFile(TimeSpan.FromMilliseconds(10)) // Reduced delay for faster test
@@ -892,7 +892,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Step 2: Scan with Unchanged filter, .log files only, no checksum, max 25 files
         progressReports.Clear();
-        scanOptions = ScanOptionsBuilder.Create()
+        scanOptions = FileScanOptionsBuilder.Create()
             .WithWaitForProcessing()
             .WithTimeout(TimeSpan.FromSeconds(30))
             //.WithDelayPerFile(TimeSpan.FromMilliseconds(10))

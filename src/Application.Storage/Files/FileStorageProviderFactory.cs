@@ -11,13 +11,19 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Linq;
 
-public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorageFactory
+/// <summary>
+/// Factory for creating and managing file storage providers with various configurations and behaviors.
+/// </summary>
+public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFileStorageProviderFactory
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
     private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = [];
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = [];
 
+    /// <summary>
+    /// Creates a file storage provider with the specified name.
+    /// </summary>
     public IFileStorageProvider CreateProvider(string name)
     {
         if (!this.providerConfigs.TryGetValue(name, out var config))
@@ -34,6 +40,9 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
         };
     }
 
+    /// <summary>
+    /// Creates a file storage provider of the specified implementation type.
+    /// </summary>
     public IFileStorageProvider CreateProvider<TImplementation>() where TImplementation : IFileStorageProvider
     {
         var matchingProviders = this.providerConfigs
@@ -62,7 +71,10 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
         return matchingProviders.First().Provider;
     }
 
-    public IFileStorageFactory RegisterProvider(string name, Action<FileStorageBuilder> configure)
+    /// <summary>
+    /// Registers a new file storage provider with the specified name and configuration.
+    /// </summary>
+    public IFileStorageProviderFactory RegisterProvider(string name, Action<FileStorageBuilder> configure)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -82,7 +94,10 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
         return this;
     }
 
-    public IFileStorageFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory)
+    /// <summary>
+    /// Adds a behavior to one or all registered providers.
+    /// </summary>
+    public IFileStorageProviderFactory WithBehavior(string providerName, Func<IFileStorageProvider, IServiceProvider, IFileStorageBehavior> behaviorFactory)
     {
         ArgumentNullException.ThrowIfNull(behaviorFactory);
 
@@ -150,60 +165,97 @@ public class FileStorageFactory(IServiceProvider serviceProvider) : IFileStorage
         return decoratedProvider;
     }
 
-    public class FileStorageBuilder(FileStorageFactory factory, string providerName)
+    /// <summary>
+    /// Builder for configuring file storage providers and their behaviors.
+    /// </summary>
+    public class FileStorageBuilder(FileStorageProviderFactory factory, string providerName)
     {
-        private readonly FileStorageFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        private readonly FileStorageProviderFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
         private readonly string providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
         private ServiceLifetime lifetime = ServiceLifetime.Scoped;
         private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = [];
+
+        /// <summary>
+        /// Gets or sets the factory function to create the provider instance.
+        /// </summary>
         public Func<IServiceProvider, IFileStorageProvider> ProviderFactory;
 
+        /// <summary>
+        /// Gets the service lifetime for the provider.
+        /// </summary>
         public ServiceLifetime Lifetime => this.lifetime;
 
+        /// <summary>
+        /// Gets the list of behavior decorator functions for the provider.
+        /// </summary>
         public List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors => this.behaviors;
 
+        /// <summary>
+        /// Configures an in-memory file storage provider.
+        /// </summary>
         public FileStorageBuilder UseInMemory(string locationName)
         {
             this.ProviderFactory = (sp) => new InMemoryFileStorageProvider(locationName);
             return this;
         }
 
+        /// <summary>
+        /// Configures a local file system storage provider.
+        /// </summary>
         public FileStorageBuilder UseLocal(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null)
         {
             this.ProviderFactory = (sp) => new LocalFileStorageProvider(locationName, rootPath, ensureRoot, lockTimeout);
             return this;
         }
 
+        /// <summary>
+        /// Adds logging behavior to the provider.
+        /// </summary>
         public FileStorageBuilder WithLogging(LoggingOptions options = null)
         {
             this.behaviors.Add((p, sp) => new LoggingFileStorageBehavior(p, sp.GetRequiredService<ILoggerFactory>(), options));
             return this;
         }
 
+        /// <summary>
+        /// Adds retry behavior to the provider.
+        /// </summary>
         public FileStorageBuilder WithRetry(RetryOptions options = null)
         {
             this.behaviors.Add((p, sp) => new RetryFileStorageBehavior(p, sp.GetRequiredService<ILoggerFactory>(), options));
             return this;
         }
 
+        /// <summary>
+        /// Adds caching behavior to the provider.
+        /// </summary>
         public FileStorageBuilder WithCaching(CachingOptions options = null)
         {
             this.behaviors.Add((p, sp) => new CachingFileStorageBehavior(p, sp.GetRequiredService<IMemoryCache>(), options));
             return this;
         }
 
+        /// <summary>
+        /// Adds a custom behavior to the provider.
+        /// </summary>
         public FileStorageBuilder WithBehavior(Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider> behaviorFactory)
         {
             this.behaviors.Add(behaviorFactory ?? throw new ArgumentNullException(nameof(behaviorFactory)));
             return this;
         }
 
+        /// <summary>
+        /// Sets the service lifetime for the provider.
+        /// </summary>
         public FileStorageBuilder WithLifetime(ServiceLifetime lifetime)
         {
             this.lifetime = lifetime;
             return this;
         }
 
+        /// <summary>
+        /// Builds and returns a configured file storage provider.
+        /// </summary>
         public IFileStorageProvider Build()
         {
             if (this.ProviderFactory == null)

@@ -108,12 +108,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         return errors.Any(e => e is FileSystemError || e is PermissionError || e is ExceptionError);
     }
 
-    public async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
         {
             return await this.ExecuteWithRetryAsync(() =>
-                this.innerProvider.ExistsAsync(path, progress, cancellationToken), "exists", path, cancellationToken);
+                this.innerProvider.FileExistsAsync(path, progress, cancellationToken), "exists", path, cancellationToken);
         }
         catch (InvalidOperationException ex)
         {
@@ -323,11 +323,11 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
-    public async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         try
         {
-            return await this.ExecuteWithRetryAsync(() => this.innerProvider.IsDirectoryAsync(path, cancellationToken), "is directory", path, cancellationToken);
+            return await this.ExecuteWithRetryAsync(() => this.innerProvider.DirectoryExistsAsync(path, cancellationToken), "is directory", path, cancellationToken);
         }
         catch (InvalidOperationException ex)
         {

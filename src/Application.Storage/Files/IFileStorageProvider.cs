@@ -35,7 +35,7 @@ public interface IFileStorageProvider
     /// <param name="progress">Optional progress reporter for tracking bytes and files processed.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result indicating success or failure with typed errors (e.g., FileSystemError, PermissionError).</returns>
-    Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
+    Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Opens a readable stream for the file or blob at the specified path, returning a Result with the stream or errors.
@@ -190,7 +190,7 @@ public interface IFileStorageProvider
     /// <param name="path">The path to check (e.g., "folder/subfolder").</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
     /// <returns>A Result indicating success or failure with typed errors (e.g., PathNotFoundError, PermissionError).</returns>
-    Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default);
+    Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a directory (or virtual folder) at the specified path, returning a Result with success or errors.

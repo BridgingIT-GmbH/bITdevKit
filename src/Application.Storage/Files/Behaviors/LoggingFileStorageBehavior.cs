@@ -26,10 +26,10 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
 
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
-    public async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
-        var result = await this.innerProvider.ExistsAsync(path, progress, cancellationToken);
+        var result = await this.innerProvider.FileExistsAsync(path, progress, cancellationToken);
         if (result.IsSuccess)
         {
             this.logger.LogInformation("{LogKey} file storage: successfully checked existence of file at '{Path}'", Constants.LogKey, path);
@@ -255,10 +255,10 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
-    public async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogIsDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
-        var result = await this.innerProvider.IsDirectoryAsync(path, cancellationToken);
+        var result = await this.innerProvider.DirectoryExistsAsync(path, cancellationToken);
         if (result.IsSuccess)
         {
             this.logger.LogInformation("{LogKey} file storage: successfully checked if '{Path}' is a directory", Constants.LogKey, path);

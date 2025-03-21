@@ -60,7 +60,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
             }));
 
         var serviceProvider = services.BuildServiceProvider(); ;
-        var factory = serviceProvider.GetRequiredService<IFileStorageFactory>();
+        var factory = serviceProvider.GetRequiredService<IFileStorageProviderFactory>();
 
         // Act & Assert - InMemory (Transient)
         var inMemoryProvider = factory.CreateProvider("inMemory");
@@ -86,7 +86,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -120,7 +120,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -150,7 +150,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -174,7 +174,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -196,7 +196,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory1", builder =>
         {
@@ -220,7 +220,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -243,7 +243,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         // Act & Assert
         Should.Throw<KeyNotFoundException>(() => factory.CreateProvider("nonexistent"))
@@ -255,7 +255,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {
@@ -276,7 +276,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         // Act & Assert
         Should.Throw<ArgumentException>(() => factory.RegisterProvider(null, builder =>
@@ -309,7 +309,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
             }));
 
         var serviceProvider = services.BuildServiceProvider();
-        var factory = serviceProvider.GetRequiredService<IFileStorageFactory>();
+        var factory = serviceProvider.GetRequiredService<IFileStorageProviderFactory>();
 
         // Act & Assert - Azure Blob (Scoped)
         var azureBlobProvider = factory.CreateProvider("azureBlob");
@@ -344,7 +344,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
             }));
 
         var serviceProvider = services.BuildServiceProvider();
-        var factory = serviceProvider.GetRequiredService<IFileStorageFactory>();
+        var factory = serviceProvider.GetRequiredService<IFileStorageProviderFactory>();
         var provider = factory.CreateProvider("local");
 
         // Act - Write a file
@@ -381,7 +381,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterNetworkFileStorageProvider("network", builder =>
         {
@@ -424,7 +424,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
             }));
 
         var serviceProvider = services.BuildServiceProvider();
-        var factory = serviceProvider.GetRequiredService<IFileStorageFactory>();
+        var factory = serviceProvider.GetRequiredService<IFileStorageProviderFactory>();
         var provider = factory.CreateProvider("local");
 
         // Act - Write a file with progress reporting
@@ -473,7 +473,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterAzureBlobProvider("azureBlob", builder =>
         {
@@ -495,7 +495,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     {
         // Arrange
         var serviceProvider = this.CreateServiceProvider();
-        var factory = new FileStorageFactory(serviceProvider);
+        var factory = new FileStorageProviderFactory(serviceProvider);
 
         factory.RegisterProvider("inMemory", builder =>
         {

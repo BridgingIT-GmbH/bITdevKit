@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
@@ -51,23 +52,10 @@ public class FileEventEntity
     public int EventType { get; set; }
 
     /// <summary>
-    /// Gets or sets the timestamp when the event was detected.
-    /// Required for tracking event history.
-    /// </summary>
-    [Required]
-    public DateTimeOffset DetectionTime { get; set; }
-
-    /// <summary>
     /// Gets or sets the size of the file in bytes at the time of detection.
     /// Used for tracking file changes.
     /// </summary>
     public long? FileSize { get; set; }
-
-    /// <summary>
-    /// Gets or sets the last modified timestamp of the file, if available.
-    /// Nullable to handle cases like deletions where metadata may not be present.
-    /// </summary>
-    public DateTimeOffset? LastModified { get; set; }
 
     /// <summary>
     /// Gets or sets the SHA256 checksum of the file content at the time of detection.
@@ -75,6 +63,38 @@ public class FileEventEntity
     /// </summary>
     [MaxLength(64)] // SHA256 hash length
     public string Checksum { get; set; }
+
+    /// <summary>
+    /// Gets or sets the timestamp when the event was detected.
+    /// Required for tracking event history.
+    /// </summary>
+    [Required]
+    public DateTimeOffset CreatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the last modified timestamp of the file, if available.
+    /// Nullable to handle cases like deletions where metadata may not be present.
+    /// </summary>
+    public DateTimeOffset? LastModified { get; set; }
+    //public DateTimeOffset? UpdatedDate { get; set; }
+
+    [NotMapped]
+    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+
+    [Column("Properties")]
+    public string
+        PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections
+    {
+        get =>
+            this.Properties.IsNullOrEmpty()
+                ? null
+                : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+        set =>
+            this.Properties = value.IsNullOrEmpty()
+                ? []
+                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
+                    DefaultSystemTextJsonSerializerOptions.Create());
+    }
 
     /// <summary>
     /// Gets or sets the row version for optimistic concurrency control.

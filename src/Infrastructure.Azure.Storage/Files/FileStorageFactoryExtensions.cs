@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure.Storage;
 
 using BridgingIT.DevKit.Application.Storage;
-using static BridgingIT.DevKit.Application.Storage.FileStorageFactory;
+using static BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory;
 
 public static class FileStorageFactoryExtensions
 {
@@ -17,8 +17,8 @@ public static class FileStorageFactoryExtensions
     /// <param name="providerName">The unique name of the provider.</param>
     /// <param name="configure">Action to configure the provider using a builder.</param>
     /// <returns>The factory for method chaining.</returns>
-    public static IFileStorageFactory RegisterAzureBlobProvider(
-        this FileStorageFactory factory,
+    public static IFileStorageProviderFactory RegisterAzureBlobProvider(
+        this FileStorageProviderFactory factory,
         string providerName,
         Action<FileStorageBuilder> configure)
     {
@@ -35,8 +35,8 @@ public static class FileStorageFactoryExtensions
     /// <param name="providerName">The unique name of the provider.</param>
     /// <param name="configure">Action to configure the provider using a builder.</param>
     /// <returns>The factory for method chaining.</returns>
-    public static IFileStorageFactory RegisterAzureFilesProvider(
-        this FileStorageFactory factory,
+    public static IFileStorageProviderFactory RegisterAzureFilesProvider(
+        this FileStorageProviderFactory factory,
         string providerName,
         Action<FileStorageBuilder> configure)
     {

@@ -23,7 +23,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
 
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
-    public async Task<Result> ExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"exists_{path}";
         if (this.cache.TryGetValue(cacheKey, out bool cachedResult))
@@ -32,7 +32,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 .WithMessage($"Cached existence check for file at '{path}'");
         }
 
-        var result = await this.InnerProvider.ExistsAsync(path, progress, cancellationToken);
+        var result = await this.InnerProvider.FileExistsAsync(path, progress, cancellationToken);
         if (result.IsSuccess)
         {
             this.cache.Set(cacheKey, true, this.options.CacheDuration);
@@ -272,7 +272,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
-    public async Task<Result> IsDirectoryAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"isdir_{path}";
         if (this.cache.TryGetValue(cacheKey, out bool cachedResult))
@@ -281,7 +281,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 .WithMessage($"Cached existence check for directory at '{path}'");
         }
 
-        var result = await this.InnerProvider.IsDirectoryAsync(path, cancellationToken);
+        var result = await this.InnerProvider.DirectoryExistsAsync(path, cancellationToken);
         if (result.IsSuccess)
         {
             this.cache.Set(cacheKey, true, this.options.CacheDuration);

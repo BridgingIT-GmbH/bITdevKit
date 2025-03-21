@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.Windows.Storage;
 
 using BridgingIT.DevKit.Application.Storage;
-using static BridgingIT.DevKit.Application.Storage.FileStorageFactory;
+using static BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory;
 
 public static class FileStorageFactoryExtensions
 {
@@ -17,8 +17,8 @@ public static class FileStorageFactoryExtensions
     /// <param name="providerName">The unique name of the provider.</param>
     /// <param name="configure">Action to configure the provider using a builder.</param>
     /// <returns>The factory for method chaining.</returns>
-    public static IFileStorageFactory RegisterNetworkFileStorageProvider(
-        this FileStorageFactory factory,
+    public static IFileStorageProviderFactory RegisterNetworkFileStorageProvider(
+        this FileStorageProviderFactory factory,
         string providerName,
         Action<FileStorageBuilder> configure)
     {

@@ -76,13 +76,13 @@ public static partial class ServiceCollectionExtensions
     ///   var inMemoryProvider = factory.CreateProvider<InMemoryFileStorageProvider>();
     ///   ```
     /// </example>
-    public static IServiceCollection AddFileStorage(this IServiceCollection services, Action<FileStorageFactory> configure = null)
+    public static IServiceCollection AddFileStorage(this IServiceCollection services, Action<FileStorageProviderFactory> configure = null)
     {
         //services.AddLogging();
         //services.AddMemoryCache();
-        services.AddSingleton<IFileStorageFactory>(sp =>
+        services.AddSingleton<IFileStorageProviderFactory>(sp =>
         {
-            var factory = new FileStorageFactory(sp);
+            var factory = new FileStorageProviderFactory(sp);
             configure?.Invoke(factory);
 
             return factory;

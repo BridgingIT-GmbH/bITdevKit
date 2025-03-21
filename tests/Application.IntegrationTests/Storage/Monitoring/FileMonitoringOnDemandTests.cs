@@ -418,8 +418,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         output.WriteLine($"Scanned {allEvents.Count} files in {stopwatch.ElapsedMilliseconds} ms");
 
         // Verify progress reporting
-        progressReports.Count.ShouldBe(10); // 10% intervals (10) + 1 final
-        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+        progressReports.Count.ShouldBe(11); // 10% intervals (10) + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 100]);
         progressReports.First().FilesScanned.ShouldBeGreaterThan(0); // Approx 10% of 7800
         progressReports.Last().FilesScanned.ShouldBe(actualFiles); // 7800
         progressReports.Last().TotalFiles.ShouldBe(actualFiles); // 7800
@@ -496,8 +496,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allEvents.Count.ShouldBe(actualFiles);
         allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
 
-        progressReports.Count.ShouldBe(10); // 10% intervals (10) + 1 final
-        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe(new[] { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 });
+        progressReports.Count.ShouldBe(11); // 10% intervals (10) + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 100]);
         progressReports.First().FilesScanned.ShouldBeGreaterThan(0);
         progressReports.Last().FilesScanned.ShouldBe(actualFiles);
         progressReports.Last().TotalFiles.ShouldBe(actualFiles);
@@ -721,6 +721,95 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allEvents.Count.ShouldBe((totalFiles * 2) + 2); // 5 Added + 5 Unchanged + 1 Changed + 1 Deleted
 
         // Cleanup
+        await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_ScanWithAdvancedOptions()
+    {
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+
+        // Create 100 files: 50 .txt, 50 .log
+        for (var i = 0; i < 50; i++)
+        {
+            File.WriteAllText(Path.Combine(tempFolder, $"file_{i}.txt"), $"Content {i}");
+            File.WriteAllText(Path.Combine(tempFolder, $"log_{i}.log"), $"Log Content {i}");
+        }
+
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("Docs", tempFolder, options =>
+                {
+                    options.FilePattern = "*.*";
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed;
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        await sut.StartAsync(CancellationToken.None);
+
+        // Step 1: Scan with Added filter, .log files only, batch size 5, 5% intervals, skip checksum, max 50 files
+        var progressReports = new List<ScanProgress>();
+        var progress = new Progress<ScanProgress>(report =>
+        {
+            lock (progressReports)
+            {
+                progressReports.Add(report);
+                output.WriteLine($"Progress: scanned {report.FilesScanned}/{report.TotalFiles} files ({report.PercentageComplete:F2}%) in {report.ElapsedTime.TotalSeconds:F2}s");
+            }
+        });
+
+        var scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(60))
+            .WithDelayPerFile(TimeSpan.FromMilliseconds(10)) // Reduced delay for faster test
+            .WithEventFilter(FileEventType.Added)
+            .WithFilePathFilter(@".*\.log$")
+            //.WithBatchSize(5)
+            .WithProgressIntervalPercentage(5)
+            //.WithSkipChecksum()
+            .WithMaxFilesToScan(50)
+            .Build();
+        var scanContext = await sut.ScanLocationAsync("Docs", scanOptions, progress, CancellationToken.None);
+        output.WriteLine($"Step 1: Scan detected {scanContext.Events.Count} Added events");
+
+        var allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count.ShouldBe(50); // 50 .log files
+        allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+        allEvents.All(e => e.FilePath.EndsWith(".log")).ShouldBeTrue();
+        progressReports.Count.ShouldBe(21); // 5% intervals (5, 10, ..., 100) = 20 + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe(new[] { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 100 });
+
+        // Step 2: Scan with Unchanged filter, .log files only, no checksum, max 25 files
+        progressReports.Clear();
+        scanOptions = ScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(30))
+            //.WithDelayPerFile(TimeSpan.FromMilliseconds(10))
+            .WithEventFilter(FileEventType.Unchanged)
+            .WithFilePathFilter(@".*\.log$")
+            //.WithBatchSize(5)
+            .WithProgressIntervalPercentage(5)
+            //.WithSkipChecksum()
+            .WithMaxFilesToScan(25)
+            .Build();
+        scanContext = await sut.ScanLocationAsync("Docs", scanOptions, progress, CancellationToken.None);
+        output.WriteLine($"Step 2: Scan detected {scanContext.Events.Count} Unchanged events");
+
+        allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count(e => e.EventType == FileEventType.Unchanged).ShouldBe(25); // 25 .txt files
+        allEvents.Count.ShouldBe(75); // 50 Added + 25 Unchanged
+        allEvents.Where(e => e.EventType == FileEventType.Unchanged).All(e => e.FilePath.EndsWith(".log")).ShouldBeTrue();
+        progressReports.Count.ShouldBe(21); // 5% intervals (5, 10, ..., 100) = 20 + 1 final
+        progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 100]);
+
         await sut.StopAsync(CancellationToken.None);
     }
 

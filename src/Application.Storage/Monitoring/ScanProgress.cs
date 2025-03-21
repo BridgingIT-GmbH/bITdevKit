@@ -11,11 +11,17 @@ using System.Diagnostics;
 [DebuggerDisplay("ToString()")]
 public class ScanProgress
 {
+    private double? percentageComplete;
+
     public int FilesScanned { get; set; }
 
     public int TotalFiles { get; set; } // Estimated or actual if known
 
-    public double PercentageComplete => this.TotalFiles > 0 ? (double)this.FilesScanned / this.TotalFiles * 100 : 0;
+    public double PercentageComplete
+    {
+        get => this.percentageComplete ?? (this.TotalFiles > 0 ? (double)this.FilesScanned / this.TotalFiles * 100 : 0);
+        set => this.percentageComplete = value;
+    }
 
     public TimeSpan ElapsedTime { get; set; }
 

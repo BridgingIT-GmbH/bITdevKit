@@ -77,7 +77,10 @@ public class LocalLocationHandler : LocationHandlerBase
         await base.StopAsync(token);
     }
 
-    public override async Task<ScanContext> ScanAsync(ScanOptions options = null, IProgress<ScanProgress> progress = null, CancellationToken token = default)
+    public override async Task<ScanContext> ScanAsync(
+        ScanOptions options = null,
+        IProgress<ScanProgress> progress = null,
+        CancellationToken token = default)
     {
         options ??= ScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
@@ -88,23 +91,39 @@ public class LocalLocationHandler : LocationHandlerBase
         var currentFiles = new Dictionary<string, FileMetadata>();
         string continuationToken = null;
         var filesScanned = 0;
-        var lastReportedPercentage = 0;
-        var estimatedTotalFiles = 0;
+        var batchCount = 0;
 
+        var estimatedTotalFiles = 0;
         if (this.provider is LocalFileStorageProvider localProvider)
         {
             estimatedTotalFiles = Directory.Exists(localProvider.RootPath)
                 ? Directory.GetFiles(localProvider.RootPath, this.options.FilePattern, SearchOption.AllDirectories).Length
                 : 0;
         }
+        if (options.MaxFilesToScan.HasValue && options.MaxFilesToScan.Value < estimatedTotalFiles)
+        {
+            estimatedTotalFiles = options.MaxFilesToScan.Value;
+        }
+
+        var filesPerPercentage = estimatedTotalFiles / 100.0;
+        var nextPercentage = options.ProgressIntervalPercentage;
+        var nextReportAtFiles = (int)Math.Ceiling(nextPercentage * filesPerPercentage);
 
         do
         {
             var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, token);
-            foreach (var filePath in result.Value.Files)
+            foreach (var filePath in result.Value.Files.OrderBy(p => p))
             {
+                if (!string.IsNullOrEmpty(options.FilePathFilter) && !System.Text.RegularExpressions.Regex.IsMatch(filePath, options.FilePathFilter))
+                {
+                    continue;
+                }
+
                 var metadataResult = await this.provider.GetFileMetadataAsync(filePath, token);
-                var checksumResult = await this.provider.GetChecksumAsync(filePath, token);
+                var checksumResult = options.SkipChecksum
+                    ? Result<string>.Success(string.Empty)
+                    : await this.provider.GetChecksumAsync(filePath, token);
+
                 if (metadataResult.IsSuccess && checksumResult.IsSuccess) // TODO: log failures
                 {
                     var metadata = metadataResult.Value;
@@ -124,66 +143,97 @@ public class LocalLocationHandler : LocationHandlerBase
                             Checksum = checksumResult.Value,
                             DetectionTime = DateTimeOffset.UtcNow
                         };
-
                         this.eventQueue.Add(fileEvent, token);
                         context.Events.Add(fileEvent);
                         this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
 
                         filesScanned++;
-                        var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
-                        if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
+                        batchCount++;
+
+                        while (filesScanned >= nextReportAtFiles && nextPercentage <= 100)
                         {
-                            lastReportedPercentage = currentPercentage;
                             progress?.Report(new ScanProgress
                             {
                                 FilesScanned = filesScanned,
-                                TotalFiles = estimatedTotalFiles > 0 ? estimatedTotalFiles : filesScanned,
-                                ElapsedTime = DateTimeOffset.UtcNow - startTime
+                                TotalFiles = estimatedTotalFiles,
+                                ElapsedTime = DateTimeOffset.UtcNow - startTime,
+                                PercentageComplete = nextPercentage // Use nextPercentage directly
                             });
+                            nextPercentage += options.ProgressIntervalPercentage;
+                            nextReportAtFiles = (int)Math.Ceiling(nextPercentage * filesPerPercentage);
                         }
 
-                        if (options.DelayPerFile > TimeSpan.Zero)
+                        if (batchCount >= options.BatchSize)
                         {
-                            await Task.Delay(options.DelayPerFile, token);
+                            if (options.DelayPerFile > TimeSpan.Zero)
+                            {
+                                await Task.Delay(options.DelayPerFile, token);
+                            }
+                            batchCount = 0;
+                        }
+
+                        if (options.MaxFilesToScan.HasValue && filesScanned >= options.MaxFilesToScan.Value)
+                        {
+                            break;
                         }
                     }
+                }
+
+                if (options.MaxFilesToScan.HasValue && filesScanned >= options.MaxFilesToScan.Value)
+                {
+                    break;
                 }
             }
             continuationToken = result.Value.NextContinuationToken;
         } while (continuationToken != null && !token.IsCancellationRequested);
 
-        foreach (var missingFile in presentFiles.Except(currentFiles.Keys))
+        if (!options.MaxFilesToScan.HasValue || filesScanned < options.MaxFilesToScan.Value)
         {
-            var fileEvent = new FileEvent
+            foreach (var missingFile in presentFiles.Except(currentFiles.Keys))
             {
-                LocationName = this.options.LocationName,
-                FilePath = missingFile,
-                EventType = FileEventType.Deleted,
-                DetectionTime = DateTimeOffset.UtcNow
-            };
-
-            if (options.EventFilter.Contains(fileEvent.EventType))
-            {
-                this.eventQueue.Add(fileEvent, token);
-                context.Events.Add(fileEvent);
-                this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
-
-                filesScanned++;
-                var currentPercentage = (int)((double)filesScanned / estimatedTotalFiles * 100);
-                if (currentPercentage > lastReportedPercentage && currentPercentage % 10 == 0)
+                var fileEvent = new FileEvent
                 {
-                    lastReportedPercentage = currentPercentage;
-                    progress?.Report(new ScanProgress
+                    LocationName = this.options.LocationName,
+                    FilePath = missingFile,
+                    EventType = FileEventType.Deleted,
+                    DetectionTime = DateTimeOffset.UtcNow
+                };
+
+                if (options.EventFilter.Contains(fileEvent.EventType))
+                {
+                    this.eventQueue.Add(fileEvent, token);
+                    context.Events.Add(fileEvent);
+                    this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+
+                    filesScanned++;
+                    batchCount++;
+
+                    while (filesScanned >= nextReportAtFiles && nextPercentage <= 100)
                     {
-                        FilesScanned = filesScanned,
-                        TotalFiles = estimatedTotalFiles > 0 ? estimatedTotalFiles : filesScanned,
-                        ElapsedTime = DateTimeOffset.UtcNow - startTime
-                    });
-                }
+                        progress?.Report(new ScanProgress
+                        {
+                            FilesScanned = filesScanned,
+                            TotalFiles = estimatedTotalFiles,
+                            ElapsedTime = DateTimeOffset.UtcNow - startTime,
+                            PercentageComplete = nextPercentage
+                        });
+                        nextPercentage += options.ProgressIntervalPercentage;
+                        nextReportAtFiles = (int)Math.Ceiling(nextPercentage * filesPerPercentage);
+                    }
 
-                if (options.DelayPerFile > TimeSpan.Zero)
-                {
-                    await Task.Delay(options.DelayPerFile, token);
+                    if (batchCount >= options.BatchSize)
+                    {
+                        if (options.DelayPerFile > TimeSpan.Zero)
+                        {
+                            await Task.Delay(options.DelayPerFile, token);
+                        }
+                        batchCount = 0;
+                    }
+
+                    if (options.MaxFilesToScan.HasValue && filesScanned >= options.MaxFilesToScan.Value)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -191,14 +241,14 @@ public class LocalLocationHandler : LocationHandlerBase
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
 
-        const int finalPercentage = 100;
-        if (finalPercentage > lastReportedPercentage)
+        if (progress != null)
         {
-            progress?.Report(new ScanProgress
+            progress.Report(new ScanProgress
             {
                 FilesScanned = filesScanned,
                 TotalFiles = filesScanned,
-                ElapsedTime = context.EndTime.Value - startTime
+                ElapsedTime = context.EndTime.Value - startTime,
+                PercentageComplete = 100 // Final report always at 100%
             });
         }
 

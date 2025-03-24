@@ -33,13 +33,61 @@ public class FileMetadata
     public DateTime? LastModified { get; set; }
 
     /// <summary>
-    /// Creates a copy of the current FileMetadata with updated values.
-    /// Example: `var updated = metadata.WithLength(2048);`
+    /// Retrieves the parent path from the current path by removing the last segment after the final slash. Returns null
+    /// if the path is empty or does not contain a slash.
     /// </summary>
-    /// <param name="update">A function to update the metadata properties.</param>
-    /// <returns>A new FileMetadata instance with updated values.</returns>
-    public FileMetadata With(Func<FileMetadata, FileMetadata> update)
+    public string GetParentPath()
     {
-        return update?.Invoke(this ?? new FileMetadata()) ?? this;
+        if (string.IsNullOrEmpty(this.Path))
+        {
+            return null;
+        }
+
+        var lastSlashIndex = this.Path.LastIndexOf('/');
+        if (lastSlashIndex < 0)
+        {
+            return null;
+        }
+
+        return this.Path[..lastSlashIndex];
+    }
+
+    /// <summary>
+    /// Retrieves the name of the file or directory from the given path. If the path is null or empty, it returns null.
+    /// </summary>
+    public string GetFileName()
+    {
+        if (string.IsNullOrEmpty(this.Path))
+        {
+            return null;
+        }
+
+        var lastSlashIndex = this.Path.LastIndexOf('/');
+        if (lastSlashIndex < 0)
+        {
+            return this.Path;
+        }
+
+        return this.Path[(lastSlashIndex + 1)..];
+    }
+
+    /// <summary>
+    /// Retrieves the file extension from the Path property. Returns null if the Path is empty or does not contain a dot.
+    /// </summary>
+    /// <returns>The file extension as a string, or null if no extension exists.</returns>
+    public string GetFileExtension()
+    {
+        if (string.IsNullOrEmpty(this.Path))
+        {
+            return null;
+        }
+
+        var lastDotIndex = this.Path.LastIndexOf('.');
+        if (lastDotIndex < 0)
+        {
+            return null;
+        }
+
+        return this.Path[(lastDotIndex + 1)..];
     }
 }

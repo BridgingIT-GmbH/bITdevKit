@@ -445,6 +445,136 @@ public static class FileStorageProviderExtensions
 
     #endregion
 
+    #region Text File Operations
+
+    /// <summary>
+    /// Writes a text file to the storage provider.
+    /// </summary>
+    public static async Task<Result> WriteTextFileAsync(this IFileStorageProvider provider, string path, string content, Encoding encoding = null, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for writing text file");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for writing text file");
+        }
+
+        if (content == null)
+        {
+            return Result.Failure()
+                .WithError(new ArgumentError("Content cannot be null"))
+                .WithMessage("Invalid content provided for writing text file");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled writing text file at '{path}'");
+        }
+
+        encoding ??= Encoding.UTF8;
+
+        try
+        {
+            await using var memoryStream = new MemoryStream(encoding.GetBytes(content));
+            var length = memoryStream.Length;
+            ReportProgress(progress, path, length, 1); // Report byte size
+            return await provider.WriteFileAsync(path, memoryStream, progress, cancellationToken)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted || task.IsCanceled)
+                    {
+                        return Result.Failure()
+                            .WithErrors(task.Result.Errors)
+                            .WithMessages(task.Result.Messages);
+                    }
+                    return task.Result.WithMessage($"Wrote text file at '{path}'");
+                }, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during text file writing"))
+                .WithMessage($"Cancelled writing text file at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error writing text file at '{path}'");
+        }
+    }
+
+    /// <summary>
+    /// Reads a text file from the storage provider.
+    /// </summary>
+    public static async Task<Result<string>> ReadTextFileAsync(this IFileStorageProvider provider, string path, Encoding encoding = null, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<string>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for reading text file");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<string>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for reading text file");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<string>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled reading text file at '{path}'");
+        }
+
+        encoding ??= Encoding.UTF8;
+
+        var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
+        if (readResult.IsFailure)
+        {
+            return Result<string>.Failure()
+                .WithErrors(readResult.Errors)
+                .WithMessages(readResult.Messages);
+        }
+
+        try
+        {
+            await using var stream = readResult.Value;
+            using var reader = new StreamReader(stream, encoding);
+            var content = await reader.ReadToEndAsync(cancellationToken);
+            var length = content.Length;
+            ReportProgress(progress, path, length, 1); // Report character size
+            return Result<string>.Success(content)
+                .WithMessage($"Read text file at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<string>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during text file reading"))
+                .WithMessage($"Cancelled reading text file at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error reading text file at '{path}'");
+        }
+    }
+
+    #endregion
+
     #region Directory Traversal
 
     /// <summary>
@@ -580,30 +710,5 @@ public static class FileStorageProviderExtensions
             FilesProcessed = filesProcessed,
             TotalFiles = totalFiles
         });
-    }
-
-    /// <summary>
-    /// Gets the relative path of a file within a base directory, ensuring consistent path separators and proper trimming.
-    /// </summary>
-    private static string GetRelativePath(string fullPath, string baseDirectory)
-    {
-        // Ensure consistent path separators (use forward slashes for ZIP compatibility)
-        fullPath = fullPath.Replace("\\", "/").Trim('/');
-        baseDirectory = baseDirectory.Replace("\\", "/").Trim('/');
-
-        // Ensure baseDirectory ends with a forward slash for proper substring removal
-        if (!baseDirectory.EndsWith("/"))
-        {
-            baseDirectory += "/";
-        }
-
-        // Remove the base directory prefix to get the relative path
-        if (fullPath.StartsWith(baseDirectory, StringComparison.OrdinalIgnoreCase))
-        {
-            return fullPath[baseDirectory.Length..];
-        }
-
-        // Fallback: if the paths don't match as expected, return the full path (this should rarely happen)
-        return fullPath;
     }
 }

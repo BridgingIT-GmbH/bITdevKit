@@ -28,7 +28,6 @@ public static class FileStorageProviderCompressionExtensions
     /// <param name="provider">The file storage provider to use for writing the compressed file.</param>
     /// <param name="path">The path where the compressed file will be written (e.g., "output.zip").</param>
     /// <param name="content">The stream containing the content to compress.</param>
-    /// <param name="password">An optional password parameter, not used for compression as SharpCompress does not support it.</param>
     /// <param name="progress">An optional progress reporter for tracking the compression process.</param>
     /// <param name="options">Optional configuration settings for compression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
@@ -37,11 +36,10 @@ public static class FileStorageProviderCompressionExtensions
     /// This method uses SharpCompress to create compressed files compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. Password protection is not supported during compression with SharpCompress.
     /// </remarks>
-    public static async Task<Result> CompressContentAsync(
+    public static async Task<Result> WriteCompressedFileAsync(
         this IFileStorageProvider provider,
         string path,
         Stream content,
-        string password = null,
         IProgress<FileProgress> progress = null,
         FileCompressionOptions options = null,
         CancellationToken cancellationToken = default)
@@ -111,6 +109,106 @@ public static class FileStorageProviderCompressionExtensions
             return Result.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error compressing file at '{path}'");
+        }
+    }
+
+    /// <summary>
+    /// Reads a compressed file from the storage provider and decompresses it into a stream, optionally handling password-protected compression using SharpCompress.
+    /// </summary>
+    /// <param name="provider">The file storage provider to use for reading the compressed file.</param>
+    /// <param name="path">The path of the compressed file to read (e.g., "input.zip").</param>
+    /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
+    /// <param name="progress">An optional progress reporter for tracking the decompression process.</param>
+    /// <param name="options">Optional configuration settings for decompression. If null, default settings are used.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A <see cref="Result{Stream}"/> containing the decompressed stream on success, or an error on failure.</returns>
+    /// <remarks>
+    /// This method uses SharpCompress to read compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
+    /// </remarks>
+    public static async Task<Result<Stream>> ReadCompressedFile(
+        this IFileStorageProvider provider,
+        string path,
+        string password = null,
+        IProgress<FileProgress> progress = null,
+        FileCompressionOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for reading compressed file");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for reading compressed file");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled reading compressed file at '{path}'");
+        }
+
+        var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
+        if (readResult.IsFailure)
+        {
+            return readResult;
+        }
+
+        options ??= FileCompressionOptions.Default;
+
+        try
+        {
+            var zipStream = readResult.Value;
+            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch");
+            }
+
+            var entry = archive.Entries.FirstOrDefault(e => !e.IsDirectory);
+            if (entry == null)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new FileSystemError("No entries found in compressed file", path))
+                    .WithMessage($"Failed to read compressed file at '{path}'");
+            }
+
+            var decompressedStream = new MemoryStream();
+            await using (var entryStream = entry.OpenEntryStream())
+            {
+                await entryStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
+            }
+            decompressedStream.Position = 0;
+            var length = decompressedStream.Length;
+            ReportProgress(progress, path, length, 1);
+
+            return Result<Stream>.Success(decompressedStream)
+                .WithMessage(!string.IsNullOrEmpty(password)
+                    ? $"Password-protected decompressed and read file at '{path}'"
+                    : $"Decompressed and read file at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during decompression"))
+                .WithMessage($"Cancelled decompressing file at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error decompressing file at '{path}'");
         }
     }
 
@@ -441,106 +539,6 @@ public static class FileStorageProviderCompressionExtensions
             return Result.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error uncompressing file at '{path}' to '{outputPath}'");
-        }
-    }
-
-    /// <summary>
-    /// Reads a compressed file from the storage provider and decompresses it into a stream, optionally handling password-protected compression using SharpCompress.
-    /// </summary>
-    /// <param name="provider">The file storage provider to use for reading the compressed file.</param>
-    /// <param name="path">The path of the compressed file to read (e.g., "input.zip").</param>
-    /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
-    /// <param name="progress">An optional progress reporter for tracking the decompression process.</param>
-    /// <param name="options">Optional configuration settings for decompression. If null, default settings are used.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A <see cref="Result{Stream}"/> containing the decompressed stream on success, or an error on failure.</returns>
-    /// <remarks>
-    /// This method uses SharpCompress to read compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
-    /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
-    /// </remarks>
-    public static async Task<Result<Stream>> UncompressContentAsync(
-        this IFileStorageProvider provider,
-        string path,
-        string password = null,
-        IProgress<FileProgress> progress = null,
-        FileCompressionOptions options = null,
-        CancellationToken cancellationToken = default)
-    {
-        if (provider == null)
-        {
-            return Result<Stream>.Failure()
-                .WithError(new ArgumentError("Provider cannot be null"))
-                .WithMessage("Invalid provider provided for reading compressed file");
-        }
-
-        if (string.IsNullOrEmpty(path))
-        {
-            return Result<Stream>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided for reading compressed file");
-        }
-
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return Result<Stream>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled"))
-                .WithMessage($"Cancelled reading compressed file at '{path}'");
-        }
-
-        var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
-        if (readResult.IsFailure)
-        {
-            return readResult;
-        }
-
-        options ??= FileCompressionOptions.Default;
-
-        try
-        {
-            var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
-
-            // Validate the archive type matches the expected type
-            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
-            {
-                return Result<Stream>.Failure()
-                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch");
-            }
-
-            var entry = archive.Entries.FirstOrDefault(e => !e.IsDirectory);
-            if (entry == null)
-            {
-                return Result<Stream>.Failure()
-                    .WithError(new FileSystemError("No entries found in compressed file", path))
-                    .WithMessage($"Failed to read compressed file at '{path}'");
-            }
-
-            var decompressedStream = new MemoryStream();
-            await using (var entryStream = entry.OpenEntryStream())
-            {
-                await entryStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
-            }
-            decompressedStream.Position = 0;
-            var length = decompressedStream.Length;
-            ReportProgress(progress, path, length, 1);
-
-            return Result<Stream>.Success(decompressedStream)
-                .WithMessage(!string.IsNullOrEmpty(password)
-                    ? $"Password-protected decompressed and read file at '{path}'"
-                    : $"Decompressed and read file at '{path}'");
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<Stream>.Failure()
-                .WithError(new OperationCancelledError("Operation cancelled during decompression"))
-                .WithMessage($"Cancelled decompressing file at '{path}'");
-        }
-        catch (Exception ex)
-        {
-            return Result<Stream>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Unexpected error decompressing file at '{path}'");
         }
     }
 

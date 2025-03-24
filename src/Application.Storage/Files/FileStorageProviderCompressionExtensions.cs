@@ -37,7 +37,7 @@ public static class FileStorageProviderCompressionExtensions
     /// This method uses SharpCompress to create compressed files compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. Password protection is not supported during compression with SharpCompress.
     /// </remarks>
-    public static async Task<Result> CompressAsync(
+    public static async Task<Result> CompressContentAsync(
         this IFileStorageProvider provider,
         string path,
         Stream content,
@@ -458,7 +458,7 @@ public static class FileStorageProviderCompressionExtensions
     /// This method uses SharpCompress to read compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
     /// </remarks>
-    public static async Task<Result<Stream>> UncompressStreamAsync(
+    public static async Task<Result<Stream>> UncompressContentAsync(
         this IFileStorageProvider provider,
         string path,
         string password = null,

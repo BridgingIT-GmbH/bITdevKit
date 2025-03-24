@@ -495,7 +495,7 @@ public abstract class FileStorageTestsBase
         result.Value.ShouldContain(d => d == "test/dir1" || d == "test/dir2");
     }
 
-    public virtual async Task CompressedUncompress_Content_Success()
+    public virtual async Task CompressedUncompress_AsStream_Success()
     {
         // Arrange
         var provider = this.CreateProvider();
@@ -503,7 +503,7 @@ public abstract class FileStorageTestsBase
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
 
         // Act
-        var result = await provider.CompressAsync(path, content, cancellationToken: CancellationToken.None);
+        var result = await provider.CompressContentAsync(path, content, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
@@ -513,7 +513,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
-        var readResult = await provider.UncompressStreamAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
+        var readResult = await provider.UncompressContentAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
         readResult.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", readResult.Messages)}");
         await using var decompressedStream = readResult.Value;
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
@@ -681,10 +681,10 @@ public abstract class FileStorageTestsBase
         const string path = "test_compressed.zip";
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
 
-        await provider.CompressAsync(path, content, cancellationToken: CancellationToken.None);
+        await provider.CompressContentAsync(path, content, cancellationToken: CancellationToken.None);
 
         // Act
-        var result = await provider.UncompressStreamAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
+        var result = await provider.UncompressContentAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", result.Messages)}");

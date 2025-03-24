@@ -7,29 +7,35 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using BridgingIT.DevKit.Common;
-using ICSharpCode.SharpZipLib.Zip;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using SharpCompress.Readers;
+using SharpCompress.Writers;
+using SharpCompress.Writers.GZip;
+using SharpCompress.Writers.Zip;
 
 /// <summary>
-/// Extension methods for <see cref="IFileStorageProvider"/> to add ZIP compression and decompression functionality.
+/// Extension methods for <see cref="IFileStorageProvider"/> to add compression and decompression functionality using SharpCompress.
 /// </summary>
 public static class FileStorageProviderCompressionExtensions
 {
     /// <summary>
-    /// Writes a file to the storage provider with ZIP compression, optionally password-protected using SharpZipLib (PKZIP or AES-256).
+    /// Writes a file to the storage provider with compression using SharpCompress.
     /// </summary>
     /// <param name="provider">The file storage provider to use for writing the compressed file.</param>
-    /// <param name="path">The path where the ZIP file will be written (e.g., "output.zip").</param>
+    /// <param name="path">The path where the compressed file will be written (e.g., "output.zip").</param>
     /// <param name="content">The stream containing the content to compress.</param>
-    /// <param name="password">An optional password for encrypting the ZIP file. If null or empty, no encryption is applied.</param>
+    /// <param name="password">An optional password parameter, not used for compression as SharpCompress does not support it.</param>
     /// <param name="progress">An optional progress reporter for tracking the compression process.</param>
-    /// <param name="options">Optional configuration settings for ZIP compression. If null, default settings are used.</param>
+    /// <param name="options">Optional configuration settings for compression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the compression operation.</returns>
     /// <remarks>
-    /// This method uses SharpZipLib to create ZIP files with password protection compatible with popular ZIP tools (e.g., 7-Zip, WinZip).
-    /// It supports PKZIP encryption (legacy) or AES encryption, depending on the configuration.
+    /// This method uses SharpCompress to create compressed files compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. Password protection is not supported during compression with SharpCompress.
     /// </remarks>
     public static async Task<Result> CompressAsync(
         this IFileStorageProvider provider,
@@ -73,37 +79,14 @@ public static class FileStorageProviderCompressionExtensions
         try
         {
             var zipStream = new MemoryStream();
-            await using (var zipOutputStream = new ZipOutputStream(zipStream) { IsStreamOwner = false })
+            using (var writer = CreateWriter(zipStream, options))
             {
-                if (!string.IsNullOrEmpty(password))
-                {
-                    zipOutputStream.Password = password;
-                }
-                zipOutputStream.UseZip64 = options.UseZip64 ? UseZip64.On : UseZip64.Off;
-                zipOutputStream.SetLevel(options.CompressionLevel);
-
-                var entry = new ZipEntry("data");
-                if (options.EntryDateTime.HasValue)
-                {
-                    entry.DateTime = options.EntryDateTime.Value;
-                }
-                if (options.AesEncryptionEnabled)
-                {
-                    entry.AESKeySize = options.AesEncryptionKeySize;
-                }
-
-                zipOutputStream.PutNextEntry(entry);
-
-                await content.CopyToAsync(zipOutputStream, options.BufferSize, cancellationToken);
-                await zipOutputStream.FlushAsync(cancellationToken);
-                zipOutputStream.CloseEntry();
-
-                await zipOutputStream.FinishAsync(cancellationToken);
-                zipStream.Position = 0;
-                var length = zipStream.Length;
-
-                ReportProgress(progress, path, length, 1);
+                writer.Write("data", content, options.EntryDateTime);
             }
+
+            zipStream.Position = 0;
+            var length = zipStream.Length;
+            ReportProgress(progress, path, length, 1);
 
             return await provider.WriteFileAsync(path, zipStream, progress, cancellationToken)
                 .ContinueWith(task =>
@@ -114,9 +97,7 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
-                    return task.Result.WithMessage(!string.IsNullOrEmpty(password)
-                        ? $"Password-protected compressed and wrote file at '{path}'"
-                        : $"Compressed and wrote file at '{path}'");
+                    return task.Result.WithMessage($"Compressed and wrote file at '{path}'");
                 }, cancellationToken);
         }
         catch (OperationCanceledException)
@@ -134,25 +115,23 @@ public static class FileStorageProviderCompressionExtensions
     }
 
     /// <summary>
-    /// Writes a ZIP file to the storage provider by compressing a file or all files and subdirectories in a directory, optionally password-protected using SharpZipLib (PKZIP or AES-256).
+    /// Writes a compressed file to the storage provider by compressing a file or all files and subdirectories in a directory using SharpCompress.
     /// </summary>
-    /// <param name="provider">The file storage provider to use for reading the input and writing the ZIP file.</param>
-    /// <param name="path">The path where the ZIP file will be written (e.g., "output.zip").</param>
+    /// <param name="provider">The file storage provider to use for reading the input and writing the compressed file.</param>
+    /// <param name="path">The path where the compressed file will be written (e.g., "output.zip").</param>
     /// <param name="inputPath">The path of the file or directory to compress (e.g., "file.txt" or "directory").</param>
-    /// <param name="password">An optional password for encrypting the ZIP file. If null or empty, no encryption is applied.</param>
     /// <param name="progress">An optional progress reporter for tracking the compression process.</param>
-    /// <param name="options">Optional configuration settings for ZIP compression. If null, default settings are used.</param>
+    /// <param name="options">Optional configuration settings for compression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the compression operation.</returns>
     /// <remarks>
-    /// This method uses SharpZipLib to create a ZIP file from a file or directory path in the storage provider, maintaining compatibility with popular ZIP tools (e.g., 7-Zip, WinZip).
-    /// It supports PKZIP encryption (legacy) or AES encryption, depending on the configuration.
+    /// This method uses SharpCompress to create a compressed file from a file or directory path in the storage provider, maintaining compatibility with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. Password protection is not supported during compression with SharpCompress.
     /// </remarks>
     public static async Task<Result> CompressAsync(
         this IFileStorageProvider provider,
         string path,
         string inputPath,
-        string password = null,
         IProgress<FileProgress> progress = null,
         FileCompressionOptions options = null,
         CancellationToken cancellationToken = default)
@@ -199,13 +178,13 @@ public static class FileStorageProviderCompressionExtensions
 
         try
         {
-            if (fileResult.IsSuccess) // zip single file
+            if (fileResult.IsSuccess) // compress single file
             {
-                return await CompressFile(provider, path, inputPath, password, progress, options, cancellationToken);
+                return await CompressFile(provider, path, inputPath, progress, options, cancellationToken);
             }
-            else // zip full directory
+            else // compress full directory
             {
-                return await CompressDirectory(provider, path, inputPath, password, progress, options, cancellationToken);
+                return await CompressDirectory(provider, path, inputPath, progress, options, cancellationToken);
             }
         }
         catch (OperationCanceledException)
@@ -225,48 +204,25 @@ public static class FileStorageProviderCompressionExtensions
             IFileStorageProvider provider,
             string path,
             string inputPath,
-            string password,
             IProgress<FileProgress> progress,
             FileCompressionOptions options,
             CancellationToken cancellationToken)
         {
             var zipStream = new MemoryStream();
-            await using (var zipOutputStream = new ZipOutputStream(zipStream) { IsStreamOwner = false })
+            using (var writer = CreateWriter(zipStream, options))
             {
-                if (!string.IsNullOrEmpty(password))
-                {
-                    zipOutputStream.Password = password;
-                }
-                zipOutputStream.UseZip64 = options.UseZip64 ? UseZip64.On : UseZip64.Off;
-                zipOutputStream.SetLevel(options.CompressionLevel);
-
                 var fileInfoResult = await provider.GetFileMetadataAsync(inputPath, cancellationToken);
                 if (fileInfoResult.IsFailure) return fileInfoResult;
 
                 var fileName = Path.GetFileName(inputPath);
-                var entry = new ZipEntry(fileName);
-                if (options.EntryDateTime.HasValue)
-                {
-                    entry.DateTime = options.EntryDateTime.Value;
-                }
-                if (options.AesEncryptionEnabled)
-                {
-                    entry.AESKeySize = options.AesEncryptionKeySize;
-                }
-
-                zipOutputStream.PutNextEntry(entry);
-
                 await using var fileStream = (await provider.ReadFileAsync(inputPath, progress, cancellationToken)).Value;
                 fileStream.Position = 0;
-                await fileStream.CopyToAsync(zipOutputStream, options.BufferSize, cancellationToken);
+                writer.Write(fileName, fileStream, options.EntryDateTime);
 
-                zipOutputStream.CloseEntry();
                 ReportProgress(progress, inputPath, fileInfoResult.Value.Length, 1, 1);
-
-                await zipOutputStream.FinishAsync(cancellationToken);
-                zipStream.Position = 0;
             }
 
+            zipStream.Position = 0;
             return await provider.WriteFileAsync(path, zipStream, progress, cancellationToken)
                 .ContinueWith(task =>
                 {
@@ -276,9 +232,7 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
-                    return task.Result.WithMessage(!string.IsNullOrEmpty(password)
-                        ? $"Password-protected compressed '{inputPath}' to '{path}'"
-                        : $"Compressed '{inputPath}' to '{path}'");
+                    return task.Result.WithMessage($"Compressed '{inputPath}' to '{path}'");
                 }, cancellationToken);
         }
 
@@ -286,21 +240,13 @@ public static class FileStorageProviderCompressionExtensions
             IFileStorageProvider provider,
             string path,
             string inputPath,
-            string password,
             IProgress<FileProgress> progress,
             FileCompressionOptions options,
             CancellationToken cancellationToken)
         {
             var zipStream = new MemoryStream();
-            await using (var zipOutputStream = new ZipOutputStream(zipStream) { IsStreamOwner = false })
+            using (var writer = CreateWriter(zipStream, options))
             {
-                if (!string.IsNullOrEmpty(password))
-                {
-                    zipOutputStream.Password = password;
-                }
-                zipOutputStream.UseZip64 = options.UseZip64 ? UseZip64.On : UseZip64.Off;
-                zipOutputStream.SetLevel(options.CompressionLevel);
-
                 var listResult = await provider.ListFilesAsync(inputPath, "*.*", true, null, cancellationToken);
                 if (listResult.Value.Files?.Any() != true)
                 {
@@ -329,33 +275,17 @@ public static class FileStorageProviderCompressionExtensions
                     }
 
                     var relativePath = GetRelativePath(file, inputPath);
-                    var entry = new ZipEntry(relativePath);
-                    if (options.EntryDateTime.HasValue)
-                    {
-                        entry.DateTime = options.EntryDateTime.Value;
-                    }
-                    if (options.AesEncryptionEnabled)
-                    {
-                        entry.AESKeySize = options.AesEncryptionKeySize;
-                    }
-
-                    zipOutputStream.PutNextEntry(entry);
-
                     await using var fileStream = (await provider.ReadFileAsync(file, progress, cancellationToken)).Value;
                     fileStream.Position = 0;
-                    await fileStream.CopyToAsync(zipOutputStream, options.BufferSize, cancellationToken);
+                    writer.Write(relativePath, fileStream, options.EntryDateTime);
 
-                    zipOutputStream.CloseEntry();
                     totalBytes += fileInfoResult.Value.Length;
                     filesProcessed++;
-
                     ReportProgress(progress, file, totalBytes, filesProcessed, totalFiles);
                 }
-
-                await zipOutputStream.FinishAsync(cancellationToken);
-                zipStream.Position = 0;
             }
 
+            zipStream.Position = 0;
             return await provider.WriteFileAsync(path, zipStream, progress, cancellationToken)
                 .ContinueWith(task =>
                 {
@@ -365,27 +295,25 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
-                    return task.Result.WithMessage(!string.IsNullOrEmpty(password)
-                        ? $"Password-protected compressed '{inputPath}' to '{path}'"
-                        : $"Compressed '{inputPath}' to '{path}'");
+                    return task.Result.WithMessage($"Compressed '{inputPath}' to '{path}'");
                 }, cancellationToken);
         }
     }
 
     /// <summary>
-    /// Reads a ZIP file from the storage provider and uncompresses it to a directory in the storage provider, optionally handling password-protected compression using SharpZipLib.
+    /// Reads a compressed file from the storage provider and uncompresses it to a directory in the storage provider, optionally handling password-protected compression using SharpCompress.
     /// </summary>
-    /// <param name="provider">The file storage provider to use for reading the ZIP file and writing the uncompressed files.</param>
-    /// <param name="path">The path of the ZIP file to uncompress (e.g., "input.zip").</param>
+    /// <param name="provider">The file storage provider to use for reading the compressed file and writing the uncompressed files.</param>
+    /// <param name="path">The path of the compressed file to uncompress (e.g., "input.zip").</param>
     /// <param name="outputPath">The directory path where the uncompressed files will be written (e.g., "uncompressed").</param>
-    /// <param name="password">An optional password for decrypting the ZIP file. If null or empty, no decryption is applied.</param>
+    /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
     /// <param name="progress">An optional progress reporter for tracking the uncompression process.</param>
-    /// <param name="options">Optional configuration settings for ZIP uncompression. If null, default settings are used.</param>
+    /// <param name="options">Optional configuration settings for uncompression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the uncompression operation.</returns>
     /// <remarks>
-    /// This method uses SharpZipLib to read and extract ZIP files with password protection compatible with popular ZIP tools (e.g., 7-Zip, WinZip).
-    /// It supports PKZIP encryption (legacy) or AES encryption, depending on the original file's configuration.
+    /// This method uses SharpCompress to read and extract compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
     /// </remarks>
     public static async Task<Result> UncompressAsync(
         this IFileStorageProvider provider,
@@ -449,15 +377,20 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var zipStream = readResult.Value;
-            await using var zipInputStream = new ZipInputStream(zipStream)
+            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
             {
-                Password = password
-            };
+                return Result.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to uncompress file at '{path}' due to archive type mismatch");
+            }
 
             long totalBytes = 0;
             long filesProcessed = 0;
-            ZipEntry entry;
-            while ((entry = zipInputStream.GetNextEntry()) != null)
+
+            foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -466,7 +399,7 @@ public static class FileStorageProviderCompressionExtensions
                         .WithMessage($"Cancelled uncompressing file at '{path}' to '{outputPath}' after processing {filesProcessed} files");
                 }
 
-                var entryPath = Path.Combine(outputPath, entry.Name).Replace("\\", "/");
+                var entryPath = Path.Combine(outputPath, entry.Key).Replace("\\", "/");
                 var directory = Path.GetDirectoryName(entryPath);
                 if (!string.IsNullOrEmpty(directory))
                 {
@@ -478,7 +411,10 @@ public static class FileStorageProviderCompressionExtensions
                 }
 
                 await using var memoryStream = new MemoryStream();
-                await zipInputStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
+                await using (var entryStream = entry.OpenEntryStream())
+                {
+                    await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
+                }
                 memoryStream.Position = 0;
 
                 var length = entry.Size;
@@ -509,20 +445,20 @@ public static class FileStorageProviderCompressionExtensions
     }
 
     /// <summary>
-    /// Reads a ZIP file from the storage provider and decompresses it into a stream, optionally handling password-protected compression using SharpZipLib.
+    /// Reads a compressed file from the storage provider and decompresses it into a stream, optionally handling password-protected compression using SharpCompress.
     /// </summary>
-    /// <param name="provider">The file storage provider to use for reading the ZIP file.</param>
-    /// <param name="path">The path of the ZIP file to read (e.g., "input.zip").</param>
-    /// <param name="password">An optional password for decrypting the ZIP file. If null or empty, no decryption is applied.</param>
+    /// <param name="provider">The file storage provider to use for reading the compressed file.</param>
+    /// <param name="path">The path of the compressed file to read (e.g., "input.zip").</param>
+    /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
     /// <param name="progress">An optional progress reporter for tracking the decompression process.</param>
-    /// <param name="options">Optional configuration settings for ZIP decompression. If null, default settings are used.</param>
+    /// <param name="options">Optional configuration settings for decompression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A <see cref="Result{Stream}"/> containing the decompressed stream on success, or an error on failure.</returns>
     /// <remarks>
-    /// This method uses SharpZipLib to read ZIP files with password protection compatible with popular ZIP tools (e.g., 7-Zip, WinZip).
-    /// It supports PKZIP encryption (legacy) or AES encryption, depending on the original file's configuration.
+    /// This method uses SharpCompress to read compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
     /// </remarks>
-    public static async Task<Result<Stream>> ReadCompressedFileAsync(
+    public static async Task<Result<Stream>> UncompressStreamAsync(
         this IFileStorageProvider provider,
         string path,
         string password = null,
@@ -562,12 +498,17 @@ public static class FileStorageProviderCompressionExtensions
         try
         {
             var zipStream = readResult.Value;
-            await using var zipInputStream = new ZipInputStream(zipStream)
-            {
-                Password = password
-            };
+            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
 
-            var entry = zipInputStream.GetNextEntry();
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch");
+            }
+
+            var entry = archive.Entries.FirstOrDefault(e => !e.IsDirectory);
             if (entry == null)
             {
                 return Result<Stream>.Failure()
@@ -576,7 +517,10 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             var decompressedStream = new MemoryStream();
-            await zipInputStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
+            await using (var entryStream = entry.OpenEntryStream())
+            {
+                await entryStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
+            }
             decompressedStream.Position = 0;
             var length = decompressedStream.Length;
             ReportProgress(progress, path, length, 1);
@@ -598,6 +542,56 @@ public static class FileStorageProviderCompressionExtensions
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error decompressing file at '{path}'");
         }
+    }
+
+    private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
+    {
+        var archiveType = MapArchiveType(options.ArchiveType);
+        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
+
+        if (archiveType == ArchiveType.Zip)
+        {
+            writerOptions = new ZipWriterOptions(GetCompressionType(archiveType))
+            {
+                DeflateCompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
+                UseZip64 = options.UseZip64,
+                //ArchiveComment = "Compressed using SharpCompress",
+                //Password = password,
+                //Encryption = ZipEncryptionMethod.WinZipAes256
+            };
+        }
+        else if (archiveType == ArchiveType.GZip)
+        {
+            writerOptions = new GZipWriterOptions()
+            {
+                CompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
+                //ArchiveComment = "Compressed using SharpCompress",
+                //Password = password,
+                //Encryption = ZipEncryptionMethod.WinZipAes256
+            };
+        }
+
+        writerOptions.ArchiveEncoding = new SharpCompress.Common.ArchiveEncoding { Default = options.Encoding };
+        writerOptions.LeaveStreamOpen = true;
+
+        return WriterFactory.Open(stream, archiveType, writerOptions);
+    }
+
+    private static CompressionType GetCompressionType(ArchiveType archiveType)
+    {
+        return archiveType switch
+        {
+            ArchiveType.Zip => CompressionType.Deflate,
+            ArchiveType.GZip => CompressionType.GZip,
+            ArchiveType.Tar => CompressionType.None, // Tar does not use compression by default
+            _ => throw new ArgumentException($"Unsupported archive type for compression: {archiveType}", nameof(archiveType))
+        };
+    }
+
+    private static bool IsArchiveTypeMatch(ArchiveType actualType, FileCompressionArchiveType expectedType)
+    {
+        var expectedArchiveType = MapArchiveType(expectedType);
+        return actualType == expectedArchiveType;
     }
 
     private static void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
@@ -627,10 +621,20 @@ public static class FileStorageProviderCompressionExtensions
 
         return fullPath;
     }
+
+    private static ArchiveType MapArchiveType(FileCompressionArchiveType archiveType)
+    {
+        return archiveType switch
+        {
+            FileCompressionArchiveType.Zip => ArchiveType.Zip,
+            FileCompressionArchiveType.GZip => ArchiveType.GZip,
+            _ => throw new ArgumentException($"Unsupported archive type: {archiveType}", nameof(archiveType))
+        };
+    }
 }
 
 /// <summary>
-/// Configuration options for ZIP compression and decompression using SharpZipLib.
+/// Configuration options for compression and decompression using SharpCompress.
 /// </summary>
 public class FileCompressionOptions
 {
@@ -653,20 +657,23 @@ public class FileCompressionOptions
     public bool UseZip64 { get; set; } = false;
 
     /// <summary>
-    /// Gets or sets whether to enable AES encryption if a password is provided.
-    /// If false, PKZIP encryption is used instead.
-    /// Default: false (uses PKZIP encryption).
-    /// </summary>
-    public bool AesEncryptionEnabled { get; set; } = false;
-
-    public int AesEncryptionKeySize { get; set; } = 256; // SharpZipLib uses 256-bit AES by default when a password is set
-
-    /// <summary>
-    /// Gets or sets the DateTime to use for ZIP entries.
+    /// Gets or sets the DateTime to use for compressed entries.
     /// If null, the current DateTime is used.
     /// Default: null.
     /// </summary>
     public DateTime? EntryDateTime { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of archive to create (e.g., Zip, Tar, GZip).
+    /// Default: Zip.
+    /// </summary>
+    public FileCompressionArchiveType ArchiveType { get; set; } = FileCompressionArchiveType.Zip;
+
+    /// <summary>
+    /// Gets or sets the encoding to use for archive entries (e.g., file names, comments).
+    /// Default: UTF8.
+    /// </summary>
+    public Encoding Encoding { get; set; } = Encoding.UTF8;
 
     /// <summary>
     /// Creates a default instance of <see cref="FileCompressionOptions"/>.
@@ -681,6 +688,23 @@ public class FileCompressionOptions
     {
         return new FileCompressionOptionsBuilder();
     }
+}
+
+/// <summary>
+/// Specifies the type of archive to create or decompress.
+/// Supported formats: Zip, Tar, GZip.
+/// </summary>
+public enum FileCompressionArchiveType
+{
+    /// <summary>
+    /// ZIP archive format.
+    /// </summary>
+    Zip,
+
+    /// <summary>
+    /// GZip archive format.
+    /// </summary>
+    GZip,
 }
 
 /// <summary>
@@ -736,29 +760,35 @@ public class FileCompressionOptionsBuilder
     }
 
     /// <summary>
-    /// Enables AES encryption for password-protected ZIP files.
+    /// Sets the DateTime to use for compressed entries.
     /// </summary>
-    /// <returns>The current <see cref="FileCompressionOptionsBuilder"/> instance for chaining.</returns>
-    public FileCompressionOptionsBuilder WithAesEncryption(bool value = false, int keySize = 256)
-    {
-        this.options.AesEncryptionEnabled = value;
-
-        if (value)
-        {
-            this.options.AesEncryptionKeySize = keySize;
-        }
-
-        return this;
-    }
-
-    /// <summary>
-    /// Sets the DateTime to use for ZIP entries.
-    /// </summary>
-    /// <param name="dateTime">The DateTime to set for ZIP entries. If null, the current DateTime is used.</param>
+    /// <param name="dateTime">The DateTime to set for compressed entries. If null, the current DateTime is used.</param>
     /// <returns>The current <see cref="FileCompressionOptionsBuilder"/> instance for chaining.</returns>
     public FileCompressionOptionsBuilder WithEntryDateTime(DateTime? dateTime)
     {
         this.options.EntryDateTime = dateTime;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the type of archive to create (e.g., Zip, Tar, GZip).
+    /// </summary>
+    /// <param name="archiveType">The type of archive to create. Default is Zip.</param>
+    /// <returns>The current <see cref="FileCompressionOptionsBuilder"/> instance for chaining.</returns>
+    public FileCompressionOptionsBuilder WithArchiveType(FileCompressionArchiveType archiveType)
+    {
+        this.options.ArchiveType = archiveType;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the encoding to use for archive entries (e.g., file names, comments).
+    /// </summary>
+    /// <param name="encoding">The encoding to use. Default is UTF8.</param>
+    /// <returns>The current <see cref="FileCompressionOptionsBuilder"/> instance for chaining.</returns>
+    public FileCompressionOptionsBuilder WithEncoding(Encoding encoding)
+    {
+        this.options.Encoding = encoding ?? Encoding.UTF8;
         return this;
     }
 

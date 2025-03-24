@@ -1350,8 +1350,8 @@
       },
       "System.Buffers": {
         "type": "Transitive",
-        "resolved": "4.5.1",
-        "contentHash": "Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg=="
+        "resolved": "4.6.0",
+        "contentHash": "lN6tZi7Q46zFzAbRYXTIvfXcyvQQgxnY7Xm6C6xQ9784dEL1amjM6S6Iw4ZpsvesAKnRVsM4scrDQaDqSClkjA=="
       },
       "System.ClientModel": {
         "type": "Transitive",
@@ -1975,6 +1975,11 @@
         "resolved": "16.2.0",
         "contentHash": "iKVYog7JNiFOTr4gMHSjCqrGFD2NyABUHgSkRq9XR8A2+fsWepSWTpjHAOnKo1LVAHjy33o6I0u6lo5Ng0NtAw=="
       },
+      "ZstdSharp.Port": {
+        "type": "Transitive",
+        "resolved": "0.8.4",
+        "contentHash": "eieSXq3kakCUXbgdxkKaRqWS6hF0KBJcqok9LlDCs60GOyrynLvPOcQ0pRw7shdPF7lh/VepJ9cP9n9HHc759g=="
+      },
       "BridgingIT.DevKit.Application.Commands": {
         "type": "Project",
         "dependencies": {
@@ -2061,7 +2066,7 @@
           "Polly": "[8.5.2, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpZipLib": "[1.4.2, )"
+          "SharpCompress": "[0.39.0, )"
         }
       },
       "BridgingIT.DevKit.Application.Utilities": {
@@ -3317,11 +3322,15 @@
           "Serilog": "4.0.0"
         }
       },
-      "SharpZipLib": {
+      "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[1.4.2, )",
-        "resolved": "1.4.2",
-        "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
+        "requested": "[0.39.0, )",
+        "resolved": "0.39.0",
+        "contentHash": "0esqIUDlg68Z7+Weuge4QzEvNtawUO4obTJFL7xuf4DBHMxVRr+wbNgiX9arMrj3kGXQSvLe0zbZG3oxpkwJOA==",
+        "dependencies": {
+          "System.Buffers": "4.6.0",
+          "ZstdSharp.Port": "0.8.4"
+        }
       },
       "System.ComponentModel.Annotations": {
         "type": "CentralTransitive",

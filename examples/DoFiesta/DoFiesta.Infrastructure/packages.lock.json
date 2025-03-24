@@ -483,6 +483,11 @@
         "resolved": "8.5.2",
         "contentHash": "1MJKdxv4zwDmiWvYvVN24DsrWUfgQ4F83voH8bhbtLMdPuGy8CfTUzsgQhvyrl1a7hrM6f/ydwLVdVUI0xooUw=="
       },
+      "System.Buffers": {
+        "type": "Transitive",
+        "resolved": "4.6.0",
+        "contentHash": "lN6tZi7Q46zFzAbRYXTIvfXcyvQQgxnY7Xm6C6xQ9784dEL1amjM6S6Iw4ZpsvesAKnRVsM4scrDQaDqSClkjA=="
+      },
       "System.ClientModel": {
         "type": "Transitive",
         "resolved": "1.1.0",
@@ -663,6 +668,11 @@
         "resolved": "8.0.0",
         "contentHash": "Obg3a90MkOw9mYKxrardLpY2u0axDMrSmy4JCdq2cYbelM2cUwmUir5Bomvd1yxmPL9h5LVHU1tuKBZpUjfASg=="
       },
+      "ZstdSharp.Port": {
+        "type": "Transitive",
+        "resolved": "0.8.4",
+        "contentHash": "eieSXq3kakCUXbgdxkKaRqWS6hF0KBJcqok9LlDCs60GOyrynLvPOcQ0pRw7shdPF7lh/VepJ9cP9n9HHc759g=="
+      },
       "BridgingIT.DevKit.Application.Commands": {
         "type": "Project",
         "dependencies": {
@@ -749,7 +759,7 @@
           "Polly": "[8.5.2, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpZipLib": "[1.4.2, )"
+          "SharpCompress": "[0.39.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -1457,11 +1467,15 @@
         "resolved": "4.2.0",
         "contentHash": "gmoWVOvKgbME8TYR+gwMf7osROiWAURterc6Rt2dQyX7wtjZYpqFiA/pY6ztjGQKKV62GGCyOcmtP1UKMHgSmA=="
       },
-      "SharpZipLib": {
+      "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[1.4.2, )",
-        "resolved": "1.4.2",
-        "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
+        "requested": "[0.39.0, )",
+        "resolved": "0.39.0",
+        "contentHash": "0esqIUDlg68Z7+Weuge4QzEvNtawUO4obTJFL7xuf4DBHMxVRr+wbNgiX9arMrj3kGXQSvLe0zbZG3oxpkwJOA==",
+        "dependencies": {
+          "System.Buffers": "4.6.0",
+          "ZstdSharp.Port": "0.8.4"
+        }
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",

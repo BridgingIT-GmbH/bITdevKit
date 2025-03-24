@@ -501,10 +501,9 @@ public abstract class FileStorageTestsBase
         var provider = this.CreateProvider();
         const string path = "test_compressed.zip";
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
-        const string password = ""; // Empty password as per your update
 
         // Act
-        var result = await provider.CompressAsync(path, content, password, cancellationToken: CancellationToken.None);
+        var result = await provider.CompressAsync(path, content, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
@@ -514,7 +513,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"File should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Read and verify the content
-        var readResult = await provider.ReadCompressedFileAsync(path, password, cancellationToken: CancellationToken.None);
+        var readResult = await provider.UncompressStreamAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
         readResult.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", readResult.Messages)}");
         await using var decompressedStream = readResult.Value;
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
@@ -526,7 +525,6 @@ public abstract class FileStorageTestsBase
         var provider = this.CreateProvider();
         const string directoryPath = "test_directory";
         const string zipPath = "test_directory.zip";
-        const string password = ""; // Empty password as per your update
         var options = FileCompressionOptions.CreateBuilder()
             .WithBufferSize(16384)
             .WithCompressionLevel(5)
@@ -540,7 +538,7 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(Path.Combine(directoryPath, "subdir/file2.txt"), new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")), null, CancellationToken.None);
 
         // Act
-        var result = await provider.CompressAsync(zipPath, directoryPath, password, null, options, cancellationToken: CancellationToken.None);
+        var result = await provider.CompressAsync(zipPath, directoryPath, null, options, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"WriteCompressedFileAsync (directory) failed: {string.Join(", ", result.Messages)}");
@@ -550,7 +548,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Uncompress and verify content
-        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", password, null, options, cancellationToken: CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", progress: null, options: null, cancellationToken: CancellationToken.None);
         uncompressResult.IsSuccess.ShouldBeTrue($"UncompressFileAsync failed: {string.Join(", ", uncompressResult.Messages)}");
 
         // Verify uncompressed files
@@ -574,7 +572,6 @@ public abstract class FileStorageTestsBase
         const string uncompressedPath = "uncompressed";
         const int fileCount = 100;
         const int maxFileSizeBytes = 2_500_000; // 2.5 MB
-        const string password = ""; // No password for this test
         var random = new Random();
 
         // Create a directory with nested folders and 100 files of random sizes (0-2.5 MB)
@@ -602,7 +599,7 @@ public abstract class FileStorageTestsBase
 
         // Act: Compress the directory
         var compressStopwatch = Stopwatch.StartNew();
-        var compressResult = await provider.CompressAsync(zipPath, inputPath, password, null, null, CancellationToken.None);
+        var compressResult = await provider.CompressAsync(zipPath, inputPath, null, null, CancellationToken.None);
         compressStopwatch.Stop();
 
         // Assert: Compression should succeed
@@ -621,7 +618,7 @@ public abstract class FileStorageTestsBase
 
         // Act: Uncompress the ZIP file
         var uncompressStopwatch = Stopwatch.StartNew();
-        var uncompressResult = await provider.UncompressAsync(zipPath, uncompressedPath, password, null, null, CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, uncompressedPath, null, null, null, CancellationToken.None);
         uncompressStopwatch.Stop();
 
         // Assert: Uncompression should succeed
@@ -646,7 +643,6 @@ public abstract class FileStorageTestsBase
         var provider = this.CreateProvider();
         const string filePath = "test_file.txt";
         const string zipPath = "test_file.zip";
-        const string password = ""; // Empty password, consistent with the directory test
         var options = FileCompressionOptions.CreateBuilder()
             .WithBufferSize(16384)
             .WithCompressionLevel(5)
@@ -658,7 +654,7 @@ public abstract class FileStorageTestsBase
         await provider.WriteFileAsync(filePath, new MemoryStream(Encoding.UTF8.GetBytes("Single file content")), null, CancellationToken.None);
 
         // Act
-        var result = await provider.CompressAsync(zipPath, filePath, password, null, options, cancellationToken: CancellationToken.None);
+        var result = await provider.CompressAsync(zipPath, filePath, null, options, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"CompressAsync (single file) failed: {string.Join(", ", result.Messages)}");
@@ -668,7 +664,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Uncompress and verify content
-        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", password, null, options, cancellationToken: CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", null, cancellationToken: CancellationToken.None);
         uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
 
         // Verify the uncompressed file
@@ -684,16 +680,14 @@ public abstract class FileStorageTestsBase
         var provider = this.CreateProvider();
         const string path = "test_compressed.zip";
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content"));
-        const string password = "testPassword123";
 
-        await provider.CompressAsync(path, content, password, cancellationToken: CancellationToken.None);
+        await provider.CompressAsync(path, content, cancellationToken: CancellationToken.None);
 
         // Act
-        var result = await provider.ReadCompressedFileAsync(path, password, cancellationToken: CancellationToken.None);
+        var result = await provider.UncompressStreamAsync(path, progress: null, options: null, cancellationToken: CancellationToken.None);
 
         // Assert
         result.IsSuccess.ShouldBeTrue($"ReadCompressedFileAsync failed: {string.Join(", ", result.Messages)}");
-        result.Messages.ShouldContain($"Password-protected decompressed and read file at '{path}'");
         await using var decompressedStream = result.Value;
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
     }
@@ -825,7 +819,7 @@ public abstract class FileStorageTestsBase
         var progress = new Progress<FileProgress>();
 
         // Act
-        var result = await provider.CompressAsync(zipPath, directoryPath, null, progress, cancellationToken: CancellationToken.None);
+        var result = await provider.CompressAsync(zipPath, directoryPath, progress, cancellationToken: CancellationToken.None);
 
         // Assert
         result.ShouldBeFailure();
@@ -841,7 +835,7 @@ public abstract class FileStorageTestsBase
         var progress = new Progress<FileProgress>();
 
         // Act
-        var result = await provider.UncompressAsync(zipPath, destinationPath, "testPassword123", progress, cancellationToken: CancellationToken.None);
+        var result = await provider.UncompressAsync(zipPath, destinationPath, progress: progress, options: null, cancellationToken: CancellationToken.None);
 
         // Assert
         result.ShouldBeFailure();

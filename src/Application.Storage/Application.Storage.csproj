@@ -15,7 +15,7 @@
     <PackageReference Include="Polly" />
     <PackageReference Include="Polly.Contrib.Simmy" />
     <PackageReference Include="Scrutor" />
-    <PackageReference Include="SharpZipLib" />
+    <PackageReference Include="SharpCompress" />
   </ItemGroup>
 
   <ItemGroup>

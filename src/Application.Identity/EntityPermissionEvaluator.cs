@@ -152,7 +152,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         if (entityTypeConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
             var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
-            foreach (var parentId in parentIds.SafeNull())
+            foreach (var parentId in parentIds.SafeNull()) // check all parents, if any has the permission granted we return true. this means the permission is inherited for entityId
             {
                 var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission, cancellationToken);
                 if (hasParentPermission)

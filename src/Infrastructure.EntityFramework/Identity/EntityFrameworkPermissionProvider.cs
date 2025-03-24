@@ -227,7 +227,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         // Execute the query and return the list of parent IDs
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
-        var parentIds = ((IEnumerable<object>)queryResult).ToList();
+        var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AID", entityType.Name, entityId?.ToString(), parentIds.Count);
 
@@ -264,6 +264,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
                 EntityType = entityType,
                 EntityId = entityId?.ToString().EmptyToNull(),
                 Permission = permission,
+                //IsRevoked = false,
                 CreatedDate = date,
                 UpdatedDate = date
             };
@@ -350,6 +351,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
                 EntityType = entityType,
                 EntityId = entityId?.ToString().EmptyToNull(),
                 Permission = permission,
+                //IsRevoked = false,
                 CreatedDate = date,
                 UpdatedDate = date
             };

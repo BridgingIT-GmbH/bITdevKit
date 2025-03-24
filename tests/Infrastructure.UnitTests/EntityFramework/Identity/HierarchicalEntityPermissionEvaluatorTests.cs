@@ -72,7 +72,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
     public async Task HasPermission_InheritedFromManager_ShouldGrantAccess()
     {
         // Arrange
-        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" };
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
         var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
         var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
 
@@ -82,33 +82,17 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Grant permission to CEO (top of chain)
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            ceo.Id,
-            Permission.Read);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), ceo.Id, Permission.Read);
 
         // Act & Assert
-        var hasManagerAccess = await this.evaluator.HasPermissionAsync(
-            userId,
-            [],
-            manager,
-            Permission.Read);
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager, Permission.Read);
         hasManagerAccess.ShouldBeTrue("Should inherit from CEO");
 
-        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(
-            userId,
-            [],
-            employee,
-            Permission.Read);
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
         hasEmployeeAccess.ShouldBeTrue("Should inherit from CEO through manager");
 
         // Grant additional permission to manager
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            manager.Id,
-            Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Write);
 
         // Verify inherited permissions
         var employeePermissions = await this.evaluator.GetPermissionsAsync(userId, [], employee);
@@ -151,7 +135,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
     {
         // Arrange
         var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" };
-        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id }; // has READ permission
         var employee1 = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee1", ManagerId = manager.Id };
         var employee2 = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee2", ManagerId = manager.Id };
 
@@ -161,11 +145,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Grant permission to manager
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            manager.Id,
-            Permission.Read);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Read);
 
         // Act & Assert
         var employee1Permissions = await this.evaluator.GetPermissionsAsync(userId, [], employee1);

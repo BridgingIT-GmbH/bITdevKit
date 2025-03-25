@@ -702,6 +702,230 @@ public static class FileStorageProviderExtensions
 
     #endregion
 
+    /// <summary>
+    /// Deep copies a file or directory structure from the source path to the destination path within the same storage location.
+    /// </summary>
+    /// <param name="provider">The file storage provider to use for copying the structure.</param>
+    /// <param name="sourcePath">The source path of the file or directory to copy (e.g., "source/folder").</param>
+    /// <param name="destinationPath">The destination path where the structure will be copied (e.g., "dest/folder").</param>
+    /// <param name="skipFiles">If true, skips copying files and only copies the directory structure. Default is false.</param>
+    /// <param name="searchPattern">An optional search pattern to filter files to copy (e.g., "*.txt"). If null, all files are copied unless skipFiles is true.</param>
+    /// <param name="progress">An optional progress reporter for tracking the copying process.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A <see cref="Result"/> indicating success or failure of the deep copy operation.</returns>
+    /// <remarks>
+    /// This method recursively copies the directory structure, including empty directories, and files that match the search pattern (unless skipped) from the source to the destination.
+    /// It uses the provider's methods to list directories, list files, create directories, and copy files, ensuring thread safety and progress reporting.
+    /// </remarks>
+    public static async Task<Result> DeepCopyAsync(
+        this IFileStorageProvider provider,
+        string sourcePath,
+        string destinationPath,
+        bool skipFiles = false,
+        string searchPattern = null,
+        IProgress<FileProgress> progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for deep copying");
+        }
+
+        if (string.IsNullOrEmpty(sourcePath))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Source path cannot be null or empty", sourcePath))
+                .WithMessage("Invalid source path provided for deep copying");
+        }
+
+        if (string.IsNullOrEmpty(destinationPath))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Destination path cannot be null or empty", destinationPath))
+                .WithMessage("Invalid destination path provided for deep copying");
+        }
+
+        if (sourcePath.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Source and destination paths cannot be the same", sourcePath))
+                .WithMessage("Source and destination paths must be different for deep copying");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled deep copying from '{sourcePath}' to '{destinationPath}'");
+        }
+
+        try
+        {
+            // Check if the source exists (file or directory)
+            var fileExistsResult = await provider.FileExistsAsync(sourcePath, cancellationToken: cancellationToken);
+            var directoryExistsResult = await provider.DirectoryExistsAsync(sourcePath, cancellationToken);
+
+            if (fileExistsResult.IsFailure && directoryExistsResult.IsFailure)
+            {
+                return Result.Failure()
+                    .WithErrors(fileExistsResult.Errors.Concat(directoryExistsResult.Errors))
+                    .WithMessages(fileExistsResult.Messages.Concat(directoryExistsResult.Messages));
+            }
+
+            // Handle single file copy
+            if (fileExistsResult.IsSuccess)
+            {
+                if (skipFiles)
+                {
+                    return Result.Success()
+                        .WithMessage($"Skipped copying file from '{sourcePath}' to '{destinationPath}' as skipFiles is true");
+                }
+
+                // Check if the file matches the search pattern (if provided)
+                if (!string.IsNullOrEmpty(searchPattern) && !Path.GetFileName(sourcePath).Match(searchPattern))
+                {
+                    return Result.Success()
+                        .WithMessage($"Skipped copying file from '{sourcePath}' to '{destinationPath}' as it does not match the search pattern '{searchPattern}'");
+                }
+
+                // Copy the single file
+                var destFilePath = destinationPath;
+                var copyResult = await provider.CopyFileAsync(sourcePath, destFilePath, progress, cancellationToken);
+                if (copyResult.IsFailure)
+                {
+                    return copyResult;
+                }
+
+                var metadataResult = await provider.GetFileMetadataAsync(sourcePath, cancellationToken);
+                if (metadataResult.IsSuccess)
+                {
+                    ReportProgress(progress, sourcePath, metadataResult.Value.Length, 1, 1);
+                }
+
+                return Result.Success()
+                    .WithMessage($"Deep copied file from '{sourcePath}' to '{destinationPath}'");
+            }
+
+            // Handle directory copy
+            // List all directories recursively under the source path, including empty ones
+            var dirListResult = await provider.ListDirectoriesAsync(sourcePath, null, true, cancellationToken);
+            if (dirListResult.IsFailure)
+            {
+                return Result.Failure()
+                    .WithErrors(dirListResult.Errors)
+                    .WithMessages(dirListResult.Messages);
+            }
+
+            var directories = dirListResult.Value?.ToList() ?? [];
+            directories.Insert(0, sourcePath); // Include the root directory
+
+            // List all files recursively under the source path, applying the search pattern
+            var fileListResult = await provider.ListFilesAsync(sourcePath, searchPattern ?? "*.*", true, null, cancellationToken);
+            if (fileListResult.IsFailure)
+            {
+                return Result.Failure()
+                    .WithErrors(fileListResult.Errors)
+                    .WithMessages(fileListResult.Messages);
+            }
+
+            var files = fileListResult.Value.Files?.ToList() ?? [];
+            var totalItems = directories.Count + (skipFiles ? 0 : files.Count); // Total items = directories + filtered files (if not skipped)
+            long totalBytes = 0;
+            long itemsProcessed = 0;
+            var failedPaths = new List<string>();
+
+            // Create directory structure
+            foreach (var dir in directories.OrderBy(d => d.Length)) // Order by length to ensure parent directories are created first
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Result.Failure()
+                        .WithError(new OperationCancelledError("Operation cancelled during deep copy"))
+                        .WithMessage($"Cancelled deep copying from '{sourcePath}' to '{destinationPath}' after processing {itemsProcessed}/{totalItems} items");
+                }
+
+                // Compute the relative path and destination directory path
+                var relativePath = dir.StartsWith(sourcePath, StringComparison.OrdinalIgnoreCase)
+                    ? dir[sourcePath.Length..].TrimStart('/')
+                    : dir;
+                var destDirPath = string.IsNullOrEmpty(relativePath)
+                    ? destinationPath
+                    : Path.Combine(destinationPath, relativePath).Replace("\\", "/");
+
+                // Create the directory at the destination
+                var createDirResult = await provider.CreateDirectoryAsync(destDirPath, cancellationToken);
+                if (createDirResult.IsFailure)
+                {
+                    failedPaths.Add(dir);
+                    continue;
+                }
+
+                itemsProcessed++;
+                ReportProgress(progress, dir, totalBytes, itemsProcessed, totalItems);
+            }
+
+            // Copy files if not skipping
+            if (!skipFiles)
+            {
+                foreach (var file in files)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return Result.Failure()
+                            .WithError(new OperationCancelledError("Operation cancelled during deep copy"))
+                            .WithMessage($"Cancelled deep copying from '{sourcePath}' to '{destinationPath}' after processing {itemsProcessed}/{totalItems} items");
+                    }
+
+                    // Compute the relative path and destination file path
+                    var relativePath = file.StartsWith(sourcePath, StringComparison.OrdinalIgnoreCase)
+                        ? file[sourcePath.Length..].TrimStart('/')
+                        : file;
+                    var destFilePath = Path.Combine(destinationPath, relativePath).Replace("\\", "/");
+
+                    // Copy the file
+                    var copyResult = await provider.CopyFileAsync(file, destFilePath, progress, cancellationToken);
+                    if (copyResult.IsFailure)
+                    {
+                        failedPaths.Add(file);
+                        continue;
+                    }
+
+                    var metadataResult = await provider.GetFileMetadataAsync(file, cancellationToken);
+                    if (metadataResult.IsSuccess)
+                    {
+                        totalBytes += metadataResult.Value.Length;
+                        itemsProcessed++;
+                        ReportProgress(progress, file, totalBytes, itemsProcessed, totalItems);
+                    }
+                }
+            }
+
+            if (failedPaths.Count > 0)
+            {
+                return Result.Failure()
+                    .WithError(new PartialOperationError("Partial deep copy failure", failedPaths))
+                    .WithMessage($"Deep copied {itemsProcessed}/{totalItems} items from '{sourcePath}' to '{destinationPath}', {failedPaths.Count} failed");
+            }
+
+            return Result.Success()
+                .WithMessage($"Deep copied structure from '{sourcePath}' to '{destinationPath}'{(skipFiles ? " (files skipped)" : string.IsNullOrEmpty(searchPattern) ? "" : $" (filtered by '{searchPattern}')")}");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during deep copy"))
+                .WithMessage($"Cancelled deep copying from '{sourcePath}' to '{destinationPath}'");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error deep copying from '{sourcePath}' to '{destinationPath}'");
+        }
+    }
+
     private static void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
     {
         progress?.Report(new FileProgress

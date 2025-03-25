@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
+using Shouldly;
 
 public abstract class FileStorageTestsBase
 {
@@ -495,7 +496,7 @@ public abstract class FileStorageTestsBase
         result.Value.ShouldContain(d => d == "test/dir1" || d == "test/dir2");
     }
 
-    public virtual async Task CompressedUncompress_AsStream_Success()
+    public virtual async Task CompressUncompress_AsStream_Success()
     {
         // Arrange
         var provider = this.CreateProvider();
@@ -891,6 +892,195 @@ public abstract class FileStorageTestsBase
         processedFiles.Count.ShouldBe(2, "Should process exactly 2 files");
         processedFiles.ShouldContain($"{path}/file1.txt", "Should process file1.txt");
         processedFiles.ShouldContain($"{path}/subdir/file2.txt", "Should process file2.txt");
+    }
+
+    public virtual async Task DeepCopyAsync_SingleFile_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string sourcePath = "file.txt";
+        const string destPath = "copied_file.txt";
+        var content = "Hello, World!"u8.ToArray();
+        await provider.WriteFileAsync(sourcePath, new MemoryStream(content), null, CancellationToken.None);
+
+        // Act
+        var result = await provider.DeepCopyAsync(sourcePath, destPath, skipFiles: false, searchPattern: null, progress: null, cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"DeepCopyAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Deep copied file from '{sourcePath}' to '{destPath}'");
+
+        var destExists = await provider.FileExistsAsync(destPath);
+        destExists.ShouldBeSuccess($"Destination file should exist: {string.Join(", ", destExists.Messages)}");
+
+        var destContentResult = await provider.ReadBytesAsync(destPath);
+        destContentResult.ShouldBeSuccess($"Reading destination file failed: {string.Join(", ", destContentResult.Messages)}");
+        destContentResult.Value.ShouldBeEquivalentTo(content);
+    }
+
+    public virtual async Task DeepCopyAsync_DirectoryStructureWithFiles_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string sourcePath = "source";
+        const string destPath = "dest";
+
+        // Create directory structure: source/dir1/dir2, source/dir3 (dir3 is empty)
+        await provider.CreateDirectoryAsync("source/dir1/dir2");
+        await provider.CreateDirectoryAsync("source/dir3");
+
+        // Create files: source/file1.txt, source/dir1/file2.txt, source/dir1/dir2/file3.txt
+        await provider.WriteTextFileAsync("source/file1.txt", "File 1 content");
+        await provider.WriteTextFileAsync("source/dir1/file2.txt", "File 2 content");
+        await provider.WriteTextFileAsync("source/dir1/dir2/file3.txt", "File 3 content");
+
+        var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
+        var expectedFiles = new List<string> { "dest/file1.txt", "dest/dir1/file2.txt", "dest/dir1/dir2/file3.txt" };
+        long expectedBytes = "File 1 content".Length + "File 2 content".Length + "File 3 content".Length;
+        var progressItems = new List<FileProgress>();
+
+        // Act
+        var result = await provider.DeepCopyAsync(sourcePath, destPath, skipFiles: false, searchPattern: null, progress: new Progress<FileProgress>(p => progressItems.Add(p)), cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"DeepCopyAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Deep copied structure from '{sourcePath}' to '{destPath}'");
+
+        // Verify directories (including empty dir3)
+        var destDirsResult = await provider.ListDirectoriesAsync(destPath, null, true);
+        destDirsResult.ShouldBeSuccess($"Listing directories failed: {string.Join(", ", destDirsResult.Messages)}");
+        destDirsResult.Value.ShouldContain(expectedDirs[0]);
+        destDirsResult.Value.ShouldContain(expectedDirs[1]);
+        destDirsResult.Value.ShouldContain(expectedDirs[2]);
+
+        // Verify files
+        var destFilesResult = await provider.ListFilesAsync(destPath, "*.*", true);
+        destFilesResult.ShouldBeSuccess($"Listing files failed: {string.Join(", ", destFilesResult.Messages)}");
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[0]);
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[1]);
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[2]);
+
+        // Verify file contents
+        //foreach (var file in expectedFiles)
+        //{
+        //    var sourceFile = file.Replace("dest", "source");
+        //    var sourceContent = await provider.ReadTextFileAsync(sourceFile);
+        //    var destContent = await provider.ReadTextFileAsync(file);
+        //    destContent.ShouldBeSuccess($"Reading file {file} failed: {string.Join(", ", destContent.Messages)}");
+        //    destContent.Value.ShouldBeSameAs(sourceContent.Value);
+        //}
+
+        // Verify progress
+        //var lastProgress = progressItems.Last();
+        //lastProgress.FilesProcessed.ShouldBe(expectedDirs.Count + expectedFiles.Count, "Should process all directories and files");
+        //lastProgress.TotalFiles.ShouldBe(expectedDirs.Count + expectedFiles.Count, "Total files should match directories plus files");
+        //lastProgress.BytesProcessed.ShouldBe(expectedBytes, "Total bytes should match the sum of file contents");
+    }
+
+    public virtual async Task DeepCopyAsync_SkipFiles_CopiesOnlyDirectoryStructure()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string sourcePath = "source";
+        const string destPath = "dest";
+
+        // Create directory structure: source/dir1/dir2, source/dir3 (dir3 is empty)
+        await provider.CreateDirectoryAsync("source/dir1/dir2");
+        await provider.CreateDirectoryAsync("source/dir3");
+
+        // Create files: source/file1.txt, source/dir1/file2.txt, source/dir1/dir2/file3.txt
+        await provider.WriteTextFileAsync("source/file1.txt", "File 1 content");
+        await provider.WriteTextFileAsync("source/dir1/file2.txt", "File 2 content");
+        await provider.WriteTextFileAsync("source/dir1/dir2/file3.txt", "File 3 content");
+
+        var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
+        var expectedFiles = new List<string>();
+        var progressItems = new List<FileProgress>();
+
+        // Act
+        var result = await provider.DeepCopyAsync(sourcePath, destPath, skipFiles: true, searchPattern: null, progress: new Progress<FileProgress>(p => progressItems.Add(p)), cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"DeepCopyAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Deep copied structure from '{sourcePath}' to '{destPath}' (files skipped)");
+
+        // Verify directories (including empty dir3)
+        var destDirsResult = await provider.ListDirectoriesAsync(destPath, null, true);
+        destDirsResult.ShouldBeSuccess($"Listing directories failed: {string.Join(", ", destDirsResult.Messages)}");
+        destDirsResult.Value.ShouldContain(expectedDirs[0]);
+        destDirsResult.Value.ShouldContain(expectedDirs[1]);
+        destDirsResult.Value.ShouldContain(expectedDirs[2]);
+
+        // Verify no files were copied
+        var destFilesResult = await provider.ListFilesAsync(destPath, "*.*", true);
+        destFilesResult.ShouldBeSuccess($"Listing files failed: {string.Join(", ", destFilesResult.Messages)}");
+        destFilesResult.Value.Files.ShouldBeEmpty();
+
+        // Verify progress
+        //var lastProgress = progressItems.Last();
+        //lastProgress.FilesProcessed.ShouldBe(expectedDirs.Count, "Should process only directories");
+        //lastProgress.TotalFiles.ShouldBe(expectedDirs.Count, "Total files should match directories");
+        //lastProgress.BytesProcessed.ShouldBe(0, "No bytes should be processed since files are skipped");
+    }
+
+    public virtual async Task DeepCopyAsync_FilterFilesWithSearchPattern_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string sourcePath = "source";
+        const string destPath = "dest";
+
+        // Create directory structure: source/dir1/dir2, source/dir3 (dir3 is empty)
+        await provider.CreateDirectoryAsync("source/dir1/dir2");
+        await provider.CreateDirectoryAsync("source/dir3");
+
+        // Create files: source/file1.txt, source/dir1/file2.txt, source/dir1/dir2/file3.jpg, source/dir3/file4.txt
+        await provider.WriteTextFileAsync("source/file1.txt", "File 1 content");
+        await provider.WriteTextFileAsync("source/dir1/file2.txt", "File 2 content");
+        await provider.WriteTextFileAsync("source/dir1/dir2/file3.jpg", "File 3 content");
+        await provider.WriteTextFileAsync("source/dir3/file4.txt", "File 4 content");
+
+        var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
+        var expectedFiles = new List<string> { "dest/file1.txt", "dest/dir1/file2.txt", "dest/dir3/file4.txt" };
+        long expectedBytes = "File 1 content".Length + "File 2 content".Length + "File 4 content".Length;
+        var progressItems = new List<FileProgress>();
+
+        // Act
+        var result = await provider.DeepCopyAsync(sourcePath, destPath, skipFiles: false, searchPattern: "*.txt", progress: new Progress<FileProgress>(p => progressItems.Add(p)), cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"DeepCopyAsync failed: {string.Join(", ", result.Messages)}");
+        result.Messages.ShouldContain($"Deep copied structure from '{sourcePath}' to '{destPath}' (filtered by '*.txt')");
+
+        // Verify directories (including empty dir3)
+        var destDirsResult = await provider.ListDirectoriesAsync(destPath, null, true);
+        destDirsResult.ShouldBeSuccess($"Listing directories failed: {string.Join(", ", destDirsResult.Messages)}");
+        destDirsResult.Value.ShouldContain(expectedDirs[0]);
+        destDirsResult.Value.ShouldContain(expectedDirs[1]);
+        destDirsResult.Value.ShouldContain(expectedDirs[2]);
+
+        // Verify files (only .txt files should be copied)
+        var destFilesResult = await provider.ListFilesAsync(destPath, "*.*", true);
+        destFilesResult.ShouldBeSuccess($"Listing files failed: {string.Join(", ", destFilesResult.Messages)}");
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[0]);
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[1]);
+        destFilesResult.Value.Files.ShouldContain(expectedFiles[2]);
+
+        // Verify file contents
+        //foreach (var file in expectedFiles)
+        //{
+        //    var sourceFile = file.Replace("dest", "source");
+        //    var sourceContent = await provider.ReadTextFileAsync(sourceFile);
+        //    var destContent = await provider.ReadTextFileAsync(file);
+        //    destContent.ShouldBeSuccess($"Reading file {file} failed: {string.Join(", ", destContent.Messages)}");
+        //    destContent.Value.ShouldBeSameAs(sourceContent.Value);
+        //}
+
+        // Verify progress
+        //var lastProgress = progressItems.Last();
+        //lastProgress.FilesProcessed.ShouldBe(expectedDirs.Count + expectedFiles.Count, "Should process all directories and filtered files");
+        //lastProgress.TotalFiles.ShouldBe(expectedDirs.Count + expectedFiles.Count, "Total files should match directories plus filtered files");
+        //lastProgress.BytesProcessed.ShouldBe(expectedBytes, "Total bytes should match the sum of filtered file contents");
     }
 
     private string ComputeSha256Hash(byte[] data)

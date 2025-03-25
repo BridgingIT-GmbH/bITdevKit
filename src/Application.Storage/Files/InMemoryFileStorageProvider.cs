@@ -618,7 +618,7 @@ public class InMemoryFileStorageProvider(string locationName)
             {
                 var filesList = this.files
                     .Where(f => f.Key.StartsWith(normalizedPath/* + "/"*/, StringComparison.OrdinalIgnoreCase) || f.Key == normalizedPath)
-                    .Where(f => f.Key.Match(searchPattern))
+                    .WhereIf(f => f.Key.Match(searchPattern), !string.IsNullOrEmpty(searchPattern))
                     .Select(f => f.Key)
                     //.Select(f => f.Key.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(f => !string.IsNullOrEmpty(f))
@@ -1437,12 +1437,11 @@ public class InMemoryFileStorageProvider(string locationName)
             {
                 var directoriesList = this.directories
                     .Where(d => d.StartsWith(normalizedPath, StringComparison.OrdinalIgnoreCase))
-                    .Where(d => d.Match(searchPattern))
+                    .Where(d => d != normalizedPath) // exclude root
+                    .WhereIf(d => d.Match(searchPattern), !string.IsNullOrEmpty(searchPattern))
                     //.Select(d => d.Substring(normalizedPath.Length).TrimStart('/'))
                     //.Where(d => !string.IsNullOrEmpty(d))
-                    .Distinct()
-                    .Order()
-                    .ToList();
+                    .Distinct().Order().ToList();
 
                 if (!recursive)
                 {
@@ -1532,8 +1531,10 @@ public class InMemoryFileStorageProvider(string locationName)
         {
             return string.Empty;
         }
+
         var parts = path.Split('/').ToList();
         parts.RemoveAt(parts.Count - 1);
+
         return string.Join("/", parts);
     }
 }

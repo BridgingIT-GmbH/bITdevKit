@@ -211,9 +211,9 @@ public class AzureBlobFileStorageProviderTests(ITestOutputHelper output, TestEnv
     //}
 
     [Fact]
-    public override async Task CompressedUncompress_AsStream_Success()
+    public override async Task CompressUncompress_AsStream_Success()
     {
-        await base.CompressedUncompress_AsStream_Success();
+        await base.CompressUncompress_AsStream_Success();
     }
 
     [Fact]

@@ -231,9 +231,9 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     }
 
     [Fact]
-    public override async Task CompressedUncompress_AsStream_Success()
+    public override async Task CompressUncompress_AsStream_Success()
     {
-        await base.CompressedUncompress_AsStream_Success();
+        await base.CompressUncompress_AsStream_Success();
     }
 
     [Fact]
@@ -258,5 +258,29 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     public override async Task TraverseFilesAsync_Success()
     {
         await base.TraverseFilesAsync_Success();
+    }
+
+    [Fact]
+    public override async Task DeepCopyAsync_SingleFile_Success()
+    {
+        await base.DeepCopyAsync_SingleFile_Success();
+    }
+
+    [Fact]
+    public override async Task DeepCopyAsync_DirectoryStructureWithFiles_Success()
+    {
+        await base.DeepCopyAsync_DirectoryStructureWithFiles_Success();
+    }
+
+    [Fact]
+    public override async Task DeepCopyAsync_SkipFiles_CopiesOnlyDirectoryStructure()
+    {
+        await base.DeepCopyAsync_SkipFiles_CopiesOnlyDirectoryStructure();
+    }
+
+    [Fact]
+    public override async Task DeepCopyAsync_FilterFilesWithSearchPattern_Success()
+    {
+        await base.DeepCopyAsync_FilterFilesWithSearchPattern_Success();
     }
 }

@@ -942,7 +942,6 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        // No file-specific lock needed for directory creation
         try
         {
             this.Initialize();
@@ -1047,7 +1046,6 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         var fullPath = this.GetFullPath(path);
-        // No file-specific lock needed for directory listing
         try
         {
             this.Initialize();
@@ -1059,9 +1057,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             }
 
             var directories = Directory.EnumerateDirectories(fullPath, searchPattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                .Select(this.GetRelativePath)
-                .Order()
-                .ToList();
+                .Select(this.GetRelativePath).Order().ToList();
 
             return Task.FromResult(Result<IEnumerable<string>>.Success(directories)
                 .WithMessage($"Listed directories in '{path}' with pattern '{searchPattern}'"));

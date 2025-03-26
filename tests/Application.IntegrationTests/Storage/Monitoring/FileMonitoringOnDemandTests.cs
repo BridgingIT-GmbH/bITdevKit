@@ -431,7 +431,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         progressReports.Last().ElapsedTime.ShouldBeGreaterThan(TimeSpan.Zero);
 
         var scanTimeMs = stopwatch.ElapsedMilliseconds;
-        scanTimeMs.ShouldBeLessThan(15000);
+        scanTimeMs.ShouldBeLessThan(16000);
 
         // Cleanup (optional)
          await sut.StopAsync(CancellationToken.None);

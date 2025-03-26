@@ -39,7 +39,7 @@ public class FileMonitoringService(
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous start operation.</returns>
-    public async Task StartAsync(CancellationToken token)
+    public async Task StartAsync(CancellationToken token = default) // TODO: maybe do this on instance creation too
     {
         if (this.isStarted)
         {
@@ -63,7 +63,7 @@ public class FileMonitoringService(
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    public async Task StopAsync(CancellationToken token)
+    public async Task StopAsync(CancellationToken token = default)
     {
         if (!this.isStarted)
         {
@@ -152,7 +152,7 @@ public class FileMonitoringService(
     /// <param name="locationName">The name of the location to restart (e.g., "Docs").</param>
     /// <param name="token">The cancellation token to stop the restart if needed.</param>
     /// <returns>A task representing the asynchronous restart operation.</returns>
-    public async Task RestartLocationAsync(string locationName, CancellationToken token)
+    public async Task RestartLocationAsync(string locationName, CancellationToken token = default)
     {
         var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
         if (handler == null)

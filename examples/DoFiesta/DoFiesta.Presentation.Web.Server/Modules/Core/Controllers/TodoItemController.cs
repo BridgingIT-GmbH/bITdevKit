@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 using System.Net;
 using Application.Modules.Core;
 using BridgingIT.DevKit.Application.Identity;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Presentation;
 using Common;
@@ -21,7 +22,9 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class TodoItemController( // TODO: move to minimal endpoints
     IMediator mediator,
-    IAuthorizationService authorizationService) : ControllerBase
+    IAuthorizationService authorizationService,
+    IFileMonitoringService fileMonitoringService,
+    ILogger<TodoItemController> logger) : ControllerBase
 {
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Read))]
     [HttpGet]
@@ -80,6 +83,12 @@ public class TodoItemController( // TODO: move to minimal endpoints
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<ICollection<TodoItemModel>>> PostSearch([FromBodyFilter] FilterModel filter)
     {
+        var scanContext = await fileMonitoringService.ScanLocationAsync("inbound");
+        foreach (var @event in scanContext.Events.SafeNull())
+        {
+            logger.LogInformation($"@@@@@@@@@ {@event.FilePath} [{@event.EventType}]");
+        }
+
         var authResult = await authorizationService.AuthorizeAsync(
             this.User, typeof(TodoItem), new EntityPermissionRequirement(Permission.List));
         if (!authResult.Succeeded)
@@ -101,7 +110,7 @@ public class TodoItemController( // TODO: move to minimal endpoints
 
         return response.Result.ToOkActionResult();
     }
-    
+
     //[EntityPermissionRequirement(typeof(TodoItem), nameof(Permission.Write))]
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -186,5 +195,21 @@ public class TodoItemController( // TODO: move to minimal endpoints
             new TodoItemCompleteAllCommand()).AnyContext();
 
         return response.Result.ToOkActionResult();
+    }
+
+    [HttpGet("scan")]
+    [AllowAnonymous]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult> Scan([FromBodyFilter] FilterModel filter)
+    {
+        await fileMonitoringService.StartAsync();
+        var scanContext = await fileMonitoringService.ScanLocationAsync("inbound");
+        foreach (var @event in scanContext.Events.SafeNull())
+        {
+            logger.LogInformation($"@@@@@@@@@ {@event.FilePath} [{@event.EventType}]");
+        }
+
+        return this.Ok(scanContext);
     }
 }

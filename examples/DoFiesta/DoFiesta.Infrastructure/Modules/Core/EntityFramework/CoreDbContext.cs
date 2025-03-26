@@ -11,11 +11,14 @@ using Microsoft.EntityFrameworkCore;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IEntityPermissionContext
+    IEntityPermissionContext,
+    IFileMonitoringContext
 {
     public DbSet<TodoItem> TodoItems { get; set; }
 
     public DbSet<Subscription> Subscriptions { get; set; }
 
     public DbSet<EntityPermission> EntityPermissions { get; set; }
+
+    public DbSet<FileEventEntity> FileEvents { get; set; }
 }

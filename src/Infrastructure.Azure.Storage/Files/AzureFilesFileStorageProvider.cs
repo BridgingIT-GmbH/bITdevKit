@@ -1012,9 +1012,10 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Result<IEnumerable<string>>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided");
+            path = string.Empty;
+            //return Result<IEnumerable<string>>.Failure()
+            //    .WithError(new FileSystemError("Path cannot be null or empty", path))
+            //    .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)

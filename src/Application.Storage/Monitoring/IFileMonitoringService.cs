@@ -22,7 +22,7 @@ public interface IFileMonitoringService
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous start operation.</returns>
-    Task StartAsync(CancellationToken token);
+    Task StartAsync(CancellationToken token = default);
 
     /// <summary>
     /// Stops monitoring all locations asynchronously.
@@ -30,7 +30,7 @@ public interface IFileMonitoringService
     /// </summary>
     /// <param name="token">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    Task StopAsync(CancellationToken token);
+    Task StopAsync(CancellationToken token = default);
 
     /// <summary>
     /// Triggers an on-demand scan for a specific location asynchronously.
@@ -66,7 +66,7 @@ public interface IFileMonitoringService
     /// <param name="locationName">The name of the location to restart (e.g., "Docs").</param>
     /// <param name="token">The cancellation token to stop the restart if needed.</param>
     /// <returns>A task representing the asynchronous restart operation.</returns>
-    Task RestartLocationAsync(string locationName, CancellationToken token);
+    Task RestartLocationAsync(string locationName, CancellationToken token = default);
 
     /// <summary>
     /// Retrieves the current status of a specific location asynchronously.

@@ -99,7 +99,7 @@ public class FileMonitoringBuilder
 
         if (locationHandlerType != null)
         {
-            this.services.AddSingleton(sp => Activator.CreateInstance(
+            this.services.AddScoped(sp => Activator.CreateInstance(
                 locationHandlerType,
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(locationHandlerType),
                 providerFactory(),

@@ -131,10 +131,14 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
             try
             {
-                var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-                var length = new FileInfo(fullPath).Length;
-                this.ReportProgress(progress, path, length, 1);
-                return Result<Stream>.Success(stream)
+                var fileInfo = new FileInfo(fullPath);
+                var fileSize = fileInfo.Length;
+                var (bufferSize, _, _) = this.CalculateBufferSize(fileSize);
+
+                var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, useAsync: true);
+                this.ReportProgress(progress, path, fileSize, 1);
+
+                return Result<Stream>.Success(fileStream)
                     .WithMessage($"Read file at '{path}'");
             }
             catch (UnauthorizedAccessException ex)
@@ -193,11 +197,17 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
             try
             {
-                await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
-                var bytesRead = 0L;
-                var buffer = new byte[4096];
+                // Estimate file size if possible (e.g., if content.Length is available)
+                var estimatedSize = content.CanSeek ? content.Length : 1024 * 1024; // Default to 1 MB if unknown
+                var (bufferSize, minBufferSize, maxBufferSize) = this.CalculateBufferSize(estimatedSize);
+
+                await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, useAsync: true);
+                var buffer = new byte[bufferSize];
+                long bytesProcessed = 0;
                 int read;
-                while ((read = await content.ReadAsync(buffer, cancellationToken)) > 0)
+                var stopwatch = Stopwatch.StartNew();
+
+                while ((read = await content.ReadAsync(buffer.AsMemory(0, bufferSize), cancellationToken)) > 0)
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
@@ -205,10 +215,21 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                     }
 
                     await fs.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-                    bytesRead += read;
-                    this.ReportProgress(progress, path, bytesRead, 1);
+                    bytesProcessed += read;
+
+                    // Adjust buffer size dynamically based on throughput
+                    var elapsedSeconds = stopwatch.Elapsed.TotalSeconds;
+                    var (newBufferSize, shouldAdjust) = this.AdjustBufferSize(bufferSize, bytesProcessed, elapsedSeconds, minBufferSize, maxBufferSize);
+                    if (shouldAdjust)
+                    {
+                        bufferSize = newBufferSize;
+                        buffer = new byte[bufferSize];
+                    }
+
+                    this.ReportProgress(progress, path, bytesProcessed, 1);
                 }
 
+                stopwatch.Stop();
                 return Result.Success()
                     .WithMessage($"Wrote file at '{path}'");
             }
@@ -1033,9 +1054,10 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Task.FromResult(Result<IEnumerable<string>>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided"));
+            path = string.Empty;
+            //return Result<IEnumerable<string>>.Failure()
+            //    .WithError(new FileSystemError("Path cannot be null or empty", path))
+            //    .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
@@ -1170,6 +1192,61 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
 
         this.disposed = true;
+    }
+
+    private (int BufferSize, int MinBufferSize, int MaxBufferSize) CalculateBufferSize(long fileSize)
+    {
+        const int KB = 1024;
+        const int MB = 1024 * KB;
+
+        const int minBufferSize = 4 * KB; // 4 KB
+        const int maxBufferSize = 4 * MB; // 4 MB
+        int bufferSize;
+
+        if (fileSize < 1 * MB)
+        {
+            bufferSize = 4 * KB; // Small files: 4 KB
+        }
+        else if (fileSize < 100 * MB)
+        {
+            bufferSize = 64 * KB; // Medium files: 64 KB
+        }
+        else
+        {
+            bufferSize = 1 * MB; // Large files: 1 MB
+        }
+
+        return (bufferSize, minBufferSize, maxBufferSize);
+    }
+
+    private (int NewBufferSize, bool ShouldAdjust) AdjustBufferSize(int currentBufferSize, long bytesProcessed, double elapsedSeconds, int minBufferSize, int maxBufferSize)
+    {
+        const int KB = 1024;
+        const int MB = 1024 * KB;
+        const double LowThroughputThreshold = 10 * MB; // 10 MB/s
+        const double HighThroughputThreshold = 100 * MB; // 100 MB/s
+
+        if (elapsedSeconds <= 0)
+        {
+            return (currentBufferSize, false);
+        }
+
+        var throughput = bytesProcessed / elapsedSeconds; // Bytes per second
+
+        if (throughput < LowThroughputThreshold && currentBufferSize < maxBufferSize)
+        {
+            // Increase buffer size to improve throughput
+            var newBufferSize = Math.Min(currentBufferSize * 2, maxBufferSize);
+            return (newBufferSize, true);
+        }
+        else if (throughput > HighThroughputThreshold && currentBufferSize > minBufferSize)
+        {
+            // Decrease buffer size to reduce memory usage
+            var newBufferSize = Math.Max(currentBufferSize / 2, minBufferSize);
+            return (newBufferSize, true);
+        }
+
+        return (currentBufferSize, false);
     }
 
     private string GetFullPath(string path) => Path.Combine(this.RootPath, path.Replace("/", "\\").TrimStart('\\'));

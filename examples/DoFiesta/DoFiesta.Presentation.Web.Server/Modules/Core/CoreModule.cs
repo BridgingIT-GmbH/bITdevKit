@@ -6,13 +6,16 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using Application.Modules.Core;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Common;
 using DevKit.Domain.Repositories;
 using Domain.Model;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public class CoreModule : WebModuleBase
 {
@@ -64,6 +67,21 @@ public class CoreModule : WebModuleBase
             o.EnableEvaluationEndpoints(o => o.RequireAuthorization = false);
             o.EnableManagementEndpoints(o => o.RequireAuthorization = false/*o => o.RequireRoles = [Role.Administrators]*/);
         });
+
+        // file monitoring
+        var inboundDirectory = Path.Combine(Path.GetTempPath(), $"DoFiesta-inbound"); // _{GuidGenerator.CreateSequential()}
+        Directory.CreateDirectory(inboundDirectory);
+        Console.WriteLine($"FILEMONITORING - {inboundDirectory}");
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("inbound", inboundDirectory, options =>
+                {
+                    options.UseOnDemandOnly = true; // On-demand only
+                    options.RateLimit = RateLimitOptions.MediumSpeed;
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        }).WithEntityFrameworkStore<CoreDbContext>();
 
         // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()

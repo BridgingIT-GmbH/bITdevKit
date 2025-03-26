@@ -626,7 +626,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
                 if (!recursive)
                 {
-                    filesList = [.. filesList.Where(f => !f.Contains('/'))];
+                    filesList = [.. filesList.Where(f => !f.Substring(normalizedPath.Length).TrimStart('/').Contains('/'))];
                 }
 
                 return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success((filesList, null))
@@ -1411,9 +1411,10 @@ public class InMemoryFileStorageProvider(string locationName)
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Result<IEnumerable<string>>.Failure()
-                .WithError(new FileSystemError("Path cannot be null or empty", path))
-                .WithMessage("Invalid path provided");
+            path = string.Empty;
+            //return Result<IEnumerable<string>>.Failure()
+            //    .WithError(new FileSystemError("Path cannot be null or empty", path))
+            //    .WithMessage("Invalid path provided");
         }
 
         if (cancellationToken.IsCancellationRequested)
@@ -1445,7 +1446,7 @@ public class InMemoryFileStorageProvider(string locationName)
 
                 if (!recursive)
                 {
-                    directoriesList = [.. directoriesList.Where(d => !d.Contains('/'))];
+                    directoriesList = [.. directoriesList.Where(d => !d.Substring(normalizedPath.Length).TrimStart('/').Contains('/'))];
                 }
 
                 return Result<IEnumerable<string>>.Success(directoriesList)

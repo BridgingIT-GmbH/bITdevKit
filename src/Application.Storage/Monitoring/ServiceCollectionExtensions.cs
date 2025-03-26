@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
     ///         });
     /// })
     /// .WithEntityFrameworkStore<MyAppDbContext>(); // Extension from EF infra project
-    /// 
+    ///
     /// </code>
     /// </example>
     public static FileMonitoringBuilderContext AddFileMonitoring(
@@ -55,7 +55,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(configure, nameof(configure));
 
-        services.TryAddSingleton<IFileMonitoringService, FileMonitoringService>();
+        services.TryAddScoped<IFileMonitoringService, FileMonitoringService>();
         services.TryAddScoped<IFileEventStore, InMemoryFileEventStore>(); // Default store
 
         var builder = new FileMonitoringBuilder(services);

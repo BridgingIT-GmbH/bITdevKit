@@ -92,10 +92,13 @@ public static class ServiceCollectionExtensions
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithJob<TJob>(
         this JobSchedulingBuilderContext context,
-        string cronExpression)
+        string cronExpression,
+        string name = null,
+        Dictionary<string, string> data = null,
+        bool enabled = true)
         where TJob : class, IJob
     {
-        return context.WithScopedJob<TJob>(cronExpression);
+        return context.WithScopedJob<TJob>(cronExpression, name, data, enabled);
     }
 
     /// <summary>
@@ -105,11 +108,17 @@ public static class ServiceCollectionExtensions
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithScopedJob<TJob>(
         this JobSchedulingBuilderContext context,
-        string cronExpression)
+        string cronExpression,
+        string name = null,
+        Dictionary<string, string> data = null,
+        bool enabled = true)
         where TJob : class, IJob
     {
-        context.Services.AddScoped<TJob>();
-        context.Services.AddSingleton(new JobSchedule(typeof(TJob), cronExpression));
+        if (enabled)
+        {
+            context.Services.AddScoped<TJob>();
+            context.Services.AddSingleton(new JobSchedule(typeof(TJob), cronExpression, name, data));
+        }
 
         return context;
     }
@@ -121,11 +130,13 @@ public static class ServiceCollectionExtensions
     /// <param name="cronExpression">the cron expression: https://www.freeformatter.com/cron-expression-generator-quartz.html</param>
     public static JobSchedulingBuilderContext WithSingletonJob<TJob>(
         this JobSchedulingBuilderContext context,
-        string cronExpression)
+        string cronExpression,
+        string name = null,
+        Dictionary<string, string> data = null)
         where TJob : class, IJob
     {
         context.Services.AddSingleton<TJob>();
-        context.Services.AddSingleton(new JobSchedule(typeof(TJob), cronExpression));
+        context.Services.AddSingleton(new JobSchedule(typeof(TJob), cronExpression, name, data));
 
         return context;
     }

@@ -6,6 +6,8 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using Application.Modules.Core;
+using BridgingIT.DevKit.Application;
+using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
@@ -27,8 +29,8 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // jobs
-        // services.AddJobScheduling()
-        //     .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+        services.AddJobScheduling()
+            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using Microsoft.Extensions.Hosting;
+using Quartz;
 
 public class JobSchedulingService : BackgroundService
 {
@@ -27,8 +28,7 @@ public class JobSchedulingService : BackgroundService
         EnsureArg.IsNotNull(schedulerFactory, nameof(schedulerFactory));
         EnsureArg.IsNotNull(jobFactory, nameof(jobFactory));
 
-        this.logger = loggerFactory?.CreateLogger<JobSchedulingService>() ??
-            NullLoggerFactory.Instance.CreateLogger<JobSchedulingService>();
+        this.logger = loggerFactory?.CreateLogger<JobSchedulingService>() ?? NullLoggerFactory.Instance.CreateLogger<JobSchedulingService>();
         this.schedulerFactory = schedulerFactory;
         this.jobFactory = jobFactory;
         this.applicationLifetime = applicationLifetime;
@@ -73,18 +73,23 @@ public class JobSchedulingService : BackgroundService
 
                 foreach (var jobSchedule in this.jobSchedules.SafeNull())
                 {
+                    if (string.IsNullOrEmpty(jobSchedule.CronExpression))
+                    {
+                        this.logger.LogWarning("{LogKey} not scheduled, needs a cron expression (name={JobName})", Constants.LogKey, jobSchedule.Name);
+                        continue;
+                    }
+
                     var jobDetail = CreateJobDetail(jobSchedule);
                     var trigger = CreateTrigger(jobSchedule);
-                    var jobTypeName = jobDetail.JobType.FullName;
+                    var jobName = jobSchedule.Name;
 
-                    if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken)
-                            .AnyContext()) // trigger could have been changed (cron)
+                    if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext()) // trigger could have been changed (cron)
                     {
                         var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
                         if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
                         {
                             await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                            this.logger.LogInformation("{LogKey} rescheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                            this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
                         }
                     }
 
@@ -92,17 +97,17 @@ public class JobSchedulingService : BackgroundService
                     {
                         try
                         {
-                            this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                            this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
                             await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
                         }
                         catch (ObjectAlreadyExistsException ex)
                         {
-                            this.logger.LogError(ex, "{LogKey} schedule job failed: {ErrorMessage} (type={JobType})", Constants.LogKey, ex.Message, jobTypeName);
+                            this.logger.LogError(ex, "{LogKey} schedule failed: {ErrorMessage} (name={JobName})", Constants.LogKey, ex.Message, jobName);
                         }
                     }
                     else
                     {
-                        this.logger.LogInformation("{LogKey} scheduled (type={JobType}, cron={CronExpression})", Constants.LogKey, jobTypeName, trigger.Description);
+                        this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
                     }
                 }
 
@@ -118,22 +123,29 @@ public class JobSchedulingService : BackgroundService
         return Task.CompletedTask;
     }
 
+    private static IJobDetail CreateJobDetail(JobSchedule schedule)
+    {
+        var builder = JobBuilder.Create(schedule.JobType)
+            .WithIdentity(schedule.Name)
+            .UsingJobData("JobId", GuidGenerator.CreateSequential().ToString("N"))
+            .WithDescription(schedule.Name ?? schedule.JobType.Name)
+            .StoreDurably();
+
+        foreach (var item in schedule.Data.SafeNull())
+        {
+            builder.UsingJobData(item.Key, item.Value);
+        }
+
+        return builder.Build();
+    }
+
     private static ITrigger CreateTrigger(JobSchedule schedule)
     {
         return TriggerBuilder.Create()
-            .WithIdentity($"{schedule.JobType.FullName}.trigger")
+            .WithIdentity($"{schedule.Name}.trigger")
+            .UsingJobData("TriggerId", GuidGenerator.CreateSequential().ToString("N"))
             .WithCronSchedule(schedule.CronExpression)
             .WithDescription(schedule.CronExpression)
-            .Build();
-    }
-
-    private static IJobDetail CreateJobDetail(JobSchedule schedule)
-    {
-        return JobBuilder.Create(schedule.JobType)
-            .WithIdentity(schedule.JobType.FullName)
-            .UsingJobData("JobId", GuidGenerator.CreateSequential().ToString("N"))
-            .WithDescription(schedule.JobType.Name)
-            .StoreDurably()
             .Build();
     }
 }

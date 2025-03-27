@@ -30,7 +30,10 @@ public class CoreModule : WebModuleBase
 
         // jobs
         services.AddJobScheduling()
-            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithJob<EchoJob>()
+                .Cron(CronExpressions.EveryMinute)
+                .WithData("message", "Second echo")
+                .RegisterScoped();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");

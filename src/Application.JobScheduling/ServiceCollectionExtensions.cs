@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Collections.Specialized;
+using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Configuration;
 using Extensions;
@@ -121,6 +122,22 @@ public static class ServiceCollectionExtensions
         }
 
         return context;
+    }
+
+    /// <summary>
+    /// Adds a scoped or singleton scheduled job with fluent configuration.
+    /// </summary>
+    /// <example>
+    /// services.AddJobScheduling()
+    ///         .WithJob<EchoJob>()
+    ///             .Cron(CronExpressions.Every10Seconds)
+    ///             .WithData("message", "Second echo")
+    ///             .RegisterScoped();
+    /// </example>
+    public static JobScheduleBuilder<TJob> WithJob<TJob>(this JobSchedulingBuilderContext context)
+        where TJob : class, IJob
+    {
+        return new JobScheduleBuilder<TJob>(context.Services);
     }
 
     /// <summary>

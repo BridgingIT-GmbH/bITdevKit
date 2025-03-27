@@ -203,7 +203,6 @@ public class TodoItemController( // TODO: move to minimal endpoints
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Scan([FromBodyFilter] FilterModel filter)
     {
-        await fileMonitoringService.StartAsync();
         var scanContext = await fileMonitoringService.ScanLocationAsync("inbound");
         foreach (var @event in scanContext.Events.SafeNull())
         {

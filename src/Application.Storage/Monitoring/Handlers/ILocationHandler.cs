@@ -28,39 +28,39 @@ public interface ILocationHandler
     /// <summary>
     /// Starts the location handler's monitoring operations.
     /// </summary>
-    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task StartAsync(CancellationToken token = default);
+    Task StartAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Stops the location handler's monitoring operations.
     /// </summary>
-    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task StopAsync(CancellationToken token = default);
+    Task StopAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Scans the location for file changes and generates events.
     /// </summary>
     /// <param name="options">Options controlling the scan behavior.</param>
     /// <param name="progress">Handler for reporting scan progress.</param>
-    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task containing the scan context with results.</returns>
-    Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default);
+    Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Temporarily pauses the location handler's monitoring operations.
     /// </summary>
-    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task PauseAsync(CancellationToken token = default);
+    Task PauseAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Resumes the location handler's previously paused monitoring operations.
     /// </summary>
-    /// <param name="token">Cancellation token to cancel the operation.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    Task ResumeAsync(CancellationToken token = default);
+    Task ResumeAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the current status of the location handler.

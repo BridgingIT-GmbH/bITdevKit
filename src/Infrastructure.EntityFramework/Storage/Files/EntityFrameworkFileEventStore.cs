@@ -22,30 +22,62 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
 {
     private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public async Task<FileEvent> GetFileEventAsync(string filePath)
+    /// <summary>
+    /// Retrieves the most recent FileEvent for a given file path.
+    /// </summary>
+    /// <param name="filePath">Specifies the location of the file for which the event is being retrieved.</param>
+    /// <param name="fromDate">Defines the earliest date for filtering file events.</param>
+    /// <param name="tillDate">Sets the latest date for filtering file events.</param>
+    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
+    /// <returns>Returns the mapped domain representation of the file event or null if not found.</returns>
+    public async Task<FileEvent> GetFileEventAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         var entity = await this.context.FileEvents
-            .OrderByDescending(e => e.CreatedDate)
-            .FirstOrDefaultAsync(e => e.FilePath == filePath);
+            .Where(e => e.FilePath == filePath)
+            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+            .OrderByDescending(e => e.DetectedDate)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         return this.MapToDomain(entity);
     }
 
-    public async Task<FileEvent> GetFileEventAsync(string locationName, string filePath)
+    /// <summary>
+    /// Tetrieves a file event based on a specified location and file path.
+    /// </summary>
+    /// <param name="locationName">Specifies the location associated with the file event to be retrieved.</param>
+    /// <param name="filePath">Indicates the path of the file for which the event is being fetched.</param>
+    /// <param name="fromDate">Defines the start date for filtering file events based on detection date.</param>
+    /// <param name="tillDate">Sets the end date for filtering file events based on detection date.</param>
+    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
+    /// <returns>Returns the mapped file event entity or null if not found.</returns>
+    public async Task<FileEvent> GetFileEventAsync(string locationName, string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         var entity = await this.context.FileEvents
             .Where(e => e.LocationName == locationName && e.FilePath == filePath)
-            .OrderByDescending(e => e.CreatedDate)
-            .FirstOrDefaultAsync(e => e.FilePath == filePath);
+            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+            .OrderByDescending(e => e.DetectedDate)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         return this.MapToDomain(entity);
     }
 
-    public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath)
+    /// <summary>
+    /// Retrieves a collection of file events related to a specified file.
+    /// </summary>
+    /// <param name="filePath">Specifies the path of the file for which events are being retrieved.</param>
+    /// <param name="fromDate">Defines the start date for filtering events based on their detection date.</param>
+    /// <param name="tillDate">Sets the end date for filtering events based on their detection date.</param>
+    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
+    /// <returns>Returns a collection of mapped file event entities.</returns>
+    public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         var entities = await this.context.FileEvents
             .Where(e => e.FilePath == filePath)
-            .OrderByDescending(e => e.CreatedDate).ToListAsync();
+            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+            .OrderByDescending(e => e.DetectedDate).ToListAsync(cancellationToken: cancellationToken);
 
         return entities.Select(this.MapToDomain);
     }
@@ -55,11 +87,13 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// </summary>
     /// <param name="locationName">Specifies the name of the location for which file events are being retrieved.</param>
     /// <returns>A list of file events mapped to the domain model.</returns>
-    public async Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
+    public async Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         var entities = await this.context.FileEvents
             .Where(e => e.LocationName == locationName)
-            .OrderByDescending(e => e.CreatedDate).ToListAsync();
+            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+            .OrderByDescending(e => e.DetectedDate).ToListAsync(cancellationToken: cancellationToken);
 
         return entities.Select(this.MapToDomain).ToList();
     }
@@ -69,19 +103,19 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// </summary>
     /// <param name="locationName">Specifies the location to filter the file events.</param>
     /// <returns>A list of file paths that are currently present at the specified location.</returns>
-    public async Task<List<string>> GetPresentFilesAsync(string locationName)
+    public async Task<List<string>> GetPresentFilesAsync(string locationName, CancellationToken cancellationToken = default)
     {
         var latestEvents = this.context.FileEvents
             .Where(e1 => e1.LocationName == locationName)
             .Where(e1 => !this.context.FileEvents
                 .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
-                .Any(e2 => e2.CreatedDate > e1.CreatedDate));
+                .Any(e2 => e2.DetectedDate > e1.DetectedDate));
 
         return await latestEvents
             .Where(e => e.EventType != (int)FileEventType.Deleted)
             .Select(e => e.FilePath)
             .Distinct()
-            .ToListAsync();
+            .ToListAsync(cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -89,12 +123,12 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// </summary>
     /// <param name="fileEvent">An object representing the details of the file event to be stored.</param>
     /// <returns>This method does not return a value.</returns>
-    public async Task StoreEventAsync(FileEvent fileEvent)
+    public async Task StoreEventAsync(FileEvent fileEvent, CancellationToken cancellationToken = default)
     {
         var entity = this.MapToEntity(fileEvent);
         this.context.FileEvents.Add(entity);
 
-        await this.context.SaveChangesAsync();
+        await this.context.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>
@@ -102,7 +136,7 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     /// </summary>
     /// <param name="result">Contains the outcome of a processing operation to be stored or logged.</param>
     /// <returns>Completes a task indicating the operation has finished.</returns>
-    public async Task StoreProcessingResultAsync(FileProcessingResult result)
+    public async Task StoreProcessingResultAsync(FileProcessingResult result, CancellationToken cancellationToken = default)
     {
         // Placeholder: ProcessingResult storage not yet fully defined.
         // For now, we'll log it or skip persistence until Step 7 clarifies requirements.
@@ -116,25 +150,29 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
             : new FileEvent
             {
                 Id = entity.Id,
+                ScanId = entity.ScanId ?? Guid.Empty,
                 LocationName = entity.LocationName,
                 FilePath = entity.FilePath,
                 EventType = (FileEventType)entity.EventType,
-                DetectionTime = entity.CreatedDate,
                 FileSize = entity.FileSize,
-                LastModified = entity.LastModified,
-                Checksum = entity.Checksum
+                DetectedDate = entity.DetectedDate,
+                LastModifiedDate = entity.LastModifiedDate,
+                Checksum = entity.Checksum,
+                Properties = entity.Properties
             };
 
     private FileEventEntity MapToEntity(FileEvent fileEvent) =>
         new()
         {
             Id = fileEvent.Id,
+            ScanId = fileEvent.ScanId,
             LocationName = fileEvent.LocationName,
             FilePath = fileEvent.FilePath,
             EventType = (int)fileEvent.EventType,
-            CreatedDate = fileEvent.DetectionTime,
             FileSize = fileEvent.FileSize,
-            LastModified = fileEvent.LastModified,
-            Checksum = fileEvent.Checksum
+            DetectedDate = fileEvent.DetectedDate,
+            LastModifiedDate = fileEvent.LastModifiedDate,
+            Checksum = fileEvent.Checksum,
+            Properties = fileEvent.Properties
         };
 }

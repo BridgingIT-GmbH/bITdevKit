@@ -47,7 +47,7 @@ public class FileProcessorTests
             FilePath = "test.txt",
             EventType = FileEventType.Added,
             FileSize = 100,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModifiedDate = DateTimeOffset.UtcNow,
             Checksum = "abc123"
         };
         var context = new FileProcessingContext(fileEvent);
@@ -75,7 +75,7 @@ public class FileProcessorTests
             FilePath = "test.txt",
             EventType = FileEventType.Added,
             FileSize = 100,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModifiedDate = DateTimeOffset.UtcNow,
             Checksum = "abc123"
         };
         var context = new FileProcessingContext(fileEvent);
@@ -187,13 +187,13 @@ public class FileProcessorTests
             FilePath = "test.txt",
             EventType = FileEventType.Added,
             FileSize = 100,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModifiedDate = DateTimeOffset.UtcNow,
             Checksum = "abc123"
         };
         await provider.WriteFileAsync("test.txt", new MemoryStream(new byte[100]), null, CancellationToken.None);
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var eventQueueField = typeof(LocalLocationHandler).GetField("eventQueue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         var eventQueue = eventQueueField.GetValue(sut) as BlockingCollection<FileEvent>;
         eventQueue.Add(fileEvent); // Simulate event

@@ -66,6 +66,8 @@ public abstract class LocationHandlerBase : ILocationHandler
         this.eventQueue = [];
         this.cts = new CancellationTokenSource();
         this.isPaused = false;
+
+        this.StartAsync();
     }
 
     /// <summary>
@@ -82,14 +84,18 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// Starts monitoring the location asynchronously.
     /// Initiates real-time watching (if supported) and event processing.
     /// </summary>
-    /// <param name="token">The cancellation token to stop the operation if needed.</param>
+    /// <param name="cancellationToken">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous start operation.</returns>
-    public virtual Task StartAsync(CancellationToken token = default)
+    public virtual Task StartAsync(CancellationToken cancellationToken = default)
     {
-        this.loggerTyped.LogInformationStartingHandler(this.options.LocationName);
-        this.cts = new CancellationTokenSource();
-        var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, this.cts.Token);
-        this.processingTask = Task.Run(() => this.ProcessEventsAsync(linkedCts.Token), linkedCts.Token);
+        if (this.processingTask == null)
+        {
+            this.loggerTyped.LogInformationStartingHandler(this.options.LocationName);
+            this.cts = new CancellationTokenSource();
+            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this.cts.Token);
+
+            this.processingTask = Task.Run(() => this.ProcessEventsAsync(linkedCts.Token), linkedCts.Token);
+        }
 
         return Task.CompletedTask;
     }
@@ -98,9 +104,9 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// Stops monitoring the location asynchronously.
     /// Halts real-time watching and event processing, cleaning up resources.
     /// </summary>
-    /// <param name="token">The cancellation token to stop the operation if needed.</param>
+    /// <param name="cancellationToken">The cancellation token to stop the operation if needed.</param>
     /// <returns>A task representing the asynchronous stop operation.</returns>
-    public virtual Task StopAsync(CancellationToken token = default)
+    public virtual Task StopAsync(CancellationToken cancellationToken = default)
     {
         this.loggerTyped.LogInformationStoppingHandler(this.options.LocationName);
         //this.cts.Cancel();
@@ -111,6 +117,7 @@ public abstract class LocationHandlerBase : ILocationHandler
         }
 
         this.eventQueue.CompleteAdding();
+        this.processingTask = null;
         this.logger.LogInformation($"Handler stopped for location: {this.options.LocationName}");
 
         return Task.CompletedTask;
@@ -122,16 +129,16 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// </summary>
     /// <param name="options">Specifies the configuration settings for the scan operation.</param>
     /// <param name="progress">Provides updates on the progress of the scan as it executes.</param>
-    /// <param name="token">Allows for the cancellation of the scan operation if needed.</param>
+    /// <param name="cancellationToken">Allows for the cancellation of the scan operation if needed.</param>
     /// <returns>Returns a task that, when completed, provides the context of the scan.</returns>
-    public abstract Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default);
+    public abstract Task<FileScanContext> ScanAsync(FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Pauses event processing for the location asynchronously.
     /// Temporarily halts the processing pipeline without stopping real-time watching.
     /// </summary>
     /// <returns>A task representing the asynchronous pause operation.</returns>
-    public virtual Task PauseAsync(CancellationToken token = default)
+    public virtual Task PauseAsync(CancellationToken cancellationToken = default)
     {
         this.loggerTyped.LogInformationPausingHandler(this.options.LocationName);
         this.isPaused = true;
@@ -144,7 +151,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     /// Restarts the processing pipeline if previously paused.
     /// </summary>
     /// <returns>A task representing the asynchronous resume operation.</returns>
-    public virtual Task ResumeAsync(CancellationToken token = default)
+    public virtual Task ResumeAsync(CancellationToken cancellationToken = default)
     {
         this.loggerTyped.LogInformationResumingHandler(this.options.LocationName);
         this.isPaused = false;
@@ -162,7 +169,7 @@ public abstract class LocationHandlerBase : ILocationHandler
         var status = new LocationStatus
         {
             LocationName = this.options.LocationName,
-            IsActive = this.processingTask != null && !this.processingTask.IsCompleted,
+            IsActive = this.processingTask?.IsCompleted == false,
             IsPaused = this.isPaused,
             QueueSize = this.eventQueue.Count,
             LastScanTime = DateTimeOffset.MinValue // Update with actual scan time if tracked
@@ -282,33 +289,33 @@ public abstract class LocationHandlerBase : ILocationHandler
         return chain;
     }
 
-    protected async Task ProcessEventsAsync(CancellationToken token)
+    protected async Task ProcessEventsAsync(CancellationToken cancellationToken)
     {
-        while (!token.IsCancellationRequested && !this.eventQueue.IsCompleted)
+        while (!cancellationToken.IsCancellationRequested && !this.eventQueue.IsCompleted)
         {
-            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, token))
+            if (this.isPaused || !this.eventQueue.TryTake(out var fileEvent, 100, cancellationToken))
             {
                 continue;
             }
 
-            await this.rateLimiter.WaitForTokenAsync(token);
+            await this.rateLimiter.WaitForTokenAsync(cancellationToken);
             var context = new FileProcessingContext(fileEvent);
             context.SetItem("StorageProvider", this.provider);
 
             // Store the event once, before processing
-            await this.store.StoreEventAsync(fileEvent);
+            await this.store.StoreEventAsync(fileEvent, cancellationToken);
 
             // Process with all enabled processors
             foreach (var processor in this.processors.Where(p => p.IsEnabled))
             {
-                var result = await this.ExecuteProcessorAsync(processor, context, token);
+                var result = await this.ExecuteProcessorAsync(processor, context, cancellationToken);
                 await this.store.StoreProcessingResultAsync(new FileProcessingResult
                 {
                     FileEventId = fileEvent.Id,
                     ProcessorName = processor.ProcessorName,
                     Success = result.IsSuccess,
                     Message = result.IsSuccess ? "Processed successfully" : result.Errors.FirstOrDefault()?.Message
-                });
+                }, cancellationToken);
             }
 
             if (!this.processors.Any(p => p.IsEnabled))
@@ -318,18 +325,18 @@ public abstract class LocationHandlerBase : ILocationHandler
         }
     }
 
-    private async Task<Result<bool>> ExecuteProcessorAsync(IFileEventProcessor processor, FileProcessingContext context, CancellationToken token)
+    private async Task<Result> ExecuteProcessorAsync(IFileEventProcessor processor, FileProcessingContext context, CancellationToken token)
     {
         try
         {
             await processor.ProcessAsync(context, token);
 
-            return Result<bool>.Success(true);
+            return Result.Success();
         }
         catch (Exception ex)
         {
             this.loggerTyped.LogErrorProcessingFailed(this.options.LocationName, processor.ProcessorName, ex.Message);
-            return Result<bool>.Failure().WithError(new ExceptionError(ex));
+            return Result.Failure().WithError(new ExceptionError(ex));
         }
     }
 

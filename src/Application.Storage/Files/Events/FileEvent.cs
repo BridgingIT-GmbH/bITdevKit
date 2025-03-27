@@ -22,6 +22,11 @@ public class FileEvent
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
+    /// Represents a unique identifier for a scan,
+    /// </summary>
+    public Guid ScanId { get; set; }
+
+    /// <summary>
     /// Gets or sets the name of the monitored location (e.g., "Docs") where the event occurred.
     /// Used to associate the event with a specific storage location.
     /// </summary>
@@ -43,7 +48,7 @@ public class FileEvent
     /// Gets or sets the timestamp when the event was detected.
     /// Defaults to the current UTC time when the event is created.
     /// </summary>
-    public DateTimeOffset DetectionTime { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset DetectedDate { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// Gets or sets the size of the file in bytes at the time of detection.
@@ -55,11 +60,16 @@ public class FileEvent
     /// Gets or sets the last modified timestamp of the file, if available.
     /// Nullable to accommodate cases where metadata is unavailable (e.g., deleted files).
     /// </summary>
-    public DateTimeOffset? LastModified { get; set; }
+    public DateTimeOffset? LastModifiedDate { get; set; }
 
     /// <summary>
     /// Gets or sets the SHA256 checksum of the file content at the time of detection.
     /// Used for checksum-based change detection strategies.
     /// </summary>
     public string Checksum { get; set; }
+
+    /// <summary>
+    /// Gets or sets additional properties associated with the file event.
+    /// </summary>
+    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 }

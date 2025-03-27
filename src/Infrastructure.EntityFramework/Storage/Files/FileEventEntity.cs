@@ -29,6 +29,11 @@ public class FileEventEntity
     public Guid Id { get; set; }
 
     /// <summary>
+    /// Represents a unique identifier for a scan.
+    /// </summary>
+    public Guid? ScanId { get; set; }
+
+    /// <summary>
     /// Gets or sets the name of the monitored location (e.g., "Docs").
     /// Indexed for efficient querying by location.
     /// </summary>
@@ -69,16 +74,19 @@ public class FileEventEntity
     /// Required for tracking event history.
     /// </summary>
     [Required]
-    public DateTimeOffset CreatedDate { get; set; }
+    public DateTimeOffset DetectedDate { get; set; }
 
     /// <summary>
     /// Gets or sets the last modified timestamp of the file, if available.
     /// Nullable to handle cases like deletions where metadata may not be present.
     /// </summary>
-    public DateTimeOffset? LastModified { get; set; }
+    public DateTimeOffset? LastModifiedDate { get; set; }
     //public DateTimeOffset? UpdatedDate { get; set; }
 
     [NotMapped]
+    /// <summary>
+    /// Gets or sets additional properties associated with the file event.
+    /// </summary>
     public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
     [Column("Properties")]

@@ -43,7 +43,7 @@ public class InMemoryFileEventStoreTests
         // Assert
         result.ShouldNotBeNull();
         result.EventType.ShouldBe(FileEventType.Changed);
-        result.DetectionTime.ShouldBe(events[2].DetectionTime); // Most recent event for filePath1
+        result.DetectedDate.ShouldBe(events[2].DetectedDate); // Most recent event for filePath1
     }
 
     [Fact]
@@ -156,9 +156,9 @@ public class InMemoryFileEventStoreTests
             FilePath = "file_1.txt",
             EventType = FileEventType.Added,
             FileSize = 100,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModifiedDate = DateTimeOffset.UtcNow,
             Checksum = "checksum1",
-            DetectionTime = DateTimeOffset.UtcNow
+            DetectedDate = DateTimeOffset.UtcNow
         };
 
         // Act
@@ -200,9 +200,9 @@ public class InMemoryFileEventStoreTests
                 FilePath = filePath,
                 EventType = FileEventType.Added,
                 FileSize = 100,
-                LastModified = DateTimeOffset.UtcNow,
+                LastModifiedDate = DateTimeOffset.UtcNow,
                 Checksum = $"checksum{i}",
-                DetectionTime = detectionTime.AddSeconds(i)
+                DetectedDate = detectionTime.AddSeconds(i)
             };
             tasks.Add(Task.Run(() => store.StoreEventAsync(fileEvent)));
         }
@@ -234,9 +234,9 @@ public static class FileEventStoreTestHelper
                 FilePath = filePath1,
                 EventType = FileEventType.Added,
                 FileSize = 100,
-                LastModified = DateTimeOffset.UtcNow,
+                LastModifiedDate = DateTimeOffset.UtcNow,
                 Checksum = "checksum1",
-                DetectionTime = detectionTime
+                DetectedDate = detectionTime
             },
             new FileEvent
             {
@@ -244,9 +244,9 @@ public static class FileEventStoreTestHelper
                 FilePath = filePath1,
                 EventType = FileEventType.Unchanged,
                 FileSize = 100,
-                LastModified = DateTimeOffset.UtcNow,
+                LastModifiedDate = DateTimeOffset.UtcNow,
                 Checksum = "checksum1",
-                DetectionTime = detectionTime.AddSeconds(1)
+                DetectedDate = detectionTime.AddSeconds(1)
             },
             new FileEvent
             {
@@ -254,9 +254,9 @@ public static class FileEventStoreTestHelper
                 FilePath = filePath1,
                 EventType = FileEventType.Changed,
                 FileSize = 150,
-                LastModified = DateTimeOffset.UtcNow,
+                LastModifiedDate = DateTimeOffset.UtcNow,
                 Checksum = "checksum2",
-                DetectionTime = detectionTime.AddSeconds(2)
+                DetectedDate = detectionTime.AddSeconds(2)
             },
             new FileEvent
             {
@@ -264,16 +264,16 @@ public static class FileEventStoreTestHelper
                 FilePath = filePath2,
                 EventType = FileEventType.Added,
                 FileSize = 200,
-                LastModified = DateTimeOffset.UtcNow,
+                LastModifiedDate = DateTimeOffset.UtcNow,
                 Checksum = "checksum3",
-                DetectionTime = detectionTime
+                DetectedDate = detectionTime
             },
             new FileEvent
             {
                 LocationName = locationName,
                 FilePath = filePath2,
                 EventType = FileEventType.Deleted,
-                DetectionTime = detectionTime.AddSeconds(1)
+                DetectedDate = detectionTime.AddSeconds(1)
             }
         };
 

@@ -56,7 +56,7 @@ public class EntityFrameworkFileEventStoreTests
         // Assert
         result.ShouldNotBeNull();
         result.EventType.ShouldBe(FileEventType.Changed);
-        result.DetectionTime.ShouldBe(events[2].DetectionTime);
+        result.DetectedDate.ShouldBe(events[2].DetectedDate);
     }
 
     [Fact]
@@ -176,9 +176,9 @@ public class EntityFrameworkFileEventStoreTests
             FilePath = "file_1.txt",
             EventType = FileEventType.Added,
             FileSize = 100,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModifiedDate = DateTimeOffset.UtcNow,
             Checksum = "checksum1",
-            DetectionTime = DateTimeOffset.UtcNow
+            DetectedDate = DateTimeOffset.UtcNow
         };
 
         // Act

@@ -50,7 +50,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await Task.Delay(500); // Allow processing
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
@@ -98,7 +98,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         File.WriteAllText(files[2], "Content 3"); // New file
 
         // Act: Start and scan to trigger processor
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
@@ -149,7 +149,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         File.WriteAllText(file3, "Content 3"); // Will be deleted
 
         // First scan to establish baseline
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
@@ -175,14 +175,14 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         // File 2: Initial Added + Changed
         var file2Events = await store.GetFileEventsAsync("file2.txt");
         file2Events.Count().ShouldBe(2);
-        var file2Ordered = file2Events.OrderBy(e => e.DetectionTime).ToList();
+        var file2Ordered = file2Events.OrderBy(e => e.DetectedDate).ToList();
         file2Ordered[0].EventType.ShouldBe(FileEventType.Added);
         file2Ordered[1].EventType.ShouldBe(FileEventType.Changed);
 
         // File 3: Initial Added + Deleted
         var file3Events = await store.GetFileEventsAsync("file3.txt");
         file3Events.Count().ShouldBe(2);
-        var file3Ordered = file3Events.OrderBy(e => e.DetectionTime).ToList();
+        var file3Ordered = file3Events.OrderBy(e => e.DetectedDate).ToList();
         file3Ordered[0].EventType.ShouldBe(FileEventType.Added);
         file3Ordered[1].EventType.ShouldBe(FileEventType.Deleted);
 
@@ -246,7 +246,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         File.WriteAllText(file2Docs2, "Docs2 Content 2"); // Will be modified
 
         // Scan 1: Initial state for both locations
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var scan1Docs1Context = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
         var scan1Docs2Context = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
@@ -332,7 +332,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         await inMemoryProvider.WriteFileAsync("file2.txt", stream2, null, CancellationToken.None);
 
         // Act: Scan both locations
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var localScanContext = await sut.ScanLocationAsync("LocalDocs", token: CancellationToken.None);
         var inMemScanContext = await sut.ScanLocationAsync("InMemDocs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
@@ -401,7 +401,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         });
 
         // Act: Scan the large tree structure
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
         var options = new FileScanOptions
         {
@@ -482,7 +482,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             }
         });
 
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         stopwatch.Restart();
         var scanOptions = new FileScanOptions
         {
@@ -561,7 +561,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         });
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
         var options = new FileScanOptions
@@ -621,7 +621,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         File.WriteAllText(sourceFile, "Existing content");
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
@@ -667,7 +667,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter
         var scanOptions = FileScanOptionsBuilder.Create()
@@ -767,7 +767,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         // Ensure the store is the EF store
         store.ShouldBeOfType<EntityFrameworkFileEventStore<TestDbContext>>();
 
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter
         var scanOptions = FileScanOptionsBuilder.Create()
@@ -856,7 +856,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
 
         // Step 1: Scan with Added filter, .log files only, batch size 5, 5% intervals, skip checksum, max 50 files
         var progressReports = new List<FileScanProgress>();

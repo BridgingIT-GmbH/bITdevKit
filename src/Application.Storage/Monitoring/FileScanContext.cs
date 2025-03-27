@@ -14,6 +14,11 @@ using System.Collections.Generic;
 public class FileScanContext
 {
     /// <summary>
+    /// Represents a unique identifier for a scan.
+    /// </summary>
+    public Guid ScanId { get; set; } = Guid.NewGuid();
+
+    /// <summary>
     /// Gets or sets the name of the monitored location where the scan occurred.
     /// </summary>
     public string LocationName { get; set; }

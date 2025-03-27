@@ -23,21 +23,26 @@ public class InMemoryFileEventStore : IFileEventStore
     /// Gets the most recent FileEvent for a specific file path (not location-scoped).
     /// Use GetFileEventAsync(string locationName, string filePath) for location-specific queries.
     /// </summary>
-    public Task<FileEvent> GetFileEventAsync(string filePath)
+    public Task<FileEvent> GetFileEventAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(this.events.TryGetValue(filePath, out var fileEvents)
-            ? fileEvents.OrderByDescending(e => e.DetectionTime).FirstOrDefault()
+            ? fileEvents
+                .WhereIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate).FirstOrDefault()
             : null);
     }
 
     /// <summary>
     /// Gets the most recent FileEvent for a specific file path within a location.
     /// </summary>
-    public Task<FileEvent> GetFileEventAsync(string locationName, string filePath)
+    public Task<FileEvent> GetFileEventAsync(string locationName, string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(this.events.TryGetValue(filePath, out var fileEvents)
             ? fileEvents.Where(e => e.LocationName == locationName)
-                        .OrderByDescending(e => e.DetectionTime)
+                        .WhereIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                        .WhereIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                        .OrderByDescending(e => e.DetectedDate)
                         .FirstOrDefault()
             : null);
     }
@@ -45,27 +50,34 @@ public class InMemoryFileEventStore : IFileEventStore
     /// <summary>
     /// Gets all FileEvents for a specific file path across all locations.
     /// </summary>
-    public Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath)
+    public Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(this.events.TryGetValue(filePath, out var fileEvents)
-            ? fileEvents.OrderByDescending(e => e.DetectionTime).AsEnumerable()
-            : Enumerable.Empty<FileEvent>());
+            ? fileEvents
+                .WhereIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate).AsEnumerable()
+            : []);
     }
 
     /// <summary>
     /// Gets all FileEvents for a specific location.
     /// </summary>
-    public Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName)
+    public Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
     {
         var result = this.events.Values.SelectMany(e => e)
-            .Where(e => e.LocationName == locationName).OrderByDescending(e => e.DetectionTime).ToList();
+            .Where(e => e.LocationName == locationName)
+            .WhereIf(e => e.DetectedDate >= fromDate, fromDate != null)
+            .WhereIf(e => e.DetectedDate <= tillDate, tillDate != null)
+            .OrderByDescending(e => e.DetectedDate).ToList();
+
         return Task.FromResult(result);
     }
 
     /// <summary>
     /// Gets the list of file paths currently present (not deleted) in a specific location.
     /// </summary>
-    public Task<List<string>> GetPresentFilesAsync(string locationName)
+    public Task<List<string>> GetPresentFilesAsync(string locationName, CancellationToken cancellationToken = default)
     {
         var presentFiles = this.events
             .Select(kv => new
@@ -73,18 +85,18 @@ public class InMemoryFileEventStore : IFileEventStore
                 FilePath = kv.Key,
                 LatestEvent = kv.Value
                     .Where(e => e.LocationName == locationName)
-                    .OrderByDescending(e => e.DetectionTime).FirstOrDefault()
+                    .OrderByDescending(e => e.DetectedDate).FirstOrDefault()
             })
             .Where(x => x.LatestEvent != null && x.LatestEvent.EventType != FileEventType.Deleted)
-            .Select(x => x.FilePath)
-            .ToList();
+            .Select(x => x.FilePath).ToList();
+
         return Task.FromResult(presentFiles);
     }
 
     /// <summary>
     /// Stores a FileEvent in a thread-safe manner.
     /// </summary>
-    public Task StoreEventAsync(FileEvent fileEvent)
+    public Task StoreEventAsync(FileEvent fileEvent, CancellationToken cancellationToken = default)
     {
         this.events.AddOrUpdate(
             fileEvent.FilePath,
@@ -100,7 +112,7 @@ public class InMemoryFileEventStore : IFileEventStore
     /// <summary>
     /// Stores a ProcessingResult (no-op for in-memory store; could be extended).
     /// </summary>
-    public Task StoreProcessingResultAsync(FileProcessingResult result)
+    public Task StoreProcessingResultAsync(FileProcessingResult result, CancellationToken cancellationToken = default)
     {
         // No-op for in-memory store; could add concurrent storage if needed
         return Task.CompletedTask;

@@ -1076,7 +1076,7 @@ public static partial class ResultNonGenericTaskExtensions
         {
             var result = await resultTask;
 
-            return await result.OrElseAsync(_ => fallback(cancellationToken));
+            return await result.OrElseAsync(_ => fallback(cancellationToken), cancellationToken: cancellationToken);
         }
         catch (OperationCanceledException)
         {

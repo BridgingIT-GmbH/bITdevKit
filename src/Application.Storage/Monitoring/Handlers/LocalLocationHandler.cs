@@ -32,40 +32,40 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
-    public override async Task StartAsync(CancellationToken token = default)
+    public override async Task StartAsync(CancellationToken cancellationToken = default)
     {
-        await base.StartAsync(token);
+        await base.StartAsync(cancellationToken);
 
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
-            await this.StartWatchingAsync(token);
+            await this.StartWatchingAsync(cancellationToken);
         }
 
         if (!this.options.UseOnDemandOnly && this.options.ScanOnStart)
         {
-            await this.ScanAsync(null, null, token);
+            await this.ScanAsync(null, null, cancellationToken);
         }
     }
 
-    public override async Task PauseAsync(CancellationToken token = default)
+    public override async Task PauseAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null && !this.isPaused)
         {
             this.fileSystemWatcher.EnableRaisingEvents = false;
-            await base.PauseAsync(token);
+            await base.PauseAsync(cancellationToken);
         }
     }
 
-    public override async Task ResumeAsync(CancellationToken token = default)
+    public override async Task ResumeAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null && this.isPaused)
         {
             this.fileSystemWatcher.EnableRaisingEvents = true;
-            await base.ResumeAsync(token);
+            await base.ResumeAsync(cancellationToken);
         }
     }
 
-    public override async Task StopAsync(CancellationToken token = default)
+    public override async Task StopAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null)
         {
@@ -74,20 +74,20 @@ public class LocalLocationHandler : LocationHandlerBase
             this.fileSystemWatcher = null;
             this.isPaused = false;
         }
-        await base.StopAsync(token);
+        await base.StopAsync(cancellationToken);
     }
 
     public override async Task<FileScanContext> ScanAsync(
         FileScanOptions options = null,
         IProgress<FileScanProgress> progress = null,
-        CancellationToken token = default)
+        CancellationToken cancellationToken = default)
     {
         options ??= FileScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
         var context = new FileScanContext { LocationName = this.options.LocationName };
-        this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
+        this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: cancellationToken);
 
-        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName);
+        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, cancellationToken);
         var currentFiles = new Dictionary<string, FileMetadata>();
         string continuationToken = null;
         var filesScanned = 0;
@@ -100,7 +100,7 @@ public class LocalLocationHandler : LocationHandlerBase
                 ? Directory.GetFiles(localProvider.RootPath, this.options.FilePattern, SearchOption.AllDirectories).Length
                 : 0;
         }
-        if (options.MaxFilesToScan.HasValue && options.MaxFilesToScan.Value < estimatedTotalFiles)
+        if (options.MaxFilesToScan < estimatedTotalFiles)
         {
             estimatedTotalFiles = options.MaxFilesToScan.Value;
         }
@@ -111,7 +111,7 @@ public class LocalLocationHandler : LocationHandlerBase
 
         do
         {
-            var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, token);
+            var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, cancellationToken);
             foreach (var filePath in result.Value.Files.OrderBy(p => p))
             {
                 if (!string.IsNullOrEmpty(options.FilePathFilter) && !System.Text.RegularExpressions.Regex.IsMatch(filePath, options.FilePathFilter))
@@ -119,33 +119,36 @@ public class LocalLocationHandler : LocationHandlerBase
                     continue;
                 }
 
-                var metadataResult = await this.provider.GetFileMetadataAsync(filePath, token);
+                var metadataResult = await this.provider.GetFileMetadataAsync(filePath, cancellationToken);
                 var checksumResult = options.SkipChecksum
                     ? Result<string>.Success(string.Empty)
-                    : await this.provider.GetChecksumAsync(filePath, token);
+                    : await this.provider.GetChecksumAsync(filePath, cancellationToken);
 
                 if (metadataResult.IsSuccess && checksumResult.IsSuccess) // TODO: log failures
                 {
                     var metadata = metadataResult.Value;
                     currentFiles[filePath] = metadata;
-                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath);
+                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath, cancellationToken: cancellationToken);
                     var eventType = this.DetermineEventType(lastEvent, metadata, checksumResult.Value);
 
                     if (eventType.HasValue && options.EventFilter.Contains(eventType.Value))
                     {
                         var fileEvent = new FileEvent
                         {
+                            ScanId = context.ScanId,
                             LocationName = this.options.LocationName,
                             FilePath = filePath,
                             EventType = eventType.Value,
                             FileSize = metadata.Length,
-                            LastModified = metadata.LastModified,
-                            Checksum = checksumResult.Value,
-                            DetectionTime = DateTimeOffset.UtcNow
+                            LastModifiedDate = metadata.LastModified,
+                            DetectedDate = DateTimeOffset.UtcNow,
+                            Checksum = checksumResult.Value
+                            //Properties = ["provider" : this.provider]
                         };
-                        this.eventQueue.Add(fileEvent, token);
+
+                        this.eventQueue.Add(fileEvent, cancellationToken);
                         context.Events.Add(fileEvent);
-                        this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+                        this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
                         filesScanned++;
                         batchCount++;
@@ -167,7 +170,7 @@ public class LocalLocationHandler : LocationHandlerBase
                         {
                             if (options.DelayPerFile > TimeSpan.Zero)
                             {
-                                await Task.Delay(options.DelayPerFile, token);
+                                await Task.Delay(options.DelayPerFile, cancellationToken);
                             }
                             batchCount = 0;
                         }
@@ -185,7 +188,7 @@ public class LocalLocationHandler : LocationHandlerBase
                 }
             }
             continuationToken = result.Value.NextContinuationToken;
-        } while (continuationToken != null && !token.IsCancellationRequested);
+        } while (continuationToken != null && !cancellationToken.IsCancellationRequested);
 
         if (!options.MaxFilesToScan.HasValue || filesScanned < options.MaxFilesToScan.Value)
         {
@@ -193,17 +196,18 @@ public class LocalLocationHandler : LocationHandlerBase
             {
                 var fileEvent = new FileEvent
                 {
+                    ScanId = context.ScanId,
                     LocationName = this.options.LocationName,
                     FilePath = missingFile,
                     EventType = FileEventType.Deleted,
-                    DetectionTime = DateTimeOffset.UtcNow
+                    DetectedDate = DateTimeOffset.UtcNow
                 };
 
                 if (options.EventFilter.Contains(fileEvent.EventType))
                 {
-                    this.eventQueue.Add(fileEvent, token);
+                    this.eventQueue.Add(fileEvent, cancellationToken);
                     context.Events.Add(fileEvent);
-                    this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+                    this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
                     filesScanned++;
                     batchCount++;
@@ -225,7 +229,7 @@ public class LocalLocationHandler : LocationHandlerBase
                     {
                         if (options.DelayPerFile > TimeSpan.Zero)
                         {
-                            await Task.Delay(options.DelayPerFile, token);
+                            await Task.Delay(options.DelayPerFile, cancellationToken);
                         }
                         batchCount = 0;
                     }
@@ -239,18 +243,15 @@ public class LocalLocationHandler : LocationHandlerBase
         }
 
         context.EndTime = DateTimeOffset.UtcNow;
-        this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
+        this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: cancellationToken);
 
-        if (progress != null)
+        progress?.Report(new FileScanProgress
         {
-            progress.Report(new FileScanProgress
-            {
-                FilesScanned = filesScanned,
-                TotalFiles = filesScanned,
-                ElapsedTime = context.EndTime.Value - startTime,
-                PercentageComplete = 100 // Final report always at 100%
-            });
-        }
+            FilesScanned = filesScanned,
+            TotalFiles = filesScanned,
+            ElapsedTime = context.EndTime.Value - startTime,
+            PercentageComplete = 100 // Final report always at 100%
+        });
 
         if (options.WaitForProcessing && options.Timeout != TimeSpan.Zero)
         {
@@ -264,7 +265,7 @@ public class LocalLocationHandler : LocationHandlerBase
         return context;
     }
 
-    private async Task StartWatchingAsync(CancellationToken token)
+    private async Task StartWatchingAsync(CancellationToken cancellationToken)
     {
         var localProvider = (LocalFileStorageProvider)this.provider;
         this.fileSystemWatcher = new FileSystemWatcher
@@ -278,7 +279,7 @@ public class LocalLocationHandler : LocationHandlerBase
         this.fileSystemWatcher.Changed += this.OnFileSystemEvent;
         this.fileSystemWatcher.Deleted += this.OnFileSystemEvent;
         this.fileSystemWatcher.EnableRaisingEvents = true;
-        _ = Task.Run(() => this.ProcessBufferedEvents(token), token);
+        _ = Task.Run(() => this.ProcessBufferedEvents(cancellationToken), cancellationToken);
 
         this.logger.LogInformation($"Real-time watching started for location: {this.options.LocationName}");
 
@@ -310,9 +311,9 @@ public class LocalLocationHandler : LocationHandlerBase
                 _ => FileEventType.Changed
             },
             FileSize = metadataResult.Value?.Length,
-            LastModified = metadataResult.Value?.LastModified,
+            LastModifiedDate = metadataResult.Value?.LastModified,
             Checksum = checksumResult.Value,
-            DetectionTime = DateTimeOffset.UtcNow
+            DetectedDate = DateTimeOffset.UtcNow
         };
 
         lock (this.eventBuffer)
@@ -358,7 +359,7 @@ public class LocalLocationHandler : LocationHandlerBase
     {
         if (lastEvent == null) return FileEventType.Added;
         if (lastEvent.EventType == FileEventType.Deleted) return FileEventType.Added;
-        if (lastEvent.Checksum != checksum || lastEvent.LastModified != current.LastModified) return FileEventType.Changed;
+        if (lastEvent.Checksum != checksum || lastEvent.LastModifiedDate != current.LastModified) return FileEventType.Changed;
 
         return FileEventType.Unchanged;
     }

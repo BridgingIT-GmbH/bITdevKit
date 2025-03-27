@@ -78,7 +78,7 @@ public class InMemoryLocationHandler(
         var context = new FileScanContext { LocationName = this.options.LocationName };
         this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
 
-        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName);
+        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, token);
         var currentFiles = new Dictionary<string, FileMetadata>();
         string continuationToken = null;
         var filesScanned = 0;
@@ -86,7 +86,7 @@ public class InMemoryLocationHandler(
 
         var initialFiles = (await this.inMemoryProvider.ListFilesAsync("/", this.options.FilePattern, true, null, token)).Value.Files.ToList();
         var estimatedTotalFiles = initialFiles.Count;
-        if (options.MaxFilesToScan.HasValue && options.MaxFilesToScan.Value < estimatedTotalFiles)
+        if (options.MaxFilesToScan < estimatedTotalFiles)
         {
             estimatedTotalFiles = options.MaxFilesToScan.Value;
         }
@@ -114,20 +114,21 @@ public class InMemoryLocationHandler(
                 {
                     var metadata = metadataResult.Value;
                     currentFiles[filePath] = metadata;
-                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath);
+                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath, cancellationToken: token);
                     var eventType = this.DetermineEventType(lastEvent, metadata, checksumResult.Value);
 
                     if (eventType.HasValue && options.EventFilter.Contains(eventType.Value))
                     {
                         var fileEvent = new FileEvent
                         {
+                            ScanId = context.ScanId,
                             LocationName = this.options.LocationName,
                             FilePath = filePath,
                             EventType = eventType.Value,
                             FileSize = metadata.Length,
-                            LastModified = metadata.LastModified,
+                            LastModifiedDate = metadata.LastModified,
                             Checksum = checksumResult.Value,
-                            DetectionTime = DateTimeOffset.UtcNow
+                            DetectedDate = DateTimeOffset.UtcNow
                         };
                         this.eventQueue.Add(fileEvent, token);
                         context.Events.Add(fileEvent);
@@ -182,7 +183,7 @@ public class InMemoryLocationHandler(
                     LocationName = this.options.LocationName,
                     FilePath = missingFile,
                     EventType = FileEventType.Deleted,
-                    DetectionTime = DateTimeOffset.UtcNow
+                    DetectedDate = DateTimeOffset.UtcNow
                 };
 
                 if (options.EventFilter.Contains(fileEvent.EventType))
@@ -227,16 +228,13 @@ public class InMemoryLocationHandler(
         context.EndTime = DateTimeOffset.UtcNow;
         this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
 
-        if (progress != null)
-        {
-            progress.Report(new FileScanProgress
+        progress?.Report(new FileScanProgress
             {
                 FilesScanned = filesScanned,
                 TotalFiles = filesScanned,
                 ElapsedTime = context.EndTime.Value - startTime,
                 PercentageComplete = 100
             });
-        }
 
         if (options.WaitForProcessing && options.Timeout != TimeSpan.Zero)
         {
@@ -259,7 +257,7 @@ public class InMemoryLocationHandler(
     {
         if (lastEvent == null) return FileEventType.Added;
         if (lastEvent.EventType == FileEventType.Deleted) return FileEventType.Added;
-        if (lastEvent.Checksum != checksum || lastEvent.LastModified != current.LastModified) return FileEventType.Changed;
+        if (lastEvent.Checksum != checksum || lastEvent.LastModifiedDate != current.LastModified) return FileEventType.Changed;
 
         return FileEventType.Unchanged;
     }

@@ -205,7 +205,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         FilePath = normalizedPath,
                         EventType = !exists ? FileEventType.Added : FileEventType.Changed,
                         FileSize = contentBytes.Length,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
 
                 progress?.Report(new FileProgress { BytesProcessed = contentBytes.Length }); // Report bytes processed
@@ -273,7 +273,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedPath,
                         EventType = FileEventType.Deleted,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
 
                 // Sync directories: check if parent directories are now empty and can be removed
@@ -710,7 +710,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedDest,
                         EventType = !exists ? FileEventType.Added : FileEventType.Changed,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
@@ -792,7 +792,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedOld,
                         EventType = FileEventType.Deleted,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
                 this.files.Remove(normalizedOld);
                 this.files[normalizedNew] = content;
@@ -803,7 +803,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedNew,
                         EventType = FileEventType.Added,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()
@@ -887,7 +887,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedSource,
                         EventType = FileEventType.Deleted,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
                 this.files[normalizedDest] = content;
                 // expose file event
@@ -897,7 +897,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         LocationName = this.LocationName,
                         FilePath = normalizedDest,
                         EventType = !exists ? FileEventType.Added : FileEventType.Changed,
-                        DetectionTime = DateTimeOffset.UtcNow
+                        DetectedDate = DateTimeOffset.UtcNow
                     }));
                 progress?.Report(new FileProgress { BytesProcessed = content.Length }); // Report bytes processed
                 return Result.Success()

@@ -53,7 +53,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var sourceFile = Path.Combine(tempFolder, "test.txt");
         File.WriteAllText(sourceFile, "Test content"); // Simulate file creation
         await Task.Delay(500); // Allow real-time watcher to process (FileSystemWatcher latency)
@@ -90,7 +90,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act: Start real-time watching and simulate file events
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var files = new[]
         {
             Path.Combine(tempFolder, "file1.txt"),
@@ -149,7 +149,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var file1 = Path.Combine(tempFolder, "1", "test1.txt");
         var file2 = Path.Combine(tempFolder, "2", "test2.txt");
         File.WriteAllText(file1, "Content1");
@@ -190,7 +190,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act - Start and Pause Watching
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         await Task.Delay(500); // Ensure started
         await sut.PauseLocationAsync("Docs");
         var sourceFile = Path.Combine(tempFolder, "test.txt");
@@ -237,7 +237,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var sourceFile = Path.Combine(tempFolder, "test.txt");
         File.WriteAllText(sourceFile, "Test content"); // Triggers Created and Changed
         await Task.Delay(500); // Wait for debounce and processing
@@ -275,7 +275,7 @@ public class FileMonitoringRealTimeTests
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
         var sourceFiles = new List<string>();
         for (var i = 0; i < fileCount; i++)
         {
@@ -326,7 +326,7 @@ public class FileMonitoringRealTimeTests
         var sourceFiles = new Dictionary<string, List<(string Action, FileEventType ExpectedEvent)>>();
 
         // Act
-        await sut.StartAsync(CancellationToken.None);
+        //await sut.StartAsync(CancellationToken.None);
 
         // Create 5 files
         for (var i = 0; i < fileCount; i++)
@@ -360,7 +360,7 @@ public class FileMonitoringRealTimeTests
         {
             var storedEvents = await store.GetFileEventsAsync(filePath);
             storedEvents.Count().ShouldBe(actions.Count); // Matches number of actions
-            var orderedEvents = storedEvents.OrderBy(e => e.DetectionTime).ToList();
+            var orderedEvents = storedEvents.OrderBy(e => e.DetectedDate).ToList();
             for (var i = 0; i < actions.Count; i++)
             {
                 orderedEvents[i].EventType.ShouldBe(actions[i].ExpectedEvent, $"Expected {actions[i].Action} event for {filePath}"); // DEBOUNCE ISSUE (added+changed) STILL HAPPENS DURING MANY TESTS CONCURRENTLY

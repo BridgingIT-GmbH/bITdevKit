@@ -17,7 +17,6 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using FluentValidation;
 using Infrastructure;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public class CoreModule : WebModuleBase
 {
@@ -32,8 +31,14 @@ public class CoreModule : WebModuleBase
         services.AddJobScheduling()
             .WithJob<EchoJob>()
                 .Cron(CronExpressions.EveryMinute)
+                .Named("firstecho")
+                .WithData("message", "First echo")
+                .RegisterScoped()
+            .WithJob<EchoJob>()
+                .Cron(CronExpressions.Every5Seconds)
+                .Named("secondecho")
                 .WithData("message", "Second echo")
-                .RegisterScoped();
+                .RegisterScoped(); ;
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
@@ -92,7 +97,7 @@ public class CoreModule : WebModuleBase
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>();
-            //.WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
+        //.WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()

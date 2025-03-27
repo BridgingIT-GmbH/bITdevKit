@@ -79,35 +79,46 @@ public class JobSchedulingService : BackgroundService
                         continue;
                     }
 
-                    var jobDetail = CreateJobDetail(jobSchedule);
-                    var trigger = CreateTrigger(jobSchedule);
-                    var jobName = jobSchedule.Name;
-
-                    if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext()) // trigger could have been changed (cron)
+                    try
                     {
-                        var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
-                        if (existingTrigger.Description != trigger.Description) // cron (=description) has changed
+                        var jobDetail = CreateJobDetail(jobSchedule);
+                        var trigger = CreateTrigger(jobSchedule);
+                        var jobName = jobSchedule.Name;
+
+                        if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext())
                         {
-                            await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                            this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                            var existingTrigger = await this.Scheduler.GetTrigger(trigger.Key, cancellationToken);
+                            if (existingTrigger.Description != trigger.Description) // cron has changed
+                            {
+                                await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
+                                this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                            }
                         }
-                    }
 
-                    if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
-                    {
-                        try
+                        if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
+                        {
+                            try
+                            {
+                                this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                                await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
+                            }
+                            catch (ObjectAlreadyExistsException ex)
+                            {
+                                this.logger.LogError(ex, "{LogKey} schedule failed: {ErrorMessage} (name={JobName})", Constants.LogKey, ex.Message, jobName);
+                            }
+                        }
+                        else
                         {
                             this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
-                            await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
-                        }
-                        catch (ObjectAlreadyExistsException ex)
-                        {
-                            this.logger.LogError(ex, "{LogKey} schedule failed: {ErrorMessage} (name={JobName})", Constants.LogKey, ex.Message, jobName);
                         }
                     }
-                    else
+                    catch (FormatException ex)
                     {
-                        this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                        this.logger.LogWarning("{LogKey} not scheduled, invalid cron expression '{CronExpression}' for job (name={JobName}): {ErrorMessage}", Constants.LogKey, jobSchedule.CronExpression, jobSchedule.Name, ex.Message);
+                    }
+                    catch (SchedulerException ex)
+                    {
+                        this.logger.LogWarning("{LogKey} schedule failed (name={JobName}, cron={CronExpression}): {ErrorMessage}", Constants.LogKey, jobSchedule.Name, jobSchedule.CronExpression, ex.Message);
                     }
                 }
 

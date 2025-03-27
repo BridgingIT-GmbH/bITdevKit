@@ -38,7 +38,8 @@ public class CoreModule : WebModuleBase
                 .Cron(CronExpressions.Every5Seconds)
                 .Named("secondecho")
                 .WithData("message", "Second echo")
-                .RegisterScoped(); ;
+                .Enabled(environment?.IsDevelopment() == true)
+                .RegisterScoped();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");

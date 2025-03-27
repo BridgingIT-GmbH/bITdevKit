@@ -6,7 +6,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Collections.Specialized;
-using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Configuration;
 using Extensions;
@@ -67,8 +66,7 @@ public static class ServiceCollectionExtensions
             services.Configure<QuartzOptions>(section);
         }
 
-        services.TryAddSingleton<IJobFactory, ScopedJobFactory>();
-        // https://github.com/quartznet/quartznet/blob/main/src/Quartz/Configuration/ServiceCollectionExtensions.cs#L31
+        services.TryAddSingleton<IJobFactory, ScopedJobFactory>();        // https://github.com/quartznet/quartznet/blob/main/src/Quartz/Configuration/ServiceCollectionExtensions.cs#L31
         services.AddQuartz(properties, configure);
 
         services.AddHostedService(sp =>

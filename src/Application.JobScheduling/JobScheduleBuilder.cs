@@ -61,6 +61,11 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
         return this;
     }
 
+    public JobSchedulingBuilderContext Register()
+    {
+        return this.RegisterScoped();
+    }
+
     public JobSchedulingBuilderContext RegisterScoped()
     {
         if (this.enabled)

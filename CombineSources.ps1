@@ -5,7 +5,7 @@ param (
   # File patterns and exclusions
   [string[]]$ExcludePatterns = @(
     'examples?', # Matches 'example' or 'examples'
-    'tests?', # Matches 'test' or 'tests'
+    # 'tests?', # Matches 'test' or 'tests'
     'docs?', # Matches 'doc' or 'docs'
     'obj', # Build output
     'bin', # Build output

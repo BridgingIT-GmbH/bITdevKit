@@ -11,6 +11,8 @@ public class CustomFileStorageProvider : IFileStorageProvider
 {
     public string LocationName => "CustomStorage";
 
+    public string Description => "CustomStorage";
+
     public bool SupportsNotifications => false;
 
     public Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)

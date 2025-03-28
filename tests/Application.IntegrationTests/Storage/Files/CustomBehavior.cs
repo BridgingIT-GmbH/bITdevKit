@@ -13,6 +13,8 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
 
     public string LocationName => this.InnerProvider.LocationName;
 
+    public string Description => this.InnerProvider.Description;
+
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
     public IFileStorageProvider InnerProvider => this.innerProvider;

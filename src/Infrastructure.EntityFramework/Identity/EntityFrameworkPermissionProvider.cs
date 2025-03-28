@@ -60,7 +60,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-        TypedLogger.LogCheckingPermission(this.logger, "AID", entityType, entityId?.ToString(), permission, userId);
+        TypedLogger.LogCheckingPermission(this.logger, "AUT", entityType, entityId?.ToString(), permission, userId);
 
         // Check user-specific permission first
         var safeEntityId = entityId?.ToString().EmptyToNull();
@@ -115,7 +115,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-        TypedLogger.LogCheckingWildcardPermission(this.logger, "AID", entityType, permission, userId);
+        TypedLogger.LogCheckingWildcardPermission(this.logger, "AUT", entityType, permission, userId);
 
         // Check user wildcard permission
         var hasUserWildcard = await context.EntityPermissions
@@ -156,13 +156,13 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-        TypedLogger.LogGettingEntityIds(this.logger, "AID", entityType, permission, userId);
+        TypedLogger.LogGettingEntityIds(this.logger, "AUT", entityType, permission, userId);
 
         // If there's a wildcard permission, return null to indicate all entities are accessible
         var hasWildcard = await this.HasPermissionAsync(userId, roles, entityType, permission, cancellationToken);
         if (hasWildcard)
         {
-            TypedLogger.LogWildcardPermissionFound(this.logger, "AID", entityType, permission, userId);
+            TypedLogger.LogWildcardPermissionFound(this.logger, "AUT", entityType, permission, userId);
             return [];
         }
 
@@ -175,7 +175,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         var entityIds = await query.Select(p => p.EntityId).Distinct().ToListAsync(cancellationToken: cancellationToken).AnyContext();
 
-        TypedLogger.LogFoundEntityIds(this.logger, "AID", entityType, permission, userId, entityIds.Count);
+        TypedLogger.LogFoundEntityIds(this.logger, "AUT", entityType, permission, userId, entityIds.Count);
 
         return entityIds;
     }
@@ -202,7 +202,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         var query = this.queryProvider.CreatePathQuery(schema, tableName, idColumn, parentIdColumn);
 
-        TypedLogger.LogGettingHierarchyPath(this.logger, "AID", entityType.Name, entityId?.ToString());
+        TypedLogger.LogGettingHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString());
 
         if (query.IsNullOrEmpty()) // provider can also return no sql, then revert back to linq
         {
@@ -229,7 +229,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
         var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
 
-        TypedLogger.LogFoundHierarchyPath(this.logger, "AID", entityType.Name, entityId?.ToString(), parentIds.Count);
+        TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
 
         return await Task.FromResult(parentIds.AsEnumerable()).AnyContext();
     }
@@ -242,7 +242,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-        TypedLogger.LogGrantingPermission(this.logger, "AID", entityType, entityId?.ToString(), permission, userId);
+        TypedLogger.LogGrantingPermission(this.logger, "AUT", entityType, entityId?.ToString(), permission, userId);
 
         var existingPermission = await context.EntityPermissions
             .FirstOrDefaultAsync(p =>
@@ -293,7 +293,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         if (entityPermission != null)
         {
-            TypedLogger.LogRevokingPermission(this.logger, "AID", entityType, entityId?.ToString(), permission, userId);
+            TypedLogger.LogRevokingPermission(this.logger, "AUT", entityType, entityId?.ToString(), permission, userId);
             context.EntityPermissions.Remove(entityPermission);
             await context.SaveChangesAsync(cancellationToken).AnyContext();
             await this.InvalidatePermissionCachesAsync(userId, entityType, entityId, cancellationToken).AnyContext();
@@ -310,7 +310,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .Where(p => p.UserId == userId).ToListAsync(cancellationToken: cancellationToken).AnyContext();
         foreach (var entityPermission in entityPermissions)
         {
-            TypedLogger.LogRevokingPermission(this.logger, "AID", entityPermission.EntityType, entityPermission.EntityId, entityPermission.Permission, userId);
+            TypedLogger.LogRevokingPermission(this.logger, "AUT", entityPermission.EntityType, entityPermission.EntityId, entityPermission.Permission, userId);
             context.EntityPermissions.Remove(entityPermission);
             await this.InvalidatePermissionCachesAsync(userId, entityPermission.EntityType, entityPermission.EntityId, cancellationToken).AnyContext();
         }
@@ -329,7 +329,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-        TypedLogger.LogGrantingRolePermission(this.logger, "AID", entityType, entityId?.ToString(), permission, roleName);
+        TypedLogger.LogGrantingRolePermission(this.logger, "AUT", entityType, entityId?.ToString(), permission, roleName);
 
         var existingPermission = await context.EntityPermissions
             .FirstOrDefaultAsync(p =>
@@ -380,7 +380,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         if (entityPermission != null)
         {
-            TypedLogger.LogRevokingRolePermission(this.logger, "AID", entityType, entityId?.ToString(), permission, roleName);
+            TypedLogger.LogRevokingRolePermission(this.logger, "AUT", entityType, entityId?.ToString(), permission, roleName);
             context.EntityPermissions.Remove(entityPermission);
             await context.SaveChangesAsync(cancellationToken).AnyContext();
             await this.InvalidateRolePermissionCachesAsync(roleName, entityType, entityId, cancellationToken).AnyContext();
@@ -397,7 +397,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .Where(p => p.RoleName == roleName).ToListAsync(cancellationToken: cancellationToken).AnyContext();
         foreach (var entityPermission in entityPermissions)
         {
-            TypedLogger.LogRevokingRolePermission(this.logger, "AID", entityPermission.EntityType, entityPermission.EntityId, entityPermission.Permission, roleName);
+            TypedLogger.LogRevokingRolePermission(this.logger, "AUT", entityPermission.EntityType, entityPermission.EntityId, entityPermission.Permission, roleName);
             context.EntityPermissions.Remove(entityPermission);
             await this.InvalidateRolePermissionCachesAsync(roleName, entityPermission.EntityType, entityPermission.EntityId, cancellationToken).AnyContext();
         }
@@ -573,7 +573,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             return;
         }
 
-        TypedLogger.LogInvalidatingCaches(this.logger, "AID", entityType, entityId?.ToString(), userId);
+        TypedLogger.LogInvalidatingCaches(this.logger, "AUT", entityType, entityId?.ToString(), userId);
 
         // Invalidate specific entity permission cache
         if (entityId != null)
@@ -601,7 +601,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             return;
         }
 
-        TypedLogger.LogInvalidatingRoleCaches(this.logger, "AID", entityType, entityId?.ToString(), roleName);
+        TypedLogger.LogInvalidatingRoleCaches(this.logger, "AUT", entityType, entityId?.ToString(), roleName);
 
         // For role permissions, we need to invalidate all user caches as we don't know which users have this role
         var typeKey = EntityPermissionCacheKeys.PatternForEntityType(entityType);
@@ -624,7 +624,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             if (!visitedIds.Add(currentId))
             {
                 // If we can't add the ID because it's already in the set, we've found a circle
-                TypedLogger.LogCircularHierarchyDetected(this.logger, "AID", typeof(TEntity).Name, currentId.ToString());
+                TypedLogger.LogCircularHierarchyDetected(this.logger, "AUT", typeof(TEntity).Name, currentId.ToString());
                 break;
             }
 

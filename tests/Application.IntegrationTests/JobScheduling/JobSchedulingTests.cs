@@ -178,7 +178,7 @@ public class JobSchedulingTests
     }
 
     [Fact]
-    public async Task JobData_PersistsAcrossExecutions()
+    public async Task JobData_PersistsDataAcrossExecutions()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
         var host = this.CreateHost(builder =>

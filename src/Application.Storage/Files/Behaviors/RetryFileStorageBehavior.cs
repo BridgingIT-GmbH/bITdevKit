@@ -26,6 +26,8 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
 
     public string LocationName => this.InnerProvider.LocationName;
 
+    public string Description => this.InnerProvider.Description;
+
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
     private async Task<Result<T>> ExecuteWithRetryAsync<T>(Func<Task<Result<T>>> operation, string operationName, string path, CancellationToken cancellationToken = default)

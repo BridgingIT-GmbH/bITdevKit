@@ -75,7 +75,7 @@ public class JobSchedulingService : BackgroundService
                 {
                     if (string.IsNullOrEmpty(jobSchedule.CronExpression))
                     {
-                        this.logger.LogWarning("{LogKey} not scheduled, needs a cron expression (name={JobName})", Constants.LogKey, jobSchedule.Name);
+                        this.logger.LogWarning("{LogKey} not scheduled, needs a cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
                         continue;
                     }
 
@@ -91,7 +91,7 @@ public class JobSchedulingService : BackgroundService
                             if (existingTrigger.Description != trigger.Description) // cron has changed
                             {
                                 await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                                this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                                this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobName, trigger.Description, jobSchedule.JobType.Name);
                             }
                         }
 
@@ -99,26 +99,27 @@ public class JobSchedulingService : BackgroundService
                         {
                             try
                             {
-                                this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                                this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobName, trigger.Description, jobSchedule.JobType.Name);
+                                this.logger.LogDebug("{LogKey} scheduled data (name={JobName}): {@JobData}", Constants.LogKey, jobName, jobDetail.JobDataMap.ToDictionary());
                                 await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
                             }
                             catch (ObjectAlreadyExistsException ex)
                             {
-                                this.logger.LogError(ex, "{LogKey} schedule failed: {ErrorMessage} (name={JobName})", Constants.LogKey, ex.Message, jobName);
+                                this.logger.LogError(ex, "{LogKey} schedule failed: {ErrorMessage} (name={JobName}, type={JobType})", Constants.LogKey, ex.Message, jobName, jobSchedule.JobType.Name);
                             }
                         }
                         else
                         {
-                            this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression})", Constants.LogKey, jobName, trigger.Description);
+                            this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobName, trigger.Description, jobSchedule.JobType.Name);
                         }
                     }
                     catch (FormatException ex)
                     {
-                        this.logger.LogWarning("{LogKey} not scheduled, invalid cron expression '{CronExpression}' for job (name={JobName}): {ErrorMessage}", Constants.LogKey, jobSchedule.CronExpression, jobSchedule.Name, ex.Message);
+                        this.logger.LogWarning("{LogKey} not scheduled, invalid cron expression '{CronExpression}' for job (name={JobName}, type={JobType}): {ErrorMessage}", Constants.LogKey, jobSchedule.CronExpression, jobSchedule.Name, jobSchedule.JobType.Name, ex.Message);
                     }
                     catch (SchedulerException ex)
                     {
-                        this.logger.LogWarning("{LogKey} schedule failed (name={JobName}, cron={CronExpression}): {ErrorMessage}", Constants.LogKey, jobSchedule.Name, jobSchedule.CronExpression, ex.Message);
+                        this.logger.LogWarning("{LogKey} schedule failed (name={JobName}, cron={CronExpression}, type={JobType}): {ErrorMessage}", Constants.LogKey, jobSchedule.Name, jobSchedule.CronExpression, jobSchedule.JobType.Name, ex.Message);
                     }
                 }
 

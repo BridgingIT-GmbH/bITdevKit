@@ -102,7 +102,7 @@ public class FileMonitoringService(
 
         this.loggerTyped.LogInformationScanningLocation(locationName);
         var context = await handler.ScanAsync(options, progress, token);
-        this.loggerTyped.LogInformationScanCompleted(locationName, context.Events.Count);
+        this.loggerTyped.LogInformationScanCompleted(locationName, context.Events.Count, (context.EndTime ?? DateTimeOffset.UtcNow).Subtract(context.StartTime).TotalMilliseconds);
 
         return context;
     }
@@ -382,60 +382,48 @@ public class FileMonitoringService(
             this.logger.LogWarning("{LogKey} filemonitoring: service not started", Constants.LogKey);
 
         public void LogWarningLocationUnhealthy(string locationName) =>
-            this.logger.LogWarning("{LogKey} filemonitoring: location unhealthy (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogWarning("{LogKey} filemonitoring: location unhealthy (LocationName={LocationName})", Constants.LogKey, locationName);
 
         // Information logs
         public void LogInformationStartingService(int locationCount) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: starting service (Locations=#{LocationCount})",
-                Constants.LogKey, locationCount);
+            this.logger.LogInformation("{LogKey} filemonitoring: starting service (Locations=#{LocationCount})", Constants.LogKey, locationCount);
 
         public void LogInformationServiceStarted() =>
             this.logger.LogInformation("{LogKey} filemonitoring: service started", Constants.LogKey);
 
         public void LogInformationStoppingService(int locationCount) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: stopping service (Locations=#{LocationCount})",
-                Constants.LogKey, locationCount);
+            this.logger.LogInformation("{LogKey} filemonitoring: stopping service (Locations=#{LocationCount})", Constants.LogKey, locationCount);
 
         public void LogInformationServiceStopped() =>
             this.logger.LogInformation("{LogKey} filemonitoring: service stopped", Constants.LogKey);
 
         public void LogInformationScanningLocation(string locationName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: scanning location (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogInformation("{LogKey} filemonitoring: scanning location (LocationName={LocationName})", Constants.LogKey, locationName);
 
-        public void LogInformationScanCompleted(string locationName, int changeCount) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: scan completed (LocationName={LocationName}, Changes={ChangeCount})",
-                Constants.LogKey, locationName, changeCount);
+        public void LogInformationScanCompleted(string locationName, int changeCount, double timeElapsed) =>
+            this.logger.LogInformation("{LogKey} filemonitoring: location scan completed (LocationName={LocationName}, Changes={ChangeCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, locationName, changeCount, timeElapsed);
 
         public void LogInformationPausingLocation(string locationName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: pausing location (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogInformation("{LogKey} filemonitoring: pausing location (LocationName={LocationName})", Constants.LogKey, locationName);
 
         public void LogInformationResumingLocation(string locationName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: resuming location (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogInformation("{LogKey} filemonitoring: resuming location (LocationName={LocationName})", Constants.LogKey, locationName);
 
         public void LogInformationRestartingLocation(string locationName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: restarting location (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogInformation("{LogKey} filemonitoring: restarting location (LocationName={LocationName})", Constants.LogKey, locationName);
 
         public void LogInformationEnablingProcessor(string locationName, string processorName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: enabling processor (LocationName={LocationName}, ProcessorName={ProcessorName})",
-                Constants.LogKey, locationName, processorName);
+            this.logger.LogInformation("{LogKey} filemonitoring: enabling processor (LocationName={LocationName}, ProcessorName={ProcessorName})", Constants.LogKey, locationName, processorName);
 
         public void LogInformationDisablingProcessor(string locationName, string processorName) =>
-            this.logger.LogInformation("{LogKey} filemonitoring: disabling processor (LocationName={LocationName}, ProcessorName={ProcessorName})",
-                Constants.LogKey, locationName, processorName);
+            this.logger.LogInformation("{LogKey} filemonitoring: disabling processor (LocationName={LocationName}, ProcessorName={ProcessorName})", Constants.LogKey, locationName, processorName);
 
         // Debug logs
         public void LogDebugCheckingHealth(int locationCount) =>
-            this.logger.LogDebug("{LogKey} filemonitoring: checking health (Locations={LocationCount})",
-                Constants.LogKey, locationCount);
+            this.logger.LogDebug("{LogKey} filemonitoring: checking health (Locations={LocationCount})", Constants.LogKey, locationCount);
 
         // Error logs
         public void LogErrorLocationNotFound(string locationName) =>
-            this.logger.LogError("{LogKey} filemonitoring: location not found (LocationName={LocationName})",
-                Constants.LogKey, locationName);
+            this.logger.LogError("{LogKey} filemonitoring: location not found (LocationName={LocationName})", Constants.LogKey, locationName);
     }
 }

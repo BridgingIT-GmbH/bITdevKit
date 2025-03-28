@@ -17,6 +17,7 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using FluentValidation;
 using Infrastructure;
+using static BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob;
 
 public class CoreModule : WebModuleBase
 {
@@ -29,6 +30,12 @@ public class CoreModule : WebModuleBase
 
         // jobs
         services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
+            .WithJob<FileMonitoringLocationScanJob>()
+                .Cron(CronExpressions.EveryMinute)
+                .Named("scan_inbound")
+                .WithData(DataKeys.LocationName, "inbound")
+                .WithData(DataKeys.DelayPerFile, "00:00:01")
+                .RegisterScoped()
             .WithJob<EchoJob>()
                 .Cron(CronExpressions.EveryMinute)
                 .Named("firstecho")
@@ -86,18 +93,14 @@ public class CoreModule : WebModuleBase
         });
 
         // file monitoring
-        var inboundDirectory = Path.Combine(Path.GetTempPath(), $"DoFiesta-inbound"); // _{GuidGenerator.CreateSequential()}
-        Directory.CreateDirectory(inboundDirectory);
-        Console.WriteLine($"FILEMONITORING - {inboundDirectory}");
-        services.AddFileMonitoring(monitoring =>
+        services.AddFileMonitoring(b =>
         {
-            monitoring
-                .UseLocal("inbound", inboundDirectory, options =>
-                {
-                    options.UseOnDemandOnly = true; // On-demand only
-                    options.RateLimit = RateLimitOptions.MediumSpeed;
-                    options.UseProcessor<FileLoggerProcessor>();
-                });
+            b.UseLocal("inbound", Path.Combine(Path.GetTempPath(), "DoFiesta-inbound"), o =>
+            {
+                o.UseOnDemandOnly = true; // On-demand only
+                o.RateLimit = RateLimitOptions.MediumSpeed;
+                o.UseProcessor<FileLoggerProcessor>();
+            });
         }).WithEntityFrameworkStore<CoreDbContext>();
 
         // repositories

@@ -24,6 +24,8 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
 
     public string LocationName => this.InnerProvider.LocationName;
 
+    public string Description => this.InnerProvider.Description;
+
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)

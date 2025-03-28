@@ -13,10 +13,12 @@ using BridgingIT.DevKit.Common;
 /// translating exceptions into typed IResultError instances or ExceptionError for unhandled errors.
 /// Intended for inheritance by concrete providers, ensuring testability and consistency.
 /// </summary>
-[DebuggerDisplay("LocationName={LocationName}")]
+[DebuggerDisplay("LocationName={LocationName}, Description={Description}")]
 public abstract class BaseFileStorageProvider(string locationName) : IFileStorageProvider
 {
     public string LocationName { get; } = locationName ?? throw new ArgumentNullException(nameof(locationName));
+
+    public virtual string Description { get; set; } = locationName;
 
     public virtual bool SupportsNotifications { get; }
 

@@ -50,7 +50,7 @@ public abstract partial class JobBase : IJob
         EnsureArg.IsNotNull(context, nameof(context));
 
         var jobId = context.JobDetail.JobDataMap?.GetString(JobIdKey) ?? context.FireInstanceId;
-        var jobTypeName = context.JobDetail.JobType.FullName;
+        var jobTypeName = context.JobDetail.JobType.Name;
         var watch = ValueStopwatch.StartNew();
         long elapsedMilliseconds = 0;
 
@@ -61,11 +61,11 @@ public abstract partial class JobBase : IJob
         }
         else
         {
-            TypedLogger.LogProcessing(this.Logger, Constants.LogKey, jobTypeName, jobId);
+            this.Name = context.JobDetail.Description ?? context.JobDetail.Key.Name;
+            BaseTypedLogger.LogProcessing(this.Logger, Constants.LogKey, jobTypeName, this.Name, jobId);
 
             GetJobProperties(context);
 
-            this.Name = context.JobDetail.Description ?? context.JobDetail.Key.Name;
             this.Data = context.JobDetail.JobDataMap.Keys.ToDictionary(k => k, k => context.JobDetail.JobDataMap[k]?.ToString() ?? string.Empty);
 
             try
@@ -74,10 +74,7 @@ public abstract partial class JobBase : IJob
             }
             catch (Exception ex)
             {
-                PutJobProperties(context,
-                    JobStatus.Fail,
-                    $"[{ex.GetType().Name}] {ex.Message}",
-                    watch.GetElapsedMilliseconds());
+                PutJobProperties(context, JobStatus.Fail, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
 
                 throw;
             }
@@ -89,7 +86,7 @@ public abstract partial class JobBase : IJob
             PutJobProperties(context, JobStatus.Success, null, elapsedMilliseconds);
         }
 
-        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, jobTypeName, jobId, elapsedMilliseconds);
+        BaseTypedLogger.LogProcessed(this.Logger, Constants.LogKey, jobTypeName, this.Name, jobId, elapsedMilliseconds);
 
         void GetJobProperties(IJobExecutionContext context)
         {
@@ -138,12 +135,12 @@ public abstract partial class JobBase : IJob
 
     public abstract Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default);
 
-    public static partial class TypedLogger
+    public static partial class BaseTypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={JobType}, id={JobId})")]
-        public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobId);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={JobType}, name={JobName}, id={JobId})")]
+        public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobName, string jobId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobId, long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, name={JobName}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
+        public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobName, string jobId, long timeElapsed);
     }
 }

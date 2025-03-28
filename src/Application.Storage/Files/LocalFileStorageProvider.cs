@@ -18,15 +18,17 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
 /// </summary>
-[DebuggerDisplay("LocationName={LocationName}, Path={rootPath}")]
 public class LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
     private readonly TimeSpan lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30);
     private readonly ConcurrentDictionary<string, SemaphoreSlim> fileLocks = [];
+    private readonly Lock initializateLock = new();
     private bool disposed;
     private bool initialized;
 
     public string RootPath { get { return Path.GetFullPath(rootPath); } }
+
+    public override string Description => this.RootPath;
 
     public override bool SupportsNotifications { get; } = true;
 
@@ -37,12 +39,22 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             return;
         }
 
-        if (ensureRoot && !Directory.Exists(this.RootPath))
+        lock (this.initializateLock)
         {
-            Directory.CreateDirectory(this.RootPath); // Ensure root exists
-        }
+            if (this.initialized)
+            {
+                return;
+            }
 
-        this.initialized = true;
+            if (ensureRoot && !Directory.Exists(this.RootPath))
+            {
+                Directory.CreateDirectory(this.RootPath); // Ensure root exists
+            }
+
+            Console.WriteLine($"FILEMONITORING RootPath - {this.RootPath}");
+
+            this.initialized = true;
+        }
     }
 
     public override async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)

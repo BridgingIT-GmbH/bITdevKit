@@ -1585,6 +1585,14 @@
           "SharpCompress": "[0.39.0, )"
         }
       },
+      "BridgingIT.DevKit.Application.Storage.Jobs": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Utilities": {
         "type": "Project",
         "dependencies": {

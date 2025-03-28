@@ -22,6 +22,11 @@ public interface IFileStorageProvider
     string LocationName { get; }
 
     /// <summary>
+    /// Gets a brief description of the storage provider (e.g., "Azure Blob Storage") and possible location details
+    /// </summary>
+    string Description { get; }
+
+    /// <summary>
     /// Indicates whether the provider supports notifications for changes (e.g., via FileSystemWatcher or cloud event subscriptions).
     /// Used in monitoring for real-time change detection; for broader use, this may indicate notification capabilities.
     /// </summary>

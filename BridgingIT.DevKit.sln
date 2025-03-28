@@ -359,6 +359,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.EntityFramew
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Windows", "src\Infrastructure.Windows\Infrastructure.Windows.csproj", "{3A738D1D-74E2-41D9-9F76-F99722CFCB89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Storage.Jobs", "src\Application.Storage.Jobs\Application.Storage.Jobs.csproj", "{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -769,6 +771,10 @@ Global
 		{3A738D1D-74E2-41D9-9F76-F99722CFCB89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A738D1D-74E2-41D9-9F76-F99722CFCB89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A738D1D-74E2-41D9-9F76-F99722CFCB89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -906,6 +912,7 @@ Global
 		{ED3BE71D-EA4A-DEC5-B3F5-88A8E8E42199} = {DCCFA631-3D06-4CB3-9130-8453D4DA8DAF}
 		{937B42C3-5306-DE57-6B36-C226557CD51F} = {2D909F9E-CC68-43F7-A6F3-DD49BB145CC2}
 		{3A738D1D-74E2-41D9-9F76-F99722CFCB89} = {2D909F9E-CC68-43F7-A6F3-DD49BB145CC2}
+		{79BB8EDC-9F54-1ABA-AE55-01457CABDAFB} = {AB446D7C-69B0-4A1C-A297-807CE3B0A520}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71C09054-DA91-4896-83AE-024F259D5330}

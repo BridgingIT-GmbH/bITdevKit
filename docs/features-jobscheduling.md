@@ -72,7 +72,7 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 
 In this implementation, `JobBase` equips developers with a suite of properties that streamline job development, offering immediate access to essential information and execution context. These properties, set automatically by the base class, reduce boilerplate and enhance the robustness of job logic.
 
-#### Key Properties of JobBase
+### Key Properties of JobBase
 
 The `Name` property provides a consistent identifier for the job, derived from its description or key name as defined during registration. This eliminates the need to manually extract it from the `IJobExecutionContext`, ensuring it’s always available within the `Process` method. Similarly, the `Data` property delivers a dictionary of strings populated from the `JobDataMap`, reflecting metadata specified via `WithData` (e.g., `"message" = "First echo"`). This makes job-specific configuration readily accessible, simplifying logic that depends on runtime parameters.
 
@@ -80,11 +80,11 @@ A standout feature, the `LastProcessedDate` property captures the timestamp of t
 
 Complementing these, `ElapsedMilliseconds` tracks the duration of the current execution in milliseconds, updated post-run for performance monitoring. The `Status` property, an enum reflecting success or failure, pairs with `ErrorMessage` to log execution outcomes or capture exceptions, providing insight into job health. Finally, the `Logger` property, pre-initialized with the job’s type via the injected `ILoggerFactory`, facilitates consistent logging without additional setup.
 
-#### Leveraging LastProcessedDate
+### Leveraging LastProcessedDate
 
 The `LastProcessedDate` property proves particularly valuable for jobs requiring awareness of their execution history. For example, a job might compare `LastProcessedDate` to the current time to identify scheduling lags or use it to filter data processed since the last run, such as new records in a database. This persistence is handled internally by `JobBase`, which updates the `JobDataMap` after each execution. The `[PersistJobDataAfterExecution]` attribute ensures this value carries forward, maintaining continuity across runs without developer intervention.
 
-#### Controlling Job Execution
+### Controlling Job Execution
 
 For jobs intended to remain inactive until explicitly enabled, the `Enabled` method in the fluent API allows registration without immediate execution. This is useful for staging jobs during development or deployment, as shown in the second `EchoJob` example above, where it’s enabled only in development:
 
@@ -233,3 +233,104 @@ After startup, verify that the Quartz.NET tables exist in the specified SQL Serv
 
 This persistence layer enhances the JobScheduling feature’s reliability, making it ideal for production environments where job continuity is critical.
 
+## Appendix: Constructing Cron Expressions
+
+Scheduling jobs in the JobScheduling feature hinges on Quartz.NET’s 6-field cron expressions, defining execution times in the format: `[Seconds] [Minutes] [Hours] [Day of Month] [Month] [Day of Week]`. Developers have two powerful tools at their disposal: the `CronExpressions` struct, offering a library of predefined constants for common schedules, and the `CronExpressionBuilder`, a fluent API for crafting custom expressions. This appendix guides developers through both approaches, showcasing their strengths with practical examples, including how to schedule a job for the first day of every month at 11:59 PM, ensuring clarity and versatility in job configuration.
+
+### Using Fixed Cron Expressions
+
+The `CronExpressions` struct provides a rich set of static constants for frequently used schedules, making it an efficient choice for standard patterns. These predefined expressions are readily available in the `BridgingIT.DevKit.Application` namespace and can be applied directly to the `Cron` method in `JobScheduleBuilder`. Here are some examples:
+
+- **Every 5 Seconds**: `CronExpressions.Every5Seconds` ("0/5 * * * * ?") runs a job every 5 seconds, ideal for frequent tasks like health checks:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<HeartbeatJob>()
+          .Cron(CronExpressions.Every5Seconds)
+          .RegisterScoped();
+  ```
+
+- **Daily at Midnight**: `CronExpressions.DailyAtMidnight` ("0 0 0 * * ?") triggers a job at 00:00:00 daily, perfect for nightly maintenance:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<CleanupJob>()
+          .Cron(CronExpressions.DailyAtMidnight)
+          .RegisterScoped();
+  ```
+
+- **First Day of Every Month at 11:59 PM**: While `CronExpressions` doesn’t have an exact match, `CronExpressions.MonthlyAtMidnightOnFirstDay` ("0 0 0 1 * ?") is close. To adjust to 11:59 PM, developers can tweak it manually or use the builder (shown later), but here’s a direct string approach inspired by the struct:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<MonthlyReportJob>()
+          .Cron("0 59 23 1 * ?") // Derived from MonthlyAtMidnightOnFirstDay, adjusted to 23:59
+          .RegisterScoped();
+  ```
+
+These constants, like `CronExpressions.EveryMinute` ("0 0/1 * * * ?") or `CronExpressions.WeeklyOnWednesdayAtMidnight` ("0 0 0 * * WED"), offer a quick, reliable way to apply tested schedules. They’re ideal for static, well-known patterns but require manual string manipulation for slight variations, such as shifting midnight to 11:59 PM.
+
+### Using the CronExpressionBuilder
+
+For greater flexibility or custom schedules, the `CronExpressionBuilder` provides a fluent, programmatic interface integrated into the `JobScheduleBuilder`’s `Cron` method. It allows developers to construct expressions step-by-step, leveraging type-safe enums and integer inputs. Below are examples mirroring the fixed expressions and your specific request:
+
+- **Every 5 Seconds**: Use `EverySeconds` to match `CronExpressions.Every5Seconds`:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<HeartbeatJob>()
+          .Cron(b => b.EverySeconds(5).Build())
+          .RegisterScoped();
+  ```
+  This builds `"0/5 * * * * ?"`, identical to the fixed constant but expressed fluently.
+
+- **Daily at Midnight**: Replicate `CronExpressions.DailyAtMidnight` with `AtTime`:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<CleanupJob>()
+          .Cron(b => b.AtTime(0, 0, 0).Build())
+          .RegisterScoped();
+  ```
+  This produces `"0 0 0 * * ?"`, matching the predefined expression with explicit time settings.
+
+- **First Day of Every Month at 11:59 PM**: Construct this precise schedule directly:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<MonthlyReportJob>()
+          .Cron(b => b
+              .DayOfMonth(1)
+              .AtTime(23, 59, 0)
+              .Build())
+          .Named("monthlyReport")
+          .RegisterScoped();
+  ```
+  The result, `"0 59 23 1 * ?"`, schedules the job at 23:59:00 on the 1st of each month, aligning with your requirement. Here, `DayOfMonth(1)` sets the day, and `AtTime(23, 59, 0)` specifies 11:59 PM.
+
+- **Every Wednesday at 9:30 AM**: Match `CronExpressions.WeeklyOnWednesdayAtMidnight` with adjustments:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<WeeklyMeetingJob>()
+          .Cron(b => b
+              .DayOfWeek(CronDayOfWeek.Wednesday)
+              .AtTime(9, 30)
+              .Build())
+          .RegisterScoped();
+  ```
+  This yields `"0 30 9 ? * WED"`, shifting the midnight timing to 9:30 AM.
+
+- **Specific Date and Time (e.g., March 27, 2025, 2:30 PM)**: Use `AtDateTime` for one-time triggers:
+  ```csharp
+  builder.Services
+      .AddJobScheduling(builder.Configuration)
+      .WithJob<OneTimeJob>()
+          .Cron(b => b
+              .AtDateTime(new DateTimeOffset(2025, 3, 27, 14, 30, 0, TimeSpan.Zero))
+              .Build())
+          .RegisterScoped();
+  ```
+  This generates `"0 30 14 27 3 ?"`, targeting a single execution.
+
+The builder’s methods, such as `EveryMinutes(15)` ("0 0/15 * * * ?") or `HoursRange(8, 17)` ("0 * 8-17 * * ?"), offer granular control. Enums like `CronDayOfWeek` and `CronMonth` ensure type safety, mapping to Quartz’s three-letter abbreviations (e.g., "WED", "JAN"), while integer inputs (e.g., `Minutes(59)`) simplify numeric fields.

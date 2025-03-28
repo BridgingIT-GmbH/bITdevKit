@@ -21,7 +21,7 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRe
             Constants.LogKey,
             message ?? "echo",
             context.JobDetail.Key,
-            this.ProcessedDate);
+            this.LastProcessedDate);
 
         await Task.Delay(5000, cancellationToken);
     }

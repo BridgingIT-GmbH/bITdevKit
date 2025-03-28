@@ -28,7 +28,7 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // jobs
-        services.AddJobScheduling()
+        services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
             .WithJob<EchoJob>()
                 .Cron(CronExpressions.EveryMinute)
                 .Named("firstecho")
@@ -38,6 +38,12 @@ public class CoreModule : WebModuleBase
                 .Cron(CronExpressions.Every5Seconds)
                 .Named("secondecho")
                 .WithData("message", "Second echo")
+                .Enabled(environment?.IsDevelopment() == true)
+                .RegisterScoped()
+            .WithJob<EchoJob>()
+                .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
+                .Named("thirdecho")
+                .WithData("message", "Third echo")
                 .Enabled(environment?.IsDevelopment() == true)
                 .RegisterScoped();
 

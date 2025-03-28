@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+using System.Collections.Generic;
+
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
 public abstract partial class JobBase : IJob
@@ -19,12 +21,28 @@ public abstract partial class JobBase : IJob
 
     public ILogger Logger { get; }
 
-    public DateTimeOffset ProcessedDate { get; set; }
+    public string Name { get; private set; }
 
+    public Dictionary<string, string> Data { get; private set; }
+
+    /// <summary>
+    /// Represents the date and time when the last processing occurred. It includes the time zone offset from UTC.
+    /// </summary>
+    public DateTimeOffset LastProcessedDate { get; set; }
+
+    /// <summary>
+    /// Represents the total elapsed time when the last processing occurred. It can be both retrieved and set.
+    /// </summary>
     public long ElapsedMilliseconds { get; set; }
 
+    /// <summary>
+    /// Represents the status of a job when the last processing occurred.
+    /// </summary>
     public JobStatus Status { get; set; }
 
+    /// <summary>
+    /// Holds the error message of when the last processing occurred.
+    /// </summary>
     public string ErrorMessage { get; set; }
 
     public virtual async Task Execute(IJobExecutionContext context)
@@ -38,10 +56,7 @@ public abstract partial class JobBase : IJob
 
         if (context.CancellationToken.IsCancellationRequested)
         {
-            this.Logger.LogWarning("{LogKey} processing cancelled (type={JobType}, id={JobId})",
-                Constants.LogKey,
-                jobTypeName,
-                jobId);
+            this.Logger.LogWarning("{LogKey} processing cancelled (type={JobType}, id={JobId})", Constants.LogKey, jobTypeName, jobId);
             context.CancellationToken.ThrowIfCancellationRequested();
         }
         else
@@ -49,6 +64,9 @@ public abstract partial class JobBase : IJob
             TypedLogger.LogProcessing(this.Logger, Constants.LogKey, jobTypeName, jobId);
 
             GetJobProperties(context);
+
+            this.Name = context.JobDetail.Description ?? context.JobDetail.Key.Name;
+            this.Data = context.JobDetail.JobDataMap.Keys.ToDictionary(k => k, k => context.JobDetail.JobDataMap[k]?.ToString() ?? string.Empty);
 
             try
             {
@@ -86,9 +104,9 @@ public abstract partial class JobBase : IJob
                 this.ErrorMessage = errorMessage;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.ProcessedDate), out var processed))
+            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.LastProcessedDate), out var processed))
             {
-                this.ProcessedDate = processed;
+                this.LastProcessedDate = processed;
             }
 
             if (context.JobDetail.JobDataMap.TryGetLong(nameof(this.ElapsedMilliseconds), out var elapsed))
@@ -105,7 +123,7 @@ public abstract partial class JobBase : IJob
         {
             this.Status = status;
             this.ErrorMessage = errorMessage;
-            this.ProcessedDate = DateTimeOffset.UtcNow;
+            this.LastProcessedDate = DateTimeOffset.UtcNow;
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
             context.JobDetail.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
@@ -113,7 +131,7 @@ public abstract partial class JobBase : IJob
             context.JobDetail.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
             context.JobDetail.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
             context.JobDetail.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
-            context.JobDetail.JobDataMap.Put(nameof(this.ProcessedDate), this.ProcessedDate);
+            context.JobDetail.JobDataMap.Put(nameof(this.LastProcessedDate), this.LastProcessedDate);
             context.JobDetail.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
         }
     }

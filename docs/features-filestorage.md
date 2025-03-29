@@ -528,7 +528,8 @@ services.AddFileMonitoring(monitoring =>
     monitoring
         .UseLocal("Docs", Path.Combine(Path.GetTempPath(), "Docs"), options =>
         {
-            options.FilePattern = "*.txt";
+            options.FileFilter = "*.txt";
+            options.FileBlackListFilter = ["*.tmp"]
             options.RateLimit = RateLimitOptions.HighSpeed; // Configure event processing rate
             options.UseProcessor<FileLoggerProcessor>();
             options.UseProcessor<FileMoverProcessor>(config =>
@@ -549,7 +550,8 @@ var progress = new Progress<FileScanProgress>(report =>
     Console.WriteLine($"Scanned {report.FilesScanned}/{report.TotalFiles} files ({report.PercentageComplete:F2}%)"));
 var scanOptions = FileScanOptionsBuilder.Create()
     .WithEventFilter(FileEventType.Added)
-    .WithFilePathFilter(@".*\.txt$")
+    .WithFileFilter(".txt")
+    .WithFileBlackListFilter(["*.tmp"])
     .WithProgressIntervalPercentage(5)
     .Build();
 var scanContext = await monitoringService.ScanLocationAsync("Docs", scanOptions, progress, CancellationToken.None);
@@ -613,14 +615,15 @@ services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
         .WithJob<FileMonitoringLocationScanJob>()
             .Cron(CronExpressions.EveryMinute)
             .Named("scan_inbound")
-            .WithData(DataKeys.LocationName, "inbound")     // mandatory
-            .WithData(DataKeys.DelayPerFile, "00:00:01")    // optional
-            .WithData(DataKeys.WaitForProcessing, "true")   // optional
-            .WithData(DataKeys.BatchSize, "10")             // optional
+            .WithData(DataKeys.LocationName, "inbound")         // mandatory
+            .WithData(DataKeys.DelayPerFile, "00:00:01")        // optional
+            .WithData(DataKeys.WaitForProcessing, "true")       // optional
+            .WithData(DataKeys.BatchSize, "10")                 // optional
             .WithData(DataKeys.ProgressIntervalPercentage, "5") // optional
-            .WithData(DataKeys.FilePathFilter, @".*\.txt$") // optional
-            .WithData(DataKeys.MaxFilesToScan, "100")       // optional
-            .WithData(DataKeys.Timeout, "00:01:00")         // optional
+            .WithData(DataKeys.FileFilter, ".txt")              // optional
+            .WithData(DataKeys.FileBlackListFilter, ".tmp;*.log") // optional
+            .WithData(DataKeys.MaxFilesToScan, "100")           // optional
+            .WithData(DataKeys.Timeout, "00:01:00")             // optional
             .RegisterScoped();
 });
 ```

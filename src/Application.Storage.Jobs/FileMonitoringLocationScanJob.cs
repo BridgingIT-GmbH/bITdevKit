@@ -93,9 +93,14 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
             scanOptions.ProgressIntervalPercentage = progressIntervalPercentageValue;
         }
 
-        if (this.Data.TryGetValue(DataKeys.FilePathFilter, out var filePathFilter))
+        if (this.Data.TryGetValue(DataKeys.FileFilter, out var fileFilter))
         {
-            scanOptions.FileFilter = filePathFilter;
+            scanOptions.FileFilter = fileFilter;
+        }
+
+        if (this.Data.TryGetValue(DataKeys.FileBlackListFilter, out var fileBlacklistFilter))
+        {
+            scanOptions.FileBlackListFilter = fileBlacklistFilter?.Split(";")?.Select(f => f.Trim())?.ToArray();
         }
 
         if (this.Data.TryGetValue(DataKeys.MaxFilesToScan, out var maxFilesToScan) && int.TryParse(maxFilesToScan, out var maxFilesToScanValue))
@@ -139,7 +144,8 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
         public const string DelayPerFile = "DelayPerFile";
         public const string BatchSize = "BatchSize";
         public const string ProgressIntervalPercentage = "ProgressIntervalPercentage";
-        public const string FilePathFilter = "FilePathFilter";
+        public const string FileFilter = "FileFilter";
+        public const string FileBlackListFilter = "FileBlackListFilter";
         public const string MaxFilesToScan = "MaxFilesToScan";
         public const string Timeout = "Timeout";
     }

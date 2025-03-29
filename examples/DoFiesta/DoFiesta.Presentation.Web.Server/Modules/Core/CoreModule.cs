@@ -35,6 +35,8 @@ public class CoreModule : WebModuleBase
                 .Named("scan_inbound")
                 .WithData(DataKeys.LocationName, "inbound")
                 .WithData(DataKeys.DelayPerFile, "00:00:01")
+                .WithData(DataKeys.FileFilter, "*.*")
+                .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
                 .RegisterScoped()
             .WithJob<EchoJob>()
                 .Cron(CronExpressions.EveryMinute)

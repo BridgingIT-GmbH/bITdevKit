@@ -99,6 +99,8 @@ public class CoreModule : WebModuleBase
             {
                 o.UseOnDemandOnly = true; // On-demand only
                 o.RateLimit = RateLimitOptions.MediumSpeed;
+                o.FileFilter = "*.*";
+                o.FileBlackListFilter = ["*.tmp"];
                 o.UseProcessor<FileLoggerProcessor>();
             });
         }).WithEntityFrameworkStore<CoreDbContext>();

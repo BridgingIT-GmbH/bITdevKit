@@ -39,7 +39,7 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     // Real-time watching enabled (default, not UseOnDemandOnly)
                     options.UseProcessor<FileLoggerProcessor>();
                     //options.UseProcessor<FileLoggerProcessor>();
@@ -80,7 +80,7 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     // Real-time watching enabled (default, no UseOnDemandOnly)
                     options.UseProcessor<TestProcessor>(); // Custom processor
                 });
@@ -130,14 +130,14 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs1", Path.Combine(tempFolder, "1"), options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                     //options.UseProcessor<FileMoverProcessor>(config =>
                     //    config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = Path.Combine(tempFolder, "MovedDocs1")));
                 })
                 .UseLocal("Docs2", Path.Combine(tempFolder, "2"), options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                     //options.UseProcessor<FileMoverProcessor>(config =>
                     //    config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = Path.Combine(tempFolder, "MovedDocs2")));
@@ -181,7 +181,7 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
@@ -228,7 +228,7 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
@@ -266,7 +266,7 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
@@ -316,7 +316,8 @@ public class FileMonitoringRealTimeTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
+                    options.FileBlackListFilter = ["*.log"];
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
@@ -352,12 +353,20 @@ public class FileMonitoringRealTimeTests
         //await Task.Delay(500); // Wait for all events to process (debounce issue)
         sourceFiles["test_4.txt"].Add(("Deleted", FileEventType.Deleted));
         await Task.Delay(500); // Wait for all events to process
+        //
+        File.WriteAllText(Path.Combine(tempFolder, "ignore_0.tmp"), "Ignored content 0"); // not part of filter (*.txt)
+        File.WriteAllText(Path.Combine(tempFolder, "ignore_1.tmp"), "Ignored content 0"); // not part of filter (*.txt)
+        // blacklisted files
+        File.WriteAllText(Path.Combine(tempFolder, "ignore_0.log"), "Ignored content 0"); // Ignored file (blacklist)
+        File.WriteAllText(Path.Combine(tempFolder, "ignore_1.log"), "Ignored content 0"); // Ignored file (blacklist)
 
         // Assert
         var allStoredEvents = await store.GetFileEventsForLocationAsync("Docs");
-        allStoredEvents.Count.ShouldBe(9); // 5 Added + 2 Changed + 2 Deleted
+        allStoredEvents.Count.ShouldBe(9); // 5 Added + 2 Changed + 2 Deleted (no blacklisted files)
         foreach (var (filePath, actions) in sourceFiles)
         {
+            filePath.ShouldNotContain(".tmp"); // Ensure files not part of filter (*.txt) are not included
+            filePath.ShouldNotContain(".log"); // Ensure blacklisted files are not included
             var storedEvents = await store.GetFileEventsAsync(filePath);
             storedEvents.Count().ShouldBe(actions.Count); // Matches number of actions
             var orderedEvents = storedEvents.OrderBy(e => e.DetectedDate).ToList();

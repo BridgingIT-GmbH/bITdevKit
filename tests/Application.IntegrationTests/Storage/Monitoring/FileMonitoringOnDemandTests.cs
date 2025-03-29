@@ -35,7 +35,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                     //options.UseProcessor<FileMoverProcessor>(config =>
@@ -77,7 +77,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<TestProcessor>(); // Custom processor
                 });
@@ -131,7 +131,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                 });
@@ -218,13 +218,13 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs1", folder1, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.UseProcessor<FileLoggerProcessor>();
                 })
                 .UseLocal("Docs2", folder2, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.UseProcessor<FileLoggerProcessor>();
                 });
@@ -300,13 +300,13 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("LocalDocs", localFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                 })
                 .UseInMemory("InMemDocs", options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                 });
@@ -382,7 +382,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.RateLimit = RateLimitOptions.MediumSpeed;
                     options.UseProcessor<FileLoggerProcessor>();
@@ -462,7 +462,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.RateLimit = RateLimitOptions.HighSpeed;
                     options.UseProcessor<FileLoggerProcessor>();
@@ -525,7 +525,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseInMemory("InMemDocs", options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.RateLimit = RateLimitOptions.HighSpeed; // 10k/s
                     options.UseProcessor<FileLoggerProcessor>();
@@ -609,7 +609,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                 });
@@ -657,7 +657,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.RateLimit = RateLimitOptions.HighSpeed;
                     options.UseProcessor<FileLoggerProcessor>();
@@ -752,7 +752,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseOnDemandOnly = true;
                     options.RateLimit = RateLimitOptions.HighSpeed;
                     options.UseProcessor<FileLoggerProcessor>();
@@ -833,11 +833,12 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
         Directory.CreateDirectory(tempFolder);
 
-        // Create 100 files: 50 .txt, 50 .log
+        // Create 150 files: 50 .txt, 50 .log, 50 .tmp
         for (var i = 0; i < 50; i++)
         {
             File.WriteAllText(Path.Combine(tempFolder, $"file_{i}.txt"), $"Content {i}");
             File.WriteAllText(Path.Combine(tempFolder, $"log_{i}.log"), $"Log Content {i}");
+            File.WriteAllText(Path.Combine(tempFolder, $"tmp_{i}.tmp"), $"Tmp Content {i}");
         }
 
         var services = new ServiceCollection().AddLogging();
@@ -846,7 +847,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.*";
+                    options.FileFilter = "*.*";
+                    options.FileBlackListFilter = ["*.tmp"];
                     options.UseOnDemandOnly = true;
                     options.RateLimit = RateLimitOptions.HighSpeed;
                     options.UseProcessor<FileLoggerProcessor>();
@@ -874,7 +876,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             .WithTimeout(TimeSpan.FromSeconds(60))
             .WithDelayPerFile(TimeSpan.FromMilliseconds(10)) // Reduced delay for faster test
             .WithEventFilter(FileEventType.Added)
-            .WithFilePathFilter(@".*\.log$")
+            .WithFileFilter("*.log")
+            .WithFileBlackListFilter(["*.tmp"])
             //.WithBatchSize(5)
             .WithProgressIntervalPercentage(5)
             //.WithSkipChecksum()
@@ -897,7 +900,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
             .WithTimeout(TimeSpan.FromSeconds(30))
             //.WithDelayPerFile(TimeSpan.FromMilliseconds(10))
             .WithEventFilter(FileEventType.Unchanged)
-            .WithFilePathFilter(@".*\.log$")
+            .WithFileFilter("*.log")
+            .WithFileBlackListFilter(["*.tmp"])
             //.WithBatchSize(5)
             .WithProgressIntervalPercentage(5)
             //.WithSkipChecksum()
@@ -912,6 +916,58 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allEvents.Where(e => e.EventType == FileEventType.Unchanged).All(e => e.FilePath.EndsWith(".log")).ShouldBeTrue();
         progressReports.Count.ShouldBe(21); // 5% intervals (5, 10, ..., 100) = 20 + 1 final
         progressReports.Select(r => (int)r.PercentageComplete).ShouldBe([5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 100]);
+
+        await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_WithBlacklistFilter()
+    {
+        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempFolder);
+
+        // Create 150 files: 50 .txt, 50 .log, 50 .tmp
+        for (var i = 0; i < 10; i++)
+        {
+            File.WriteAllText(Path.Combine(tempFolder, $"file_{i}.txt"), $"Content {i}");
+            File.WriteAllText(Path.Combine(tempFolder, $"log_{i}.log"), $"Log Content {i}");
+            File.WriteAllText(Path.Combine(tempFolder, $"tmp_{i}.tmp"), $"Tmp Content {i}");
+        }
+
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("Docs", tempFolder, options =>
+                {
+                    options.FileFilter = "*.*";
+                    options.FileBlackListFilter = ["*.tmp"]; // Exclude .tmp files
+                    options.UseOnDemandOnly = true;
+                    options.RateLimit = RateLimitOptions.HighSpeed;
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+
+        //await sut.StartAsync(CancellationToken.None);
+
+        var scanOptions = FileScanOptionsBuilder.Create()
+            .WithWaitForProcessing()
+            .WithTimeout(TimeSpan.FromSeconds(60))
+            .WithDelayPerFile(TimeSpan.FromMilliseconds(10)) // Reduced delay for faster test
+            .WithEventFilter(FileEventType.Added)
+            //.WithFileFilter("*.*")
+            .WithFileBlackListFilter(["*.log"]) // Exclude .log files
+            .Build();
+        var scanContext = await sut.ScanLocationAsync("Docs", scanOptions, null, CancellationToken.None);
+        output.WriteLine($"Step 1: Scan detected {scanContext.Events.Count} Added events");
+
+        var allEvents = await store.GetFileEventsForLocationAsync("Docs");
+        allEvents.Count.ShouldBe(10); // 10 .txt files
+        allEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
+        allEvents.All(e => e.FilePath.EndsWith(".txt")).ShouldBeTrue();
 
         await sut.StopAsync(CancellationToken.None);
     }

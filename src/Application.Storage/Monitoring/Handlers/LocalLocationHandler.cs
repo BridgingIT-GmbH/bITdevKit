@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SharpCompress.Common;
 
 public class LocalLocationHandler : LocationHandlerBase
 {
@@ -96,8 +97,9 @@ public class LocalLocationHandler : LocationHandlerBase
         var estimatedTotalFiles = 0;
         if (this.provider is LocalFileStorageProvider localProvider)
         {
+            // TODO: maybe just use the provider capabilities here and not rely on the file system directly (perf?)
             estimatedTotalFiles = Directory.Exists(localProvider.RootPath)
-                ? Directory.GetFiles(localProvider.RootPath, this.options.FilePattern, SearchOption.AllDirectories).Length
+                ? Directory.GetFiles(localProvider.RootPath, this.options.FileFilter, SearchOption.AllDirectories).Length
                 : 0;
         }
         if (options.MaxFilesToScan < estimatedTotalFiles)
@@ -111,14 +113,10 @@ public class LocalLocationHandler : LocationHandlerBase
 
         do
         {
-            var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, cancellationToken);
-            foreach (var filePath in result.Value.Files.OrderBy(p => p))
+            var result = await this.provider.ListFilesAsync("/", this.options.FileFilter, true, continuationToken, cancellationToken);
+            foreach (var filePath in result.Value.Files.Order()
+                .Where(f => this.ShouldProcessFile(options, f)))
             {
-                if (!string.IsNullOrEmpty(options.FilePathFilter) && !System.Text.RegularExpressions.Regex.IsMatch(filePath, options.FilePathFilter))
-                {
-                    continue;
-                }
-
                 var metadataResult = await this.provider.GetFileMetadataAsync(filePath, cancellationToken);
                 var checksumResult = options.SkipChecksum
                     ? Result<string>.Success(string.Empty)
@@ -192,13 +190,18 @@ public class LocalLocationHandler : LocationHandlerBase
 
         if (!options.MaxFilesToScan.HasValue || filesScanned < options.MaxFilesToScan.Value)
         {
-            foreach (var missingFile in presentFiles.Except(currentFiles.Keys))
+            foreach (var missingFilePath in presentFiles.Except(currentFiles.Keys))
             {
+                if (!this.ShouldProcessFile(options, missingFilePath))
+                {
+                    continue;
+                }
+
                 var fileEvent = new FileEvent
                 {
                     ScanId = context.ScanId,
                     LocationName = this.options.LocationName,
-                    FilePath = missingFile,
+                    FilePath = missingFilePath,
                     EventType = FileEventType.Deleted,
                     DetectedDate = DateTimeOffset.UtcNow
                 };
@@ -271,7 +274,7 @@ public class LocalLocationHandler : LocationHandlerBase
         this.fileSystemWatcher = new FileSystemWatcher
         {
             Path = localProvider.RootPath,
-            Filter = this.options.FilePattern,
+            Filter = "*.*", //this.options.FileFilter,
             NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
             IncludeSubdirectories = true
         };
@@ -288,6 +291,16 @@ public class LocalLocationHandler : LocationHandlerBase
 
     private async void OnFileSystemEvent(object sender, FileSystemEventArgs e)
     {
+        if (!this.options.FileFilter.IsNullOrEmpty() && !e.FullPath.Match(this.options.FileFilter))
+        {
+            return;
+        }
+
+        if (this.options.FileBlackListFilter.SafeAny() && e.FullPath.MatchAny(this.options.FileBlackListFilter))
+        {
+            return;
+        }
+
         var localProvider = (LocalFileStorageProvider)this.provider;
         var relativePath = Path.GetRelativePath(localProvider.RootPath, e.FullPath);
         var metadataResult = e.ChangeType != WatcherChangeTypes.Deleted ? await this.provider.GetFileMetadataAsync(relativePath, CancellationToken.None) : Result<FileMetadata>.Success();
@@ -341,14 +354,25 @@ public class LocalLocationHandler : LocationHandlerBase
         while (!token.IsCancellationRequested)
         {
             await Task.Delay(this.debounceInterval, token);
+
             lock (this.eventBuffer)
             {
-                foreach (var (path, (fileEvent, timestamp)) in this.eventBuffer.ToList())
+                foreach (var (filePath, (fileEvent, timestamp)) in this.eventBuffer.ToList())
                 {
+                    if (!this.options.FileFilter.IsNullOrEmpty() && !filePath.Match(this.options.FileFilter))
+                    {
+                        continue;
+                    }
+
+                    if (this.options.FileBlackListFilter.SafeAny() && filePath.MatchAny(this.options.FileBlackListFilter))
+                    {
+                        continue;
+                    }
+
                     if (DateTimeOffset.UtcNow - timestamp >= this.debounceInterval)
                     {
                         this.eventQueue.Add(fileEvent, token);
-                        this.eventBuffer.Remove(path);
+                        this.eventBuffer.Remove(filePath);
                     }
                 }
             }

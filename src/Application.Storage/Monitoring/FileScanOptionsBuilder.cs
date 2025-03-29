@@ -109,13 +109,24 @@ public class FileScanOptionsBuilder
     }
 
     /// <summary>
-    /// Sets a regex or glob pattern to filter files by path.
+    /// Sets a glob pattern to filter files by path.
     /// </summary>
-    /// <param name="filePathFilter">The filter pattern to set.</param>
+    /// <param name="pattern">The filter pattern to set.</param>
     /// <returns>The builder instance for method chaining.</returns>
-    public FileScanOptionsBuilder WithFilePathFilter(string filePathFilter)
+    public FileScanOptionsBuilder WithFileFilter(string pattern)
     {
-        this.options.FilePathFilter = filePathFilter;
+        this.options.FileFilter = pattern;
+        return this;
+    }
+
+    /// <summary>
+    /// Set a blacklist filter for files using glob patterns.
+    /// </summary>
+    /// <param name="patterns">The provided patterns are used to define which files should be excluded from scanning.</param>
+    /// <returns>Returns the updated instance of the builder for method chaining.</returns>
+    public FileScanOptionsBuilder WithFileBlackListFilter(string[] patterns)
+    {
+        this.options.FileBlackListFilter = patterns;
         return this;
     }
 

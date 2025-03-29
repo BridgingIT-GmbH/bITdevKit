@@ -16,7 +16,15 @@ public class LocationOptions(string name)
 {
     public string LocationName { get; } = name;
 
-    public string FilePattern { get; set; } = "*.*";
+    /// <summary>
+    /// Sets a glob pattern to filter files by path. Defaults to all files with the filter '*.*'.
+    /// </summary>
+    public string FileFilter { get; set; } = "*.*";
+
+    /// <summary>
+    /// Set a blacklist filter for files using glob patterns.
+    /// </summary>
+    public string[] FileBlackListFilter { get; set; } = [];
 
     public bool UseOnDemandOnly { get; set; }
 

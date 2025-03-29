@@ -50,7 +50,12 @@ public class FileScanOptions
     /// <summary>
     /// Gets or sets a regex or glob pattern to filter files by path.
     /// </summary>
-    public string FilePathFilter { get; set; } = null; // Regex or glob pattern (e.g., "*.log")
+    public string FileFilter { get; set; } = null; // Regex or glob pattern (e.g., "*.log")
+
+    /// <summary>
+    /// Gets or sets a blacklist filter for files using glob patterns.
+    /// </summary>
+    public string[] FileBlackListFilter { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a value indicating whether to skip checksum calculation.
@@ -104,7 +109,7 @@ public class FileScanOptions
         }
         this.BatchSize = batchSize;
         this.ProgressIntervalPercentage = progressIntervalPercentage;
-        this.FilePathFilter = filePathFilter;
+        this.FileFilter = filePathFilter;
         this.SkipChecksum = skipChecksum;
         this.MaxFilesToScan = maxFilesToScan;
     }

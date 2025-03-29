@@ -5,9 +5,11 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SharpCompress.Common;
 
 public class InMemoryLocationHandler(
     ILogger logger,
@@ -19,9 +21,9 @@ public class InMemoryLocationHandler(
 {
     private readonly InMemoryFileStorageProvider inMemoryProvider = provider as InMemoryFileStorageProvider ?? throw new ArgumentException("InMemoryLocationHandler requires InMemoryFileStorageProvider.");
 
-    public override async Task StartAsync(CancellationToken token = default)
+    public override async Task StartAsync(CancellationToken cancellationToken = default)
     {
-        await base.StartAsync(token);
+        await base.StartAsync(cancellationToken);
 
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
@@ -33,13 +35,13 @@ public class InMemoryLocationHandler(
 
         if (!this.options.UseOnDemandOnly && this.options.ScanOnStart)
         {
-            await this.ScanAsync(null, null, token);
+            await this.ScanAsync(null, null, cancellationToken);
         }
     }
 
-    public override async Task PauseAsync(CancellationToken token = default)
+    public override async Task PauseAsync(CancellationToken cancellationToken = default)
     {
-        await base.PauseAsync(token);
+        await base.PauseAsync(cancellationToken);
         if (!this.isPaused)
         {
             this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
@@ -49,9 +51,9 @@ public class InMemoryLocationHandler(
         }
     }
 
-    public override async Task ResumeAsync(CancellationToken token = default)
+    public override async Task ResumeAsync(CancellationToken cancellationToken = default)
     {
-        await base.ResumeAsync(token);
+        await base.ResumeAsync(cancellationToken);
         if (this.isPaused)
         {
             this.inMemoryProvider.OnFileEvent += this.OnInMemoryFileEvent;
@@ -71,20 +73,20 @@ public class InMemoryLocationHandler(
     public override async Task<FileScanContext> ScanAsync(
         FileScanOptions options = null,
         IProgress<FileScanProgress> progress = null,
-        CancellationToken token = default)
+        CancellationToken cancellationToken = default)
     {
         options ??= FileScanOptions.Default;
         var startTime = DateTimeOffset.UtcNow;
         var context = new FileScanContext { LocationName = this.options.LocationName };
-        this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: token);
+        this.behaviors.ForEach(b => b.OnScanStarted(context), cancellationToken: cancellationToken);
 
-        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, token);
+        var presentFiles = await this.store.GetPresentFilesAsync(this.options.LocationName, cancellationToken);
         var currentFiles = new Dictionary<string, FileMetadata>();
         string continuationToken = null;
         var filesScanned = 0;
         var batchCount = 0;
 
-        var initialFiles = (await this.inMemoryProvider.ListFilesAsync("/", this.options.FilePattern, true, null, token)).Value.Files.ToList();
+        var initialFiles = (await this.inMemoryProvider.ListFilesAsync("/", this.options.FileFilter, true, null, cancellationToken)).Value.Files.ToList();
         var estimatedTotalFiles = initialFiles.Count;
         if (options.MaxFilesToScan < estimatedTotalFiles)
         {
@@ -97,24 +99,20 @@ public class InMemoryLocationHandler(
 
         do
         {
-            var result = await this.provider.ListFilesAsync("/", this.options.FilePattern, true, continuationToken, token);
-            foreach (var filePath in result.Value.Files.OrderBy(p => p))
+            var result = await this.provider.ListFilesAsync("/", this.options.FileFilter, true, continuationToken, cancellationToken);
+            foreach (var filePath in result.Value.Files.Order()
+                .Where(f => this.ShouldProcessFile(options, f)))
             {
-                if (!string.IsNullOrEmpty(options.FilePathFilter) && !System.Text.RegularExpressions.Regex.IsMatch(filePath, options.FilePathFilter))
-                {
-                    continue;
-                }
-
-                var metadataResult = await this.provider.GetFileMetadataAsync(filePath, token);
+                var metadataResult = await this.provider.GetFileMetadataAsync(filePath, cancellationToken);
                 var checksumResult = options.SkipChecksum
                     ? Result<string>.Success(string.Empty)
-                    : await this.provider.GetChecksumAsync(filePath, token);
+                    : await this.provider.GetChecksumAsync(filePath, cancellationToken);
 
                 if (metadataResult.IsSuccess && checksumResult.IsSuccess)
                 {
                     var metadata = metadataResult.Value;
                     currentFiles[filePath] = metadata;
-                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath, cancellationToken: token);
+                    var lastEvent = await this.store.GetFileEventAsync(this.options.LocationName, filePath, cancellationToken: cancellationToken);
                     var eventType = this.DetermineEventType(lastEvent, metadata, checksumResult.Value);
 
                     if (eventType.HasValue && options.EventFilter.Contains(eventType.Value))
@@ -130,9 +128,10 @@ public class InMemoryLocationHandler(
                             Checksum = checksumResult.Value,
                             DetectedDate = DateTimeOffset.UtcNow
                         };
-                        this.eventQueue.Add(fileEvent, token);
+
+                        this.eventQueue.Add(fileEvent, cancellationToken);
                         context.Events.Add(fileEvent);
-                        this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+                        this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
                         filesScanned++;
                         batchCount++;
@@ -154,7 +153,7 @@ public class InMemoryLocationHandler(
                         {
                             if (options.DelayPerFile > TimeSpan.Zero)
                             {
-                                await Task.Delay(options.DelayPerFile, token);
+                                await Task.Delay(options.DelayPerFile, cancellationToken);
                             }
                             batchCount = 0;
                         }
@@ -172,25 +171,30 @@ public class InMemoryLocationHandler(
                 }
             }
             continuationToken = result.Value.NextContinuationToken;
-        } while (continuationToken != null && !token.IsCancellationRequested);
+        } while (continuationToken != null && !cancellationToken.IsCancellationRequested);
 
         if (!options.MaxFilesToScan.HasValue || filesScanned < options.MaxFilesToScan.Value)
         {
-            foreach (var missingFile in presentFiles.Except(currentFiles.Keys))
+            foreach (var missingFilePath in presentFiles.Except(currentFiles.Keys))
             {
+                if (!this.ShouldProcessFile(options, missingFilePath))
+                {
+                    continue;
+                }
+
                 var fileEvent = new FileEvent
                 {
                     LocationName = this.options.LocationName,
-                    FilePath = missingFile,
+                    FilePath = missingFilePath,
                     EventType = FileEventType.Deleted,
                     DetectedDate = DateTimeOffset.UtcNow
                 };
 
                 if (options.EventFilter.Contains(fileEvent.EventType))
                 {
-                    this.eventQueue.Add(fileEvent, token);
+                    this.eventQueue.Add(fileEvent, cancellationToken);
                     context.Events.Add(fileEvent);
-                    this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: token);
+                    this.behaviors.ForEach(b => b.OnFileDetected(context, fileEvent), cancellationToken: cancellationToken);
 
                     filesScanned++;
                     batchCount++;
@@ -212,7 +216,7 @@ public class InMemoryLocationHandler(
                     {
                         if (options.DelayPerFile > TimeSpan.Zero)
                         {
-                            await Task.Delay(options.DelayPerFile, token);
+                            await Task.Delay(options.DelayPerFile, cancellationToken);
                         }
                         batchCount = 0;
                     }
@@ -226,15 +230,15 @@ public class InMemoryLocationHandler(
         }
 
         context.EndTime = DateTimeOffset.UtcNow;
-        this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: token);
+        this.behaviors.ForEach(b => b.OnScanCompleted(context, context.EndTime.Value - context.StartTime), cancellationToken: cancellationToken);
 
         progress?.Report(new FileScanProgress
-            {
-                FilesScanned = filesScanned,
-                TotalFiles = filesScanned,
-                ElapsedTime = context.EndTime.Value - startTime,
-                PercentageComplete = 100
-            });
+        {
+            FilesScanned = filesScanned,
+            TotalFiles = filesScanned,
+            ElapsedTime = context.EndTime.Value - startTime,
+            PercentageComplete = 100
+        });
 
         if (options.WaitForProcessing && options.Timeout != TimeSpan.Zero)
         {

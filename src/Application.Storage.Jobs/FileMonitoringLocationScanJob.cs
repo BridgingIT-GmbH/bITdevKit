@@ -95,7 +95,7 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
 
         if (this.Data.TryGetValue(DataKeys.FilePathFilter, out var filePathFilter))
         {
-            scanOptions.FilePathFilter = filePathFilter;
+            scanOptions.FileFilter = filePathFilter;
         }
 
         if (this.Data.TryGetValue(DataKeys.MaxFilesToScan, out var maxFilesToScan) && int.TryParse(maxFilesToScan, out var maxFilesToScanValue))

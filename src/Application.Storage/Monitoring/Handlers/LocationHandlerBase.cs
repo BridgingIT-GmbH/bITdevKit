@@ -326,6 +326,35 @@ public abstract class LocationHandlerBase : ILocationHandler
         }
     }
 
+    /// <summary>
+    /// Determines whether a file should be processed based on specified options and its file path.
+    /// </summary>
+    /// <param name="options">Contains criteria for filtering files, including path filters and blacklist patterns.</param>
+    /// <param name="filePath">Represents the path of the file being evaluated for processing.</param>
+    /// <returns>Returns true if the file meets the criteria for processing; otherwise, false.</returns>
+    protected bool ShouldProcessFile(FileScanOptions options, string filePath)
+    {
+        // Skip files that don't match the optional path filter (scan options)
+        if (!string.IsNullOrEmpty(options.FileFilter) && !filePath.MatchAny([options.FileFilter]))
+        {
+            return false;
+        }
+
+        // Skip files that match the blacklist patterns (scan options)
+        if (options.FileBlackListFilter.SafeAny() && filePath.MatchAny(options.FileBlackListFilter))
+        {
+            return false;
+        }
+
+        // Skip files that match the blacklist patterns (location options)
+        if (this.options.FileBlackListFilter.SafeAny() && filePath.MatchAny(this.options.FileBlackListFilter))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task<Result> ExecuteProcessorAsync(IFileEventProcessor processor, FileProcessingContext context, CancellationToken token)
     {
         try

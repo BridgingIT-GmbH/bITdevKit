@@ -167,7 +167,7 @@ public class FileProcessorTests
         var store = this.serviceProvider.GetRequiredService<IFileEventStore>();
         var options = new LocationOptions("Docs")
         {
-            FilePattern = "*.txt",
+            FileFilter = "*.txt",
             UseOnDemandOnly = true,
             ProcessorConfigs =
             {
@@ -219,7 +219,7 @@ public class FileProcessorTests
                 //.WithBehavior<LoggingBehavior>()
                 .UseLocal("Docs", "C:\\Docs", options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.WithProcessorBehavior<LoggingProcessorBehavior>();
                     options.UseProcessor<FileLoggerProcessor>();
                     options.UseProcessor<FileMoverProcessor>(config =>

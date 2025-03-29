@@ -50,7 +50,7 @@ public static partial class Extensions
     /// <param name="patterns">the value strings to compare to.</param>
     /// <param name="ignoreCase">Ignore case.</param>
     /// <returns>true if equal, otherwhise false.</returns>
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static bool MatchAny(this string source, IEnumerable<string> patterns, bool ignoreCase = true)
     {
         if (source is null && patterns is null)

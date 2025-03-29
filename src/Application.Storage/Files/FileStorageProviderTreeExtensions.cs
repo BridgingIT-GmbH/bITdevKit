@@ -106,7 +106,7 @@ public static class FileStorageProviderTreeExtensions
         var dirListResult = await provider.ListDirectoriesAsync(node.Path, null, false, cancellationToken);
         if (dirListResult.IsSuccess)
         {
-            foreach (var dir in dirListResult.Value.OrderBy(d => d))
+            foreach (var dir in dirListResult.Value.Order())
             {
                 var subNode = new DirectoryNode { Path = dir };
                 node.Subdirectories.Add(subNode);
@@ -122,7 +122,7 @@ public static class FileStorageProviderTreeExtensions
             var fileListResult = await provider.ListFilesAsync(node.Path, "*.*", false, null, cancellationToken);
             if (fileListResult.IsSuccess)
             {
-                node.Files.AddRange(fileListResult.Value.Files.OrderBy(f => f));
+                node.Files.AddRange(fileListResult.Value.Files.Order());
                 foreach (var file in node.Files)
                 {
                     var metadataResult = await provider.GetFileMetadataAsync(file, cancellationToken);

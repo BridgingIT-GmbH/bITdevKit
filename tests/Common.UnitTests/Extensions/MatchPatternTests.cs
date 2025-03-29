@@ -12,6 +12,8 @@ public class MatchPatternTests
     public void Match_Misc_ReturnsExpected()
     {
         Assert.True("Test".Match("*"));
+        Assert.True("test_0.log".Match("*.log"));
+        Assert.True("test_0.log".Match("*.*"));
         Assert.True("Test".Match("Test"));
         Assert.False("Test1".Match("Test"));
         Assert.False("Test".Match("test", false));
@@ -24,6 +26,26 @@ public class MatchPatternTests
         Assert.True("1Test1".Match("*Test*"));
         Assert.True("³[]³}{]}{]}³1Test1³²[²³{[]²³$&%/$&%".Match("*Test*"));
         Assert.True("Te\\asd[\\w]st".Match("Te\\asd[\\w]st"));
+    }
+
+    [Fact]
+    public void MatchAny_Misc_ReturnsExpected()
+    {
+        Assert.True("Test".MatchAny(["*"]));
+        Assert.True("test_0.log".MatchAny(["*.log"]));
+        Assert.True("test_0.log".MatchAny(["*.*"]));
+        Assert.True("Test".MatchAny(["Test"]));
+        Assert.False("Test1".MatchAny(["Test"]));
+        Assert.False("Test".MatchAny(["test"], false));
+        Assert.True("Test".MatchAny(["Test"], false));
+        Assert.True("1234Test".MatchAny(["*Test"]));
+        Assert.False("Test123".MatchAny(["test*"], false));
+        Assert.True("Test234".MatchAny(["Test*"], false));
+        Assert.True("Test1".MatchAny(["Test*"]));
+        Assert.False("1Test1".MatchAny(["Test*"]));
+        Assert.True("1Test1".MatchAny(["*Test*"]));
+        Assert.True("³[]³}{]}{]}³1Test1³²[²³{[]²³$&%/$&%".MatchAny(["*Test*"]));
+        Assert.True("Te\\asd[\\w]st".MatchAny(["Te\\asd[\\w]st"]));
     }
 
     [Fact]

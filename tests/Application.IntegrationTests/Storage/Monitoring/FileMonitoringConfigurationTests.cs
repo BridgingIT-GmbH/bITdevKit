@@ -38,7 +38,7 @@ public class FileMonitoringConfigurationTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.WithProcessorBehavior<LoggingProcessorBehavior>();
                     options.UseProcessor<FileLoggerProcessor>();
                     options.UseProcessor<FileMoverProcessor>(config =>
@@ -78,12 +78,12 @@ public class FileMonitoringConfigurationTests
             monitoring
                 .UseLocal("Docs1", folder1, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                 })
                 .UseLocal("Docs2", folder2, options =>
                 {
-                    options.FilePattern = "*.docx";
+                    options.FileFilter = "*.docx";
                     options.UseOnDemandOnly = true;
                     options.UseProcessor<FileMoverProcessor>(config =>
                         config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = Path.Combine(folder2, "MovedDocs")));
@@ -102,12 +102,12 @@ public class FileMonitoringConfigurationTests
         var docs1Handler = handlers.First(h => h.Options.LocationName == "Docs1");
         var docs2Handler = handlers.First(h => h.Options.LocationName == "Docs2");
 
-        docs1Handler.Options.FilePattern.ShouldBe("*.txt");
+        docs1Handler.Options.FileFilter.ShouldBe("*.txt");
         docs1Handler.Options.UseOnDemandOnly.ShouldBeFalse(); // Default real-time
         docs1Handler.GetProcessors().Count().ShouldBe(1);
         docs1Handler.GetProcessors().First().ProcessorName.ShouldBe("FileLoggerProcessor");
 
-        docs2Handler.Options.FilePattern.ShouldBe("*.docx");
+        docs2Handler.Options.FileFilter.ShouldBe("*.docx");
         docs2Handler.Options.UseOnDemandOnly.ShouldBeTrue();
         docs2Handler.GetProcessors().Count().ShouldBe(1);
         docs2Handler.GetProcessors().First().ProcessorName.ShouldBe("FileMoverProcessor");
@@ -129,7 +129,7 @@ public class FileMonitoringConfigurationTests
                 .WithBehavior<LoggingBehavior>() // Global behavior
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options
                         .WithProcessorBehavior<LoggingProcessorBehavior>() // Location-wide processor behavior
                         .UseProcessor<FileLoggerProcessor>(config => config
@@ -178,7 +178,7 @@ public class FileMonitoringConfigurationTests
             monitoring
                 .UseLocal("Docs", tempFolder, options =>
                 {
-                    options.FilePattern = "*.txt";
+                    options.FileFilter = "*.txt";
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         })

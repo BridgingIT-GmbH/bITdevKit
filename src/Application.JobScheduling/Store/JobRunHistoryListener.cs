@@ -12,7 +12,8 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
     private readonly List<Action<string, string, string, DateTimeOffset>> onJobStartedHandlers = [];
-    private readonly List<Action<string, string, string, DateTimeOffset>> onJobCompletedHandlers = [];
+    private readonly List<Action<string, string, string, DateTimeOffset>> onJobSuccessHandlers = [];
+    private readonly List<Action<string, string, string, DateTimeOffset>> onJobFailedHandlers = [];
 
     public string Name => nameof(JobRunHistoryListener);
 
@@ -45,17 +46,17 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
     }
 
     /// <summary>
-    /// Registers a callback to be invoked when a job is competed.
+    /// Registers a callback to be invoked when a job is completed.
     /// Multiple handlers can be registered and will all be invoked.
     /// </summary>
     /// <param name="callback">The callback to invoke with jobName, jobGroup, entryId, and startTime.</param>
-    public void RegisterOnJobCompleted(Action<string, string, string, DateTimeOffset> callback)
+    public void RegisterOnJobSuccess(Action<string, string, string, DateTimeOffset> callback)
     {
         if (callback != null)
         {
-            lock (this.onJobCompletedHandlers)
+            lock (this.onJobSuccessHandlers)
             {
-                this.onJobCompletedHandlers.Add(callback);
+                this.onJobSuccessHandlers.Add(callback);
             }
         }
     }
@@ -64,11 +65,39 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
     /// Removes a specified callback from the list of handlers that are triggered when a job is completed.
     /// </summary>
     /// <param name="callback">The callback to be removed from the job triggered handlers.</param>
-    public void UnregisterOnJobCompleted(Action<string, string, string, DateTimeOffset> callback)
+    public void UnregisterOnJobSuccess(Action<string, string, string, DateTimeOffset> callback)
     {
-        lock (this.onJobCompletedHandlers)
+        lock (this.onJobSuccessHandlers)
         {
-            this.onJobCompletedHandlers.Remove(callback);
+            this.onJobSuccessHandlers.Remove(callback);
+        }
+    }
+
+    /// <summary>
+    /// Registers a callback to be invoked when a job is failed.
+    /// Multiple handlers can be registered and will all be invoked.
+    /// </summary>
+    /// <param name="callback">The callback to invoke with jobName, jobGroup, entryId, and startTime.</param>
+    public void RegisterOnJobFailed(Action<string, string, string, DateTimeOffset> callback)
+    {
+        if (callback != null)
+        {
+            lock (this.onJobFailedHandlers)
+            {
+                this.onJobFailedHandlers.Add(callback);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes a specified callback from the list of handlers that are triggered when a job is failed.
+    /// </summary>
+    /// <param name="callback">The callback to be removed from the job triggered handlers.</param>
+    public void UnregisterOnJobFailed(Action<string, string, string, DateTimeOffset> callback)
+    {
+        lock (this.onJobFailedHandlers)
+        {
+            this.onJobFailedHandlers.Remove(callback);
         }
     }
 
@@ -180,11 +209,24 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
             this.logger.LogInformation("{LogKey} listener: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 
-            lock (this.onJobCompletedHandlers) // // Notify all registered handlers
+            if (status == "Success")
             {
-                foreach (var handler in this.onJobCompletedHandlers)
+                lock (this.onJobSuccessHandlers) // // Notify all registered handlers
                 {
-                    handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                    foreach (var handler in this.onJobSuccessHandlers)
+                    {
+                        handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                    }
+                }
+            }
+            else if (status == "Failed")
+            {
+                lock (this.onJobFailedHandlers) // // Notify all registered handlers
+                {
+                    foreach (var handler in this.onJobFailedHandlers)
+                    {
+                        handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                    }
                 }
             }
         }

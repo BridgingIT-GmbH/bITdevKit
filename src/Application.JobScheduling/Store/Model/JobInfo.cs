@@ -17,4 +17,5 @@ public class JobInfo
     public JobRunStats LastRunStats { get; set; }
     public string Category { get; set; }
     public IEnumerable<TriggerInfo> Triggers { get; set; }
+    public List<JobRun> Runs { get; set; } = [];
 }

@@ -15,29 +15,21 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
 {
     private readonly ILogger<SqlServerJobStoreProvider> logger;
     private readonly string connectionString;
-    private readonly string tablePrefix;
+    private readonly string schema;
+    private readonly string prefix;
 
     public SqlServerJobStoreProvider(ILoggerFactory loggerFactory, string connectionString, string tablePrefix)
     {
         this.logger = loggerFactory?.CreateLogger<SqlServerJobStoreProvider>() ?? NullLogger<SqlServerJobStoreProvider>.Instance;
         this.connectionString = connectionString;
-        this.tablePrefix = tablePrefix;
+
+        // Parse tablePrefix into schema and prefix, handling brackets correctly
+        var cleanPrefix = tablePrefix.Replace("[", string.Empty).Replace("]", string.Empty); // "[dbo].[QRTZ_" -> "dbo.QRTZ_"
+        var parts = cleanPrefix.Split(['.'], StringSplitOptions.RemoveEmptyEntries);
+        this.schema = parts.Length > 1 ? parts[0] : "dbo"; // "dbo" (default if no schema)
+        this.prefix = parts.Length > 1 ? parts[1] : parts[0]; // "QRTZ_"
     }
 
-    /// <summary>
-    /// Retrieves job run history from the SQL Server database with specified filters.
-    /// </summary>
-    /// <param name="jobName">The name of the job.</param>
-    /// <param name="jobGroup">The group the job belongs to.</param>
-    /// <param name="startDate">Filter runs starting on or after this date.</param>
-    /// <param name="endDate">Filter runs ending on or before this date.</param>
-    /// <param name="status">Filter by execution status.</param>
-    /// <param name="priority">Filter by trigger priority.</param>
-    /// <param name="instanceName">Filter by scheduler instance name.</param>
-    /// <param name="resultContains">Filter runs where the result contains this string.</param>
-    /// <param name="take">Limit the number of runs returned.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A collection of job run records from the SQL Server database.</returns>
     public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
@@ -46,12 +38,13 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         CancellationToken cancellationToken)
     {
         var runs = new List<JobRun>();
+        var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
             SELECT {(take.HasValue ? $"TOP {take.Value}" : "")}
                 ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION,
                 START_TIME, END_TIME, SCHEDULED_TIME, RUN_TIME_MS, STATUS, ERROR_MESSAGE,
                 JOB_DATA_JSON, INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY
-            FROM {this.tablePrefix}JOURNAL_TRIGGERS
+            FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
                 {(endDate.HasValue ? "AND START_TIME <= @endDate" : "")}
@@ -82,20 +75,12 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         return runs;
     }
 
-    /// <summary>
-    /// Retrieves aggregated statistics for a job's execution history from the SQL Server database.
-    /// </summary>
-    /// <param name="jobName">The name of the job.</param>
-    /// <param name="jobGroup">The group the job belongs to.</param>
-    /// <param name="startDate">Start of the date range for stats.</param>
-    /// <param name="endDate">End of the date range for stats.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>Statistics including total runs, success/failure counts, and runtime metrics.</returns>
     public async Task<JobRunStats> GetJobRunStatsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
         CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
             SELECT 
                 COUNT(*) as TotalRuns,
@@ -104,7 +89,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 AVG(CAST(RUN_TIME_MS AS FLOAT)) as AvgRunTimeMs,
                 MAX(RUN_TIME_MS) as MaxRunTimeMs,
                 MIN(RUN_TIME_MS) as MinRunTimeMs
-            FROM {this.tablePrefix}JOURNAL_TRIGGERS
+            FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
                 {(endDate.HasValue ? "AND START_TIME <= @endDate" : "")}";
@@ -134,37 +119,46 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         return new JobRunStats();
     }
 
-    /// <summary>
-    /// Saves or updates a job run record in the SQL Server database.
-    /// </summary>
-    /// <param name="jobRun">The job run record to save.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
-            MERGE {this.tablePrefix}JOURNAL_TRIGGERS AS target
-            USING (VALUES (@schedName, @entryId)) AS source (SCHED_NAME, ENTRY_ID)
-            ON (target.SCHED_NAME = source.SCHED_NAME AND target.ENTRY_ID = source.ENTRY_ID)
-            WHEN MATCHED THEN
-                UPDATE SET 
-                    TRIGGER_NAME = @triggerName, TRIGGER_GROUP = @triggerGroup, JOB_NAME = @jobName, JOB_GROUP = @jobGroup,
-                    DESCRIPTION = @description, START_TIME = @startTime, END_TIME = @endTime, SCHEDULED_TIME = @scheduledTime,
-                    RUN_TIME_MS = @runTimeMs, STATUS = @status, ERROR_MESSAGE = @errorMessage, JOB_DATA_JSON = @jobDataJson,
-                    INSTANCE_NAME = @instanceName, PRIORITY = @priority, RESULT = @result, RETRY_COUNT = @retryCount, CATEGORY = @category
-            WHEN NOT MATCHED THEN
-                INSERT (SCHED_NAME, ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION, START_TIME, END_TIME, SCHEDULED_TIME, RUN_TIME_MS, STATUS, ERROR_MESSAGE, JOB_DATA_JSON, INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY)
-                VALUES (@schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description, @startTime, @endTime, @scheduledTime, @runTimeMs, @status, @errorMessage, @jobDataJson, @instanceName, @priority, @result, @retryCount, @category);";
+            IF EXISTS (SELECT 1 FROM {tableName} WHERE SCHED_NAME = @schedName AND ENTRY_ID = @entryId)
+                UPDATE {tableName} 
+                SET TRIGGER_NAME = @triggerName,
+                    TRIGGER_GROUP = @triggerGroup,
+                    JOB_NAME = @jobName,
+                    JOB_GROUP = @jobGroup,
+                    DESCRIPTION = @description,
+                    START_TIME = @startTime,
+                    END_TIME = @endTime,
+                    SCHEDULED_TIME = @scheduledTime,
+                    RUN_TIME_MS = @runTimeMs,
+                    STATUS = @status,
+                    ERROR_MESSAGE = @errorMessage,
+                    JOB_DATA_JSON = @jobDataJson,
+                    INSTANCE_NAME = @instanceName,
+                    PRIORITY = @priority,
+                    RESULT = @result,
+                    RETRY_COUNT = @retryCount,
+                    CATEGORY = @category
+                WHERE SCHED_NAME = @schedName AND ENTRY_ID = @entryId
+            ELSE
+                INSERT INTO {tableName} 
+                VALUES (@schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description, 
+                        @startTime, @endTime, @scheduledTime, @runTimeMs, @status, @errorMessage, @jobDataJson, 
+                        @instanceName, @priority, @result, @retryCount, @category);";
 
         await using var connection = new SqlConnection(this.connectionString);
         await connection.OpenAsync(cancellationToken);
         await using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@schedName", "Scheduler"); // Assuming a default scheduler name
+        command.Parameters.AddWithValue("@schedName", "Scheduler");
         command.Parameters.AddWithValue("@entryId", jobRun.Id);
         command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
         command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
         command.Parameters.AddWithValue("@jobName", jobRun.JobName);
         command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
-        //command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
+        command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
         command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
@@ -181,17 +175,11 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Deletes job run history older than a specified date from the SQL Server database.
-    /// </summary>
-    /// <param name="jobName">The name of the job.</param>
-    /// <param name="jobGroup">The group the job belongs to.</param>
-    /// <param name="olderThan">Delete runs older than this date.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
-            DELETE FROM {this.tablePrefix}JOURNAL_TRIGGERS
+            DELETE FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup AND START_TIME < @olderThan";
 
         await using var connection = new SqlConnection(this.connectionString);
@@ -227,5 +215,11 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             RetryCount = reader.GetInt32(16),
             Category = reader.IsDBNull(17) ? null : reader.GetString(17)
         };
+    }
+
+    private string GetTableName(string table)
+    {
+        // Handle both bracketed (e.g., "[dbo].[QRTZ_") and unbracketed (e.g., "dbo.QRTZ_") prefixes
+        return $"[{this.schema}].[{this.prefix}{table}]";
     }
 }

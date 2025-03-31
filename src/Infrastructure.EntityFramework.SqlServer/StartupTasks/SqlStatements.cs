@@ -9,6 +9,7 @@ public static partial class SqlStatements
 {
     public static string QuartzTables(string database, string tablePrefix)
     {
+        // Source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_postgres.sql
         return $@"
         USE [{database}]
 

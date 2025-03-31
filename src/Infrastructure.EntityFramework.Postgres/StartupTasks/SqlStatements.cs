@@ -1,4 +1,5 @@
-﻿// MIT-License
+﻿// Source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_postgres.sql
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -9,7 +10,6 @@ public static partial class SqlStatements
 {
     public static string QuartzTables(string database, string tablePrefix)
     {
-        // Source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_postgres.sql
         return $@"
         DO $$
         DECLARE

@@ -120,22 +120,6 @@ public static class ServiceCollectionExtensions
         // Register hosted service with listener
         services.AddSingleton<JobRunHistoryListener>();
         services.AddHostedService<JobSchedulingService>();
-        //services.AddHostedService(sp =>
-        //{
-        //    var schedulerFactory = sp.GetRequiredService<ISchedulerFactory>();
-        //    var jobFactory = sp.GetRequiredService<IJobFactory>();
-        //    var jobStore = sp.GetRequiredService<IJobStore>();
-        //    var listener = new JobRunHistoryListener(sp.GetService<ILoggerFactory>(), jobStore);
-        //    var service = new JobSchedulingService(
-        //        sp.GetService<ILoggerFactory>(),
-        //        schedulerFactory,
-        //        jobFactory,
-        //        sp.GetRequiredService<IHostApplicationLifetime>(),
-        //        sp.GetServices<JobSchedule>(),
-        //        options);
-        //    service.Scheduler.ListenerManager.AddJobListener(listener);
-        //    return service;
-        //});
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);
     }

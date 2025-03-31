@@ -15,13 +15,19 @@ public class PostgresJobStoreProvider : IJobStoreProvider
 {
     private readonly ILogger<PostgresJobStoreProvider> logger;
     private readonly string connectionString;
-    private readonly string tablePrefix;
+    private readonly string schema;
+    private readonly string prefix;
 
     public PostgresJobStoreProvider(ILoggerFactory loggerFactory, string connectionString, string tablePrefix)
     {
         this.logger = loggerFactory?.CreateLogger<PostgresJobStoreProvider>() ?? NullLogger<PostgresJobStoreProvider>.Instance;
         this.connectionString = connectionString;
-        this.tablePrefix = tablePrefix;
+
+        // Parse tablePrefix into schema and prefix, handling brackets or dots
+        var cleanPrefix = tablePrefix.Replace("[", string.Empty).Replace("]", string.Empty); // "[public].[qrtz_" -> "public.qrtz_"
+        var parts = cleanPrefix.Split(['.'], StringSplitOptions.RemoveEmptyEntries);
+        this.schema = parts.Length > 1 ? parts[0] : "public"; // Default to "public" if no schema
+        this.prefix = parts.Length > 1 ? parts[1] : parts[0]; // Prefix is after schema or the whole string
     }
 
     public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
@@ -32,12 +38,13 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         CancellationToken cancellationToken)
     {
         var runs = new List<JobRun>();
+        var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
             SELECT 
                 entry_id, trigger_name, trigger_group, job_name, job_group, description,
                 start_time, end_time, scheduled_time, run_time_ms, status, error_message,
                 job_data_json, instance_name, priority, result, retry_count, category
-            FROM {this.tablePrefix}journal_triggers
+            FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup
                 {(startDate.HasValue ? "AND start_time >= @startDate" : "")}
                 {(endDate.HasValue ? "AND start_time <= @endDate" : "")}
@@ -74,6 +81,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         DateTimeOffset? startDate, DateTimeOffset? endDate,
         CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
             SELECT 
                 COUNT(*) as total_runs,
@@ -82,7 +90,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 AVG(run_time_ms) as avg_run_time_ms,
                 MAX(run_time_ms) as max_run_time_ms,
                 MIN(run_time_ms) as min_run_time_ms
-            FROM {this.tablePrefix}journal_triggers
+            FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup
                 {(startDate.HasValue ? "AND start_time >= @startDate" : "")}
                 {(endDate.HasValue ? "AND start_time <= @endDate" : "")}";
@@ -114,8 +122,9 @@ public class PostgresJobStoreProvider : IJobStoreProvider
 
     public async Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
-            DELETE FROM {this.tablePrefix}journal_triggers
+            DELETE FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup AND start_time < @olderThan";
 
         await using var connection = new NpgsqlConnection(this.connectionString);
@@ -130,8 +139,9 @@ public class PostgresJobStoreProvider : IJobStoreProvider
 
     public async Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
+        var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
-            INSERT INTO {this.tablePrefix}journal_triggers (
+            INSERT INTO {tableName} (
                 sched_name, entry_id, trigger_name, trigger_group, job_name, job_group, description,
                 start_time, end_time, scheduled_time, run_time_ms, status, error_message, job_data_json,
                 instance_name, priority, result, retry_count, category
@@ -175,7 +185,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.RunTimeMs ?? DBNull.Value);
         command.Parameters.AddWithValue("@status", jobRun.Status);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
-        command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data)); // Using System.Text.Json
+        command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
         command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
         command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
         command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
@@ -201,12 +211,18 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             RunTimeMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
             Status = reader.GetString(10),
             ErrorMessage = reader.IsDBNull(11) ? null : reader.GetString(11),
-            Data = reader.IsDBNull(12) ? new Dictionary<string, object>() : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)), // Using System.Text.Json
+            Data = reader.IsDBNull(12) ? new Dictionary<string, object>() : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),
             InstanceName = reader.IsDBNull(13) ? null : reader.GetString(13),
             Priority = reader.IsDBNull(14) ? null : reader.GetInt32(14),
             Result = reader.IsDBNull(15) ? null : reader.GetString(15),
             RetryCount = reader.GetInt32(16),
             Category = reader.IsDBNull(17) ? null : reader.GetString(17)
         };
+    }
+
+    private string GetTableName(string table)
+    {
+        // Construct a properly quoted PostgreSQL table name
+        return $"\"{this.schema}\".\"{this.prefix}{table}\"";
     }
 }

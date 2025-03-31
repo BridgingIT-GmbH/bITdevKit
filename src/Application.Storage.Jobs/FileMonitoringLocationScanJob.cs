@@ -51,14 +51,18 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
         if (scanContext.Events.Any())
         {
             TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events.Count);
+            this.Data.AddOrUpdate("Detected events", scanContext.Events.Count.ToString());
 
             foreach (var evt in scanContext.Events.SafeNull())
             {
                 TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);
+
+                this.Data.AddOrUpdate($"Detected event for {evt.FilePath}", evt.EventType.ToString());
             }
         }
         else
         {
+            this.Data.AddOrUpdate("Detected events", "0");
             TypedLogger.LogNoChanges(this.Logger, Constants.LogKey, locationName);
         }
     }

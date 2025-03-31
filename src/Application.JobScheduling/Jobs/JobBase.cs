@@ -130,6 +130,14 @@ public abstract partial class JobBase : IJob
             context.JobDetail.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
             context.JobDetail.JobDataMap.Put(nameof(this.LastProcessedDate), this.LastProcessedDate);
             context.JobDetail.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+
+            foreach (var key in this.Data.Keys)
+            {
+                if (!context.JobDetail.JobDataMap.ContainsKey(key))
+                {
+                    context.JobDetail.JobDataMap.Put(key, this.Data[key]);
+                }
+            }
         }
     }
 

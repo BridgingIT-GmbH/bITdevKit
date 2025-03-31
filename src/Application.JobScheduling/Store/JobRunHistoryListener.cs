@@ -144,7 +144,14 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
             {
                 foreach (var handler in this.onJobStartedHandlers)
                 {
-                    handler.Invoke(jobKey.Name, jobKey.Group, entryId, startTime);
+                    try
+                    {
+                        handler.Invoke(jobKey.Name, jobKey.Group, entryId, startTime);
+                    }
+                    catch (System.InvalidOperationException ex)
+                    {
+                        this.logger.LogError(ex, "{LogKey} listener: failed to invoke job started handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                    }
                 }
             }
         }
@@ -209,23 +216,37 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
             this.logger.LogInformation("{LogKey} listener: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 
-            if (status == "Success")
-            {
-                lock (this.onJobSuccessHandlers) // // Notify all registered handlers
-                {
-                    foreach (var handler in this.onJobSuccessHandlers)
-                    {
-                        handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
-                    }
-                }
-            }
-            else if (status == "Failed")
+            if (status == "Failed")
             {
                 lock (this.onJobFailedHandlers) // // Notify all registered handlers
                 {
                     foreach (var handler in this.onJobFailedHandlers)
                     {
-                        handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                        try
+                        {
+                            handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                        }
+                        catch (System.InvalidOperationException ex)
+                        {
+                            this.logger.LogError(ex, "{LogKey} listener: failed to invoke job failed handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lock (this.onJobSuccessHandlers) // // Notify all registered handlers
+                {
+                    foreach (var handler in this.onJobSuccessHandlers)
+                    {
+                        try
+                        {
+                            handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                        }
+                        catch (System.InvalidOperationException ex)
+                        {
+                            this.logger.LogError(ex, "{LogKey} listener: failed to invoke job success handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                        }
                     }
                 }
             }

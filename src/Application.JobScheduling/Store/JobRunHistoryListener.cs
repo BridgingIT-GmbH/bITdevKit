@@ -5,16 +5,72 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System.Linq;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Quartz;
 
 public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobStore) : IJobListener
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
+    private readonly List<Action<string, string, string, DateTimeOffset>> onJobStartedHandlers = [];
+    private readonly List<Action<string, string, string, DateTimeOffset>> onJobCompletedHandlers = [];
 
     public string Name => nameof(JobRunHistoryListener);
+
+    /// <summary>
+    /// Registers a callback to be invoked when a job is started.
+    /// Multiple handlers can be registered and will all be invoked.
+    /// </summary>
+    /// <param name="callback">The callback to invoke with jobName, jobGroup, entryId, and startTime.</param>
+    public void RegisterOnJobStarted(Action<string, string, string, DateTimeOffset> callback)
+    {
+        if (callback != null)
+        {
+            lock (this.onJobStartedHandlers)
+            {
+                this.onJobStartedHandlers.Add(callback);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes a specified callback from the list of handlers that are triggered when a job starts.
+    /// </summary>
+    /// <param name="callback">The callback to be removed from the job triggered handlers.</param>
+    public void UnregisterOnJobStarted(Action<string, string, string, DateTimeOffset> callback)
+    {
+        lock (this.onJobStartedHandlers)
+        {
+            this.onJobStartedHandlers.Remove(callback);
+        }
+    }
+
+    /// <summary>
+    /// Registers a callback to be invoked when a job is competed.
+    /// Multiple handlers can be registered and will all be invoked.
+    /// </summary>
+    /// <param name="callback">The callback to invoke with jobName, jobGroup, entryId, and startTime.</param>
+    public void RegisterOnJobCompleted(Action<string, string, string, DateTimeOffset> callback)
+    {
+        if (callback != null)
+        {
+            lock (this.onJobCompletedHandlers)
+            {
+                this.onJobCompletedHandlers.Add(callback);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes a specified callback from the list of handlers that are triggered when a job is completed.
+    /// </summary>
+    /// <param name="callback">The callback to be removed from the job triggered handlers.</param>
+    public void UnregisterOnJobCompleted(Action<string, string, string, DateTimeOffset> callback)
+    {
+        lock (this.onJobCompletedHandlers)
+        {
+            this.onJobCompletedHandlers.Remove(callback);
+        }
+    }
 
     /// <summary>
     /// Called before a job is executed, logs the start of the job run via the job store.
@@ -54,6 +110,14 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
         {
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
             this.logger.LogInformation("{LogKey} listener: job started (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+
+            lock (this.onJobStartedHandlers) // // Notify all registered handlers
+            {
+                foreach (var handler in this.onJobStartedHandlers)
+                {
+                    handler.Invoke(jobKey.Name, jobKey.Group, entryId, startTime);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -68,7 +132,6 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        // No logging added here as per original implementation (no action taken)
         return Task.CompletedTask;
     }
 
@@ -116,6 +179,14 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
         {
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
             this.logger.LogInformation("{LogKey} listener: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
+
+            lock (this.onJobCompletedHandlers) // // Notify all registered handlers
+            {
+                foreach (var handler in this.onJobCompletedHandlers)
+                {
+                    handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
+                }
+            }
         }
         catch (Exception ex)
         {

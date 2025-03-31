@@ -6,108 +6,195 @@
 namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 using System.Net;
-using Common;
+using System.Threading;
+using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
-using Quartz.Impl.Matchers;
-using Constants = BridgingIT.DevKit.Application.JobScheduling.Constants;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public class JobSchedulingEndpoints(
-    ISchedulerFactory schedulerFactory,
+    ILoggerFactory loggerFactory,
+    IJobStore jobStore,
     JobSchedulingEndpointsOptions options = null) : EndpointsBase
 {
-    private readonly ISchedulerFactory schedulerFactory = schedulerFactory;
+    private readonly ILogger<JobSchedulingEndpoints> logger = loggerFactory?.CreateLogger<JobSchedulingEndpoints>() ?? NullLogger<JobSchedulingEndpoints>.Instance;
     private readonly JobSchedulingEndpointsOptions options = options ?? new JobSchedulingEndpointsOptions();
 
     public override void Map(IEndpointRouteBuilder app)
     {
+        if (!this.Enabled)
+        {
+            return;
+        }
+
         var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetJobs)
-            //.AllowAnonymous()
-            .Produces<IEnumerable<JobModel>>()
-            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
+            .Produces<IEnumerable<JobInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("GetJobs")
+            .WithDescription("Retrieves a list of all scheduled jobs.");
 
-        group.MapPost("{name}", this.PostJob)
-            //.AllowAnonymous()
-            .Produces<IEnumerable<JobModel>>((int)HttpStatusCode.Accepted)
-            .Produces<IEnumerable<JobModel>>((int)HttpStatusCode.NotFound)
-            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
+        group.MapGet("{jobName}/{jobGroup}", this.GetJob)
+            .Produces<JobInfo>()
+            .Produces<string>((int)HttpStatusCode.NotFound)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("GetJob")
+            .WithDescription("Retrieves details for a specific job.");
+
+        group.MapGet("{jobName}/{jobGroup}/runs", this.GetJobRuns)
+            .Produces<IEnumerable<JobRun>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("GetJobRuns")
+            .WithDescription("Retrieves execution history for a specific job with optional filters.");
+
+        group.MapGet("{jobName}/{jobGroup}/stats", this.GetJobRunStats)
+            .Produces<JobRunStats>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("GetJobRunStats")
+            .WithDescription("Retrieves aggregated statistics for a job’s execution history.");
+
+        group.MapGet("{jobName}/{jobGroup}/triggers", this.GetJobTriggers)
+            .Produces<IEnumerable<TriggerInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("GetJobTriggers")
+            .WithDescription("Retrieves all triggers associated with a specific job.");
+
+        group.MapPost("{jobName}/{jobGroup}/trigger", this.TriggerJob)
+            .Produces<string>((int)HttpStatusCode.Accepted)
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("TriggerJob")
+            .WithDescription("Triggers a job to run immediately with optional data.");
+
+        group.MapPost("{jobName}/{jobGroup}/pause", this.PauseJob)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("PauseJob")
+            .WithDescription("Pauses the execution of a specific job.");
+
+        group.MapPost("{jobName}/{jobGroup}/resume", this.ResumeJob)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("ResumeJob")
+            .WithDescription("Resumes the execution of a paused job.");
+
+        group.MapDelete("{jobName}/{jobGroup}/runs", this.PurgeJobRuns)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("PurgeJobRuns")
+            .WithDescription("Purges job run history older than a specified date.");
+
+        this.IsRegistered = true;
     }
 
     private async Task<IResult> GetJobs(CancellationToken cancellationToken)
     {
-        return Results.Ok(await this.GetAllJobs(await this.schedulerFactory.GetScheduler(cancellationToken),
-            cancellationToken));
+        this.logger.LogInformation("Fetching all jobs");
+        var jobs = await jobStore.GetJobsAsync(cancellationToken);
+        return Results.Ok(jobs);
     }
 
-    private async Task<IResult> PostJob(string name, HttpContext httpContext, CancellationToken cancellationToken)
+    private async Task<IResult> GetJob(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
-        var scheduler = await this.schedulerFactory.GetScheduler(cancellationToken);
-        if (!(await scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup(), cancellationToken)).Any(j => j.Name == name))
-        {
-            return Results.NotFound();
-        }
-
-        var data = new JobDataMap
-        {
-            [Constants.CorrelationIdKey] = httpContext.TryGetCorrelationId(),
-            [Constants.TriggeredByKey] = nameof(JobSchedulingEndpoints) // or CurrentUserService
-        };
-        await scheduler.TriggerJob(new JobKey(name), data, cancellationToken);
-        await Task.Delay(300, cancellationToken); // TODO: job properties are only available after job has finished
-        var job = (await this.GetAllJobs(scheduler, cancellationToken))?.FirstOrDefault(j => j.Name == name);
-
-        return Results.Accepted(null, job);
+        this.logger.LogInformation("Fetching job {JobName} in group {JobGroup}", jobName, jobGroup);
+        var job = await jobStore.GetJobAsync(jobName, jobGroup, cancellationToken);
+        return job != null ? Results.Ok(job) : Results.NotFound($"Job {jobName} in group {jobGroup} not found.");
     }
 
-    private async Task<IEnumerable<JobModel>> GetAllJobs(IScheduler scheduler, CancellationToken cancellationToken)
+    private async Task<IResult> GetJobRuns(
+        string jobName,
+        string jobGroup,
+        [FromQuery] DateTimeOffset? startDate,
+        [FromQuery] DateTimeOffset? endDate,
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        [FromQuery] string? status,
+        [FromQuery] int? priority,
+        [FromQuery] string? instanceName,
+        [FromQuery] string? resultContains,
+        [FromQuery] int? take,
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        CancellationToken cancellationToken)
     {
-        var results = new List<JobModel>();
-        var jobGroups = await scheduler.GetJobGroupNames(cancellationToken);
-        var triggerGroups = await scheduler.GetTriggerGroupNames(cancellationToken);
-        var executingJobs = await scheduler.GetCurrentlyExecutingJobs(cancellationToken);
+        this.logger.LogInformation("Fetching run history for job {JobName} in group {JobGroup}", jobName, jobGroup);
+        var runs = await jobStore.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
+        return Results.Ok(runs);
+    }
 
-        foreach (var group in jobGroups.SafeNull())
+    private async Task<IResult> GetJobRunStats(
+        string jobName,
+        string jobGroup,
+        [FromQuery] DateTimeOffset? startDate,
+        [FromQuery] DateTimeOffset? endDate,
+        CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Fetching run stats for job {JobName} in group {JobGroup}", jobName, jobGroup);
+        var stats = await jobStore.GetJobRunStatsAsync(jobName, jobGroup, startDate, endDate, cancellationToken);
+        return Results.Ok(stats);
+    }
+
+    private async Task<IResult> GetJobTriggers(string jobName, string jobGroup, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Fetching triggers for job {JobName} in group {JobGroup}", jobName, jobGroup);
+        var triggers = await jobStore.GetTriggersAsync(jobName, jobGroup, cancellationToken);
+        return Results.Ok(triggers);
+    }
+
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+    private async Task<IResult> TriggerJob(string jobName, string jobGroup, [FromBody] Dictionary<string, object>? data, CancellationToken cancellationToken)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+    {
+        this.logger.LogInformation("Triggering job {JobName} in group {JobGroup}", jobName, jobGroup);
+        try
         {
-            var groupMatcher = GroupMatcher<JobKey>.GroupContains(group);
-            var jobKeys = await scheduler.GetJobKeys(groupMatcher, cancellationToken);
-
-            foreach (var jobKey in jobKeys.SafeNull())
-            {
-                var job = await scheduler.GetJobDetail(jobKey, cancellationToken);
-                var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
-                var props = job.JobDataMap.ToDictionary();
-
-                foreach (var trigger in triggers.SafeNull())
-                {
-                    var jobInfo = new JobModel
-                    {
-                        Group = group,
-                        Name = jobKey.Name,
-                        Description = $"{job.Description} ({trigger.Description})",
-                        Type = job.JobType.FullName,
-                        TriggerName = trigger.Key.Name,
-                        TriggerGroup = trigger.Key.Group,
-                        TriggerType = trigger.GetType().Name,
-                        TriggerState = (await scheduler.GetTriggerState(trigger.Key, cancellationToken)).ToString(),
-                        NextFireTime = trigger.GetNextFireTimeUtc(),
-                        PreviousFireTime = trigger.GetPreviousFireTimeUtc(),
-                        CurrentlyExecuting = executingJobs.SafeWhere(j => j.JobDetail.Key.Name == job.Key.Name)
-                            .SafeAny(),
-#pragma warning disable SA1010 // Opening square brackets should be spaced correctly
-                        Properties = job.JobDataMap?.ToDictionary() ?? []
-#pragma warning restore SA1010 // Opening square brackets should be spaced correctly
-                    };
-                    results.Add(jobInfo);
-                }
-            }
+            await jobStore.TriggerJobAsync(jobName, jobGroup, data ?? [], cancellationToken);
+            return Results.Accepted(null, $"Job {jobName} in group {jobGroup} triggered successfully.");
         }
+        catch (SchedulerException ex)
+        {
+            return Results.Problem($"Failed to trigger job {jobName} in group {jobGroup}: {ex.Message}", statusCode: (int)HttpStatusCode.BadRequest);
+        }
+    }
 
-        return results;
+    private async Task<IResult> PauseJob(string jobName, string jobGroup, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Pausing job {JobName} in group {JobGroup}", jobName, jobGroup);
+        try
+        {
+            await jobStore.PauseJobAsync(jobName, jobGroup, cancellationToken);
+            return Results.Ok($"Job {jobName} in group {jobGroup} paused successfully.");
+        }
+        catch (SchedulerException ex)
+        {
+            return Results.Problem($"Failed to pause job {jobName} in group {jobGroup}: {ex.Message}", statusCode: (int)HttpStatusCode.BadRequest);
+        }
+    }
+
+    private async Task<IResult> ResumeJob(string jobName, string jobGroup, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Resuming job {JobName} in group {JobGroup}", jobName, jobGroup);
+        try
+        {
+            await jobStore.ResumeJobAsync(jobName, jobGroup, cancellationToken);
+            return Results.Ok($"Job {jobName} in group {jobGroup} resumed successfully.");
+        }
+        catch (SchedulerException ex)
+        {
+            return Results.Problem($"Failed to resume job {jobName} in group {jobGroup}: {ex.Message}", statusCode: (int)HttpStatusCode.BadRequest);
+        }
+    }
+
+    private async Task<IResult> PurgeJobRuns(string jobName, string jobGroup, [FromQuery] DateTimeOffset olderThan, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Purging run history for job {JobName} in group {JobGroup} older than {OlderThan}", jobName, jobGroup, olderThan);
+        await jobStore.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
+        return Results.Ok($"Run history for job {jobName} in group {jobGroup} older than {olderThan} purged successfully.");
     }
 }

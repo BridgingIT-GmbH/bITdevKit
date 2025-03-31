@@ -50,6 +50,7 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
     {
         this.Target.SimpleLoggerEnabled = value;
         this.Target.SimpleLoggerLevel = logLevel;
+        this.Target.SensitiveDataLoggingEnabled = true;
 
         return this;
     }

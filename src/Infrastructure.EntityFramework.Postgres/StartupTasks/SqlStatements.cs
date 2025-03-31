@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-public static class SqlStatements
+public static partial class SqlStatements
 {
     public static string QuartzTables(string database, string tablePrefix)
     {
-        // source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_postgres.sql
+        // Source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_postgres.sql
         return $@"
         DO $$
         DECLARE
@@ -123,8 +123,8 @@ public static class SqlStatements
                     int_prop_2 INTEGER,
                     long_prop_1 BIGINT,
                     long_prop_2 BIGINT,
-                    dec_prop_1 NUMERIC(13,4),  -- Adjusted precision from SQL Server
-                    dec_prop_2 NUMERIC(13,4),  -- Adjusted precision from SQL Server
+                    dec_prop_1 NUMERIC(13,4),
+                    dec_prop_2 NUMERIC(13,4),
                     bool_prop_1 BOOL,
                     bool_prop_2 BOOL,
                     time_zone_id TEXT,
@@ -184,7 +184,7 @@ public static class SqlStatements
                     state TEXT NOT NULL,
                     job_name TEXT,
                     job_group TEXT,
-                    is_nonconcurrent BOOL,  -- Made nullable to match SQL Server
+                    is_nonconcurrent BOOL,
                     requests_recovery BOOL,
                     PRIMARY KEY (sched_name, entry_id)
                 );', schema_name, table_prefix_only);
@@ -205,7 +205,7 @@ public static class SqlStatements
                     PRIMARY KEY (sched_name, lock_name)
                 );', schema_name, table_prefix_only);
 
-            -- Add custom journal_triggers table from SQL Server script
+            -- custom table to store the triger history
             EXECUTE format('
                 CREATE TABLE %I.%Ijournal_triggers (
                     sched_name TEXT NOT NULL,
@@ -215,17 +215,22 @@ public static class SqlStatements
                     job_name TEXT NOT NULL,
                     job_group TEXT NOT NULL,
                     description TEXT,
-                    fire_time BIGINT,
-                    trigger_state TEXT NOT NULL,
-                    trigger_type TEXT NOT NULL,
-                    start_time BIGINT NOT NULL,
-                    end_time BIGINT,
-                    calendar_name TEXT,
-                    job_data BYTEA,
+                    start_time TIMESTAMP NOT NULL,
+                    end_time TIMESTAMP,
+                    scheduled_time TIMESTAMP NOT NULL,
+                    run_time_ms BIGINT,
+                    status TEXT NOT NULL,
+                    error_message TEXT,
+                    job_data_json TEXT,
+                    instance_name TEXT,
+                    priority INTEGER,
+                    result TEXT,
+                    retry_count INTEGER NOT NULL DEFAULT 0,
+                    category TEXT,
                     PRIMARY KEY (sched_name, entry_id)
                 );', schema_name, table_prefix_only);
 
-            -- Create indexes (merging SQL Server and PostgreSQL inspiration)
+            -- Create indexes
             EXECUTE format('
                 CREATE INDEX idx_%s_j_req_recovery ON %I.%Ijob_details (requests_recovery);
                 CREATE INDEX idx_%s_t_next_fire_time ON %I.%Itriggers (next_fire_time);
@@ -247,13 +252,10 @@ public static class SqlStatements
                 CREATE INDEX idx_%s_ft_g_j ON %I.%Ifired_triggers (sched_name, job_group, job_name);
                 CREATE INDEX idx_%s_ft_g_t ON %I.%Ifired_triggers (sched_name, trigger_group, trigger_name);
                 CREATE INDEX idx_%s_jt_g_j ON %I.%Ijournal_triggers (sched_name, job_group, job_name);
-                CREATE INDEX idx_%s_jt_j ON %I.%Ijournal_triggers (job_name);
-                CREATE INDEX idx_%s_jt_g_t ON %I.%Ijournal_triggers (sched_name, trigger_group, trigger_name);
-                CREATE INDEX idx_%s_jt_t ON %I.%Ijournal_triggers (trigger_name);
-                CREATE INDEX idx_%s_jt_ft ON %I.%Ijournal_triggers (sched_name, fire_time);
+                CREATE INDEX idx_%s_jt_st ON %I.%Ijournal_triggers (sched_name, start_time DESC);
+                CREATE INDEX idx_%s_jt_status ON %I.%Ijournal_triggers (sched_name, status);
+                CREATE INDEX idx_%s_jt_inst ON %I.%Ijournal_triggers (sched_name, instance_name);
             ', table_prefix_only, schema_name, table_prefix_only,
-               table_prefix_only, schema_name, table_prefix_only,
-               table_prefix_only, schema_name, table_prefix_only,
                table_prefix_only, schema_name, table_prefix_only,
                table_prefix_only, schema_name, table_prefix_only,
                table_prefix_only, schema_name, table_prefix_only,

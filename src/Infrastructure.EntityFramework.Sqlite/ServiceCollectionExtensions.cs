@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
@@ -13,6 +14,7 @@ using EntityFrameworkCore.Diagnostics;
 using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Quartz;
 
 public static class ServiceCollectionExtensions
 {
@@ -131,6 +133,30 @@ public static class ServiceCollectionExtensions
             lifetime,
             connectionString: connectionString,
             provider: Provider.Sqlite);
+    }
+
+    /// <summary>
+    /// Configures the job scheduling to use SQLite persistence with the specified connection string and table prefix.
+    /// </summary>
+    /// <param name="context">The job scheduling builder context from AddJobScheduling.</param>
+    /// <param name="connectionString">The SQLite connection string.</param>
+    /// <param name="tablePrefix">The table prefix for Quartz tables (default: "QRTZ_").</param>
+    /// <returns>The updated job scheduling builder context.</returns>
+    public static JobSchedulingBuilderContext WithSqliteStore(
+        this JobSchedulingBuilderContext context,
+        string connectionString,
+        string tablePrefix = "QRTZ_")
+    {
+        context.Services.AddSingleton<IJobStoreProvider>(sp => new SqliteJobStoreProvider(
+            sp.GetService<ILoggerFactory>(),
+            connectionString,
+            tablePrefix));
+        context.Services.AddSingleton<IJobStore>(sp => new JobStore(
+            sp.GetService<ILoggerFactory>(),
+            sp.GetRequiredService<ISchedulerFactory>(),
+            sp.GetRequiredService<IJobStoreProvider>()));
+
+        return context;
     }
 
     private static void RegisterInterceptors(

@@ -3,9 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BridgingIT.DevKit.Application.Commands;
+using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
@@ -13,12 +14,13 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Pages;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor.Services;
-using BridgingIT.DevKit.Application.JobScheduling;
 
 // ===============================================================================================
 // Create the webhost
@@ -55,19 +57,20 @@ builder.Services.AddQueries()
 builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
-    .WithBehavior<TimeoutJobSchedulingBehavior>();
+    .WithBehavior<TimeoutJobSchedulingBehavior>()
+    //.WithInMemoryStore()
+    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"]);
+    //.AddEndpoints(builder.Environment.IsDevelopment());
 
 //
 // Startup Tasks ==============================
-//
-
 builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithTask<EchoStartupTask>(o => o
         .Enabled(builder.Environment.IsDevelopment())
         .StartupDelay("00:00:03"))
     //.WithTask(sp =>
     //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
-    //.WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
     //.WithTask(sp =>
     //    new SqlServerQuartzSeederStartupTask(
     //        sp.GetRequiredService<ILoggerFactory>(),
@@ -118,7 +121,7 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
-builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
+//builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddSwagger(builder.Configuration);
 
 // ===============================================================================================

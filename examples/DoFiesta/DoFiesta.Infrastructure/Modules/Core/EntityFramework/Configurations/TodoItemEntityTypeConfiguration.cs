@@ -16,7 +16,9 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
     {
         builder.ToTable("TodoItems").HasKey(x => x.Id).IsClustered(false);
 
-        builder.Property(e => e.ConcurrencyVersion).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
+        builder.Property(e => e.ConcurrencyVersion).
+            IsConcurrencyToken()
+            .ValueGeneratedNever(); // Tell EF Core to use the application-provided value
 
         builder.Property(e => e.Id)
             .ValueGeneratedOnAdd()

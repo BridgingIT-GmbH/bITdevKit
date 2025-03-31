@@ -55,16 +55,13 @@ public static partial class ServiceCollectionExtensions
         if (endpoints.SafeAny() && enabled)
         {
             var serviceDescriptors = endpoints.Select(e => new ServiceDescriptor(typeof(IEndpoints), e)).ToArray();
-
             if (serviceDescriptors.SafeAny())
             {
                 services.TryAddEnumerable(serviceDescriptors);
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})",
-                        LogKey,
-                        serviceDescriptor.ImplementationInstance.GetType().Name);
+                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationInstance.GetType().Name);
                 }
             }
         }

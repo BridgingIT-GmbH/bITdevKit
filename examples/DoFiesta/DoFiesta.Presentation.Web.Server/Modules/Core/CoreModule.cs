@@ -66,14 +66,14 @@ public class CoreModule : WebModuleBase
                 .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         // dbcontext
-        //services.AddSqlServerDbContext<CoreDbContext>(o => o
-        //        .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-        //        .UseLogger().UseSimpleLogger())
-        //    .WithDatabaseCreatorService(o => o.DeleteOnStartup());
+        services.AddSqlServerDbContext<CoreDbContext>(o => o
+                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+                .UseLogger()/*.UseSimpleLogger()*/)
+            .WithDatabaseCreatorService(o => o.DeleteOnStartup(false));
 
-        services.AddInMemoryDbContext<CoreDbContext>()
-            .WithDatabaseCreatorService(o => o
-                .Enabled(environment?.IsDevelopment() == true));
+        //services.AddInMemoryDbContext<CoreDbContext>()
+        //    .WithDatabaseCreatorService(o => o
+        //        .Enabled(environment?.IsDevelopment() == true));
 
         // permissions
         services.AddEntityAuthorization(o =>
@@ -110,12 +110,13 @@ public class CoreModule : WebModuleBase
         // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
-            .WithBehavior<RepositoryLoggingBehavior<TodoItem>>();
-        //.WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
+            .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
+            .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
-            .WithBehavior<RepositoryLoggingBehavior<Subscription>>();
+            .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
+            .WithBehavior<RepositoryAuditStateBehavior<Subscription>>();
 
         return services;
     }

@@ -1,5 +1,11 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace Microsoft.Extensions.DependencyInjection;
+
+using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
@@ -9,6 +15,7 @@ using Extensions;
 using Logging;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using Quartz;
 
 public static class ServiceCollectionExtensions
 {
@@ -142,6 +149,30 @@ public static class ServiceCollectionExtensions
             lifetime,
             connectionString: connectionString,
             provider: Provider.Postgres);
+    }
+
+    /// <summary>
+    /// Configures the job scheduling to use PostgreSQL persistence with the specified connection string and table prefix.
+    /// </summary>
+    /// <param name="context">The job scheduling builder context from AddJobScheduling.</param>
+    /// <param name="connectionString">The PostgreSQL connection string.</param>
+    /// <param name="tablePrefix">The table prefix for Quartz tables (default: "[public].[QRTZ_").</param>
+    /// <returns>The updated job scheduling builder context.</returns>
+    public static JobSchedulingBuilderContext WithPostgresStore(
+        this JobSchedulingBuilderContext context,
+        string connectionString,
+        string tablePrefix = "[public].[QRTZ_")
+    {
+        context.Services.AddSingleton<IJobStoreProvider>(sp => new PostgresJobStoreProvider(
+            sp.GetService<ILoggerFactory>(),
+            connectionString,
+            tablePrefix));
+        context.Services.AddSingleton<IJobStore>(sp => new JobStore(
+            sp.GetService<ILoggerFactory>(),
+            sp.GetRequiredService<ISchedulerFactory>(),
+            sp.GetRequiredService<IJobStoreProvider>()));
+
+        return context;
     }
 
     private static void RegisterInterceptors(IServiceCollection services, PostgresOptions options, ServiceLifetime lifetime)

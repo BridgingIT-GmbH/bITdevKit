@@ -110,16 +110,55 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IJobFactory, ScopedJobFactory>();
         services.AddQuartz(properties, configure);
 
-        services.AddHostedService(sp =>
-            new JobSchedulingService(
-                sp.GetService<ILoggerFactory>(),
-                sp.GetRequiredService<ISchedulerFactory>(),
-                sp.GetRequiredService<IJobFactory>(),
-                sp.GetRequiredService<IHostApplicationLifetime>(),
-                sp.GetServices<JobSchedule>(),
-                contextOptions));
+        // Register SqlJobStore with NullJobStoreProvider by default
+        services.AddSingleton<IJobStoreProvider, NullJobStoreProvider>();
+        services.AddSingleton<IJobStore>(sp => new JobStore(
+            sp.GetService<ILoggerFactory>(),
+            sp.GetRequiredService<ISchedulerFactory>(),
+            sp.GetRequiredService<IJobStoreProvider>()));
+
+        // Register hosted service with listener
+        services.AddSingleton<JobRunHistoryListener>();
+        services.AddHostedService<JobSchedulingService>();
+        //services.AddHostedService(sp =>
+        //{
+        //    var schedulerFactory = sp.GetRequiredService<ISchedulerFactory>();
+        //    var jobFactory = sp.GetRequiredService<IJobFactory>();
+        //    var jobStore = sp.GetRequiredService<IJobStore>();
+        //    var listener = new JobRunHistoryListener(sp.GetService<ILoggerFactory>(), jobStore);
+        //    var service = new JobSchedulingService(
+        //        sp.GetService<ILoggerFactory>(),
+        //        schedulerFactory,
+        //        jobFactory,
+        //        sp.GetRequiredService<IHostApplicationLifetime>(),
+        //        sp.GetServices<JobSchedule>(),
+        //        options);
+        //    service.Scheduler.ListenerManager.AddJobListener(listener);
+        //    return service;
+        //});
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);
+    }
+
+    /// <summary>
+    /// Configures the job scheduling to use in-memory persistence with an optional retention period.
+    /// </summary>
+    /// <param name="context">The job scheduling builder context from AddJobScheduling.</param>
+    /// <param name="retentionPeriod">The duration to retain job run history (default: 1 hour).</param>
+    /// <returns>The updated job scheduling builder context.</returns>
+    public static JobSchedulingBuilderContext WithInMemoryStore(
+        this JobSchedulingBuilderContext context,
+        TimeSpan? retentionPeriod = null)
+    {
+        context.Services.AddSingleton<IJobStoreProvider>(sp => new InMemoryJobStoreProvider(
+            sp.GetService<ILoggerFactory>(),
+            retentionPeriod));
+        context.Services.AddSingleton<IJobStore>(sp => new JobStore(
+            sp.GetService<ILoggerFactory>(),
+            sp.GetRequiredService<ISchedulerFactory>(),
+            sp.GetRequiredService<IJobStoreProvider>()));
+
+        return context;
     }
 
     /// <summary>

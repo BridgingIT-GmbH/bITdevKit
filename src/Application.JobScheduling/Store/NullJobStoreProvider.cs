@@ -5,12 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using Microsoft.Extensions.Logging;
-
-public class NullJobStoreProvider(ILoggerFactory loggerFactory) : IJobStoreProvider
+public class NullJobStoreProvider : IJobStoreProvider
 {
-    private readonly ILogger<NullJobStoreProvider> logger = loggerFactory?.CreateLogger<NullJobStoreProvider>() ?? NullLogger<NullJobStoreProvider>.Instance;
-
     /// <summary>
     /// Attempts to retrieve job run history, but returns an empty collection as no persistence is available.
     /// </summary>
@@ -32,7 +28,6 @@ public class NullJobStoreProvider(ILoggerFactory loggerFactory) : IJobStoreProvi
         string resultContains, int? take,
         CancellationToken cancellationToken)
     {
-        this.logger.LogWarning("NullJobStoreProvider: No run history available.");
         return Task.FromResult(Enumerable.Empty<JobRun>());
     }
 
@@ -50,7 +45,6 @@ public class NullJobStoreProvider(ILoggerFactory loggerFactory) : IJobStoreProvi
         DateTimeOffset? startDate, DateTimeOffset? endDate,
         CancellationToken cancellationToken)
     {
-        this.logger.LogWarning("NullJobStoreProvider: No run statistics available.");
         return Task.FromResult(new JobRunStats());
     }
 
@@ -61,7 +55,6 @@ public class NullJobStoreProvider(ILoggerFactory loggerFactory) : IJobStoreProvi
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
-        this.logger.LogWarning("NullJobStoreProvider: No persistence available for saving job run {JobName} ({EntryId}).", jobRun.JobName, jobRun.Id);
         return Task.CompletedTask;
     }
 
@@ -74,7 +67,6 @@ public class NullJobStoreProvider(ILoggerFactory loggerFactory) : IJobStoreProvi
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
-        this.logger.LogWarning("NullJobStoreProvider: No run history to purge.");
         return Task.CompletedTask;
     }
 }

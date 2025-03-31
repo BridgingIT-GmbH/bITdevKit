@@ -69,7 +69,7 @@ public class CoreModule : WebModuleBase
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
                 .UseLogger()/*.UseSimpleLogger()*/)
-            .WithDatabaseCreatorService(o => o.DeleteOnStartup(false));
+            .WithDatabaseCreatorService(o => o.DeleteOnStartup());
 
         //services.AddInMemoryDbContext<CoreDbContext>()
         //    .WithDatabaseCreatorService(o => o

@@ -10,11 +10,11 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Quartz;
 
-public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobStore) : IJobListener
+public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobStore) : IJobListener
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
 
-    public string Name => "JobRunHistoryListener";
+    public string Name => nameof(JobRunHistoryListener);
 
     /// <summary>
     /// Called before a job is executed, logs the start of the job run via the job store.
@@ -28,6 +28,8 @@ public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobSt
         var triggerKey = context.Trigger.Key;
         var scheduledTime = context.ScheduledFireTimeUtc ?? DateTimeOffset.UtcNow;
         var startTime = DateTimeOffset.UtcNow;
+
+        TypedLogger.LogJobStarting(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
 
         var jobRun = new JobRun
         {
@@ -51,11 +53,11 @@ public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobSt
         try
         {
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
-            this.logger.LogInformation("Job {JobName} starting (EntryId: {EntryId})", jobKey.Name, entryId);
+            this.logger.LogInformation("{LogKey} listener: job started (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Failed to log job start for {JobName} ({EntryId})", jobKey.Name, entryId);
+            this.logger.LogError(ex, "{LogKey} listener: failed to log job start (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
         }
     }
 
@@ -66,6 +68,7 @@ public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobSt
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
+        // No logging added here as per original implementation (no action taken)
         return Task.CompletedTask;
     }
 
@@ -82,6 +85,8 @@ public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobSt
         var endTime = DateTimeOffset.UtcNow;
         var runTimeMs = (long)(endTime - context.FireTimeUtc).TotalMilliseconds;
         var status = jobException == null ? "Success" : "Failed";
+
+        TypedLogger.LogJobCompleted(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 
         var jobRun = new JobRun
         {
@@ -110,11 +115,20 @@ public class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobSt
         try
         {
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
-            this.logger.LogInformation("Job {JobName} completed (EntryId: {EntryId}, Status: {Status})", jobKey.Name, entryId, status);
+            this.logger.LogInformation("{LogKey} listener: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Failed to log job completion for {JobName} ({EntryId})", jobKey.Name, entryId);
+            this.logger.LogError(ex, "{LogKey} listener: failed to log job completion (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
         }
+    }
+
+    public static partial class TypedLogger
+    {
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} listener: job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        public static partial void LogJobStarting(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
+
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} listener: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
+        public static partial void LogJobCompleted(ILogger logger, string logKey, string jobName, string jobGroup, string entryId, string status);
     }
 }

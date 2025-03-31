@@ -59,8 +59,8 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<TimeoutJobSchedulingBehavior>()
     //.WithInMemoryStore()
-    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"]);
-    //.AddEndpoints(builder.Environment.IsDevelopment());
+    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
+    .AddEndpoints(builder.Environment.IsDevelopment());
 
 //
 // Startup Tasks ==============================

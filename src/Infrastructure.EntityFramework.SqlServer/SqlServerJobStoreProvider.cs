@@ -107,9 +107,9 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         {
             return new JobRunStats
             {
-                TotalRuns = reader.GetInt32(0),
-                SuccessCount = reader.GetInt32(1),
-                FailureCount = reader.GetInt32(2),
+                TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                 AvgRunTimeMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
                 MaxRunTimeMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
                 MinRunTimeMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)

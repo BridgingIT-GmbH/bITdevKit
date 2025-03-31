@@ -99,6 +99,7 @@ public class JobSchedulingEndpoints(
     {
         this.logger.LogInformation("Fetching all jobs");
         var jobs = await jobStore.GetJobsAsync(cancellationToken);
+
         return Results.Ok(jobs);
     }
 
@@ -106,6 +107,7 @@ public class JobSchedulingEndpoints(
     {
         this.logger.LogInformation("Fetching job {JobName} in group {JobGroup}", jobName, jobGroup);
         var job = await jobStore.GetJobAsync(jobName, jobGroup, cancellationToken);
+
         return job != null ? Results.Ok(job) : Results.NotFound($"Job {jobName} in group {jobGroup} not found.");
     }
 

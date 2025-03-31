@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl.Matchers;
 
-public class JobStore(
+public partial class JobStore(
     ILoggerFactory loggerFactory,
     ISchedulerFactory schedulerFactory,
     IJobStoreProvider provider) : IJobStore
@@ -24,6 +24,8 @@ public class JobStore(
     /// <returns>A collection of job information objects with latest run and stats.</returns>
     public async Task<IEnumerable<JobInfo>> GetJobsAsync(CancellationToken cancellationToken)
     {
+        TypedLogger.LogGetJobs(this.logger, Constants.LogKey);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKeys = await scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup(), cancellationToken);
         var jobs = new List<JobInfo>();
@@ -34,6 +36,7 @@ public class JobStore(
             var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
             var runs = await this.GetJobRunsAsync(jobKey.Name, jobKey.Group, take: 1, cancellationToken: cancellationToken);
             var stats = await this.GetJobRunStatsAsync(jobKey.Name, jobKey.Group, null, null, cancellationToken);
+            detail.JobDataMap.TryGetString("Category", out var category);
 
             jobs.Add(new JobInfo
             {
@@ -45,7 +48,7 @@ public class JobStore(
                 TriggerCount = triggers.Count,
                 LastRun = runs.FirstOrDefault(),
                 LastRunStats = stats,
-                Category = detail.JobDataMap.GetString("Category"),
+                Category = category,
                 Triggers = await Task.WhenAll(triggers.Select(async t => new TriggerInfo
                 {
                     Name = t.Key.Name,
@@ -71,14 +74,21 @@ public class JobStore(
     /// <returns>The job information with latest run and stats, or null if not found.</returns>
     public async Task<JobInfo> GetJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        TypedLogger.LogGetJob(this.logger, Constants.LogKey, jobName, jobGroup);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKey = new JobKey(jobName, jobGroup);
         var detail = await scheduler.GetJobDetail(jobKey, cancellationToken);
-        if (detail == null) return null;
+        if (detail == null)
+        {
+            this.logger.LogDebug("{LogKey} store: job not found (name={JobName}, group={JobGroup})", Constants.LogKey, jobName, jobGroup);
+            return null;
+        }
 
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
         var runs = await this.GetJobRunsAsync(jobName, jobGroup, take: 1, cancellationToken: cancellationToken);
         var stats = await this.GetJobRunStatsAsync(jobName, jobGroup, null, null, cancellationToken);
+        detail.JobDataMap.TryGetString("Category", out var category);
 
         return new JobInfo
         {
@@ -90,7 +100,7 @@ public class JobStore(
             TriggerCount = triggers.Count,
             LastRun = runs.FirstOrDefault(),
             LastRunStats = stats,
-            Category = detail.JobDataMap.GetString("Category"),
+            Category = category,
             Triggers = await Task.WhenAll(triggers.Select(async t => new TriggerInfo
             {
                 Name = t.Key.Name,
@@ -125,6 +135,9 @@ public class JobStore(
         string resultContains = null, int? take = null,
         CancellationToken cancellationToken = default)
     {
+        TypedLogger.LogGetJobRuns(this.logger, Constants.LogKey, jobName, jobGroup);
+        this.LogFilterOptions(startDate, endDate, status, priority, instanceName, resultContains, take);
+
         return provider.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
     }
 
@@ -142,6 +155,9 @@ public class JobStore(
         DateTimeOffset? startDate, DateTimeOffset? endDate,
         CancellationToken cancellationToken)
     {
+        TypedLogger.LogGetJobRunStats(this.logger, Constants.LogKey, jobName, jobGroup);
+        this.LogDateRange(startDate, endDate);
+
         return provider.GetJobRunStatsAsync(jobName, jobGroup, startDate, endDate, cancellationToken);
     }
 
@@ -154,6 +170,8 @@ public class JobStore(
     /// <returns>A collection of trigger information objects.</returns>
     public async Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        TypedLogger.LogGetTriggers(this.logger, Constants.LogKey, jobName, jobGroup);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKey = new JobKey(jobName, jobGroup);
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
@@ -176,6 +194,8 @@ public class JobStore(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
+        TypedLogger.LogSaveJobRun(this.logger, Constants.LogKey, jobRun?.JobName, jobRun?.JobGroup, jobRun?.Id);
+
         return provider.SaveJobRunAsync(jobRun, cancellationToken);
     }
 
@@ -188,6 +208,8 @@ public class JobStore(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task TriggerJobAsync(string jobName, string jobGroup, IDictionary<string, object> data, CancellationToken cancellationToken)
     {
+        TypedLogger.LogTriggerJob(this.logger, Constants.LogKey, jobName, jobGroup);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKey = new JobKey(jobName, jobGroup);
         var jobData = new JobDataMap(data ?? new Dictionary<string, object>());
@@ -202,6 +224,8 @@ public class JobStore(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task PauseJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        TypedLogger.LogPauseJob(this.logger, Constants.LogKey, jobName, jobGroup);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.PauseJob(new JobKey(jobName, jobGroup), cancellationToken);
     }
@@ -214,6 +238,8 @@ public class JobStore(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task ResumeJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        TypedLogger.LogResumeJob(this.logger, Constants.LogKey, jobName, jobGroup);
+
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.ResumeJob(new JobKey(jobName, jobGroup), cancellationToken);
     }
@@ -227,14 +253,79 @@ public class JobStore(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
+        TypedLogger.LogPurgeJobRuns(this.logger, Constants.LogKey, jobName, jobGroup, olderThan);
+
         return provider.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
     }
 
     private async Task<string> GetJobStatusAsync(JobKey jobKey, IScheduler scheduler, CancellationToken cancellationToken)
     {
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
-        if (!triggers.Any()) return "No Triggers";
+        if (triggers.Count == 0) return "No Triggers";
+
         var states = await Task.WhenAll(triggers.Select(t => scheduler.GetTriggerState(t.Key, cancellationToken)));
+
         return states.All(s => s == TriggerState.Paused) ? "Paused" : "Active";
+    }
+
+    private void LogFilterOptions(
+        DateTimeOffset? startDate, DateTimeOffset? endDate, string status, int? priority,
+        string instanceName, string resultContains, int? take)
+    {
+        this.LogDateRange(startDate, endDate);
+
+        if (!string.IsNullOrEmpty(status))
+            this.logger.LogDebug("{LogKey} store: filter status={Status}", Constants.LogKey, status);
+        if (priority.HasValue)
+            this.logger.LogDebug("{LogKey} store: filter priority={Priority}", Constants.LogKey, priority.Value);
+        if (!string.IsNullOrEmpty(instanceName))
+            this.logger.LogDebug("{LogKey} store: filter instanceName={InstanceName}", Constants.LogKey, instanceName);
+        if (!string.IsNullOrEmpty(resultContains))
+            this.logger.LogDebug("{LogKey} store: filter resultContains={ResultContains}", Constants.LogKey, resultContains);
+        if (take.HasValue)
+            this.logger.LogDebug("{LogKey} store: take={Take}", Constants.LogKey, take.Value);
+    }
+
+    private void LogDateRange(DateTimeOffset? startDate, DateTimeOffset? endDate)
+    {
+        if (startDate.HasValue && endDate.HasValue)
+            this.logger.LogDebug("{LogKey} store: date range start={StartDate}, end={EndDate}", Constants.LogKey, startDate.Value, endDate.Value);
+        else if (startDate.HasValue)
+            this.logger.LogDebug("{LogKey} store: date range start={StartDate}", Constants.LogKey, startDate.Value);
+        else if (endDate.HasValue)
+            this.logger.LogDebug("{LogKey} store: date range end={EndDate}", Constants.LogKey, endDate.Value);
+    }
+
+    public static partial class TypedLogger
+    {
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} store: get jobs")]
+        public static partial void LogGetJobs(ILogger logger, string logKey);
+
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} store: get job (name={JobName}, group={JobGroup})")]
+        public static partial void LogGetJob(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(2, LogLevel.Information, "{LogKey} store: get job runs (name={JobName}, group={JobGroup})")]
+        public static partial void LogGetJobRuns(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(3, LogLevel.Information, "{LogKey} store: get job run stats (name={JobName}, group={JobGroup})")]
+        public static partial void LogGetJobRunStats(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(4, LogLevel.Information, "{LogKey} store: get triggers (name={JobName}, group={JobGroup})")]
+        public static partial void LogGetTriggers(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(5, LogLevel.Information, "{LogKey} store: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
+        public static partial void LogSaveJobRun(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
+
+        [LoggerMessage(6, LogLevel.Information, "{LogKey} store: trigger job (name={JobName}, group={JobGroup})")]
+        public static partial void LogTriggerJob(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(7, LogLevel.Information, "{LogKey} store: pause job (name={JobName}, group={JobGroup})")]
+        public static partial void LogPauseJob(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(8, LogLevel.Information, "{LogKey} store: resume job (name={JobName}, group={JobGroup})")]
+        public static partial void LogResumeJob(ILogger logger, string logKey, string jobName, string jobGroup);
+
+        [LoggerMessage(9, LogLevel.Information, "{LogKey} store: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
+        public static partial void LogPurgeJobRuns(ILogger logger, string logKey, string jobName, string jobGroup, DateTimeOffset olderThan);
     }
 }

@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using Configuration;
 using Extensions;
 using Microsoft.Extensions.Hosting;
+using Quartz.Impl;
 
 public static class ServiceCollectionExtensions
 {
@@ -60,7 +61,7 @@ public static class ServiceCollectionExtensions
     public static JobSchedulingBuilderContext AddJobScheduling(
         this IServiceCollection services,
         Builder<JobSchedulingOptionsBuilder, JobSchedulingOptions> optionsBuilder,
-        Action<IServiceCollectionQuartzConfigurator> configure,
+        Action<StdSchedulerFactory> configure,
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
@@ -94,30 +95,42 @@ public static class ServiceCollectionExtensions
     public static JobSchedulingBuilderContext AddJobScheduling(
         this IServiceCollection services,
         JobSchedulingOptions options = null,
-        Action<IServiceCollectionQuartzConfigurator> configure = null,
+        Action<StdSchedulerFactory> configure = null,
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        contextOptions ??= options;
+        contextOptions ??= options ?? new JobSchedulingOptions();
 
         properties ??= [];
         if (configuration != null)
         {
-            var section = configuration.GetSection("JobScheduling:Quartz", false);
+            var section = configuration.GetSection("Quartz");
             services.Configure<QuartzOptions>(section);
+            foreach (var key in section.GetChildren().Select(c => c.Key))
+            {
+                var value = section[key];
+                if (!string.IsNullOrEmpty(value))
+                {
+                    properties[key] = value;
+                }
+            }
         }
 
+        // Register Quartz dependencies
         services.TryAddSingleton<IJobFactory, ScopedJobFactory>();
-        services.AddQuartz(properties, configure);
+        services.AddSingleton<ISchedulerFactory>(sp =>
+        {
+            var factory = new StdSchedulerFactory(properties);
+            configure?.Invoke(factory);
+            return factory;
+        });
 
-        // Register SqlJobStore with NullJobStoreProvider by default
         services.AddSingleton<IJobStoreProvider, NullJobStoreProvider>();
         services.AddSingleton<IJobStore>(sp => new JobStore(
             sp.GetService<ILoggerFactory>(),
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));
 
-        // Register hosted service with listener
         services.AddSingleton<JobRunHistoryListener>();
         services.AddHostedService<JobSchedulingService>();
 

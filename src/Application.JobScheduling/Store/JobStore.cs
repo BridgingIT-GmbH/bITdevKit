@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Linq;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl.Matchers;
@@ -142,9 +143,12 @@ public partial class JobService(
 
         foreach (var run in runs.SafeNull()) // fix the duration for still running jobs (no endtime/duration)
         {
-            if (run.Status == "Started" && run.EndTime == null && run.DurationMs == null)
+            if (run.Status == "Started"/* && run.EndTime == null && run.DurationMs == null*/)
             {
-                run.DurationMs = (long)(DateTimeOffset.Now - run.StartTime).TotalMilliseconds; // WARN: if there is a an hour or 2 offset it can be an issue with UTC
+                // Create a new DateTimeOffset from the original local time, but with zero offset for the calculation
+                var startTime = new DateTimeOffset(run.StartTime.DateTime, TimeSpan.Zero);
+                var now = new DateTimeOffset(DateTimeOffset.UtcNow.DateTime, TimeSpan.Zero);
+                run.DurationMs = (long)(now - startTime).TotalMilliseconds;
             }
         }
 

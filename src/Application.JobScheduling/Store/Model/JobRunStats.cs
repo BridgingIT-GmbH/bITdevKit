@@ -15,7 +15,7 @@ public class JobRunStats
 
     public int FailureCount { get; set; }
 
-    public int InterruptedCount { get; set; }
+    public int InterruptCount { get; set; }
 
     public double AvgRunDurationMs { get; set; }
 

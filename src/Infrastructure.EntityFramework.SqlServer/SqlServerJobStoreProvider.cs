@@ -86,7 +86,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 COUNT(*) as TotalRuns,
                 SUM(CASE WHEN STATUS = 'Success' THEN 1 ELSE 0 END) as SuccessCount,
                 SUM(CASE WHEN STATUS = 'Failed' THEN 1 ELSE 0 END) as FailureCount,
-                SUM(CASE WHEN STATUS = 'Interrupted' THEN 1 ELSE 0 END) as InterruptedCount,
+                SUM(CASE WHEN STATUS = 'Interrupted' THEN 1 ELSE 0 END) as InterruptCount,
                 AVG(CAST(DURATION_MS AS FLOAT)) as AvgRunDurationMs,
                 MAX(DURATION_MS) as MaxRunDurationMs,
                 MIN(DURATION_MS) as MinRunDurationMs
@@ -111,7 +111,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                InterruptedCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
                 AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
                 MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
                 MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)

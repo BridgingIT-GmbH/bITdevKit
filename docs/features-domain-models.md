@@ -1,5 +1,7 @@
 # Domain Models Feature Documentation
+
 [TOC]
+
 ## Overview
 
 ## Challenges
@@ -28,7 +30,7 @@ sequenceDiagram
     participant Code as Domain Code
     participant Enum as Smart Enumeration
     participant DB as Database
-    
+
     Code->>Enum: Create TodoItem with Status
     Note over Enum: Rich domain object<br/>with properties & behavior
     Code->>Enum: Access Description
@@ -55,7 +57,7 @@ public class TodoStatus : Enumeration
     }
 
     public string Description { get; }
-    
+
     public static IEnumerable<TodoStatus> GetAll() => GetAll<TodoStatus>();
 }
 ```
@@ -89,7 +91,7 @@ The result is code that better expresses business concepts while remaining maint
 
 ### Overview
 
-In domain-driven design and clean architecture, entity identifiers play a crucial role. However, using primitive types like `Guid` or `int` as identifiers can lead to subtle bugs and unclear code. Consider a system managing both `Todo`s and `TodoStep`s, each using GUIDs as identifiers. A method that accidentally accepts a `TodoStep` ID when it should work with `Todo` IDs will compile successfully because both are GUIDs. 
+In domain-driven design and clean architecture, entity identifiers play a crucial role. However, using primitive types like `Guid` or `int` as identifiers can lead to subtle bugs and unclear code. Consider a system managing both `Todo`s and `TodoStep`s, each using GUIDs as identifiers. A method that accidentally accepts a `TodoStep` ID when it should work with `Todo` IDs will compile successfully because both are GUIDs.
 
 This common anti-pattern is known as "[primitive obsession](https://wiki.c2.com/?PrimitiveObsession)" - using primitive types where a dedicated type would better express domain concepts and prevent errors.
 

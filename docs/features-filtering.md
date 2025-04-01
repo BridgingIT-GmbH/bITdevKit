@@ -1,27 +1,12 @@
 # Filtering Feature Documentation
 
-<!-- TOC -->
+> Simplify complex entity queries with a unified filtering solution.
 
-* [Overview](#overview)
-* [Request Flow Diagram](#request-flow-diagram)
-* [Filter Model Structure](#filter-model-structure)
-* [API Implementation](#api-implementation)
-* [HTTP Request Examples](#http-request-examples)
-* [HTTP Response Format](#http-response-format)
-* [Best Practices](#best-practices)
-* [Standard Filter Operators](#standard-filter-operators)
-* [Custom Filter Types](#custom-filter-types)
-* [Complex Filter Examples](#complex-filter-examples)
-* [Appendix A: Angular Usage Guide](#appendix-a-angular-usage-guide)
-* [Appendix B: Flow Diagram](#appendix-b-flow-diagram)
-* [Appendix C: Filter Model Builder](#appendix-c-filter-model-builder)
-* [Appendix D: Disclaimer](#appendix-c-disclaimer)
-
-<!-- TOC -->
+[TOC]
 
 ## Overview
 
-> The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications on the server side. The translated filter model can easily be handled by the DevKit repositories.
+The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications and FindOptions on the server side. The translated filter model can easily be handled by the DevKit repositories.
 
 ```mermaid
 graph LR
@@ -209,7 +194,19 @@ app.MapGet("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFou
         new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
 
     return TypedResults.Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
-});
+}).WithFilterSchema(); // adds openapi schema for the filter model
+```
+
+```csharp
+app.MapPost("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFound>>
+  (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
+{
+    var filter = await context.FromQueryFilterAsync();
+    var response = await mediator.Send(
+        new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
+
+    return TypedResults.Ok(response); // should ideally return a ResultPaged<UserModel> (mapped)
+}).WithFilterSchema(true); // adds openapi schema for the filter model
 ```
 
 ### Repository Usage (QueryHandler)
@@ -1283,7 +1280,7 @@ export class ApiService<T> {
   searchFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
     return this.http.post<ResultPaged<T>>(`${this.baseUrl}/search`, filterModel);
   }
-    
+
   // GET (querystring)
   getFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
     let params = new HttpParams()

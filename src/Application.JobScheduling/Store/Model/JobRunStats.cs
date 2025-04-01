@@ -5,12 +5,25 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+using Humanizer;
+
 public class JobRunStats
 {
     public int TotalRuns { get; set; }
+
     public int SuccessCount { get; set; }
+
     public int FailureCount { get; set; }
-    public double AvgRunTimeMs { get; set; }
-    public long MaxRunTimeMs { get; set; }
-    public long MinRunTimeMs { get; set; }
+
+    public double AvgRunDurationMs { get; set; }
+
+    public string AvgRunDurationText => TimeSpan.FromMilliseconds(this.AvgRunDurationMs).Humanize();
+
+    public long MaxRunDurationMs { get; set; }
+
+    public string MaxRunDurationText => TimeSpan.FromMilliseconds(this.MaxRunDurationMs).Humanize();
+
+    public long MinRunDurationMs { get; set; }
+
+    public string MinRunDurationText => TimeSpan.FromMilliseconds(this.MinRunDurationMs).Humanize();
 }

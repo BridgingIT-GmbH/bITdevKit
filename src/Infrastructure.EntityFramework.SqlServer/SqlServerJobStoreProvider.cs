@@ -42,7 +42,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         var sql = $@"
             SELECT {(take.HasValue ? $"TOP {take.Value}" : "")}
                 ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION,
-                START_TIME, END_TIME, SCHEDULED_TIME, RUN_TIME_MS, STATUS, ERROR_MESSAGE,
+                START_TIME, END_TIME, SCHEDULED_TIME, DURATION_MS, STATUS, ERROR_MESSAGE,
                 JOB_DATA_JSON, INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY
             FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
@@ -86,9 +86,9 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 COUNT(*) as TotalRuns,
                 SUM(CASE WHEN STATUS = 'Success' THEN 1 ELSE 0 END) as SuccessCount,
                 SUM(CASE WHEN STATUS = 'Failed' THEN 1 ELSE 0 END) as FailureCount,
-                AVG(CAST(RUN_TIME_MS AS FLOAT)) as AvgRunTimeMs,
-                MAX(RUN_TIME_MS) as MaxRunTimeMs,
-                MIN(RUN_TIME_MS) as MinRunTimeMs
+                AVG(CAST(DURATION_MS AS FLOAT)) as AvgRunDurationMs,
+                MAX(DURATION_MS) as MaxRunDurationMs,
+                MIN(DURATION_MS) as MinRunDurationMs
             FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
@@ -110,9 +110,9 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                AvgRunTimeMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                MaxRunTimeMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
-                MinRunTimeMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
+                AvgRunDurationMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
+                MaxRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
+                MinRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
             };
         }
 
@@ -133,7 +133,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                     START_TIME = @startTime,
                     END_TIME = @endTime,
                     SCHEDULED_TIME = @scheduledTime,
-                    RUN_TIME_MS = @runTimeMs,
+                    DURATION_MS = @durationMs,
                     STATUS = @status,
                     ERROR_MESSAGE = @errorMessage,
                     JOB_DATA_JSON = @jobDataJson,
@@ -146,7 +146,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             ELSE
                 INSERT INTO {tableName} 
                 VALUES (@schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description, 
-                        @startTime, @endTime, @scheduledTime, @runTimeMs, @status, @errorMessage, @jobDataJson, 
+                        @startTime, @endTime, @scheduledTime, @durationMs, @status, @errorMessage, @jobDataJson, 
                         @instanceName, @priority, @result, @retryCount, @category);";
 
         await using var connection = new SqlConnection(this.connectionString);
@@ -162,7 +162,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.DurationMs ?? DBNull.Value);
+        command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
         command.Parameters.AddWithValue("@status", jobRun.Status);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
         command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));

@@ -42,7 +42,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         var sql = $@"
             SELECT 
                 entry_id, trigger_name, trigger_group, job_name, job_group, description,
-                start_time, end_time, scheduled_time, run_time_ms, status, error_message,
+                start_time, end_time, scheduled_time, duration_ms, status, error_message,
                 job_data_json, instance_name, priority, result, retry_count, category
             FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup
@@ -87,9 +87,9 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 COUNT(*) as total_runs,
                 SUM(CASE WHEN status = 'Success' THEN 1 ELSE 0 END) as success_count,
                 SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) as failure_count,
-                AVG(run_time_ms) as avg_run_time_ms,
-                MAX(run_time_ms) as max_run_time_ms,
-                MIN(run_time_ms) as min_run_time_ms
+                AVG(duration_ms) as avg_duration_ms,
+                MAX(duration_ms) as max_duration_ms,
+                MIN(duration_ms) as min_duration_ms
             FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup
                 {(startDate.HasValue ? "AND start_time >= @startDate" : "")}
@@ -111,9 +111,9 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                AvgRunTimeMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                MaxRunTimeMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
-                MinRunTimeMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
+                AvgRunDurationMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
+                MaxRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
+                MinRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
             };
         }
 
@@ -143,7 +143,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         var sql = $@"
             INSERT INTO {tableName} (
                 sched_name, entry_id, trigger_name, trigger_group, job_name, job_group, description,
-                start_time, end_time, scheduled_time, run_time_ms, status, error_message, job_data_json,
+                start_time, end_time, scheduled_time, duration_ms, status, error_message, job_data_json,
                 instance_name, priority, result, retry_count, category
             ) VALUES (
                 @schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description,
@@ -159,7 +159,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 start_time = EXCLUDED.start_time,
                 end_time = EXCLUDED.end_time,
                 scheduled_time = EXCLUDED.scheduled_time,
-                run_time_ms = EXCLUDED.run_time_ms,
+                duration_ms = EXCLUDED.duration_ms,
                 status = EXCLUDED.status,
                 error_message = EXCLUDED.error_message,
                 job_data_json = EXCLUDED.job_data_json,

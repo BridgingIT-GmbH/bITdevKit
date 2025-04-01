@@ -86,9 +86,9 @@ public class InMemoryJobStoreProvider(ILoggerFactory loggerFactory, TimeSpan? re
             TotalRuns = runs.Count(),
             SuccessCount = runs.Count(r => r.Status == "Success"),
             FailureCount = runs.Count(r => r.Status == "Failed"),
-            AvgRunTimeMs = runs.Where(r => r.DurationMs.HasValue).Average(r => r.DurationMs.Value),
-            MaxRunTimeMs = runs.Where(r => r.DurationMs.HasValue).Max(r => r.DurationMs.Value),
-            MinRunTimeMs = runs.Where(r => r.DurationMs.HasValue).Min(r => r.DurationMs.Value)
+            AvgRunDurationMs = runs.Where(r => r.DurationMs.HasValue).Average(r => r.DurationMs.Value),
+            MaxRunDurationMs = runs.Where(r => r.DurationMs.HasValue).Max(r => r.DurationMs.Value),
+            MinRunDurationMs = runs.Where(r => r.DurationMs.HasValue).Min(r => r.DurationMs.Value)
         };
 
         return Task.FromResult(stats);

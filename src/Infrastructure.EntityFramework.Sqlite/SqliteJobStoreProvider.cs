@@ -50,7 +50,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         var sql = $@"
             SELECT 
                 ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION,
-                START_TIME, END_TIME, SCHEDULED_TIME, RUN_TIME_MS, STATUS, ERROR_MESSAGE,
+                START_TIME, END_TIME, SCHEDULED_TIME, DURATION_MS, STATUS, ERROR_MESSAGE,
                 JOB_DATA_JSON, INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY
             FROM {this.tablePrefix}JOURNAL_TRIGGERS
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
@@ -103,9 +103,9 @@ public class SqliteJobStoreProvider : IJobStoreProvider
                 COUNT(*) as TotalRuns,
                 SUM(CASE WHEN STATUS = 'Success' THEN 1 ELSE 0 END) as SuccessCount,
                 SUM(CASE WHEN STATUS = 'Failed' THEN 1 ELSE 0 END) as FailureCount,
-                AVG(RUN_TIME_MS) as AvgRunTimeMs,
-                MAX(RUN_TIME_MS) as MaxRunTimeMs,
-                MIN(RUN_TIME_MS) as MinRunTimeMs
+                AVG(DURATION_MS) as AvgRunDurationMs,
+                MAX(DURATION_MS) as MaxRunDurationMs,
+                MIN(DURATION_MS) as MinRunDurationMs
             FROM {this.tablePrefix}JOURNAL_TRIGGERS
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
@@ -127,9 +127,9 @@ public class SqliteJobStoreProvider : IJobStoreProvider
                 TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
                 FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                AvgRunTimeMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
-                MaxRunTimeMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
-                MinRunTimeMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
+                AvgRunDurationMs = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
+                MaxRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetInt64(4),
+                MinRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5)
             };
         }
 
@@ -169,11 +169,11 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         var sql = $@"
             INSERT OR REPLACE INTO {this.tablePrefix}JOURNAL_TRIGGERS (
                 SCHED_NAME, ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION,
-                START_TIME, END_TIME, SCHEDULED_TIME, RUN_TIME_MS, STATUS, ERROR_MESSAGE, JOB_DATA_JSON,
+                START_TIME, END_TIME, SCHEDULED_TIME, DURATION_MS, STATUS, ERROR_MESSAGE, JOB_DATA_JSON,
                 INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY
             ) VALUES (
                 @schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description,
-                @startTime, @endTime, @scheduledTime, @runTimeMs, @status, @errorMessage, @jobDataJson,
+                @startTime, @endTime, @scheduledTime, @durationMs, @status, @errorMessage, @jobDataJson,
                 @instanceName, @priority, @result, @retryCount, @category
             );";
 
@@ -190,7 +190,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.DurationMs ?? DBNull.Value);
+        command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
         command.Parameters.AddWithValue("@status", jobRun.Status);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
         command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));

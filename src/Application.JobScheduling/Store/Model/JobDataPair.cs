@@ -8,5 +8,6 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 public class JobDataPair
 {
     public string Key { get; set; } = string.Empty;
+
     public string Value { get; set; } = string.Empty;
 }

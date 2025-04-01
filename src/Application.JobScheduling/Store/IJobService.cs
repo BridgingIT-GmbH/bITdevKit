@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-public interface IJobStore
+public interface IJobService
 {
     /// <summary>
     /// Retrieves all jobs currently registered with the scheduler.
@@ -82,6 +82,15 @@ public interface IJobStore
     /// <param name="data">Optional data to pass to the job execution.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task TriggerJobAsync(string jobName, string jobGroup, IDictionary<string, object> data, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
+    /// token.
+    /// </summary>
+    /// <param name="jobName">Specifies the name of the job to be interrupted.</param>
+    /// <param name="jobGroup">Indicates the group to which the job belongs.</param>
+    /// <param name="cancellationToken">Allows the operation to be canceled if needed.</param>
+    Task InterruptJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
 
     /// <summary>
     /// Pauses the execution of a specific job.

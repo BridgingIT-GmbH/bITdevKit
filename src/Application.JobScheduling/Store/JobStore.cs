@@ -10,12 +10,12 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl.Matchers;
 
-public partial class JobStore(
+public partial class JobService(
     ILoggerFactory loggerFactory,
     ISchedulerFactory schedulerFactory,
-    IJobStoreProvider provider) : IJobStore
+    IJobStoreProvider provider) : IJobService
 {
-    private readonly ILogger<JobStore> logger = loggerFactory?.CreateLogger<JobStore>() ?? NullLogger<JobStore>.Instance;
+    private readonly ILogger<JobService> logger = loggerFactory?.CreateLogger<JobService>() ?? NullLogger<JobService>.Instance;
 
     /// <summary>
     /// Retrieves all jobs currently registered with the scheduler, enriched with persistent run data from the provider.
@@ -128,7 +128,7 @@ public partial class JobStore(
     /// <param name="take">Limit the number of runs returned.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of job run records from the database.</returns>
-    public Task<IEnumerable<JobRun>> GetJobRunsAsync(
+    public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate = null, DateTimeOffset? endDate = null,
         string status = null, int? priority = null, string instanceName = null,
@@ -138,7 +138,17 @@ public partial class JobStore(
         TypedLogger.LogGetJobRuns(this.logger, Constants.LogKey, jobName, jobGroup);
         this.LogFilterOptions(startDate, endDate, status, priority, instanceName, resultContains, take);
 
-        return provider.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
+        var runs = await provider.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
+
+        foreach (var run in runs.SafeNull()) // fix the duration for still running jobs (no endtime/duration)
+        {
+            if (run.Status == "Started" && run.EndTime == null && run.DurationMs == null)
+            {
+                run.DurationMs = (long)(DateTimeOffset.UtcNow - run.StartTime).TotalMilliseconds;
+            }
+        }
+
+        return runs;
     }
 
     /// <summary>
@@ -213,7 +223,25 @@ public partial class JobStore(
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKey = new JobKey(jobName, jobGroup);
         var jobData = new JobDataMap(data ?? new Dictionary<string, object>());
+
         await scheduler.TriggerJob(jobKey, jobData, cancellationToken);
+    }
+
+    /// <summary>
+    /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
+    /// token.
+    /// </summary>
+    /// <param name="jobName">Specifies the name of the job to be interrupted.</param>
+    /// <param name="jobGroup">Indicates the group to which the job belongs.</param>
+    /// <param name="cancellationToken">Allows the operation to be canceled if needed.</param>
+    public async Task InterruptJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    {
+        TypedLogger.LogTriggerJob(this.logger, Constants.LogKey, jobName, jobGroup);
+
+        var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
+        var jobKey = new JobKey(jobName, jobGroup);
+
+        await scheduler.Interrupt(jobKey, cancellationToken);
     }
 
     /// <summary>

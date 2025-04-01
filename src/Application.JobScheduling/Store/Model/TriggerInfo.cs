@@ -5,13 +5,25 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+using Humanizer;
+
 public class TriggerInfo
 {
     public string Name { get; set; }
+
     public string Group { get; set; }
+
     public string Description { get; set; }
+
     public string CronExpression { get; set; }
+
     public DateTimeOffset? NextFireTime { get; set; }
+
+    public string NextFireTimeText => this.NextFireTime.HasValue ? (this.NextFireTime.Value - DateTimeOffset.UtcNow).Humanize() : string.Empty;
+
     public DateTimeOffset? PreviousFireTime { get; set; }
+
+    public string PreviousFireTimeText => this.PreviousFireTime.HasValue ? (DateTimeOffset.UtcNow - this.PreviousFireTime.Value).Humanize() : string.Empty;
+
     public string State { get; set; }
 }

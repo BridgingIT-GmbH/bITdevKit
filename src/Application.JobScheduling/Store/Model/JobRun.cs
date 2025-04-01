@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+using Humanizer;
+
 public class JobRun
 {
     public string Id { get; set; }
@@ -14,9 +16,12 @@ public class JobRun
     public string TriggerName { get; set; }
     public string TriggerGroup { get; set; }
     public DateTimeOffset StartTime { get; set; }
+    public string StartTimeText => (DateTimeOffset.UtcNow - this.StartTime).Humanize();
     public DateTimeOffset? EndTime { get; set; }
+    public string EndTimeText => this.EndTime.HasValue ? (this.EndTime.Value - this.StartTime).Humanize() : string.Empty;
     public DateTimeOffset ScheduledTime { get; set; }
-    public long? RunTimeMs { get; set; }
+    public long? DurationMs { get; set; }
+    public string DurationText => this.DurationMs.HasValue ? TimeSpan.FromMilliseconds(this.DurationMs.Value).Humanize() : null;
     public string Status { get; set; }
     public string ErrorMessage { get; set; }
     public IDictionary<string, object> Data { get; set; }

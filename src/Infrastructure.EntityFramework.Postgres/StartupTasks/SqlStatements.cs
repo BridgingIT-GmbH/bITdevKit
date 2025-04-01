@@ -218,7 +218,7 @@ public static partial class SqlStatements
                     start_time TIMESTAMP NOT NULL,
                     end_time TIMESTAMP,
                     scheduled_time TIMESTAMP NOT NULL,
-                    run_time_ms BIGINT,
+                    duration_ms BIGINT,
                     status TEXT NOT NULL,
                     error_message TEXT,
                     job_data_json TEXT,

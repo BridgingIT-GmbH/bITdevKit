@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobStore jobStore) : IJobListener
+public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobService jobStore) : IJobListener
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
     private readonly List<Action<string, string, string, DateTimeOffset>> onJobStartedHandlers = [];
@@ -199,7 +199,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSto
             StartTime = context.FireTimeUtc,
             EndTime = endTime,
             ScheduledTime = context.ScheduledFireTimeUtc ?? DateTimeOffset.UtcNow,
-            RunTimeMs = runTimeMs,
+            DurationMs = runTimeMs,
             Status = status,
             ErrorMessage = jobException?.Message,
             InstanceName = context.Scheduler.SchedulerInstanceId,

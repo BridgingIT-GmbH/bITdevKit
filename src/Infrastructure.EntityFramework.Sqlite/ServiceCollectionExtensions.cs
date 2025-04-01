@@ -151,7 +151,7 @@ public static class ServiceCollectionExtensions
             sp.GetService<ILoggerFactory>(),
             connectionString,
             tablePrefix));
-        context.Services.AddSingleton<IJobStore>(sp => new JobStore(
+        context.Services.AddSingleton<IJobService>(sp => new JobService(
             sp.GetService<ILoggerFactory>(),
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));

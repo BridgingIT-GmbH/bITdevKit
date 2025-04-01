@@ -19,7 +19,7 @@ using Quartz;
 
 public class JobSchedulingEndpoints(
     ILoggerFactory loggerFactory,
-    IJobStore jobStore,
+    IJobService jobService,
     JobSchedulingEndpointsOptions options = null) : EndpointsBase
 {
     private readonly ILogger<JobSchedulingEndpoints> logger = loggerFactory?.CreateLogger<JobSchedulingEndpoints>() ?? NullLogger<JobSchedulingEndpoints>.Instance;
@@ -98,7 +98,7 @@ public class JobSchedulingEndpoints(
     private async Task<IResult> GetJobs(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Fetching all jobs");
-        var jobs = await jobStore.GetJobsAsync(cancellationToken);
+        var jobs = await jobService.GetJobsAsync(cancellationToken);
 
         return Results.Ok(jobs);
     }
@@ -106,7 +106,7 @@ public class JobSchedulingEndpoints(
     private async Task<IResult> GetJob(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Fetching job {JobName} in group {JobGroup}", jobName, jobGroup);
-        var job = await jobStore.GetJobAsync(jobName, jobGroup, cancellationToken);
+        var job = await jobService.GetJobAsync(jobName, jobGroup, cancellationToken);
 
         return job != null ? Results.Ok(job) : Results.NotFound($"Job {jobName} in group {jobGroup} not found.");
     }
@@ -126,7 +126,7 @@ public class JobSchedulingEndpoints(
         CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Fetching run history for job {JobName} in group {JobGroup}", jobName, jobGroup);
-        var runs = await jobStore.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
+        var runs = await jobService.GetJobRunsAsync(jobName, jobGroup, startDate, endDate, status, priority, instanceName, resultContains, take, cancellationToken);
         return Results.Ok(runs);
     }
 
@@ -138,14 +138,14 @@ public class JobSchedulingEndpoints(
         CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Fetching run stats for job {JobName} in group {JobGroup}", jobName, jobGroup);
-        var stats = await jobStore.GetJobRunStatsAsync(jobName, jobGroup, startDate, endDate, cancellationToken);
+        var stats = await jobService.GetJobRunStatsAsync(jobName, jobGroup, startDate, endDate, cancellationToken);
         return Results.Ok(stats);
     }
 
     private async Task<IResult> GetJobTriggers(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Fetching triggers for job {JobName} in group {JobGroup}", jobName, jobGroup);
-        var triggers = await jobStore.GetTriggersAsync(jobName, jobGroup, cancellationToken);
+        var triggers = await jobService.GetTriggersAsync(jobName, jobGroup, cancellationToken);
         return Results.Ok(triggers);
     }
 
@@ -156,7 +156,7 @@ public class JobSchedulingEndpoints(
         this.logger.LogInformation("Triggering job {JobName} in group {JobGroup}", jobName, jobGroup);
         try
         {
-            await jobStore.TriggerJobAsync(jobName, jobGroup, data ?? [], cancellationToken);
+            await jobService.TriggerJobAsync(jobName, jobGroup, data ?? [], cancellationToken);
             return Results.Accepted(null, $"Job {jobName} in group {jobGroup} triggered successfully.");
         }
         catch (SchedulerException ex)
@@ -170,7 +170,7 @@ public class JobSchedulingEndpoints(
         this.logger.LogInformation("Pausing job {JobName} in group {JobGroup}", jobName, jobGroup);
         try
         {
-            await jobStore.PauseJobAsync(jobName, jobGroup, cancellationToken);
+            await jobService.PauseJobAsync(jobName, jobGroup, cancellationToken);
             return Results.Ok($"Job {jobName} in group {jobGroup} paused successfully.");
         }
         catch (SchedulerException ex)
@@ -184,7 +184,7 @@ public class JobSchedulingEndpoints(
         this.logger.LogInformation("Resuming job {JobName} in group {JobGroup}", jobName, jobGroup);
         try
         {
-            await jobStore.ResumeJobAsync(jobName, jobGroup, cancellationToken);
+            await jobService.ResumeJobAsync(jobName, jobGroup, cancellationToken);
             return Results.Ok($"Job {jobName} in group {jobGroup} resumed successfully.");
         }
         catch (SchedulerException ex)
@@ -196,7 +196,7 @@ public class JobSchedulingEndpoints(
     private async Task<IResult> PurgeJobRuns(string jobName, string jobGroup, [FromQuery] DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
         this.logger.LogInformation("Purging run history for job {JobName} in group {JobGroup} older than {OlderThan}", jobName, jobGroup, olderThan);
-        await jobStore.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
+        await jobService.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
         return Results.Ok($"Run history for job {jobName} in group {jobGroup} older than {olderThan} purged successfully.");
     }
 }

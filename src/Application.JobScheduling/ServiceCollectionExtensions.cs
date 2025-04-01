@@ -126,7 +126,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<IJobStoreProvider, NullJobStoreProvider>();
-        services.AddSingleton<IJobStore>(sp => new JobStore(
+        services.AddSingleton<IJobService>(sp => new JobService(
             sp.GetService<ILoggerFactory>(),
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));
@@ -150,7 +150,7 @@ public static class ServiceCollectionExtensions
         context.Services.AddSingleton<IJobStoreProvider>(sp => new InMemoryJobStoreProvider(
             sp.GetService<ILoggerFactory>(),
             retentionPeriod));
-        context.Services.AddSingleton<IJobStore>(sp => new JobStore(
+        context.Services.AddSingleton<IJobService>(sp => new JobService(
             sp.GetService<ILoggerFactory>(),
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));

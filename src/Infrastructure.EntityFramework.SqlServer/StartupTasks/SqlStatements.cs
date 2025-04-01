@@ -179,7 +179,7 @@ public static partial class SqlStatements
             [START_TIME] datetime2(7) NOT NULL,
             [END_TIME] datetime2(7) NULL,
             [SCHEDULED_TIME] datetime2(7) NOT NULL,
-            [RUN_TIME_MS] bigint NULL,
+            [DURATION_MS] bigint NULL,
             [STATUS] nvarchar(16) NOT NULL,
             [ERROR_MESSAGE] nvarchar(max) NULL,
             [JOB_DATA_JSON] nvarchar(max) NULL,

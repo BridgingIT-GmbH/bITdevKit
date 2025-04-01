@@ -162,7 +162,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.RunTimeMs ?? DBNull.Value);
+        command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.DurationMs ?? DBNull.Value);
         command.Parameters.AddWithValue("@status", jobRun.Status);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
         command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
@@ -205,7 +205,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             StartTime = reader.GetDateTime(6),
             EndTime = reader.IsDBNull(7) ? null : (DateTimeOffset?)reader.GetDateTime(7),
             ScheduledTime = reader.GetDateTime(8),
-            RunTimeMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
+            DurationMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
             Status = reader.GetString(10),
             ErrorMessage = reader.IsDBNull(11) ? null : reader.GetString(11),
             Data = reader.IsDBNull(12) ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),

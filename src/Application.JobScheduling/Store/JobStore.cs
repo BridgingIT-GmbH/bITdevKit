@@ -298,34 +298,34 @@ public partial class JobStore(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} store: get jobs")]
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} store: get jobs")]
         public static partial void LogGetJobs(ILogger logger, string logKey);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} store: get job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} store: get job (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} store: get job runs (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(2, LogLevel.Debug, "{LogKey} store: get job runs (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRuns(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(3, LogLevel.Information, "{LogKey} store: get job run stats (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(3, LogLevel.Debug, "{LogKey} store: get job run stats (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRunStats(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} store: get triggers (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(4, LogLevel.Debug, "{LogKey} store: get triggers (name={JobName}, group={JobGroup})")]
         public static partial void LogGetTriggers(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(5, LogLevel.Information, "{LogKey} store: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
+        [LoggerMessage(5, LogLevel.Debug, "{LogKey} store: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
         public static partial void LogSaveJobRun(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(6, LogLevel.Information, "{LogKey} store: trigger job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(6, LogLevel.Debug, "{LogKey} store: trigger job (name={JobName}, group={JobGroup})")]
         public static partial void LogTriggerJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(7, LogLevel.Information, "{LogKey} store: pause job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(7, LogLevel.Debug, "{LogKey} store: pause job (name={JobName}, group={JobGroup})")]
         public static partial void LogPauseJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(8, LogLevel.Information, "{LogKey} store: resume job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(8, LogLevel.Debug, "{LogKey} store: resume job (name={JobName}, group={JobGroup})")]
         public static partial void LogResumeJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(9, LogLevel.Information, "{LogKey} store: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
+        [LoggerMessage(9, LogLevel.Debug, "{LogKey} store: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
         public static partial void LogPurgeJobRuns(ILogger logger, string logKey, string jobName, string jobGroup, DateTimeOffset olderThan);
     }
 }

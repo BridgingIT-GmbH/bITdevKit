@@ -74,7 +74,7 @@ public abstract partial class JobBase : IJob
             }
             catch (Exception ex)
             {
-                PutJobProperties(context, JobStatus.Fail, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
+                PutJobProperties(context, JobStatus.Failed, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
 
                 throw;
             }

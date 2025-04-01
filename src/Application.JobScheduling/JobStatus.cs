@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 
 public enum JobStatus
 {
-    Unknown = 0,
+    Started = 0,
     Success = 1,
-    Fail = 2
+    Failed = 2
 }

@@ -182,8 +182,11 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         var entryId = context.FireInstanceId;
         var jobKey = context.JobDetail.Key;
         var endTime = DateTimeOffset.UtcNow;
-        var runTimeMs = (long)(endTime - context.FireTimeUtc).TotalMilliseconds;
-        var status = jobException == null ? "Success" : "Failed";
+        var runTimeMs = (long)(endTime - context.FireTimeUtc).TotalMilliseconds; // or get from elapsedMilliseconds below
+        //var status = jobException == null ? "Success" : "Failed";
+        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.Status), out var status);
+        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.ErrorMessage), out var errorMessage);
+        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.ElapsedMilliseconds), out var elapsedMilliseconds);
 
         TypedLogger.LogJobCompleted(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 
@@ -201,7 +204,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             ScheduledTime = context.ScheduledFireTimeUtc ?? DateTimeOffset.UtcNow,
             DurationMs = runTimeMs,
             Status = status,
-            ErrorMessage = jobException?.Message,
+            ErrorMessage = errorMessage, //jobException?.Message,
             InstanceName = context.Scheduler.SchedulerInstanceId,
             Priority = context.Trigger.Priority,
             Result = context.Result?.ToString(),

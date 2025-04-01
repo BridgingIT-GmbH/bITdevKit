@@ -86,6 +86,13 @@ public class JobSchedulingEndpoints(
             .WithName("ResumeJob")
             .WithDescription("Resumes the execution of a paused job.");
 
+        group.MapPost("{jobName}/{jobGroup}/interrupt", this.InterruptJob)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("InterruptJob")
+            .WithDescription("Interrupts the execution of a currently running job.");
+
         group.MapDelete("{jobName}/{jobGroup}/runs", this.PurgeJobRuns)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
@@ -190,6 +197,20 @@ public class JobSchedulingEndpoints(
         catch (SchedulerException ex)
         {
             return Results.Problem($"Failed to resume job {jobName} in group {jobGroup}: {ex.Message}", statusCode: (int)HttpStatusCode.BadRequest);
+        }
+    }
+
+    private async Task<IResult> InterruptJob(string jobName, string jobGroup, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Interrupting job {JobName} in group {JobGroup}", jobName, jobGroup);
+        try
+        {
+            await jobService.InterruptJobAsync(jobName, jobGroup, cancellationToken);
+            return Results.Ok($"Job {jobName} in group {jobGroup} interrupted successfully.");
+        }
+        catch (SchedulerException ex)
+        {
+            return Results.Problem($"Failed to interrupt job {jobName} in group {jobGroup}: {ex.Message}", statusCode: (int)HttpStatusCode.BadRequest);
         }
     }
 

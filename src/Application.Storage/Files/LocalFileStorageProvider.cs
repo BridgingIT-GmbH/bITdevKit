@@ -51,7 +51,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 Directory.CreateDirectory(this.RootPath); // Ensure root exists
             }
 
-            Console.WriteLine($"FILEMONITORING RootPath - {this.RootPath}");
+            //Console.WriteLine($"FILEMONITORING RootPath - {this.RootPath}");
 
             this.initialized = true;
         }

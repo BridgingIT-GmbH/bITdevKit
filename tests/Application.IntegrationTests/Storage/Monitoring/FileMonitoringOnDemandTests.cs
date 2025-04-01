@@ -14,7 +14,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 using static BridgingIT.DevKit.Application.IntegrationTests.Storage.FileMonitoringConfigurationTests;
@@ -27,15 +26,24 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
     public async Task FileMonitoringService_OnDemand_DetectsFileChanges()
     {
         // Arrange
-        var tempFolder = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest_{Guid.NewGuid()}");
-        Directory.CreateDirectory(tempFolder);
+        var id = Guid.NewGuid();
+        var tempFolder1 = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest-Docs_{id}");
+        var tempFolder2 = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest-Images_{id}");
         var services = new ServiceCollection().AddLogging();
         services.AddFileMonitoring(monitoring =>
         {
             monitoring
-                .UseLocal("Docs", tempFolder, options =>
+                .UseLocal("Docs", tempFolder1, options =>
                 {
                     options.FileFilter = "*.txt";
+                    options.UseOnDemandOnly = true; // On-demand only
+                    options.UseProcessor<FileLoggerProcessor>();
+                    //options.UseProcessor<FileMoverProcessor>(config =>
+                    //    config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = Path.Combine(tempFolder, "MovedDocs")));
+                })
+                .UseLocal("Images", tempFolder2, options =>
+                {
+                    options.FileFilter = "*.png";
                     options.UseOnDemandOnly = true; // On-demand only
                     options.UseProcessor<FileLoggerProcessor>();
                     //options.UseProcessor<FileMoverProcessor>(config =>
@@ -45,21 +53,79 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var handlers = provider.GetServices<ILocationHandler>();
-        var sourceFile = Path.Combine(tempFolder, "test.txt");
-        File.WriteAllText(sourceFile, "Test content");
+
+        Directory.CreateDirectory(tempFolder1);
+        var sourceFile1 = Path.Combine(tempFolder1, "test.txt");
+        File.WriteAllText(sourceFile1, "Test content");
+        //var sourceFile2 = Path.Combine(tempFolder2, "test.png");
+        //File.WriteAllText(sourceFile1, "Test content");
         await Task.Delay(500); // Allow processing
 
         // Act
         //await sut.StartAsync(CancellationToken.None);
-        var scanContext = await sut.ScanLocationAsync("Docs", token: CancellationToken.None);
+        var locations = await sut.GetAllLocationStatusAsync();
+        var scanContext1 = await sut.ScanLocationAsync(locationName: "Docs", token: CancellationToken.None);
+        var scanContext2 = await sut.ScanLocationAsync("Images", token: CancellationToken.None); // contains no files, root is however created by provider
         await Task.Delay(500); // Allow processing
 
         // Assert
-        scanContext.Events.ShouldHaveSingleItem();
-        scanContext.Events[0].EventType.ShouldBe(FileEventType.Added);
-        scanContext.Events[0].FilePath.ShouldBe("test.txt");
+        Directory.Exists(tempFolder1).ShouldBeTrue();
+        Directory.Exists(tempFolder2).ShouldBeTrue();
+        locations.ShouldNotBeNull();
+        locations.Count.ShouldBe(2); // Two locations registered
+        scanContext1.Events.ShouldHaveSingleItem();
+        scanContext1.Events[0].EventType.ShouldBe(FileEventType.Added);
+        scanContext1.Events[0].FilePath.ShouldBe("test.txt");
+        scanContext2.Events.ShouldBeEmpty();
         //var movedExists = File.Exists(Path.Combine(tempFolder, "MovedDocs", "test.txt"));
         //movedExists.ShouldBeTrue();
+
+        // Cleanup(optional)
+        await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task FileMonitoringService_OnDemand_NoFilesNoEvents()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var tempFolder1 = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest-Docs_{id}");
+        var tempFolder2 = Path.Combine(Path.GetTempPath(), $"FileMonitoringTest-Images_{id}");
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring
+                .UseLocal("Docs", tempFolder1, options =>
+                {
+                    options.FileFilter = "*.txt";
+                    options.UseOnDemandOnly = true; // On-demand only
+                    options.UseProcessor<FileLoggerProcessor>();
+                })
+                .UseLocal("Images", tempFolder2, options =>
+                {
+                    options.FileFilter = "*.png";
+                    options.UseOnDemandOnly = true; // On-demand only
+                    options.UseProcessor<FileLoggerProcessor>();
+                });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var handlers = provider.GetServices<ILocationHandler>();
+
+        // Act
+        //await sut.StartAsync(CancellationToken.None);
+        var locations = await sut.GetAllLocationStatusAsync();
+        var scanContext1 = await sut.ScanLocationAsync(locationName: "Docs", token: CancellationToken.None); // contains no files, root is however created by provider
+        var scanContext2 = await sut.ScanLocationAsync("Images", token: CancellationToken.None); // contains no files, root is however created by provider
+        await Task.Delay(100); // Allow processing
+
+        // Assert
+        Directory.Exists(tempFolder1).ShouldBeTrue();
+        Directory.Exists(tempFolder2).ShouldBeTrue();
+        locations.ShouldNotBeNull();
+        locations.Count.ShouldBe(2); // Two locations registered
+        scanContext1.Events.ShouldBeEmpty();
+        scanContext2.Events.ShouldBeEmpty();
 
         // Cleanup(optional)
         await sut.StopAsync(CancellationToken.None);
@@ -116,7 +182,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allStoredEvents.All(e => e.EventType == FileEventType.Added).ShouldBeTrue();
 
         // Cleanup (optional)
-         await sut.StopAsync(CancellationToken.None);
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -198,7 +264,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         scanContext.Events.ShouldContain(e => e.FilePath == "file4.txt" && e.EventType == FileEventType.Added);
 
         // Cleanup (optional, commented in your style)
-         await sut.StopAsync(CancellationToken.None);
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -282,7 +348,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         allDocs2Events.Count.ShouldBe(4); // 2 Added (Scan 1) + 1 Changed, 1 Added (Scan 2)
 
         // Cleanup (optional)
-         await sut.StopAsync(CancellationToken.None);
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -352,7 +418,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         inMemEvents.Any(e => e.FilePath == "file2.txt").ShouldBeTrue();
 
         // Cleanup
-         await sut.StopAsync(CancellationToken.None);
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]
@@ -434,7 +500,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         scanTimeMs.ShouldBeLessThan(16000);
 
         // Cleanup (optional)
-         await sut.StopAsync(CancellationToken.None);
+        await sut.StopAsync(CancellationToken.None);
     }
 
     [Fact]

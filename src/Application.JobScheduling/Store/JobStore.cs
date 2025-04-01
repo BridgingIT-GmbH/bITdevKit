@@ -144,7 +144,7 @@ public partial class JobService(
         {
             if (run.Status == "Started" && run.EndTime == null && run.DurationMs == null)
             {
-                run.DurationMs = (long)(DateTimeOffset.UtcNow - run.StartTime).TotalMilliseconds;
+                run.DurationMs = (long)(DateTimeOffset.Now - run.StartTime).TotalMilliseconds; // WARN: if there is a an hour or 2 offset it can be an issue with UTC
             }
         }
 

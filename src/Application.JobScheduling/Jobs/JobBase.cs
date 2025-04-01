@@ -72,6 +72,14 @@ public abstract partial class JobBase : IJob
             {
                 await this.Process(context, context.CancellationToken).AnyContext();
             }
+            catch (OperationCanceledException oeex)
+            {
+                BaseTypedLogger.LogInterrupted(this.Logger, Constants.LogKey, jobTypeName, this.Name, jobId);
+
+                PutJobProperties(context, JobStatus.Interrupted, $"[{oeex.GetType().Name}] {oeex.Message}", watch.GetElapsedMilliseconds());
+
+                return;
+            }
             catch (Exception ex)
             {
                 PutJobProperties(context, JobStatus.Failed, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
@@ -150,5 +158,8 @@ public abstract partial class JobBase : IJob
 
         [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, name={JobName}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobName, string jobId, long timeElapsed);
+
+        [LoggerMessage(2, LogLevel.Warning, "{LogKey} interrupted (type={JobType}, name={JobName}, id={JobId})")]
+        public static partial void LogInterrupted(ILogger logger, string logKey, string jobType, string jobName, string jobId);
     }
 }

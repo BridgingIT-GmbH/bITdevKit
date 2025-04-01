@@ -9,5 +9,6 @@ public enum JobStatus
 {
     Started = 0,
     Success = 1,
-    Failed = 2
+    Failed = 2,
+    Interrupted = 3
 }

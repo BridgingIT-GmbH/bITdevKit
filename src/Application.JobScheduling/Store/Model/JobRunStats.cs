@@ -15,6 +15,8 @@ public class JobRunStats
 
     public int FailureCount { get; set; }
 
+    public int InterruptedCount { get; set; }
+
     public double AvgRunDurationMs { get; set; }
 
     public string AvgRunDurationText => TimeSpan.FromMilliseconds(this.AvgRunDurationMs).Humanize();

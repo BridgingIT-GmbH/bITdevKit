@@ -171,5 +171,5 @@ public class TypedEntityIntIdTests
     }
 
     [TypedEntityId<int>]
-    public class StubIntEntity : Entity<StubIntEntityId> { }
+    public class StubIntEntity : Entity<StubIntEntityId>;
 }

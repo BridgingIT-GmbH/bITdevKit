@@ -217,5 +217,5 @@ public class GuidValidationTests
         public string GuidString { get; set; }
     }
 
-    private class TestValidator : AbstractValidator<TestModel> { }
+    private class TestValidator : AbstractValidator<TestModel>;
 }

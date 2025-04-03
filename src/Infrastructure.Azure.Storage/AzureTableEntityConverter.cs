@@ -214,4 +214,4 @@ public class PropertyConverter<T>(Func<T, object> toTableEntityProperty, Action<
     public Action<T, object> SetObjectProperty { get; } = setObjectProperty;
 }
 
-public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>> { }
+public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>>;

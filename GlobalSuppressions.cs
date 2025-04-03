@@ -297,3 +297,5 @@ using System.Diagnostics.CodeAnalysis;
     SuppressMessage("StyleCop.CSharp.SpacingRules",
         "SA1015:Closing generic brackets should be spaced correctly",
         Justification = "<Pending>")]
+
+[assembly: SuppressMessage("Style", "IDE0130:Namespace does not match folder structure", Justification = "<Pending>")]

@@ -11,4 +11,4 @@ namespace BridgingIT.DevKit.Domain.Model;
 /// </summary>
 /// <typeparam name="TId">The type of the identifier.</typeparam>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public class TypedEntityIdAttribute<TId> : Attribute { }
+public class TypedEntityIdAttribute<TId> : Attribute;

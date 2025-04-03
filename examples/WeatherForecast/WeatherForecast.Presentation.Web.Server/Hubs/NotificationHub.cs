@@ -7,4 +7,4 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server;
 
 using Microsoft.AspNetCore.SignalR;
 
-public class NotificationHub : Hub { }
+public class NotificationHub : Hub;

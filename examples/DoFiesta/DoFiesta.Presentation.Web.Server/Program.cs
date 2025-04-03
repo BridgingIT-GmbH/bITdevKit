@@ -60,7 +60,7 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
     .WithBehavior<TimeoutJobSchedulingBehavior>()
     //.WithInMemoryStore()
     .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
-    .AddEndpoints(builder.Environment.IsDevelopment());
+    .AddEndpoints(/*new JobSchedulingEndpointsOptions { RequireAuthorization = true }, */builder.Environment.IsDevelopment());
 
 //
 // Startup Tasks ==============================

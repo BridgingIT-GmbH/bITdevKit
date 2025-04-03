@@ -18,5 +18,5 @@ public class CustomerFindAllQuery : QueryRequestBase<Result<IEnumerable<Customer
         return new Validator().Validate(this);
     }
 
-    public class Validator : AbstractValidator<CustomerFindAllQuery> { }
+    public class Validator : AbstractValidator<CustomerFindAllQuery>;
 }

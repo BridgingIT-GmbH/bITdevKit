@@ -5,8 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-public interface IEntityFindOneQuery { }
+public interface IEntityFindOneQuery;
 
 public interface IEntityFindOneQuery<TEntity> : IEntityFindOneQuery
-    where TEntity : class, IEntity
-{ }
+    where TEntity : class, IEntity;

@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-public interface IQueryBehavior { }
+public interface IQueryBehavior;
 
 public interface IQueryBehavior<TRequest, TResponse> : IQueryBehavior
     where TRequest : class, IRequest<TResponse>

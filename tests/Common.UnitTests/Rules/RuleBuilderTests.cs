@@ -1856,4 +1856,4 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
 }
 
 [CollectionDefinition(nameof(RuleBuilderCollectionDefinition), DisableParallelization = true)]
-public class RuleBuilderCollectionDefinition { }
+public class RuleBuilderCollectionDefinition;

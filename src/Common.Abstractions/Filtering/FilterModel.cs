@@ -339,7 +339,7 @@ public class CompositeSpecification
 /// <summary>
 /// Represents a base class for specification nodes.
 /// </summary>
-public abstract class SpecificationNode { }
+public abstract class SpecificationNode;
 
 /// <summary>
 /// Represents a leaf node in a specification tree.

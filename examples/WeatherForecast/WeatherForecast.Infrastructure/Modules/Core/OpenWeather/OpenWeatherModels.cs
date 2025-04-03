@@ -99,7 +99,7 @@ public class Current
     public CurrentRain Rain { get; set; }
 }
 
-public class CurrentRain { }
+public class CurrentRain;
 
 public class Weather
 {

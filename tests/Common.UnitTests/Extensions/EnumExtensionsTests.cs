@@ -116,4 +116,4 @@ public class CustomAttribute(int value) : Attribute
 }
 
 [Custom(500)]
-public class MyClass { }
+public class MyClass;

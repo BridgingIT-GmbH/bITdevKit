@@ -5,4 +5,4 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-public class EchoQuery : QueryRequestBase<string> { }
+public class EchoQuery : QueryRequestBase<string>;

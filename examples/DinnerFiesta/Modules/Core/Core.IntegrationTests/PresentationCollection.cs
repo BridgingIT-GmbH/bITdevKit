@@ -8,5 +8,4 @@ namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.IntegrationTests;
 [CollectionDefinition(nameof(PresentationCollection))]
 public class PresentationCollection
     : // https://xunit.net/docs/shared-context#collection-fixture
-        ICollectionFixture<CustomWebApplicationFactoryFixture<Program>>
-{ }
+        ICollectionFixture<CustomWebApplicationFactoryFixture<Program>>;

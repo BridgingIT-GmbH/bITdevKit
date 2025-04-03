@@ -8,8 +8,7 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class EnumerationJsonConverter<TEnumeration>
     : EnumerationJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration
-{ }
+    where TEnumeration : IEnumeration;
 
 /// <summary>
 ///     Converter for enumerations with default int id and custom value type.
@@ -17,8 +16,7 @@ public class EnumerationJsonConverter<TEnumeration>
 public class EnumerationJsonConverter<TEnumeration, TValue>
     : EnumerationJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable
-{ }
+    where TValue : IComparable;
 
 /// <summary>
 ///     Converter for enumerations with custom id and value types.
@@ -206,8 +204,7 @@ public class EnumerationJsonConverter<TEnumeration, TId, TValue> : JsonConverter
 /// </summary>
 public class EnumerationCollectionJsonConverter<TEnumeration>
     : EnumerationCollectionJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration
-{ }
+    where TEnumeration : IEnumeration;
 
 /// <summary>
 ///     Converter for ICollection of enumerations with default int id and custom value type.
@@ -215,8 +212,7 @@ public class EnumerationCollectionJsonConverter<TEnumeration>
 public class EnumerationCollectionJsonConverter<TEnumeration, TValue>
     : EnumerationCollectionJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable
-{ }
+    where TValue : IComparable;
 
 /// <summary>
 ///     Converter for ICollection of enumerations with custom id and value types.
@@ -290,8 +286,7 @@ public class EnumerationCollectionJsonConverter<TEnumeration, TId, TValue>
 /// </summary>
 public class EnumerationListJsonConverter<TEnumeration>
     : EnumerationListJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration
-{ }
+    where TEnumeration : IEnumeration;
 
 /// <summary>
 ///     Converter for List of enumerations with default int id and custom value type.
@@ -299,8 +294,7 @@ public class EnumerationListJsonConverter<TEnumeration>
 public class EnumerationListJsonConverter<TEnumeration, TValue>
     : EnumerationListJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable
-{ }
+    where TValue : IComparable;
 
 /// <summary>
 ///     Converter for List of enumerations with custom id and value types.
@@ -374,8 +368,7 @@ public class EnumerationListJsonConverter<TEnumeration, TId, TValue>
 /// </summary>
 public class EnumerationSetJsonConverter<TEnumeration>
     : EnumerationSetJsonConverter<TEnumeration, int, string>
-    where TEnumeration : IEnumeration
-{ }
+    where TEnumeration : IEnumeration;
 
 /// <summary>
 ///     Converter for HashSet of enumerations with default int id and custom value type.
@@ -383,8 +376,7 @@ public class EnumerationSetJsonConverter<TEnumeration>
 public class EnumerationSetJsonConverter<TEnumeration, TValue>
     : EnumerationSetJsonConverter<TEnumeration, int, TValue>
     where TEnumeration : IEnumeration<TValue>
-    where TValue : IComparable
-{ }
+    where TValue : IComparable;
 
 /// <summary>
 ///     Converter for HashSet of enumerations with custom id and value types.

@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-public interface IEnumeration : IEnumeration<int, string> { }
+public interface IEnumeration : IEnumeration<int, string>;
 
-public interface IEnumeration<out TValue> : IEnumeration<int, TValue> { }
+public interface IEnumeration<out TValue> : IEnumeration<int, TValue>;
 
 public interface IEnumeration<out TId, out TValue> : IComparable, IEquatable<Enumeration>
     where TId : IComparable

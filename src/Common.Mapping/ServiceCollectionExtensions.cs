@@ -225,6 +225,6 @@ public static class ServiceCollectionExtensions
     }
 }
 
-public class AutoMapperConfiguration { }
+public class AutoMapperConfiguration;
 
-public class MapsterConfiguration { }
+public class MapsterConfiguration;

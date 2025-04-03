@@ -14,5 +14,5 @@ public class HostFindAllQuery : QueryRequestBase<Result<IEnumerable<Host>>>
         return new Validator().Validate(this);
     }
 
-    public class Validator : AbstractValidator<HostFindAllQuery> { }
+    public class Validator : AbstractValidator<HostFindAllQuery>;
 }

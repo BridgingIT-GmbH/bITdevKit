@@ -17,6 +17,7 @@ public static class CloneHelper
     // TODO: preferably use the SystemTextJsonSerializer instead https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/converters-how-to?pivots=dotnet-6-0
     //       however that is not feasable at the moment because of the following issues: https://cosmin-vladutu.medium.com/system-text-json-in-net-7-and-deserialization-edb2b65d0a9
     //       solution? JsonObjectCreationHandling.Populate > https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
+    // see CloneHelperNew
 
     /// <summary>
     ///     Provides a serializer for cloning objects using JSON serialization.

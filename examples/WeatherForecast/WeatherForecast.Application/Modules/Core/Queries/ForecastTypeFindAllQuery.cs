@@ -8,4 +8,4 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 using DevKit.Application.Queries;
 using Domain.Model;
 
-public class ForecastTypeFindAllQuery : QueryRequestBase<IEnumerable<ForecastType>> { }
+public class ForecastTypeFindAllQuery : QueryRequestBase<IEnumerable<ForecastType>>;

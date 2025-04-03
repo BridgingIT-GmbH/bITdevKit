@@ -12,7 +12,7 @@ public class CircuitBreaker
     private readonly TimeSpan resetTimeout;
     private readonly bool handleErrors;
     private readonly ILogger logger;
-    private readonly IProgress<ResiliencyProgress> progress;
+    private readonly IProgress<CircuitBreakerProgress> progress;
     private int failureCount;
     private DateTime lastFailureTime;
     private CircuitBreakerState state;
@@ -30,7 +30,7 @@ public class CircuitBreaker
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30), progress: progress);
     /// await circuitBreaker.ExecuteAsync(async ct => await SomeOperation(ct), cts.Token);
     /// </code>
@@ -40,7 +40,7 @@ public class CircuitBreaker
         TimeSpan resetTimeout,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<CircuitBreakerProgress> progress = null)
     {
         if (failureThreshold < 1)
             throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Failure threshold must be at least 1.");
@@ -92,7 +92,7 @@ public class CircuitBreaker
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
     /// await circuitBreaker.ExecuteAsync(async ct =>
     /// {
@@ -103,7 +103,7 @@ public class CircuitBreaker
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<CircuitBreakerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var (success, _) = await this.TryExecuteAsync(ct => action(ct), cancellationToken, progress);
@@ -132,7 +132,7 @@ public class CircuitBreaker
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
     /// int result = await circuitBreaker.ExecuteAsync(async ct =>
     /// {
@@ -143,7 +143,7 @@ public class CircuitBreaker
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<CircuitBreakerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var (success, result) = await this.TryExecuteAsync(ct => action(ct), cancellationToken, progress);
@@ -160,7 +160,7 @@ public class CircuitBreaker
         return (T)result;
     }
 
-    private async Task<(bool Success, object Result)> TryExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IProgress<ResiliencyProgress> progress)
+    private async Task<(bool Success, object Result)> TryExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IProgress<CircuitBreakerProgress> progress)
     {
         lock (this.lockObject)
         {
@@ -182,8 +182,7 @@ public class CircuitBreaker
             lock (this.lockObject)
             {
                 this.state = CircuitBreakerState.Closed;
-                this.failureCount = 0;
-                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
+                this.progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
             return (true, null);
         }
@@ -214,7 +213,7 @@ public class CircuitBreaker
         }
     }
 
-    private async Task<(bool Success, object Result)> TryExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken, IProgress<ResiliencyProgress> progress)
+    private async Task<(bool Success, object Result)> TryExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken, IProgress<CircuitBreakerProgress> progress)
     {
         lock (this.lockObject)
         {
@@ -313,7 +312,7 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
 {
     private bool handleErrors;
     private ILogger logger;
-    private IProgress<ResiliencyProgress> progress;
+    private IProgress<CircuitBreakerProgress> progress;
 
     /// <summary>
     /// Configures the circuit breaker to handle errors by logging them instead of throwing.
@@ -332,7 +331,7 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
     /// </summary>
     /// <param name="progress">The progress reporter to use for circuit breaker operations.</param>
     /// <returns>The CircuitBreakerBuilder instance for chaining.</returns>
-    public CircuitBreakerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public CircuitBreakerBuilder WithProgress(IProgress<CircuitBreakerProgress> progress)
     {
         this.progress = progress;
         return this;

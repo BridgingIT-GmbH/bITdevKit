@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var requester = new Requester(progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+/// var requester = new Requester(progress: new Progress<RequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
 /// requester.RegisterHandler(new MyRequestHandler());
 /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
 /// Console.WriteLine(response.Result);
@@ -25,12 +25,12 @@ public class Requester(
     bool handleErrors = false,
     ILogger logger = null,
     IEnumerable<IRequestPipelineBehavior> pipelineBehaviors = null,
-    IProgress<ResiliencyProgress> progress = null)
+    IProgress<RequesterProgress> progress = null)
 {
     private readonly Dictionary<Type, (IRequestHandler Handler, Type ResponseType)> handlers = [];
     private readonly List<IRequestPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse().ToList() ?? [];
     private readonly Lock lockObject = new();
-    private readonly IProgress<ResiliencyProgress> progress = progress;
+    private readonly IProgress<RequesterProgress> progress = progress;
 
     /// <summary>
     /// Registers a handler for a specific request type.
@@ -73,7 +73,7 @@ public class Requester(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
     /// var requester = new Requester();
     /// requester.RegisterHandler(new MyRequestHandler());
     /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token, progress);
@@ -81,7 +81,7 @@ public class Requester(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default, IProgress<RequesterProgress> progress = null)
         where TRequest : IRequest<TResponse>
     {
         progress ??= this.progress; // Use instance-level progress if provided
@@ -197,7 +197,7 @@ public class RequesterBuilder
     private bool handleErrors;
     private ILogger logger;
     private readonly List<IRequestPipelineBehavior> pipelineBehaviors;
-    private IProgress<ResiliencyProgress> progress;
+    private IProgress<RequesterProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the RequesterBuilder.
@@ -238,7 +238,7 @@ public class RequesterBuilder
     /// </summary>
     /// <param name="progress">The progress reporter to use for request operations.</param>
     /// <returns>The RequesterBuilder instance for chaining.</returns>
-    public RequesterBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public RequesterBuilder WithProgress(IProgress<RequesterProgress> progress)
     {
         this.progress = progress;
         return this;

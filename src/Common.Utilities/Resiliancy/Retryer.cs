@@ -13,7 +13,7 @@ public class Retryer
     private readonly bool useExponentialBackoff;
     private readonly bool handleErrors;
     private readonly ILogger logger;
-    private readonly IProgress<ResiliencyProgress> progress;
+    private readonly IProgress<RetryProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the Retryer class with the specified retry settings.
@@ -28,7 +28,7 @@ public class Retryer
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RetryProgress>(p => Console.WriteLine($"Retry Attempt: {p.CurrentAttempt}/{p.MaxAttempts}, Delay: {p.Delay.TotalSeconds}s"));
     /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1), progress: progress);
     /// await retryer.ExecuteAsync(async ct => await SomeOperation(ct), cts.Token);
     /// </code>
@@ -39,7 +39,7 @@ public class Retryer
         bool useExponentialBackoff = false,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<RetryProgress> progress = null)
     {
         if (maxRetries < 1)
         {
@@ -71,7 +71,7 @@ public class Retryer
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RetryProgress>(p => Console.WriteLine($"Retry Attempt: {p.CurrentAttempt}/{p.MaxAttempts}, Delay: {p.Delay.TotalSeconds}s"));
     /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
     /// await retryer.ExecuteAsync(async ct =>
     /// {
@@ -82,7 +82,7 @@ public class Retryer
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<RetryProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         Exception lastException = null;
@@ -134,7 +134,7 @@ public class Retryer
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RetryProgress>(p => Console.WriteLine($"Retry Attempt: {p.CurrentAttempt}/{p.MaxAttempts}, Delay: {p.Delay.TotalSeconds}s"));
     /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
     /// int result = await retryer.ExecuteAsync(async ct =>
     /// {
@@ -145,7 +145,7 @@ public class Retryer
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<RetryProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         Exception lastException = null;
@@ -199,7 +199,7 @@ public class RetryerBuilder(int maxRetries, TimeSpan delay)
     private bool useExponentialBackoff = false;
     private bool handleErrors = false;
     private ILogger logger = null;
-    private IProgress<ResiliencyProgress> progress = null;
+    private IProgress<RetryProgress> progress = null;
 
     /// <summary>
     /// Configures the retryer to use exponential backoff, increasing the delay with each retry attempt.
@@ -228,7 +228,7 @@ public class RetryerBuilder(int maxRetries, TimeSpan delay)
     /// </summary>
     /// <param name="progress">The progress reporter to use for retry operations.</param>
     /// <returns>The RetryerBuilder instance for chaining.</returns>
-    public RetryerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public RetryerBuilder WithProgress(IProgress<RetryProgress> progress)
     {
         this.progress = progress;
         return this;

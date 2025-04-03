@@ -15,7 +15,7 @@ public class RateLimiter
     private readonly TimeSpan window;
     private readonly bool handleErrors;
     private readonly ILogger logger;
-    private readonly IProgress<ResiliencyProgress> progress;
+    private readonly IProgress<RateLimiterProgress> progress;
     private readonly Queue<DateTime> operationTimestamps;
     private readonly Lock lockObject = new();
 
@@ -30,7 +30,7 @@ public class RateLimiter
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxOperations is less than 1 or window is negative.</exception>
     /// <example>
     /// <code>
-    /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+    /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10), progress: new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s")));
     /// await rateLimiter.ExecuteAsync(async ct => await SomeOperation(ct), CancellationToken.None);
     /// </code>
     /// </example>
@@ -39,7 +39,7 @@ public class RateLimiter
         TimeSpan window,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<RateLimiterProgress> progress = null)
     {
         if (maxOperations < 1)
             throw new ArgumentOutOfRangeException(nameof(maxOperations), "Maximum operations must be at least 1.");
@@ -66,7 +66,7 @@ public class RateLimiter
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s"));
     /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10));
     /// await rateLimiter.ExecuteAsync(async ct =>
     /// {
@@ -75,7 +75,7 @@ public class RateLimiter
     /// }, cts.Token, progress);
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<RateLimiterProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         if (!this.AllowOperation(progress))
@@ -117,7 +117,7 @@ public class RateLimiter
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s"));
     /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10));
     /// int result = await rateLimiter.ExecuteAsync(async ct =>
     /// {
@@ -127,7 +127,7 @@ public class RateLimiter
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<RateLimiterProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         if (!this.AllowOperation(progress))
@@ -157,7 +157,7 @@ public class RateLimiter
         }
     }
 
-    private bool AllowOperation(IProgress<ResiliencyProgress> progress)
+    private bool AllowOperation(IProgress<RateLimiterProgress> progress)
     {
         lock (this.lockObject)
         {
@@ -202,7 +202,7 @@ public class RateLimiterBuilder(int maxOperations, TimeSpan window)
 {
     private bool handleErrors = false;
     private ILogger logger = null;
-    private IProgress<ResiliencyProgress> progress = null;
+    private IProgress<RateLimiterProgress> progress = null;
 
     /// <summary>
     /// Configures the rate limiter to handle errors by logging them instead of throwing.
@@ -221,7 +221,7 @@ public class RateLimiterBuilder(int maxOperations, TimeSpan window)
     /// </summary>
     /// <param name="progress">The progress reporter to use for rate-limiting operations.</param>
     /// <returns>The RateLimiterBuilder instance for chaining.</returns>
-    public RateLimiterBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public RateLimiterBuilder WithProgress(IProgress<RateLimiterProgress> progress)
     {
         this.progress = progress;
         return this;

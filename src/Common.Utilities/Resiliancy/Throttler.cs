@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+/// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s")));
 /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
 /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
 /// </code>
@@ -26,14 +26,14 @@ public class Throttler(
     Func<CancellationToken, Task> action,
     bool handleErrors = false,
     ILogger logger = null,
-    IProgress<ResiliencyProgress> progress = null) : IDisposable
+    IProgress<ThrottlerProgress> progress = null) : IDisposable
 {
     private readonly Func<CancellationToken, Task> action = action ?? throw new ArgumentNullException(nameof(action));
     private CancellationTokenSource cts = new();
     private bool isThrottled;
     private DateTime lastExecution;
     private readonly Lock lockObject = new();
-    private readonly IProgress<ResiliencyProgress> progress = progress;
+    private readonly IProgress<ThrottlerProgress> progress = progress;
 
     /// <summary>
     /// Initializes a new instance of the Throttler class with a simpler action that does not require a CancellationToken.
@@ -45,7 +45,7 @@ public class Throttler(
     /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
     /// <example>
     /// <code>
-    /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+    /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s")));
     /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
     /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
     /// </code>
@@ -55,7 +55,7 @@ public class Throttler(
         Func<Task> action,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<ThrottlerProgress> progress = null)
         : this(interval, ct => action(), handleErrors, logger, progress)
     {
     }
@@ -70,7 +70,7 @@ public class Throttler(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s"));
     /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"));
     /// await throttler.ThrottleAsync(cts.Token, progress); // Executes immediately with progress
     /// await throttler.ThrottleAsync(cts.Token, progress); // Skips if within 1 second with progress
@@ -79,7 +79,7 @@ public class Throttler(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ThrottlerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var now = DateTime.UtcNow;
@@ -189,7 +189,7 @@ public class ThrottlerBuilder
     private readonly Func<CancellationToken, Task> action;
     private bool handleErrors;
     private ILogger logger;
-    private IProgress<ResiliencyProgress> progress;
+    private IProgress<ThrottlerProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the ThrottlerBuilder with the specified interval and action.
@@ -236,7 +236,7 @@ public class ThrottlerBuilder
     /// </summary>
     /// <param name="progress">The progress reporter to use for throttling operations.</param>
     /// <returns>The ThrottlerBuilder instance for chaining.</returns>
-    public ThrottlerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public ThrottlerBuilder WithProgress(IProgress<ThrottlerProgress> progress)
     {
         this.progress = progress;
         return this;

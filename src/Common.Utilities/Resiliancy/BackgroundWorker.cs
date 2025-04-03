@@ -22,8 +22,8 @@ using Microsoft.Extensions.Logging;
 ///         await Task.Delay(100, ct);
 ///         progress.Report(i);
 ///     }
-/// }, progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
-/// worker.ProgressChanged += (s, e) => Console.WriteLine($"Progress: {e.ProgressPercentage}%");
+/// }, progress: new Progress<BackgroundWorkerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Percentage: {p.ProgressPercentage}%")));
+/// worker.ProgressChanged += (s, e) => Console.WriteLine($"Legacy Progress: {e.ProgressPercentage}%");
 /// await worker.StartAsync(CancellationToken.None);
 /// </code>
 /// </example>
@@ -31,12 +31,12 @@ public class BackgroundWorker(
     Func<CancellationToken, IProgress<int>, Task> work,
     bool handleErrors = false,
     ILogger logger = null,
-    IProgress<ResiliencyProgress> progress = null)
+    IProgress<BackgroundWorkerProgress> progress = null)
 {
     private readonly Func<CancellationToken, IProgress<int>, Task> work = work ?? throw new ArgumentNullException(nameof(work));
     private CancellationTokenSource cts = new();
     private Task task;
-    private readonly IProgress<ResiliencyProgress> progress = progress;
+    private readonly IProgress<BackgroundWorkerProgress> progress = progress;
 
     /// <summary>
     /// Delegate type for the ProgressChanged event.
@@ -72,7 +72,7 @@ public class BackgroundWorker(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<BackgroundWorkerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Percentage: {p.ProgressPercentage}%"));
     /// var worker = new BackgroundWorker(async (ct, p) =>
     /// {
     ///     for (int i = 0; i <= 100; i += 10)
@@ -86,7 +86,7 @@ public class BackgroundWorker(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<BackgroundWorkerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         if (this.task?.IsCompleted == false)
@@ -163,7 +163,7 @@ public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Tas
 {
     private bool handleErrors = false;
     private ILogger logger = null;
-    private IProgress<ResiliencyProgress> progress = null;
+    private IProgress<BackgroundWorkerProgress> progress = null;
 
     /// <summary>
     /// Configures the background worker to handle errors by logging them instead of throwing.
@@ -182,7 +182,7 @@ public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Tas
     /// </summary>
     /// <param name="progress">The progress reporter to use for background operations.</param>
     /// <returns>The BackgroundWorkerBuilder instance for chaining.</returns>
-    public BackgroundWorkerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public BackgroundWorkerBuilder WithProgress(IProgress<BackgroundWorkerProgress> progress)
     {
         this.progress = progress;
         return this;

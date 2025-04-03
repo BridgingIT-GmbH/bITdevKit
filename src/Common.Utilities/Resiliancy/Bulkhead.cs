@@ -12,7 +12,7 @@ public class Bulkhead
     private readonly int maxConcurrency;
     private readonly bool handleErrors;
     private readonly ILogger logger;
-    private readonly IProgress<ResiliencyProgress> progress;
+    private readonly IProgress<BulkheadProgress> progress;
     private readonly Queue<Task> queuedTasks = [];
     private readonly Lock lockObject = new();
 
@@ -26,7 +26,7 @@ public class Bulkhead
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxConcurrency is less than 1.</exception>
     /// <example>
     /// <code>
-    /// var bulkhead = new Bulkhead(5, progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+    /// var bulkhead = new Bulkhead(5, progress: new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}")));
     /// await bulkhead.ExecuteAsync(async ct => await Task.Delay(100, ct), CancellationToken.None);
     /// </code>
     /// </example>
@@ -34,7 +34,7 @@ public class Bulkhead
         int maxConcurrency,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<BulkheadProgress> progress = null)
     {
         if (maxConcurrency < 1)
             throw new ArgumentOutOfRangeException(nameof(maxConcurrency), "Maximum concurrency must be at least 1.");
@@ -57,7 +57,7 @@ public class Bulkhead
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
     /// var bulkhead = new Bulkhead(2);
     /// await bulkhead.ExecuteAsync(async ct =>
     /// {
@@ -66,7 +66,7 @@ public class Bulkhead
     /// }, cts.Token, progress);
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<BulkheadProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var task = Task.Run(async () =>
@@ -118,7 +118,7 @@ public class Bulkhead
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
     /// var bulkhead = new Bulkhead(2);
     /// int result = await bulkhead.ExecuteAsync(async ct =>
     /// {
@@ -128,7 +128,7 @@ public class Bulkhead
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<BulkheadProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var task = Task.Run(async () =>
@@ -182,7 +182,7 @@ public class BulkheadBuilder(int maxConcurrency)
 {
     private bool handleErrors = false;
     private ILogger logger = null;
-    private IProgress<ResiliencyProgress> progress = null;
+    private IProgress<BulkheadProgress> progress = null;
 
     /// <summary>
     /// Configures the bulkhead to handle errors by logging them instead of throwing.
@@ -201,7 +201,7 @@ public class BulkheadBuilder(int maxConcurrency)
     /// </summary>
     /// <param name="progress">The progress reporter to use for bulkhead operations.</param>
     /// <returns>The BulkheadBuilder instance for chaining.</returns>
-    public BulkheadBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public BulkheadBuilder WithProgress(IProgress<BulkheadProgress> progress)
     {
         this.progress = progress;
         return this;

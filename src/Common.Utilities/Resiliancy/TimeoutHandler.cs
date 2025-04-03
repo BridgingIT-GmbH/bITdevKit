@@ -12,7 +12,7 @@ public class TimeoutHandler
     private readonly TimeSpan timeout;
     private readonly bool handleErrors;
     private readonly ILogger logger;
-    private readonly IProgress<ResiliencyProgress> progress;
+    private readonly IProgress<TimeoutHandlerProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the TimeoutHandler class with the specified timeout duration.
@@ -24,7 +24,7 @@ public class TimeoutHandler
     /// <exception cref="ArgumentOutOfRangeException">Thrown if timeout is negative.</exception>
     /// <example>
     /// <code>
-    /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(5), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+    /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(5), progress: new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s")));
     /// await timeoutHandler.ExecuteAsync(async ct => await Task.Delay(3000, ct), CancellationToken.None);
     /// </code>
     /// </example>
@@ -32,7 +32,7 @@ public class TimeoutHandler
         TimeSpan timeout,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<TimeoutHandlerProgress> progress = null)
     {
         if (timeout < TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout cannot be negative.");
@@ -55,7 +55,7 @@ public class TimeoutHandler
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s"));
     /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(2));
     /// await timeoutHandler.ExecuteAsync(async ct =>
     /// {
@@ -64,7 +64,7 @@ public class TimeoutHandler
     /// }, cts.Token, progress);
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<TimeoutHandlerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
@@ -126,7 +126,7 @@ public class TimeoutHandler
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s"));
     /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(2));
     /// int result = await timeoutHandler.ExecuteAsync(async ct =>
     /// {
@@ -135,7 +135,7 @@ public class TimeoutHandler
     /// }, cts.Token, progress);
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<TimeoutHandlerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
@@ -198,7 +198,7 @@ public class TimeoutHandlerBuilder(TimeSpan timeout)
 {
     private bool handleErrors = false;
     private ILogger logger = null;
-    private IProgress<ResiliencyProgress> progress = null;
+    private IProgress<TimeoutHandlerProgress> progress = null;
 
     /// <summary>
     /// Configures the timeout handler to handle errors by logging them instead of throwing.
@@ -217,7 +217,7 @@ public class TimeoutHandlerBuilder(TimeSpan timeout)
     /// </summary>
     /// <param name="progress">The progress reporter to use for timeout operations.</param>
     /// <returns>The TimeoutHandlerBuilder instance for chaining.</returns>
-    public TimeoutHandlerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public TimeoutHandlerBuilder WithProgress(IProgress<TimeoutHandlerProgress> progress)
     {
         this.progress = progress;
         return this;

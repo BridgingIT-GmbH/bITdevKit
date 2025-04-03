@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for debouncing/throttling operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+/// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<DebouncerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingDelay.TotalSeconds}s, Throttling: {p.IsThrottling}")));
 /// await debouncer.DebounceAsync(CancellationToken.None); // Delays execution by 1 second
 /// </code>
 /// </example>
@@ -29,7 +29,7 @@ public class Debouncer(
     bool useThrottling = false,
     bool handleErrors = false,
     ILogger logger = null,
-    IProgress<ResiliencyProgress> progress = null) : IDisposable
+    IProgress<DebouncerProgress> progress = null) : IDisposable
 {
     private readonly TimeSpan delay = delay;
     private readonly Func<CancellationToken, Task> action = action ?? throw new ArgumentNullException(nameof(action));
@@ -38,7 +38,7 @@ public class Debouncer(
     private bool isPending;
     private DateTime lastExecution;
     private readonly Lock lockObject = new();
-    private readonly IProgress<ResiliencyProgress> progress = progress;
+    private readonly IProgress<DebouncerProgress> progress = progress;
 
     /// <summary>
     /// Initializes a new instance of the Debouncer class with a simpler action that does not require a CancellationToken.
@@ -52,7 +52,7 @@ public class Debouncer(
     /// <param name="progress">An optional progress reporter for debouncing/throttling operations. Defaults to null.</param>
     /// <example>
     /// <code>
-    /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+    /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<DebouncerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingDelay.TotalSeconds}s, Throttling: {p.IsThrottling}")));
     /// await debouncer.DebounceAsync(CancellationToken.None); // Delays execution by 1 second
     /// </code>
     /// </example>
@@ -63,7 +63,7 @@ public class Debouncer(
         bool useThrottling = false,
         bool handleErrors = false,
         ILogger logger = null,
-        IProgress<ResiliencyProgress> progress = null)
+        IProgress<DebouncerProgress> progress = null)
         : this(delay, ct => action(), executeImmediatelyOnFirstCall, useThrottling, handleErrors, logger, progress)
     {
     }
@@ -80,13 +80,13 @@ public class Debouncer(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<DebouncerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingDelay.TotalSeconds}s, Throttling: {p.IsThrottling}"));
     /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"));
     /// await debouncer.DebounceAsync(cts.Token, progress); // Action executes after 1 second with progress updates
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task DebounceAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task DebounceAsync(CancellationToken cancellationToken = default, IProgress<DebouncerProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         if (useThrottling)
@@ -244,7 +244,7 @@ public class DebouncerBuilder
     private bool useThrottling;
     private bool handleErrors;
     private ILogger logger;
-    private IProgress<ResiliencyProgress> progress;
+    private IProgress<DebouncerProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the DebouncerBuilder with the specified delay and action.
@@ -315,7 +315,7 @@ public class DebouncerBuilder
     /// </summary>
     /// <param name="progress">The progress reporter to use for debouncing/throttling operations.</param>
     /// <returns>The DebouncerBuilder instance for chaining.</returns>
-    public DebouncerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public DebouncerBuilder WithProgress(IProgress<DebouncerProgress> progress)
     {
         this.progress = progress;
         return this;

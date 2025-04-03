@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var notifier = new Notifier(progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+/// var notifier = new Notifier(progress: new Progress<NotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
 /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
 /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);
 /// </code>
@@ -24,12 +24,12 @@ public class Notifier(
     bool handleErrors = false,
     ILogger logger = null,
     IEnumerable<INotifcationPipelineBehavior> pipelineBehaviors = null,
-    IProgress<ResiliencyProgress> progress = null)
+    IProgress<NotifierProgress> progress = null)
 {
     private readonly Dictionary<Type, List<(INotificationHandler Handler, int Order)>> subscribers = [];
     private readonly List<INotifcationPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToList() ?? [];
     private readonly Lock lockObject = new();
-    private readonly IProgress<ResiliencyProgress> progress = progress;
+    private readonly IProgress<NotifierProgress> progress = progress;
 
     /// <summary>
     /// Subscribes a handler to events of the specified type with an optional execution order.
@@ -102,14 +102,14 @@ public class Notifier(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var progress = new Progress<NotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
     /// var notifier = new Notifier();
     /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
     /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
+    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default, IProgress<NotifierProgress> progress = null)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         List<(INotificationHandler Handler, int Order)> handlers;
@@ -227,7 +227,7 @@ public class NotifierBuilder
     private bool handleErrors;
     private ILogger logger;
     private readonly List<INotifcationPipelineBehavior> pipelineBehaviors;
-    private IProgress<ResiliencyProgress> progress;
+    private IProgress<NotifierProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the NotifierBuilder.
@@ -268,7 +268,7 @@ public class NotifierBuilder
     /// </summary>
     /// <param name="progress">The progress reporter to use for notification operations.</param>
     /// <returns>The NotifierBuilder instance for chaining.</returns>
-    public NotifierBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    public NotifierBuilder WithProgress(IProgress<NotifierProgress> progress)
     {
         this.progress = progress;
         return this;

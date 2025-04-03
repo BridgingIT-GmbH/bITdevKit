@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -17,6 +13,7 @@ public class Retryer
     private readonly bool useExponentialBackoff;
     private readonly bool handleErrors;
     private readonly ILogger logger;
+    private readonly IProgress<ResiliencyProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the Retryer class with the specified retry settings.
@@ -26,11 +23,14 @@ public class Retryer
     /// <param name="useExponentialBackoff">If true, increases the delay exponentially with each retry attempt. Defaults to false.</param>
     /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
     /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+    /// <param name="progress">An optional progress reporter for retry operations. Defaults to null.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxRetries is less than 1 or delay is negative.</exception>
     /// <example>
     /// <code>
-    /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
-    /// await retryer.ExecuteAsync(async ct => await SomeOperation(ct), CancellationToken.None);
+    /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1), progress: progress);
+    /// await retryer.ExecuteAsync(async ct => await SomeOperation(ct), cts.Token);
     /// </code>
     /// </example>
     public Retryer(
@@ -38,7 +38,8 @@ public class Retryer
         TimeSpan delay,
         bool useExponentialBackoff = false,
         bool handleErrors = false,
-        ILogger logger = null)
+        ILogger logger = null,
+        IProgress<ResiliencyProgress> progress = null)
     {
         if (maxRetries < 1)
         {
@@ -55,6 +56,7 @@ public class Retryer
         this.useExponentialBackoff = useExponentialBackoff;
         this.handleErrors = handleErrors;
         this.logger = logger;
+        this.progress = progress;
     }
 
     /// <summary>
@@ -62,24 +64,27 @@ public class Retryer
     /// </summary>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for retry operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="AggregateException">Thrown if all retry attempts fail and handleErrors is false.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
     /// await retryer.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(100, ct); // Simulate work
     ///     if (new Random().Next(2) == 0) throw new Exception("Transient failure");
     ///     Console.WriteLine("Success");
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         Exception lastException = null;
 
         for (var attempt = 1; attempt <= this.maxRetries; attempt++)
@@ -102,6 +107,7 @@ public class Retryer
                     if (this.handleErrors)
                     {
                         this.logger?.LogError(ex, "All retry attempts failed.");
+                        progress?.Report(new RetryProgress(attempt, this.maxRetries, TimeSpan.Zero, "All retry attempts failed."));
                         return;
                     }
                     throw new AggregateException($"Operation failed after {this.maxRetries} attempts.", ex);
@@ -109,6 +115,7 @@ public class Retryer
 
                 this.logger?.LogWarning(ex, $"Attempt {attempt} failed. Retrying after delay...");
                 var currentDelay = this.useExponentialBackoff ? this.delay.Multiply(1 << (attempt - 1)) : this.delay;
+                progress?.Report(new RetryProgress(attempt, this.maxRetries, currentDelay, $"Attempt {attempt} failed. Retrying after {currentDelay.TotalSeconds} seconds."));
                 await Task.Delay(currentDelay, cancellationToken);
             }
         }
@@ -120,24 +127,27 @@ public class Retryer
     /// <typeparam name="T">The type of the result returned by the action.</typeparam>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for retry operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation, returning the result of the action.</returns>
     /// <exception cref="AggregateException">Thrown if all retry attempts fail and handleErrors is false.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
     /// int result = await retryer.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(100, ct); // Simulate work
     ///     if (new Random().Next(2) == 0) throw new Exception("Transient failure");
     ///     return 42;
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         Exception lastException = null;
 
         for (var attempt = 1; attempt <= this.maxRetries; attempt++)
@@ -159,6 +169,7 @@ public class Retryer
                     if (this.handleErrors)
                     {
                         this.logger?.LogError(ex, "All retry attempts failed.");
+                        progress?.Report(new RetryProgress(attempt, this.maxRetries, TimeSpan.Zero, "All retry attempts failed."));
                         return default;
                     }
                     throw new AggregateException($"Operation failed after {this.maxRetries} attempts.", ex);
@@ -166,6 +177,7 @@ public class Retryer
 
                 this.logger?.LogWarning(ex, $"Attempt {attempt} failed. Retrying after delay...");
                 var currentDelay = this.useExponentialBackoff ? this.delay.Multiply(1 << (attempt - 1)) : this.delay;
+                progress?.Report(new RetryProgress(attempt, this.maxRetries, currentDelay, $"Attempt {attempt} failed. Retrying after {currentDelay.TotalSeconds} seconds."));
                 await Task.Delay(currentDelay, cancellationToken);
             }
         }
@@ -187,6 +199,7 @@ public class RetryerBuilder(int maxRetries, TimeSpan delay)
     private bool useExponentialBackoff = false;
     private bool handleErrors = false;
     private ILogger logger = null;
+    private IProgress<ResiliencyProgress> progress = null;
 
     /// <summary>
     /// Configures the retryer to use exponential backoff, increasing the delay with each retry attempt.
@@ -211,6 +224,17 @@ public class RetryerBuilder(int maxRetries, TimeSpan delay)
     }
 
     /// <summary>
+    /// Configures the retryer to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for retry operations.</param>
+    /// <returns>The RetryerBuilder instance for chaining.</returns>
+    public RetryerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured Retryer instance.
     /// </summary>
     /// <returns>A configured Retryer instance.</returns>
@@ -221,6 +245,7 @@ public class RetryerBuilder(int maxRetries, TimeSpan delay)
             delay,
             this.useExponentialBackoff,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

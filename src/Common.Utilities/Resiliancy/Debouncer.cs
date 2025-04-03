@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -19,9 +15,10 @@ using Microsoft.Extensions.Logging;
 /// <param name="useThrottling">If true, uses throttling mode (executes immediately and then at fixed intervals); otherwise, uses debouncing mode. Defaults to false.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+/// <param name="progress">An optional progress reporter for debouncing/throttling operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct));
+/// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
 /// await debouncer.DebounceAsync(CancellationToken.None); // Delays execution by 1 second
 /// </code>
 /// </example>
@@ -31,14 +28,17 @@ public class Debouncer(
     bool executeImmediatelyOnFirstCall = false,
     bool useThrottling = false,
     bool handleErrors = false,
-    ILogger logger = null) : IDisposable
+    ILogger logger = null,
+    IProgress<ResiliencyProgress> progress = null) : IDisposable
 {
+    private readonly TimeSpan delay = delay;
     private readonly Func<CancellationToken, Task> action = action ?? throw new ArgumentNullException(nameof(action));
     private CancellationTokenSource cts = new();
     private Task pendingTask;
     private bool isPending;
     private DateTime lastExecution;
     private readonly Lock lockObject = new();
+    private readonly IProgress<ResiliencyProgress> progress = progress;
 
     /// <summary>
     /// Initializes a new instance of the Debouncer class with a simpler action that does not require a CancellationToken.
@@ -49,9 +49,10 @@ public class Debouncer(
     /// <param name="useThrottling">If true, uses throttling mode (executes immediately and then at fixed intervals); otherwise, uses debouncing mode. Defaults to false.</param>
     /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
     /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+    /// <param name="progress">An optional progress reporter for debouncing/throttling operations. Defaults to null.</param>
     /// <example>
     /// <code>
-    /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async () => await Task.Delay(100));
+    /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
     /// await debouncer.DebounceAsync(CancellationToken.None); // Delays execution by 1 second
     /// </code>
     /// </example>
@@ -61,8 +62,9 @@ public class Debouncer(
         bool executeImmediatelyOnFirstCall = false,
         bool useThrottling = false,
         bool handleErrors = false,
-        ILogger logger = null)
-        : this(delay, ct => action(), executeImmediatelyOnFirstCall, useThrottling, handleErrors, logger)
+        ILogger logger = null,
+        IProgress<ResiliencyProgress> progress = null)
+        : this(delay, ct => action(), executeImmediatelyOnFirstCall, useThrottling, handleErrors, logger, progress)
     {
     }
 
@@ -72,26 +74,28 @@ public class Debouncer(
     /// In throttle mode, executes immediately and then at fixed intervals during rapid calls.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for debouncing/throttling operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var debouncer = new Debouncer(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"));
-    /// await debouncer.DebounceAsync(cts.Token); // Action executes after 1 second
-    /// await debouncer.DebounceAsync(cts.Token); // Resets delay, executes after another 1 second
+    /// await debouncer.DebounceAsync(cts.Token, progress); // Action executes after 1 second with progress updates
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task DebounceAsync(CancellationToken cancellationToken = default)
+    public async Task DebounceAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         if (useThrottling)
         {
             var now = DateTime.UtcNow;
             bool shouldExecute;
             lock (this.lockObject)
             {
-                shouldExecute = !this.isPending || (now - this.lastExecution) >= delay;
+                shouldExecute = !this.isPending || (now - this.lastExecution) >= this.delay;
                 if (shouldExecute)
                 {
                     this.isPending = true;
@@ -101,6 +105,7 @@ public class Debouncer(
 
             if (shouldExecute)
             {
+                progress?.Report(new DebouncerProgress(TimeSpan.Zero, true, "Executing throttled action"));
                 try
                 {
                     await this.action(cancellationToken);
@@ -121,6 +126,11 @@ public class Debouncer(
                     }
                 }
             }
+            else
+            {
+                var remaining = this.delay - (DateTime.UtcNow - this.lastExecution);
+                progress?.Report(new DebouncerProgress(remaining, true, $"Throttled, waiting {remaining.TotalSeconds} seconds"));
+            }
         }
         else
         {
@@ -132,6 +142,7 @@ public class Debouncer(
                     this.cts.Cancel();
                     this.cts.Dispose();
                     this.cts = new CancellationTokenSource();
+                    progress?.Report(new DebouncerProgress(this.delay, false, "Debounce reset due to new call"));
                 }
                 else if (executeImmediatelyOnFirstCall)
                 {
@@ -146,6 +157,7 @@ public class Debouncer(
 
             if (shouldExecuteImmediately)
             {
+                progress?.Report(new DebouncerProgress(TimeSpan.Zero, false, "Executing immediately on first call"));
                 await this.action(cancellationToken);
                 return;
             }
@@ -153,7 +165,8 @@ public class Debouncer(
             var token = this.cts.Token;
             using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken))
             {
-                this.pendingTask = Task.Delay(delay, linkedCts.Token)
+                progress?.Report(new DebouncerProgress(this.delay, false, "Debouncing, waiting for delay"));
+                this.pendingTask = Task.Delay(this.delay, linkedCts.Token)
                     .ContinueWith(async _ =>
                     {
                         if (!linkedCts.Token.IsCancellationRequested)
@@ -164,6 +177,7 @@ public class Debouncer(
                             }
                             try
                             {
+                                progress?.Report(new DebouncerProgress(TimeSpan.Zero, false, "Executing debounced action"));
                                 await this.action(linkedCts.Token);
                             }
                             catch (OperationCanceledException)
@@ -230,6 +244,7 @@ public class DebouncerBuilder
     private bool useThrottling;
     private bool handleErrors;
     private ILogger logger;
+    private IProgress<ResiliencyProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the DebouncerBuilder with the specified delay and action.
@@ -244,6 +259,7 @@ public class DebouncerBuilder
         this.useThrottling = false;
         this.handleErrors = false;
         this.logger = null;
+        this.progress = null;
     }
 
     /// <summary>
@@ -259,6 +275,7 @@ public class DebouncerBuilder
         this.useThrottling = false;
         this.handleErrors = false;
         this.logger = null;
+        this.progress = null;
     }
 
     /// <summary>
@@ -294,6 +311,17 @@ public class DebouncerBuilder
     }
 
     /// <summary>
+    /// Configures the debouncer to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for debouncing/throttling operations.</param>
+    /// <returns>The DebouncerBuilder instance for chaining.</returns>
+    public DebouncerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured Debouncer instance.
     /// </summary>
     /// <returns>A configured Debouncer instance.</returns>
@@ -305,6 +333,7 @@ public class DebouncerBuilder
             this.executeImmediatelyOnFirstCall,
             this.useThrottling,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

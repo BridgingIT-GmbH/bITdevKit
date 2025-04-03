@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -16,6 +12,7 @@ public class Bulkhead
     private readonly int maxConcurrency;
     private readonly bool handleErrors;
     private readonly ILogger logger;
+    private readonly IProgress<ResiliencyProgress> progress;
     private readonly Queue<Task> queuedTasks = [];
     private readonly Lock lockObject = new();
 
@@ -25,17 +22,19 @@ public class Bulkhead
     /// <param name="maxConcurrency">The maximum number of concurrent operations allowed.</param>
     /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
     /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+    /// <param name="progress">An optional progress reporter for bulkhead operations. Defaults to null.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxConcurrency is less than 1.</exception>
     /// <example>
     /// <code>
-    /// var bulkhead = new Bulkhead(5);
+    /// var bulkhead = new Bulkhead(5, progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
     /// await bulkhead.ExecuteAsync(async ct => await Task.Delay(100, ct), CancellationToken.None);
     /// </code>
     /// </example>
     public Bulkhead(
         int maxConcurrency,
         bool handleErrors = false,
-        ILogger logger = null)
+        ILogger logger = null,
+        IProgress<ResiliencyProgress> progress = null)
     {
         if (maxConcurrency < 1)
             throw new ArgumentOutOfRangeException(nameof(maxConcurrency), "Maximum concurrency must be at least 1.");
@@ -44,6 +43,7 @@ public class Bulkhead
         this.semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
         this.handleErrors = handleErrors;
         this.logger = logger;
+        this.progress = progress;
     }
 
     /// <summary>
@@ -51,26 +51,30 @@ public class Bulkhead
     /// </summary>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for bulkhead operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var bulkhead = new Bulkhead(2);
     /// await bulkhead.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(1000, ct); // Simulate work
     ///     Console.WriteLine("Operation completed");
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         var task = Task.Run(async () =>
         {
             await this.semaphore.WaitAsync(cancellationToken);
             try
             {
+                progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Executing operation within bulkhead"));
                 await action(cancellationToken);
             }
             catch (OperationCanceledException)
@@ -85,19 +89,21 @@ public class Bulkhead
             finally
             {
                 this.semaphore.Release();
+                lock (this.lockObject)
+                {
+                    this.queuedTasks.Dequeue();
+                }
+                progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Operation completed, semaphore released"));
             }
         }, cancellationToken);
 
         lock (this.lockObject)
         {
             this.queuedTasks.Enqueue(task);
+            progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, $"Task queued, {this.queuedTasks.Count} tasks in queue"));
         }
 
         await task;
-        lock (this.lockObject)
-        {
-            this.queuedTasks.Dequeue();
-        }
     }
 
     /// <summary>
@@ -106,27 +112,31 @@ public class Bulkhead
     /// <typeparam name="T">The type of the result returned by the action.</typeparam>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for bulkhead operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation, returning the result of the action.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var bulkhead = new Bulkhead(2);
     /// int result = await bulkhead.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(1000, ct); // Simulate work
     ///     return 42;
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         var task = Task.Run(async () =>
         {
             await this.semaphore.WaitAsync(cancellationToken);
             try
             {
+                progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Executing operation within bulkhead"));
                 return await action(cancellationToken);
             }
             catch (OperationCanceledException)
@@ -142,19 +152,21 @@ public class Bulkhead
             finally
             {
                 this.semaphore.Release();
+                lock (this.lockObject)
+                {
+                    this.queuedTasks.Dequeue();
+                }
+                progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Operation completed, semaphore released"));
             }
         }, cancellationToken);
 
         lock (this.lockObject)
         {
             this.queuedTasks.Enqueue(task);
+            progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, $"Task queued, {this.queuedTasks.Count} tasks in queue"));
         }
 
         var result = await task;
-        lock (this.lockObject)
-        {
-            this.queuedTasks.Dequeue();
-        }
         return result;
     }
 }
@@ -170,6 +182,7 @@ public class BulkheadBuilder(int maxConcurrency)
 {
     private bool handleErrors = false;
     private ILogger logger = null;
+    private IProgress<ResiliencyProgress> progress = null;
 
     /// <summary>
     /// Configures the bulkhead to handle errors by logging them instead of throwing.
@@ -184,6 +197,17 @@ public class BulkheadBuilder(int maxConcurrency)
     }
 
     /// <summary>
+    /// Configures the bulkhead to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for bulkhead operations.</param>
+    /// <returns>The BulkheadBuilder instance for chaining.</returns>
+    public BulkheadBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured Bulkhead instance.
     /// </summary>
     /// <returns>A configured Bulkhead instance.</returns>
@@ -192,6 +216,7 @@ public class BulkheadBuilder(int maxConcurrency)
         return new Bulkhead(
             maxConcurrency,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

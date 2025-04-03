@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -16,6 +12,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="work">The asynchronous work to execute in the background, accepting a CancellationToken and IProgress<int> for progress reporting.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from the work; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+/// <param name="progress">An optional progress reporter for background operations. Defaults to null.</param>
 /// <example>
 /// <code>
 /// var worker = new BackgroundWorker(async (ct, progress) =>
@@ -25,7 +22,7 @@ using Microsoft.Extensions.Logging;
 ///         await Task.Delay(100, ct);
 ///         progress.Report(i);
 ///     }
-/// });
+/// }, progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
 /// worker.ProgressChanged += (s, e) => Console.WriteLine($"Progress: {e.ProgressPercentage}%");
 /// await worker.StartAsync(CancellationToken.None);
 /// </code>
@@ -33,11 +30,13 @@ using Microsoft.Extensions.Logging;
 public class BackgroundWorker(
     Func<CancellationToken, IProgress<int>, Task> work,
     bool handleErrors = false,
-    ILogger logger = null)
+    ILogger logger = null,
+    IProgress<ResiliencyProgress> progress = null)
 {
     private readonly Func<CancellationToken, IProgress<int>, Task> work = work ?? throw new ArgumentNullException(nameof(work));
     private CancellationTokenSource cts = new();
     private Task task;
+    private readonly IProgress<ResiliencyProgress> progress = progress;
 
     /// <summary>
     /// Delegate type for the ProgressChanged event.
@@ -66,27 +65,30 @@ public class BackgroundWorker(
     /// Starts the background work.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for background operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the background work is already running.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var worker = new BackgroundWorker(async (ct, progress) =>
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var worker = new BackgroundWorker(async (ct, p) =>
     /// {
     ///     for (int i = 0; i <= 100; i += 10)
     ///     {
     ///         await Task.Delay(100, ct);
-    ///         progress.Report(i);
+    ///         p.Report(i);
     ///     }
     /// });
-    /// worker.ProgressChanged += (s, e) => Console.WriteLine($"Progress: {e.ProgressPercentage}%");
-    /// await worker.StartAsync(cts.Token);
+    /// worker.ProgressChanged += (s, e) => Console.WriteLine($"Legacy Progress: {e.ProgressPercentage}%");
+    /// await worker.StartAsync(cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task StartAsync(CancellationToken cancellationToken = default)
+    public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         if (this.task?.IsCompleted == false)
         {
             throw new InvalidOperationException("Background work is already running.");
@@ -95,12 +97,16 @@ public class BackgroundWorker(
         this.cts = new CancellationTokenSource();
         using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(this.cts.Token, cancellationToken))
         {
-            var progress = new Progress<int>(value => ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(value)));
+            var legacyProgress = new Progress<int>(value =>
+            {
+                ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(value));
+                progress?.Report(new BackgroundWorkerProgress(value, $"Progress updated to {value}%"));
+            });
             this.task = Task.Run(async () =>
             {
                 try
                 {
-                    await this.work(linkedCts.Token, progress);
+                    await this.work(linkedCts.Token, legacyProgress);
                 }
                 catch (OperationCanceledException)
                 {
@@ -157,6 +163,7 @@ public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Tas
 {
     private bool handleErrors = false;
     private ILogger logger = null;
+    private IProgress<ResiliencyProgress> progress = null;
 
     /// <summary>
     /// Configures the background worker to handle errors by logging them instead of throwing.
@@ -171,6 +178,17 @@ public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Tas
     }
 
     /// <summary>
+    /// Configures the background worker to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for background operations.</param>
+    /// <returns>The BackgroundWorkerBuilder instance for chaining.</returns>
+    public BackgroundWorkerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured BackgroundWorker instance.
     /// </summary>
     /// <returns>A configured BackgroundWorker instance.</returns>
@@ -179,6 +197,7 @@ public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Tas
         return new BackgroundWorker(
             work,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

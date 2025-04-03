@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -16,6 +12,7 @@ public class CircuitBreaker
     private readonly TimeSpan resetTimeout;
     private readonly bool handleErrors;
     private readonly ILogger logger;
+    private readonly IProgress<ResiliencyProgress> progress;
     private int failureCount;
     private DateTime lastFailureTime;
     private CircuitBreakerState state;
@@ -28,18 +25,22 @@ public class CircuitBreaker
     /// <param name="resetTimeout">The duration to wait before transitioning from Open to Half-Open state.</param>
     /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
     /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+    /// <param name="progress">An optional progress reporter for circuit breaker operations. Defaults to null.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if failureThreshold is less than 1 or resetTimeout is negative.</exception>
     /// <example>
     /// <code>
-    /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
-    /// await circuitBreaker.ExecuteAsync(async ct => await SomeOperation(ct), CancellationToken.None);
+    /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30), progress: progress);
+    /// await circuitBreaker.ExecuteAsync(async ct => await SomeOperation(ct), cts.Token);
     /// </code>
     /// </example>
     public CircuitBreaker(
         int failureThreshold,
         TimeSpan resetTimeout,
         bool handleErrors = false,
-        ILogger logger = null)
+        ILogger logger = null,
+        IProgress<ResiliencyProgress> progress = null)
     {
         if (failureThreshold < 1)
             throw new ArgumentOutOfRangeException(nameof(failureThreshold), "Failure threshold must be at least 1.");
@@ -50,6 +51,7 @@ public class CircuitBreaker
         this.resetTimeout = resetTimeout;
         this.handleErrors = handleErrors;
         this.logger = logger;
+        this.progress = progress;
         this.state = CircuitBreakerState.Closed;
     }
 
@@ -71,6 +73,7 @@ public class CircuitBreaker
                 if (this.state == CircuitBreakerState.Open && DateTime.UtcNow - this.lastFailureTime >= this.resetTimeout)
                 {
                     this.state = CircuitBreakerState.HalfOpen;
+                    this.progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
                 }
                 return this.state;
             }
@@ -82,27 +85,31 @@ public class CircuitBreaker
     /// </summary>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for circuit breaker operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="CircuitBreakerOpenException">Thrown if the circuit is open and the reset timeout has not elapsed.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
     /// await circuitBreaker.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(100, ct); // Simulate work
     ///     if (new Random().Next(2) == 0) throw new Exception("Operation failed");
     ///     Console.WriteLine("Success");
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
-        var (success, _) = await this.TryExecuteAsync(ct => action(ct), cancellationToken);
+        progress ??= this.progress; // Use instance-level progress if provided
+        var (success, _) = await this.TryExecuteAsync(ct => action(ct), cancellationToken, progress);
         if (!success)
         {
+            progress?.Report(new CircuitBreakerProgress(this.State, this.failureCount, this.resetTimeout, "Circuit is open, operation skipped"));
             if (this.handleErrors)
             {
                 this.logger?.LogWarning("Circuit breaker is open, operation skipped.");
@@ -118,27 +125,31 @@ public class CircuitBreaker
     /// <typeparam name="T">The type of the result returned by the action.</typeparam>
     /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for circuit breaker operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation, returning the result of the action.</returns>
     /// <exception cref="CircuitBreakerOpenException">Thrown if the circuit is open and the reset timeout has not elapsed.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
     /// int result = await circuitBreaker.ExecuteAsync(async ct =>
     /// {
     ///     await Task.Delay(100, ct); // Simulate work
     ///     if (new Random().Next(2) == 0) throw new Exception("Operation failed");
     ///     return 42;
-    /// }, cts.Token);
+    /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
     /// </code>
     /// </example>
-    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default)
+    public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
-        var (success, result) = await this.TryExecuteAsync(ct => action(ct), cancellationToken);
+        progress ??= this.progress; // Use instance-level progress if provided
+        var (success, result) = await this.TryExecuteAsync(ct => action(ct), cancellationToken, progress);
         if (!success)
         {
+            progress?.Report(new CircuitBreakerProgress(this.State, this.failureCount, this.resetTimeout, "Circuit is open, operation skipped"));
             if (this.handleErrors)
             {
                 this.logger?.LogWarning("Circuit breaker is open, operation skipped.");
@@ -149,7 +160,7 @@ public class CircuitBreaker
         return (T)result;
     }
 
-    private async Task<(bool Success, object Result)> TryExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
+    private async Task<(bool Success, object Result)> TryExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IProgress<ResiliencyProgress> progress)
     {
         lock (this.lockObject)
         {
@@ -157,9 +168,11 @@ public class CircuitBreaker
             {
                 if (DateTime.UtcNow - this.lastFailureTime < this.resetTimeout)
                 {
+                    progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit is open, operation blocked"));
                     return (false, null); // Circuit is still open
                 }
                 this.state = CircuitBreakerState.HalfOpen;
+                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
             }
         }
 
@@ -170,6 +183,7 @@ public class CircuitBreaker
             {
                 this.state = CircuitBreakerState.Closed;
                 this.failureCount = 0;
+                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
             return (true, null);
         }
@@ -187,6 +201,7 @@ public class CircuitBreaker
                 if (this.failureCount >= this.failureThreshold)
                 {
                     this.state = CircuitBreakerState.Open;
+                    progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit opened due to repeated failures"));
                     this.logger?.LogWarning(ex, "Circuit breaker opened due to repeated failures.");
                 }
             }
@@ -199,7 +214,7 @@ public class CircuitBreaker
         }
     }
 
-    private async Task<(bool Success, object Result)> TryExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken)
+    private async Task<(bool Success, object Result)> TryExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken, IProgress<ResiliencyProgress> progress)
     {
         lock (this.lockObject)
         {
@@ -207,9 +222,11 @@ public class CircuitBreaker
             {
                 if (DateTime.UtcNow - this.lastFailureTime < this.resetTimeout)
                 {
+                    progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit is open, operation blocked"));
                     return (false, null); // Circuit is still open
                 }
                 this.state = CircuitBreakerState.HalfOpen;
+                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
             }
         }
 
@@ -220,6 +237,7 @@ public class CircuitBreaker
             {
                 this.state = CircuitBreakerState.Closed;
                 this.failureCount = 0;
+                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
             return (true, result);
         }
@@ -237,6 +255,7 @@ public class CircuitBreaker
                 if (this.failureCount >= this.failureThreshold)
                 {
                     this.state = CircuitBreakerState.Open;
+                    progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit opened due to repeated failures"));
                     this.logger?.LogWarning(ex, "Circuit breaker opened due to repeated failures.");
                 }
             }
@@ -294,6 +313,7 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
 {
     private bool handleErrors;
     private ILogger logger;
+    private IProgress<ResiliencyProgress> progress;
 
     /// <summary>
     /// Configures the circuit breaker to handle errors by logging them instead of throwing.
@@ -308,6 +328,17 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
     }
 
     /// <summary>
+    /// Configures the circuit breaker to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for circuit breaker operations.</param>
+    /// <returns>The CircuitBreakerBuilder instance for chaining.</returns>
+    public CircuitBreakerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured CircuitBreaker instance.
     /// </summary>
     /// <returns>A configured CircuitBreaker instance.</returns>
@@ -317,6 +348,7 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
             failureThreshold,
             resetTimeout,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

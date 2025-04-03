@@ -1,36 +1,35 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Provides a publish-subscribe pattern for loosely coupled event handling.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the EventAggregator class with the specified settings.
+/// Initializes a new instance of the Notifier class with the specified settings.
 /// </remarks>
 /// <param name="handleErrors">If true, catches and logs exceptions from event handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
 /// <param name="pipelineBehaviors">A list of pipeline behaviors to execute before and after event handling, applied in reverse order. Defaults to an empty list.</param>
+/// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var eventAggregator = new EventAggregator();
-/// eventAggregator.Subscribe&lt;MyEvent&gt;(async (e, ct) => Console.WriteLine(e.Message));
-/// await eventAggregator.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);
+/// var notifier = new Notifier(progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
+/// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
+/// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);
 /// </code>
 /// </example>
 public class Notifier(
     bool handleErrors = false,
     ILogger logger = null,
-    IEnumerable<INotifcationPipelineBehavior> pipelineBehaviors = null)
+    IEnumerable<INotifcationPipelineBehavior> pipelineBehaviors = null,
+    IProgress<ResiliencyProgress> progress = null)
 {
     private readonly Dictionary<Type, List<(INotificationHandler Handler, int Order)>> subscribers = [];
     private readonly List<INotifcationPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToList() ?? [];
     private readonly Lock lockObject = new();
+    private readonly IProgress<ResiliencyProgress> progress = progress;
 
     /// <summary>
     /// Subscribes a handler to events of the specified type with an optional execution order.
@@ -40,8 +39,8 @@ public class Notifier(
     /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
     /// <example>
     /// <code>
-    /// var eventAggregator = new EventAggregator();
-    /// eventAggregator.Subscribe&lt;MyEvent&gt;(async (e, ct) => Console.WriteLine(e.Message), order: 1);
+    /// var notifier = new Notifier();
+    /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message), order: 1);
     /// </code>
     /// </example>
     public void Subscribe<TNotification>(Func<TNotification, CancellationToken, Task> handler, int order = 0)
@@ -68,10 +67,10 @@ public class Notifier(
     /// <param name="handler">The handler to remove.</param>
     /// <example>
     /// <code>
-    /// var eventAggregator = new EventAggregator();
-    /// Func&lt;MyEvent, CancellationToken, Task&gt; handler = async (e, ct) => Console.WriteLine(e.Message);
-    /// eventAggregator.Subscribe&lt;MyEvent&gt;(handler);
-    /// eventAggregator.Unsubscribe&lt;MyEvent&gt;(handler);
+    /// var notifier = new Notifier();
+    /// Func<MyEvent, CancellationToken, Task> handler = async (e, ct) => Console.WriteLine(e.Message);
+    /// notifier.Subscribe<MyEvent>(handler);
+    /// notifier.Unsubscribe<MyEvent>(handler);
     /// </code>
     /// </example>
     public void Unsubscribe<TNotification>(Func<TNotification, CancellationToken, Task> handler)
@@ -82,7 +81,7 @@ public class Notifier(
             if (this.subscribers.TryGetValue(notificationType, out var handlers))
             {
                 var notificationHandler = new NotificationHandler<TNotification>(handler);
-                handlers.RemoveAll(h => h.Handler.Equals(handler));
+                handlers.RemoveAll(h => h.Handler.Equals(notificationHandler));
                 if (handlers.Count == 0)
                 {
                     this.subscribers.Remove(notificationType);
@@ -97,19 +96,22 @@ public class Notifier(
     /// <typeparam name="TNotification">The type of event to publish.</typeparam>
     /// <param name="notification">The notification to publish.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var eventAggregator = new EventAggregator();
-    /// eventAggregator.Subscribe&lt;MyEvent&gt;(async (e, ct) => Console.WriteLine(e.Message));
-    /// await eventAggregator.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token);
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
+    /// var notifier = new Notifier();
+    /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
+    /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         List<(INotificationHandler Handler, int Order)> handlers;
         lock (this.lockObject)
         {
@@ -120,6 +122,7 @@ public class Notifier(
             handlers = [.. handlerList];
         }
 
+        var handlersProcessed = 0;
         foreach (var (handler, _) in handlers)
         {
             try
@@ -132,6 +135,8 @@ public class Notifier(
                     next = () => behavior.HandleAsync(notification, cancellationToken, currentNext);
                 }
                 await next();
+                handlersProcessed++;
+                progress?.Report(new NotifierProgress(handlersProcessed, handlers.Count, $"Processed {handlersProcessed} of {handlers.Count} handlers"));
             }
             catch (OperationCanceledException)
             {
@@ -215,29 +220,31 @@ public class LoggingPipelineBehavior(ILogger logger) : INotifcationPipelineBehav
 }
 
 /// <summary>
-/// A fluent builder for configuring and creating an EventAggregator instance.
+/// A fluent builder for configuring and creating an Notifier instance.
 /// </summary>
 public class NotifierBuilder
 {
     private bool handleErrors;
     private ILogger logger;
     private readonly List<INotifcationPipelineBehavior> pipelineBehaviors;
+    private IProgress<ResiliencyProgress> progress;
 
     /// <summary>
-    /// Initializes a new instance of the EventAggregatorBuilder.
+    /// Initializes a new instance of the NotifierBuilder.
     /// </summary>
     public NotifierBuilder()
     {
         this.handleErrors = false;
         this.logger = null;
         this.pipelineBehaviors = [];
+        this.progress = null;
     }
 
     /// <summary>
     /// Configures the event aggregator to handle errors by logging them instead of throwing.
     /// </summary>
     /// <param name="logger">The logger to use for error logging. If null, errors are silently ignored.</param>
-    /// <returns>The EventAggregatorBuilder instance for chaining.</returns>
+    /// <returns>The NotifierBuilder instance for chaining.</returns>
     public NotifierBuilder HandleErrors(ILogger logger = null)
     {
         this.handleErrors = true;
@@ -249,7 +256,7 @@ public class NotifierBuilder
     /// Adds a pipeline behavior to the event aggregator for pre- and post-processing of events.
     /// </summary>
     /// <param name="behavior">The pipeline behavior to add.</param>
-    /// <returns>The EventAggregatorBuilder instance for chaining.</returns>
+    /// <returns>The NotifierBuilder instance for chaining.</returns>
     public NotifierBuilder AddPipelineBehavior(INotifcationPipelineBehavior behavior)
     {
         this.pipelineBehaviors.Add(behavior);
@@ -257,14 +264,26 @@ public class NotifierBuilder
     }
 
     /// <summary>
-    /// Builds and returns a configured EventAggregator instance.
+    /// Configures the notifier to report progress using the specified progress reporter.
     /// </summary>
-    /// <returns>A configured EventAggregator instance.</returns>
+    /// <param name="progress">The progress reporter to use for notification operations.</param>
+    /// <returns>The NotifierBuilder instance for chaining.</returns>
+    public NotifierBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
+    /// Builds and returns a configured Notifier instance.
+    /// </summary>
+    /// <returns>A configured Notifier instance.</returns>
     public Notifier Build()
     {
         return new Notifier(
             this.handleErrors,
             this.logger,
-            this.pipelineBehaviors);
+            this.pipelineBehaviors,
+            this.progress);
     }
 }

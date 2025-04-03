@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -17,9 +13,10 @@ using Microsoft.Extensions.Logging;
 /// <param name="action">The asynchronous action to execute, accepting a CancellationToken.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+/// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct));
+/// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
 /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
 /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
 /// </code>
@@ -28,13 +25,15 @@ public class Throttler(
     TimeSpan interval,
     Func<CancellationToken, Task> action,
     bool handleErrors = false,
-    ILogger logger = null) : IDisposable
+    ILogger logger = null,
+    IProgress<ResiliencyProgress> progress = null) : IDisposable
 {
     private readonly Func<CancellationToken, Task> action = action ?? throw new ArgumentNullException(nameof(action));
     private CancellationTokenSource cts = new();
     private bool isThrottled;
     private DateTime lastExecution;
     private readonly Lock lockObject = new();
+    private readonly IProgress<ResiliencyProgress> progress = progress;
 
     /// <summary>
     /// Initializes a new instance of the Throttler class with a simpler action that does not require a CancellationToken.
@@ -43,9 +42,10 @@ public class Throttler(
     /// <param name="action">The asynchronous action to execute.</param>
     /// <param name="handleErrors">If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</param>
     /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+    /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
     /// <example>
     /// <code>
-    /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async () => await Task.Delay(100));
+    /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
     /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
     /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
     /// </code>
@@ -54,8 +54,9 @@ public class Throttler(
         TimeSpan interval,
         Func<Task> action,
         bool handleErrors = false,
-        ILogger logger = null)
-        : this(interval, ct => action(), handleErrors, logger)
+        ILogger logger = null,
+        IProgress<ResiliencyProgress> progress = null)
+        : this(interval, ct => action(), handleErrors, logger, progress)
     {
     }
 
@@ -63,21 +64,24 @@ public class Throttler(
     /// Triggers the throttled action, executing it immediately if the interval has passed since the last execution, or skipping if within the interval.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"));
-    /// await throttler.ThrottleAsync(cts.Token); // Executes immediately
-    /// await throttler.ThrottleAsync(cts.Token); // Skips if within 1 second
+    /// await throttler.ThrottleAsync(cts.Token, progress); // Executes immediately with progress
+    /// await throttler.ThrottleAsync(cts.Token, progress); // Skips if within 1 second with progress
     /// await Task.Delay(1100);
-    /// await throttler.ThrottleAsync(cts.Token); // Executes after 1.1 seconds
+    /// await throttler.ThrottleAsync(cts.Token, progress); // Executes after 1.1 seconds
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task ThrottleAsync(CancellationToken cancellationToken = default)
+    public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
     {
+        progress ??= this.progress; // Use instance-level progress if provided
         var now = DateTime.UtcNow;
         bool shouldExecute;
         CancellationToken token;
@@ -98,6 +102,7 @@ public class Throttler(
 
         if (shouldExecute)
         {
+            progress?.Report(new ThrottlerProgress(TimeSpan.Zero, "Executing throttled action"));
             using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken))
             {
                 try
@@ -125,9 +130,15 @@ public class Throttler(
                 var remaining = interval - elapsed;
                 if (remaining > TimeSpan.Zero)
                 {
+                    progress?.Report(new ThrottlerProgress(remaining, $"Waiting remaining interval of {remaining.TotalSeconds} seconds"));
                     await Task.Delay(remaining, linkedCts.Token);
                 }
             }
+        }
+        else
+        {
+            var remaining = interval - (now - this.lastExecution);
+            progress?.Report(new ThrottlerProgress(remaining, $"Throttled, waiting {remaining.TotalSeconds} seconds"));
         }
     }
 
@@ -178,6 +189,7 @@ public class ThrottlerBuilder
     private readonly Func<CancellationToken, Task> action;
     private bool handleErrors;
     private ILogger logger;
+    private IProgress<ResiliencyProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the ThrottlerBuilder with the specified interval and action.
@@ -190,6 +202,7 @@ public class ThrottlerBuilder
         this.action = ct => action();
         this.handleErrors = false;
         this.logger = null;
+        this.progress = null;
     }
 
     /// <summary>
@@ -203,6 +216,7 @@ public class ThrottlerBuilder
         this.action = action;
         this.handleErrors = false;
         this.logger = null;
+        this.progress = null;
     }
 
     /// <summary>
@@ -218,6 +232,17 @@ public class ThrottlerBuilder
     }
 
     /// <summary>
+    /// Configures the throttler to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for throttling operations.</param>
+    /// <returns>The ThrottlerBuilder instance for chaining.</returns>
+    public ThrottlerBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured Throttler instance.
     /// </summary>
     /// <returns>A configured Throttler instance.</returns>
@@ -227,6 +252,7 @@ public class ThrottlerBuilder
             this.interval,
             this.action,
             this.handleErrors,
-            this.logger);
+            this.logger,
+            this.progress);
     }
 }

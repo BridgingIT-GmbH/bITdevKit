@@ -1,10 +1,6 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-namespace BridgingIT.DevKit.Common.Utilities;
-
+using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -16,9 +12,10 @@ using Microsoft.Extensions.Logging;
 /// <param name="handleErrors">If true, catches and logs exceptions from request handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
 /// <param name="pipelineBehaviors">A list of pipeline behaviors to execute before and after request handling, applied in reverse order. Defaults to an empty list.</param>
+/// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var requester = new Requester();
+/// var requester = new Requester(progress: new Progress<ResiliencyProgress>(p => Console.WriteLine(p.Status)));
 /// requester.RegisterHandler(new MyRequestHandler());
 /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
 /// Console.WriteLine(response.Result);
@@ -27,11 +24,13 @@ using Microsoft.Extensions.Logging;
 public class Requester(
     bool handleErrors = false,
     ILogger logger = null,
-    IEnumerable<IRequestPipelineBehavior> pipelineBehaviors = null)
+    IEnumerable<IRequestPipelineBehavior> pipelineBehaviors = null,
+    IProgress<ResiliencyProgress> progress = null)
 {
     private readonly Dictionary<Type, (IRequestHandler Handler, Type ResponseType)> handlers = [];
     private readonly List<IRequestPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse().ToList() ?? [];
     private readonly Lock lockObject = new();
+    private readonly IProgress<ResiliencyProgress> progress = progress;
 
     /// <summary>
     /// Registers a handler for a specific request type.
@@ -67,32 +66,36 @@ public class Requester(
     /// <typeparam name="TResponse">The type of response expected from the handler.</typeparam>
     /// <param name="request">The request to send.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation, returning the response from the handler.</returns>
     /// <exception cref="InvalidOperationException">Thrown if no handler is registered for the request type.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
+    /// var progress = new Progress<ResiliencyProgress>(p => Console.WriteLine($"Progress: {p.Status}"));
     /// var requester = new Requester();
     /// requester.RegisterHandler(new MyRequestHandler());
-    /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token);
+    /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token, progress);
     /// Console.WriteLine(response.Result);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
+    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default, IProgress<ResiliencyProgress> progress = null)
         where TRequest : IRequest<TResponse>
     {
+        progress ??= this.progress; // Use instance-level progress if provided
+        var requestType = typeof(TRequest);
         (IRequestHandler Handler, Type ResponseType) handlerInfo;
         lock (this.lockObject)
         {
-            var requestType = typeof(TRequest);
             if (!this.handlers.TryGetValue(requestType, out handlerInfo))
             {
                 throw new InvalidOperationException($"No handler registered for request type {requestType.Name}.");
             }
         }
 
+        progress?.Report(new RequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
         try
         {
             // Apply pipeline behaviors
@@ -194,6 +197,7 @@ public class RequesterBuilder
     private bool handleErrors;
     private ILogger logger;
     private readonly List<IRequestPipelineBehavior> pipelineBehaviors;
+    private IProgress<ResiliencyProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the RequesterBuilder.
@@ -203,6 +207,7 @@ public class RequesterBuilder
         this.handleErrors = false;
         this.logger = null;
         this.pipelineBehaviors = [];
+        this.progress = null;
     }
 
     /// <summary>
@@ -229,6 +234,17 @@ public class RequesterBuilder
     }
 
     /// <summary>
+    /// Configures the requester to report progress using the specified progress reporter.
+    /// </summary>
+    /// <param name="progress">The progress reporter to use for request operations.</param>
+    /// <returns>The RequesterBuilder instance for chaining.</returns>
+    public RequesterBuilder WithProgress(IProgress<ResiliencyProgress> progress)
+    {
+        this.progress = progress;
+        return this;
+    }
+
+    /// <summary>
     /// Builds and returns a configured Requester instance.
     /// </summary>
     /// <returns>A configured Requester instance.</returns>
@@ -237,6 +253,7 @@ public class RequesterBuilder
         return new Requester(
             this.handleErrors,
             this.logger,
-            this.pipelineBehaviors);
+            this.pipelineBehaviors,
+            this.progress);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace BridgingIT.DevKit.Common.Resilience;
+﻿namespace BridgingIT.DevKit.Common.Utilities;
 
 using System.Threading;
 using BridgingIT.DevKit.Common.Resiliancy;

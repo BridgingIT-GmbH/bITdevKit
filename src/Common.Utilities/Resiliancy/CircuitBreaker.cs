@@ -50,7 +50,7 @@ public class CircuitBreaker
         this.failureThreshold = failureThreshold;
         this.resetTimeout = resetTimeout;
         this.handleErrors = handleErrors;
-        this.logger = logger;
+        this.logger = logger ?? (handleErrors ? new NullLogger() : null); // Ensure logger is not null if handleErrors is true
         this.progress = progress;
         this.state = CircuitBreakerState.Closed;
     }
@@ -153,11 +153,12 @@ public class CircuitBreaker
             if (this.handleErrors)
             {
                 this.logger?.LogWarning("Circuit breaker is open, operation skipped.");
-                return default;
+                return default; // Return default value instead of throwing
             }
             throw new CircuitBreakerOpenException("Circuit breaker is open.");
         }
-        return (T)result;
+        // Cast result only if it’s not null, otherwise return default
+        return result != null ? (T)result : default;
     }
 
     private async Task<(bool Success, object Result)> TryExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken, IProgress<CircuitBreakerProgress> progress)
@@ -182,7 +183,8 @@ public class CircuitBreaker
             lock (this.lockObject)
             {
                 this.state = CircuitBreakerState.Closed;
-                this.progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
+                this.failureCount = 0;
+                progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
             return (true, null);
         }
@@ -207,7 +209,7 @@ public class CircuitBreaker
             if (this.handleErrors)
             {
                 this.logger?.LogError(ex, "Operation failed.");
-                return (true, null);
+                return (false, null); // Return false for handled failures, not true
             }
             throw;
         }
@@ -261,7 +263,7 @@ public class CircuitBreaker
             if (this.handleErrors)
             {
                 this.logger?.LogError(ex, "Operation failed.");
-                return (true, null);
+                return (false, null); // Return false for handled failures
             }
             throw;
         }
@@ -349,5 +351,22 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
             this.handleErrors,
             this.logger,
             this.progress);
+    }
+}
+
+/// <summary>
+/// A minimal implementation of ILogger that logs to the console.
+/// </summary>
+public class NullLogger : ILogger
+{
+    public static readonly NullLogger Instance = new NullLogger();
+
+    public IDisposable BeginScope<TState>(TState state) => null;
+
+    public bool IsEnabled(LogLevel logLevel) => false;
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    {
+        // Do nothing
     }
 }

@@ -57,8 +57,6 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   var progress = new Progress<DebouncerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingDelay.TotalSeconds}s, Throttling: {p.IsThrottling}"));
   var debouncer = new DebouncerBuilder(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"))
       .ExecuteImmediatelyOnFirstCall()
-      .UseThrottling()
-      .HandleErrors(new ConsoleLogger())
       .WithProgress(progress)
       .Build();
   await debouncer.DebounceAsync(cts.Token);
@@ -66,13 +64,10 @@ The **Resiliency** utilities are a collection of robust, reusable components des
 - **Configuration Options**:
   - `delay`: Delay interval for debouncing or minimum interval for throttling.
   - `executeImmediatelyOnFirstCall`: Executes immediately on the first call in debounce mode.
-  - `useThrottling`: Switches to throttling mode (immediate execution with fixed intervals).
-  - `handleErrors`: Log errors instead of throwing (with optional logger).
   - `progress`: An optional progress reporter of type `IProgress<DebouncerProgress>` for debouncing/throttling operations (configured via `WithProgress`).
 - **Best Practices**:
   - Use debouncing for UI input handling (e.g., search queries).
-  - Use throttling for rate-limiting frequent updates.
-  - Use `IProgress<DebouncerProgress>` to monitor delay or throttling status in real-time.
+  - Use `IProgress<DebouncerProgress>` to monitor delay or IsThrottling status in real-time.
 
 ### 3. Throttler
 - **Purpose**: Rate-limits an action, executing it immediately and then at fixed intervals during rapid calls.

@@ -1,12 +1,8 @@
-﻿// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
+﻿namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 /// <summary>
 /// Implements IFileEventStore using EF Core, storing FileEvent instances as FileEventEntity in a DbContext.
@@ -21,127 +17,162 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     where TContext : DbContext, IFileMonitoringContext
 {
     private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly SemaphoreSlim semaphore = new(1, 1); // Allows only one thread at a time
 
-    /// <summary>
-    /// Retrieves the most recent FileEvent for a given file path.
-    /// </summary>
-    /// <param name="filePath">Specifies the location of the file for which the event is being retrieved.</param>
-    /// <param name="fromDate">Defines the earliest date for filtering file events.</param>
-    /// <param name="tillDate">Sets the latest date for filtering file events.</param>
-    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
-    /// <returns>Returns the mapped domain representation of the file event or null if not found.</returns>
-    public async Task<FileEvent> GetFileEventAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
+    public async Task<FileEvent> GetFileEventAsync(
+        string filePath,
+        DateTimeOffset? fromDate = null,
+        DateTimeOffset? tillDate = null,
+        CancellationToken cancellationToken = default)
     {
-        var entity = await this.context.FileEvents
-            .Where(e => e.FilePath == filePath)
-            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
-            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
-            .OrderByDescending(e => e.DetectedDate)
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var entity = await this.context.FileEvents
+                .Where(e => e.FilePath == filePath)
+                .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate)
+                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-        return this.MapToDomain(entity);
+            return this.MapToDomain(entity);
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Tetrieves a file event based on a specified location and file path.
-    /// </summary>
-    /// <param name="locationName">Specifies the location associated with the file event to be retrieved.</param>
-    /// <param name="filePath">Indicates the path of the file for which the event is being fetched.</param>
-    /// <param name="fromDate">Defines the start date for filtering file events based on detection date.</param>
-    /// <param name="tillDate">Sets the end date for filtering file events based on detection date.</param>
-    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
-    /// <returns>Returns the mapped file event entity or null if not found.</returns>
-    public async Task<FileEvent> GetFileEventAsync(string locationName, string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
+    public async Task<FileEvent> GetFileEventAsync(
+        string locationName,
+        string filePath,
+        DateTimeOffset? fromDate = null,
+        DateTimeOffset? tillDate = null,
+        CancellationToken cancellationToken = default)
     {
-        var entity = await this.context.FileEvents
-            .Where(e => e.LocationName == locationName && e.FilePath == filePath)
-            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
-            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
-            .OrderByDescending(e => e.DetectedDate)
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var entity = await this.context.FileEvents
+                .Where(e => e.LocationName == locationName && e.FilePath == filePath)
+                .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate)
+                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-        return this.MapToDomain(entity);
+            return this.MapToDomain(entity);
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Retrieves a collection of file events related to a specified file.
-    /// </summary>
-    /// <param name="filePath">Specifies the path of the file for which events are being retrieved.</param>
-    /// <param name="fromDate">Defines the start date for filtering events based on their detection date.</param>
-    /// <param name="tillDate">Sets the end date for filtering events based on their detection date.</param>
-    /// <param name="cancellationToken">Allows for the operation to be canceled if needed.</param>
-    /// <returns>Returns a collection of mapped file event entities.</returns>
-    public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(string filePath, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(
+        string filePath,
+        DateTimeOffset? fromDate = null,
+        DateTimeOffset? tillDate = null,
+        CancellationToken cancellationToken = default)
     {
-        var entities = await this.context.FileEvents
-            .Where(e => e.FilePath == filePath)
-            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
-            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
-            .OrderByDescending(e => e.DetectedDate).ToListAsync(cancellationToken: cancellationToken);
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var entities = await this.context.FileEvents
+                .Where(e => e.FilePath == filePath)
+                .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate)
+                .ToListAsync(cancellationToken: cancellationToken);
 
-        return entities.Select(this.MapToDomain);
+            return entities.Select(this.MapToDomain);
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Retrieves a list of file events associated with a specific location asynchronously.
-    /// </summary>
-    /// <param name="locationName">Specifies the name of the location for which file events are being retrieved.</param>
-    /// <returns>A list of file events mapped to the domain model.</returns>
-    public async Task<List<FileEvent>> GetFileEventsForLocationAsync(string locationName, DateTimeOffset? fromDate = null, DateTimeOffset? tillDate = null, CancellationToken cancellationToken = default)
+    public async Task<List<FileEvent>> GetFileEventsForLocationAsync(
+        string locationName,
+        DateTimeOffset? fromDate = null,
+        DateTimeOffset? tillDate = null,
+        CancellationToken cancellationToken = default)
     {
-        var entities = await this.context.FileEvents
-            .Where(e => e.LocationName == locationName)
-            .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
-            .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
-            .OrderByDescending(e => e.DetectedDate).ToListAsync(cancellationToken: cancellationToken);
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var entities = await this.context.FileEvents
+                .Where(e => e.LocationName == locationName)
+                .WhereExpressionIf(e => e.DetectedDate >= fromDate, fromDate != null)
+                .WhereExpressionIf(e => e.DetectedDate <= tillDate, tillDate != null)
+                .OrderByDescending(e => e.DetectedDate)
+                .ToListAsync(cancellationToken: cancellationToken);
 
-        return entities.Select(this.MapToDomain).ToList();
+            return entities.Select(this.MapToDomain).ToList();
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Retrieves a list of file paths that are present at a specified location, excluding deleted files.
-    /// </summary>
-    /// <param name="locationName">Specifies the location to filter the file events.</param>
-    /// <returns>A list of file paths that are currently present at the specified location.</returns>
-    public async Task<List<string>> GetPresentFilesAsync(string locationName, CancellationToken cancellationToken = default)
+    public async Task<List<string>> GetPresentFilesAsync(
+        string locationName,
+        CancellationToken cancellationToken = default)
     {
-        var latestEvents = this.context.FileEvents
-            .Where(e1 => e1.LocationName == locationName)
-            .Where(e1 => !this.context.FileEvents
-                .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
-                .Any(e2 => e2.DetectedDate > e1.DetectedDate));
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var latestEvents = this.context.FileEvents
+                .Where(e1 => e1.LocationName == locationName)
+                .Where(e1 => !this.context.FileEvents
+                    .Where(e2 => e2.LocationName == locationName && e2.FilePath == e1.FilePath)
+                    .Any(e2 => e2.DetectedDate > e1.DetectedDate));
 
-        return await latestEvents
-            .Where(e => e.EventType != (int)FileEventType.Deleted)
-            .Select(e => e.FilePath)
-            .Distinct()
-            .ToListAsync(cancellationToken: cancellationToken);
+            return await latestEvents
+                .Where(e => e.EventType != (int)FileEventType.Deleted)
+                .Select(e => e.FilePath)
+                .Distinct()
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Stores a file event in the database asynchronously. It maps the provided event to an entity and saves it.
-    /// </summary>
-    /// <param name="fileEvent">An object representing the details of the file event to be stored.</param>
-    /// <returns>This method does not return a value.</returns>
-    public async Task StoreEventAsync(FileEvent fileEvent, CancellationToken cancellationToken = default)
+    public async Task StoreEventAsync(
+        FileEvent fileEvent,
+        CancellationToken cancellationToken = default)
     {
-        var entity = this.MapToEntity(fileEvent);
-        this.context.FileEvents.Add(entity);
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var entity = this.MapToEntity(fileEvent);
+            this.context.FileEvents.Add(entity);
 
-        await this.context.SaveChangesAsync(cancellationToken);
+            await this.context.SaveChangesAsync(cancellationToken);
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
-    /// <summary>
-    /// Stores the processing result asynchronously, with current implementation logging or skipping persistence.
-    /// </summary>
-    /// <param name="result">Contains the outcome of a processing operation to be stored or logged.</param>
-    /// <returns>Completes a task indicating the operation has finished.</returns>
-    public async Task StoreProcessingResultAsync(FileProcessingResult result, CancellationToken cancellationToken = default)
+    public async Task StoreProcessingResultAsync(
+        FileProcessingResult result,
+        CancellationToken cancellationToken = default)
     {
-        // Placeholder: ProcessingResult storage not yet fully defined.
-        // For now, we'll log it or skip persistence until Step 7 clarifies requirements.
-        // If persisted, it could be a separate DbSet or embedded in FileEventEntity.
-        await Task.CompletedTask;
+        await this.semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            // Placeholder: ProcessingResult storage not yet fully defined.
+            await Task.CompletedTask;
+        }
+        finally
+        {
+            this.semaphore.Release();
+        }
     }
 
     private FileEvent MapToDomain(FileEventEntity entity) =>

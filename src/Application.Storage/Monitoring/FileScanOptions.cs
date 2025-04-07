@@ -105,7 +105,7 @@ public class FileScanOptions
         this.DelayPerFile = delayPerFile ?? TimeSpan.Zero;
         if (eventFilter != null)
         {
-            this.EventFilter = new HashSet<FileEventType>(eventFilter);
+            this.EventFilter = [.. eventFilter];
         }
         this.BatchSize = batchSize;
         this.ProgressIntervalPercentage = progressIntervalPercentage;

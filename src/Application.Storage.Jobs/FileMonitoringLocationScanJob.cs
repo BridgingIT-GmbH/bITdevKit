@@ -73,6 +73,8 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
         var scanOptions = new FileScanOptions
         {
             WaitForProcessing = true,
+            //SkipChecksum = true,
+            //DelayPerFile = TimeSpan.FromMilliseconds(100),
             Timeout = TimeSpan.FromSeconds(90)
         };
 

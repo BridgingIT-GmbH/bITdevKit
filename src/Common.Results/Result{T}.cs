@@ -103,9 +103,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public T Value => this.success
-        ? this.value
-        : throw new InvalidOperationException("Cannot access Value of failed result");
+    public T Value => this.value;
+
+    //public T Value => this.success
+    //    ? this.value
+    //    : throw new InvalidOperationException("Cannot access Value of failed result");
 
     /// <summary>
     /// Gets a read-only list of messages associated with the result.

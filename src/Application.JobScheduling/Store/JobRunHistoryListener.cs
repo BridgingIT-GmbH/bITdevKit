@@ -148,7 +148,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                     {
                         handler.Invoke(jobKey.Name, jobKey.Group, entryId, startTime);
                     }
-                    catch (System.InvalidOperationException ex)
+                    catch (InvalidOperationException ex)
                     {
                         this.logger.LogError(ex, "{LogKey} listener: failed to invoke job started handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                     }
@@ -229,7 +229,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                         {
                             handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
                         }
-                        catch (System.InvalidOperationException ex)
+                        catch (InvalidOperationException ex)
                         {
                             this.logger.LogError(ex, "{LogKey} listener: failed to invoke job failed handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                         }
@@ -246,7 +246,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                         {
                             handler.Invoke(jobKey.Name, jobKey.Group, entryId, endTime);
                         }
-                        catch (System.InvalidOperationException ex)
+                        catch (InvalidOperationException ex)
                         {
                             this.logger.LogError(ex, "{LogKey} listener: failed to invoke job success handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                         }

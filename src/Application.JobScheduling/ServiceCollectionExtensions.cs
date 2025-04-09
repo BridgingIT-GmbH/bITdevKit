@@ -132,6 +132,7 @@ public static class ServiceCollectionExtensions
             sp.GetRequiredService<IJobStoreProvider>()));
 
         services.AddSingleton<JobRunHistoryListener>();
+        services.TryAddSingleton(contextOptions);
         services.AddHostedService<JobSchedulingService>();
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);

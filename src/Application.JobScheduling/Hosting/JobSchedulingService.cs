@@ -73,7 +73,7 @@ public class JobSchedulingService : BackgroundService
             {
                 try
                 {
-                    this.logger.LogInformation("{LogKey} scheduling service starting (attempt {Attempt}/{MaxRetries})", Constants.LogKey, attempt, maxRetries);
+                    this.logger.LogInformation("{LogKey} scheduling service starting (attempt={Attempt}/{MaxRetries}, delay={Delay}ms)", Constants.LogKey, attempt, maxRetries, this.options.StartupDelay.TotalMilliseconds);
                     this.Scheduler = await this.schedulerFactory.GetScheduler(cancellationToken).AnyContext();
                     if (this.Scheduler == null)
                     {

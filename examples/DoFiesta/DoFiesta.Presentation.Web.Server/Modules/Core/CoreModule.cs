@@ -28,13 +28,20 @@ public class CoreModule : WebModuleBase
     {
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
+        // tasks
+        services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
+            .WithTask<CoreDomainSeederTask>(o => o
+                //.Enabled(environment?.IsDevelopment() == true)
+                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
         // jobs
-        services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
-            .WithJob<FileMonitoringLocationScanJob>()
-                .Cron(CronExpressions.EveryMinute)
+        services.AddJobScheduling(o => o
+            .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
+            .WithSqlServerStore(configuration["Modules:Core:ConnectionStrings:Default"])
+            .WithJob<FileMonitoringLocationScanScopedJob>()
+                .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
                 .WithData(DataKeys.LocationName, "inbound")
-                .WithData(DataKeys.DelayPerFile, "00:00:01")
+                .WithData(FileMonitoringLocationScanJob.DataKeys.DelayPerFile, "00:00:00:500") // delay is needed for now due to dbcontext concurrent access issue
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
                 .RegisterScoped()
@@ -54,16 +61,11 @@ public class CoreModule : WebModuleBase
                 .Named("thirdecho")
                 .WithData("message", "Third echo")
                 .Enabled(environment?.IsDevelopment() == true)
-                .RegisterScoped();
+                .RegisterScoped()
+            .AddEndpoints();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
-
-        // tasks
-        services.AddStartupTasks()
-            .WithTask<CoreDomainSeederTask>(o => o
-                .Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o

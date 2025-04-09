@@ -399,3 +399,4 @@ class Program
 ### Notes
 - Each utility’s progress type (e.g., `RetryProgress`, `TimeoutHandlerProgress`) inherits from `ResiliencyProgress`, enabling type-safe access to utility-specific data.
 - Clients can extend this approach to other environments (e.g., WPF, ASP.NET) by replacing console output with UI updates or API responses.
+- 

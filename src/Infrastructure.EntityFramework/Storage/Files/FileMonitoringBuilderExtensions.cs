@@ -39,14 +39,26 @@ public static class FileMonitoringBuilderExtensions
     /// </example>
     /// <exception cref="ArgumentNullException">Thrown if the context is null.</exception>
     public static FileMonitoringBuilderContext WithEntityFrameworkStore<TContext>(
-        this FileMonitoringBuilderContext context)
+        this FileMonitoringBuilderContext context,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext, IFileMonitoringContext
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
         // Replace any existing IFileEventStore registration (e.g., default InMemoryFileEventStore)
         context.Services.RemoveAll<IFileEventStore>();
-        context.Services.AddScoped<IFileEventStore, EntityFrameworkFileEventStore<TContext>>();
+        if (lifetime == ServiceLifetime.Transient)
+        {
+            context.Services.TryAddTransient<IFileEventStore, EntityFrameworkFileEventStore<TContext>>();
+        }
+        else if (lifetime == ServiceLifetime.Singleton)
+        {
+            context.Services.TryAddSingleton<IFileEventStore, EntityFrameworkFileEventStore<TContext>>();
+        }
+        else
+        {
+            context.Services.TryAddScoped<IFileEventStore, EntityFrameworkFileEventStore<TContext>>(); // Default
+        }
 
         return context;
     }

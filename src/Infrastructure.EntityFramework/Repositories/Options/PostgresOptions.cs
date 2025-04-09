@@ -35,5 +35,5 @@ public class PostgresOptions : OptionsBase
 
     public virtual List<Type> InterceptorTypes { get; set; } = [];
 
-    public virtual string SearchPath { get; set; } 
+    public virtual string SearchPath { get; set; }
 }

@@ -693,6 +693,57 @@ public abstract class FileStorageTestsBase
         new StreamReader(decompressedStream).ReadToEnd().ShouldBe("Test content");
     }
 
+    public virtual async Task ListCompressedFilesAsync_ValidArchive_ReturnsFiles()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string zipPath = "test_archive.zip";
+        const string directoryPath = "test_directory";
+
+        // Create a directory with files, including a subfolder
+        await provider.CreateDirectoryAsync(directoryPath, CancellationToken.None);
+        await provider.WriteFileAsync(
+            Path.Combine(directoryPath, "file1.txt"),
+            new MemoryStream(Encoding.UTF8.GetBytes("File 1 content")),
+            null,
+            CancellationToken.None);
+        await provider.WriteFileAsync(
+            Path.Combine(directoryPath, "subdir/file2.txt"),
+            new MemoryStream(Encoding.UTF8.GetBytes("File 2 content")),
+            null,
+            CancellationToken.None);
+
+        // Compress the directory into a ZIP file
+        var compressResult = await provider.CompressAsync(
+            zipPath,
+            directoryPath,
+            null, // No progress
+            FileCompressionOptions.CreateBuilder().WithArchiveType(FileCompressionArchiveType.Zip).Build(),
+            CancellationToken.None);
+        compressResult.IsSuccess.ShouldBeTrue($"CompressAsync failed: {string.Join(", ", compressResult.Messages)}");
+
+        // Act
+        var result = await provider.ListCompressedFilesAsync(
+            zipPath,
+            null, // No password
+            null, // No progress
+            FileCompressionOptions.CreateBuilder().WithArchiveType(FileCompressionArchiveType.Zip).Build(),
+            CancellationToken.None);
+
+        // Assert
+        result.ShouldBeSuccess($"ListCompressedFilesAsync failed: {string.Join(", ", result.Messages)}");
+        result.Value.ShouldNotBeNull();
+        result.Value.ShouldNotBeEmpty();
+        result.Value.Count().ShouldBe(2, "Should list exactly 2 files from the archive");
+        result.Value.ShouldContain("file1.txt", "Should include file1.txt at the root");
+        result.Value.ShouldContain("subdir/file2.txt", "Should include file2.txt in the subfolder");
+        result.ShouldContainMessage($"Listed files in archive at '{zipPath}'");
+
+        // Cleanup
+        await provider.DeleteFileAsync(zipPath, null, CancellationToken.None);
+        await provider.DeleteDirectoryAsync(directoryPath, true, CancellationToken.None);
+    }
+
     //public virtual async Task CompressUncompress_Stream_Success()
     //{
     //    // Arrange

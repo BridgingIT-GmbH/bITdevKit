@@ -542,6 +542,113 @@ public static class FileStorageProviderCompressionExtensions
         }
     }
 
+    /// <summary>
+    /// Lists all files within a compressed archive stored in the storage provider, optionally handling password-protected archives using SharpCompress.
+    /// </summary>
+    /// <param name="provider">The file storage provider to use for reading the compressed archive.</param>
+    /// <param name="path">The path of the compressed archive to read (e.g., "archive.zip").</param>
+    /// <param name="password">An optional password for decrypting the compressed archive. If null or empty, no decryption is applied.</param>
+    /// <param name="progress">An optional progress reporter for tracking the listing process.</param>
+    /// <param name="options">Optional configuration settings for archive handling. If null, default settings are used.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A <see cref="Result{IEnumerable{string}}"/> containing the list of file names on success, or an error on failure.</returns>
+    /// <remarks>
+    /// This method uses SharpCompress to read archive entries compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. Returns all file names at once without pagination.
+    /// Only file entries are included (directories are excluded).
+    /// </remarks>
+    public static async Task<Result<IEnumerable<string>>> ListCompressedFilesAsync(
+        this IFileStorageProvider provider,
+        string path,
+        string password = null,
+        IProgress<FileProgress> progress = null,
+        FileCompressionOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for listing archive files");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for listing archive files");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled listing files in archive at '{path}'");
+        }
+
+        var existsResult = await provider.FileExistsAsync(path, cancellationToken: cancellationToken);
+        if (existsResult.IsFailure)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithErrors(existsResult.Errors)
+                .WithMessages(existsResult.Messages);
+        }
+
+        options ??= FileCompressionOptions.Default;
+
+        try
+        {
+            var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
+            if (readResult.IsFailure)
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithErrors(readResult.Errors)
+                    .WithMessages(readResult.Messages);
+            }
+
+            await using var archiveStream = readResult.Value;
+            using var archive = ArchiveFactory.Open(archiveStream, new ReaderOptions { Password = password });
+
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to list files in archive at '{path}' due to archive type mismatch");
+            }
+
+            var fileEntries = archive.Entries
+                .Where(e => !e.IsDirectory)
+                .Select(e => e.Key)
+                .ToList();
+
+            if (!fileEntries.Any())
+            {
+                return Result<IEnumerable<string>>.Success(Enumerable.Empty<string>())
+                    .WithMessage($"No files found in archive at '{path}'");
+            }
+
+            ReportProgress(progress, path, archive.TotalSize, fileEntries.Count);
+
+            return Result<IEnumerable<string>>.Success(fileEntries)
+                .WithMessage(!string.IsNullOrEmpty(password)
+                    ? $"Listed files in password-protected archive at '{path}'"
+                    : $"Listed files in archive at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during archive listing"))
+                .WithMessage($"Cancelled listing files in archive at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error listing files in archive at '{path}'");
+        }
+    }
+
     private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
     {
         var archiveType = MapArchiveType(options.ArchiveType);

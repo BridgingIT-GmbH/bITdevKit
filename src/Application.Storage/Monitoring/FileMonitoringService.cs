@@ -200,6 +200,23 @@ public class FileMonitoringService(
     }
 
     /// <summary>
+    /// Retrieves an instance that handles location-related operations based on the specified name.
+    /// The handler provides methods to manage and interact with the location like the StorageProvider.
+    /// </summary>
+    /// <param name="locationName">The name of the location to access.</param>
+    public ILocationHandler GetLocation(string locationName)
+    {
+        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        if (handler == null)
+        {
+            this.loggerTyped.LogErrorLocationNotFound(locationName);
+            throw new KeyNotFoundException($"Location '{locationName}' not found.");
+        }
+
+        return handler;
+    }
+
+    /// <summary>
     /// Checks if a specific location is currently active (monitoring and processing events) asynchronously.
     /// </summary>
     /// <param name="locationName">The name of the location to check (e.g., "Docs").</param>

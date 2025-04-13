@@ -220,7 +220,7 @@ public interface IFileStorageTreeRenderer
 
 public class TextFileStorageTreeRenderer : IFileStorageTreeRenderer
 {
-    private readonly StringBuilder builder = new StringBuilder();
+    private readonly StringBuilder builder = new();
 
     public void RenderNode(TreeNode node, int level)
     {
@@ -255,7 +255,7 @@ public class TextFileStorageTreeRenderer : IFileStorageTreeRenderer
 
 public class HtmlFileStorageTreeRenderer : IFileStorageTreeRenderer
 {
-    private readonly StringBuilder builder = new StringBuilder();
+    private readonly StringBuilder builder = new();
 
     public HtmlFileStorageTreeRenderer()
     {

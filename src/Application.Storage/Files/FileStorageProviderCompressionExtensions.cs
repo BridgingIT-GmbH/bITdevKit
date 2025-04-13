@@ -173,7 +173,7 @@ public static class FileStorageProviderCompressionExtensions
             {
                 return Result<Stream>.Failure()
                     .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch");
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
             var entry = archive.Entries.FirstOrDefault(e => !e.IsDirectory);
@@ -482,7 +482,7 @@ public static class FileStorageProviderCompressionExtensions
             {
                 return Result.Failure()
                     .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to uncompress file at '{path}' due to archive type mismatch");
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
             long totalBytes = 0;
@@ -614,7 +614,7 @@ public static class FileStorageProviderCompressionExtensions
             {
                 return Result<IEnumerable<string>>.Failure()
                     .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to list files in archive at '{path}' due to archive type mismatch");
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
             var fileEntries = archive.Entries
@@ -652,8 +652,13 @@ public static class FileStorageProviderCompressionExtensions
     private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
     {
         var archiveType = MapArchiveType(options.ArchiveType);
-        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
+        // only allow write support for the following zip/tar/bzip2/gzip/lzip are implemented.
+        if (archiveType != ArchiveType.Zip && archiveType != ArchiveType.Tar && archiveType != ArchiveType.GZip)
+        {
+            throw new ArgumentException($"Archive type '{archiveType}' is not supported for writing.");
+        }
 
+        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
         if (archiveType == ArchiveType.Zip)
         {
             writerOptions = new ZipWriterOptions(GetCompressionType(archiveType))
@@ -686,9 +691,11 @@ public static class FileStorageProviderCompressionExtensions
     {
         return archiveType switch
         {
-            ArchiveType.Zip => CompressionType.Deflate,
-            ArchiveType.GZip => CompressionType.GZip,
+            ArchiveType.Zip => CompressionType.Deflate, // ZIP uses Deflate compression
+            ArchiveType.GZip => CompressionType.GZip, // GZip uses GZip compression
             ArchiveType.Tar => CompressionType.None, // Tar does not use compression by default
+            ArchiveType.SevenZip => CompressionType.LZMA, // 7-Zip uses LZMA compression
+            ArchiveType.Rar => CompressionType.Rar, // Rar uses RAR compression
             _ => throw new ArgumentException($"Unsupported archive type for compression: {archiveType}", nameof(archiveType))
         };
     }
@@ -733,6 +740,9 @@ public static class FileStorageProviderCompressionExtensions
         {
             FileCompressionArchiveType.Zip => ArchiveType.Zip,
             FileCompressionArchiveType.GZip => ArchiveType.GZip,
+            FileCompressionArchiveType.SevenZip => ArchiveType.SevenZip,
+            FileCompressionArchiveType.Rar => ArchiveType.Rar,
+            FileCompressionArchiveType.Tar => ArchiveType.Tar,
             _ => throw new ArgumentException($"Unsupported archive type: {archiveType}", nameof(archiveType))
         };
     }
@@ -783,7 +793,7 @@ public class FileCompressionOptions
     /// <summary>
     /// Creates a default instance of <see cref="FileCompressionOptions"/>.
     /// </summary>
-    public static FileCompressionOptions Default => new FileCompressionOptions();
+    public static FileCompressionOptions Default => new();
 
     /// <summary>
     /// Creates a new fluent builder for configuring <see cref="FileCompressionOptions"/>.
@@ -810,6 +820,21 @@ public enum FileCompressionArchiveType
     /// GZip archive format.
     /// </summary>
     GZip,
+
+    /// <summary>
+    /// 7-Zip archive format.
+    /// </summary>
+    SevenZip,
+
+    /// <summary>
+    /// RAR archive format.
+    /// </summary>
+    Rar,
+
+    /// <summary>
+    /// TAR archive format.
+    /// </summary>
+    Tar
 }
 
 /// <summary>

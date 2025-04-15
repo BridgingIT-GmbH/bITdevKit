@@ -138,7 +138,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         try
         {
             await jobStore.SaveJobRunAsync(jobRun, cancellationToken);
-            this.logger.LogInformation("{LogKey} filemonitoring: job started (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+            this.logger.LogInformation("{LogKey} job started (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
 
             lock (this.onJobStartedHandlers) // // Notify all registered handlers
             {
@@ -150,14 +150,14 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                     }
                     catch (InvalidOperationException ex)
                     {
-                        this.logger.LogError(ex, "{LogKey} filemonitoring: failed to invoke job started handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                        this.logger.LogError(ex, "{LogKey} failed to invoke job started handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} filemonitoring: failed to log job start (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+            this.logger.LogError(ex, "{LogKey} failed to log job start (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
         }
     }
 
@@ -228,7 +228,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                         }
                         catch (InvalidOperationException ex)
                         {
-                            this.logger.LogError(ex, "{LogKey} filemonitoring: failed to invoke job failed handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                            this.logger.LogError(ex, "{LogKey} failed to invoke job failed handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                         }
                     }
                 }
@@ -245,7 +245,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
                         }
                         catch (InvalidOperationException ex)
                         {
-                            this.logger.LogError(ex, "{LogKey} filemonitoring: failed to invoke job success handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
+                            this.logger.LogError(ex, "{LogKey} failed to invoke job success handler (name={JobName}, group={JobGroup}, entryId={EntryId})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
                         }
                     }
                 }
@@ -253,16 +253,16 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} filemonitoring: failed to log job completion (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
+            this.logger.LogError(ex, "{LogKey} failed to log job completion (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})", Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} filemonitoring: job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobStarting(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} filemonitoring: job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
         public static partial void LogJobCompleted(ILogger logger, string logKey, string jobName, string jobGroup, string entryId, string status);
     }
 }

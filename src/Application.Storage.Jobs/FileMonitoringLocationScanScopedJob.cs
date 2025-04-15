@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 
 [DisallowConcurrentExecution]
-public partial class FileMonitoringLocationScanScopedJob(
+public partial class FileMonitoringLocationScanJob(
     ILoggerFactory loggerFactory,
     IServiceScopeFactory scopeFactory) : JobBase(loggerFactory), IRetryJobScheduling
 {
@@ -20,46 +20,41 @@ public partial class FileMonitoringLocationScanScopedJob(
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        using (var scope = scopeFactory.CreateScope())
+        using var scope = scopeFactory.CreateScope();
+        var fileMonitoringService = scope.ServiceProvider.GetRequiredService<IFileMonitoringService>();
+
+        // Retrieve the location name from the job data map
+        this.Data.TryGetValue(DataKeys.LocationName, out var locationName);
+        if (string.IsNullOrEmpty(locationName))
         {
-            var fileMonitoringService = scope.ServiceProvider.GetRequiredService<IFileMonitoringService>();
+            TypedLogger.LogMissingLocation(this.Logger, Constants.LogKey);
+            throw new ArgumentException($"{DataKeys.LocationName} must be provided in the job data.");
+        }
 
-            // Retrieve the location name from the job data map
-            this.Data.TryGetValue(DataKeys.LocationName, out var locationName);
-            if (string.IsNullOrEmpty(locationName))
+        // Log the start of the scan
+        TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName);
+        var scanOptions = this.CreateScanOptions();
+        var progressReports = new List<FileScanProgress>();
+        var progress = new Progress<FileScanProgress>(report =>
+        {
+            progressReports.Add(report); TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
+        });
+
+        var scanContext = await fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);
+        TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events?.Count ?? 0);
+        if (scanContext.Events.SafeAny())
+        {
+            this.Data.AddOrUpdate("Detected events", scanContext.Events.Count.ToString());
+            foreach (var evt in scanContext.Events.SafeNull())
             {
-                TypedLogger.LogMissingLocation(this.Logger, Constants.LogKey);
-                throw new ArgumentException($"{DataKeys.LocationName} must be provided in the job data.");
+                //TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);
+                this.Data.AddOrUpdate($"Detected event for {evt.FilePath}", evt.EventType.ToString());
             }
-
-            // Log the start of the scan
-            TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName);
-            var scanOptions = this.CreateScanOptions();
-
-            var progressReports = new List<FileScanProgress>();
-            var progress = new Progress<FileScanProgress>(report =>
-            {
-                progressReports.Add(report); TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
-            });
-
-            var scanContext = await fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);
-            if (scanContext.Events.Any())
-            {
-                TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events.Count);
-                this.Data.AddOrUpdate("Detected events", scanContext.Events.Count.ToString());
-
-                foreach (var evt in scanContext.Events.SafeNull())
-                {
-                    TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);
-
-                    this.Data.AddOrUpdate($"Detected event for {evt.FilePath}", evt.EventType.ToString());
-                }
-            }
-            else
-            {
-                this.Data.AddOrUpdate("Detected events", "0");
-                TypedLogger.LogNoChanges(this.Logger, Constants.LogKey, locationName);
-            }
+        }
+        else
+        {
+            this.Data.AddOrUpdate("Detected events", "0");
+            TypedLogger.LogNoChanges(this.Logger, Constants.LogKey, locationName);
         }
     }
 

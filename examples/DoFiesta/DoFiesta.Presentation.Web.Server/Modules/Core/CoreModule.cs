@@ -37,7 +37,7 @@ public class CoreModule : WebModuleBase
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
             .WithSqlServerStore(configuration["Modules:Core:ConnectionStrings:Default"])
-            .WithJob<FileMonitoringLocationScanScopedJob>()
+            .WithJob<FileMonitoringLocationScanJob>()
                 .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
                 .WithData(DataKeys.LocationName, "inbound")

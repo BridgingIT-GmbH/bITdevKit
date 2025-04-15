@@ -67,7 +67,7 @@ public abstract class LocationHandlerBase : ILocationHandler
         this.cts = new CancellationTokenSource();
         this.isPaused = false;
 
-        this.StartAsync();
+        this.StartAsync(); // autostart
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     {
         if (this.processingTask == null)
         {
-            this.loggerTyped.LogInformationStartingHandler(this.options.LocationName, this.provider.Description);
+            //this.loggerTyped.LogInformationStartingHandler(this.options.LocationName, this.provider.Description);
             this.cts = new CancellationTokenSource();
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this.cts.Token);
 

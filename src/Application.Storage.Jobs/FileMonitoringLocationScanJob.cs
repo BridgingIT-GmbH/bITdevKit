@@ -32,7 +32,6 @@ public partial class FileMonitoringLocationScanJob(
         }
 
         // Log the start of the scan
-        TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName);
         var scanOptions = this.CreateScanOptions();
         var progressReports = new List<FileScanProgress>();
         var progress = new Progress<FileScanProgress>(report =>
@@ -40,6 +39,7 @@ public partial class FileMonitoringLocationScanJob(
             progressReports.Add(report); TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
         });
 
+        TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName, scanOptions);
         var scanContext = await fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);
         TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events?.Count ?? 0);
         if (scanContext.Events.SafeAny())
@@ -115,8 +115,8 @@ public partial class FileMonitoringLocationScanJob(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} job: scan started (location={LocationName})")]
-        public static partial void LogStartScan(ILogger logger, string logKey, string locationName);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} job: scan started (location={LocationName}) {@Options}")]
+        public static partial void LogStartScan(ILogger logger, string logKey, string locationName, FileScanOptions options);
 
         [LoggerMessage(1, LogLevel.Information, "{LogKey} job: scan completed (location={LocationName}, eventCount={EventCount})")]
         public static partial void LogScanCompleted(ILogger logger, string logKey, string locationName, int eventCount);

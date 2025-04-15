@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 [TypedEntityId<Guid>]
-public partial class CategoryId // generates a standalone typed id
-; // generates a standalone typed id
-
+public partial class CategoryId; // generates a standalone typed id
 
 [TypedEntityId<Guid>]
 public class Blog : AggregateRoot<BlogId>

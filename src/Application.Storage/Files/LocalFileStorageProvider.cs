@@ -34,7 +34,6 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
     private void Initialize()
     {
-        //Console.WriteLine($"1-------------------------- LOCALFILESTORAGE check1 {this.LocationName} {this.RootPath}");
         if (this.initialized)
         {
             return;
@@ -42,20 +41,17 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         lock (this.initializateLock)
         {
-            //Console.WriteLine($"2-------------------------- LOCALFILESTORAGE check2 {this.LocationName} {this.RootPath}");
             if (this.initialized)
             {
                 return;
             }
 
-            //Console.WriteLine($"3-------------------------- LOCALFILESTORAGE check3 {this.LocationName} {this.RootPath} {ensureRoot}");
             if (ensureRoot && !Directory.Exists(this.RootPath))
             {
                 Directory.CreateDirectory(this.RootPath); // Ensure root exists
-                //Console.WriteLine($"4++++++++++++++++++++++++++ LOCALFILESTORAGE created {this.LocationName} {this.RootPath}");
             }
 
-            //Console.WriteLine($"FILEMONITORING RootPath - {this.RootPath}");
+            Console.WriteLine($"LocalFileStorageProvider {this.LocationName}, RootPath: {this.RootPath}");
 
             this.initialized = true;
         }

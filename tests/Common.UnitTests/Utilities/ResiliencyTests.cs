@@ -210,7 +210,7 @@ public class ResiliencyTests
         var cts = new CancellationTokenSource();
 
         // Act
-        await notifier.PublishAsync("Test", cts.Token);
+        await notifier.PublishAsync("Test", cancellationToken: cts.Token);
 
         // Assert
         this.progressUpdates.Count.ShouldBe(2); // One update per handler
@@ -254,12 +254,13 @@ public class ResiliencyTests
         var progress = new Progress<RequesterProgress>(p => this.progressUpdates.Add(p));
         var requester = new RequesterBuilder()
             .WithProgress(progress)
+            //.AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger())) // Optional logging behavior
             .Build();
         requester.RegisterHandler<TestRequest, string>(new TestRequestHandler());
         var cts = new CancellationTokenSource();
 
         // Act
-        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cts.Token);
+        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
 
         // Assert
         this.progressUpdates.Count.ShouldBe(1);
@@ -295,7 +296,7 @@ public class TestRequest : IRequest<string> { }
 
 public class TestRequestHandler : IRequestHandler<TestRequest, string>
 {
-    public Task<string> HandleAsync(TestRequest request, CancellationToken cancellationToken)
+    public Task<string> HandleAsync(TestRequest request, CancellationToken cancellationToken = default)
     {
         return Task.FromResult($"Processed: {nameof(TestRequest)}");
     }

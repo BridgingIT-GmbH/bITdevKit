@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 /// <remarks>
 /// Initializes a new instance of the Notifier class with the specified settings.
 /// </remarks>
-/// <param name="handleErrors">If true, catches and logs exceptions from event handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+/// <param name="handleErrors">If true, catches and logs exceptions from event handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="pipelineBehaviors">A list of pipeline behaviors to execute before and after event handling, applied in reverse order. Defaults to an empty list.</param>
 /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
 /// <example>
@@ -21,8 +21,8 @@ using Microsoft.Extensions.Logging;
 /// </code>
 /// </example>
 public class Notifier(
-    bool handleErrors = false,
     ILogger logger = null,
+    bool handleErrors = false,
     IEnumerable<INotifcationPipelineBehavior> pipelineBehaviors = null,
     IProgress<NotifierProgress> progress = null)
 {
@@ -95,8 +95,8 @@ public class Notifier(
     /// </summary>
     /// <typeparam name="TNotification">The type of event to publish.</typeparam>
     /// <param name="notification">The notification to publish.</param>
-    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
@@ -109,7 +109,7 @@ public class Notifier(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task PublishAsync<TNotification>(TNotification notification, CancellationToken cancellationToken = default, IProgress<NotifierProgress> progress = null)
+    public async Task PublishAsync<TNotification>(TNotification notification, IProgress<NotifierProgress> progress = null, CancellationToken cancellationToken = default)
     {
         progress ??= this.progress; // Use instance-level progress if provided
         List<(INotificationHandler Handler, int Order)> handlers;
@@ -132,7 +132,7 @@ public class Notifier(
                 foreach (var behavior in this.pipelineBehaviors)
                 {
                     var currentNext = next;
-                    next = () => behavior.HandleAsync(notification, cancellationToken, currentNext);
+                    next = () => behavior.HandleAsync(notification, currentNext, cancellationToken);
                 }
                 await next();
                 handlersProcessed++;
@@ -156,7 +156,7 @@ public class Notifier(
 /// </summary>
 public interface INotificationHandler
 {
-    Task HandleAsync(object notification, CancellationToken cancellationToken);
+    Task HandleAsync(object notification, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -167,7 +167,7 @@ public class NotificationHandler<TNotification>(Func<TNotification, Cancellation
 {
     private readonly Func<TNotification, CancellationToken, Task> handler = handler;
 
-    public async Task HandleAsync(object notification, CancellationToken cancellationToken)
+    public async Task HandleAsync(object notification, CancellationToken cancellationToken = default)
     {
         if (notification is TNotification typedNotification)
         {
@@ -195,7 +195,7 @@ public class NotificationHandler<TNotification>(Func<TNotification, Cancellation
 /// </summary>
 public interface INotifcationPipelineBehavior
 {
-    Task HandleAsync<TNotification>(TNotification notification, CancellationToken cancellationToken, Func<Task> next);
+    Task HandleAsync<TNotification>(TNotification notification, Func<Task> next, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -203,7 +203,7 @@ public interface INotifcationPipelineBehavior
 /// </summary>
 public class LoggingPipelineBehavior(ILogger logger) : INotifcationPipelineBehavior
 {
-    public async Task HandleAsync<TNotification>(TNotification notification, CancellationToken cancellationToken, Func<Task> next)
+    public async Task HandleAsync<TNotification>(TNotification notification, Func<Task> next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling notification of type {typeof(TNotification).Name}");
         try
@@ -281,8 +281,8 @@ public class NotifierBuilder
     public Notifier Build()
     {
         return new Notifier(
-            this.handleErrors,
             this.logger,
+            this.handleErrors,
             this.pipelineBehaviors,
             this.progress);
     }

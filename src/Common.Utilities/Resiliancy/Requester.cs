@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 /// <remarks>
 /// Initializes a new instance of the Requester class with the specified settings.
 /// </remarks>
-/// <param name="handleErrors">If true, catches and logs exceptions from request handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
+/// <param name="handleErrors">If true, catches and logs exceptions from request handlers; otherwise, throws them. Defaults to false.</param>
 /// <param name="pipelineBehaviors">A list of pipeline behaviors to execute before and after request handling, applied in reverse order. Defaults to an empty list.</param>
 /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
 /// <example>
@@ -22,8 +22,8 @@ using Microsoft.Extensions.Logging;
 /// </code>
 /// </example>
 public class Requester(
-    bool handleErrors = false,
     ILogger logger = null,
+    bool handleErrors = false,
     IEnumerable<IRequestPipelineBehavior> pipelineBehaviors = null,
     IProgress<RequesterProgress> progress = null)
 {
@@ -65,8 +65,8 @@ public class Requester(
     /// <typeparam name="TRequest">The type of request to send.</typeparam>
     /// <typeparam name="TResponse">The type of response expected from the handler.</typeparam>
     /// <param name="request">The request to send.</param>
-    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation, returning the response from the handler.</returns>
     /// <exception cref="InvalidOperationException">Thrown if no handler is registered for the request type.</exception>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
@@ -81,7 +81,7 @@ public class Requester(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default, IProgress<RequesterProgress> progress = null)
+    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<RequesterProgress> progress = null, CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
     {
         progress ??= this.progress; // Use instance-level progress if provided
@@ -103,7 +103,7 @@ public class Requester(
             foreach (var behavior in this.pipelineBehaviors)
             {
                 var currentNext = next;
-                next = () => behavior.HandleAsync(request, cancellationToken, currentNext);
+                next = () => behavior.HandleAsync(request, currentNext, cancellationToken);
             }
             var result = await next();
             return (TResponse)result;
@@ -136,7 +136,7 @@ public interface IRequest<TResponse> : IRequest;
 /// </summary>
 public interface IRequestHandler
 {
-    Task<object> HandleAsync(object request, CancellationToken cancellationToken);
+    Task<object> HandleAsync(object request, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -147,7 +147,7 @@ public interface IRequestHandler
 public interface IRequestHandler<in TRequest, TResponse> : IRequestHandler
     where TRequest : IRequest<TResponse>
 {
-    Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
+    Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
 
     async Task<object> IRequestHandler.HandleAsync(object request, CancellationToken cancellationToken)
     {
@@ -155,6 +155,7 @@ public interface IRequestHandler<in TRequest, TResponse> : IRequestHandler
         {
             return await this.HandleAsync(typedRequest, cancellationToken);
         }
+
         throw new InvalidOperationException($"Request type {request.GetType().Name} does not match expected type {typeof(TRequest).Name}.");
     }
 }
@@ -164,7 +165,7 @@ public interface IRequestHandler<in TRequest, TResponse> : IRequestHandler
 /// </summary>
 public interface IRequestPipelineBehavior
 {
-    Task<object> HandleAsync(IRequest request, CancellationToken cancellationToken, Func<Task<object>> next);
+    Task<object> HandleAsync(IRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -172,7 +173,7 @@ public interface IRequestPipelineBehavior
 /// </summary>
 public class LoggingRequestPipelineBehavior(ILogger logger) : IRequestPipelineBehavior
 {
-    public async Task<object> HandleAsync(IRequest request, CancellationToken cancellationToken, Func<Task<object>> next)
+    public async Task<object> HandleAsync(IRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling request of type {request.GetType().Name}");
         try
@@ -251,8 +252,8 @@ public class RequesterBuilder
     public Requester Build()
     {
         return new Requester(
-            this.handleErrors,
             this.logger,
+            this.handleErrors,
             this.pipelineBehaviors,
             this.progress);
     }

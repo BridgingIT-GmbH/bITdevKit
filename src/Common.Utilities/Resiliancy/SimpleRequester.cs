@@ -21,16 +21,16 @@ using Microsoft.Extensions.Logging;
 /// Console.WriteLine(response.Result);
 /// </code>
 /// </example>
-public class Requester(
+public class SimpleRequester(
     ILogger logger = null,
     bool handleErrors = false,
-    IEnumerable<IRequestPipelineBehavior> pipelineBehaviors = null,
-    IProgress<RequesterProgress> progress = null)
+    IEnumerable<ISimpleRequestPipelineBehavior> pipelineBehaviors = null,
+    IProgress<SimpleRequesterProgress> progress = null)
 {
-    private readonly Dictionary<Type, (IRequestHandler Handler, Type ResponseType)> handlers = [];
-    private readonly List<IRequestPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse().ToList() ?? [];
+    private readonly Dictionary<Type, (ISimpleRequestHandler Handler, Type ResponseType)> handlers = [];
+    private readonly List<ISimpleRequestPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse().ToList() ?? [];
     private readonly Lock lockObject = new();
-    private readonly IProgress<RequesterProgress> progress = progress;
+    private readonly IProgress<SimpleRequesterProgress> progress = progress;
 
     /// <summary>
     /// Registers a handler for a specific request type.
@@ -45,8 +45,8 @@ public class Requester(
     /// requester.RegisterHandler(new MyRequestHandler());
     /// </code>
     /// </example>
-    public void RegisterHandler<TRequest, TResponse>(IRequestHandler<TRequest, TResponse> handler)
-        where TRequest : IRequest<TResponse>
+    public void RegisterHandler<TRequest, TResponse>(ISimpleRequestHandler<TRequest, TResponse> handler)
+        where TRequest : ISimpleRequest<TResponse>
     {
         lock (this.lockObject)
         {
@@ -81,12 +81,12 @@ public class Requester(
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<RequesterProgress> progress = null, CancellationToken cancellationToken = default)
-        where TRequest : IRequest<TResponse>
+    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<SimpleRequesterProgress> progress = null, CancellationToken cancellationToken = default)
+        where TRequest : ISimpleRequest<TResponse>
     {
         progress ??= this.progress; // Use instance-level progress if provided
         var requestType = typeof(TRequest);
-        (IRequestHandler Handler, Type ResponseType) handlerInfo;
+        (ISimpleRequestHandler Handler, Type ResponseType) handlerInfo;
         lock (this.lockObject)
         {
             if (!this.handlers.TryGetValue(requestType, out handlerInfo))
@@ -95,11 +95,11 @@ public class Requester(
             }
         }
 
-        progress?.Report(new RequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
+        progress?.Report(new SimpleRequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
         try
         {
             // Apply pipeline behaviors
-            Func<Task<object>> next = async () => await ((IRequestHandler<TRequest, TResponse>)handlerInfo.Handler).HandleAsync(request, cancellationToken);
+            Func<Task<object>> next = async () => await ((ISimpleRequestHandler<TRequest, TResponse>)handlerInfo.Handler).HandleAsync(request, cancellationToken);
             foreach (var behavior in this.pipelineBehaviors)
             {
                 var currentNext = next;
@@ -123,18 +123,18 @@ public class Requester(
 /// <summary>
 /// Defines a non-generic base interface for all requests.
 /// </summary>
-public interface IRequest;
+public interface ISimpleRequest;
 
 /// <summary>
 /// Defines a request that returns a response.
 /// </summary>
 /// <typeparam name="TResponse">The type of response returned by the request.</typeparam>
-public interface IRequest<TResponse> : IRequest;
+public interface ISimpleRequest<TResponse> : ISimpleRequest;
 
 /// <summary>
 /// Non-generic base interface for request handlers.
 /// </summary>
-public interface IRequestHandler
+public interface ISimpleRequestHandler
 {
     Task<object> HandleAsync(object request, CancellationToken cancellationToken = default);
 }
@@ -144,12 +144,12 @@ public interface IRequestHandler
 /// </summary>
 /// <typeparam name="TRequest">The type of request to handle.</typeparam>
 /// <typeparam name="TResponse">The type of response returned by the handler.</typeparam>
-public interface IRequestHandler<in TRequest, TResponse> : IRequestHandler
-    where TRequest : IRequest<TResponse>
+public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestHandler
+    where TRequest : ISimpleRequest<TResponse>
 {
     Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
 
-    async Task<object> IRequestHandler.HandleAsync(object request, CancellationToken cancellationToken)
+    async Task<object> ISimpleRequestHandler.HandleAsync(object request, CancellationToken cancellationToken)
     {
         if (request is TRequest typedRequest)
         {
@@ -163,17 +163,17 @@ public interface IRequestHandler<in TRequest, TResponse> : IRequestHandler
 /// <summary>
 /// Defines a pipeline behavior for pre- and post-processing of requests.
 /// </summary>
-public interface IRequestPipelineBehavior
+public interface ISimpleRequestPipelineBehavior
 {
-    Task<object> HandleAsync(IRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default);
+    Task<object> HandleAsync(ISimpleRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
 /// A sample pipeline behavior that logs request handling.
 /// </summary>
-public class LoggingRequestPipelineBehavior(ILogger logger) : IRequestPipelineBehavior
+public class LoggingRequestPipelineBehavior(ILogger logger) : ISimpleRequestPipelineBehavior
 {
-    public async Task<object> HandleAsync(IRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default)
+    public async Task<object> HandleAsync(ISimpleRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling request of type {request.GetType().Name}");
         try
@@ -193,17 +193,17 @@ public class LoggingRequestPipelineBehavior(ILogger logger) : IRequestPipelineBe
 /// <summary>
 /// A fluent builder for configuring and creating a Requester instance.
 /// </summary>
-public class RequesterBuilder
+public class SimpleRequesterBuilder
 {
     private bool handleErrors;
     private ILogger logger;
-    private readonly List<IRequestPipelineBehavior> pipelineBehaviors;
-    private IProgress<RequesterProgress> progress;
+    private readonly List<ISimpleRequestPipelineBehavior> pipelineBehaviors;
+    private IProgress<SimpleRequesterProgress> progress;
 
     /// <summary>
     /// Initializes a new instance of the RequesterBuilder.
     /// </summary>
-    public RequesterBuilder()
+    public SimpleRequesterBuilder()
     {
         this.handleErrors = false;
         this.logger = null;
@@ -216,7 +216,7 @@ public class RequesterBuilder
     /// </summary>
     /// <param name="logger">The logger to use for error logging. If null, errors are silently ignored.</param>
     /// <returns>The RequesterBuilder instance for chaining.</returns>
-    public RequesterBuilder HandleErrors(ILogger logger = null)
+    public SimpleRequesterBuilder HandleErrors(ILogger logger = null)
     {
         this.handleErrors = true;
         this.logger = logger;
@@ -228,7 +228,7 @@ public class RequesterBuilder
     /// </summary>
     /// <param name="behavior">The pipeline behavior to add.</param>
     /// <returns>The RequesterBuilder instance for chaining.</returns>
-    public RequesterBuilder AddPipelineBehavior(IRequestPipelineBehavior behavior)
+    public SimpleRequesterBuilder AddPipelineBehavior(ISimpleRequestPipelineBehavior behavior)
     {
         this.pipelineBehaviors.Add(behavior);
         return this;
@@ -239,7 +239,7 @@ public class RequesterBuilder
     /// </summary>
     /// <param name="progress">The progress reporter to use for request operations.</param>
     /// <returns>The RequesterBuilder instance for chaining.</returns>
-    public RequesterBuilder WithProgress(IProgress<RequesterProgress> progress)
+    public SimpleRequesterBuilder WithProgress(IProgress<SimpleRequesterProgress> progress)
     {
         this.progress = progress;
         return this;
@@ -249,9 +249,9 @@ public class RequesterBuilder
     /// Builds and returns a configured Requester instance.
     /// </summary>
     /// <returns>A configured Requester instance.</returns>
-    public Requester Build()
+    public SimpleRequester Build()
     {
-        return new Requester(
+        return new SimpleRequester(
             this.logger,
             this.handleErrors,
             this.pipelineBehaviors,

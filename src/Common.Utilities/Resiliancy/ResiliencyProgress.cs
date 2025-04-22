@@ -72,7 +72,7 @@ public class RateLimiterProgress(int currentOperations, int maxOperations, TimeS
 /// <summary>
 /// Progress information for Notifier operations.
 /// </summary>
-public class NotifierProgress(int handlersProcessed, int totalHandlers, string status) : ResiliencyProgress(status)
+public class SimpleNotifierProgress(int handlersProcessed, int totalHandlers, string status) : ResiliencyProgress(status)
 {
     public int HandlersProcessed { get; set; } = handlersProcessed;
     public int TotalHandlers { get; set; } = totalHandlers;
@@ -89,7 +89,7 @@ public class BackgroundWorkerProgress(int progressPercentage, string status) : R
 /// <summary>
 /// Progress information for Requester operations.
 /// </summary>
-public class RequesterProgress(string requestType, string status) : ResiliencyProgress(status)
+public class SimpleRequesterProgress(string requestType, string status) : ResiliencyProgress(status)
 {
     public string RequestType { get; set; } = requestType;
 }

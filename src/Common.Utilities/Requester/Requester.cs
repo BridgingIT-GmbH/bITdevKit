@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Requester;
 
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
@@ -356,9 +357,9 @@ public interface IRequestHandlerProvider
 /// Initializes a new instance of the <see cref="RequestHandlerProvider"/> class.
 /// </remarks>
 /// <param name="handlerCache">The cache of handler types, mapping request handler interfaces to concrete types.</param>
-public class RequestHandlerProvider(ConcurrentDictionary<Type, Type> handlerCache) : IRequestHandlerProvider
+public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandlerProvider
 {
-    private readonly ConcurrentDictionary<Type, Type> handlerCache = handlerCache ?? throw new ArgumentNullException(nameof(handlerCache));
+    private readonly IHandlerCache handlerCache = handlerCache ?? throw new ArgumentNullException(nameof(handlerCache));
 
     /// <summary>
     /// Resolves the handler for a specific request type.
@@ -603,14 +604,14 @@ public partial class Requester(
     ILogger<Requester> logger,
     IRequestHandlerProvider handlerProvider,
     IRequestBehaviorsProvider behaviorsProvider,
-    ConcurrentDictionary<Type, Type> handlerCache,
+    IHandlerCache handlerCache,
     IReadOnlyList<Type> pipelineBehaviorTypes) : IRequester
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly ILogger<Requester> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly IRequestHandlerProvider handlerProvider = handlerProvider ?? throw new ArgumentNullException(nameof(handlerProvider));
     private readonly IRequestBehaviorsProvider behaviorsProvider = behaviorsProvider ?? throw new ArgumentNullException(nameof(behaviorsProvider));
-    private readonly ConcurrentDictionary<Type, Type> handlerCache = handlerCache ?? throw new ArgumentNullException(nameof(handlerCache));
+    private readonly IHandlerCache handlerCache = handlerCache ?? throw new ArgumentNullException(nameof(handlerCache));
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
 
     /// <summary>
@@ -733,7 +734,7 @@ public class RequesterBuilder(IServiceCollection services)
     private readonly IServiceCollection services = services ?? throw new ArgumentNullException(nameof(services));
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
-    private readonly ConcurrentDictionary<Type, Type> handlerCache = [];
+    private readonly IHandlerCache handlerCache = new HandlerCache();
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = [];
 
     /// <summary>
@@ -781,7 +782,7 @@ public class RequesterBuilder(IServiceCollection services)
             }
         }
 
-        this.services.AddSingleton(this.handlerCache); // this registration is too generic
+        this.services.AddSingleton<IHandlerCache>(this.handlerCache);
         this.services.AddSingleton(this.policyCache);
         this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
         this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
@@ -790,7 +791,7 @@ public class RequesterBuilder(IServiceCollection services)
             sp.GetRequiredService<ILogger<Requester>>(),
             sp.GetRequiredService<IRequestHandlerProvider>(),
             sp.GetRequiredService<IRequestBehaviorsProvider>(),
-            sp.GetRequiredService<ConcurrentDictionary<Type, Type>>(),
+            sp.GetRequiredService<IHandlerCache>(),
             this.pipelineBehaviorTypes));
 
         return this;
@@ -923,4 +924,49 @@ public class RegistrationInformation(
     /// Gets the list of registered behavior types.
     /// </summary>
     public IReadOnlyList<string> BehaviorTypes { get; } = behaviorTypes ?? throw new ArgumentNullException(nameof(behaviorTypes));
+}
+
+/// <summary>
+/// Defines a cache for mapping request handler interfaces to their concrete types.
+/// </summary>
+public interface IHandlerCache : IReadOnlyDictionary<Type, Type>
+{
+    /// <summary>
+    /// Attempts to add a handler type mapping to the cache.
+    /// </summary>
+    /// <param name="key">The request handler interface type.</param>
+    /// <param name="value">The concrete handler type.</param>
+    /// <returns>True if the mapping was added; otherwise, false.</returns>
+    bool TryAdd(Type key, Type value);
+}
+
+/// <summary>
+/// Implements <see cref="IHandlerCache"/> using a <see cref="ConcurrentDictionary{TKey, TValue}"/>.
+/// </summary>
+public class HandlerCache : IHandlerCache
+{
+    private readonly ConcurrentDictionary<Type, Type> cache;
+
+    public HandlerCache()
+    {
+        this.cache = [];
+    }
+
+    public Type this[Type key] => this.cache[key];
+
+    public IEnumerable<Type> Keys => this.cache.Keys;
+
+    public IEnumerable<Type> Values => this.cache.Values;
+
+    public int Count => this.cache.Count;
+
+    public bool ContainsKey(Type key) => this.cache.ContainsKey(key);
+
+    public bool TryGetValue(Type key, out Type value) => this.cache.TryGetValue(key, out value);
+
+    public bool TryAdd(Type key, Type value) => this.cache.TryAdd(key, value);
+
+    public IEnumerator<KeyValuePair<Type, Type>> GetEnumerator() => this.cache.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }

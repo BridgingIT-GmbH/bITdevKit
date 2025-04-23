@@ -28,7 +28,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_RegisteredHandler_ReturnsHandler()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var handlerType = typeof(MyTestRequestHandler);
         handlerCache.TryAdd(typeof(IRequestHandler<MyTestRequest, string>), handlerType);
 
@@ -53,7 +53,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_UnregisteredHandler_ThrowsRequesterException()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var serviceProvider = Substitute.For<IServiceProvider>();
         var sut = new RequestHandlerProvider(handlerCache);
 
@@ -72,7 +72,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_HandlerNotInDIContainer_ThrowsInvalidOperationException()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var handlerType = typeof(MyTestRequestHandler);
         handlerCache.TryAdd(typeof(IRequestHandler<MyTestRequest, string>), handlerType);
 
@@ -97,7 +97,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_NullServiceProvider_ThrowsArgumentNullException()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var sut = new RequestHandlerProvider(handlerCache);
 
         // Act
@@ -126,7 +126,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_EmptyHandlerCache_ThrowsRequesterException()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var serviceProvider = Substitute.For<IServiceProvider>();
         var sut = new RequestHandlerProvider(handlerCache);
 
@@ -145,7 +145,7 @@ public class RequestHandlerProviderTests
     public async Task GetHandler_ConcurrentAccess_ResolvesHandlerConsistently()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var handlerType = typeof(MyTestRequestHandler);
         handlerCache.TryAdd(typeof(IRequestHandler<MyTestRequest, string>), handlerType);
 
@@ -181,7 +181,7 @@ public class RequestHandlerProviderTests
     public void GetHandler_InvalidHandlerTypeInCache_ThrowsInvalidCastException()
     {
         // Arrange
-        var handlerCache = new ConcurrentDictionary<Type, Type>();
+        var handlerCache = new HandlerCache();
         var invalidHandlerType = typeof(InvalidHandler); // Does not implement IRequestHandler<MyTestRequest, string>
         handlerCache.TryAdd(typeof(IRequestHandler<MyTestRequest, string>), invalidHandlerType);
 

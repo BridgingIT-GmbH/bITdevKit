@@ -45,7 +45,7 @@ public class RequesterBuilderTests
         var behaviorsProvider = serviceProvider.GetService<IRequestBehaviorsProvider>();
         behaviorsProvider.ShouldNotBeNull();
 
-        var handlerCache = serviceProvider.GetService<ConcurrentDictionary<Type, Type>>();
+        var handlerCache = serviceProvider.GetService<IHandlerCache>();
         handlerCache.ShouldNotBeNull();
         handlerCache.ShouldContainKey(typeof(IRequestHandler<MyTestRequest, string>));
         handlerCache[typeof(IRequestHandler<MyTestRequest, string>)].ShouldBe(typeof(MyTestRequestHandler));
@@ -139,7 +139,7 @@ public class RequesterBuilderTests
         var behaviorsProvider = serviceProvider.GetService<IRequestBehaviorsProvider>();
         behaviorsProvider.ShouldNotBeNull();
 
-        var handlerCache = serviceProvider.GetService<ConcurrentDictionary<Type, Type>>();
+        var handlerCache = serviceProvider.GetService<IHandlerCache>();
         handlerCache.ShouldNotBeNull();
         handlerCache.ShouldBeEmpty();
     }
@@ -160,7 +160,7 @@ public class RequesterBuilderTests
         var serviceProvider = services.BuildServiceProvider();
 
         // Assert
-        var handlerCache = serviceProvider.GetService<ConcurrentDictionary<Type, Type>>();
+        var handlerCache = serviceProvider.GetService<IHandlerCache>();
         handlerCache.ShouldNotBeNull();
         handlerCache.ShouldBeEmpty();
     }
@@ -181,7 +181,7 @@ public class RequesterBuilderTests
         var serviceProvider = services.BuildServiceProvider();
 
         // Assert
-        var handlerCache = serviceProvider.GetService<ConcurrentDictionary<Type, Type>>();
+        var handlerCache = serviceProvider.GetService<IHandlerCache>();
         handlerCache.ShouldNotBeNull();
         handlerCache.ShouldContainKey(typeof(IRequestHandler<MyTestRequest, string>));
         handlerCache[typeof(IRequestHandler<MyTestRequest, string>)].ShouldBe(typeof(MyTestRequestHandler));

@@ -6,9 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;

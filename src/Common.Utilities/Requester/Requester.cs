@@ -222,6 +222,15 @@ public class SendOptions
     /// Gets or sets the progress reporter for tracking request processing.
     /// </summary>
     public IProgress<ProgressReport> Progress { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether exceptions should be caught and returned as a failed result with an error.
+    /// If set to <c>false</c>, exceptions will be thrown instead of being converted to a result.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> to handle exceptions as result errors (default); <c>false</c> to throw exceptions.
+    /// </value>
+    public bool HandleExceptionsAsResultError { get; set; } = true;
 }
 
 /// <summary>
@@ -454,8 +463,7 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
 
         var behaviorType = typeof(IPipelineBehavior<TRequest, IResult<TValue>>);
         var allBehaviors = serviceProvider.GetServices(behaviorType)
-            .Cast<IPipelineBehavior<TRequest, IResult<TValue>>>()
-            .ToList();
+            .Cast<IPipelineBehavior<TRequest, IResult<TValue>>>().ToList();
 
         // If no behaviors are registered but pipelineBehaviorTypes expects some, throw an exception
         if (allBehaviors.Count == 0 && this.pipelineBehaviorTypes.Count > 0)
@@ -566,11 +574,50 @@ public interface IRequester
         where TRequest : class, IRequest<TValue>;
 
     /// <summary>
+    /// Dispatches a request to its handler asynchronously, inferring the response type from the request.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the response value.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    Task<Result<TValue>> SendAsync<TValue>(
+        IRequest<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Returns information about registered request handlers and behaviors.
     /// </summary>
     /// <returns>An object containing handler mappings and behavior types.</returns>
     RegistrationInformation GetRegistrationInformation();
 }
+
+///// <summary>
+///// Provides extension methods for <see cref="IRequester"/> to simplify request dispatching.
+///// </summary>
+//public static class IRequesterExtensions
+//{
+//    /// <summary>
+//    /// Dispatches a request to its handler asynchronously, inferring the request and response types.
+//    /// </summary>
+//    /// <typeparam name="TRequest">The type of the request.</typeparam>
+//    /// <typeparam name="TValue">The type of the response value.</typeparam>
+//    /// <param name="requester">The requester instance.</param>
+//    /// <param name="request">The request to dispatch.</param>
+//    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+//    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+//    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+//    public static Task<Result<TValue>> SendAsync<TRequest, TValue>(
+//        this IRequester requester,
+//        TRequest request,
+//        SendOptions options = null,
+//        CancellationToken cancellationToken = default)
+//        where TRequest : class, IRequest<TValue>
+//    {
+//        return requester.SendAsync<TRequest, TValue>(request, options, cancellationToken);
+//    }
+//}
 
 /// <summary>
 /// Dispatches requests to their handlers through a pipeline of behaviors.
@@ -632,18 +679,20 @@ public partial class Requester(
         ArgumentNullException.ThrowIfNull(request);
 
         TypedLogger.LogProcessing(this.logger, "REQ", typeof(TRequest).Name, request.RequestId.ToString("N"));
+        cancellationToken.ThrowIfCancellationRequested();
+        options ??= new SendOptions();
         var watch = ValueStopwatch.StartNew();
+        var handler = this.handlerProvider.GetHandler<TRequest, TValue>(this.serviceProvider);
+        var behaviors = this.behaviorsProvider.GetBehaviors<TRequest, TValue>(this.serviceProvider);
 
         try
         {
-            var handler = this.handlerProvider.GetHandler<TRequest, TValue>(this.serviceProvider);
             Func<Task<IResult<TValue>>> next = async () =>
                 await handler.HandleAsync(request, options, cancellationToken);
 
-            var behaviors = this.behaviorsProvider.GetBehaviors<TRequest, TValue>(this.serviceProvider);
-
             foreach (var behavior in behaviors.Reverse())
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var behaviorType = behavior.GetType().Name;
                 TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"));
                 var behaviorWatch = ValueStopwatch.StartNew();
@@ -656,15 +705,45 @@ public partial class Requester(
                 };
             }
 
-            var result = await next();
+            cancellationToken.ThrowIfCancellationRequested();
+            var result = await next().ConfigureAwait(false);
             TypedLogger.LogProcessed(this.logger, "REQ", typeof(TRequest).Name, request.RequestId.ToString("N"), watch.GetElapsedMilliseconds());
             return (Result<TValue>)result;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (options.HandleExceptionsAsResultError)
         {
             TypedLogger.LogError(this.logger, ex, typeof(TRequest).Name, request.RequestId.ToString("N"));
             return Result<TValue>.Failure().WithError(new ExceptionError(ex));
         }
+    }
+
+    public Task<Result<TValue>> SendAsync<TValue>(
+        IRequest<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var requestType = request.GetType();
+        var requestInterface = typeof(IRequest<TValue>);
+        if (!requestInterface.IsAssignableFrom(requestType))
+        {
+            throw new ArgumentException($"Request of type '{requestType}' does not implement '{requestInterface}'.", nameof(request));
+        }
+
+        // Find the generic SendAsync<TRequest, TValue> method
+        var method = typeof(Requester)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .FirstOrDefault(m => m.Name == nameof(this.SendAsync) && m.IsGenericMethod && m.GetGenericArguments().Length == 2);
+
+        if (method == null)
+        {
+            throw new InvalidOperationException($"Generic method '{nameof(this.SendAsync)}' not found on '{nameof(Requester)}'.");
+        }
+
+        // Create the generic method with the runtime requestType and TValue
+        var genericMethod = method.MakeGenericMethod(requestType, typeof(TValue));
+        return (Task<Result<TValue>>)genericMethod.Invoke(this, new object[] { request, options, cancellationToken });
     }
 
     /// <summary>
@@ -675,13 +754,12 @@ public partial class Requester(
     {
         var handlerMappings = this.handlerCache
             .ToDictionary(
-                kvp => kvp.Key.GetGenericArguments()[0].Name, // Request type
-                kvp => new List<string> { kvp.Value.Name }.AsReadOnly() as IReadOnlyList<string>);
+                kvp => kvp.Key.GetGenericArguments()[0].PrettyName(), // Request type
+                kvp => new List<string> { kvp.Value.PrettyName() }.AsReadOnly() as IReadOnlyList<string>);
 
         var behaviorTypes = this.pipelineBehaviorTypes
-            .Select(t => t.Name)
-            .ToList()
-            .AsReadOnly();
+            .Select(t => t.PrettyName())
+            .ToList().AsReadOnly();
 
         var information = new RegistrationInformation(handlerMappings, behaviorTypes);
 

@@ -349,6 +349,36 @@ public class RequesterTests
     }
 
     /// <summary>
+    /// Tests that the Progress callback in SendOptions is invoked during request processing.
+    /// </summary>
+    [Fact]
+    public async Task SendAsync_WithProgressReporting_InvokesProgressCallback()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers(["^System\\..*"])
+               .WithBehavior(typeof(ProgressReportingBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new MyTestRequest();
+        var progressReports = new List<ProgressReport>();
+        var options = new SendOptions
+        {
+            Progress = new Progress<ProgressReport>(r => progressReports.Add(r))
+        };
+
+        // Act
+        var result = await requester.SendAsync(request, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        progressReports.ShouldNotBeEmpty();
+        progressReports.SelectMany(r => r.Messages).Any(m => m == "Progress: 50%");
+    }
+
+    /// <summary>
     /// Tests that GetRegistrationInformation returns an empty behavior list when no behaviors are registered.
     /// </summary>
     [Fact]
@@ -467,6 +497,21 @@ public class ModifyingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
             throw new InvalidOperationException("Result type is not compatible with expected TValue.");
         }
         return result;
+    }
+}
+
+/// <summary>
+/// A behavior that reports progress via SendOptions.
+/// </summary>
+public class ProgressReportingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
+{
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    {
+        var sendOptions = options as SendOptions;
+        sendOptions?.Progress?.Report(new ProgressReport("MyTestRequest", new[] { "Progress: 50%" }, 50.0));
+        return await next();
     }
 }
 

@@ -212,9 +212,10 @@ public class MyTestRequest : RequestBase<string>
 /// </summary>
 public class MyTestRequestHandler : RequestHandlerBase<MyTestRequest, string>
 {
-    protected override Task<Result<string>> HandleAsync(MyTestRequest request, SendOptions options, CancellationToken cancellationToken)
+    protected override async Task<Result<string>> HandleAsync(MyTestRequest request, SendOptions options, CancellationToken cancellationToken)
     {
-        return Task.FromResult(Result<string>.Success("Test"));
+        await Task.Delay(100, cancellationToken); // Simulate processing time to test concurrency
+        return Result<string>.Success("Test");
     }
 }
 

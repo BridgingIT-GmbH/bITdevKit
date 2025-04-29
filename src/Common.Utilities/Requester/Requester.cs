@@ -593,32 +593,6 @@ public interface IRequester
     RegistrationInformation GetRegistrationInformation();
 }
 
-///// <summary>
-///// Provides extension methods for <see cref="IRequester"/> to simplify request dispatching.
-///// </summary>
-//public static class IRequesterExtensions
-//{
-//    /// <summary>
-//    /// Dispatches a request to its handler asynchronously, inferring the request and response types.
-//    /// </summary>
-//    /// <typeparam name="TRequest">The type of the request.</typeparam>
-//    /// <typeparam name="TValue">The type of the response value.</typeparam>
-//    /// <param name="requester">The requester instance.</param>
-//    /// <param name="request">The request to dispatch.</param>
-//    /// <param name="options">The options for request processing, including context and progress reporting.</param>
-//    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
-//    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
-//    public static Task<Result<TValue>> SendAsync<TRequest, TValue>(
-//        this IRequester requester,
-//        TRequest request,
-//        SendOptions options = null,
-//        CancellationToken cancellationToken = default)
-//        where TRequest : class, IRequest<TValue>
-//    {
-//        return requester.SendAsync<TRequest, TValue>(request, options, cancellationToken);
-//    }
-//}
-
 /// <summary>
 /// Dispatches requests to their handlers through a pipeline of behaviors.
 /// </summary>

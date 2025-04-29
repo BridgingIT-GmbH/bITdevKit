@@ -724,6 +724,7 @@ public partial class Requester(
     {
         ArgumentNullException.ThrowIfNull(request);
 
+        cancellationToken.ThrowIfCancellationRequested();
         var requestType = request.GetType();
         var requestInterface = typeof(IRequest<TValue>);
         if (!requestInterface.IsAssignableFrom(requestType))

@@ -5,14 +5,16 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using BridgingIT.DevKit.Application.Requester;
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Requester;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
+using Polly.Timeout;
+using Shouldly;
 using Xunit;
 
 /// <summary>
@@ -27,7 +29,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        builder.AddHandlers()
                .WithBehavior(typeof(TestBehavior<,>))
                .WithBehavior(typeof(AnotherTestBehavior<,>));
         this.serviceProvider = services.BuildServiceProvider();
@@ -61,8 +63,9 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var behaviorOrder = new List<string>();
+        services.AddScoped(sp => behaviorOrder);
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        builder.AddHandlers()
                .WithBehavior(typeof(OrderedBehavior<,>))
                .WithBehavior(typeof(AnotherOrderedBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
@@ -74,7 +77,7 @@ public class RequesterTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        behaviorOrder.ShouldBe(new[] { nameof(OrderedBehavior<MyTestRequest, IResult<string>>), nameof(AnotherOrderedBehavior<MyTestRequest, IResult<string>>) });
+        behaviorOrder.ShouldBe(new[] { typeof(OrderedBehavior<MyTestRequest, IResult<string>>).PrettyName(), typeof(AnotherOrderedBehavior<MyTestRequest, IResult<string>>).PrettyName() });
     }
 
     /// <summary>
@@ -87,7 +90,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"]);
+        builder.AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new FailingRequest();
@@ -114,7 +117,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"]);
+        builder.AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new FailingRequest();
@@ -153,7 +156,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"]);
+        builder.AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new AnotherTestRequest(); // No handler registered for this request type
@@ -174,7 +177,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"]);
+        builder.AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new DelayedRequest();
@@ -205,6 +208,7 @@ public class RequesterTests
 
         info.BehaviorTypes.ShouldNotBeNull();
         info.BehaviorTypes.ShouldBe(["TestBehavior<TRequest,TResponse>", "AnotherTestBehavior<TRequest,TResponse>"]);
+        //info.BehaviorTypes.ShouldBe(new[] { typeof(TestBehavior<TRequest, TResponse>).PrettyName(), typeof(AnotherTestBehavior<TRequest, TResponse>).PrettyName() });
     }
 
     /// <summary>
@@ -272,7 +276,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        builder.AddHandlers()
                .WithBehavior(typeof(ModifyingBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
@@ -296,7 +300,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        builder.AddHandlers()
                .WithBehavior(typeof(FailingBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
@@ -329,7 +333,8 @@ public class RequesterTests
         services.AddLogging();
         var contextValues = new List<string>();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        services.AddScoped(sp => contextValues);
+        builder.AddHandlers()
                .WithBehavior(typeof(ContextCapturingBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
@@ -358,7 +363,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"])
+        builder.AddHandlers()
                .WithBehavior(typeof(ProgressReportingBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
@@ -388,7 +393,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         var builder = new RequesterBuilder(services);
-        builder.AddHandlers(["^System\\..*"]); // No behaviors registered
+        builder.AddHandlers(); // No behaviors registered
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
 
@@ -400,6 +405,87 @@ public class RequesterTests
         info.HandlerMappings.ShouldContainKey(nameof(MyTestRequest));
         info.HandlerMappings[nameof(MyTestRequest)].ShouldContain(nameof(MyTestRequestHandler));
         info.BehaviorTypes.ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// Tests that RetryBehavior retries the specified number of times on failure before succeeding.
+    /// </summary>
+    [Fact]
+    public async Task RetryBehavior_RetriesOnFailure()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(RetryBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new RetryTestRequest();
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe("Success");
+        RetryTestRequestHandler.RetryAttempts.ShouldBe(2); // Should retry twice before succeeding
+    }
+
+    /// <summary>
+    /// Tests that TimeoutBehavior fails if the handler execution exceeds the timeout duration.
+    /// </summary>
+    [Fact]
+    public async Task TimeoutBehavior_FailsOnTimeout()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(TimeoutBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new TimeoutTestRequest();
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors[0].ShouldBeOfType<ExceptionError>();
+        var error = (ExceptionError)result.Errors[0];
+        error.Exception.ShouldBeOfType<TimeoutRejectedException>();
+        //error.Message.ShouldContain("Timeout after");
+    }
+
+    /// <summary>
+    /// Tests that ChaosBehavior injects chaos (exceptions) when configured.
+    /// </summary>
+    [Fact]
+    public async Task ChaosBehavior_InjectsChaos()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(ChaosBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new ChaosTestRequest();
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors[0].ShouldBeOfType<ExceptionError>();
+        var error = (ExceptionError)result.Errors[0];
+        error.Exception.ShouldBeOfType<ChaosException>();
+        error.Message.ShouldContain("Chaos injection triggered");
     }
 }
 
@@ -450,9 +536,9 @@ public class OrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         this.orderList = orderList;
     }
 
-    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
-        this.orderList.Add(this.GetType().Name);
+        this.orderList.Add(this.GetType().PrettyName());
         return await next();
     }
 }
@@ -471,9 +557,9 @@ public class AnotherOrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
         this.orderList = orderList;
     }
 
-    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
-        this.orderList.Add(this.GetType().Name);
+        this.orderList.Add(this.GetType().PrettyName());
         return await next();
     }
 }
@@ -485,7 +571,7 @@ public class ModifyingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
     where TRequest : class
     where TResponse : IResult
 {
-    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var result = await next();
         if (result.IsSuccess)
@@ -507,7 +593,7 @@ public class ProgressReportingBehavior<TRequest, TResponse> : IPipelineBehavior<
     where TRequest : class
     where TResponse : IResult
 {
-    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
         sendOptions?.Progress?.Report(new ProgressReport("MyTestRequest", new[] { "Progress: 50%" }, 50.0));
@@ -522,7 +608,7 @@ public class FailingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     where TRequest : class
     where TResponse : IResult
 {
-    public Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         throw new Exception("Behavior failure");
     }
@@ -542,7 +628,7 @@ public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<T
         this.capturedValues = capturedValues;
     }
 
-    public async Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
         if (sendOptions?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
@@ -585,5 +671,75 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
             this.capturedValues.Add($"{userId}-Handler");
         }
         return Task.FromResult(Result<string>.Success("Test"));
+    }
+}
+
+/// <summary>
+/// A request to test retry behavior.
+/// </summary>
+public class RetryTestRequest : RequestBase<string>
+{
+}
+
+/// <summary>
+/// A handler that fails twice before succeeding to test retry behavior.
+/// </summary>
+[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+public class RetryTestRequestHandler : IRequestHandler<RetryTestRequest, string>
+{
+    public static int RetryAttempts { get; private set; }
+
+    private static int attempts = 0;
+
+    public async Task<Result<string>> HandleAsync(RetryTestRequest request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(0, cancellationToken);
+        attempts++;
+        if (attempts <= 2) // Fail on first two attempts
+        {
+            RetryAttempts++;
+            throw new Exception("Simulated failure");
+        }
+        attempts = 0; // Reset for next test
+        return Result<string>.Success("Success");
+    }
+}
+
+/// <summary>
+/// A request to test timeout behavior.
+/// </summary>
+public class TimeoutTestRequest : RequestBase<string>
+{
+}
+
+/// <summary>
+/// A handler that takes too long to complete to test timeout behavior.
+/// </summary>
+[HandlerTimeout(100)] // Timeout after 100ms
+public class TimeoutTestRequestHandler : IRequestHandler<TimeoutTestRequest, string>
+{
+    public async Task<Result<string>> HandleAsync(TimeoutTestRequest request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(500, cancellationToken); // Delay longer than the timeout
+        return Result<string>.Success("Should not reach here");
+    }
+}
+
+/// <summary>
+/// A request to test chaos behavior.
+/// </summary>
+public class ChaosTestRequest : RequestBase<string>
+{
+}
+
+/// <summary>
+/// A handler to test chaos behavior with a chaos policy.
+/// </summary>
+[HandlerChaos(1.0)] // 100% injection rate for testing
+public class ChaosTestRequestHandler : IRequestHandler<ChaosTestRequest, string>
+{
+    public Task<Result<string>> HandleAsync(ChaosTestRequest request, SendOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result<string>.Success("Should not reach here"));
     }
 }

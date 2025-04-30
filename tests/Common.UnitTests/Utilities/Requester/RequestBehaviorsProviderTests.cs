@@ -178,7 +178,7 @@ public class TestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
     where TRequest : class
     where TResponse : IResult
 {
-    public Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         return next();
     }
@@ -191,7 +191,7 @@ public class AnotherTestBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     where TRequest : class
     where TResponse : IResult
 {
-    public Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
+    public Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         return next();
     }

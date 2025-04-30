@@ -10,8 +10,13 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
+using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Contrib.Simmy;
+using Polly.Contrib.Simmy.Outcomes;
+using Polly.Timeout;
 
 /// <summary>
 /// Represents an error that occurs during request processing.
@@ -538,7 +543,7 @@ public interface IPipelineBehavior<TRequest, TResponse>
     /// <param name="next">The delegate to call the next behavior or handler in the pipeline.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A task representing the result of the operation, returning a <see cref="TResponse"/>.</returns>
-    Task<TResponse> HandleAsync(TRequest request, object options, Func<Task<TResponse>> next, CancellationToken cancellationToken = default);
+    Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -673,7 +678,7 @@ public partial class Requester(
                 var currentNext = next;
                 next = async () =>
                 {
-                    var result = await behavior.HandleAsync(request, options, currentNext, cancellationToken);
+                    var result = await behavior.HandleAsync(request, options, handler.GetType(), currentNext, cancellationToken);
                     TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
                     return result;
                 };
@@ -797,9 +802,9 @@ public class RequesterBuilder(IServiceCollection services)
     /// <returns>The <see cref="RequesterBuilder"/> for fluent chaining.</returns>
     public RequesterBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
     {
+        blacklistPatterns ??= ["^System\\..*"];
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns))
-            .ToList();
+            .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
         foreach (var assembly in assemblies)
         {
             var types = this.SafeGetTypes(assembly);
@@ -813,15 +818,16 @@ public class RequesterBuilder(IServiceCollection services)
                     var valueType = type.GetInterfaces()
                         .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>))
                         .GetGenericArguments()[1];
+
                     this.handlerCache.TryAdd(typeof(IRequestHandler<,>).MakeGenericType(requestType, valueType), type);
                     this.policyCache.TryAdd(type, new PolicyConfig
                     {
                         Retry = type.GetCustomAttribute<HandlerRetryAttribute>(),
-                        Timeout = type.GetCustomAttribute<HandlerTimeoutAttribute>()
+                        Timeout = type.GetCustomAttribute<HandlerTimeoutAttribute>(),
+                        Chaos = type.GetCustomAttribute<HandlerChaosAttribute>()
                     });
 
-                    // Only register concrete (non-abstract) types in the DI container
-                    if (!type.IsAbstract)
+                    if (!type.IsAbstract) // Only register concrete (non-abstract) types in the DI container
                     {
                         this.services.AddScoped(type);
                     }
@@ -901,6 +907,11 @@ public class PolicyConfig
     /// Gets or sets the timeout policy attribute for the handler.
     /// </summary>
     public HandlerTimeoutAttribute Timeout { get; set; }
+
+    /// <summary>
+    /// Gets or sets the chaos policy attribute for the handler.
+    /// </summary>
+    public HandlerChaosAttribute Chaos { get; set; }
 }
 
 /// <summary>
@@ -938,7 +949,26 @@ public class HandlerTimeoutAttribute(int timeout) : Attribute
     /// <summary>
     /// Gets the timeout duration in milliseconds.
     /// </summary>
-    public int Timeout { get; } = timeout;
+    public int Duration { get; } = timeout;
+}
+
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public class HandlerChaosAttribute : Attribute
+{
+    public HandlerChaosAttribute(double injectionRate, bool enabled = true)
+    {
+        if (injectionRate < 0 || injectionRate > 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(injectionRate), "Injection rate must be between 0 and 1.");
+        }
+
+        this.InjectionRate = injectionRate;
+        this.Enabled = enabled;
+    }
+
+    public double InjectionRate { get; }
+
+    public bool Enabled { get; } = true;
 }
 
 /// <summary>
@@ -1022,4 +1052,198 @@ public class HandlerCache : IHandlerCache
     public IEnumerator<KeyValuePair<Type, Type>> GetEnumerator() => this.cache.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+}
+
+public abstract class BehaviorBase<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
+{
+    protected const string LogKey = "APP";
+
+    protected ILogger<BehaviorBase<TRequest, TResponse>> Logger { get; }
+
+    protected BehaviorBase(ILoggerFactory loggerFactory)
+    {
+        this.Logger = loggerFactory?.CreateLogger<BehaviorBase<TRequest, TResponse>>() ?? throw new ArgumentNullException(nameof(loggerFactory));
+    }
+
+    public async Task<TResponse> HandleAsync(
+        TRequest request,
+        object options,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken = default)
+    {
+        if (!this.CanProcess(request, handlerType))
+        {
+            this.Logger.LogDebug("{LogKey} behavior skipped (type={BehaviorType})", LogKey, this.GetType().Name);
+            return await next();
+        }
+
+        this.Logger.LogDebug("{LogKey} behavior started (type={BehaviorType})", LogKey, this.GetType().Name);
+        var response = await this.Process(request, handlerType, next, cancellationToken);
+        this.Logger.LogDebug("{LogKey} behavior finished (type={BehaviorType})", LogKey, this.GetType().Name);
+        return response;
+    }
+
+    protected abstract bool CanProcess(TRequest request, Type handlerType);
+
+    protected abstract Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken);
+}
+
+public class RetryBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
+
+    public RetryBehavior(
+        ILoggerFactory loggerFactory,
+        ConcurrentDictionary<Type, PolicyConfig> policyCache)
+        : base(loggerFactory)
+    {
+        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    }
+
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
+    }
+
+    protected override async Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken)
+    {
+        if (!this.policyCache.TryGetValue(handlerType, out var policyConfig) || policyConfig.Retry == null)
+        {
+            return await next();
+        }
+
+        var retryCount = policyConfig.Retry.Count;
+        var delay = TimeSpan.FromMilliseconds(policyConfig.Retry.Delay);
+
+        var policy = Policy<TResponse>
+            .Handle<Exception>()
+            .WaitAndRetryAsync(
+                retryCount,
+                retryAttempt => delay,
+                (exception, timespan, retryAttempt, context) =>
+                {
+                    this.Logger.LogWarning(
+                        "{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs}ms due to {ExceptionMessage}",
+                        LogKey,
+                        retryAttempt,
+                        retryCount,
+                        handlerType.Name,
+                        timespan.Humanize(),
+                        exception.Exception?.Message);
+                });
+
+        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+}
+
+public class TimeoutBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
+
+    public TimeoutBehavior(
+        ILoggerFactory loggerFactory,
+        ConcurrentDictionary<Type, PolicyConfig> policyCache)
+        : base(loggerFactory)
+    {
+        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    }
+
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Timeout != null;
+    }
+
+    protected override async Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken)
+    {
+        if (!this.policyCache.TryGetValue(handlerType, out var policyConfig) || policyConfig.Timeout == null)
+        {
+            return await next();
+        }
+
+        var timeout = TimeSpan.FromMilliseconds(policyConfig.Timeout.Duration);
+        var policy = Policy.TimeoutAsync<TResponse>(
+            timeout,
+            TimeoutStrategy.Pessimistic,
+            (context, timespan, task, exception) =>
+            {
+                this.Logger.LogWarning(
+                    "{LogKey} timeout behavior triggered (timeout={Timeout}, type={BehaviorType})",
+                    LogKey,
+                    timespan.Humanize(),
+                    this.GetType().Name);
+                return Task.CompletedTask;
+            });
+
+        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+}
+
+public class ChaosBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
+
+    public ChaosBehavior(
+        ILoggerFactory loggerFactory,
+        ConcurrentDictionary<Type, PolicyConfig> policyCache)
+        : base(loggerFactory)
+    {
+        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    }
+
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Chaos != null;
+    }
+
+    protected override async Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken)
+    {
+        if (!this.policyCache.TryGetValue(handlerType, out var policyConfig) || policyConfig.Chaos == null)
+        {
+            return await next();
+        }
+
+        if (policyConfig.Chaos.InjectionRate <= 0)
+        {
+            this.Logger.LogDebug("{LogKey} chaos behavior skipped due to injection rate <= 0 (type={BehaviorType})", LogKey, this.GetType().Name);
+            return await next();
+        }
+
+        this.Logger.LogDebug(
+            "{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})",
+            LogKey,
+            policyConfig.Chaos.InjectionRate,
+            this.GetType().Name);
+
+        var policy = MonkeyPolicy.InjectException(with =>
+            with.Fault(new ChaosException("Chaos injection triggered"))
+                .InjectionRate(policyConfig.Chaos.InjectionRate)
+                .Enabled(policyConfig.Chaos.Enabled));
+
+        return await policy.Execute(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
 }

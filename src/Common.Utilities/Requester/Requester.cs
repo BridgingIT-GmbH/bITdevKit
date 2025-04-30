@@ -7,6 +7,8 @@ namespace BridgingIT.DevKit.Application.Requester;
 
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Data;
+using System.Diagnostics;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
@@ -802,7 +804,7 @@ public class RequesterBuilder(IServiceCollection services)
     /// <returns>The <see cref="RequesterBuilder"/> for fluent chaining.</returns>
     public RequesterBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
     {
-        blacklistPatterns ??= ["^System\\..*"];
+        blacklistPatterns ??= Blacklists.ApplicationDependencies; // ["^System\\..*"];
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
         foreach (var assembly in assemblies)
@@ -824,7 +826,10 @@ public class RequesterBuilder(IServiceCollection services)
                     {
                         Retry = type.GetCustomAttribute<HandlerRetryAttribute>(),
                         Timeout = type.GetCustomAttribute<HandlerTimeoutAttribute>(),
-                        Chaos = type.GetCustomAttribute<HandlerChaosAttribute>()
+                        Chaos = type.GetCustomAttribute<HandlerChaosAttribute>(),
+                        CircuitBreaker = type.GetCustomAttribute<HandlerCircuitBreakerAttribute>(),
+                        CacheInvalidate = type.GetCustomAttribute<HandlerCacheInvalidateAttribute>(),
+                        //DatabaseTransaction = type.GetCustomAttribute<HandlerDatabaseTransactionAttribute>(),
                     });
 
                     if (!type.IsAbstract) // Only register concrete (non-abstract) types in the DI container
@@ -893,6 +898,61 @@ public class RequesterBuilder(IServiceCollection services)
     }
 }
 
+public static class ServiceCollectionExtensions
+{
+    /// <summary>
+    /// Adds the Requester service to the specified <see cref="IServiceCollection"/> and returns a <see cref="RequesterBuilder"/> for configuration.
+    /// </summary>
+    /// <remarks>
+    /// This method registers the necessary services for the Requester system, including the <see cref="IRequester"/> implementation
+    /// and its dependencies. It returns a <see cref="RequesterBuilder"/> that can be used to configure handlers and behaviors
+    /// using a fluent API. The Requester system enables dispatching requests to their corresponding handlers through a pipeline
+    /// of behaviors, supporting features like validation, retry, timeout, and chaos injection.
+    /// 
+    /// To use the Requester system, you must:
+    /// 1. Call <see cref="AddRequester"/> to register the core services.
+    /// 2. Use <see cref="RequesterBuilder.AddHandlers"/> to scan for and register request handlers.
+    /// 3. Optionally, use <see cref="RequesterBuilder.WithBehavior{TBehavior}"/> to add pipeline behaviors.
+    /// 4. Build the service provider to resolve the <see cref="IRequester"/> service for dispatching requests.
+    /// 
+    /// The <see cref="IRequester"/> service is registered with a scoped lifetime, meaning a new instance is created for each
+    /// scope (e.g., per HTTP request in ASP.NET Core). Ensure that any dependencies (e.g., logging) are also registered in the
+    /// service collection before calling this method.
+    /// </remarks>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the Requester service to.</param>
+    /// <returns>A <see cref="RequesterBuilder"/> for fluent configuration.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null.</exception>
+    /// <example>
+    /// <code>
+    /// // Basic usage with default configuration
+    /// var services = new ServiceCollection();
+    /// services.AddLogging(); // Required for IRequester logging
+    /// services.AddRequester()
+    ///     .AddHandlers(new[] { "^System\\..*" }); // Exclude System assemblies
+    /// var provider = services.BuildServiceProvider();
+    /// var requester = provider.GetRequiredService&lt;IRequester&gt;();
+    /// var result = await requester.SendAsync(new MyRequest());
+    /// 
+    /// // Usage with pipeline behaviors
+    /// var services = new ServiceCollection();
+    /// services.AddLogging();
+    /// services.AddRequester()
+    ///     .AddHandlers(new[] { "^System\\..*" })
+    ///     .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;() // Add validation behavior
+    ///     .WithBehavior&lt;RetryBehavior&lt;,&gt;&gt;();    // Add retry behavior
+    /// var provider = services.BuildServiceProvider();
+    /// var requester = provider.GetRequiredService&lt;IRequester&gt;();
+    /// var result = await requester.SendAsync(new MyRequest());
+    /// </code>
+    /// </example>
+    /// <seealso cref="RequesterBuilder"/>
+    /// <seealso cref="IRequester"/>
+    public static RequesterBuilder AddRequester(this IServiceCollection services)
+    {
+        return services == null ? throw new ArgumentNullException(nameof(services)) : new RequesterBuilder(services);
+    }
+}
+
 /// <summary>
 /// Represents the policy configuration for a handler, including retry and timeout settings.
 /// </summary>
@@ -912,6 +972,21 @@ public class PolicyConfig
     /// Gets or sets the chaos policy attribute for the handler.
     /// </summary>
     public HandlerChaosAttribute Chaos { get; set; }
+
+    /// <summary>
+    /// Gets or sets the circuit breaker policy attribute for the handler.
+    /// </summary>
+    public HandlerCircuitBreakerAttribute CircuitBreaker { get; set; }
+
+    /// <summary>
+    /// Gets or sets the cache invalidation policy attribute for the handler.
+    /// </summary>
+    public HandlerCacheInvalidateAttribute CacheInvalidate { get; set; }
+
+    ///// <summary>
+    ///// Gets or sets the transaction policy attribute for the handler.
+    ///// </summary>
+    //public HandlerDatabaseTransactionAttribute DatabaseTransaction { get; set; }
 }
 
 /// <summary>
@@ -1054,18 +1129,13 @@ public class HandlerCache : IHandlerCache
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
 
-public abstract class BehaviorBase<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public abstract class PipelineBehaviorBase<TRequest, TResponse>(ILoggerFactory loggerFactory) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
     where TResponse : IResult
 {
     protected const string LogKey = "APP";
 
-    protected ILogger<BehaviorBase<TRequest, TResponse>> Logger { get; }
-
-    protected BehaviorBase(ILoggerFactory loggerFactory)
-    {
-        this.Logger = loggerFactory?.CreateLogger<BehaviorBase<TRequest, TResponse>>() ?? throw new ArgumentNullException(nameof(loggerFactory));
-    }
+    protected ILogger<PipelineBehaviorBase<TRequest, TResponse>> Logger { get; } = loggerFactory?.CreateLogger<PipelineBehaviorBase<TRequest, TResponse>>() ?? throw new ArgumentNullException(nameof(loggerFactory));
 
     public async Task<TResponse> HandleAsync(
         TRequest request,
@@ -1095,19 +1165,13 @@ public abstract class BehaviorBase<TRequest, TResponse> : IPipelineBehavior<TReq
         CancellationToken cancellationToken);
 }
 
-public class RetryBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+public class RetryPipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
-
-    public RetryBehavior(
-        ILoggerFactory loggerFactory,
-        ConcurrentDictionary<Type, PolicyConfig> policyCache)
-        : base(loggerFactory)
-    {
-        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
-    }
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -1135,33 +1199,20 @@ public class RetryBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TRespon
                 retryAttempt => delay,
                 (exception, timespan, retryAttempt, context) =>
                 {
-                    this.Logger.LogWarning(
-                        "{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs}ms due to {ExceptionMessage}",
-                        LogKey,
-                        retryAttempt,
-                        retryCount,
-                        handlerType.Name,
-                        timespan.Humanize(),
-                        exception.Exception?.Message);
+                    this.Logger.LogWarning("{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs}ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.Humanize(), exception.Exception?.Message);
                 });
 
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
     }
 }
 
-public class TimeoutBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+public class TimeoutPipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
-
-    public TimeoutBehavior(
-        ILoggerFactory loggerFactory,
-        ConcurrentDictionary<Type, PolicyConfig> policyCache)
-        : base(loggerFactory)
-    {
-        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
-    }
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -1185,11 +1236,7 @@ public class TimeoutBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResp
             TimeoutStrategy.Pessimistic,
             (context, timespan, task, exception) =>
             {
-                this.Logger.LogWarning(
-                    "{LogKey} timeout behavior triggered (timeout={Timeout}, type={BehaviorType})",
-                    LogKey,
-                    timespan.Humanize(),
-                    this.GetType().Name);
+                this.Logger.LogWarning("{LogKey} timeout behavior triggered (timeout={Timeout}, type={BehaviorType})", LogKey, timespan.Humanize(), this.GetType().Name);
                 return Task.CompletedTask;
             });
 
@@ -1197,19 +1244,13 @@ public class TimeoutBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResp
     }
 }
 
-public class ChaosBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TResponse>
+public class ChaosPipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache;
-
-    public ChaosBehavior(
-        ILoggerFactory loggerFactory,
-        ConcurrentDictionary<Type, PolicyConfig> policyCache)
-        : base(loggerFactory)
-    {
-        this.policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
-    }
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -1233,11 +1274,7 @@ public class ChaosBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TRespon
             return await next();
         }
 
-        this.Logger.LogDebug(
-            "{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})",
-            LogKey,
-            policyConfig.Chaos.InjectionRate,
-            this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, policyConfig.Chaos.InjectionRate, this.GetType().Name);
 
         var policy = MonkeyPolicy.InjectException(with =>
             with.Fault(new ChaosException("Chaos injection triggered"))
@@ -1245,5 +1282,166 @@ public class ChaosBehavior<TRequest, TResponse> : BehaviorBase<TRequest, TRespon
                 .Enabled(policyConfig.Chaos.Enabled));
 
         return await policy.Execute(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+}
+
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public class HandlerCircuitBreakerAttribute : Attribute
+{
+    public HandlerCircuitBreakerAttribute(int attempts, int breakDurationSeconds, int backoffMilliseconds, bool backoffExponential = false)
+    {
+        if (attempts <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(attempts), "Attempts must be greater than 0.");
+        }
+        if (breakDurationSeconds < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(breakDurationSeconds), "Break duration must be non-negative.");
+        }
+        if (backoffMilliseconds < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(backoffMilliseconds), "Backoff milliseconds must be non-negative.");
+        }
+
+        this.Attempts = attempts;
+        this.BreakDuration = TimeSpan.FromSeconds(breakDurationSeconds);
+        this.Backoff = TimeSpan.FromMilliseconds(backoffMilliseconds);
+        this.BackoffExponential = backoffExponential;
+    }
+
+    public int Attempts { get; }
+
+    public TimeSpan BreakDuration { get; }
+
+    public TimeSpan Backoff { get; }
+
+    public bool BackoffExponential { get; }
+}
+
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public class HandlerCacheInvalidateAttribute : Attribute
+{
+    public HandlerCacheInvalidateAttribute(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentNullException(nameof(key), "Cache key cannot be null or empty.");
+        }
+
+        this.Key = key;
+    }
+
+    public string Key { get; }
+}
+
+public class ModuleNotEnabledException(string moduleName) : Exception($"Module '{moduleName}' is not enabled.")
+{
+    public string ModuleName { get; } = moduleName;
+}
+
+public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.CircuitBreaker != null;
+    }
+
+    protected override async Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken)
+    {
+        if (!this.policyCache.TryGetValue(handlerType, out var policyConfig) || policyConfig.CircuitBreaker == null)
+        {
+            return await next();
+        }
+
+        var options = policyConfig.CircuitBreaker;
+        var attempts = 1;
+
+        var retryPolicy = options.BackoffExponential
+            ? Policy.Handle<Exception>()
+                .WaitAndRetryForeverAsync(
+                    attempt => TimeSpan.FromMilliseconds(options.Backoff.Milliseconds * Math.Pow(2, attempt)),
+                    (ex, wait) =>
+                    {
+                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.Humanize(), this.GetType().Name, ex.Message);
+                        attempts++;
+                    })
+            : Policy.Handle<Exception>()
+                .WaitAndRetryForeverAsync(
+                    attempt => options.Backoff,
+                    (ex, wait) =>
+                    {
+                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.Humanize(), this.GetType().Name, ex.Message);
+                        attempts++;
+                    });
+
+        var circuitBreakerPolicy = Policy
+            .Handle<Exception>()
+            .CircuitBreakerAsync(
+                options.Attempts,
+                options.BreakDuration,
+                (ex, wait) =>
+                {
+                    this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, wait.Humanize(), this.GetType().Name, ex.Message);
+                },
+                () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name),
+                () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name));
+
+        var policy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
+
+        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+}
+
+public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    ConcurrentDictionary<Type, PolicyConfig> policyCache,
+    ICacheProvider provider) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
+
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.CacheInvalidate != null;
+    }
+
+    protected override async Task<TResponse> Process(
+        TRequest request,
+        Type handlerType,
+        Func<Task<TResponse>> next,
+        CancellationToken cancellationToken)
+    {
+        if (!this.policyCache.TryGetValue(handlerType, out var policyConfig) || policyConfig.CacheInvalidate == null)
+        {
+            return await next();
+        }
+
+        var key = policyConfig.CacheInvalidate.Key;
+        if (string.IsNullOrEmpty(key))
+        {
+            return await next();
+        }
+
+        var result = await next(); // Continue pipeline
+
+        this.Logger.LogDebug("{LogKey} cache invalidate behavior (key={CacheKey}*, type={BehaviorType})",
+            LogKey,
+            key,
+            this.GetType().Name);
+        await this.provider.RemoveStartsWithAsync(key, cancellationToken);
+
+        return result;
     }
 }

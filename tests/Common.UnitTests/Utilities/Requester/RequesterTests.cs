@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
@@ -28,10 +27,10 @@ public class RequesterTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers()
-               .WithBehavior(typeof(TestBehavior<,>))
-               .WithBehavior(typeof(AnotherTestBehavior<,>));
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(TestBehavior<,>))
+            .WithBehavior(typeof(AnotherTestBehavior<,>));
         this.serviceProvider = services.BuildServiceProvider();
     }
 
@@ -62,12 +61,12 @@ public class RequesterTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(OrderedBehavior<,>))
+            .WithBehavior(typeof(AnotherOrderedBehavior<,>));
         var behaviorOrder = new List<string>();
         services.AddScoped(sp => behaviorOrder);
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers()
-               .WithBehavior(typeof(OrderedBehavior<,>))
-               .WithBehavior(typeof(AnotherOrderedBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new MyTestRequest();
@@ -89,8 +88,8 @@ public class RequesterTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers();
+        services.AddRequester()
+            .AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new FailingRequest();
@@ -116,8 +115,8 @@ public class RequesterTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers();
+        services.AddRequester()
+            .AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new FailingRequest();
@@ -155,8 +154,8 @@ public class RequesterTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers();
+        services.AddRequester()
+            .AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new AnotherTestRequest(); // No handler registered for this request type
@@ -176,8 +175,8 @@ public class RequesterTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = new RequesterBuilder(services);
-        builder.AddHandlers();
+        services.AddRequester()
+            .AddHandlers();
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new DelayedRequest();
@@ -418,7 +417,7 @@ public class RequesterTests
         services.AddLogging();
         var builder = new RequesterBuilder(services);
         builder.AddHandlers()
-               .WithBehavior(typeof(RetryBehavior<,>));
+               .WithBehavior(typeof(RetryPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new RetryTestRequest();
@@ -443,7 +442,7 @@ public class RequesterTests
         services.AddLogging();
         var builder = new RequesterBuilder(services);
         builder.AddHandlers()
-               .WithBehavior(typeof(TimeoutBehavior<,>));
+               .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new TimeoutTestRequest();
@@ -471,7 +470,7 @@ public class RequesterTests
         services.AddLogging();
         var builder = new RequesterBuilder(services);
         builder.AddHandlers()
-               .WithBehavior(typeof(ChaosBehavior<,>));
+               .WithBehavior(typeof(ChaosPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new ChaosTestRequest();
@@ -486,6 +485,31 @@ public class RequesterTests
         var error = (ExceptionError)result.Errors[0];
         error.Exception.ShouldBeOfType<ChaosException>();
         error.Message.ShouldContain("Chaos injection triggered");
+    }
+
+    /// <summary>
+    /// Tests that SendAsync handles a command returning Result<Unit> correctly with retry behavior.
+    /// </summary>
+    [Fact]
+    public async Task SendAsync_WithUnitResultAndRetry_SucceedsAfterRetries()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(RetryPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new SendNotificationCommand { Message = "Test Notification" };
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(Unit.Value);
+        SendNotificationCommandHandler.RetryAttempts.ShouldBe(2); // Should retry twice before succeeding
     }
 }
 
@@ -741,5 +765,33 @@ public class ChaosTestRequestHandler : IRequestHandler<ChaosTestRequest, string>
     public Task<Result<string>> HandleAsync(ChaosTestRequest request, SendOptions options, CancellationToken cancellationToken)
     {
         return Task.FromResult(Result<string>.Success("Should not reach here"));
+    }
+}
+
+// Command to send a notification
+public class SendNotificationCommand : RequestBase<Unit>
+{
+    public string Message { get; set; }
+}
+
+// Handler for the command with a retry policy
+[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+public class SendNotificationCommandHandler : RequestHandlerBase<SendNotificationCommand, Unit>
+{
+    public static int RetryAttempts { get; private set; }
+
+    private static int attempts = 0;
+
+    protected override async Task<Result<Unit>> HandleAsync(SendNotificationCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        attempts++;
+        if (attempts <= 2) // Fail on first two attempts
+        {
+            RetryAttempts++;
+            throw new Exception("Simulated failure");
+        }
+        attempts = 0; // Reset for next test
+        await Task.Delay(50, cancellationToken); // Simulate async operation
+        return Result<Unit>.Success(Unit.Value);
     }
 }

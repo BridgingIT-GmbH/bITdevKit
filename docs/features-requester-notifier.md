@@ -1,35 +1,34 @@
-# Documentation for Requester and Notifier
+# Requester and Notifier Feature Documentation
 
-This document provides a practical guide for developers using the `Requester` and `Notifier` libraries in .NET applications. The `Requester` handles commands (operations that modify state) and queries (operations that retrieve data) following the Command Query Separation (CQS) pattern, while the `Notifier` publishes notifications (domain events) to multiple handlers for event-driven architectures. Both libraries are designed for type safety, asynchronous processing, and integration with Dependency Injection (DI), offering features like validation, progress reporting, and pipeline behaviors. This guide focuses on usage, examples, and testing, with technical design details available in `Design.md`.
+[TOC]
 
-## Introduction
+## Overview
 
-The `Requester` and `Notifier` libraries simplify processing requests and notifications in .NET applications, ensuring consistency, scalability, and developer productivity. The `Requester` dispatches requests through a pipeline of behaviors, returning structured `Result<TResponse>` outcomes, while the `Notifier` broadcasts notifications to multiple handlers, returning `Result<Unit>`. Both leverage the `Result` pattern for unified success or failure handling, with configurable options via `SendOptions` and `PublishOptions`. For integration with minimal API endpoints, see `Extensions.md`.
+The `Requester` system is a robust framework designed to streamline the handling of requests—such as commands and queries—in modern applications. It provides a structured approach to dispatching requests to their respective handlers through a customizable pipeline of behaviors, allowing developers to address cross-cutting concerns like validation, retries, and timeouts without altering core business logic. By enforcing a consistent and type-safe mechanism for request processing, the system ensures predictability and maintainability in complex applications. The `Requester` system also includes a set of extensible pipeline behaviors that can be shared with other systems, such as the `Notifier`, ensuring consistency across different types of request handling.
 
-### Request and Notification Flow
+### Challenges
 
-The following Mermaid sequence diagram illustrates the high-level flow of a request or notification:
+When developing applications, managing the core mechanics of request dispatching and handler execution presents several challenges:
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant System as Requester/Notifier
-    participant Behaviors as Pipeline Behaviors
-    participant Handler as Request/Notification Handler
+1. **Inconsistent Request Dispatching**: Without a standardized mechanism, dispatching requests to handlers can vary across the application, leading to unpredictable behavior.
+2. **Error Propagation Complexity**: Propagating errors from handlers through multiple layers while preserving context is difficult, often resulting in lost information.
+3. **Coupling of Concerns**: Handlers often mix business logic with technical concerns (e.g., error handling, logging), making them harder to maintain and test.
+4. **Extensibility Limitations**: Adding new functionality (e.g., validation, retries) typically requires modifying existing handlers, increasing complexity and risk.
+5. **Type Safety Issues**: Ensuring type-safe handling of requests and their results, especially for operations with no meaningful return value, can be error-prone.
+6. **Request Tracking**: Tracking request metadata (e.g., IDs, timestamps) for debugging and auditing is often ad hoc, leading to inconsistent monitoring.
 
-    Client->>System: SendAsync/PublishAsync(request/notification, options, cancellationToken)
-    System->>Behaviors: HandleAsync(request/notification, next, cancellationToken)
-    Behaviors->>Handler: HandleAsync(request/notification, options, cancellationToken)
-    Handler-->>Behaviors: Result<TResponse>/Result<Unit>
-    Behaviors-->>System: Result
-    System-->>Client: Result<TResponse>/Result<Unit>
-```
+These challenges are why request-handling systems are popular—they provide a structured approach to dispatching requests, managing errors, and extending functionality without modifying core logic. The `Requester` system addresses these challenges by offering a standardized, extensible, and type-safe solution for request and handler management.
 
-The client invokes `SendAsync` (requests) or `PublishAsync` (notifications), processing the message through behaviors before reaching the handler(s), which return a result that propagates back to the client.
+### Solution
 
-## Requester
+The `Requester` system provides a comprehensive solution by:
 
-The `Requester` is a type-safe, asynchronous library for handling commands and queries, supporting validation, progress reporting, and per-handler policies.
+1. Standardizing request dispatching through a central `IRequester` interface, ensuring consistent behavior across the application.
+2. Enabling structured error propagation with `Result<TValue>`, preserving context across layers.
+3. Decoupling concerns by using a pipeline of behaviors to handle technical aspects (e.g., validation, retries) separately from business logic.
+4. Supporting extensibility through behaviors that can be added without modifying handlers.
+5. Providing type-safe handling with `Result<Unit>` for commands with no meaningful return value.
+6. Including built-in request metadata (`RequestId`, `RequestTimestamp`) for tracking and auditing.
 
 ### Key Features
 
@@ -44,7 +43,96 @@ The `Requester` is a type-safe, asynchronous library for handling commands and q
 - Progress reporting via `IProgress<ProgressReport>`.
 - Automatic handler and validator discovery via assembly scanning.
 
+### Architecture
+
+The `Requester` system is built around the `IRequester` interface, which dispatches requests to handlers through a pipeline of behaviors. Requests inherit from `RequestBase<TValue>`, providing metadata (`RequestId`, `RequestTimestamp`). Handlers implement `IRequestHandler<TRequest, TValue>`, returning a `Result<TValue>` (or `Result<Unit>` for null results). Behaviors implement `IPipelineBehavior<TRequest, TResponse>`, applying cross-cutting concerns like validation, retries, or transactions. The `RequesterBuilder` configures the system, allowing registration of handlers and behaviors via a fluent API, including automatic discovery of validators embedded in requests.
+
+```mermaid
+classDiagram
+    class IRequester {
+        <<interface>>
+        +SendAsync(TRequest, SendOptions, CancellationToken)
+        +GetRegistrationInformation()
+    }
+
+    class IResult {
+        <<interface>>
+        +IReadOnlyList Messages
+        +IReadOnlyList Errors
+        +bool IsSuccess
+        +bool IsFailure
+    }
+
+    class IResultT {
+        <<interface>>
+        +TValue Value
+    }
+
+    class IResultError {
+        <<interface>>
+        +string Message
+    }
+
+    class IRequest {
+        <<interface>>
+        +Guid RequestId
+        +DateTimeOffset RequestTimestamp
+    }
+
+    class IPipelineBehavior {
+        <<interface>>
+        +HandleAsync(TRequest, object, Type, Func, CancellationToken)
+    }
+
+    class IHandlerCache {
+        <<interface>>
+        +TryAdd(Type, Type)
+    }
+
+    class IRequestHandler {
+        <<interface>>
+        +HandleAsync(TRequest, SendOptions, CancellationToken)
+    }
+
+    class Requester {
+        +SendAsync(TRequest, SendOptions, CancellationToken)
+        +GetRegistrationInformation()
+    }
+
+    class RequestBase {
+        +Guid RequestId
+        +DateTimeOffset RequestTimestamp
+    }
+
+    class PipelineBehaviorBase {
+        +HandleAsync(TRequest, object, Type, Func, CancellationToken)
+    }
+
+    class HandlerCache {
+        +TryAdd(Type, Type)
+    }
+
+    class RequestHandlerBase {
+        +HandleAsync(TRequest, SendOptions, CancellationToken)
+    }
+
+    IRequester <|.. Requester
+    IResult <|-- IResultT
+    IResult ..> IResultError : contains
+    IResultT <|.. ResultT : Result<Unit> for null results
+    IRequest <|.. RequestBase
+    IPipelineBehavior <|.. PipelineBehaviorBase
+    IHandlerCache <|.. HandlerCache
+    IRequestHandler <|.. RequestHandlerBase
+    Requester --> IPipelineBehavior : uses
+    Requester --> IHandlerCache : uses
+    Requester --> IRequestHandler : uses
+    RequestBase --> IResultT : returns
+```
+
 ### Use Cases
+
+The `Requester` system is particularly useful in the following scenarios:
 
 - Creating a customer (`Result<Unit>`).
 - Updating a customer’s email (`Result<string>`).
@@ -53,2102 +141,594 @@ The `Requester` is a type-safe, asynchronous library for handling commands and q
 - Handling polymorphic requests (e.g., `Request<Customer>` with a `Request<Person>` handler).
 - Processing generic entities (e.g., `SaveEntityRequest<TEntity>`).
 
-### Validation
+## Part 1: Requester
 
-Validation uses nested `Validator` classes within request types, executed by the mandatory `ValidationBehavior`. Invalid requests return `Result.Failure()` with `FluentValidationError`, short-circuiting the pipeline. Register `ValidationBehavior` with `WithBehavior<ValidationBehavior>()` to enable validation.
+### Basic Usage
 
-### Usage
-
-#### Setup
-
-Add the `Requester` to your .NET project and configure it with DI (e.g., Microsoft.Extensions.DependencyInjection):
+#### Request Dispatching
 
 ```csharp
-var services = new ServiceCollection();
-services.AddLogging(builder => builder.AddConsole());
-services.AddSingleton<IRepository, MockRepository>();
+// Creating a command
+var command = new DoSomethingCommand { Message = "Performing task..." };
+
+// Dispatching the command
+var requester = provider.GetRequiredService<IRequester>();
+var result = await requester.SendAsync(command);
+
+// Checking result status
+if (result.IsSuccess)
+{
+    Console.WriteLine("Task performed successfully.");
+}
+else
+{
+    Console.WriteLine($"Failed: {result.Errors.FirstOrDefault()?.Message}");
+}
+
+// Dispatching a query with a value
+var query = new GetUserQuery { UserId = Guid.NewGuid() };
+var queryResult = await requester.SendAsync(query);
+
+if (queryResult.IsSuccess)
+{
+    Console.WriteLine($"User found: {queryResult.Value.Username}");
+}
+```
+
+#### Command with Unit Result
+
+```csharp
+public class DoSomethingCommand : RequestBase<Unit>
+{
+    public string Message { get; set; }
+
+    // Nested FluentValidation validator for automatic discovery
+    public class Validator : AbstractValidator<DoSomethingCommand>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Message).NotEmpty().WithMessage("Message cannot be empty.");
+        }
+    }
+}
+
+[HandlerRetry(3, 200)] // Retry 3 times with 200ms delay
+public class DoSomethingCommandHandler : RequestHandlerBase<DoSomethingCommand, Unit>
+{
+    protected override async Task<Result<Unit>> HandleAsync(DoSomethingCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken); // Simulate async operation
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+```
+
+#### Query with Value Result
+
+```csharp
+public class User : IEntity
+{
+    public Guid Id { get; set; }
+    public string Username { get; set; }
+
+    public bool HasIdentity() => this.Id != Guid.Empty;
+}
+
+public class GetUserQuery : RequestBase<User>
+{
+    public Guid UserId { get; set; }
+
+    // Nested FluentValidation validator for automatic discovery
+    public class Validator : AbstractValidator<GetUserQuery>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId cannot be empty.");
+        }
+    }
+}
+
+[HandlerTimeout(500)] // Timeout after 500ms
+public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
+{
+    private readonly IGenericReadOnlyRepository<User> userRepository;
+
+    public GetUserQueryHandler(IGenericReadOnlyRepository<User> userRepository)
+    {
+        this.userRepository = userRepository;
+    }
+
+    protected override async Task<Result<User>> HandleAsync(GetUserQuery request, SendOptions options, CancellationToken cancellationToken)
+    {
+        var user = await this.userRepository.FindOneAsync(request.UserId, cancellationToken: cancellationToken);
+        return user != null
+            ? Result<User>.Success(user)
+            : Result<User>.Failure().WithMessage($"User with ID {request.UserId} not found.");
+    }
+}
+```
+
+#### FluentValidation Setup in Requests
+
+Requests can include a nested `Validator` class that extends `FluentValidation.AbstractValidator<TRequest>`. The `RequesterBuilder` automatically discovers these validators during assembly scanning and registers them for use with the `ValidationBehavior`.
+
+```csharp
+public class CreateCustomerCommand : RequestBase<Unit>
+{
+    public string Email { get; set; }
+
+    public class Validator : AbstractValidator<CreateCustomerCommand>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
+}
+```
+
+#### Validation Behavior
+
+The `ValidationBehavior` is a pipeline behavior that automatically validates requests using FluentValidation if a validator is registered. It runs before the handler, ensuring validation errors are caught early.
+
+```csharp
+// Ensure the ValidationBehavior is registered
 services.AddRequester()
-    .WithBehavior<ValidationBehavior>()
-    .WithBehavior<RetryBehavior>()
-    .WithBehavior<TimeoutBehavior>()
-    .AddHandlers(new[] { "System.*", "Microsoft.*" });
-var provider = services.BuildServiceProvider();
-```
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<ValidationBehavior<,>>();
 
-Resolve `IRequester` within a scope:
-
-```csharp
-using var scope = provider.CreateScope();
-var requester = scope.ServiceProvider.GetRequiredService<IRequester>();
-```
-
-#### Defining Requests
-
-Requests inherit from `RequestBase<TResponse>`, providing `RequestId` and `RequestTimestamp`. Nested `Validator` classes enable validation.
-
-**Command Example**:
-
-```csharp
-public class CustomerCreateCommand : RequestBase<string>
+// Example request with validation
+public class UpdateEmailCommand : RequestBase<string>
 {
-    public string Name { get; set; }
+    public string Email { get; set; }
 
-    public class Validator : AbstractValidator<CustomerCreateCommand>
+    public class Validator : AbstractValidator<UpdateEmailCommand>
     {
         public Validator()
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Name cannot be empty.");
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
         }
     }
 }
-```
 
-**Query Example**:
-
-```csharp
-public class GetCustomerQuery : RequestBase<CustomerDto>
+public class UpdateEmailCommandHandler : RequestHandlerBase<UpdateEmailCommand, string>
 {
-    public int Id { get; set; }
-
-    public class Validator : AbstractValidator<GetCustomerQuery>
+    protected override async Task<Result<string>> HandleAsync(UpdateEmailCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        public Validator()
-        {
-            RuleFor(x => x.Id).GreaterThan(0).WithMessage("Id must be positive.");
-        }
+        // ValidationBehavior ensures Email is valid before this executes
+        return Result<string>.Success(request.Email);
     }
 }
 ```
 
-#### Defining Handlers
-
-Handlers inherit from `RequestHandlerBase<TRequest, TResponse>`, implementing `HandleAsync`:
+#### Using SendOptions
 
 ```csharp
-public class CustomerCreateCommandHandler : RequestHandlerBase<CustomerCreateCommand, string>
-{
-    private readonly ILogger<CustomerCreateCommandHandler> logger;
-    private readonly IRepository repository;
+var requester = provider.GetRequiredService<IRequester>();
+var query = new GetUserQuery { UserId = Guid.NewGuid() };
 
-    public CustomerCreateCommandHandler(ILogger<CustomerCreateCommandHandler> logger, IRepository repository)
-    {
-        this.logger = logger;
-        this.repository = repository;
-    }
-
-    protected override async Task<Result<string>> HandleAsync(CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken = default)
-    {
-        return await Result<string>.TryAsync(async ct =>
-        {
-            if (ct.IsCancellationRequested)
-            {
-                return Result<string>.Failure().WithMessage("Operation canceled");
-            }
-            this.logger.LogInformation("Handling CustomerCreateCommand for {Name}", request.Name);
-            options.Progress?.Report(new ProgressReport(nameof(CustomerCreateCommand), new[] { "Processing command" }, 50.0));
-            await this.repository.SaveAsync(request.Name, ct);
-            options.Progress?.Report(new ProgressReport(nameof(CustomerCreateCommand), new[] { "Command processed" }, 100.0, true));
-            return Result<string>.Success($"Customer {request.Name} created");
-        }, cancellationToken);
-    }
-}
-```
-
-#### Dispatching Requests
-
-Dispatch requests using `SendAsync` with `SendOptions`:
-
-```csharp
-var request = new CustomerCreateCommand { Name = "John Doe" };
+// Configure SendOptions to throw exceptions
 var options = new SendOptions
 {
-    Progress = new Progress<ProgressReport>(p => Console.WriteLine($"Progress: {string.Join(", ", p.Messages)} ({p.PercentageComplete}%)"))
+    HandleExceptionsAsResultError = false
 };
-var result = await requester.SendAsync<CustomerCreateCommand, string>(request, options)
-    .Match(
-        value => $"Success: {value}",
-        errors => $"Failure: {string.Join(", ", errors.Select(e => e.Message 0}", request.RequestId.ToString("N"));
-        TypedLogger.LogProcessed(this.logger, "ValidationBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
+
+try
+{
+    var result = await requester.SendAsync(query, options);
+    if (result.IsSuccess)
+    {
+        Console.WriteLine($"User found: {result.Value.Username}");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
+```
+
+#### Request Metadata and Cancellation
+
+```csharp
+public class CancelableCommand : RequestBase<Unit>
+{
+    public Guid TaskId { get; set; }
+}
+
+public class CancelableCommandHandler : RequestHandlerBase<CancelableCommand, Unit>
+{
+    protected override async Task<Result<Unit>> HandleAsync(CancelableCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"Request ID: {request.RequestId}, Timestamp: {request.RequestTimestamp}");
+        await Task.Delay(5000, cancellationToken); // Long-running operation
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+
+var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+var result = await requester.SendAsync(new CancelableCommand { TaskId = Guid.NewGuid() }, cancellationToken: cts.Token);
+```
+
+#### Best Practices
+
+1. **Early Returns**: Check `result.IsSuccess` early to avoid unnecessary processing.
+   ```csharp
+   var result = await requester.SendAsync(request);
+   if (result.IsFailure)
+   {
+       return result;
+   }
+   ```
+
+2. **Meaningful Messages**: Include context in error messages for better debugging.
+   ```csharp
+   return Result<Unit>.Failure($"Failed to process task {request.TaskId}: Invalid input");
+   ```
+
+3. **Order Behaviors**: Place critical behaviors (e.g., validation, transactions) early in the pipeline.
+   ```csharp
+   services.AddRequester()
+       .AddHandlers(new[] { "^System\\..*" })
+       .WithBehavior<ValidationBehavior<,>>()
+       .WithBehavior<TransactionPipelineBehavior<,>>()
+       .WithBehavior<RetryPipelineBehavior<,>>();
+   ```
+
+### Examples
+
+#### Command Handling Example
+
+```csharp
+public class DoSomethingCommand : RequestBase<Unit>
+{
+    public string Message { get; set; }
+
+    public class Validator : AbstractValidator<DoSomethingCommand>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Message).NotEmpty().WithMessage("Message cannot be empty.");
+        }
+    }
+}
+
+[HandlerRetry(3, 200)] // Retry 3 times with 200ms delay
+public class DoSomethingCommandHandler : RequestHandlerBase<DoSomethingCommand, Unit>
+{
+    protected override async Task<Result<Unit>> HandleAsync(DoSomethingCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken); // Simulate async operation
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+
+var command = new DoSomethingCommand { Message = "Performing task..." };
+var result = await requester.SendAsync(command);
+
+if (result.IsSuccess)
+{
+    Console.WriteLine("Task performed successfully.");
+}
+else
+{
+    Console.WriteLine($"Failed: {result.Errors.FirstOrDefault()?.Message}");
+}
+```
+
+#### Query Handling Example
+
+```csharp
+public class User : IEntity
+{
+    public Guid Id { get; set; }
+    public string Username { get; set; }
+
+    public bool HasIdentity() => this.Id != Guid.Empty;
+}
+
+public class GetUserQuery : RequestBase<User>
+{
+    public Guid UserId { get; set; }
+
+    public class Validator : AbstractValidator<GetUserQuery>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId cannot be empty.");
+        }
+    }
+}
+
+[HandlerTimeout(500)] // Timeout after 500ms
+public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
+{
+    private readonly IGenericReadOnlyRepository<User> userRepository;
+
+    public GetUserQueryHandler(IGenericReadOnlyRepository<User> userRepository)
+    {
+        this.userRepository = userRepository;
+    }
+
+    protected override async Task<Result<User>> HandleAsync(GetUserQuery request, SendOptions options, CancellationToken cancellationToken)
+    {
+        var user = await this.userRepository.FindOneAsync(request.UserId, cancellationToken: cancellationToken);
+        return user != null
+            ? Result<User>.Success(user)
+            : Result<User>.Failure().WithMessage($"User with ID {request.UserId} not found.");
+    }
+}
+
+var query = new GetUserQuery { UserId = Guid.NewGuid() };
+var result = await requester.SendAsync(query);
+
+if (result.IsSuccess)
+{
+    Console.WriteLine($"User found: {result.Value.Username}");
+}
+else
+{
+    Console.WriteLine($"Failed: {result.Errors.FirstOrDefault()?.Message}");
+}
+```
+
+#### API Controller Example
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+    private readonly IRequester requester;
+
+    public UsersController(IRequester requester)
+    {
+        this.requester = requester;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUser(Guid id)
+    {
+        var query = new GetUserQuery { UserId = id };
+        var result = await this.requester.SendAsync(query);
+
+        if (result.IsFailure)
+        {
+            return this.BadRequest(new
+            {
+                Errors = result.Errors.Select(e => e.Message),
+                Messages = result.Messages
+            });
+        }
+
+        return this.Ok(result.Value);
     }
 }
 ```
 
-### RetryBehavior
+## Part 2: Notifier
+
+### Overview
+
+### Basic Usage
+
+### Examples
+
+## Part 3: Pipeline Behaviors
+
+### Basic Usage
+
+#### Configuring Behaviors
+
+Pipeline behaviors can be added to both the `Requester` and `Notifier` systems to handle cross-cutting concerns. They are registered using the fluent API during system configuration.
 
 ```csharp
-/// <summary>
-/// Retries failed requests or notifications based on HandlerRetry attributes using Polly.
-/// </summary>
-public class RetryBehavior : IPipelineBehavior
-{
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<RetryBehavior> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the RetryBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    /// <param name="logger">The logger for retry processing.</param>
-    public RetryBehavior(IServiceProvider serviceProvider, ILogger<RetryBehavior> logger)
-    {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "RetryBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        // Assume handler type is resolved from request type (simplified for documentation)
-        var handlerType = request.GetType().GetInterfaces()
-            .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) || i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-            .Select(i => i.GetGenericArguments()[0])
-            .FirstOrDefault()?.GetTypeInfo();
-
-        var retryAttribute = handlerType?.GetCustomAttribute<HandlerRetryAttribute>();
-        if (retryAttribute != null)
-        {
-            var policy = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(
-                    retryAttribute.Attempts,
-                    attempt => TimeSpan.FromSeconds(Math.Pow(retryAttribute.DelaySeconds, attempt)) * (retryAttribute.Jitter ? (new Random().NextDouble() * 0.1 + 0.95) : 1));
-            var result = await policy.ExecuteAsync(next);
-            TypedLogger.LogProcessed(this.logger, "RetryBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-            return result;
-        }
-
-        var nextResult = await next();
-        TypedLogger.LogProcessed(this.logger, "RetryBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
-    }
-}
+// Adding validation, retry, and timeout behaviors
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<ValidationBehavior<,>>()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior<TimeoutPipelineBehavior<,>>();
 ```
 
-### TimeoutBehavior
+#### Creating a Custom Behavior
+
+You can create custom pipeline behaviors to add your own cross-cutting concerns. To do so, inherit from `PipelineBehaviorBase<TRequest, TResponse>` and implement the required methods.
 
 ```csharp
-/// <summary>
-/// Enforces timeouts for requests or notifications based on HandlerTimeout attributes using Polly.
-/// </summary>
-public class TimeoutBehavior : IPipelineBehavior
+public class LoggingPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRequest, TResponse>
+    where TRequest : class
+    where TResponse : IResult
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<TimeoutBehavior> logger;
+    public LoggingPipelineBehavior(ILoggerFactory loggerFactory) : base(loggerFactory) { }
 
-    /// <summary>
-    /// Initializes a new instance of the TimeoutBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    /// <param name="logger">The logger for timeout processing.</param>
-    public TimeoutBehavior(IServiceProvider serviceProvider, ILogger<TimeoutBehavior> logger)
+    protected override bool CanProcess(TRequest request, Type handlerType)
     {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
+        return true;
     }
 
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
+    protected override async Task<TResponse> Process(TRequest request, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken)
     {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "TimeoutBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        // Assume handler type is resolved from request type (simplified for documentation)
-        var handlerType = request.GetType().GetInterfaces()
-            .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) || i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-            .Select(i => i.GetGenericArguments()[0])
-            .FirstOrDefault()?.GetTypeInfo();
-
-        var timeoutAttribute = handlerType?.GetCustomAttribute<HandlerTimeoutAttribute>();
-        if (timeoutAttribute != null)
-        {
-            var policy = Policy.TimeoutAsync(timeoutAttribute.Seconds);
-            try
-            {
-                var result = await policy.ExecuteAsync(next);
-                TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return result;
-            }
-            catch (TimeoutRejectedException)
-            {
-                TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return Result.Failure().WithError(new TimeoutError($"Operation timed out after {timeoutAttribute.Seconds} seconds"));
-            }
-        }
-
-        var nextResult = await next();
-        TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
-    }
-}
-```
-
-### ChaosBehavior
-
-```csharp
-/// <summary>
-/// Simulates failures for requests or notifications to test resilience.
-/// </summary>
-public class ChaosBehavior : IPipelineBehavior
-{
-    private readonly ILogger<ChaosBehavior> logger;
-    private readonly Random random = new Random();
-    private readonly double failureProbability;
-    private readonly int minDelayMs;
-    private readonly int maxDelayMs;
-
-    /// <summary>
-    /// Initializes a new instance of the ChaosBehavior class.
-    /// </summary>
-    /// <param name="logger">The logger for chaos behavior processing.</param>
-    /// <param name="failureProbability">The probability of failure (0.0 to 1.0).</param>
-    /// <param name="minDelayMs">The minimum delay in milliseconds.</param>
-    /// <param name="maxDelayMs">The maximum delay in milliseconds.</param>
-    public ChaosBehavior(ILogger<ChaosBehavior> logger, double failureProbability = 0.1, int minDelayMs = 100, int maxDelayMs = 1000)
-    {
-        this.logger = logger;
-        this.failureProbability = failureProbability;
-        this.minDelayMs = minDelayMs;
-        this.maxDelayMs = maxDelayMs;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "ChaosBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        if (this.random.NextDouble() < this.failureProbability)
-        {
-            if (this.random.NextDouble() < 0.5)
-            {
-                int delay = this.random.Next(this.minDelayMs, this.maxDelayMs);
-                await Task.Delay(delay, cancellationToken);
-            }
-            else
-            {
-                TypedLogger.LogProcessed(this.logger, "ChaosBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return Result.Failure().WithError(new ChaosError("Simulated failure"));
-            }
-        }
-
+        this.Logger.LogInformation($"Processing request: {request.GetType().Name}");
         var result = await next();
-        TypedLogger.LogProcessed(this.logger, "ChaosBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
+        this.Logger.LogInformation($"Request processed: {result.IsSuccess}");
         return result;
     }
 }
+
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<LoggingPipelineBehavior<,>>();
 ```
 
-### HandlerPolicyBehavior
+### Examples
+
+#### Progress Reporting
+
+- Allows handlers and behaviors to report progress during request processing using the `SendOptions.Progress` property.
+- Useful for long-running operations where you want to provide feedback to the caller.
 
 ```csharp
-/// <summary>
-/// Applies per-handler policies based on attributes like HandlerRetry and HandlerTimeout.
-/// </summary>
-public class HandlerPolicyBehavior : IPipelineBehavior
+public class LongRunningCommand : RequestBase<Unit> { }
+
+public class LongRunningCommandHandler : RequestHandlerBase<LongRunningCommand, Unit>
 {
-    private readonly IServiceProvider serviceProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the HandlerPolicyBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    public HandlerPolicyBehavior(IServiceProvider serviceProvider)
+    protected override async Task<Result<Unit>> HandleAsync(LongRunningCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        this.serviceProvider = serviceProvider;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        // Simplified for documentation; actual implementation inspects handler attributes
-        return await next();
-    }
-}
-```
-
-## Other Classes
-
-### SendOptions
-
-```csharp
-/// <summary>
-/// Configures options for dispatching a request.
-/// </summary>
-public class SendOptions
-{
-    /// <summary>
-    /// Gets or sets the progress reporter for request processing updates.
-    /// If null, no progress reporting occurs.
-    /// </summary>
-    public IProgress<ProgressReport> Progress { get; set; }
-}
-```
-
-### PublishOptions
-
-```csharp
-/// <summary>
-/// Configures options for publishing a notification.
-/// </summary>
-public class PublishOptions
-{
-    /// <summary>
-    /// Gets or sets the error handling strategy for multiple handlers.
-    /// </summary>
-    public NotificationErrorHandlingStrategy ErrorHandling { get; set; } = NotificationErrorHandlingStrategy.Continue;
-
-    /// <summary>
-    /// Gets or sets the progress reporter for notification processing updates.
-    /// If null, no progress reporting occurs.
-    /// </summary>
-    public IProgress<ProgressReport> Progress { get; set; }
-
-    /// <summary>
-    /// Gets or sets the concurrency mode for handler execution.
-    /// </summary>
-    public NotificationConcurrencyMode ConcurrencyMode { get; set; } = NotificationConcurrencyMode.Parallel;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to wait for all handlers to complete.
-    /// </summary>
-    public bool WaitForAllHandlers { get; set; } = true;
-}
-```
-
-### ProgressReport
-
-```csharp
-/// <summary>
-/// Represents progress updates for a request or notification.
-/// </summary>
-public class ProgressReport
-{
-    /// <summary>
-    /// Gets the type of the request or notification being processed.
-    /// </summary>
-    public string MessageType { get; }
-
-    /// <summary>
-    /// Gets a collection of status messages for the current progress.
-    /// </summary>
-    public IReadOnlyList<string> Messages { get; }
-
-    /// <summary>
-    /// Gets the percentage of completion (0.0 to 100.0).
-    /// </summary>
-    public double PercentageComplete { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the request or notification processing is complete.
-    /// </summary>
-    public bool IsCompleted { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the ProgressReport class.
-    /// </summary>
-    /// <param name="messageType">The type of the request or notification.</param>
-    /// <param name="messages">A collection of status messages.</param>
-    /// <param name="percentageComplete">The percentage of completion (0.0 to 100.0).</param>
-    /// <param name="isCompleted">Indicates whether the processing is complete.</param>
-    public ProgressReport(string messageType, IReadOnlyList<string> messages, double percentageComplete = 0.0, bool isCompleted = false)
-    {
-        this.MessageType = messageType;
-        this.Messages = messages;
-        this.PercentageComplete = percentageComplete;
-        this.IsCompleted = isCompleted;
-    }
-}
-```
-
-## Fluent Builders
-
-### RequesterBuilder
-
-```csharp
-/// <summary>
-/// Configures and builds the Requester service for DI registration.
-/// </summary>
-/// <remarks>
-/// Provides a fluent API for registering handlers and pipeline behaviors.
-/// </remarks>
-/// <example>
-/// <code>
-/// var services = new ServiceCollection();
-/// services.AddRequester()
-///     .AddHandlers(new[] { "^System\\..*" })
-///     .WithBehavior<ValidationBehavior>()
-///     .WithBehavior<RetryBehavior>();
-/// </code>
-/// </example>
-public class RequesterBuilder
-{
-    private readonly IServiceCollection services;
-    private readonly List<IPipelineBehavior> pipelineBehaviors = new List<IPipelineBehavior>();
-    private readonly List<Type> validatorTypes = new List<Type>();
-
-    /// <summary>
-    /// Initializes a new instance of the RequesterBuilder class.
-    /// </summary>
-    /// <param name="services">The service collection for DI registration.</param>
-    public RequesterBuilder(IServiceCollection services)
-    {
-        this.services = services;
-    }
-
-    /// <summary>
-    /// Adds handlers and validators by scanning all loaded assemblies, excluding those matching blacklist patterns.
-    /// </summary>
-    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies.</param>
-    /// <returns>The RequesterBuilder for fluent chaining.</returns>
-    public RequesterBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
-    {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !blacklistPatterns?.Any(p => Regex.IsMatch(a.GetName().Name, p)) ?? true);
-        foreach (var assembly in assemblies)
+        for (int i = 0; i <= 100; i += 10)
         {
-            var types = SafeGetTypes(assembly);
-            foreach (var type in types)
-            {
-                if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)))
-                {
-                    this.services.AddScoped(type);
-                    var requestType = type.GetInterfaces()
-                        .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>))
-                        .GetGenericArguments()[0];
-                    var validatorType = requestType.GetNestedType("Validator");
-                    if (validatorType != null && validatorType.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(requestType)))
-                    {
-                        this.validatorTypes.Add(validatorType);
-                    }
-                }
-            }
+            options.Progress?.Report(new ProgressReport("LongRunningCommand", new[] { $"Processing {i}%" }, i));
+            await Task.Delay(100, cancellationToken);
         }
-        return this;
-    }
-
-    /// <summary>
-    /// Adds a pipeline behavior to the request processing pipeline.
-    /// </summary>
-    /// <typeparam name="T">The type of the behavior.</typeparam>
-    /// <returns>The RequesterBuilder for fluent chaining.</returns>
-    public RequesterBuilder WithBehavior<T>() where T : IPipelineBehavior
-    {
-        this.services.AddScoped<IPipelineBehavior, T>();
-        this.pipelineBehaviors.Add(this.services.BuildServiceProvider().GetRequiredService<T>());
-        return this;
+        return Result<Unit>.Success(Unit.Value);
     }
 }
+
+// Dispatch with progress reporting
+var options = new SendOptions
+{
+    Progress = new Progress<ProgressReport>(report => Console.WriteLine($"Progress: {report.Messages.First()} ({report.PercentageComplete}%)"))
+};
+var result = await requester.SendAsync(new LongRunningCommand(), options);
 ```
 
-### NotifierBuilder
+#### TransactionPipelineBehavior
+
+- Wraps request handling in a database transaction to ensure data consistency.
+- Configured with `HandlerDatabaseTransactionAttribute` to specify isolation level, rollback behavior, and the `DbContext` type.
 
 ```csharp
-/// <summary>
-/// Configures and builds the Notifier service for DI registration.
-/// </summary>
-/// <remarks>
-/// Provides a fluent API for registering handlers and pipeline behaviors.
-/// </remarks>
-/// <example>
-/// <code>
-/// var services = new ServiceCollection();
-/// services.AddNotifier()
-///     .AddHandlers(new[] { "^System\\..*" })
-///     .WithBehavior<ValidationBehavior>();
-/// </code>
-/// </example>
-public class NotifierBuilder
+// Command to update a user
+public class UpdateUserCommand : RequestBase<Unit>
 {
-    private readonly IServiceCollection services;
-    private readonly List<IPipelineBehavior> pipelineBehaviors = new List<IPipelineBehavior>();
-    private readonly List<Type> validatorTypes = new List<Type>();
+    public Guid UserId { get; set; }
+    public string Username { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the NotifierBuilder class.
-    /// </summary>
-    /// <param name="services">The service collection for DI registration.</param>
-    public NotifierBuilder(IServiceCollection services)
+    public class Validator : AbstractValidator<UpdateUserCommand>
     {
-        this.services = services;
-    }
-
-    /// <summary>
-    /// Adds handlers and validators by scanning all loaded assemblies, excluding those matching blacklist patterns.
-    /// </summary>
-    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies.</param>
-    /// <returns>The NotifierBuilder for fluent chaining.</returns>
-    public NotifierBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
-    {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !blacklistPatterns?.Any(p => Regex.IsMatch(a.GetName().Name, p)) ?? true);
-        foreach (var assembly in assemblies)
+        public Validator()
         {
-            var types = SafeGetTypes(assembly);
-            foreach (var type in types)
-            {
-                if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-                {
-                    this.services.AddScoped(type);
-                    var notificationType = type.GetInterfaces()
-                        .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
-                        .GetGenericArguments()[0];
-                    var validatorType = notificationType.GetNestedType("Validator");
-                    if (validatorType != null && validatorType.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(notificationType)))
-                    {
-                        this.validatorTypes.Add(validatorType);
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    /// <summary>
-    /// Adds a pipeline behavior to the notification processing pipeline.
-    /// </summary>
-    /// <typeparam name="T">The type of the behavior.</typeparam>
-    /// <returns>The NotifierBuilder for fluent chaining.</returns>
-    public NotifierBuilder WithBehavior<T>() where T : IPipelineBehavior
-    {
-        this.services.AddScoped<IPipelineBehavior, T>();
-        this.pipelineBehaviors.Add(this.services.BuildServiceProvider().GetRequiredService<T>());
-        return this;
-    }
-}
-```
-
-## Testing
-
-Testing ensures reliable behavior for both `Requester` and `Notifier`. Tests use xUnit, NSubstitute for mocking, Shouldly for assertions, and FluentValidation for validation, with minimal setups focused on DI-based integration.
-
-### Unit Testing Handlers
-
-Test request and notification handlers by mocking dependencies and invoking `HandleAsync`:
-
-```csharp
-public class CustomerCreateCommandHandlerTests
-{
-    private readonly IRepository repository = Substitute.For<IRepository>();
-    private readonly ILogger<CustomerCreateCommandHandler> logger = Substitute.For<ILogger<CustomerCreateCommandHandler>>();
-    private readonly List<ProgressReport> progressUpdates = [];
-
-    [Fact]
-    public async Task HandleAsync_ValidCommand_ReturnsSuccessResult()
-    {
-        var handler = new CustomerCreateCommandHandler(this.logger, this.repository);
-        var request = new CustomerCreateCommand { Name = "John Doe" };
-        var options = new SendOptions
-        {
-            Progress = new Progress<ProgressReport>(p => this.progressUpdates.Add(p))
-        };
-        this.repository.SaveAsync("John Doe", Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
-
-        var result = await handler.HandleAsync(request, options);
-
-        result.ShouldBeSuccess();
-        result.Value.ShouldBe("Customer John Doe created");
-        this.progressUpdates.ShouldNotBeEmpty();
-        this.progressUpdates[0].MessageType.ShouldBe(nameof(CustomerCreateCommand));
-        this.progressUpdates[0].Messages.ShouldContain("Processing command");
-        await this.repository.Received(1).SaveAsync("John Doe", Arg.Any<CancellationToken>());
-    }
-}
-```
-
-```csharp
-public class CustomerCreatedNotificationHandlerTests
-{
-    private readonly ILogger<CustomerCreatedNotificationHandler> logger = Substitute.For<ILogger<CustomerCreatedNotificationHandler>>();
-    private readonly List<ProgressReport> progressUpdates = [];
-
-    [Fact]
-    public async Task HandleAsync_ValidNotification_ReturnsSuccessResult()
-    {
-        var handler = new CustomerCreatedNotificationHandler(this.logger);
-        var notification = new CustomerCreatedNotification { Name = "John Doe" };
-        var options = new PublishOptions
-        {
-            Progress = new Progress<ProgressReport>(p => this.progressUpdates.Add(p)),
-            ConcurrencyMode = NotificationConcurrencyMode.Parallel,
-            ErrorHandling = NotificationErrorHandlingStrategy.Continue,
-            WaitForAllHandlers = true
-        };
-
-        var result = await handler.HandleAsync(notification, options);
-
-        result.ShouldBeSuccess();
-        this.progressUpdates.ShouldNotBeEmpty();
-        this.progressUpdates[0].MessageType.ShouldBe(nameof(CustomerCreatedNotification));
-        this.progressUpdates[0].Messages.ShouldContain("Logging notification");
-    }
-}
-```
-
-### Testing Validation
-
-Test validators for valid and invalid inputs:
-
-```csharp
-public class CustomerCreateCommandValidatorTests
-{
-    private readonly CustomerCreateCommand.Validator validator = new();
-
-    [Fact]
-    public void Validate_ValidCommand_Passes()
-    {
-        var command = new CustomerCreateCommand { Name = "John Doe" };
-
-        var result = this.validator.Validate(command);
-
-        result.IsValid.ShouldBeTrue();
-        result.Errors.ShouldBeEmpty();
-    }
-
-    [Fact]
-    public void Validate_EmptyName_Fails()
-    {
-        var command = new CustomerCreateCommand { Name = "" };
-
-        var result = this.validator.Validate(command);
-
-        result.IsValid.ShouldBeFalse();
-        result.Errors.ShouldHaveSingleItem();
-        result.Errors[0].PropertyName.ShouldBe("Name");
-        result.Errors[0].ErrorMessage.ShouldBe("Name cannot be empty.");
-    }
-}
-```
-
-### Integration Testing
-
-Test the full pipeline with behaviors:
-
-```csharp
-public class RequesterIntegrationTests
-{
-    private readonly IRepository repository = Substitute.For<IRepository>();
-    private readonly ILogger<CustomerCreateCommandHandler> handlerLogger = Substitute.For<ILogger<CustomerCreateCommandHandler>>();
-    private readonly ILogger<Requester> requesterLogger = Substitute.For<ILogger<Requester>>();
-    private readonly ILoggerFactory loggerFactory = Substitute.For<ILoggerFactory>();
-
-    public RequesterIntegrationTests()
-    {
-        this.loggerFactory.CreateLogger(Arg.Any<string>()).Returns(this.requesterLogger);
-        this.loggerFactory.CreateLogger(nameof(CustomerCreateCommandHandler)).Returns(this.handlerLogger);
-    }
-
-    [Fact]
-    public async Task SendAsync_ValidCommand_ReturnsSuccess()
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<IRepository>(this.repository);
-        services.AddSingleton<ILoggerFactory>(this.loggerFactory);
-        services.AddRequester()
-            .WithBehavior<ValidationBehavior>()
-            .AddHandlers();
-        var provider = services.BuildServiceProvider();
-        using var scope = provider.CreateScope();
-        var requester = scope.ServiceProvider.GetRequiredService<IRequester>();
-        var request = new CustomerCreateCommand { Name = "John Doe" };
-        this.repository.SaveAsync("John Doe", Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
-
-        var result = await requester.SendAsync<CustomerCreateCommand, string>(request, new SendOptions());
-
-        result.ShouldBeSuccess();
-        result.Value.ShouldBe("Customer John Doe created");
-        await this.repository.Received(1).SaveAsync("John Doe", Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
-    public async Task SendAsync_InvalidCommand_ReturnsValidationFailure()
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<IRepository>(this.repository);
-        services.AddSingleton<ILoggerFactory>(this.loggerFactory);
-        services.AddRequester()
-            .WithBehavior<ValidationBehavior>()
-            .AddHandlers();
-        var provider = services.BuildServiceProvider();
-        using var scope = provider.CreateScope();
-        var requester = scope.ServiceProvider.GetRequiredService<IRequester>();
-        var request = new CustomerCreateCommand { Name = "" };
-
-        var result = await requester.SendAsync<CustomerCreateCommand, string>(request, new SendOptions());
-
-        result.IsSuccess.ShouldBeFalse();
-        result.Messages.ShouldContain("Validation failed");
-        result.Errors.ShouldHaveSingleItem();
-        result.Errors[0].ShouldBeOfType<FluentValidationError>();
-        await this.repository.DidNotReceive().SaveAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
-    }
-}
-```
-
-```csharp
-public class NotifierIntegrationTests
-{
-    private readonly ILogger<CustomerCreatedNotificationHandler> handlerLogger = Substitute.For<ILogger<CustomerCreatedNotificationHandler>>();
-    private readonly ILogger<Notifier> notifierLogger = Substitute.For<ILogger<Notifier>>();
-    private readonly ILoggerFactory loggerFactory = Substitute.For<ILoggerFactory>();
-
-    public NotifierIntegrationTests()
-    {
-        this.loggerFactory.CreateLogger(Arg.Any<string>()).Returns(this.notifierLogger);
-        this.loggerFactory.CreateLogger(nameof(CustomerCreatedNotificationHandler)).Returns(this.handlerLogger);
-    }
-
-    [Fact]
-    public async Task PublishAsync_ValidNotification_ReturnsSuccess()
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton<ILoggerFactory>(this.loggerFactory);
-        services.AddNotifier()
-            .WithBehavior<ValidationBehavior>()
-            .AddHandlers();
-        var provider = services.BuildServiceProvider();
-        using var scope = provider.CreateScope();
-        var notifier = scope.ServiceProvider.GetRequiredService<INotifier>();
-        var notification = new CustomerCreatedNotification { Name = "John Doe" };
-
-        var result = await notifier.PublishAsync(notification, new PublishOptions { ConcurrencyMode = NotificationConcurrencyMode.Parallel });
-
-        result.ShouldBeSuccess();
-    }
-}
-```
-
-## Error Handling
-
-Both systems handle errors consistently:
-
-- **Normal Flow Errors**: Returned as `Result.Failure()` with errors like `FluentValidationError`, `TimeoutError`, or `ExceptionResultError`. Exceptions are caught and logged internally, converted to `Result.Failure()` by default.
-- **Exceptional Cases**: Throw `RequesterException` for critical issues like missing handlers or type mismatches, requiring developer intervention.
-- **Notifications**: `PublishOptions.ErrorHandling` configures whether publishing continues (`Continue`) or stops (`StopOnFirstFailure`) on handler errors, aggregating errors in `Result<Unit>`.
-
-Example for Requests:
-
-```csharp
-var request = new CustomerCreateCommand { Name = "John Doe" };
-var result = await requester.SendAsync<CustomerCreateCommand, string>(request, new SendOptions())
-    .Match(
-        value => $"Success: {value}",
-        errors => $"Failure: {string.Join(", ", errors.Select(e => e.Message))}");
-Console.WriteLine(result);
-```
-
-Example for Notifications:
-
-```csharp
-var notification = new CustomerCreatedNotification { Name = "John Doe" };
-var result = await notifier.PublishAsync(notification, new PublishOptions { ErrorHandling = NotificationErrorHandlingStrategy.Continue })
-    .Match(
-        _ => "Notification published successfully",
-        errors => $"Notification failed: {string.Join(", ", errors.Select(e => e.Message))}");
-Console.WriteLine(result);
-```
-
-## Design Decisions and Internals
-
-For detailed design decisions and internal implementation details, including interfaces, classes, and DI setup, refer to `Design.md`. Key design choices include:
-
-- **Async-Only Processing**: Ensures non-blocking execution.
-- **Structured Results**: Uses `Result<TResponse>` for type-safe outcomes.
-- **Integrated Validation**: Leverages FluentValidation for consistency.
-- **Fluent Builder and Assembly Scanning**: Automates handler registration.
-- **Pipeline Behaviors**: Modular cross-cutting concerns.
-- **Scoped Handlers**: Resolved per scope for proper DI.
-
-## Conclusion
-
-The `Requester` and `Notifier` libraries provide robust, type-safe frameworks for CQS and event-driven architectures in .NET. The `Requester` excels in handling commands and queries with integrated validation, structured results, and progress reporting, while the `Notifier` supports notifications with configurable concurrency and error handling.
-
-
---------------------------------------
-
-# Design Documentation for Requester and Notifier
-
-This document details the internal interfaces, base classes, implementations, and fluent builders of the `Requester` and `Notifier` libraries, providing a technical reference for developers maintaining or extending the system. All public symbols include XML comments for clarity, with usage examples where applicable. The `Requester` handles commands and queries using the Command Query Separation (CQS) pattern, while the `Notifier` publishes notifications for event-driven architectures. Both systems are async-only, type-safe, and integrate with Dependency Injection (DI). A summary of design decisions is included at the beginning to capture the rationale behind key architectural choices.
-
-## Design Decisions
-
-The `Requester` and `Notifier` libraries were designed with several key architectural choices to ensure robustness, scalability, and developer productivity. Below is a summary of these decisions, capturing the rationale behind each:
-
- 1. **Async-Only Processing**:
-
-    - **Decision**: Both systems use asynchronous processing exclusively, with `HandleAsync` as the sole entry point for handlers.
-    - **Rationale**: Aligns with modern .NET practices, ensuring non-blocking execution, supporting cancellation via `CancellationToken`, and avoiding synchronous pitfalls. This simplifies concurrency and improves performance in high-throughput applications.
-
- 2. **Structured Results**:
-
-    - **Decision**: Use the `Result<TResponse>` pattern (`Result<Unit>` for notifications) with fluent methods (`TryAsync`, `Match`, `Bind`, `Map`, `Switch`) for type-safe outcomes.
-    - **Rationale**: Provides consistent success/failure handling, reduces exception overhead for normal flow errors, and enables declarative workflows inspired by functional programming. Requires explicit result handling but enhances robustness and readability.
-
- 3. **Integrated Validation**:
-
-    - **Decision**: Use FluentValidation with nested `Validator` classes, automatically discovered during handler registration, executed by the mandatory `ValidationBehavior`.
-    - **Rationale**: Reduces boilerplate, ensures consistent validation across requests and notifications, and supports asynchronous validation with cancellation. The dependency on FluentValidation is justified by its maturity and flexibility, with early rejection of invalid messages improving efficiency.
-
- 4. **Fluent Builder and Assembly Scanning**:
-
-    - **Decision**: Provide `RequesterBuilder` and `NotifierBuilder` with `AddHandlers(IEnumerable<string> blacklistPatterns)` to scan all assemblies, excluding those matching blacklist patterns using `MatchAny` (e.g., `System.*`).
-    - **Rationale**: Automates handler and validator registration, eliminating manual configuration for large projects. `MatchAny` provides robust wildcard-based pattern matching, ensuring flexible exclusion of irrelevant assemblies while optimizing startup performance.
-
- 5. **Pipeline Behaviors**:
-
-    - **Decision**: Use a unified `IPipelineBehavior` interface for shared behaviors (`ValidationBehavior`, `RetryBehavior`, `TimeoutBehavior`, `ChaosBehavior`, `HandlerPolicyBehavior`), executed in registration order.
-    - **Rationale**: Reduces code duplication, enables modular cross-cutting concerns, and ensures predictable processing. Registration order allows developers to control behavior precedence (e.g., validation before retries).
-
- 6. **Behavior Scoping**:
-
-    - **Decision**: Register behaviors as scoped services (`AddScoped<IPipelineBehavior, T>`) in `WithBehavior<T>`, resolved at runtime by `Requester` or `Notifier` using their `IServiceProvider`. Each system maintains a separate behavior pipeline.
-    - **Rationale**: Ensures behaviors are scoped to the request or notification lifetime, preventing interference between `Requester` and `Notifier`. Runtime resolution avoids premature instantiation, maintaining proper DI lifetimes and avoiding singleton issues.
-
- 7. **Handler Scoping and Resolution**:
-
-    - **Decision**: Register handlers as scoped services (`AddScoped`) in `AddHandlers`, resolved at runtime by `Requester` or `Notifier` using `IServiceProvider` during `SendAsync` or `PublishAsync`.
-    - **Rationale**: Ensures handlers are instantiated per scope (e.g., per HTTP request in ASP.NET Core), supporting dependency injection and isolation. Runtime resolution aligns with DI best practices, providing fresh handler instances for each operation, as discussed in our April 21, 2025 conversation on DI setup.
-
- 8. **Error Handling Strategy**:
-
-    - **Decision**: Fix request error handling to `Result.Failure()` with automatic exception catching and logging (`ExceptionResultError`). For notifications, allow `PublishOptions.ErrorHandling` (`Continue` or `StopOnFirstFailure`) to control multi-handler behavior. Throw `RequesterException` for exceptional cases (e.g., missing handlers).
-    - **Rationale**: Ensures consistency for requests, with flexibility for notifications to accommodate partial success scenarios. Exceptional cases signal critical issues requiring developer intervention.
-
- 9. **Progress Reporting**:
-
-    - **Decision**: Implement opt-in progress reporting via `SendOptions.Progress` and `PublishOptions.Progress` using a unified `ProgressReport` class with `MessageType`, `Messages`, `PercentageComplete`, and `IsCompleted`.
-    - **Rationale**: Supports long-running operations with detailed tracking (messages and percentage) without overhead when not needed. A single `ProgressReport` class simplifies the API and ensures consistency across requests and notifications.
-
-10. **Notification Concurrency and Wait Behavior**:
-
-    - **Decision**: Allow `PublishOptions.ConcurrencyMode` (`Parallel` or `Sequential`) and `PublishOptions.WaitForAllHandlers` (default: `true`) to control notification handler execution. Requests use sequential processing by a single handler.
-    - **Rationale**: Provides flexibility for notifications, where multiple handlers may benefit from concurrent execution or immediate return. Sequential request processing simplifies the design and ensures predictability.
-
-11. **Attribute-Based Policies**:
-
-    - **Decision**: Use `HandlerRetry` and `HandlerTimeout` attributes on handlers, applied by `RetryBehavior` and `TimeoutBehavior` using Polly.
-    - **Rationale**: Decentralizes policy configuration, keeping it close to handlers for clarity. Polly’s robust retry (with exponential backoff) and timeout policies enhance resilience, though attribute inspection requires reflection.
-
-12. **Internal Logging and Timing**:
-
-    - **Decision**: Handle logging internally using typed log messages (`LoggerMessage`) with patterns like `"Processing {HandlerType} for {RequestType} ({RequestId})"`. Use `ValueStopwatch` for timing. Handlers use standard `ILogger`.
-    - **Rationale**: Ensures high-performance, low-allocation logging for `Requester` and `Notifier` internals, with detailed diagnostics. Standard `ILogger` in handlers simplifies implementation while maintaining flexibility.
-
-13. **Contravariance**:
-
-    - **Decision**: Support contravariance for requests, allowing handlers for base types (e.g., `Request<Person>`) to process derived types (e.g., `Request<Customer>`).
-    - **Rationale**: Enables polymorphic handling, common in domain-driven design, with minimal runtime overhead using `in TRequest` and `IsAssignableFrom` checks.
-
-14. **Request Metadata in IRequest**:
-
-    - **Decision**: Include `RequestId` and `RequestTimestamp` in the non-generic `IRequest` interface, inherited by all request types.
-    - **Rationale**: Ensures all requests, regardless of response type, have consistent metadata for traceability, simplifying implementation and avoiding duplication in `IRequest<TResponse>`.
-
-## Interfaces
-
-### IRequest
-
-```csharp
-/// <summary>
-/// Marker interface for requests that can be handled by the Requester.
-/// </summary>
-/// <remarks>
-/// Extended by IRequest<TResponse> to specify the response type. Includes metadata for all requests.
-/// </remarks>
-public interface IRequest
-{
-    /// <summary>
-    /// Gets the unique identifier for the request.
-    /// </summary>
-    Guid RequestId { get; }
-
-    /// <summary>
-    /// Gets the UTC timestamp when the request was created.
-    /// </summary>
-    DateTimeOffset RequestTimestamp { get; }
-}
-```
-
-### IRequest
-
-```csharp
-/// <summary>
-/// Defines a request that can be handled to produce a result of type TResponse.
-/// </summary>
-/// <typeparam name="TResponse">The type of the response value.</typeparam>
-/// <remarks>
-/// Implementations typically inherit from RequestBase<TResponse> to include metadata inherited from IRequest.
-/// </remarks>
-public interface IRequest<TResponse> : IRequest
-{
-}
-```
-
-### INotification
-
-```csharp
-/// <summary>
-/// Defines a notification that can be published to multiple handlers.
-/// </summary>
-/// <remarks>
-/// Implementations typically inherit from NotificationBase to include metadata like NotificationId and Timestamp.
-/// </remarks>
-public interface INotification
-{
-    /// <summary>
-    /// Gets the unique identifier for the notification.
-    /// </summary>
-    Guid NotificationId { get; }
-
-    /// <summary>
-    /// Gets the UTC timestamp when the notification was created.
-    /// </summary>
-    DateTimeOffset Timestamp { get; }
-}
-```
-
-### IRequester
-
-```csharp
-/// <summary>
-/// Defines the interface for dispatching requests asynchronously.
-/// </summary>
-/// <remarks>
-/// Provides a mechanism to send requests to their respective handlers, processing them through a pipeline of behaviors.
-/// </remarks>
-public interface IRequester
-{
-    /// <summary>
-    /// Dispatches a request to its handler, processing it through the configured pipeline.
-    /// </summary>
-    /// <typeparam name="TRequest">The type of the request.</typeparam>
-    /// <typeparam name="TResponse">The type of the response value.</typeparam>
-    /// <param name="request">The request to process.</param>
-    /// <param name="options">The options for request processing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the request.</returns>
-    /// <example>
-    /// <code>
-    /// var requester = serviceProvider.GetRequiredService<IRequester>();
-    /// var request = new CustomerCreateCommand { Name = "John Doe" };
-    /// var options = new SendOptions { Progress = new Progress<ProgressReport>(p => Console.WriteLine(p.Messages[0])) };
-    /// var result = await requester.SendAsync<CustomerCreateCommand, string>(request, options);
-    /// </code>
-    /// </example>
-    Task<Result<TResponse>> SendAsync<TRequest, TResponse>(
-        TRequest request,
-        SendOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TRequest : IRequest<TResponse>;
-}
-```
-
-### INotifier
-
-```csharp
-/// <summary>
-/// Defines the interface for publishing notifications asynchronously.
-/// </summary>
-/// <remarks>
-/// Provides a mechanism to publish notifications to multiple handlers, processing them through a pipeline of behaviors.
-/// </remarks>
-public interface INotifier
-{
-    /// <summary>
-    /// Publishes a notification to all registered handlers, processing it through the configured pipeline.
-    /// </summary>
-    /// <typeparam name="TNotification">The type of the notification.</typeparam>
-    /// <param name="notification">The notification to publish.</param>
-    /// <param name="options">The options for notification publishing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the notification publishing.</returns>
-    /// <example>
-    /// <code>
-    /// var notifier = serviceProvider.GetRequiredService<INotifier>();
-    /// var notification = new CustomerCreatedNotification { Name = "John Doe" };
-    /// var options = new PublishOptions { Progress = new Progress<ProgressReport>(p => Console.WriteLine(p.Messages[0])) };
-    /// var result = await notifier.PublishAsync(notification, options);
-    /// </code>
-    /// </example>
-    Task<Result<Unit>> PublishAsync<TNotification>(
-        TNotification notification,
-        PublishOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TNotification : INotification;
-}
-```
-
-### IPipelineBehavior
-
-```csharp
-/// <summary>
-/// Defines a pipeline behavior for processing requests or notifications.
-/// </summary>
-public interface IPipelineBehavior
-{
-    /// <summary>
-    /// Processes a request or notification, calling the next behavior or handler in the pipeline.
-    /// </summary>
-    /// <param name="request">The request or notification to process.</param>
-    /// <param name="next">The delegate to call the next behavior or handler.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the operation.</returns>
-    Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default);
-}
-```
-
-### IRequestHandler&lt;TRequest, TResponse&gt;
-
-```csharp
-/// <summary>
-/// Defines a handler for a specific request type.
-/// </summary>
-/// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response value.</typeparam>
-public interface IRequestHandler<in TRequest, TResponse> where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// Handles the specified request asynchronously.
-    /// </summary>
-    /// <param name="request">The request to handle.</param>
-    /// <param name="options">The options for request processing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the request handling.</returns>
-    Task<Result<TResponse>> HandleAsync(TRequest request, SendOptions options, CancellationToken cancellationToken = default);
-}
-```
-
-### INotificationHandler
-
-```csharp
-/// <summary>
-/// Defines a handler for a specific notification type.
-/// </summary>
-/// <typeparam name="TNotification">The type of the notification.</typeparam>
-public interface INotificationHandler<in TNotification> where TNotification : INotification
-{
-    /// <summary>
-    /// Handles the specified notification asynchronously.
-    /// </summary>
-    /// <param name="notification">The notification to handle.</param>
-    /// <param name="options">The options for notification processing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the notification handling.</returns>
-    Task<Result<Unit>> HandleAsync(TNotification notification, PublishOptions options, CancellationToken cancellationToken = default);
-}
-```
-
-## Base Classes
-
-### RequestBase
-
-```csharp
-/// <summary>
-/// Base class for requests, providing metadata and implementing IRequest<TResponse>.
-/// </summary>
-/// <typeparam name="TResponse">The type of the response value.</typeparam>
-public abstract class RequestBase<TResponse> : IRequest<TResponse>
-{
-    /// <summary>
-    /// Gets the unique identifier for the request.
-    /// </summary>
-    public Guid RequestId { get; } = GuidGenerator.CreateSequential();
-
-    /// <summary>
-    /// Gets the UTC timestamp when the request was created.
-    /// </summary>
-    public DateTimeOffset RequestTimestamp { get; } = DateTimeOffset.UtcNow;
-}
-```
-
-### NotificationBase
-
-```csharp
-/// <summary>
-/// Base class for notifications, providing metadata and implementing INotification.
-/// </summary>
-public abstract class NotificationBase : INotification
-{
-    /// <summary>
-    /// Gets the unique identifier for the notification.
-    /// </summary>
-    public Guid NotificationId { get; } = GuidGenerator.CreateSequential();
-
-    /// <summary>
-    /// Gets the UTC timestamp when the notification was created.
-    /// </summary>
-    public DateTimeOffset Timestamp { get; } = DateTimeOffset.UtcNow;
-}
-```
-
-### RequestHandlerBase&lt;TRequest, TResponse&gt;
-
-```csharp
-/// <summary>
-/// Base class for request handlers, providing a template for handling requests.
-/// </summary>
-/// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response value.</typeparam>
-public abstract class RequestHandlerBase<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// Handles the specified request asynchronously.
-    /// </summary>
-    /// <param name="request">The request to handle.</param>
-    /// <param name="options">The options for request processing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the request handling.</returns>
-    protected abstract Task<Result<TResponse>> HandleAsync(TRequest request, SendOptions options, CancellationToken cancellationToken = default);
-
-    async Task<Result<TResponse>> IRequestHandler<TRequest, TResponse>.HandleAsync(TRequest request, SendOptions options, CancellationToken cancellationToken)
-    {
-        return await this.HandleAsync(request, options, cancellationToken);
-    }
-}
-```
-
-## Implementations
-
-### Requester
-
-```csharp
-/// <summary>
-/// Implements IRequester for dispatching requests through a pipeline of behaviors.
-/// </summary>
-public class Requester : IRequester
-{
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<Requester> logger;
-    private readonly ConcurrentDictionary<Type, Type> handlerTypes;
-    private readonly IReadOnlyList<Type> pipelineBehaviorTypes;
-
-    /// <summary>
-    /// Initializes a new instance of the Requester class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving handlers and behaviors.</param>
-    /// <param name="logger">The logger for request processing.</param>
-    /// <param name="handlerTypes">The dictionary of registered handler types.</param>
-    /// <param name="pipelineBehaviorTypes">The list of pipeline behavior types.</param>
-    public Requester(
-        IServiceProvider serviceProvider,
-        ILogger<Requester> logger,
-        ConcurrentDictionary<Type, Type> handlerTypes,
-        IReadOnlyList<Type> pipelineBehaviorTypes)
-    {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-        this.handlerTypes = handlerTypes;
-        this.pipelineBehaviorTypes = pipelineBehaviorTypes;
-    }
-
-    public async Task<Result<TResponse>> SendAsync<TRequest, TResponse>(
-        TRequest request,
-        SendOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TRequest : IRequest<TResponse>
-    {
-        TypedLogger.LogProcessing(this.logger, "Requester", typeof(TRequest).Name, request.RequestId.ToString("N"));
-        var watch = ValueStopwatch.StartNew();
-
-        try
-        {
-            if (!this.handlerTypes.TryGetValue(typeof(IRequestHandler<TRequest, TResponse>), out var handlerType))
-            {
-                throw new RequesterException($"No handler found for request type {typeof(TRequest).Name}");
-            }
-
-            var handler = (IRequestHandler<TRequest, TResponse>)this.serviceProvider.GetRequiredService(handlerType);
-            Func<Task<Result>> next = async () =>
-                await handler.HandleAsync(request, options, cancellationToken);
-
-            var allBehaviors = new List<IPipelineBehavior> { (IPipelineBehavior)this.serviceProvider.GetRequiredService(typeof(HandlerPolicyBehavior)) };
-            allBehaviors.AddRange(this.pipelineBehaviorTypes.Select(t => (IPipelineBehavior)this.serviceProvider.GetRequiredService(t)));
-
-            foreach (var behavior in allBehaviors.Reverse())
-            {
-                var behaviorType = behavior.GetType().Name;
-                TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"));
-                var behaviorWatch = ValueStopwatch.StartNew();
-                var currentNext = next;
-                next = async () =>
-                {
-                    var result = await behavior.HandleAsync(request, currentNext, cancellationToken);
-                    TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
-                    return result;
-                };
-            }
-
-            var result = await next();
-            TypedLogger.LogProcessed(this.logger, "Requester", typeof(TRequest).Name, request.RequestId.ToString("N"), watch.GetElapsedMilliseconds());
-            return result as Result<TResponse> ?? Result<TResponse>.Failure().WithMessage("Invalid result type");
-        }
-        catch (Exception ex)
-        {
-            TypedLogger.LogError(this.logger, ex, "Request processing failed for {RequestType} ({RequestId})", typeof(TRequest).Name, request.RequestId.ToString("N"));
-            return Result<TResponse>.Failure().WithError(new ExceptionResultError(ex));
+            RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId cannot be empty.");
+            RuleFor(x => x.Username).NotEmpty().WithMessage("Username cannot be empty.");
         }
     }
 }
-```
 
-### Notifier
-
-```csharp
-/// <summary>
-/// Implements INotifier for publishing notifications to multiple handlers through a pipeline.
-/// </summary>
-public class Notifier : INotifier
+[HandlerDatabaseTransactionAttribute<MyDbContext>(IsolationLevel.ReadCommitted, true)]
+public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Unit>
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<Notifier> logger;
-    private readonly ConcurrentDictionary<Type, IReadOnlyList<Type>> handlerTypes;
-    private readonly IReadOnlyList<Type> pipelineBehaviorTypes;
+    private readonly IGenericRepository<User> userRepository;
 
-    /// <summary>
-    /// Initializes a new instance of the Notifier class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving handlers and behaviors.</param>
-    /// <param name="logger">The logger for notification processing.</param>
-    /// <param name="handlerTypes">The dictionary of registered handler types.</param>
-    /// <param name="pipelineBehaviorTypes">The list of pipeline behavior types.</param>
-    public Notifier(
-        IServiceProvider serviceProvider,
-        ILogger<Notifier> logger,
-        ConcurrentDictionary<Type, IReadOnlyList<Type>> handlerTypes,
-        IReadOnlyList<Type> pipelineBehaviorTypes)
+    public UpdateUserCommandHandler(IGenericRepository<User> userRepository)
     {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-        this.handlerTypes = handlerTypes;
-        this.pipelineBehaviorTypes = pipelineBehaviorTypes;
+        this.userRepository = userRepository;
     }
 
-    public async Task<Result<Unit>> PublishAsync<TNotification>(
-        TNotification notification,
-        PublishOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TNotification : INotification
+    protected override async Task<Result<Unit>> HandleAsync(UpdateUserCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        TypedLogger.LogProcessing(this.logger, "Notifier", typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-        var watch = ValueStopwatch.StartNew();
-
-        try
+        var user = await this.userRepository.FindOneAsync(request.UserId, cancellationToken: cancellationToken);
+        if (user == null)
         {
-            if (!this.handlerTypes.TryGetValue(typeof(INotificationHandler<TNotification>), out var handlerTypeList) || handlerTypeList.Count == 0)
-            {
-                throw new RequesterException($"No handlers found for notification type {typeof(TNotification).Name}");
-            }
-
-            var results = new List<Result>();
-            if (options?.ConcurrencyMode == NotificationConcurrencyMode.Parallel)
-            {
-                var tasks = handlerTypeList.Select(handlerType =>
-                    ProcessNotification(this.serviceProvider.GetRequiredService(handlerType) as INotificationHandler<TNotification>, notification, options, cancellationToken));
-                if (options?.WaitForAllHandlers ?? true)
-                {
-                    results.AddRange(await Task.WhenAll(tasks));
-                }
-                else
-                {
-                    // Fire and forget
-                    _ = Task.WhenAll(tasks);
-                    results.Add(Result.Success());
-                }
-            }
-            else
-            {
-                foreach (var handlerType in handlerTypeList)
-                {
-                    var result = await ProcessNotification(this.serviceProvider.GetRequiredService(handlerType) as INotificationHandler<TNotification>, notification, options, cancellationToken);
-                    results.Add(result);
-                    if (options?.ErrorHandling == NotificationErrorHandlingStrategy.StopOnFirstFailure && result.IsFailure)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            var errors = results.Where(r => r.IsFailure).SelectMany(r => r.Errors).ToList();
-            if (errors.Any() && (options?.ErrorHandling == NotificationErrorHandlingStrategy.StopOnFirstFailure || results.All(r => r.IsFailure)))
-            {
-                return Result<Unit>.Failure().WithErrors(errors);
-            }
-
-            TypedLogger.LogProcessed(this.logger, "Notifier", typeof(TNotification).Name, notification.NotificationId.ToString("N"), watch.GetElapsedMilliseconds());
-            return Result<Unit>.Success(Unit.Value);
-        }
-        catch (Exception ex)
-        {
-            TypedLogger.LogError(this.logger, ex, "Notification processing failed for {NotificationType} ({NotificationId})", typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-            return Result<Unit>.Failure().WithError(new ExceptionResultError(ex));
-        }
-    }
-
-    private async Task<Result> ProcessNotification<TNotification>(
-        INotificationHandler<TNotification> handler,
-        TNotification notification,
-        PublishOptions options,
-        CancellationToken cancellationToken)
-        where TNotification : INotification
-    {
-        Func<Task<Result>> next = async () => await handler.HandleAsync(notification, options, cancellationToken);
-
-        var allBehaviors = new List<IPipelineBehavior> { (IPipelineBehavior)this.serviceProvider.GetRequiredService(typeof(HandlerPolicyBehavior)) };
-        allBehaviors.AddRange(this.pipelineBehaviorTypes.Select(t => (IPipelineBehavior)this.serviceProvider.GetRequiredService(t)));
-
-        foreach (var behavior in allBehaviors.Reverse())
-        {
-            var behaviorType = behavior.GetType().Name;
-            TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-            var behaviorWatch = ValueStopwatch.StartNew();
-            var currentNext = next;
-            next = async () =>
-            {
-                var result = await behavior.HandleAsync(notification, currentNext, cancellationToken);
-                TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
-                return result;
-            };
+            return Result<Unit>.Failure().WithMessage($"User with ID {request.UserId} not found.");
         }
 
-        return await next();
+        user.Username = request.Username;
+        await this.userRepository.UpdateAsync(user, cancellationToken);
+        return Result<Unit>.Success(Unit.Value);
     }
 }
+
+// Register the behavior
+services.AddDbContext<MyDbContext>(options => options.UseSqlServer("connection_string"));
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<ValidationBehavior<,>>()
+    .WithBehavior<TransactionPipelineBehavior<,>>();
 ```
 
-### ValidationBehavior
+#### ChaosPipelineBehavior
+
+- Injects random failures to test system resilience.
+- Configured with `HandlerChaosAttribute` to specify the injection rate and whether it’s enabled.
 
 ```csharp
-/// <summary>
-/// Validates requests or notifications using nested Validator classes.
-/// </summary>
-public class ValidationBehavior : IPipelineBehavior
+// Command to test chaos
+public class TestChaosCommand : RequestBase<Unit> { }
+
+[HandlerChaos(0.1, true)] // 10% chance of failure
+public class TestChaosCommandHandler : RequestHandlerBase<TestChaosCommand, Unit>
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<ValidationBehavior> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the ValidationBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving validators.</param>
-    /// <param name="logger">The logger for validation processing.</param>
-    public ValidationBehavior(IServiceProvider serviceProvider, ILogger<ValidationBehavior> logger)
+    protected override async Task<Result<Unit>> HandleAsync(TestChaosCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func residedHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
-{
-    /// <summary>
-    /// Handles the specified request asynchronously.
-    /// </summary>
-    /// <param name="request">The request to handle.</param>
-    /// <param name="options">The options for request processing.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task representing the result of the request handling.</returns>
-    protected abstract Task<Result<TResponse>> HandleAsync(TRequest request, SendOptions options, CancellationToken cancellationToken = default);
-
-    async Task<Result<TResponse>> IRequestHandler<TRequest, TResponse>.HandleAsync(TRequest request, SendOptions options, CancellationToken cancellationToken)
-    {
-        return await this.HandleAsync(request, options, cancellationToken);
+        await Task.Delay(50, cancellationToken); // Simulate some work
+        return Result<Unit>.Success(Unit.Value);
     }
 }
+
+// Register the behavior
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<ChaosPipelineBehavior<,>>();
 ```
 
-## Implementations
+#### CircuitBreakerPipelineBehavior
 
-### Requester
+- Implements a circuit breaker pattern to prevent repeated failures.
+- Configured with `HandlerCircuitBreakerAttribute` to specify attempts, break duration, and backoff settings.
 
 ```csharp
-/// <summary>
-/// Implements IRequester for dispatching requests through a pipeline of behaviors.
-/// </summary>
-public class Requester : IRequester
+// Command for a critical operation
+public class CriticalOperationCommand : RequestBase<Unit> { }
+
+[HandlerCircuitBreaker(3, 30, 200, true)] // 3 attempts, 30s break, 200ms backoff, exponential
+public class CriticalOperationCommandHandler : RequestHandlerBase<CriticalOperationCommand, Unit>
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<Requester> logger;
-    private readonly ConcurrentDictionary<Type, Type> handlerTypes;
-    private readonly IReadOnlyList<Type> pipelineBehaviorTypes;
-
-    /// <summary>
-    /// Initializes a new instance of the Requester class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving handlers and behaviors.</param>
-    /// <param name="logger">The logger for request processing.</param>
-    /// <param name="handlerTypes">The dictionary of registered handler types.</param>
-    /// <param name="pipelineBehaviorTypes">The list of pipeline behavior types.</param>
-    public Requester(
-        IServiceProvider serviceProvider,
-        ILogger<Requester> logger,
-        ConcurrentDictionary<Type, Type> handlerTypes,
-        IReadOnlyList<Type> pipelineBehaviorTypes)
+    protected override async Task<Result<Unit>> HandleAsync(CriticalOperationCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-        this.handlerTypes = handlerTypes;
-        this.pipelineBehaviorTypes = pipelineBehaviorTypes;
-    }
-
-    public async Task<Result<TResponse>> SendAsync<TRequest, TResponse>(
-        TRequest request,
-        SendOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TRequest : IRequest<TResponse>
-    {
-        TypedLogger.LogProcessing(this.logger, "Requester", typeof(TRequest).Name, request.RequestId.ToString("N"));
-        var watch = ValueStopwatch.StartNew();
-
-        try
-        {
-            if (!this.handlerTypes.TryGetValue(typeof(IRequestHandler<TRequest, TResponse>), out var handlerType))
-            {
-                throw new RequesterException($"No handler found for request type {typeof(TRequest).Name}");
-            }
-
-            var handler = (IRequestHandler<TRequest, TResponse>)this.serviceProvider.GetRequiredService(handlerType);
-            Func<Task<Result>> next = async () =>
-                await handler.HandleAsync(request, options, cancellationToken);
-
-            var allBehaviors = new List<IPipelineBehavior> { (IPipelineBehavior)this.serviceProvider.GetRequiredService(typeof(HandlerPolicyBehavior)) };
-            allBehaviors.AddRange(this.pipelineBehaviorTypes.Select(t => (IPipelineBehavior)this.serviceProvider.GetRequiredService(t)));
-
-            foreach (var behavior in allBehaviors.Reverse())
-            {
-                var behaviorType = behavior.GetType().Name;
-                TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"));
-                var behaviorWatch = ValueStopwatch.StartNew();
-                var currentNext = next;
-                next = async () =>
-                {
-                    var result = await behavior.HandleAsync(request, currentNext, cancellationToken);
-                    TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
-                    return result;
-                };
-            }
-
-            var result = await next();
-            TypedLogger.LogProcessed(this.logger, "Requester", typeof(TRequest).Name, request.RequestId.ToString("N"), watch.GetElapsedMilliseconds());
-            return result as Result<TResponse> ?? Result<TResponse>.Failure().WithMessage("Invalid result type");
-        }
-        catch (Exception ex)
-        {
-            TypedLogger.LogError(this.logger, ex, "Request processing failed for {RequestType} ({RequestId})", typeof(TRequest).Name, request.RequestId.ToString("N"));
-            return Result<TResponse>.Failure().WithError(new ExceptionResultError(ex));
-        }
+        await Task.Delay(50, cancellationToken); // Simulate critical operation
+        return Result<Unit>.Success(Unit.Value);
     }
 }
+
+// Register the behavior
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<CircuitBreakerPipelineBehavior<,>>();
 ```
 
-### Notifier
+#### CacheInvalidatePipelineBehavior
+
+- Invalidates cache entries after request processing.
+- Configured with `HandlerCacheInvalidateAttribute` to specify the cache key to invalidate.
 
 ```csharp
-/// <summary>
-/// Implements INotifier for publishing notifications to multiple handlers through a pipeline.
-/// </summary>
-public class Notifier : INotifier
+// Command to clear user cache
+public class ClearUserCacheCommand : RequestBase<Unit> { }
+
+[HandlerCacheInvalidate("user-cache")] // Invalidate cache entries starting with "user-cache"
+public class ClearUserCacheCommandHandler : RequestHandlerBase<ClearUserCacheCommand, Unit>
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<Notifier> logger;
-    private readonly ConcurrentDictionary<Type, IReadOnlyList<Type>> handlerTypes;
-    private readonly IReadOnlyList<Type> pipelineBehaviorTypes;
-
-    /// <summary>
-    /// Initializes a new instance of the Notifier class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving handlers and behaviors.</param>
-    /// <param name="logger">The logger for notification processing.</param>
-    /// <param name="handlerTypes">The dictionary of registered handler types.</param>
-    /// <param name="pipelineBehaviorTypes">The list of pipeline behavior types.</param>
-    public Notifier(
-        IServiceProvider serviceProvider,
-        ILogger<Notifier> logger,
-        ConcurrentDictionary<Type, IReadOnlyList<Type>> handlerTypes,
-        IReadOnlyList<Type> pipelineBehaviorTypes)
+    protected override async Task<Result<Unit>> HandleAsync(ClearUserCacheCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-        this.handlerTypes = handlerTypes;
-        this.pipelineBehaviorTypes = pipelineBehaviorTypes;
-    }
-
-    public async Task<Result<Unit>> PublishAsync<TNotification>(
-        TNotification notification,
-        PublishOptions options = null,
-        CancellationToken cancellationToken = default)
-        where TNotification : INotification
-    {
-        TypedLogger.LogProcessing(this.logger, "Notifier", typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-        var watch = ValueStopwatch.StartNew();
-
-        try
-        {
-            if (!this.handlerTypes.TryGetValue(typeof(INotificationHandler<TNotification>), out var handlerTypeList) || handlerTypeList.Count == 0)
-            {
-                throw new RequesterException($"No handlers found for notification type {typeof(TNotification).Name}");
-            }
-
-            var results = new List<Result>();
-            if (options?.ConcurrencyMode == NotificationConcurrencyMode.Parallel)
-            {
-                var tasks = handlerTypeList.Select(handlerType =>
-                    ProcessNotification(this.serviceProvider.GetRequiredService(handlerType) as INotificationHandler<TNotification>, notification, options, cancellationToken));
-                if (options?.WaitForAllHandlers ?? true)
-                {
-                    results.AddRange(await Task.WhenAll(tasks));
-                }
-                else
-                {
-                    // Fire and forget
-                    _ = Task.WhenAll(tasks);
-                    results.Add(Result.Success());
-                }
-            }
-            else
-            {
-                foreach (var handlerType in handlerTypeList)
-                {
-                    var result = await ProcessNotification(this.serviceProvider.GetRequiredService(handlerType) as INotificationHandler<TNotification>, notification, options, cancellationToken);
-                    results.Add(result);
-                    if (options?.ErrorHandling == NotificationErrorHandlingStrategy.StopOnFirstFailure && result.IsFailure)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            var errors = results.Where(r => r.IsFailure).SelectMany(r => r.Errors).ToList();
-            if (errors.Any() && (options?.ErrorHandling == NotificationErrorHandlingStrategy.StopOnFirstFailure || results.All(r => r.IsFailure)))
-            {
-                return Result<Unit>.Failure().WithErrors(errors);
-            }
-
-            TypedLogger.LogProcessed(this.logger, "Notifier", typeof(TNotification).Name, notification.NotificationId.ToString("N"), watch.GetElapsedMilliseconds());
-            return Result<Unit>.Success(Unit.Value);
-        }
-        catch (Exception ex)
-        {
-            TypedLogger.LogError(this.logger, ex, "Notification processing failed for {NotificationType} ({NotificationId})", typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-            return Result<Unit>.Failure().WithError(new ExceptionResultError(ex));
-        }
-    }
-
-    private async Task<Result> ProcessNotification<TNotification>(
-        INotificationHandler<TNotification> handler,
-        TNotification notification,
-        PublishOptions options,
-        CancellationToken cancellationToken)
-        where TNotification : INotification
-    {
-        Func<Task<Result>> next = async () => await handler.HandleAsync(notification, options, cancellationToken);
-
-        var allBehaviors = new List<IPipelineBehavior> { (IPipelineBehavior)this.serviceProvider.GetRequiredService(typeof(HandlerPolicyBehavior)) };
-        allBehaviors.AddRange(this.pipelineBehaviorTypes.Select(t => (IPipelineBehavior)this.serviceProvider.GetRequiredService(t)));
-
-        foreach (var behavior in allBehaviors.Reverse())
-        {
-            var behaviorType = behavior.GetType().Name;
-            TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"));
-            var behaviorWatch = ValueStopwatch.StartNew();
-            var currentNext = next;
-            next = async () =>
-            {
-                var result = await behavior.HandleAsync(notification, currentNext, cancellationToken);
-                TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
-                return result;
-            };
-        }
-
-        return await next();
+        return Result<Unit>.Success(Unit.Value);
     }
 }
+
+// Register the behavior
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior<CacheInvalidatePipelineBehavior<,>>();
 ```
 
-### ValidationBehavior
+## Appendix A: CQS Pattern
 
-```csharp
-/// <summary>
-/// Validates requests or notifications using nested Validator classes.
-/// </summary>
-public class ValidationBehavior : IPipelineBehavior
-{
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<ValidationBehavior> logger;
+The `Requester` system aligns with the Command-Query Separation (CQS) pattern, which separates operations into commands (actions that modify state) and queries (requests that retrieve data). This pattern offers several benefits:
 
-    /// <summary>
-    /// Initializes a new instance of the ValidationBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving validators.</param>
-    /// <param name="logger">The logger for validation processing.</param>
-    public ValidationBehavior(IServiceProvider serviceProvider, ILogger<ValidationBehavior> logger)
-    {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-    }
+- **Clarity**: Commands and queries have distinct roles, making the code easier to understand and maintain.
+- **Predictability**: Commands modify state without returning data, while queries return data without modifying state, reducing side effects.
+- **Scalability**: Separating concerns allows for better optimization, such as caching query results or applying different behaviors to commands and queries.
 
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "ValidationBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        var validatorType = typeof(IValidator<>).MakeGenericType(request.GetType());
-        var validator = this.serviceProvider.GetService(validatorType) as IValidator;
-
-        if (validator != null)
-        {
-            var context = new ValidationContext<object>(request);
-            var result = await validator.ValidateAsync(context, cancellationToken);
-            if (!result.IsValid)
-            {
-                TypedLogger.LogProcessed(this.logger, "ValidationBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return Result.Failure()
-                    .WithMessage("Validation failed")
-                    .WithError(new FluentValidationError(result));
-            }
-        }
-
-        var nextResult = await next();
-        TypedLogger.LogProcessed(this.logger, "ValidationBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
-    }
-}
-```
-
-### RetryBehavior
-
-```csharp
-/// <summary>
-/// Retries failed requests or notifications based on HandlerRetry attributes using Polly.
-/// </summary>
-public class RetryBehavior : IPipelineBehavior
-{
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<RetryBehavior> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the RetryBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    /// <param name="logger">The logger for retry processing.</param>
-    public RetryBehavior(IServiceProvider serviceProvider, ILogger<RetryBehavior> logger)
-    {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "RetryBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        // Assume handler type is resolved from request type (simplified for documentation)
-        var handlerType = request.GetType().GetInterfaces()
-            .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) || i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-            .Select(i => i.GetGenericArguments()[0])
-            .FirstOrDefault()?.GetTypeInfo();
-
-        var retryAttribute = handlerType?.GetCustomAttribute<HandlerRetryAttribute>();
-        if (retryAttribute != null)
-        {
-            var policy = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(
-                    retryAttribute.Attempts,
-                    attempt => TimeSpan.FromSeconds(Math.Pow(retryAttribute.DelaySeconds, attempt)) * (retryAttribute.Jitter ? (new Random().NextDouble() * 0.1 + 0.95) : 1));
-            var result = await policy.ExecuteAsync(next);
-            TypedLogger.LogProcessed(this.logger, "RetryBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-            return result;
-        }
-
-        var nextResult = await next();
-        TypedLogger.LogProcessed(this.logger, "RetryBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
-    }
-}
-```
-
-### TimeoutBehavior
-
-```csharp
-/// <summary>
-/// Enforces timeouts for requests or notifications based on HandlerTimeout attributes using Polly.
-/// </summary>
-public class TimeoutBehavior : IPipelineBehavior
-{
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<TimeoutBehavior> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the TimeoutBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    /// <param name="logger">The logger for timeout processing.</param>
-    public TimeoutBehavior(IServiceProvider serviceProvider, ILogger<TimeoutBehavior> logger)
-    {
-        this.serviceProvider = serviceProvider;
-        this.logger = logger;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "TimeoutBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        // Assume handler type is resolved from request type (simplified for documentation)
-        var handlerType = request.GetType().GetInterfaces()
-            .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) || i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-            .Select(i => i.GetGenericArguments()[0])
-            .FirstOrDefault()?.GetTypeInfo();
-
-        var timeoutAttribute = handlerType?.GetCustomAttribute<HandlerTimeoutAttribute>();
-        if (timeoutAttribute != null)
-        {
-            var policy = Policy.TimeoutAsync(timeoutAttribute.Seconds);
-            try
-            {
-                var result = await policy.ExecuteAsync(next);
-                TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return result;
-            }
-            catch (TimeoutRejectedException)
-            {
-                TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return Result.Failure().WithError(new TimeoutError($"Operation timed out after {timeoutAttribute.Seconds} seconds"));
-            }
-        }
-
-        var nextResult = await next();
-        TypedLogger.LogProcessed(this.logger, "TimeoutBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return nextResult;
-    }
-}
-```
-
-### ChaosBehavior
-
-```csharp
-/// <summary>
-/// Simulates failures for requests or notifications to test resilience.
-/// </summary>
-public class ChaosBehavior : IPipelineBehavior
-{
-    private readonly ILogger<ChaosBehavior> logger;
-    private readonly Random random = new Random();
-    private readonly double failureProbability;
-    private readonly int minDelayMs;
-    private readonly int maxDelayMs;
-
-    /// <summary>
-    /// Initializes a new instance of the ChaosBehavior class.
-    /// </summary>
-    /// <param name="logger">The logger for chaos behavior processing.</param>
-    /// <param name="failureProbability">The probability of failure (0.0 to 1.0).</param>
-    /// <param name="minDelayMs">The minimum delay in milliseconds.</param>
-    /// <param name="maxDelayMs">The maximum delay in milliseconds.</param>
-    public ChaosBehavior(ILogger<ChaosBehavior> logger, double failureProbability = 0.1, int minDelayMs = 100, int maxDelayMs = 1000)
-    {
-        this.logger = logger;
-        this.failureProbability = failureProbability;
-        this.minDelayMs = minDelayMs;
-        this.maxDelayMs = maxDelayMs;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        string requestType = request.GetType().Name;
-        string requestId = (request as INotification)?.NotificationId.ToString("N") ?? (request as IRequest)?.RequestId.ToString("N") ?? "Unknown";
-        TypedLogger.LogProcessing(this.logger, "ChaosBehavior", requestType, requestId);
-        var watch = ValueStopwatch.StartNew();
-
-        if (this.random.NextDouble() < this.failureProbability)
-        {
-            if (this.random.NextDouble() < 0.5)
-            {
-                int delay = this.random.Next(this.minDelayMs, this.maxDelayMs);
-                await Task.Delay(delay, cancellationToken);
-            }
-            else
-            {
-                TypedLogger.LogProcessed(this.logger, "ChaosBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-                return Result.Failure().WithError(new ChaosError("Simulated failure"));
-            }
-        }
-
-        var result = await next();
-        TypedLogger.LogProcessed(this.logger, "ChaosBehavior", requestType, requestId, watch.GetElapsedMilliseconds());
-        return result;
-    }
-}
-```
-
-### HandlerPolicyBehavior
-
-```csharp
-/// <summary>
-/// Applies per-handler policies based on attributes like HandlerRetry and HandlerTimeout.
-/// </summary>
-public class HandlerPolicyBehavior : IPipelineBehavior
-{
-    private readonly IServiceProvider serviceProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the HandlerPolicyBehavior class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving policies.</param>
-    public HandlerPolicyBehavior(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
-    public async Task<Result> HandleAsync(object request, Func<Task<Result>> next, CancellationToken cancellationToken = default)
-    {
-        // Simplified for documentation; actual implementation inspects handler attributes
-        return await next();
-    }
-}
-```
-
-## Other Classes
-
-### SendOptions
-
-```csharp
-/// <summary>
-/// Configures options for dispatching a request.
-/// </summary>
-public class SendOptions
-{
-    /// <summary>
-    /// Gets or sets the progress reporter for request processing updates.
-    /// If null, no progress reporting occurs.
-    /// </summary>
-    public IProgress<ProgressReport> Progress { get; set; }
-}
-```
-
-### PublishOptions
-
-```csharp
-/// <summary>
-/// Configures options for publishing a notification.
-/// </summary>
-public class PublishOptions
-{
-    /// <summary>
-    /// Gets or sets the error handling strategy for multiple handlers.
-    /// </summary>
-    public NotificationErrorHandlingStrategy ErrorHandling { get; set; } = NotificationErrorHandlingStrategy.Continue;
-
-    /// <summary>
-    /// Gets or sets the progress reporter for notification processing updates.
-    /// If null, no progress reporting occurs.
-    /// </summary>
-    public IProgress<ProgressReport> Progress { get; set; }
-
-    /// <summary>
-    /// Gets or sets the concurrency mode for handler execution.
-    /// </summary>
-    public NotificationConcurrencyMode ConcurrencyMode { get; set; } = NotificationConcurrencyMode.Parallel;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to wait for all handlers to complete.
-    /// </summary>
-    public bool WaitForAllHandlers { get; set; } = true;
-}
-```
-
-### ProgressReport
-
-```csharp
-/// <summary>
-/// Represents progress updates for a request or notification.
-/// </summary>
-public class ProgressReport
-{
-    /// <summary>
-    /// Gets the type of the request or notification being processed.
-    /// </summary>
-    public string MessageType { get; }
-
-    /// <summary>
-    /// Gets a collection of status messages for the current progress.
-    /// </summary>
-    public IReadOnlyList<string> Messages { get; }
-
-    /// <summary>
-    /// Gets the percentage of completion (0.0 to 100.0).
-    /// </summary>
-    public double PercentageComplete { get; }
-
-    /// <summary>
-    /// Gets a value indicating whether the request or notification processing is complete.
-    /// </summary>
-    public bool IsCompleted { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the ProgressReport class.
-    /// </summary>
-    /// <param name="messageType">The type of the request or notification.</param>
-    /// <param name="messages">A collection of status messages.</param>
-    /// <param name="percentageComplete">The percentage of completion (0.0 to 100.0).</param>
-    /// <param name="isCompleted">Indicates whether the processing is complete.</param>
-    public ProgressReport(string messageType, IReadOnlyList<string> messages, double percentageComplete = 0.0, bool isCompleted = false)
-    {
-        this.MessageType = messageType;
-        this.Messages = messages;
-        this.PercentageComplete = percentageComplete;
-        this.IsCompleted = isCompleted;
-    }
-}
-```
-
-## Fluent Builders
-
-### RequesterBuilder
-
-```csharp
-/// <summary>
-/// Configures and builds the Requester service for DI registration.
-/// </summary>
-public class RequesterBuilder
-{
-    private readonly IServiceCollection services;
-    private readonly List<Type> pipelineBehaviorTypes = new List<Type>();
-    private readonly List<Type> validatorTypes = new List<Type>();
-
-    /// <summary>
-    /// Initializes a new instance of the RequesterBuilder class.
-    /// </summary>
-    /// <param name="services">The service collection for DI registration.</param>
-    public RequesterBuilder(IServiceCollection services)
-    {
-        this.services = services;
-    }
-
-    /// <summary>
-    /// Adds handlers and validators by scanning all loaded assemblies, excluding those matching blacklist patterns.
-    /// </summary>
-    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies.</param>
-    /// <returns>The RequesterBuilder for fluent chaining.</returns>
-    public RequesterBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
-    {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns))
-            .ToList();
-        foreach (var assembly in assemblies)
-        {
-            var types = SafeGetTypes(assembly);
-            foreach (var type in types)
-            {
-                if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)))
-                {
-                    this.services.AddScoped(type);
-                    var requestType = type.GetInterfaces()
-                        .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>))
-                        .GetGenericArguments()[0];
-                    var validatorType = requestType.GetNestedType("Validator");
-                    if (validatorType != null && validatorType.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(requestType)))
-                    {
-                        this.validatorTypes.Add(validatorType);
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    /// <summary>
-    /// Adds a pipeline behavior to the request processing pipeline.
-    /// </summary>
-    /// <typeparam name="T">The type of the behavior.</typeparam>
-    /// <returns>The RequesterBuilder for fluent chaining.</returns>
-    public RequesterBuilder WithBehavior<T>() where T : IPipelineBehavior
-    {
-        this.services.AddScoped<IPipelineBehavior, T>();
-        this.pipelineBehaviorTypes.Add(typeof(T));
-        return this;
-    }
-}
-```
-
-### NotifierBuilder
-
-```csharp
-/// <summary>
-/// Configures and builds the Notifier service for DI registration.
-/// </summary>
-public class NotifierBuilder
-{
-    private readonly IServiceCollection services;
-    private readonly List<Type> pipelineBehaviorTypes = new List<Type>();
-    private readonly List<Type> validatorTypes = new List<Type>();
-
-    /// <summary>
-    /// Initializes a new instance of the NotifierBuilder class.
-    /// </summary>
-    /// <param name="services">The service collection for DI registration.</param>
-    public NotifierBuilder(IServiceCollection services)
-    {
-        this.services = services;
-    }
-
-    /// <summary>
-    /// Adds handlers and validators by scanning all loaded assemblies, excluding those matching blacklist patterns.
-    /// </summary>
-    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies.</param>
-    /// <returns>The NotifierBuilder for fluent chaining.</returns>
-    public NotifierBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
-    {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns))
-            .ToList();
-        foreach (var assembly in assemblies)
-        {
-            var types = SafeGetTypes(assembly);
-            foreach (var type in types)
-            {
-                if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
-                {
-                    this.services.AddScoped(type);
-                    var notificationType = type.GetInterfaces()
-                        .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
-                        .GetGenericArguments()[0];
-                    var validatorType = notificationType.GetNestedType("Validator");
-                    if (validatorType != null && validatorType.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(notificationType)))
-                    {
-                        this.validatorTypes.Add(validatorType);
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    /// <summary>
-    /// Adds a pipeline behavior to the notification processing pipeline.
-    /// </summary>
-    /// <typeparam name="T">The type of the behavior.</typeparam>
-    /// <returns>The NotifierBuilder for fluent chaining.</returns>
-    public NotifierBuilder WithBehavior<T>() where T : IPipelineBehavior
-    {
-        this.services.AddScoped<IPipelineBehavior, T>();
-        this.pipelineBehaviorTypes.Add(typeof(T));
-        return this;
-    }
-}
-```
-
-## Conclusion
-
-The `Requester` and `Notifier` libraries are designed to provide robust, type-safe frameworks for CQS and event-driven architectures. The interfaces, base classes, implementations, and fluent builders ensure a modular, extensible system, with design decisions prioritizing performance, consistency, and developer productivity. This documentation serves as a technical reference for maintaining and extending the libraries, capturing the rationale behind each architectural choice.
+By using the `Requester` system, you can enforce CQS principles, ensuring a clean and predictable request-handling architecture.

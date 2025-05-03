@@ -40,11 +40,11 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
         // Log the start of the scan
         TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName);
         var scanOptions = this.CreateScanOptions();
-
         var progressReports = new List<FileScanProgress>();
         var progress = new Progress<FileScanProgress>(report =>
         {
-            progressReports.Add(report); TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
+            progressReports.Add(report);
+            TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
         });
 
         var scanContext = await this.fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);

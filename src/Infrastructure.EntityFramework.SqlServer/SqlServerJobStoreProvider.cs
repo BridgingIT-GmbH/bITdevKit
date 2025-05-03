@@ -174,7 +174,18 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
         command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (SqlException ex) when (ex.Number == 208) // Invalid object name (table doesn't exist)
+        {
+            return; // Silently ignore the error when the table doesn't exist yet
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)

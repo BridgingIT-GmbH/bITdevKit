@@ -7,28 +7,22 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
 [DisallowConcurrentExecution]
-public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobScheduling
+public partial class FileMonitoringLocationScanJob(
+    ILoggerFactory loggerFactory,
+    IServiceScopeFactory scopeFactory) : JobBase(loggerFactory), IRetryJobScheduling
 {
-    private readonly IFileMonitoringService fileMonitoringService;
-
-    public FileMonitoringLocationScanJob(
-        ILoggerFactory loggerFactory,
-        IFileMonitoringService fileMonitoringService)
-        : base(loggerFactory)
-    {
-        EnsureArg.IsNotNull(fileMonitoringService, nameof(fileMonitoringService));
-
-        this.fileMonitoringService = fileMonitoringService;
-    }
-
     RetryJobSchedulingOptions IRetryJobScheduling.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
+        using var scope = scopeFactory.CreateScope();
+        var fileMonitoringService = scope.ServiceProvider.GetRequiredService<IFileMonitoringService>();
+
         // Retrieve the location name from the job data map
         this.Data.TryGetValue(DataKeys.LocationName, out var locationName);
         if (string.IsNullOrEmpty(locationName))
@@ -38,7 +32,6 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
         }
 
         // Log the start of the scan
-        TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName);
         var scanOptions = this.CreateScanOptions();
         var progressReports = new List<FileScanProgress>();
         var progress = new Progress<FileScanProgress>(report =>
@@ -47,16 +40,15 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
             TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
         });
 
-        var scanContext = await this.fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);
-        if (scanContext.Events.Any())
+        TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName, scanOptions);
+        var scanContext = await fileMonitoringService.ScanLocationAsync(locationName, scanOptions, progress, cancellationToken);
+        TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events?.Count ?? 0);
+        if (scanContext.Events.SafeAny())
         {
-            TypedLogger.LogScanCompleted(this.Logger, Constants.LogKey, locationName, scanContext.Events.Count);
             this.Data.AddOrUpdate("Detected events", scanContext.Events.Count.ToString());
-
             foreach (var evt in scanContext.Events.SafeNull())
             {
-                TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);
-
+                //TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);
                 this.Data.AddOrUpdate($"Detected event for {evt.FilePath}", evt.EventType.ToString());
             }
         }
@@ -124,8 +116,8 @@ public partial class FileMonitoringLocationScanJob : JobBase, IRetryJobSchedulin
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} job: scan started (location={LocationName})")]
-        public static partial void LogStartScan(ILogger logger, string logKey, string locationName);
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} job: scan started (location={LocationName}) {@Options}")]
+        public static partial void LogStartScan(ILogger logger, string logKey, string locationName, FileScanOptions options);
 
         [LoggerMessage(1, LogLevel.Information, "{LogKey} job: scan completed (location={LocationName}, eventCount={EventCount})")]
         public static partial void LogScanCompleted(ILogger logger, string logKey, string locationName, int eventCount);

@@ -28,42 +28,44 @@ public class CoreModule : WebModuleBase
     {
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
+        // tasks
+        services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
+            .WithTask<CoreDomainSeederTask>(o => o
+                //.Enabled(environment?.IsDevelopment() == true)
+                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
         // jobs
-        services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
+        services.AddJobScheduling(o => o
+            .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
+            .WithSqlServerStore(configuration["Modules:Core:ConnectionStrings:Default"])
             .WithJob<FileMonitoringLocationScanJob>()
-                .Cron(CronExpressions.EveryMinute)
+                .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
                 .WithData(DataKeys.LocationName, "inbound")
-                .WithData(DataKeys.DelayPerFile, "00:00:01")
+                .WithData(DataKeys.DelayPerFile, "00:00:00:100")
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
                 .RegisterScoped()
-            .WithJob<EchoJob>()
-                .Cron(CronExpressions.EveryMinute)
-                .Named("firstecho")
-                .WithData("message", "First echo")
-                .RegisterScoped()
-            .WithJob<EchoJob>()
-                .Cron(CronExpressions.Every5Seconds)
-                .Named("secondecho")
-                .WithData("message", "Second echo")
-                .Enabled(environment?.IsDevelopment() == true)
-                .RegisterScoped()
-            .WithJob<EchoJob>()
-                .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
-                .Named("thirdecho")
-                .WithData("message", "Third echo")
-                .Enabled(environment?.IsDevelopment() == true)
-                .RegisterScoped();
+            //.WithJob<EchoJob>()
+            //    .Cron(CronExpressions.EveryMinute)
+            //    .Named("firstecho")
+            //    .WithData("message", "First echo")
+            //    .RegisterScoped()
+            //.WithJob<EchoJob>()
+            //    .Cron(CronExpressions.Every5Seconds)
+            //    .Named("secondecho")
+            //    .WithData("message", "Second echo")
+            //    .Enabled(environment?.IsDevelopment() == true)
+            //    .RegisterScoped()
+            //.WithJob<EchoJob>()
+            //    .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
+            //    .Named("thirdecho")
+            //    .WithData("message", "Third echo")
+            //    .Enabled(environment?.IsDevelopment() == true)
+            //    .RegisterScoped()
+            .AddEndpoints();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
-
-        // tasks
-        services.AddStartupTasks()
-            .WithTask<CoreDomainSeederTask>(o => o
-                .Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o

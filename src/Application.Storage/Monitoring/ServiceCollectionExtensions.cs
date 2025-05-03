@@ -50,13 +50,27 @@ public static class ServiceCollectionExtensions
     /// </example>
     public static FileMonitoringBuilderContext AddFileMonitoring(
         this IServiceCollection services,
-        Action<FileMonitoringBuilder> configure)
+        Action<FileMonitoringBuilder> configure,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         EnsureArg.IsNotNull(services, nameof(services));
         EnsureArg.IsNotNull(configure, nameof(configure));
 
-        services.TryAddScoped<IFileMonitoringService, FileMonitoringService>();
-        services.TryAddScoped<IFileEventStore, InMemoryFileEventStore>(); // Default store
+        if (lifetime == ServiceLifetime.Transient)
+        {
+            services.TryAddTransient<IFileMonitoringService, FileMonitoringService>();
+            services.TryAddTransient<IFileEventStore, InMemoryFileEventStore>();
+        }
+        else if (lifetime == ServiceLifetime.Singleton)
+        {
+            services.TryAddSingleton<IFileMonitoringService, FileMonitoringService>();
+            services.TryAddSingleton<IFileEventStore, InMemoryFileEventStore>();
+        }
+        else
+        {
+            services.TryAddScoped<IFileMonitoringService, FileMonitoringService>();
+            services.TryAddScoped<IFileEventStore, InMemoryFileEventStore>(); // Default store
+        }
 
         var builder = new FileMonitoringBuilder(services);
         configure(builder);

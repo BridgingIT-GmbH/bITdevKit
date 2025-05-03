@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+using BridgingIT.DevKit.Domain.Model;
+
 /// <summary>
 /// EntityFrameworkRepositoryWrapper is a repository implementation using Entity Framework Core.
 /// It provides a wrapper around the generic repository to handle CRUD operations for a specific entity type.
@@ -30,14 +32,12 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// <summary>
     /// A generic repository class for Entity Framework, providing basic CRUD operations on entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity.</typeparam>
     protected EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
     /// <summary>
     /// Specifies an Entity Framework repository to manage entities of type <typeparamref name="TEntity"/>.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity.</typeparam>
     public EntityFrameworkGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
@@ -45,7 +45,6 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// <summary>
     /// A generic repository for performing CRUD operations on an entity using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context)) { }
 
@@ -93,20 +92,19 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// <returns>
     /// A tuple containing the entity and the result of the action (Inserted or Updated).
     /// </returns>
-    public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
-        TEntity entity,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity is null)
         {
             return (null, RepositoryActionResult.None);
         }
 
-        var isNew = entity.Id == default;
-        var existingEntity = isNew
-            ? null
-            : await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext(); // prevent the entity from being tracked (which find() does
-        isNew = isNew || existingEntity is null;
+        var isNew = IsDefaultId(entity.Id);
+        if (!isNew) // Check if the entity already exists in the database
+        {
+            var existingEntity = await this.FindOneAsync(entity.Id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext();
+            isNew = existingEntity == null;
+        }
 
         if (isNew)
         {
@@ -236,6 +234,30 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    // Helper method to check if Id is at its default value
+    private static bool IsDefaultId(object id)
+    {
+        if (id == null)
+        {
+            return true; // null is considered default for reference types like string
+        }
+
+        var idType = id.GetType();
+        return idType switch
+        {
+            Type t when t == typeof(Guid) => (Guid)id == Guid.Empty,
+            Type t when t == typeof(int) => (int)id == 0,
+            Type t when t == typeof(long) => (long)id == 0,
+            Type t when t == typeof(string) => string.IsNullOrEmpty((string)id),
+            Type t when typeof(EntityId<Guid>).IsAssignableFrom(t) => ((EntityId<Guid>)id).Value == Guid.Empty,
+            Type t when typeof(EntityId<int>).IsAssignableFrom(t) => ((EntityId<int>)id).Value == 0,
+            Type t when typeof(EntityId<long>).IsAssignableFrom(t) => ((EntityId<long>)id).Value == 0,
+            Type t when typeof(EntityId<string>).IsAssignableFrom(t) => string.IsNullOrEmpty(((EntityId<string>)id).Value),
+            // Add other types as needed (e.g., short, byte, custom structs)
+            _ => Equals(id, Activator.CreateInstance(idType)) // Fallback for value types
+        };
     }
 
     public static partial class TypedLogger

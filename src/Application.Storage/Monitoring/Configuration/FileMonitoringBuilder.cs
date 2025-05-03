@@ -99,7 +99,7 @@ public class FileMonitoringBuilder
             this.services.TryAddScoped(behaviorType);
         }
 
-        if (locationHandlerType != null)
+        if (locationHandlerType != null) // register the locationHandler, base does an autostart
         {
             this.services.AddScoped(sp => Activator.CreateInstance(
                 locationHandlerType,

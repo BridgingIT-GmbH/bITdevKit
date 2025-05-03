@@ -63,19 +63,19 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
         var factory = serviceProvider.GetRequiredService<IFileStorageProviderFactory>();
 
         // Act & Assert - InMemory (Transient)
-        var inMemoryProvider = factory.CreateProvider("inMemory");
+        var inMemoryProvider = factory.CreateProvider("inmemory"); // case insensitive
         inMemoryProvider.ShouldNotBeNull();
         //inMemoryProvider.ShouldBeOfType<InMemoryFileStorageProvider>();
         inMemoryProvider.LocationName.ShouldBe("TestInMemory");
 
         // Act & Assert - Network (Singleton)
-        var networkProvider = factory.CreateProvider("network");
+        var networkProvider = factory.CreateProvider("network"); // case insensitive
         networkProvider.ShouldNotBeNull();
         //networkProvider.ShouldBeOfType<NetworkFileStorageProvider>();
         networkProvider.LocationName.ShouldBe("NetworkStorage");
 
         // Act & Assert - Local (Singleton)
-        var localProvider = factory.CreateProvider("local");
+        var localProvider = factory.CreateProvider("local"); // case insensitive
         localProvider.ShouldNotBeNull();
         //localProvider.ShouldBeOfType<LocalFileStorageProvider>();
         localProvider.LocationName.ShouldBe("TestLocal");

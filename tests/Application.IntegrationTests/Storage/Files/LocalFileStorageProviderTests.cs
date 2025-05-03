@@ -272,6 +272,12 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     }
 
     [Fact]
+    public override Task ListCompressedFilesAsync_ValidArchive_ReturnsFiles()
+    {
+        return base.ListCompressedFilesAsync_ValidArchive_ReturnsFiles();
+    }
+
+    [Fact]
     public override async Task TraverseFilesAsync_Success()
     {
         await base.TraverseFilesAsync_Success();

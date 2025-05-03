@@ -198,11 +198,11 @@ public class ResiliencyTests
     }
 
     [Fact]
-    public async Task Notifier_PublishesEvents_ReportsProgress()
+    public async Task SimpleNotifier_PublishesEvents_ReportsProgress()
     {
         // Arrange
-        var progress = new Progress<NotifierProgress>(p => this.progressUpdates.Add(p));
-        var notifier = new NotifierBuilder()
+        var progress = new Progress<SimpleNotifierProgress>(p => this.progressUpdates.Add(p));
+        var notifier = new SimpleNotifierBuilder()
             .WithProgress(progress)
             .Build();
         notifier.Subscribe<string>(async (msg, ct) => await this.SimulateWorkAsync(ct));
@@ -210,12 +210,12 @@ public class ResiliencyTests
         var cts = new CancellationTokenSource();
 
         // Act
-        await notifier.PublishAsync("Test", cts.Token);
+        await notifier.PublishAsync("Test", cancellationToken: cts.Token);
 
         // Assert
         this.progressUpdates.Count.ShouldBe(2); // One update per handler
-        this.progressUpdates.ShouldAllBe(p => p is NotifierProgress);
-        var progressUpdate = (NotifierProgress)this.progressUpdates[0];
+        this.progressUpdates.ShouldAllBe(p => p is SimpleNotifierProgress);
+        var progressUpdate = (SimpleNotifierProgress)this.progressUpdates[0];
         progressUpdate.HandlersProcessed.ShouldBe(1);
         progressUpdate.TotalHandlers.ShouldBe(2);
     }
@@ -248,23 +248,24 @@ public class ResiliencyTests
     }
 
     [Fact]
-    public async Task Requester_SendsRequest_ReportsProgress()
+    public async Task SimpleRequester_SendsRequest_ReportsProgress()
     {
         // Arrange
-        var progress = new Progress<RequesterProgress>(p => this.progressUpdates.Add(p));
-        var requester = new RequesterBuilder()
+        var progress = new Progress<SimpleRequesterProgress>(p => this.progressUpdates.Add(p));
+        var requester = new SimpleRequesterBuilder()
             .WithProgress(progress)
+            //.AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger())) // Optional logging behavior
             .Build();
         requester.RegisterHandler<TestRequest, string>(new TestRequestHandler());
         var cts = new CancellationTokenSource();
 
         // Act
-        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cts.Token);
+        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
 
         // Assert
         this.progressUpdates.Count.ShouldBe(1);
-        this.progressUpdates.ShouldAllBe(p => p is RequesterProgress);
-        var progressUpdate = (RequesterProgress)this.progressUpdates[0];
+        this.progressUpdates.ShouldAllBe(p => p is SimpleRequesterProgress);
+        var progressUpdate = (SimpleRequesterProgress)this.progressUpdates[0];
         progressUpdate.RequestType.ShouldBe(nameof(TestRequest));
         response.ShouldBe("Processed: TestRequest");
     }
@@ -291,11 +292,11 @@ public class ResiliencyTests
 }
 
 // Test implementation for Requester with proper IRequest implementation
-public class TestRequest : IRequest<string> { }
+public class TestRequest : ISimpleRequest<string> { }
 
-public class TestRequestHandler : IRequestHandler<TestRequest, string>
+public class TestRequestHandler : ISimpleRequestHandler<TestRequest, string>
 {
-    public Task<string> HandleAsync(TestRequest request, CancellationToken cancellationToken)
+    public Task<string> HandleAsync(TestRequest request, CancellationToken cancellationToken = default)
     {
         return Task.FromResult($"Processed: {nameof(TestRequest)}");
     }

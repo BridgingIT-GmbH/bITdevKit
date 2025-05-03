@@ -221,7 +221,7 @@ public class UserService
 
 ### Imperative vs Declaritive
 
-Imperative programming expresses logic as a sequence of explicit steps and checks. Declarative programming describes the desired outcome. 
+Imperative programming expresses logic as a sequence of explicit steps and checks. Declarative programming describes the desired outcome.
 In the Result pattern, imperative style requires explicit success checks and error handling, while declarative style creates a clean pipeline of operations using the functional extensions.
 
 ```csharp
@@ -1679,7 +1679,7 @@ Avoid using Either for simple boolean conditions or null checks, as these scenar
 
 Either is implemented as a value type, providing thread-safety and immutability by design. It's memory-efficient and supports both synchronous and asynchronous operations. The implementation ensures that you can't accidentally access the wrong type without explicitly handling both cases, providing robust type safety at compile time.
 
-Here’s the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
+Hereï¿½s the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
 
 ---
 
@@ -1691,7 +1691,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpNoContent
 - Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new DeleteCommand(id));
   return response.Result.MapHttpNoContent(logger);
@@ -1700,7 +1700,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpOk<T> (Generic)
 - Maps a `Result<T>` to a response with a value (e.g., GET).
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOk(logger);
@@ -1709,7 +1709,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpOk (Non-Generic)
 - Maps a non-generic `Result` to a simple success response.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new SimpleOperationCommand());
   return response.Result.MapHttpOk(logger);
@@ -1718,7 +1718,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpOkAll<T>
 - Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOkAll(logger);
@@ -1727,7 +1727,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpCreated<T>
 - Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new CreateItemCommand(item));
   return response.Result.MapHttpCreated($"/api/items/{response.Result.Value.Id}", logger);
@@ -1738,7 +1738,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpAccepted and MapHttpAccepted<T>
 - Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new StartLongRunningTaskCommand());
   return response.Result.MapHttpAccepted("/api/status/123", logger);
@@ -1747,7 +1747,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpOkPaged<T>
 - Maps a `ResultPaged<T>` to a paginated data response.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new GetPagedItemsQuery(page: 1, pageSize: 10));
   return response.Result.MapHttpOkPaged(logger);
@@ -1756,7 +1756,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttpFile
 - Maps a `Result<FileContent>` to a file download response.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new GetFileCommand(id));
   return response.Result.MapHttpFile(logger);
@@ -1765,7 +1765,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 
 ### MapHttp<TSuccess, ...> (Generic)
 - Flexible mapping for custom success and error types.
-- **Usage**: 
+- **Usage**:
   ```csharp
   var response = await mediator.Send(new CustomOperationCommand());
   return response.Result.MapHttp<Created<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
@@ -1776,7 +1776,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
 ## Custom Error Handling
 - **Registering Handlers**: Override defaults with `RegisterErrorHandler<TError>`.
   ```csharp
-  ResultMapHttpExtensions.RegisterErrorHandler<ValidationError>((logger, result) => 
+  ResultMapHttpExtensions.RegisterErrorHandler<ValidationError>((logger, result) =>
       TypedResults.Problem(detail: result.ToString(), statusCode: 422, title: "Validation Failed"));
   ```
 - **Behavior**: Specific methods wrap unrecognized custom results in `ProblemHttpResult`; generic `MapHttp` uses `MapError<TProblem>`.

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using System.Collections.Concurrent;
+using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
-using System.Linq;
 
 /// <summary>
 /// Factory for creating and managing file storage providers with various configurations and behaviors.
@@ -18,8 +18,8 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-    private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = [];
-    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = [];
+    private readonly ConcurrentDictionary<string, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors)> providerConfigs = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Creates a file storage provider with the specified name.
@@ -54,8 +54,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
                 ServiceLifetime.Transient => this.CreateTransientProvider(x.Config),
                 _ => throw new ArgumentException($"Unsupported lifetime: {x.Config.Lifetime}", nameof(x.Config.Lifetime))
             }))
-            .Where(x => x.Provider is TImplementation)
-            .ToList();
+            .Where(x => x.Provider is TImplementation).ToList();
 
         if (matchingProviders.Count == 0)
         {

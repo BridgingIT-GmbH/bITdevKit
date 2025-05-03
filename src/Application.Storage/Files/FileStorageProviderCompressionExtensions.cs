@@ -173,7 +173,7 @@ public static class FileStorageProviderCompressionExtensions
             {
                 return Result<Stream>.Failure()
                     .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch");
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
             var entry = archive.Entries.FirstOrDefault(e => !e.IsDirectory);
@@ -482,7 +482,7 @@ public static class FileStorageProviderCompressionExtensions
             {
                 return Result.Failure()
                     .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
-                    .WithMessage($"Failed to uncompress file at '{path}' due to archive type mismatch");
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
             long totalBytes = 0;
@@ -542,11 +542,123 @@ public static class FileStorageProviderCompressionExtensions
         }
     }
 
+    /// <summary>
+    /// Lists all files within a compressed archive stored in the storage provider, optionally handling password-protected archives using SharpCompress.
+    /// </summary>
+    /// <param name="provider">The file storage provider to use for reading the compressed archive.</param>
+    /// <param name="path">The path of the compressed archive to read (e.g., "archive.zip").</param>
+    /// <param name="password">An optional password for decrypting the compressed archive. If null or empty, no decryption is applied.</param>
+    /// <param name="progress">An optional progress reporter for tracking the listing process.</param>
+    /// <param name="options">Optional configuration settings for archive handling. If null, default settings are used.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A <see cref="Result{IEnumerable{string}}"/> containing the list of file names on success, or an error on failure.</returns>
+    /// <remarks>
+    /// This method uses SharpCompress to read archive entries compatible with popular tools (e.g., 7-Zip, WinZip).
+    /// Supported formats: Zip, Tar, GZip. Returns all file names at once without pagination.
+    /// Only file entries are included (directories are excluded).
+    /// </remarks>
+    public static async Task<Result<IEnumerable<string>>> ListCompressedFilesAsync(
+        this IFileStorageProvider provider,
+        string path,
+        string password = null,
+        IProgress<FileProgress> progress = null,
+        FileCompressionOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for listing archive files");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for listing archive files");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled listing files in archive at '{path}'");
+        }
+
+        var existsResult = await provider.FileExistsAsync(path, cancellationToken: cancellationToken);
+        if (existsResult.IsFailure)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithErrors(existsResult.Errors)
+                .WithMessages(existsResult.Messages);
+        }
+
+        options ??= FileCompressionOptions.Default;
+
+        try
+        {
+            var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
+            if (readResult.IsFailure)
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithErrors(readResult.Errors)
+                    .WithMessages(readResult.Messages);
+            }
+
+            await using var archiveStream = readResult.Value;
+            using var archive = ArchiveFactory.Open(archiveStream, new ReaderOptions { Password = password });
+
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
+            }
+
+            var fileEntries = archive.Entries
+                .Where(e => !e.IsDirectory)
+                .Select(e => e.Key)
+                .ToList();
+
+            if (!fileEntries.Any())
+            {
+                return Result<IEnumerable<string>>.Success(Enumerable.Empty<string>())
+                    .WithMessage($"No files found in archive at '{path}'");
+            }
+
+            ReportProgress(progress, path, archive.TotalSize, fileEntries.Count);
+
+            return Result<IEnumerable<string>>.Success(fileEntries)
+                .WithMessage(!string.IsNullOrEmpty(password)
+                    ? $"Listed files in password-protected archive at '{path}'"
+                    : $"Listed files in archive at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during archive listing"))
+                .WithMessage($"Cancelled listing files in archive at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error listing files in archive at '{path}'");
+        }
+    }
+
     private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
     {
         var archiveType = MapArchiveType(options.ArchiveType);
-        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
+        // only allow write support for the following zip/tar/bzip2/gzip/lzip are implemented.
+        if (archiveType != ArchiveType.Zip && archiveType != ArchiveType.Tar && archiveType != ArchiveType.GZip)
+        {
+            throw new ArgumentException($"Archive type '{archiveType}' is not supported for writing.");
+        }
 
+        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
         if (archiveType == ArchiveType.Zip)
         {
             writerOptions = new ZipWriterOptions(GetCompressionType(archiveType))
@@ -579,9 +691,11 @@ public static class FileStorageProviderCompressionExtensions
     {
         return archiveType switch
         {
-            ArchiveType.Zip => CompressionType.Deflate,
-            ArchiveType.GZip => CompressionType.GZip,
+            ArchiveType.Zip => CompressionType.Deflate, // ZIP uses Deflate compression
+            ArchiveType.GZip => CompressionType.GZip, // GZip uses GZip compression
             ArchiveType.Tar => CompressionType.None, // Tar does not use compression by default
+            ArchiveType.SevenZip => CompressionType.LZMA, // 7-Zip uses LZMA compression
+            ArchiveType.Rar => CompressionType.Rar, // Rar uses RAR compression
             _ => throw new ArgumentException($"Unsupported archive type for compression: {archiveType}", nameof(archiveType))
         };
     }
@@ -626,6 +740,9 @@ public static class FileStorageProviderCompressionExtensions
         {
             FileCompressionArchiveType.Zip => ArchiveType.Zip,
             FileCompressionArchiveType.GZip => ArchiveType.GZip,
+            FileCompressionArchiveType.SevenZip => ArchiveType.SevenZip,
+            FileCompressionArchiveType.Rar => ArchiveType.Rar,
+            FileCompressionArchiveType.Tar => ArchiveType.Tar,
             _ => throw new ArgumentException($"Unsupported archive type: {archiveType}", nameof(archiveType))
         };
     }
@@ -676,7 +793,7 @@ public class FileCompressionOptions
     /// <summary>
     /// Creates a default instance of <see cref="FileCompressionOptions"/>.
     /// </summary>
-    public static FileCompressionOptions Default => new FileCompressionOptions();
+    public static FileCompressionOptions Default => new();
 
     /// <summary>
     /// Creates a new fluent builder for configuring <see cref="FileCompressionOptions"/>.
@@ -703,6 +820,21 @@ public enum FileCompressionArchiveType
     /// GZip archive format.
     /// </summary>
     GZip,
+
+    /// <summary>
+    /// 7-Zip archive format.
+    /// </summary>
+    SevenZip,
+
+    /// <summary>
+    /// RAR archive format.
+    /// </summary>
+    Rar,
+
+    /// <summary>
+    /// TAR archive format.
+    /// </summary>
+    Tar
 }
 
 /// <summary>

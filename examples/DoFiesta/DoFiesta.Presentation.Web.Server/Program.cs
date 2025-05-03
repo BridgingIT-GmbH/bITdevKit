@@ -3,6 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using System.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using BridgingIT.DevKit.Application.Commands;
@@ -54,31 +55,22 @@ builder.Services.AddQueries()
     //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
-    .WithBehavior<ModuleScopeJobSchedulingBehavior>()
-    //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
-    .WithBehavior<TimeoutJobSchedulingBehavior>()
-    //.WithInMemoryStore()
-    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
-    .AddEndpoints(/*new JobSchedulingEndpointsOptions { RequireAuthorization = true }, */builder.Environment.IsDevelopment());
-
-//
 // Startup Tasks ==============================
-builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
-    .WithTask<EchoStartupTask>(o => o
-        .Enabled(builder.Environment.IsDevelopment())
-        .StartupDelay("00:00:03"))
-    //.WithTask(sp =>
-    //    new EchoStartupTask(sp.GetRequiredService<ILoggerFactory>()), o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:03"))
-    .WithTask<JobSchedulingSqlServerSeederStartupTask>() // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-    //.WithTask(sp =>
-    //    new SqlServerQuartzSeederStartupTask(
-    //        sp.GetRequiredService<ILoggerFactory>(),
-    //        builder.Configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
-    //        "[dbo].QRTZ444_"))
-    .WithBehavior<ModuleScopeStartupTaskBehavior>()
-    //.WithBehavior<ChaosExceptionStartupTaskBehavior>()
-    .WithBehavior<TimeoutStartupTaskBehavior>();
+builder.Services.AddStartupTasks(o => o
+        .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+    //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+    .WithBehavior<ModuleScopeStartupTaskBehavior>();
+
+//builder.Services.AddJobScheduling(o => o
+//    .Enabled().StartupDelay(builder.Configuration["JobScheduling:StartupDelay"]), builder.Configuration)
+//    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
+//    .WithBehavior<ModuleScopeJobSchedulingBehavior>()
+//    //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
+//    .WithBehavior<TimeoutJobSchedulingBehavior>()
+//    //.WithInMemoryStore()
+//    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
+//    .AddEndpoints(/*new JobSchedulingEndpointsOptions { RequireAuthorization = true }, */builder.Environment.IsDevelopment());
 
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 //builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());

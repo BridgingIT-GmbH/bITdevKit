@@ -202,7 +202,18 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
         command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (SQLiteException ex) when (ex.Message.Contains("no such table")) // Silently ignore the error when the table doesn't exist yet
+        {
+            return;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     private JobRun MapJobRun(DbDataReader reader)

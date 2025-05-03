@@ -67,7 +67,7 @@ public abstract class LocationHandlerBase : ILocationHandler
         this.cts = new CancellationTokenSource();
         this.isPaused = false;
 
-        this.StartAsync();
+        this.StartAsync(); // autostart
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     {
         if (this.processingTask == null)
         {
-            this.loggerTyped.LogInformationStartingHandler(this.options.LocationName, this.provider.Description);
+            //this.loggerTyped.LogInformationStartingHandler(this.options.LocationName, this.provider.Description);
             this.cts = new CancellationTokenSource();
             var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this.cts.Token);
 
@@ -403,16 +403,16 @@ public abstract class LocationHandlerBase : ILocationHandler
     private class TypedLogger(ILogger logger)
     {
         public void LogInformationStartingHandler(string storageProviderLocationName, string storageProviderDescription) =>
-            logger.LogInformation("{LogKey} filemonitoring: starting handler (locationName={StorageProviderLocationName}, description={StorageProviderDescription})", Constants.LogKey, storageProviderLocationName, storageProviderDescription);
+            logger.LogInformation("{LogKey} filemonitoring: starting location handler (locationName={StorageProviderLocationName}, description={StorageProviderDescription})", Constants.LogKey, storageProviderLocationName, storageProviderDescription);
 
         public void LogInformationRealTimeStarted(string storageProviderLocationName) =>
             logger.LogInformation("{LogKey} filemonitoring: real-time watching started (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationStoppingHandler(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: stopping handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("{LogKey} filemonitoring: stopping location handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationHandlerStopped(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: handler stopped (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("{LogKey} filemonitoring: location handler stopped (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationScanningLocation(string storageProviderLocationName) =>
             logger.LogInformation("{LogKey} filemonitoring: scanning location (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);

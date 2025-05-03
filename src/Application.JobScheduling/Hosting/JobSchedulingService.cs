@@ -73,7 +73,7 @@ public class JobSchedulingService : BackgroundService
             {
                 try
                 {
-                    this.logger.LogInformation("{LogKey} scheduling service starting (attempt {Attempt}/{MaxRetries})", Constants.LogKey, attempt, maxRetries);
+                    this.logger.LogInformation("{LogKey} scheduling service starting (attempt={Attempt}/{MaxRetries}, delay={Delay}ms)", Constants.LogKey, attempt, maxRetries, this.options.StartupDelay.TotalMilliseconds);
                     this.Scheduler = await this.schedulerFactory.GetScheduler(cancellationToken).AnyContext();
                     if (this.Scheduler == null)
                     {
@@ -95,7 +95,16 @@ public class JobSchedulingService : BackgroundService
                         }
 
                         var jobDetail = CreateJobDetail(jobSchedule);
-                        var trigger = CreateTrigger(jobSchedule);
+                        ITrigger trigger = null;
+                        try
+                        {
+                            trigger = CreateTrigger(jobSchedule);
+                        }
+                        catch (FormatException)
+                        {
+                            this.logger.LogWarning("{LogKey} not scheduled, needs a valid cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
+                            continue;
+                        }
                         var jobName = jobSchedule.Name;
 
                         if (await this.Scheduler.CheckExists(trigger.Key, cancellationToken).AnyContext())

@@ -194,7 +194,18 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
         command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist, Silently ignore the error when the table doesn't exist
+        {
+            return;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     private JobRun MapJobRun(NpgsqlDataReader reader)

@@ -93,7 +93,7 @@ public class FileMonitoringService(
     /// <exception cref="KeyNotFoundException">Thrown when the specified location cannot be found in the handlers.</exception>
     public async Task<FileScanContext> ScanLocationAsync(string locationName, FileScanOptions options = null, IProgress<FileScanProgress> progress = null, CancellationToken token = default)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -115,7 +115,7 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous pause operation.</returns>
     public async Task PauseLocationAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -134,7 +134,7 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous resume operation.</returns>
     public async Task ResumeLocationAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -154,7 +154,7 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous restart operation.</returns>
     public async Task RestartLocationAsync(string locationName, CancellationToken token = default)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -174,7 +174,7 @@ public class FileMonitoringService(
     /// <returns>A LocationStatus object with the location's current state.</returns>
     public async Task<LocationStatus> GetLocationStatusAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -200,13 +200,30 @@ public class FileMonitoringService(
     }
 
     /// <summary>
+    /// Retrieves an instance that handles location-related operations based on the specified name.
+    /// The handler provides methods to manage and interact with the location like the StorageProvider.
+    /// </summary>
+    /// <param name="locationName">The name of the location to access.</param>
+    public ILocationHandler GetLocation(string locationName)
+    {
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
+        if (handler == null)
+        {
+            this.loggerTyped.LogErrorLocationNotFound(locationName);
+            throw new KeyNotFoundException($"Location '{locationName}' not found.");
+        }
+
+        return handler;
+    }
+
+    /// <summary>
     /// Checks if a specific location is currently active (monitoring and processing events) asynchronously.
     /// </summary>
     /// <param name="locationName">The name of the location to check (e.g., "Docs").</param>
     /// <returns>True if the location is active; false otherwise.</returns>
     public async Task<bool> IsLocationActiveAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -245,7 +262,7 @@ public class FileMonitoringService(
     /// <returns>The number of pending events in the queue.</returns>
     public int GetQueueSize(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -262,7 +279,7 @@ public class FileMonitoringService(
     /// <returns>True if the queue is empty; false otherwise.</returns>
     public async Task<bool> IsQueueEmptyAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -281,7 +298,7 @@ public class FileMonitoringService(
     /// <returns>A task that completes when the queue is empty or the timeout is reached.</returns>
     public async Task WaitForQueueEmptyAsync(string locationName, TimeSpan timeout)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -299,7 +316,7 @@ public class FileMonitoringService(
     /// <returns>A list of active processor names.</returns>
     public async Task<IEnumerable<string>> GetActiveProcessorsAsync(string locationName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -318,7 +335,7 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous enable operation.</returns>
     public async Task EnableProcessorAsync(string locationName, string processorName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);
@@ -338,7 +355,7 @@ public class FileMonitoringService(
     /// <returns>A task representing the asynchronous disable operation.</returns>
     public async Task DisableProcessorAsync(string locationName, string processorName)
     {
-        var handler = this.handlers.FirstOrDefault(h => h.Options.LocationName == locationName);
+        var handler = this.handlers.FirstOrDefault(h => string.Equals(h.Options.LocationName, locationName, StringComparison.OrdinalIgnoreCase));
         if (handler == null)
         {
             this.loggerTyped.LogErrorLocationNotFound(locationName);

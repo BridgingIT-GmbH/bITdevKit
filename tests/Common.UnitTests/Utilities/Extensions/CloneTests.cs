@@ -30,10 +30,7 @@ public class CloneTests
     {
         public CloneStub() { }
 
-        public CloneStub(string firstName)
-        {
-            this.FirstName = firstName;
-        }
+        public CloneStub(string firstName) => this.FirstName = firstName;
 
         public string FirstName { get; init; }
 

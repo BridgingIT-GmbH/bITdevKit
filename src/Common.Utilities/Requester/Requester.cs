@@ -1175,7 +1175,8 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
-        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
+        //return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
+        return true;
     }
 
     protected override async Task<TResponse> Process(

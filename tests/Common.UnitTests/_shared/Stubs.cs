@@ -68,10 +68,7 @@ public class EmailAddressStub
 {
     private EmailAddressStub() { }
 
-    private EmailAddressStub(string value)
-    {
-        this.Value = value;
-    }
+    private EmailAddressStub(string value) => this.Value = value;
 
     public string Value { get; }
 

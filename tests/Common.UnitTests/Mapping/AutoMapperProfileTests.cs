@@ -69,10 +69,7 @@ public class AutoMapperProfileTests
 
 public class PersonProfile : Profile
 {
-    public PersonProfile()
-    {
-        this.CreateMap<PersonStub, PersonDtoStub>()
+    public PersonProfile() => this.CreateMap<PersonStub, PersonDtoStub>()
             .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}".Trim()))
             .ReverseMap(); // https://dotnettutorials.net/lesson/reverse-mapping-using-automapper/
-    }
 }

@@ -203,9 +203,7 @@ public class RequestHandlerProviderTests
 /// <summary>
 /// A sample request for testing purposes.
 /// </summary>
-public class MyTestRequest : RequestBase<string>
-{
-}
+public class MyTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A sample request handler for testing purposes.
@@ -222,9 +220,7 @@ public class MyTestRequestHandler : RequestHandlerBase<MyTestRequest, string>
 /// <summary>
 /// Another sample request for testing purposes, used for empty cache scenario.
 /// </summary>
-public class AnotherTestRequest : RequestBase<int>
-{
-}
+public class AnotherTestRequest : RequestBase<int>;
 
 /// <summary>
 /// An invalid handler that does not implement <see cref="IRequestHandler{TRequest, TValue}"/>.

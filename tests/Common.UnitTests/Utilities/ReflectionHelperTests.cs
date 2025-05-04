@@ -172,10 +172,7 @@ public class ReflectionHelperTests
     {
         public StubPerson() { }
 
-        public StubPerson(string firstName)
-        {
-            this.FirstName = firstName;
-        }
+        public StubPerson(string firstName) => this.FirstName = firstName;
 
         public string FirstName { get; set; }
 

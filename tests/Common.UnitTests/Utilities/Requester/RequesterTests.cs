@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -555,10 +556,7 @@ public class OrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 {
     private readonly List<string> orderList;
 
-    public OrderedBehavior(List<string> orderList)
-    {
-        this.orderList = orderList;
-    }
+    public OrderedBehavior(List<string> orderList) => this.orderList = orderList;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
@@ -576,10 +574,7 @@ public class AnotherOrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
 {
     private readonly List<string> orderList;
 
-    public AnotherOrderedBehavior(List<string> orderList)
-    {
-        this.orderList = orderList;
-    }
+    public AnotherOrderedBehavior(List<string> orderList) => this.orderList = orderList;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
@@ -647,17 +642,20 @@ public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<T
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingBehavior(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingBehavior(List<string> capturedValues) => this.capturedValues = capturedValues;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
         if (sendOptions?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
         {
-            this.capturedValues.Add(userId.ToString());
+            this.capturedValues.Add(userId);
+        }
+
+        var publishOptions = options as PublishOptions;
+        if (publishOptions?.Context?.Properties.TryGetValue("UserId", out var userId2) == true)
+        {
+            this.capturedValues.Add(userId2);
         }
         return await next();
     }
@@ -670,10 +668,7 @@ public class ContextCapturingRequest : RequestBase<string>
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingRequest(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingRequest(List<string> capturedValues) => this.capturedValues = capturedValues;
 }
 
 /// <summary>
@@ -683,10 +678,7 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingRequestHandler(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingRequestHandler(List<string> capturedValues) => this.capturedValues = capturedValues;
 
     public Task<Result<string>> HandleAsync(ContextCapturingRequest request, SendOptions options, CancellationToken cancellationToken)
     {
@@ -701,9 +693,7 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
 /// <summary>
 /// A request to test retry behavior.
 /// </summary>
-public class RetryTestRequest : RequestBase<string>
-{
-}
+public class RetryTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler that fails twice before succeeding to test retry behavior.
@@ -732,9 +722,7 @@ public class RetryTestRequestHandler : IRequestHandler<RetryTestRequest, string>
 /// <summary>
 /// A request to test timeout behavior.
 /// </summary>
-public class TimeoutTestRequest : RequestBase<string>
-{
-}
+public class TimeoutTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler that takes too long to complete to test timeout behavior.
@@ -752,9 +740,7 @@ public class TimeoutTestRequestHandler : IRequestHandler<TimeoutTestRequest, str
 /// <summary>
 /// A request to test chaos behavior.
 /// </summary>
-public class ChaosTestRequest : RequestBase<string>
-{
-}
+public class ChaosTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler to test chaos behavior with a chaos policy.

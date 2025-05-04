@@ -390,11 +390,13 @@ public class NotifierTests
         var progressReports = new List<ProgressReport>();
         var options = new PublishOptions
         {
-            Progress = new Progress<ProgressReport>(r => progressReports.Add(r))
+            Progress = new Progress<ProgressReport>(r => progressReports.Add(r)),
+            ExecutionMode = ExecutionMode.Sequential
         };
 
         // Act
         var result = await notifier.PublishAsync(notification, options);
+        await Task.Delay(100); // Allow time for progress reporting
 
         // Assert
         result.IsSuccess.ShouldBeTrue();

@@ -377,6 +377,7 @@ public class RequesterTests
 
         // Act
         var result = await requester.SendAsync(request, options);
+        await Task.Delay(100); // Allow time for progress reporting
 
         // Assert
         result.ShouldBeSuccess();

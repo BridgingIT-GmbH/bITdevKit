@@ -1560,9 +1560,29 @@ public class ValidationBehavior<TMessage, TResponse> : PipelineBehaviorBase<TMes
             .Where(r => !r.IsValid)
             .Select(r => new FluentValidationError(r)).ToList();
 
-        if (errors.Count != 0)
+        if (errors.Any())
         {
-            return (TResponse)(object)Result.Failure().WithErrors(errors);
+            // Determine the type of TResponse and create the appropriate failure result
+            var responseType = typeof(TResponse);
+            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(IResult<>))
+            {
+                // TResponse is Result<TValue>
+                var valueType = responseType.GetGenericArguments()[0];
+                var resultType = typeof(Result<>).MakeGenericType(valueType);
+                var failureMethod = resultType.GetMethod(nameof(Result<object>.Failure), new[] { typeof(IEnumerable<string>), typeof(IEnumerable<IResultError>) });
+                var failureResult = failureMethod.Invoke(null, new object[] { null, errors });
+
+                return (TResponse)failureResult;
+            }
+            else if (responseType == typeof(IResult))
+            {
+                // TResponse is Result (non-generic, for notifications)
+                return (TResponse)(object)Result.Failure().WithErrors(errors);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unsupported response type '{responseType}' in ValidationBehavior.");
+            }
         }
 
         return await next();

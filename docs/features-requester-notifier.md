@@ -6,6 +6,10 @@
 
 The `Requester` system is a robust framework designed to streamline the handling of requests—such as commands and queries—in modern applications. It provides a structured approach to dispatching requests to their respective handlers through a customizable pipeline of behaviors, allowing developers to address cross-cutting concerns like validation, retries, and timeouts without altering core business logic. By enforcing a consistent and type-safe mechanism for request processing, the system ensures predictability and maintainability in complex applications. The `Requester` system also includes a set of extensible pipeline behaviors that can be shared with other systems, such as the `Notifier`, ensuring consistency across different types of request handling.
 
+Two kinds of messages are supported:
+- Request/response messages, dispatched to a single handler
+- Notification messages, dispatched to multiple handlers
+
 ### Challenges
 
 When developing applications, managing the core mechanics of request dispatching and handler execution presents several challenges:

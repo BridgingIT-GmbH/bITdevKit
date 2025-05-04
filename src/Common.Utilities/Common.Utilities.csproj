@@ -26,8 +26,4 @@
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Requester\PipelineBehaviors\" />
-  </ItemGroup>
-
 </Project>

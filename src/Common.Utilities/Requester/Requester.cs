@@ -1521,17 +1521,11 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
 /// </remarks>
 /// <param name="loggerFactory">The logger factory for creating loggers.</param>
 /// <param name="validators">The collection of validators for the message type.</param>
-public class ValidationPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRequest, TResponse>
+public class ValidationPipelineBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, IEnumerable<IValidator<TRequest>> validators = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly IValidator<TRequest>[] validators;
-
-    public ValidationPipelineBehavior(ILoggerFactory loggerFactory, IEnumerable<IValidator<TRequest>> validators = null)
-        : base(loggerFactory)
-    {
-        this.validators = validators?.ToArray();
-    }
+    private readonly IValidator<TRequest>[] validators = validators?.ToArray();
 
     /// <summary>
     /// Indicates whether the behavior can process the specified message.

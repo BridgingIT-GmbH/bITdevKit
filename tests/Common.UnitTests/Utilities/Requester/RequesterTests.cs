@@ -526,7 +526,7 @@ public class RequesterTests
         services.AddLogging();
         var builder = new RequesterBuilder(services);
         builder.AddHandlers()
-               .WithBehavior(typeof(ValidationBehavior<,>));
+               .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new CreateCustomerCommand { Email = "" }; // Invalid email (empty)
@@ -554,7 +554,7 @@ public class RequesterTests
         services.AddLogging();
         var builder = new RequesterBuilder(services);
         builder.AddHandlers()
-               .WithBehavior(typeof(ValidationBehavior<,>));
+               .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var requester = serviceProvider.GetService<IRequester>();
         var request = new CreateCustomerCommand { Email = "valid@example.com" }; // Valid email

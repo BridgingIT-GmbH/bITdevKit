@@ -519,7 +519,7 @@ public class NotifierTests
         services.AddLogging();
         services.AddNotifier()
             .AddHandlers()
-            .WithBehavior(typeof(ValidationBehavior<,>));
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var notifier = serviceProvider.GetService<INotifier>();
         var notification = new InvalidEmailNotification { EmailAddress = "" }; // Invalid email (empty)
@@ -547,7 +547,7 @@ public class NotifierTests
         services.AddLogging();
         services.AddNotifier()
             .AddHandlers()
-            .WithBehavior(typeof(ValidationBehavior<,>));
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
         var notifier = serviceProvider.GetService<INotifier>();
         var notification = new EmailSentNotification { EmailAddress = "valid@example.com" }; // Valid email

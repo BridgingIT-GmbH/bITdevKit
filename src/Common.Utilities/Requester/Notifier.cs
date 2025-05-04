@@ -800,7 +800,7 @@ public class NotifierBuilder(IServiceCollection services)
             }
         }
 
-        this.services.AddSingleton<IHandlerCache>(this.handlerCache);
+        this.services.AddSingleton(this.handlerCache);
         this.services.AddSingleton(this.policyCache);
         this.services.AddSingleton<INotificationHandlerProvider, NotificationHandlerProvider>();
         this.services.AddSingleton<INotificationBehaviorsProvider>(sp => new NotificationBehaviorsProvider(this.pipelineBehaviorTypes));

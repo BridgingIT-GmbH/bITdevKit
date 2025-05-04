@@ -852,7 +852,7 @@ public class RequesterBuilder(IServiceCollection services)
             }
         }
 
-        this.services.AddSingleton<IHandlerCache>(this.handlerCache);
+        this.services.AddSingleton(this.handlerCache);
         this.services.AddSingleton(this.policyCache);
         this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
         this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
@@ -1489,7 +1489,7 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
 /// <summary>
 /// A pipeline behavior that validates messages using FluentValidation.
 /// </summary>
-/// <typeparam name="TMessage">The type of the message (request or notification).</typeparam>
+/// <typeparam name="TRequest">The type of the message (request or notification).</typeparam>
 /// <typeparam name="TResponse">The type of the response, implementing <see cref="IResult"/>.</typeparam>
 /// <remarks>
 /// This behavior validates the message using a registered FluentValidation validator before passing it to the next behavior or handler.
@@ -1517,29 +1517,29 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
 /// </code>
 /// </example>
 /// <remarks>
-/// Initializes a new instance of the <see cref="ValidationBehavior{TMessage, TResponse}"/> class.
+/// Initializes a new instance of the <see cref="ValidationPipelineBehavior{TRequest, TResponse}"/> class.
 /// </remarks>
 /// <param name="loggerFactory">The logger factory for creating loggers.</param>
 /// <param name="validators">The collection of validators for the message type.</param>
-public class ValidationBehavior<TMessage, TResponse> : PipelineBehaviorBase<TMessage, TResponse>
-    where TMessage : class
+public class ValidationPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRequest, TResponse>
+    where TRequest : class
     where TResponse : IResult
 {
-    private readonly IValidator<TMessage>[] validators;
+    private readonly IValidator<TRequest>[] validators;
 
-    public ValidationBehavior(ILoggerFactory loggerFactory, IEnumerable<IValidator<TMessage>> validators = null)
+    public ValidationPipelineBehavior(ILoggerFactory loggerFactory, IEnumerable<IValidator<TRequest>> validators = null)
         : base(loggerFactory)
     {
-        this.validators = validators?.ToArray() ?? throw new ArgumentNullException(nameof(validators));
+        this.validators = validators?.ToArray();
     }
 
     /// <summary>
     /// Indicates whether the behavior can process the specified message.
     /// </summary>
-    /// <param name="message">The message to process.</param>
+    /// <param name="request">The message to process.</param>
     /// <param name="handlerType">The type of the handler, if applicable.</param>
     /// <returns><c>true</c> if there are validators to apply; otherwise, <c>false</c>.</returns>
-    protected override bool CanProcess(TMessage message, Type handlerType)
+    protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return this.validators.SafeAny();
     }
@@ -1547,14 +1547,14 @@ public class ValidationBehavior<TMessage, TResponse> : PipelineBehaviorBase<TMes
     /// <summary>
     /// Validates the message using FluentValidation and proceeds if validation passes.
     /// </summary>
-    /// <param name="message">The message to process.</param>
+    /// <param name="request">The message to process.</param>
     /// <param name="handlerType">The type of the handler, if applicable.</param>
     /// <param name="next">The delegate to invoke the next behavior or handler in the pipeline.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A task representing the result of the processing, returning a <see cref="TResponse"/>.</returns>
-    protected override async Task<TResponse> Process(TMessage message, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken)
+    protected override async Task<TResponse> Process(TRequest request, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken)
     {
-        var context = new ValidationContext<TMessage>(message);
+        var context = new ValidationContext<TRequest>(request);
         var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
         var errors = validationResults
             .Where(r => !r.IsValid)

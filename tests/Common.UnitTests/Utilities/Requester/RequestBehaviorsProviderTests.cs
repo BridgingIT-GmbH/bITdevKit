@@ -182,6 +182,8 @@ public class TestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TRe
     {
         return next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -195,6 +197,8 @@ public class AnotherTestBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     {
         return next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>

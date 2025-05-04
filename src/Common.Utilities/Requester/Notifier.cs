@@ -528,7 +528,7 @@ public partial class Notifier(
     /// <param name="notification">The notification to dispatch.</param>
     /// <param name="options">The options for notification processing, including execution mode and progress reporting.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
-    /// <returns>A task representing the result of the notification, returning a <see cref="Result"/>.</returns>
+    /// <returns>A task representing the result of the notification, returning a <see cref="IResult"/>.</returns>
     public async Task<IResult> PublishAsync<TNotification>(
         TNotification notification,
         PublishOptions options = null,
@@ -544,23 +544,69 @@ public partial class Notifier(
         var handlers = this.handlerProvider.GetHandlers<TNotification>(this.serviceProvider);
         var behaviors = this.behaviorsProvider.GetBehaviors<TNotification>(this.serviceProvider);
 
-        // Build the pipeline with behaviors
+        // Split behaviors into notification-level and handler-specific
+        var notificationLevelBehaviors = behaviors.Where(b => !b.IsHandlerSpecific()).Reverse().ToList();
+        var handlerSpecificBehaviors = behaviors.Where(b => b.IsHandlerSpecific()).Reverse().ToList();
+
+        // Build the pipeline for notification-level behaviors (run once)
         Func<Task<IResult>> next = async () =>
         {
-            var results = new List<Result>();
+            var results = new List<IResult>();
             if (options.ExecutionMode == ExecutionMode.FireAndForget)
             {
                 // Fire-and-forget: Dispatch handlers without awaiting
                 foreach (var handler in handlers)
                 {
-                    _ = Task.Run(() => handler.HandleAsync(notification, options, cancellationToken), cancellationToken);
+                    var handlerType = handler.GetType();
+                    Func<Task<IResult>> handlerNext = async () => await handler.HandleAsync(notification, options, cancellationToken);
+
+                    // Build per-handler pipeline for handler-specific behaviors
+                    foreach (var behavior in handlerSpecificBehaviors)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var behaviorType = behavior.GetType().Name;
+                        TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"));
+                        var behaviorWatch = ValueStopwatch.StartNew();
+                        var currentNext = handlerNext;
+                        handlerNext = async () =>
+                        {
+                            var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
+                            TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
+                            return result;
+                        };
+                    }
+
+                    _ = Task.Run(() => handlerNext(), cancellationToken);
                 }
                 return Result.Success();
             }
             else if (options.ExecutionMode == ExecutionMode.Concurrent)
             {
                 // Concurrent: Run all handlers in parallel
-                var tasks = handlers.Select(handler => handler.HandleAsync(notification, options, cancellationToken));
+                var tasks = handlers.Select(async handler =>
+                {
+                    var handlerType = handler.GetType();
+                    Func<Task<IResult>> handlerNext = async () => await handler.HandleAsync(notification, options, cancellationToken);
+
+                    // Build per-handler pipeline for handler-specific behaviors
+                    foreach (var behavior in handlerSpecificBehaviors)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var behaviorType = behavior.GetType().Name;
+                        TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"));
+                        var behaviorWatch = ValueStopwatch.StartNew();
+                        var currentNext = handlerNext;
+                        handlerNext = async () =>
+                        {
+                            var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
+                            TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
+                            return result;
+                        };
+                    }
+
+                    return await handlerNext();
+                });
+
                 results.AddRange(await Task.WhenAll(tasks));
             }
             else
@@ -568,8 +614,27 @@ public partial class Notifier(
                 // Sequential: Run handlers one by one, stop on first failure
                 foreach (var handler in handlers)
                 {
-                    var handlerResult = await handler.HandleAsync(notification, options, cancellationToken);
-                    results.Add(handlerResult);
+                    var handlerType = handler.GetType();
+                    Func<Task<IResult>> handlerNext = async () => await handler.HandleAsync(notification, options, cancellationToken);
+
+                    // Build per-handler pipeline for handler-specific behaviors
+                    foreach (var behavior in handlerSpecificBehaviors)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var behaviorType = behavior.GetType().Name;
+                        TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"));
+                        var behaviorWatch = ValueStopwatch.StartNew();
+                        var currentNext = handlerNext;
+                        handlerNext = async () =>
+                        {
+                            var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
+                            TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TNotification).Name, notification.NotificationId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
+                            return result;
+                        };
+                    }
+
+                    var handlerResult = await handlerNext();
+                    results.Add((Result)handlerResult);
                     if (handlerResult.IsFailure)
                     {
                         break;
@@ -585,13 +650,14 @@ public partial class Notifier(
 
             var errors = results.SelectMany(r => r.Errors).ToList();
             var messages = results.SelectMany(r => r.Messages).ToList();
+
             return Result.Failure(messages, errors);
         };
 
         try
         {
-            // Apply behaviors in reverse order (outermost to innermost)
-            foreach (var behavior in behaviors.Reverse())
+            // Apply notification-level behaviors in reverse order (outermost to innermost)
+            foreach (var behavior in notificationLevelBehaviors)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var behaviorType = behavior.GetType().Name;
@@ -728,6 +794,7 @@ public class NotifierBuilder(IServiceCollection services)
                     if (validatorType?.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(notificationType)) == true)
                     {
                         this.validatorTypes.Add(validatorType);
+                        this.services.AddScoped(typeof(IValidator<>).MakeGenericType(notificationType), validatorType);
                     }
                 }
             }

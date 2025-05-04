@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Timeout;
 using Shouldly;
@@ -504,6 +505,57 @@ public class NotifierTests
         error.Exception.ShouldBeOfType<ChaosException>();
         error.Message.ShouldContain("Chaos injection triggered");
     }
+
+    /// <summary>
+    /// Tests that ValidationBehavior validates the notification and returns FluentValidationError on failure.
+    /// </summary>
+    [Fact]
+    public async Task ValidationBehavior_FailsValidation_ReturnsFluentValidationError()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddNotifier()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var notifier = serviceProvider.GetService<INotifier>();
+        var notification = new InvalidEmailNotification { EmailAddress = "" }; // Invalid email (empty)
+
+        // Act
+        var result = await notifier.PublishAsync(notification);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors[0].ShouldBeOfType<FluentValidationError>();
+        var error = (FluentValidationError)result.Errors[0];
+        error.Errors.ShouldNotBeEmpty();
+        error.Errors[0].ErrorMessage.ShouldBe("Email cannot be empty.");
+    }
+
+    /// <summary>
+    /// Tests that ValidationBehavior allows the handler to execute when validation passes.
+    /// </summary>
+    [Fact]
+    public async Task ValidationBehavior_PassesValidation_ProceedsToHandler()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddNotifier()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var notifier = serviceProvider.GetService<INotifier>();
+        var notification = new EmailSentNotification { EmailAddress = "valid@example.com" }; // Valid email
+
+        // Act
+        var result = await notifier.PublishAsync(notification);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+    }
 }
 
 /// <summary>
@@ -551,6 +603,8 @@ public class MessageAddingBehavior<TNotification, TResponse> : IPipelineBehavior
         var result = await next();
         return (TResponse)(object)Result.Success("Behavior message");
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>

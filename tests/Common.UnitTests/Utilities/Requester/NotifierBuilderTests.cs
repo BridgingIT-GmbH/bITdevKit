@@ -185,14 +185,3 @@ public class NotifierBuilderTests
         handlerCache[typeof(INotificationHandler<EmailSentNotification>)].ShouldBe(typeof(EmailSentNotificationHandler));
     }
 }
-
-/// <summary>
-/// A sample notification handler for testing purposes.
-/// </summary>
-public class EmailSentNotificationHandler : NotificationHandlerBase<EmailSentNotification>
-{
-    protected override Task<Result> HandleAsync(EmailSentNotification notification, PublishOptions options, CancellationToken cancellationToken)
-    {
-        return Task.FromResult(Result.Success());
-    }
-}

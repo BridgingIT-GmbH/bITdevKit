@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
@@ -168,9 +169,62 @@ public class NotificationBehaviorsProviderTests
 }
 
 /// <summary>
-/// A sample notification for testing purposes.
+/// A sample notification for testing purposes with validation.
 /// </summary>
-public class EmailSentNotification : NotificationBase;
+public class EmailSentNotification : NotificationBase
+{
+    public string EmailAddress { get; set; }
+
+    public class Validator : AbstractValidator<EmailSentNotification>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.EmailAddress)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
+}
+
+/// <summary>
+/// A sample notification for testing validation failure.
+/// </summary>
+public class InvalidEmailNotification : NotificationBase
+{
+    public string EmailAddress { get; set; }
+
+    public class Validator : AbstractValidator<InvalidEmailNotification>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.EmailAddress)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
+}
+
+/// <summary>
+/// A sample notification handler for testing purposes.
+/// </summary>
+public class EmailSentNotificationHandler : NotificationHandlerBase<EmailSentNotification>
+{
+    protected override Task<Result> HandleAsync(EmailSentNotification notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Success());
+    }
+}
+
+/// <summary>
+/// A sample notification handler for testing validation failure.
+/// </summary>
+public class InvalidEmailNotificationHandler : NotificationHandlerBase<InvalidEmailNotification>
+{
+    protected override Task<Result> HandleAsync(InvalidEmailNotification notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Success());
+    }
+}
 
 /// <summary>
 /// Another sample notification for testing purposes, used for empty cache scenario.

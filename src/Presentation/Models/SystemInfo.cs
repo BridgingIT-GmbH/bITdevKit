@@ -7,7 +7,15 @@ namespace BridgingIT.DevKit.Presentation;
 
 public class SystemInfo
 {
-    public IDictionary<string, object> Request { get; set; }
+    public Dictionary<string, object> Request { get; set; }
 
-    public IDictionary<string, string> Runtime { get; set; }
+    public Dictionary<string, string> Runtime { get; set; }
+
+    public Dictionary<string, string> Memory { get; set; }
+
+    public Dictionary<string, string> Configuration { get; set; }
+
+    public Dictionary<string, string> CustomMetadata { get; set; }
+
+    public string Uptime { get; set; }
 }

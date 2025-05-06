@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using IResult = Microsoft.AspNetCore.Http.IResult;
+using Version = BridgingIT.DevKit.Common.Version;
 
 public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsBase
 {
@@ -106,6 +107,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
                 ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                 ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 ["version"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(), //Assembly.GetEntryAssembly().GetName().Version.ToString(),
+                ["versionShort"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease), //Assembly.GetEntryAssembly().GetName().Version.ToString(),
                 //["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
                 ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
                 ["processName"] = !this.options.HideSensitiveInformation ? Process.GetCurrentProcess().ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)" : Process.GetCurrentProcess().ProcessName : string.Empty,

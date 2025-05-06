@@ -303,7 +303,7 @@ public class Version : IComparable<Version>, IEquatable<Version>
 
         switch (format)
         {
-            case VersionFormat.Simple:
+            case VersionFormat.Short:
                 return baseVersion;
             case VersionFormat.WithPrerelease:
                 return !string.IsNullOrEmpty(this.Prerelease) ? $"{baseVersion}-{this.Prerelease}" : baseVersion;
@@ -331,7 +331,7 @@ public enum VersionFormat
     /// <summary>
     /// Renders the version as major.minor.patch (e.g., "1.0.0").
     /// </summary>
-    Simple,
+    Short,
 
     /// <summary>
     /// Renders the version as major.minor.patch-prerelease (e.g., "1.0.0-alpha").

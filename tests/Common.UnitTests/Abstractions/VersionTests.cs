@@ -138,7 +138,7 @@ public class VersionTests
         var version = Version.Parse("1.0.8-preview0.2+3d57ae10dfa788f109ca91a47ccc");
 
         // Act
-        var result = version.ToString(VersionFormat.Simple);
+        var result = version.ToString(VersionFormat.Short);
 
         // Assert
         result.ShouldBe("1.0.8");

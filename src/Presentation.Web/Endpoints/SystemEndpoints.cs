@@ -105,8 +105,8 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
             {
                 ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                 ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-                ["version"] = Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                ["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
+                ["version"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(), //Assembly.GetEntryAssembly().GetName().Version.ToString(),
+                //["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
                 ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
                 ["processName"] = !this.options.HideSensitiveInformation ? Process.GetCurrentProcess().ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)" : Process.GetCurrentProcess().ProcessName : string.Empty,
                 ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,

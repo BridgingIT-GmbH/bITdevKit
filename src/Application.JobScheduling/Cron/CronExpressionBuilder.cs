@@ -36,7 +36,11 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder Seconds(int value)
     {
-        if (value < 0 || value > 59) throw new ArgumentOutOfRangeException(nameof(value), "Seconds must be between 0 and 59.");
+        if (value < 0 || value > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Seconds must be between 0 and 59.");
+        }
+
         this.seconds = value.ToString();
         return this;
     }
@@ -55,8 +59,16 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder SecondsRange(int start, int end)
     {
-        if (start < 0 || start > 59) throw new ArgumentOutOfRangeException(nameof(start), "Start seconds must be between 0 and 59.");
-        if (end < start || end > 59) throw new ArgumentOutOfRangeException(nameof(end), "End seconds must be between start and 59.");
+        if (start < 0 || start > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(start), "Start seconds must be between 0 and 59.");
+        }
+
+        if (end < start || end > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(end), "End seconds must be between start and 59.");
+        }
+
         this.seconds = $"{start}-{end}";
         return this;
     }
@@ -74,7 +86,11 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder Minutes(int value)
     {
-        if (value < 0 || value > 59) throw new ArgumentOutOfRangeException(nameof(value), "Minutes must be between 0 and 59.");
+        if (value < 0 || value > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Minutes must be between 0 and 59.");
+        }
+
         this.minutes = value.ToString();
         return this;
     }
@@ -93,8 +109,16 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder MinutesRange(int start, int end)
     {
-        if (start < 0 || start > 59) throw new ArgumentOutOfRangeException(nameof(start), "Start minutes must be between 0 and 59.");
-        if (end < start || end > 59) throw new ArgumentOutOfRangeException(nameof(end), "End minutes must be between start and 59.");
+        if (start < 0 || start > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(start), "Start minutes must be between 0 and 59.");
+        }
+
+        if (end < start || end > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(end), "End minutes must be between start and 59.");
+        }
+
         this.minutes = $"{start}-{end}";
         return this;
     }
@@ -112,7 +136,11 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder Hours(int value)
     {
-        if (value < 0 || value > 23) throw new ArgumentOutOfRangeException(nameof(value), "Hours must be between 0 and 23.");
+        if (value < 0 || value > 23)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Hours must be between 0 and 23.");
+        }
+
         this.hours = value.ToString();
         return this;
     }
@@ -131,8 +159,16 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder HoursRange(int start, int end)
     {
-        if (start < 0 || start > 23) throw new ArgumentOutOfRangeException(nameof(start), "Start hours must be between 0 and 23.");
-        if (end < start || end > 23) throw new ArgumentOutOfRangeException(nameof(end), "End hours must be between start and 23.");
+        if (start < 0 || start > 23)
+        {
+            throw new ArgumentOutOfRangeException(nameof(start), "Start hours must be between 0 and 23.");
+        }
+
+        if (end < start || end > 23)
+        {
+            throw new ArgumentOutOfRangeException(nameof(end), "End hours must be between start and 23.");
+        }
+
         this.hours = $"{start}-{end}";
         return this;
     }
@@ -152,7 +188,11 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder DayOfMonth(int value)
     {
-        if (value < 1 || value > 31) throw new ArgumentOutOfRangeException(nameof(value), "Day of month must be between 1 and 31.");
+        if (value < 1 || value > 31)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Day of month must be between 1 and 31.");
+        }
+
         this.dayOfMonth = value.ToString();
         this.dayOfWeek = "?"; // Mutually exclusive with day of week
         return this;
@@ -173,8 +213,16 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder DayOfMonthRange(int start, int end)
     {
-        if (start < 1 || start > 31) throw new ArgumentOutOfRangeException(nameof(start), "Start day of month must be between 1 and 31.");
-        if (end < start || end > 31) throw new ArgumentOutOfRangeException(nameof(end), "End day of month must be between start and 31.");
+        if (start < 1 || start > 31)
+        {
+            throw new ArgumentOutOfRangeException(nameof(start), "Start day of month must be between 1 and 31.");
+        }
+
+        if (end < start || end > 31)
+        {
+            throw new ArgumentOutOfRangeException(nameof(end), "End day of month must be between start and 31.");
+        }
+
         this.dayOfMonth = $"{start}-{end}";
         this.dayOfWeek = "?"; // Mutually exclusive with day of week
         return this;
@@ -315,9 +363,20 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder AtTime(int hour, int minute, int second = 0)
     {
-        if (hour < 0 || hour > 23) throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 0 and 23.");
-        if (minute < 0 || minute > 59) throw new ArgumentOutOfRangeException(nameof(minute), "Minute must be between 0 and 59.");
-        if (second < 0 || second > 59) throw new ArgumentOutOfRangeException(nameof(second), "Second must be between 0 and 59.");
+        if (hour < 0 || hour > 23)
+        {
+            throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 0 and 23.");
+        }
+
+        if (minute < 0 || minute > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(minute), "Minute must be between 0 and 59.");
+        }
+
+        if (second < 0 || second > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(second), "Second must be between 0 and 59.");
+        }
 
         this.hours = hour.ToString();
         this.minutes = minute.ToString();
@@ -385,7 +444,10 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder EverySeconds(int interval)
     {
-        if (interval < 1 || interval > 59) throw new ArgumentOutOfRangeException(nameof(interval), "Seconds interval must be between 1 and 59.");
+        if (interval < 1 || interval > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(interval), "Seconds interval must be between 1 and 59.");
+        }
 
         this.seconds = $"0/{interval}";
         return this;
@@ -404,7 +466,10 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder EveryMinutes(int interval)
     {
-        if (interval < 1 || interval > 59) throw new ArgumentOutOfRangeException(nameof(interval), "Minutes interval must be between 1 and 59.");
+        if (interval < 1 || interval > 59)
+        {
+            throw new ArgumentOutOfRangeException(nameof(interval), "Minutes interval must be between 1 and 59.");
+        }
 
         this.minutes = $"0/{interval}";
         this.seconds = "0"; // Reset to start of minute
@@ -424,7 +489,10 @@ public class CronExpressionBuilder
     /// </example>
     public CronExpressionBuilder EveryHours(int interval)
     {
-        if (interval < 1 || interval > 23) throw new ArgumentOutOfRangeException(nameof(interval), "Hours interval must be between 1 and 23.");
+        if (interval < 1 || interval > 23)
+        {
+            throw new ArgumentOutOfRangeException(nameof(interval), "Hours interval must be between 1 and 23.");
+        }
 
         this.hours = $"*/{interval}";
         this.minutes = "0"; // Reset to start of hour

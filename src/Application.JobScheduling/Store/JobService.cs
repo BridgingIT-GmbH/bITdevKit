@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Linq;
-using Humanizer;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl.Matchers;
@@ -75,6 +74,8 @@ public partial class JobService(
     /// <returns>The job information with latest run and stats, or null if not found.</returns>
     public async Task<JobInfo> GetJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogGetJob(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -136,6 +137,8 @@ public partial class JobService(
         string resultContains = null, int? take = null,
         CancellationToken cancellationToken = default)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogGetJobRuns(this.logger, Constants.LogKey, jobName, jobGroup);
         this.LogFilterOptions(startDate, endDate, status, priority, instanceName, resultContains, take);
 
@@ -169,6 +172,8 @@ public partial class JobService(
         DateTimeOffset? startDate, DateTimeOffset? endDate,
         CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogGetJobRunStats(this.logger, Constants.LogKey, jobName, jobGroup);
         this.LogDateRange(startDate, endDate);
 
@@ -184,6 +189,8 @@ public partial class JobService(
     /// <returns>A collection of trigger information objects.</returns>
     public async Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogGetTriggers(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -208,6 +215,7 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNull(jobRun, nameof(jobRun));
         TypedLogger.LogSaveJobRun(this.logger, Constants.LogKey, jobRun?.JobName, jobRun?.JobGroup, jobRun?.Id);
 
         return provider.SaveJobRunAsync(jobRun, cancellationToken);
@@ -222,6 +230,8 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task TriggerJobAsync(string jobName, string jobGroup, IDictionary<string, object> data, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogTriggerJob(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -240,6 +250,8 @@ public partial class JobService(
     /// <param name="cancellationToken">Allows the operation to be canceled if needed.</param>
     public async Task InterruptJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogTriggerJob(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -256,6 +268,8 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task PauseJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogPauseJob(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -270,6 +284,8 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public async Task ResumeJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogResumeJob(this.logger, Constants.LogKey, jobName, jobGroup);
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
@@ -285,6 +301,8 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     public Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        jobGroup ??= "DEFAULT";
         TypedLogger.LogPurgeJobRuns(this.logger, Constants.LogKey, jobName, jobGroup, olderThan);
 
         return provider.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
@@ -292,8 +310,12 @@ public partial class JobService(
 
     private async Task<string> GetJobStatusAsync(JobKey jobKey, IScheduler scheduler, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNull(jobKey, nameof(jobKey));
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
-        if (triggers.Count == 0) return "No Triggers";
+        if (triggers.Count == 0)
+        {
+            return "No Triggers";
+        }
 
         var states = await Task.WhenAll(triggers.Select(t => scheduler.GetTriggerState(t.Key, cancellationToken)));
 
@@ -307,25 +329,45 @@ public partial class JobService(
         this.LogDateRange(startDate, endDate);
 
         if (!string.IsNullOrEmpty(status))
+        {
             this.logger.LogDebug("{LogKey} store: filter status={Status}", Constants.LogKey, status);
+        }
+
         if (priority.HasValue)
+        {
             this.logger.LogDebug("{LogKey} store: filter priority={Priority}", Constants.LogKey, priority.Value);
+        }
+
         if (!string.IsNullOrEmpty(instanceName))
+        {
             this.logger.LogDebug("{LogKey} store: filter instanceName={InstanceName}", Constants.LogKey, instanceName);
+        }
+
         if (!string.IsNullOrEmpty(resultContains))
+        {
             this.logger.LogDebug("{LogKey} store: filter resultContains={ResultContains}", Constants.LogKey, resultContains);
+        }
+
         if (take.HasValue)
+        {
             this.logger.LogDebug("{LogKey} store: take={Take}", Constants.LogKey, take.Value);
+        }
     }
 
     private void LogDateRange(DateTimeOffset? startDate, DateTimeOffset? endDate)
     {
         if (startDate.HasValue && endDate.HasValue)
+        {
             this.logger.LogDebug("{LogKey} store: date range start={StartDate}, end={EndDate}", Constants.LogKey, startDate.Value, endDate.Value);
+        }
         else if (startDate.HasValue)
+        {
             this.logger.LogDebug("{LogKey} store: date range start={StartDate}", Constants.LogKey, startDate.Value);
+        }
         else if (endDate.HasValue)
+        {
             this.logger.LogDebug("{LogKey} store: date range end={EndDate}", Constants.LogKey, endDate.Value);
+        }
     }
 
     public static partial class TypedLogger

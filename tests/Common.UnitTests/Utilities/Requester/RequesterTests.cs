@@ -9,8 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Timeout;
 using Shouldly;
@@ -375,6 +377,7 @@ public class RequesterTests
 
         // Act
         var result = await requester.SendAsync(request, options);
+        await Task.Delay(100); // Allow time for progress reporting
 
         // Assert
         result.ShouldBeSuccess();
@@ -511,6 +514,58 @@ public class RequesterTests
         result.Value.ShouldBe(Unit.Value);
         SendNotificationCommandHandler.RetryAttempts.ShouldBe(2); // Should retry twice before succeeding
     }
+
+    /// <summary>
+    /// Tests that ValidationBehavior validates the request and returns FluentValidationError on failure.
+    /// </summary>
+    [Fact]
+    public async Task ValidationBehavior_FailsValidation_ReturnsFluentValidationError()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new CreateCustomerCommand { Email = "" }; // Invalid email (empty)
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeFalse();
+        result.Errors.ShouldNotBeEmpty();
+        result.Errors[0].ShouldBeOfType<FluentValidationError>();
+        var error = (FluentValidationError)result.Errors[0];
+        error.Errors.ShouldNotBeEmpty();
+        error.Errors[0].ErrorMessage.ShouldBe("Email cannot be empty.");
+    }
+
+    /// <summary>
+    /// Tests that ValidationBehavior allows the handler to execute when validation passes.
+    /// </summary>
+    [Fact]
+    public async Task ValidationBehavior_PassesValidation_ProceedsToHandler()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        var builder = new RequesterBuilder(services);
+        builder.AddHandlers()
+               .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var requester = serviceProvider.GetService<IRequester>();
+        var request = new CreateCustomerCommand { Email = "valid@example.com" }; // Valid email
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe("Customer created");
+    }
 }
 
 /// <summary>
@@ -555,16 +610,15 @@ public class OrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 {
     private readonly List<string> orderList;
 
-    public OrderedBehavior(List<string> orderList)
-    {
-        this.orderList = orderList;
-    }
+    public OrderedBehavior(List<string> orderList) => this.orderList = orderList;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         this.orderList.Add(this.GetType().PrettyName());
         return await next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -576,16 +630,15 @@ public class AnotherOrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
 {
     private readonly List<string> orderList;
 
-    public AnotherOrderedBehavior(List<string> orderList)
-    {
-        this.orderList = orderList;
-    }
+    public AnotherOrderedBehavior(List<string> orderList) => this.orderList = orderList;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         this.orderList.Add(this.GetType().PrettyName());
         return await next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -608,6 +661,8 @@ public class ModifyingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
         }
         return result;
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -620,9 +675,13 @@ public class ProgressReportingBehavior<TRequest, TResponse> : IPipelineBehavior<
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
+        var publishOptions = options as PublishOptions;
         sendOptions?.Progress?.Report(new ProgressReport("MyTestRequest", new[] { "Progress: 50%" }, 50.0));
+        publishOptions?.Progress?.Report(new ProgressReport("MyTestRequest", new[] { "Progress: 50%" }, 50.0));
         return await next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -636,6 +695,8 @@ public class FailingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     {
         throw new Exception("Behavior failure");
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -647,20 +708,25 @@ public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<T
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingBehavior(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingBehavior(List<string> capturedValues) => this.capturedValues = capturedValues;
 
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
         if (sendOptions?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
         {
-            this.capturedValues.Add(userId.ToString());
+            this.capturedValues.Add(userId);
+        }
+
+        var publishOptions = options as PublishOptions;
+        if (publishOptions?.Context?.Properties.TryGetValue("UserId", out var userId2) == true)
+        {
+            this.capturedValues.Add(userId2);
         }
         return await next();
     }
+
+    public bool IsHandlerSpecific() => false;
 }
 
 /// <summary>
@@ -670,10 +736,7 @@ public class ContextCapturingRequest : RequestBase<string>
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingRequest(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingRequest(List<string> capturedValues) => this.capturedValues = capturedValues;
 }
 
 /// <summary>
@@ -683,10 +746,7 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
 {
     private readonly List<string> capturedValues;
 
-    public ContextCapturingRequestHandler(List<string> capturedValues)
-    {
-        this.capturedValues = capturedValues;
-    }
+    public ContextCapturingRequestHandler(List<string> capturedValues) => this.capturedValues = capturedValues;
 
     public Task<Result<string>> HandleAsync(ContextCapturingRequest request, SendOptions options, CancellationToken cancellationToken)
     {
@@ -701,9 +761,7 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
 /// <summary>
 /// A request to test retry behavior.
 /// </summary>
-public class RetryTestRequest : RequestBase<string>
-{
-}
+public class RetryTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler that fails twice before succeeding to test retry behavior.
@@ -732,9 +790,7 @@ public class RetryTestRequestHandler : IRequestHandler<RetryTestRequest, string>
 /// <summary>
 /// A request to test timeout behavior.
 /// </summary>
-public class TimeoutTestRequest : RequestBase<string>
-{
-}
+public class TimeoutTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler that takes too long to complete to test timeout behavior.
@@ -752,9 +808,7 @@ public class TimeoutTestRequestHandler : IRequestHandler<TimeoutTestRequest, str
 /// <summary>
 /// A request to test chaos behavior.
 /// </summary>
-public class ChaosTestRequest : RequestBase<string>
-{
-}
+public class ChaosTestRequest : RequestBase<string>;
 
 /// <summary>
 /// A handler to test chaos behavior with a chaos policy.
@@ -793,5 +847,35 @@ public class SendNotificationCommandHandler : RequestHandlerBase<SendNotificatio
         attempts = 0; // Reset for next test
         await Task.Delay(50, cancellationToken); // Simulate async operation
         return Result<Unit>.Success(Unit.Value);
+    }
+}
+
+/// <summary>
+/// A command to send a notification with validation.
+/// </summary>
+public class CreateCustomerCommand : RequestBase<string>
+{
+    public string Email { get; set; }
+
+    public class Validator : AbstractValidator<CreateCustomerCommand>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
+}
+
+/// <summary>
+/// Handler for the CreateCustomerCommand.
+/// </summary>
+public class CreateCustomerCommandHandler : RequestHandlerBase<CreateCustomerCommand, string>
+{
+    protected override async Task<Result<string>> HandleAsync(CreateCustomerCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(50, cancellationToken); // Simulate async operation
+        return Result<string>.Success("Customer created");
     }
 }

@@ -14,19 +14,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class DatabaseTransactionPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRequest, TResponse>
+public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    IServiceProvider serviceProvider) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly IServiceProvider serviceProvider;
-
-    public DatabaseTransactionPipelineBehavior(
-        ILoggerFactory loggerFactory,
-        IServiceProvider serviceProvider)
-        : base(loggerFactory)
-    {
-        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    }
+    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -47,8 +41,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse> : Pipeline
 
         // Resolve the DbContext dynamically
         var dbContextType = attribute.DbContextType;
-        var dbContext = this.serviceProvider.GetService(dbContextType) as DbContext;
-        if (dbContext == null)
+        if (this.serviceProvider.GetService(dbContextType) is not DbContext dbContext)
         {
             this.Logger.LogError("{LogKey} transaction behavior failed: DbContext type {DbContextType} is not registered in the service provider (type={BehaviorType})",
                 LogKey,
@@ -64,7 +57,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse> : Pipeline
             requestId,
             this.GetType().Name);
 
-        using var transaction = await dbContext.Database.BeginTransactionAsync(attribute.IsolationLevel, cancellationToken);
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(attribute.IsolationLevel, cancellationToken);
 
         try
         {

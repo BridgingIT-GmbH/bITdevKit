@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Application.Requester;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
@@ -546,6 +545,12 @@ public interface IPipelineBehavior<TRequest, TResponse>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A task representing the result of the operation, returning a <see cref="TResponse"/>.</returns>
     Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Indicates whether the behavior should be applied per handler.
+    /// </summary>
+    /// <returns><c>true</c> if the behavior is handler-specific (e.g., retry, timeout); <c>false</c> if it should run once per message (e.g., validation).</returns>
+    bool IsHandlerSpecific();
 }
 
 /// <summary>
@@ -841,12 +846,13 @@ public class RequesterBuilder(IServiceCollection services)
                     if (validatorType?.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(requestType)) == true)
                     {
                         this.validatorTypes.Add(validatorType);
+                        this.services.AddScoped(typeof(IValidator<>).MakeGenericType(requestType), validatorType);
                     }
                 }
             }
         }
 
-        this.services.AddSingleton<IHandlerCache>(this.handlerCache);
+        this.services.AddSingleton(this.handlerCache);
         this.services.AddSingleton(this.policyCache);
         this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
         this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
@@ -908,13 +914,13 @@ public static class ServiceCollectionExtensions
     /// and its dependencies. It returns a <see cref="RequesterBuilder"/> that can be used to configure handlers and behaviors
     /// using a fluent API. The Requester system enables dispatching requests to their corresponding handlers through a pipeline
     /// of behaviors, supporting features like validation, retry, timeout, and chaos injection.
-    /// 
+    ///
     /// To use the Requester system, you must:
     /// 1. Call <see cref="AddRequester"/> to register the core services.
     /// 2. Use <see cref="RequesterBuilder.AddHandlers"/> to scan for and register request handlers.
     /// 3. Optionally, use <see cref="RequesterBuilder.WithBehavior{TBehavior}"/> to add pipeline behaviors.
     /// 4. Build the service provider to resolve the <see cref="IRequester"/> service for dispatching requests.
-    /// 
+    ///
     /// The <see cref="IRequester"/> service is registered with a scoped lifetime, meaning a new instance is created for each
     /// scope (e.g., per HTTP request in ASP.NET Core). Ensure that any dependencies (e.g., logging) are also registered in the
     /// service collection before calling this method.
@@ -932,7 +938,7 @@ public static class ServiceCollectionExtensions
     /// var provider = services.BuildServiceProvider();
     /// var requester = provider.GetRequiredService&lt;IRequester&gt;();
     /// var result = await requester.SendAsync(new MyRequest());
-    /// 
+    ///
     /// // Usage with pipeline behaviors
     /// var services = new ServiceCollection();
     /// services.AddLogging();
@@ -1163,6 +1169,15 @@ public abstract class PipelineBehaviorBase<TRequest, TResponse>(ILoggerFactory l
         Type handlerType,
         Func<Task<TResponse>> next,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Indicates whether the behavior should be applied per handler.
+    /// </summary>
+    /// <returns><c>true</c> if the behavior is handler-specific (e.g., retry, timeout); <c>false</c> if it should run once per message (e.g., validation).</returns>
+    public virtual bool IsHandlerSpecific()
+    {
+        return false;
+    }
 }
 
 public class RetryPipelineBehavior<TRequest, TResponse>(
@@ -1175,7 +1190,8 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
-        return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
+        //return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
+        return true;
     }
 
     protected override async Task<TResponse> Process(
@@ -1203,6 +1219,15 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
                 });
 
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+
+    /// <summary>
+    /// Indicates that this behavior is handler-specific and should run for each handler.
+    /// </summary>
+    /// <returns><c>true</c> to indicate this is a handler-specific behavior.</returns>
+    public override bool IsHandlerSpecific()
+    {
+        return true;
     }
 }
 
@@ -1241,6 +1266,15 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
             });
 
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+
+    /// <summary>
+    /// Indicates that this behavior is handler-specific and should run for each handler.
+    /// </summary>
+    /// <returns><c>true</c> to indicate this is a handler-specific behavior.</returns>
+    public override bool IsHandlerSpecific()
+    {
+        return true;
     }
 }
 
@@ -1282,6 +1316,15 @@ public class ChaosPipelineBehavior<TRequest, TResponse>(
                 .Enabled(policyConfig.Chaos.Enabled));
 
         return await policy.Execute(async context => await next().AnyContext(), cancellationToken).AnyContext();
+    }
+
+    /// <summary>
+    /// Indicates that this behavior is handler-specific and should run for each handler.
+    /// </summary>
+    /// <returns><c>true</c> to indicate this is a handler-specific behavior.</returns>
+    public override bool IsHandlerSpecific()
+    {
+        return true;
     }
 }
 
@@ -1436,12 +1479,115 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
 
         var result = await next(); // Continue pipeline
 
-        this.Logger.LogDebug("{LogKey} cache invalidate behavior (key={CacheKey}*, type={BehaviorType})",
-            LogKey,
-            key,
-            this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} cache invalidate behavior (key={CacheKey}*, type={BehaviorType})", LogKey, key, this.GetType().Name);
         await this.provider.RemoveStartsWithAsync(key, cancellationToken);
 
         return result;
+    }
+}
+
+/// <summary>
+/// A pipeline behavior that validates messages using FluentValidation.
+/// </summary>
+/// <typeparam name="TRequest">The type of the message (request or notification).</typeparam>
+/// <typeparam name="TResponse">The type of the response, implementing <see cref="IResult"/>.</typeparam>
+/// <remarks>
+/// This behavior validates the message using a registered FluentValidation validator before passing it to the next behavior or handler.
+/// If validation fails, it returns a failed result with validation errors wrapped in <see cref="FluentValidationError"/>; otherwise, it proceeds with the pipeline.
+/// It runs once per message (not per handler) to avoid redundant validation.
+/// </remarks>
+/// <example>
+/// <code>
+/// services.AddRequester()
+///     .AddHandlers(new[] { "^System\\..*" })
+///     .WithBehavior<ValidationBehavior<,>>();
+///
+/// public class MyRequest : RequestBase<Unit>
+/// {
+///     public string Name { get; set; }
+///
+///     public class Validator : AbstractValidator<MyRequest>
+///     {
+///         public Validator()
+///         {
+///             RuleFor(x => x.Name).NotEmpty();
+///         }
+///     }
+/// }
+/// </code>
+/// </example>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ValidationPipelineBehavior{TRequest, TResponse}"/> class.
+/// </remarks>
+/// <param name="loggerFactory">The logger factory for creating loggers.</param>
+/// <param name="validators">The collection of validators for the message type.</param>
+public class ValidationPipelineBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, IEnumerable<IValidator<TRequest>> validators = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
+    where TRequest : class
+    where TResponse : IResult
+{
+    private readonly IValidator<TRequest>[] validators = validators?.ToArray();
+
+    /// <summary>
+    /// Indicates whether the behavior can process the specified message.
+    /// </summary>
+    /// <param name="request">The message to process.</param>
+    /// <param name="handlerType">The type of the handler, if applicable.</param>
+    /// <returns><c>true</c> if there are validators to apply; otherwise, <c>false</c>.</returns>
+    protected override bool CanProcess(TRequest request, Type handlerType)
+    {
+        return this.validators.SafeAny();
+    }
+
+    /// <summary>
+    /// Validates the message using FluentValidation and proceeds if validation passes.
+    /// </summary>
+    /// <param name="request">The message to process.</param>
+    /// <param name="handlerType">The type of the handler, if applicable.</param>
+    /// <param name="next">The delegate to invoke the next behavior or handler in the pipeline.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the processing, returning a <see cref="TResponse"/>.</returns>
+    protected override async Task<TResponse> Process(TRequest request, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken)
+    {
+        var context = new ValidationContext<TRequest>(request);
+        var validationResults = await Task.WhenAll(this.validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+        var errors = validationResults
+            .Where(r => !r.IsValid)
+            .Select(r => new FluentValidationError(r)).ToList();
+
+        if (errors.Any())
+        {
+            // Determine the type of TResponse and create the appropriate failure result
+            var responseType = typeof(TResponse);
+            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(IResult<>))
+            {
+                // TResponse is Result<TValue>
+                var valueType = responseType.GetGenericArguments()[0];
+                var resultType = typeof(Result<>).MakeGenericType(valueType);
+                var failureMethod = resultType.GetMethod(nameof(Result<object>.Failure), new[] { typeof(IEnumerable<string>), typeof(IEnumerable<IResultError>) });
+                var failureResult = failureMethod.Invoke(null, new object[] { null, errors });
+
+                return (TResponse)failureResult;
+            }
+            else if (responseType == typeof(IResult))
+            {
+                // TResponse is Result (non-generic, for notifications)
+                return (TResponse)(object)Result.Failure().WithErrors(errors);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unsupported response type '{responseType}' in ValidationBehavior.");
+            }
+        }
+
+        return await next();
+    }
+
+    /// <summary>
+    /// Indicates that this behavior should run once per message, not per handler.
+    /// </summary>
+    /// <returns><c>false</c> to indicate this is not a handler-specific behavior.</returns>
+    public override bool IsHandlerSpecific()
+    {
+        return false;
     }
 }

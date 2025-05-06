@@ -7,11 +7,9 @@ namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
 public class RulesFixture : IDisposable
 {
-    public RulesFixture()
-    {
+    public RulesFixture() =>
         // Reset settings before each test class
         this.ResetSettings();
-    }
 
     public void Dispose()
     {

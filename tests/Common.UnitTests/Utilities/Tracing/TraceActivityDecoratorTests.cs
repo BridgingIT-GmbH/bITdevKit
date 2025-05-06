@@ -13,14 +13,11 @@ using OpenTelemetry.Trace;
 [UnitTest("Common")]
 public class TraceActivityDecoratorTests
 {
-    public TraceActivityDecoratorTests()
-    {
-        Sdk.CreateTracerProviderBuilder()
+    public TraceActivityDecoratorTests() => Sdk.CreateTracerProviderBuilder()
             .AddSource("*")
             .SetResourceBuilder(ResourceBuilder.CreateDefault()
                 .AddService("test", serviceVersion: "1.0"))
             .Build();
-    }
 
     [Fact]
     public void Activity_Created_For_Attribute_Marked_Method()

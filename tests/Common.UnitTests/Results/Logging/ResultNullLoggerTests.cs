@@ -12,10 +12,7 @@ public class ResultNullLoggerTests
 {
     private readonly ResultNullLogger logger;
 
-    public ResultNullLoggerTests()
-    {
-        this.logger = new ResultNullLogger();
-    }
+    public ResultNullLoggerTests() => this.logger = new ResultNullLogger();
 
     [Fact]
     public void Log_WithStringContext_DoesNotThrowException()

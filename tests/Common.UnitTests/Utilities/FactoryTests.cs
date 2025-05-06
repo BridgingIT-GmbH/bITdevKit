@@ -76,10 +76,7 @@ public class FactoryTests
     {
         public Stub() { }
 
-        public Stub(string firstName)
-        {
-            this.FirstName = firstName;
-        }
+        public Stub(string firstName) => this.FirstName = firstName;
 
         public string FirstName { get; set; }
 
@@ -90,10 +87,7 @@ public class FactoryTests
     {
         public Stub() { }
 
-        public Stub(string firstName)
-        {
-            this.FirstName = firstName;
-        }
+        public Stub(string firstName) => this.FirstName = firstName;
 
         public string FirstName { get; set; }
 

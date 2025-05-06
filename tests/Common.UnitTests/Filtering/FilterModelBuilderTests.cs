@@ -14,14 +14,11 @@ public class FilterModelBuilderTests
 {
     private readonly Faker<PersonStub> faker;
 
-    public FilterModelBuilderTests()
-    {
-        this.faker = new Faker<PersonStub>()
+    public FilterModelBuilderTests() => this.faker = new Faker<PersonStub>()
             .RuleFor(p => p.FirstName, f => f.Name.FirstName())
             .RuleFor(p => p.LastName, f => f.Name.LastName())
             .RuleFor(p => p.Age, f => f.Random.Int(18, 99))
             .RuleFor(p => p.Email, f => EmailAddressStub.Create(f.Internet.Email()));
-    }
 
     [Fact]
     public void SetPaging_ValidPageAndPageSize_ShouldSetPagingCorrectly()

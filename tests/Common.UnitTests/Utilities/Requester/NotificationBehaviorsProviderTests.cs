@@ -7,19 +7,19 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
 using Xunit;
 
 /// <summary>
-/// Unit tests for the <see cref="RequestBehaviorsProvider"/> class.
+/// Unit tests for the <see cref="NotificationBehaviorsProvider"/> class.
 /// </summary>
-public class RequestBehaviorsProviderTests
+public class NotificationBehaviorsProviderTests
 {
     /// <summary>
     /// Tests that the provider resolves a single behavior successfully when the behavior type is registered.
@@ -33,16 +33,15 @@ public class RequestBehaviorsProviderTests
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TestBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
 
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
-        var behaviors = sut.GetBehaviors<MyTestRequest, string>(serviceProvider);
+        var behaviors = sut.GetBehaviors<EmailSentNotification>(serviceProvider);
 
         // Assert
         behaviors.ShouldNotBeNull();
         behaviors.Count.ShouldBe(1);
-        behaviors[0].ShouldBeOfType(typeof(TestBehavior<MyTestRequest, IResult<string>>));
-        //behaviors[0].ShouldBeOfType<TestBehavior>(); // How to assert?
+        behaviors[0].ShouldBeOfType(typeof(TestBehavior<EmailSentNotification, IResult>));
     }
 
     /// <summary>
@@ -62,18 +61,16 @@ public class RequestBehaviorsProviderTests
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AnotherTestBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
 
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
-        var behaviors = sut.GetBehaviors<MyTestRequest, string>(serviceProvider);
+        var behaviors = sut.GetBehaviors<EmailSentNotification>(serviceProvider);
 
         // Assert
         behaviors.ShouldNotBeNull();
         behaviors.Count.ShouldBe(2);
-        behaviors[0].ShouldBeOfType(typeof(TestBehavior<MyTestRequest, IResult<string>>));
-        behaviors[1].ShouldBeOfType(typeof(AnotherTestBehavior<MyTestRequest, IResult<string>>));
-        //behaviors[0].ShouldBeOfType<TestBehavior>(); // How to assert?
-        //behaviors[1].ShouldBeOfType<AnotherTestBehavior>(); // How to assert?
+        behaviors[0].ShouldBeOfType(typeof(TestBehavior<EmailSentNotification, IResult>));
+        behaviors[1].ShouldBeOfType(typeof(AnotherTestBehavior<EmailSentNotification, IResult>));
     }
 
     /// <summary>
@@ -85,10 +82,10 @@ public class RequestBehaviorsProviderTests
         // Arrange
         var pipelineBehaviorTypes = new List<Type>();
         var serviceProvider = Substitute.For<IServiceProvider>();
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
-        var behaviors = sut.GetBehaviors<MyTestRequest, string>(serviceProvider);
+        var behaviors = sut.GetBehaviors<EmailSentNotification>(serviceProvider);
 
         // Assert
         behaviors.ShouldNotBeNull();
@@ -96,17 +93,17 @@ public class RequestBehaviorsProviderTests
     }
 
     /// <summary>
-    /// Tests that the provider throws an <see cref="ArgumentNullException"/> when the service provider is null.
+    /// Tests that the provider returns an empty list when the service provider is null.
     /// </summary>
     [Fact]
-    public void GetBehaviors_NullServiceProvider_ReturnsEmptyLis()
+    public void GetBehaviors_NullServiceProvider_ReturnsEmptyList()
     {
         // Arrange
         var pipelineBehaviorTypes = new List<Type>();
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
-        var behaviors = sut.GetBehaviors<MyTestRequest, string>(null);
+        var behaviors = sut.GetBehaviors<EmailSentNotification>(null);
 
         // Assert
         behaviors.ShouldBeEmpty();
@@ -120,7 +117,7 @@ public class RequestBehaviorsProviderTests
     {
         // Arrange & Act
         var exception = Should.Throw<ArgumentNullException>(() =>
-            new RequestBehaviorsProvider(null));
+            new NotificationBehaviorsProvider(null));
 
         // Assert
         exception.ParamName.ShouldBe("pipelineBehaviorTypes");
@@ -138,11 +135,11 @@ public class RequestBehaviorsProviderTests
         // Intentionally not registering TestBehavior in DI container
         var serviceProvider = services.BuildServiceProvider();
 
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
         var exception = Should.Throw<InvalidOperationException>(() =>
-            sut.GetBehaviors<MyTestRequest, string>(serviceProvider));
+            sut.GetBehaviors<EmailSentNotification>(serviceProvider));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -152,7 +149,7 @@ public class RequestBehaviorsProviderTests
     /// Tests that the provider throws an exception when the registered behavior type does not implement the expected interface.
     /// </summary>
     [Fact]
-    public void GetBehaviors_InvalidBehaviorTypeInList_InvalidOperationException()
+    public void GetBehaviors_InvalidBehaviorTypeInList_ThrowsInvalidOperationException()
     {
         // Arrange
         var pipelineBehaviorTypes = new List<Type> { typeof(InvalidBehavior) };
@@ -160,11 +157,11 @@ public class RequestBehaviorsProviderTests
         services.AddScoped<InvalidBehavior>();
         var serviceProvider = services.BuildServiceProvider();
 
-        var sut = new RequestBehaviorsProvider(pipelineBehaviorTypes);
+        var sut = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 
         // Act
         var exception = Should.Throw<InvalidOperationException>(() =>
-            sut.GetBehaviors<MyTestRequest, string>(serviceProvider));
+            sut.GetBehaviors<EmailSentNotification>(serviceProvider));
 
         // Assert
         exception.Message.ShouldNotBeNullOrEmpty();
@@ -172,39 +169,64 @@ public class RequestBehaviorsProviderTests
 }
 
 /// <summary>
-/// A sample behavior for testing purposes.
+/// A sample notification for testing purposes with validation.
 /// </summary>
-public class TestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class
-    where TResponse : IResult
+public class EmailSentNotification : NotificationBase
 {
-    public Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
-    {
-        return next();
-    }
+    public string EmailAddress { get; set; }
 
-    public bool IsHandlerSpecific() => false;
+    public class Validator : AbstractValidator<EmailSentNotification>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.EmailAddress)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
 }
 
 /// <summary>
-/// Another sample behavior for testing purposes.
+/// A sample notification for testing validation failure.
 /// </summary>
-public class AnotherTestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class
-    where TResponse : IResult
+public class InvalidEmailNotification : NotificationBase
 {
-    public Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
-    {
-        return next();
-    }
+    public string EmailAddress { get; set; }
 
-    public bool IsHandlerSpecific() => false;
+    public class Validator : AbstractValidator<InvalidEmailNotification>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.EmailAddress)
+                .NotEmpty().WithMessage("Email cannot be empty.")
+                .EmailAddress().WithMessage("Invalid email format.");
+        }
+    }
 }
 
 /// <summary>
-/// An invalid behavior that does not implement the expected <see cref="IPipelineBehavior{TRequest, TResponse}"/> interface.
+/// A sample notification handler for testing purposes.
 /// </summary>
-public class InvalidBehavior
+public class EmailSentNotificationHandler : NotificationHandlerBase<EmailSentNotification>
 {
-    // Intentionally empty to simulate an invalid behavior type
+    protected override Task<Result> HandleAsync(EmailSentNotification notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Success());
+    }
 }
+
+/// <summary>
+/// A sample notification handler for testing validation failure.
+/// </summary>
+public class InvalidEmailNotificationHandler : NotificationHandlerBase<InvalidEmailNotification>
+{
+    protected override Task<Result> HandleAsync(InvalidEmailNotification notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Success());
+    }
+}
+
+/// <summary>
+/// Another sample notification for testing purposes, used for empty cache scenario.
+/// </summary>
+public class AnotherEmailSentNotification : NotificationBase;

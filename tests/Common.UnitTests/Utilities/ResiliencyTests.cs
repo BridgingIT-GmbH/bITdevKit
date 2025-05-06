@@ -292,7 +292,7 @@ public class ResiliencyTests
 }
 
 // Test implementation for Requester with proper IRequest implementation
-public class TestRequest : ISimpleRequest<string> { }
+public class TestRequest : ISimpleRequest<string>;
 
 public class TestRequestHandler : ISimpleRequestHandler<TestRequest, string>
 {

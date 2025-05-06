@@ -36,7 +36,8 @@ public partial class FileMonitoringLocationScanJob(
         var progressReports = new List<FileScanProgress>();
         var progress = new Progress<FileScanProgress>(report =>
         {
-            progressReports.Add(report); TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
+            progressReports.Add(report);
+            TypedLogger.LogProgress(this.Logger, Constants.LogKey, locationName, report.FilesScanned, report.TotalFiles, report.PercentageComplete, report.ElapsedTime.TotalMilliseconds);
         });
 
         TypedLogger.LogStartScan(this.Logger, Constants.LogKey, locationName, scanOptions);

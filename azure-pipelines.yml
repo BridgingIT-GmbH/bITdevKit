@@ -2,13 +2,13 @@ variables:
   - group: global
   - group: NuGetOrg
   - name: dotnetVersion
-    value: '9.0.201'
+    value: '9.0.203'
   - name: solution
     value: "**/*.sln"
   - name: buildConfiguration
     value: 'Release'
   - name: publishableBranches
-    value: 'main,features/dotnet9'  # Comma-separated list of branch names to publish packages from
+    value: 'main,features/dotnet9'  # Comma-separated list of branch names to publish packages for
 
 trigger:
   tags:

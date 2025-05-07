@@ -12,7 +12,7 @@ public interface IJobService
     /// </summary>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of job information objects.</returns>
-    Task<IEnumerable<JobInfo>> GetJobsAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<JobInfo>> GetJobsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves details for a specific job identified by its name and group.
@@ -21,7 +21,7 @@ public interface IJobService
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The job information, or null if not found.</returns>
-    Task<JobInfo> GetJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
+    Task<JobInfo> GetJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves execution history for a specific job with optional filters.
@@ -38,7 +38,7 @@ public interface IJobService
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of job run records.</returns>
     Task<IEnumerable<JobRun>> GetJobRunsAsync(
-        string jobName, string jobGroup,
+        string jobName, string jobGroup = null,
         DateTimeOffset? startDate = null, DateTimeOffset? endDate = null,
         string status = null, int? priority = null, string instanceName = null,
         string resultContains = null, int? take = null,
@@ -54,9 +54,9 @@ public interface IJobService
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Statistics including total runs, success/failure counts, and runtime metrics.</returns>
     Task<JobRunStats> GetJobRunStatsAsync(
-        string jobName, string jobGroup,
-        DateTimeOffset? startDate, DateTimeOffset? endDate,
-        CancellationToken cancellationToken);
+        string jobName, string jobGroup = null,
+        DateTimeOffset? startDate = null, DateTimeOffset? endDate = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves all triggers associated with a specific job.
@@ -65,14 +65,14 @@ public interface IJobService
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of trigger information objects.</returns>
-    Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
+    Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Saves or updates a job run record in the store.
     /// </summary>
     /// <param name="jobRun">The job run record to save.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken);
+    Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Triggers a job to run immediately with optional data.
@@ -81,7 +81,7 @@ public interface IJobService
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="data">Optional data to pass to the job execution.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task TriggerJobAsync(string jobName, string jobGroup, IDictionary<string, object> data, CancellationToken cancellationToken);
+    Task TriggerJobAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
@@ -90,7 +90,7 @@ public interface IJobService
     /// <param name="jobName">Specifies the name of the job to be interrupted.</param>
     /// <param name="jobGroup">Indicates the group to which the job belongs.</param>
     /// <param name="cancellationToken">Allows the operation to be canceled if needed.</param>
-    Task InterruptJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
+    Task InterruptJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Pauses the execution of a specific job.
@@ -98,7 +98,7 @@ public interface IJobService
     /// <param name="jobName">The name of the job to pause.</param>
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task PauseJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
+    Task PauseJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Resumes the execution of a paused job.
@@ -106,7 +106,7 @@ public interface IJobService
     /// <param name="jobName">The name of the job to resume.</param>
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task ResumeJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken);
+    Task ResumeJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Purges job run history older than a specified date.
@@ -115,5 +115,5 @@ public interface IJobService
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="olderThan">Delete runs older than this date.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken);
+    Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset? olderThan = null, CancellationToken cancellationToken = default);
 }

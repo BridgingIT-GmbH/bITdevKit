@@ -598,7 +598,7 @@ public class RequesterTests
             .AddHandler<ProcessDataRequest<UserData>, string, GenericDataProcessor<UserData>>() // add the generic handler
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var request = new ProcessDataRequest<UserData> { Data = data };
@@ -630,7 +630,8 @@ public class RequesterTests
                 typeArguments: [typeof(OtherUserData)])
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        //var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var otherData = new OtherUserData { UserId = "user456", Name = "John Doe" };

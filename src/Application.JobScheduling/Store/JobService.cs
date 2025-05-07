@@ -22,7 +22,7 @@ public partial class JobService(
     /// </summary>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of job information objects with latest run and stats.</returns>
-    public async Task<IEnumerable<JobInfo>> GetJobsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<JobInfo>> GetJobsAsync(CancellationToken cancellationToken = default)
     {
         TypedLogger.LogGetJobs(this.logger, Constants.LogKey);
 
@@ -72,7 +72,7 @@ public partial class JobService(
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The job information with latest run and stats, or null if not found.</returns>
-    public async Task<JobInfo> GetJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    public async Task<JobInfo> GetJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -131,7 +131,7 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of job run records from the database.</returns>
     public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
-        string jobName, string jobGroup,
+        string jobName, string jobGroup = null,
         DateTimeOffset? startDate = null, DateTimeOffset? endDate = null,
         string status = null, int? priority = null, string instanceName = null,
         string resultContains = null, int? take = null,
@@ -168,9 +168,9 @@ public partial class JobService(
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Statistics including total runs, success/failure counts, and runtime metrics.</returns>
     public Task<JobRunStats> GetJobRunStatsAsync(
-        string jobName, string jobGroup,
-        DateTimeOffset? startDate, DateTimeOffset? endDate,
-        CancellationToken cancellationToken)
+        string jobName, string jobGroup = null,
+        DateTimeOffset? startDate = null, DateTimeOffset? endDate = null,
+        CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -187,7 +187,7 @@ public partial class JobService(
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of trigger information objects.</returns>
-    public async Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TriggerInfo>> GetTriggersAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -213,7 +213,7 @@ public partial class JobService(
     /// </summary>
     /// <param name="jobRun">The job run record to save.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
+    public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(jobRun, nameof(jobRun));
         TypedLogger.LogSaveJobRun(this.logger, Constants.LogKey, jobRun?.JobName, jobRun?.JobGroup, jobRun?.Id);
@@ -228,7 +228,7 @@ public partial class JobService(
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="data">Optional data to pass to the job execution.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    public async Task TriggerJobAsync(string jobName, string jobGroup, IDictionary<string, object> data, CancellationToken cancellationToken)
+    public async Task TriggerJobAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -248,7 +248,7 @@ public partial class JobService(
     /// <param name="jobName">Specifies the name of the job to be interrupted.</param>
     /// <param name="jobGroup">Indicates the group to which the job belongs.</param>
     /// <param name="cancellationToken">Allows the operation to be canceled if needed.</param>
-    public async Task InterruptJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    public async Task InterruptJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -266,7 +266,7 @@ public partial class JobService(
     /// <param name="jobName">The name of the job to pause.</param>
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    public async Task PauseJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    public async Task PauseJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -282,7 +282,7 @@ public partial class JobService(
     /// <param name="jobName">The name of the job to resume.</param>
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    public async Task ResumeJobAsync(string jobName, string jobGroup, CancellationToken cancellationToken)
+    public async Task ResumeJobAsync(string jobName, string jobGroup = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
@@ -299,16 +299,17 @@ public partial class JobService(
     /// <param name="jobGroup">The group the job belongs to.</param>
     /// <param name="olderThan">Delete runs older than this date.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    public Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
+    public Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset? olderThan = null, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
         jobGroup ??= "DEFAULT";
-        TypedLogger.LogPurgeJobRuns(this.logger, Constants.LogKey, jobName, jobGroup, olderThan);
+        olderThan ??= DateTimeOffset.UtcNow;
+        TypedLogger.LogPurgeJobRuns(this.logger, Constants.LogKey, jobName, jobGroup, olderThan.Value);
 
-        return provider.PurgeJobRunsAsync(jobName, jobGroup, olderThan, cancellationToken);
+        return provider.PurgeJobRunsAsync(jobName, jobGroup, olderThan.Value, cancellationToken);
     }
 
-    private async Task<string> GetJobStatusAsync(JobKey jobKey, IScheduler scheduler, CancellationToken cancellationToken)
+    private async Task<string> GetJobStatusAsync(JobKey jobKey, IScheduler scheduler, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(jobKey, nameof(jobKey));
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);

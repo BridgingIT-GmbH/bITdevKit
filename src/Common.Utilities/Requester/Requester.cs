@@ -1025,8 +1025,9 @@ public class RequesterBuilder
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
 
-        var genericHandlers = new List<(Type HandlerType, Type RequestTypeDefinition, Type ValueType)>();
-        foreach (var assembly in assemblies)
+        // Use ConcurrentBag for thread-safe collection of generic handlers
+        var genericHandlers = new ConcurrentBag<(Type HandlerType, Type RequestTypeDefinition, Type ValueType)>();
+        Parallel.ForEach(assemblies, assembly =>
         {
             var types = this.SafeGetTypes(assembly);
             foreach (var type in types)
@@ -1049,14 +1050,13 @@ public class RequesterBuilder
 
                         if (type.IsGenericTypeDefinition)
                         {
-                            // Get the generic type definition of the request type
                             var requestTypeDefinition = requestType.GetGenericTypeDefinition();
                             genericHandlers.Add((type, requestTypeDefinition, valueType));
                         }
                     }
                 }
             }
-        }
+        });
 
         foreach (var (handlerType, requestTypeDefinition, valueType) in genericHandlers)
         {
@@ -1071,35 +1071,43 @@ public class RequesterBuilder
             var isClassConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0;
             var hasDefaultConstructorConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0;
 
-            var typeArguments = new List<Type>();
-            foreach (var assembly in assemblies)
+            // Use ConcurrentBag for thread-safe collection of type arguments
+            var typeArguments = new ConcurrentBag<Type>();
+            Parallel.ForEach(assemblies, assembly =>
             {
                 var types = this.SafeGetTypes(assembly);
                 foreach (var candidateType in types)
                 {
+                    // Pre-filter types to reduce expensive reflection checks
                     if (candidateType.IsAbstract || candidateType.IsInterface || candidateType.IsGenericTypeDefinition)
+                    {
+                        continue;
+                    }
+
+                    // Fast checks first: class constraint and value type
+                    if (isClassConstraint && candidateType.IsValueType)
                     {
                         continue;
                     }
 
                     var satisfiesConstraints = true;
 
-                    if (isClassConstraint && candidateType.IsValueType)
-                    {
-                        satisfiesConstraints = false;
-                    }
-
+                    // Check for parameterless constructor if required
                     if (hasDefaultConstructorConstraint && !candidateType.GetConstructors().Any(c => c.GetParameters().Length == 0))
                     {
                         satisfiesConstraints = false;
                     }
 
-                    foreach (var constraint in constraints)
+                    // Check interface/base class constraints
+                    if (satisfiesConstraints)
                     {
-                        if (!constraint.IsAssignableFrom(candidateType))
+                        foreach (var constraint in constraints)
                         {
-                            satisfiesConstraints = false;
-                            break;
+                            if (!constraint.IsAssignableFrom(candidateType))
+                            {
+                                satisfiesConstraints = false;
+                                break;
+                            }
                         }
                     }
 
@@ -1108,7 +1116,7 @@ public class RequesterBuilder
                         typeArguments.Add(candidateType);
                     }
                 }
-            }
+            });
 
             if (!typeArguments.Any())
             {

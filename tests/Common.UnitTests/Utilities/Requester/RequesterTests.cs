@@ -659,8 +659,8 @@ public class RequesterTests
             .AddGenericHandlers() // Automatically discover and register generic handlers
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        //var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>();
-        //var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>();
+        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>();
+        var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>();
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var otherData = new OtherUserData { UserId = "user456", Name = "Jane Doe" };

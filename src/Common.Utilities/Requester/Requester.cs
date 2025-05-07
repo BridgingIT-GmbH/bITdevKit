@@ -389,7 +389,15 @@ public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandle
     {
         if (!this.handlerCache.TryGetValue(typeof(IRequestHandler<TRequest, TValue>), out var handlerType))
         {
-            throw new RequesterException($"No handler found for request type {typeof(TRequest).Name}");
+            try
+            {
+                // current fallback for open generic requests/handlers which are not registered in the handlercache (due to 'Arity of open generic service type' issue)
+                return serviceProvider.GetRequiredService<IRequestHandler<TRequest, TValue>>();
+            }
+            catch (Exception ex)
+            {
+                throw new RequesterException($"No handler found for request type {typeof(TRequest).Name}", ex);
+            }
         }
 
         return (IRequestHandler<TRequest, TValue>)serviceProvider.GetRequiredService(handlerType);
@@ -834,7 +842,6 @@ public class RequesterBuilder(IServiceCollection services)
                         Chaos = type.GetCustomAttribute<HandlerChaosAttribute>(),
                         CircuitBreaker = type.GetCustomAttribute<HandlerCircuitBreakerAttribute>(),
                         CacheInvalidate = type.GetCustomAttribute<HandlerCacheInvalidateAttribute>(),
-                        //DatabaseTransaction = type.GetCustomAttribute<HandlerDatabaseTransactionAttribute>(),
                     });
 
                     if (!type.IsAbstract) // Only register concrete (non-abstract) types in the DI container
@@ -863,6 +870,43 @@ public class RequesterBuilder(IServiceCollection services)
             sp.GetRequiredService<IRequestBehaviorsProvider>(),
             sp.GetRequiredService<IHandlerCache>(),
             this.pipelineBehaviorTypes));
+
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a specific handler for a specific request type, usefull for generic handlers.
+    /// </summary>
+    public RequesterBuilder AddHandler<TRequest, TValue, THandler>()
+        where TRequest : IRequest<TValue>
+        where THandler : class, IRequestHandler<TRequest, TValue>
+    {
+        var handlerInterface = typeof(IRequestHandler<TRequest, TValue>);
+        var handlerType = typeof(THandler);
+
+        this.services.AddScoped(handlerInterface, handlerType);
+
+        if (!handlerType.IsGenericTypeDefinition)
+        {
+            this.handlerCache.TryAdd(handlerInterface, handlerType);
+        }
+
+        this.policyCache.TryAdd(handlerType, new PolicyConfig
+        {
+            Retry = handlerType.GetCustomAttribute<HandlerRetryAttribute>(),
+            Timeout = handlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
+            Chaos = handlerType.GetCustomAttribute<HandlerChaosAttribute>(),
+            CircuitBreaker = handlerType.GetCustomAttribute<HandlerCircuitBreakerAttribute>(),
+            CacheInvalidate = handlerType.GetCustomAttribute<HandlerCacheInvalidateAttribute>(),
+        });
+
+        var requestType = typeof(TRequest);
+        var validatorType = requestType.GetNestedType("Validator");
+        if (validatorType?.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(requestType)) == true)
+        {
+            this.validatorTypes.Add(validatorType);
+            this.services.AddScoped(typeof(IValidator<>).MakeGenericType(requestType), validatorType);
+        }
 
         return this;
     }

@@ -566,6 +566,33 @@ public class RequesterTests
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe("Customer created");
     }
+
+    /// <summary>
+    /// Tests that a generic request with valid data is successfully processed.
+    /// </summary>
+    [Fact]
+    public async Task GenericRequest_SuccessfulProcessing_Succeeds()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester()
+            .AddHandlers()
+            .AddHandler<ProcessDataRequest<UserData>, string, GenericDataProcessor<UserData>>() // add the generic handler
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        var requester = serviceProvider.GetService<IRequester>();
+        var data = new UserData { UserId = "user123", Name = "John Doe" };
+        var request = new ProcessDataRequest<UserData> { Data = data };
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe("Processed: user123 (UserData)");
+    }
 }
 
 /// <summary>
@@ -877,5 +904,51 @@ public class CreateCustomerCommandHandler : RequestHandlerBase<CreateCustomerCom
     {
         await Task.Delay(50, cancellationToken); // Simulate async operation
         return Result<string>.Success("Customer created");
+    }
+}
+
+public interface IDataItem
+{
+    string GetIdentifier();
+}
+
+public class UserData : IDataItem
+{
+    public string UserId { get; set; }
+    public string Name { get; set; }
+
+    public string GetIdentifier() => this.UserId;
+}
+
+public class ProcessDataRequest<TData> : RequestBase<string>
+    where TData : class, IDataItem
+{
+    public TData Data { get; set; }
+
+    public class Validator : AbstractValidator<ProcessDataRequest<TData>>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Data).NotNull().WithMessage("Data cannot be null.");
+            RuleFor(x => x.Data.GetIdentifier()).NotEmpty().WithMessage("Data identifier cannot be empty.");
+        }
+    }
+}
+
+[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+public class GenericDataProcessor<TData> : RequestHandlerBase<ProcessDataRequest<TData>, string>
+    where TData : class, IDataItem
+{
+    protected override async Task<Result<string>> HandleAsync(ProcessDataRequest<TData> request, SendOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(50, cancellationToken); // Simulate async processing
+        var identifier = request.Data.GetIdentifier();
+        if (string.IsNullOrEmpty(identifier))
+        {
+            return Result<string>.Failure().WithMessage("Data identifier is invalid.");
+        }
+
+        var result = $"Processed: {identifier} ({typeof(TData).Name})";
+        return Result<string>.Success(result);
     }
 }

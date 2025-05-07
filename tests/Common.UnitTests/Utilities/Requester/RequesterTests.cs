@@ -620,11 +620,11 @@ public class RequesterTests
         services.AddLogging();
         services.AddRequester()
             //.AddHandlers()
-            .AddGenericHandlers(
+            .AddGenericHandler(
                 genericHandlerType: typeof(GenericDataProcessor<>),
                 genericRequestType: typeof(ProcessDataRequest<>),
                 typeArguments: [typeof(UserData)])
-            .AddGenericHandlers(
+            .AddGenericHandler(
                 genericHandlerType: typeof(GenericDataProcessor<>),
                 genericRequestType: typeof(ProcessDataRequest<>),
                 typeArguments: [typeof(OtherUserData)])
@@ -634,7 +634,36 @@ public class RequesterTests
         var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
-        var otherData = new OtherUserData { UserId = "user456", Name = "John Doe" };
+        var otherData = new OtherUserData { UserId = "user456", Name = "Jane Doe" };
+        var request = new ProcessDataRequest<UserData> { Data = data };
+        var otherRequest = new ProcessDataRequest<OtherUserData> { Data = otherData };
+
+        // Act
+        var result = await requester.SendAsync(request);
+        var otherResult = await requester.SendAsync(otherRequest);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe("Processed: user123 (UserData)");
+        otherResult.IsSuccess.ShouldBeTrue();
+        otherResult.Value.ShouldBe("Processed: user456 (OtherUserData)");
+    }
+
+    [Fact]
+    public async Task GenericOpenRequest2_SuccessfulProcessing_Succeeds()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester()
+            .AddGenericHandlers() // Automatically discover and register generic handlers
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        //var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>();
+        //var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>();
+        var requester = serviceProvider.GetService<IRequester>();
+        var data = new UserData { UserId = "user123", Name = "John Doe" };
+        var otherData = new OtherUserData { UserId = "user456", Name = "Jane Doe" };
         var request = new ProcessDataRequest<UserData> { Data = data };
         var otherRequest = new ProcessDataRequest<OtherUserData> { Data = otherData };
 

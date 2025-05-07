@@ -936,7 +936,7 @@ public class RequesterBuilder
     /// <param name="genericRequestType">The open generic request type (e.g., typeof(ProcessDataRequest<>))</param>
     /// <param name="typeArguments">The list of type arguments to create closed generic handlers (e.g., new[] { typeof(UserData), typeof(string) })</param>
     /// <returns>The <see cref="RequesterBuilder"/> for fluent chaining.</returns>
-    public RequesterBuilder AddGenericHandlers(Type genericHandlerType, Type genericRequestType, Type[] typeArguments)
+    public RequesterBuilder AddGenericHandler(Type genericHandlerType, Type genericRequestType, Type[] typeArguments)
     {
         if (genericHandlerType == null || !genericHandlerType.IsGenericTypeDefinition)
         {
@@ -1006,6 +1006,139 @@ public class RequesterBuilder
             {
                 this.validatorTypes.Add(validatorType);
                 this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedRequestType), validatorType);
+            }
+        }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Automatically discovers and registers generic handlers for generic requests.
+    /// Uses reflection to find open generic handlers, their corresponding generic requests,
+    /// and type arguments based on the generic constraints defined on the handler.
+    /// </summary>
+    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> for fluent chaining.</returns>
+    public RequesterBuilder AddGenericHandlers(IEnumerable<string> blacklistPatterns = null)
+    {
+        blacklistPatterns ??= Blacklists.ApplicationDependencies;
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
+
+        var genericHandlers = new List<(Type HandlerType, Type RequestTypeDefinition, Type ValueType)>();
+        foreach (var assembly in assemblies)
+        {
+            var types = this.SafeGetTypes(assembly);
+            foreach (var type in types)
+            {
+                if (type.IsAbstract)
+                {
+                    continue;
+                }
+
+                var handlerInterfaces = type.GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>))
+                    .ToList();
+
+                if (handlerInterfaces.Any())
+                {
+                    foreach (var handlerInterface in handlerInterfaces)
+                    {
+                        var requestType = handlerInterface.GetGenericArguments()[0];
+                        var valueType = handlerInterface.GetGenericArguments()[1];
+
+                        if (type.IsGenericTypeDefinition)
+                        {
+                            // Get the generic type definition of the request type
+                            var requestTypeDefinition = requestType.GetGenericTypeDefinition();
+                            genericHandlers.Add((type, requestTypeDefinition, valueType));
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (var (handlerType, requestTypeDefinition, valueType) in genericHandlers)
+        {
+            var genericTypeParameters = handlerType.GetGenericArguments();
+            if (genericTypeParameters.Length != 1)
+            {
+                throw new InvalidOperationException($"Handler type {handlerType.Name} must have exactly one generic type parameter for automatic discovery.");
+            }
+
+            var typeParameter = genericTypeParameters[0];
+            var constraints = typeParameter.GetGenericParameterConstraints();
+            var isClassConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0;
+            var hasDefaultConstructorConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0;
+
+            var typeArguments = new List<Type>();
+            foreach (var assembly in assemblies)
+            {
+                var types = this.SafeGetTypes(assembly);
+                foreach (var candidateType in types)
+                {
+                    if (candidateType.IsAbstract || candidateType.IsInterface || candidateType.IsGenericTypeDefinition)
+                    {
+                        continue;
+                    }
+
+                    var satisfiesConstraints = true;
+
+                    if (isClassConstraint && candidateType.IsValueType)
+                    {
+                        satisfiesConstraints = false;
+                    }
+
+                    if (hasDefaultConstructorConstraint && !candidateType.GetConstructors().Any(c => c.GetParameters().Length == 0))
+                    {
+                        satisfiesConstraints = false;
+                    }
+
+                    foreach (var constraint in constraints)
+                    {
+                        if (!constraint.IsAssignableFrom(candidateType))
+                        {
+                            satisfiesConstraints = false;
+                            break;
+                        }
+                    }
+
+                    if (satisfiesConstraints)
+                    {
+                        typeArguments.Add(candidateType);
+                    }
+                }
+            }
+
+            if (!typeArguments.Any())
+            {
+                throw new InvalidOperationException($"No concrete types found that satisfy the constraints for generic handler {handlerType.Name}.");
+            }
+
+            foreach (var typeArg in typeArguments)
+            {
+                var closedRequestType = requestTypeDefinition.MakeGenericType(typeArg);
+                var closedHandlerType = handlerType.MakeGenericType(typeArg);
+                var closedHandlerInterface = typeof(IRequestHandler<,>).MakeGenericType(closedRequestType, valueType);
+
+                this.services.AddScoped(closedHandlerInterface, closedHandlerType);
+                this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
+
+                this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
+                {
+                    Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
+                    Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
+                    Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),
+                    CircuitBreaker = closedHandlerType.GetCustomAttribute<HandlerCircuitBreakerAttribute>(),
+                    CacheInvalidate = closedHandlerType.GetCustomAttribute<HandlerCacheInvalidateAttribute>(),
+                });
+
+                var validatorType = closedRequestType.GetNestedType("Validator");
+                if (validatorType?.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(closedRequestType)) == true)
+                {
+                    this.validatorTypes.Add(validatorType);
+                    this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedRequestType), validatorType);
+                }
             }
         }
 

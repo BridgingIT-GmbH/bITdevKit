@@ -586,11 +586,9 @@ public class RequesterTests
         result.Value.ShouldBe("Customer created");
     }
 
-    /// <summary>
-    /// Tests that a generic request with valid data is successfully processed.
-    /// </summary>
+    // Closed Generic Type: A closed generic type is a fully specified type where all generic type parameters have been bound to concrete types
     [Fact]
-    public async Task GenericRequest_SuccessfulProcessing_Succeeds()
+    public async Task GenericClosedRequest_SuccessfulProcessing_Succeeds()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -613,8 +611,9 @@ public class RequesterTests
         result.Value.ShouldBe("Processed: user123 (UserData)");
     }
 
+    // Open Generic Type: An open generic type is a type definition with unbound type parameters.
     [Fact]
-    public async Task GenericRequest2_SuccessfulProcessing_Succeeds()
+    public async Task GenericOpenRequest_SuccessfulProcessing_Succeeds()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -625,19 +624,28 @@ public class RequesterTests
                 genericHandlerType: typeof(GenericDataProcessor<>),
                 genericRequestType: typeof(ProcessDataRequest<>),
                 typeArguments: [typeof(UserData)])
+            .AddGenericHandlers(
+                genericHandlerType: typeof(GenericDataProcessor<>),
+                genericRequestType: typeof(ProcessDataRequest<>),
+                typeArguments: [typeof(OtherUserData)])
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        //var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
+        var otherData = new OtherUserData { UserId = "user456", Name = "John Doe" };
         var request = new ProcessDataRequest<UserData> { Data = data };
+        var otherRequest = new ProcessDataRequest<OtherUserData> { Data = otherData };
 
         // Act
         var result = await requester.SendAsync(request);
+        var otherResult = await requester.SendAsync(otherRequest);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe("Processed: user123 (UserData)");
+        otherResult.IsSuccess.ShouldBeTrue();
+        otherResult.Value.ShouldBe("Processed: user456 (OtherUserData)");
     }
 }
 
@@ -962,7 +970,13 @@ public class UserData : IDataItem
 {
     public string UserId { get; set; }
     public string Name { get; set; }
+    public string GetIdentifier() => this.UserId;
+}
 
+public class OtherUserData : IDataItem
+{
+    public string UserId { get; set; }
+    public string Name { get; set; }
     public string GetIdentifier() => this.UserId;
 }
 

@@ -322,18 +322,31 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
     public IReadOnlyList<INotificationHandler<TNotification>> GetHandlers<TNotification>(IServiceProvider serviceProvider)
         where TNotification : INotification
     {
-        if (!this.handlerCache.TryGetValue(typeof(INotificationHandler<TNotification>), out var handlerType))
+        var handlerInterface = typeof(INotificationHandler<TNotification>);
+        var requestType = typeof(TNotification);
+
+        // Only use the handlerCache for non-generic request types
+        if (!requestType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out var handlerType))
         {
-            throw new NotifierException($"No handlers found for notification type {typeof(TNotification).Name}");
+            try
+            {
+                return serviceProvider.GetServices(handlerType).Cast<INotificationHandler<TNotification>>().ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
+            }
         }
 
-        var handlers = serviceProvider.GetServices(handlerType).Cast<INotificationHandler<TNotification>>().ToList();
-        if (handlers.Count == 0)
+        // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
+        try
         {
-            throw new NotifierException($"No handlers found for notification type {typeof(TNotification).Name}");
+            return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
         }
-
-        return handlers.AsReadOnly();
+        catch (Exception ex)
+        {
+            throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
+        }
     }
 }
 

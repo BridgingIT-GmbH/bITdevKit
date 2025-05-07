@@ -612,6 +612,33 @@ public class RequesterTests
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe("Processed: user123 (UserData)");
     }
+
+    [Fact]
+    public async Task GenericRequest2_SuccessfulProcessing_Succeeds()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester()
+            //.AddHandlers()
+            .AddGenericHandlers(
+                genericHandlerType: typeof(GenericDataProcessor<>),
+                genericRequestType: typeof(ProcessDataRequest<>),
+                typeArguments: [typeof(UserData)])
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+        var serviceProvider = services.BuildServiceProvider();
+        var handler = serviceProvider.GetService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        var requester = serviceProvider.GetService<IRequester>();
+        var data = new UserData { UserId = "user123", Name = "John Doe" };
+        var request = new ProcessDataRequest<UserData> { Data = data };
+
+        // Act
+        var result = await requester.SendAsync(request);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe("Processed: user123 (UserData)");
+    }
 }
 
 /// <summary>

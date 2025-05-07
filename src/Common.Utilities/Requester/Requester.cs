@@ -929,6 +929,90 @@ public class RequesterBuilder
     }
 
     /// <summary>
+    /// Adds generic handlers for the specified generic request type, using the provided type arguments.
+    /// The value type (TValue) is inferred from the generic handler's interface.
+    /// </summary>
+    /// <param name="genericHandlerType">The open generic handler type (e.g., typeof(GenericDataProcessor<>))</param>
+    /// <param name="genericRequestType">The open generic request type (e.g., typeof(ProcessDataRequest<>))</param>
+    /// <param name="typeArguments">The list of type arguments to create closed generic handlers (e.g., new[] { typeof(UserData), typeof(string) })</param>
+    /// <returns>The <see cref="RequesterBuilder"/> for fluent chaining.</returns>
+    public RequesterBuilder AddGenericHandlers(Type genericHandlerType, Type genericRequestType, Type[] typeArguments)
+    {
+        if (genericHandlerType == null || !genericHandlerType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException("Generic handler type must be an open generic type definition.", nameof(genericHandlerType));
+        }
+
+        if (genericRequestType == null || !genericRequestType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException("Generic request type must be an open generic type definition.", nameof(genericRequestType));
+        }
+
+        if (typeArguments == null || !typeArguments.Any())
+        {
+            throw new ArgumentException("At least one type argument must be provided.", nameof(typeArguments));
+        }
+
+        // Validate that the number of type arguments matches the generic parameters of the request and handler types
+        var requestTypeParams = genericRequestType.GetGenericArguments().Length;
+        var handlerTypeParams = genericHandlerType.GetGenericArguments().Length;
+        if (requestTypeParams != handlerTypeParams || typeArguments.Length != requestTypeParams)
+        {
+            throw new ArgumentException($"The number of type arguments ({typeArguments.Length}) must match the number of generic parameters in the request type ({requestTypeParams}) and handler type ({handlerTypeParams}).");
+        }
+
+        // Determine the value type (TValue) from the generic handler's interface
+        var handlerInterface = genericHandlerType.GetInterfaces()
+            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>));
+        if (handlerInterface == null)
+        {
+            throw new ArgumentException($"Generic handler type {genericHandlerType.Name} does not implement IRequestHandler<,>.", nameof(genericHandlerType));
+        }
+
+        // The value type is the second generic argument of the IRequestHandler<,> interface (TValue)
+        var valueType = handlerInterface.GetGenericArguments()[1];
+
+        // Register closed generic handlers for each type argument
+        foreach (var typeArg in typeArguments)
+        {
+            // Create the closed generic request type (e.g., ProcessDataRequest<UserData>)
+            var closedRequestType = genericRequestType.MakeGenericType(typeArg);
+
+            // Create the closed generic handler type (e.g., GenericDataProcessor<UserData>)
+            var closedHandlerType = genericHandlerType.MakeGenericType(typeArg);
+
+            // Create the closed generic interface (e.g., IRequestHandler<ProcessDataRequest<UserData>, string>)
+            var closedHandlerInterface = typeof(IRequestHandler<,>).MakeGenericType(closedRequestType, valueType);
+
+            // Register in DI
+            this.services.AddScoped(closedHandlerInterface, closedHandlerType);
+
+            // Register in handlerCache (since this is a closed generic type)
+            this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
+
+            // Register policies for the closed handler type
+            this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
+            {
+                Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
+                Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
+                Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),
+                CircuitBreaker = closedHandlerType.GetCustomAttribute<HandlerCircuitBreakerAttribute>(),
+                CacheInvalidate = closedHandlerType.GetCustomAttribute<HandlerCacheInvalidateAttribute>(),
+            });
+
+            // Register validator if present
+            var validatorType = closedRequestType.GetNestedType("Validator");
+            if (validatorType?.GetInterfaces().Any(i => i == typeof(IValidator<>).MakeGenericType(closedRequestType)) == true)
+            {
+                this.validatorTypes.Add(validatorType);
+                this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedRequestType), validatorType);
+            }
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Adds a pipeline behavior to the request processing pipeline.
     /// </summary>
     /// <param name="behaviorType">The open generic type of the behavior (e.g., typeof(TestBehavior<,>)).</param>

@@ -279,7 +279,7 @@ public class FilterModelBuilderTests
                     .AddFilter(loc => loc.PostalCode, FilterOperator.StartsWith, "100")) // Any location with City = New York or ZipCode starts with "100"
             .AddCustomFilter(FilterCustomType.FullTextSearch)
             .AddParameter("searchTerm", "John")
-            .AddParameter("fields", new[] { "FirstName", "LastName" }).Done()
+            .AddParameter("fields", ["FirstName", "LastName"]).Done()
             .AddOrdering(p => p.LastName, OrderDirection.Descending) // Order by LastName Descending
             .AddOrdering(p => p.FirstName, OrderDirection.Ascending) // Then order by FirstName Ascending
             .AddInclude(p => p.Locations)

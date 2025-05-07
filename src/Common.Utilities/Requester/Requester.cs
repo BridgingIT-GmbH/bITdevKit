@@ -387,20 +387,31 @@ public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandle
     public IRequestHandler<TRequest, TValue> GetHandler<TRequest, TValue>(IServiceProvider serviceProvider)
         where TRequest : IRequest<TValue>
     {
-        if (!this.handlerCache.TryGetValue(typeof(IRequestHandler<TRequest, TValue>), out var handlerType))
+        var handlerInterface = typeof(IRequestHandler<TRequest, TValue>);
+        var requestType = typeof(TRequest);
+
+        // Only use the handlerCache for non-generic request types
+        if (!requestType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out var handlerType))
         {
             try
             {
-                // current fallback for open generic requests/handlers which are not registered in the handlercache (due to 'Arity of open generic service type' issue)
-                return serviceProvider.GetRequiredService<IRequestHandler<TRequest, TValue>>();
+                return (IRequestHandler<TRequest, TValue>)serviceProvider.GetRequiredService(handlerType);
             }
             catch (Exception ex)
             {
-                throw new RequesterException($"No handler found for request type {typeof(TRequest).Name}", ex);
+                throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
             }
         }
 
-        return (IRequestHandler<TRequest, TValue>)serviceProvider.GetRequiredService(handlerType);
+        // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
+        try
+        {
+            return serviceProvider.GetRequiredService<IRequestHandler<TRequest, TValue>>();
+        }
+        catch (Exception ex)
+        {
+            throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
+        }
     }
 }
 
@@ -802,13 +813,31 @@ public partial class Requester(
 /// Initializes a new instance of the <see cref="RequesterBuilder"/> class.
 /// </remarks>
 /// <param name="services">The service collection for dependency injection registration.</param>
-public class RequesterBuilder(IServiceCollection services)
+public class RequesterBuilder
 {
-    private readonly IServiceCollection services = services ?? throw new ArgumentNullException(nameof(services));
+    private readonly IServiceCollection services;
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
     private readonly IHandlerCache handlerCache = new HandlerCache();
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = [];
+
+    public RequesterBuilder(IServiceCollection services)
+    {
+        this.services = services ?? throw new ArgumentNullException(nameof(services));
+
+        // Register the core services needed for Requester to function
+        this.services.AddSingleton(this.handlerCache);
+        this.services.AddSingleton(this.policyCache);
+        this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
+        this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
+        this.services.AddScoped<IRequester>(sp => new Requester(
+            sp,
+            sp.GetRequiredService<ILogger<Requester>>(),
+            sp.GetRequiredService<IRequestHandlerProvider>(),
+            sp.GetRequiredService<IRequestBehaviorsProvider>(),
+            sp.GetRequiredService<IHandlerCache>(),
+            this.pipelineBehaviorTypes));
+    }
 
     /// <summary>
     /// Adds handlers, validators, and providers by scanning all loaded assemblies, excluding those matching blacklist patterns.
@@ -858,18 +887,6 @@ public class RequesterBuilder(IServiceCollection services)
                 }
             }
         }
-
-        this.services.AddSingleton(this.handlerCache);
-        this.services.AddSingleton(this.policyCache);
-        this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
-        this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
-        this.services.AddScoped<IRequester>(sp => new Requester(
-            sp,
-            sp.GetRequiredService<ILogger<Requester>>(),
-            sp.GetRequiredService<IRequestHandlerProvider>(),
-            sp.GetRequiredService<IRequestBehaviorsProvider>(),
-            sp.GetRequiredService<IHandlerCache>(),
-            this.pipelineBehaviorTypes));
 
         return this;
     }

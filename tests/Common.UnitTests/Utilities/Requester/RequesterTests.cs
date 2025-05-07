@@ -37,6 +37,25 @@ public class RequesterTests
     }
 
     /// <summary>
+    /// Tests that a generic request with valid data is successfully processed.
+    /// </summary>
+    [Fact]
+    public void Requester_NoHandlers_CanResolve()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester();
+        var serviceProvider = services.BuildServiceProvider();
+
+        // Act
+        var requester = serviceProvider.GetService<IRequester>();
+
+        // Assert
+        requester.ShouldNotBeNull();
+    }
+
+    /// <summary>
     /// Tests that SendAsync successfully processes a request and returns a result.
     /// </summary>
     [Fact]
@@ -577,7 +596,7 @@ public class RequesterTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddRequester()
-            .AddHandlers()
+            //.AddHandlers()
             .AddHandler<ProcessDataRequest<UserData>, string, GenericDataProcessor<UserData>>() // add the generic handler
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();

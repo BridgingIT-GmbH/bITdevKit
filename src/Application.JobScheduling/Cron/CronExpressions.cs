@@ -9,6 +9,8 @@ public struct CronExpressions
 // https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontriggers.html#example-cron-expressions
 // http://www.cronmaker.com/?1
 {
+    public const string Never = "0 0 0 ? * * 2099";
+
     public const string EverySecond = "0/1 * * * * ?";
 
     public const string Every5Seconds = "0/5 * * * * ?";

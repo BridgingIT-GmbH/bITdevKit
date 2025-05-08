@@ -34,7 +34,7 @@ public class NotificationHandlerProviderTests
         handlerCache.TryAdd(typeof(INotificationHandler<EmailSentNotification>), handlerType);
 
         var services = new ServiceCollection();
-        services.AddScoped<EmailSentNotificationHandler>();
+        services.AddScoped<INotificationHandler<EmailSentNotification>, EmailSentNotificationHandler>();
         var serviceProvider = services.BuildServiceProvider();
 
         var sut = new NotificationHandlerProvider(handlerCache);
@@ -137,7 +137,7 @@ public class NotificationHandlerProviderTests
         handlerCache.TryAdd(typeof(INotificationHandler<EmailSentNotification>), handlerType);
 
         var services = new ServiceCollection();
-        services.AddScoped<EmailSentNotificationHandler>();
+        services.AddScoped<INotificationHandler<EmailSentNotification>, EmailSentNotificationHandler>();
         var serviceProvider = services.BuildServiceProvider();
 
         var sut = new NotificationHandlerProvider(handlerCache);
@@ -166,7 +166,7 @@ public class NotificationHandlerProviderTests
     /// Tests that the provider throws an exception when the cached handler type does not implement the expected interface.
     /// </summary>
     [Fact]
-    public void GetHandlers_InvalidHandlerTypeInCache_ThrowsInvalidCastException()
+    public void GetHandlers_InvalidHandlerTypeInCache_ThrowsNotifierException()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -180,7 +180,7 @@ public class NotificationHandlerProviderTests
         var sut = new NotificationHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<InvalidCastException>(() =>
+        var exception = Should.Throw<NotifierException>(() =>
             sut.GetHandlers<EmailSentNotification>(serviceProvider));
 
         // Assert

@@ -69,7 +69,7 @@ public class RequestHandlerProviderTests
     /// Tests that the provider throws an exception when the handler type is in the cache but not registered in the DI container.
     /// </summary>
     [Fact]
-    public void GetHandler_HandlerNotInDIContainer_ThrowsInvalidOperationException()
+    public void GetHandler_HandlerNotInDIContainer_ThrowsRequesterException()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -83,7 +83,7 @@ public class RequestHandlerProviderTests
         var sut = new RequestHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<InvalidOperationException>(() =>
+        var exception = Should.Throw<RequesterException>(() =>
             sut.GetHandler<MyTestRequest, string>(serviceProvider));
 
         // Assert
@@ -178,7 +178,7 @@ public class RequestHandlerProviderTests
     /// Tests that the provider throws an exception when the cached handler type does not implement the expected interface.
     /// </summary>
     [Fact]
-    public void GetHandler_InvalidHandlerTypeInCache_ThrowsInvalidCastException()
+    public void GetHandler_InvalidHandlerTypeInCache_ThrowsRequesterException()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -192,7 +192,7 @@ public class RequestHandlerProviderTests
         var sut = new RequestHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<InvalidCastException>(() =>
+        var exception = Should.Throw<RequesterException>(() =>
             sut.GetHandler<MyTestRequest, string>(serviceProvider));
 
         // Assert

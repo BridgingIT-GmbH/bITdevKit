@@ -323,29 +323,41 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         where TNotification : INotification
     {
         var handlerInterface = typeof(INotificationHandler<TNotification>);
-        var requestType = typeof(TNotification);
+        var notifierType = typeof(TNotification);
 
         // Only use the handlerCache for non-generic request types
-        if (!requestType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out var handlerType))
+        if (!notifierType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out var handlerType))
         {
             try
             {
-                return serviceProvider.GetServices(handlerType).Cast<INotificationHandler<TNotification>>().ToList();
+                var handlers = serviceProvider.GetServices(handlerInterface).Cast<INotificationHandler<TNotification>>().ToList();
+                if(handlers.Count == 0)
+                {
+                    throw new NotifierException($"No handlers found for notification type {notifierType.Name}");
+                }
+
+                return handlers;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not NotifierException)
             {
-                throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
+                throw new NotifierException($"No handlers found for notification type {notifierType.Name}", ex);
             }
         }
 
         // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
         try
         {
-            return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
+            var handlers = serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
+            if (handlers.Count == 0)
+            {
+                throw new NotifierException($"No handlers found for notification type {notifierType.Name}");
+            }
+
+            return handlers;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not NotifierException)
         {
-            throw new RequesterException($"No handler found for request type {requestType.Name}", ex);
+            throw new NotifierException($"No handlers found for notification type {notifierType.Name}", ex);
         }
     }
 }

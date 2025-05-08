@@ -1120,3 +1120,105 @@ The `Requester` and `Notifier` systems share similarities with the popular **Med
   - **Built-in Behaviors**: `Requester` and `Notifier` provide pre-built behaviors (e.g., retry, timeout, chaos injection) via attributes, whereas MediatR requires custom implementation of such features.
   - **Result Type**: `Requester` uses `Result<TValue>` and `Notifier` uses `Result` for consistent error handling, while MediatR allows handlers to return any type, leaving error handling to the user.
   - **Metadata**: `RequestBase<TValue>` and `NotificationBase` include built-in metadata (`RequestId`, `NotificationId`, timestamps), which MediatR lacks by default.
+
+# Appendix C: Generic Handlers in Requester and Notifier
+
+## Overview
+
+Generic handlers in the `Requester` and `Notifier` systems enable handling of generic request/notification types (e.g., `GenericRequest<TData>`, `GenericNotification<TData>`) with a single handler, reducing code duplication. They are registered using `AddGenericHandlers`, which discovers open generic handlers, validates constraints, and registers closed handlers (e.g., `GenericDataProcessor<UserData>`).
+
+## Key Features
+- **Automatic Discovery**: `AddGenericHandlers` scans assemblies for open generic handlers and discovers type arguments based on constraints.
+- **Constraint Validation**: Ensures type arguments meet constraints (e.g., `where TData : class, IDataItem`).
+
+## Setup with `AddGenericHandlers`
+
+### Requester
+```csharp
+services.AddRequester()
+    .AddHandlers()
+    .AddGenericHandlers()
+    .WithBehavior<ValidationPipelineBehavior<,>>();
+```
+
+### Notifier
+```csharp
+services.AddNotifier()
+    .AddHandlers()
+    .AddGenericHandlers()
+    .WithBehavior<ValidationPipelineBehavior<,>>();
+```
+
+`AddGenericHandlers` discovers open generic handlers (e.g., `GenericDataProcessor<TData>`), finds type arguments (e.g., `UserData`, `OrderData`) that satisfy constraints, and registers closed handlers.
+
+## Examples
+
+### Generic Request Handler (Requester)
+```csharp
+public class ProcessDataRequest<TData> : RequestBase<string>
+    where TData : class, IDataItem
+{
+    public TData Data { get; set; }
+
+    public class Validator : AbstractValidator<ProcessDataRequest<TData>>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Data).NotNull();
+        }
+    }
+}
+
+public class GenericDataProcessor<TData> : RequestHandlerBase<ProcessDataRequest<TData>, string>
+    where TData : class, IDataItem
+{
+    protected override async Task<Result<string>> HandleAsync(
+        ProcessDataRequest<TData> request,
+        SendOptions options,
+        CancellationToken cancellationToken)
+    {
+        return Result<string>.Success($"Processed: {request.Data.Id}");
+    }
+}
+
+public interface IDataItem { string Id { get; set; } }
+public class UserData : IDataItem { public string Id { get; set; } public string Name { get; set; } }
+
+// Dispatching
+var userRequest = new ProcessDataRequest<UserData> { Data = new UserData { Id = "user123" } };
+var result = await requester.SendAsync(userRequest); // "Processed: user123"
+```
+
+### Generic Notification Handler (Notifier)
+```csharp
+public class GenericNotification<TData> : NotificationBase
+    where TData : class, IDataItem
+{
+    public TData Data { get; set; }
+
+    public class Validator : AbstractValidator<GenericNotification<TData>>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Data).NotNull();
+        }
+    }
+}
+
+public class GenericNotificationHandler<TData> : NotificationHandlerBase<GenericNotification<TData>>
+    where TData : class, IDataItem
+{
+    protected override async Task<Result> HandleAsync(
+        GenericNotification<TData> notification,
+        PublishOptions options,
+        CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"Handled: {notification.Data.Id}");
+        return Result.Success();
+    }
+}
+
+// Dispatching
+var userNotification = new GenericNotification<UserData> { Data = new UserData { Id = "user123" } };
+var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: user123"
+```

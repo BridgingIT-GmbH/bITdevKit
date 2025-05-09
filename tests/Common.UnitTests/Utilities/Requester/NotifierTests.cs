@@ -151,7 +151,7 @@ public class NotifierTests
     /// Tests that PublishAsync throws a NotifierException when no handler is found.
     /// </summary>
     [Fact]
-    public async Task PublishAsync_NoHandlerFound_ThrowsNotifierException()
+    public async Task PublishAsync_NoHandlerFound_ReturnsSuccess()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -163,9 +163,10 @@ public class NotifierTests
         var notification = new AnotherEmailSentNotification(); // No handler registered for this notification type
 
         // Act & Assert
-        var exception = await Should.ThrowAsync<NotifierException>(async () =>
-            await notifier.PublishAsync(notification));
-        //exception.Message.ShouldBe("No handlers found for notification type AnotherEmailSentNotification");
+        var result = await notifier.PublishAsync(notification);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
     }
 
     /// <summary>

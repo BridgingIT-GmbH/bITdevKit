@@ -52,7 +52,7 @@ public class NotificationHandlerProviderTests
     /// Tests that the provider throws a <see cref="NotifierException"/> when the handler type is not in the cache.
     /// </summary>
     [Fact]
-    public void GetHandlers_UnregisteredHandler_ThrowsNotifierException()
+    public void GetHandlers_UnregisteredHandler_ReturnsNoHandlers()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -60,18 +60,18 @@ public class NotificationHandlerProviderTests
         var sut = new NotificationHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<NotifierException>(() =>
-            sut.GetHandlers<EmailSentNotification>(serviceProvider));
+        var handlers = sut.GetHandlers<EmailSentNotification>(serviceProvider);
 
         // Assert
-        exception.Message.ShouldNotBeNullOrEmpty();
+        handlers.ShouldNotBeNull();
+        handlers.Count.ShouldBe(0);
     }
 
     /// <summary>
     /// Tests that the provider throws an exception when the handler type is in the cache but not registered in the DI container.
     /// </summary>
     [Fact]
-    public void GetHandlers_HandlerNotInDIContainer_ThrowsInvalidOperationException()
+    public void GetHandlers_HandlerNotInDIContainer_ReturnsNoHandlers()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -85,18 +85,18 @@ public class NotificationHandlerProviderTests
         var sut = new NotificationHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<NotifierException>(() =>
-            sut.GetHandlers<EmailSentNotification>(serviceProvider));
+        var handlers = sut.GetHandlers<EmailSentNotification>(serviceProvider);
 
         // Assert
-        exception.Message.ShouldNotBeNullOrEmpty();
+        handlers.ShouldNotBeNull();
+        handlers.Count.ShouldBe(0);
     }
 
     /// <summary>
     /// Tests that the provider throws an exception when the handler cache is empty.
     /// </summary>
     [Fact]
-    public void GetHandlers_EmptyHandlerCache_ThrowsNotifierException()
+    public void GetHandlers_EmptyHandlerCache_ReturnsNoHandlers()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -104,11 +104,11 @@ public class NotificationHandlerProviderTests
         var sut = new NotificationHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<NotifierException>(() =>
-            sut.GetHandlers<AnotherEmailSentNotification>(serviceProvider));
+        var handlers = sut.GetHandlers<AnotherEmailSentNotification>(serviceProvider);
 
         // Assert
-        exception.Message.ShouldNotBeNullOrEmpty();
+        handlers.ShouldNotBeNull();
+        handlers.Count.ShouldBe(0);
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ public class NotificationHandlerProviderTests
     /// Tests that the provider throws an exception when the cached handler type does not implement the expected interface.
     /// </summary>
     [Fact]
-    public void GetHandlers_InvalidHandlerTypeInCache_ThrowsNotifierException()
+    public void GetHandlers_InvalidHandlerTypeInCache_ReturnsNoHandlers()
     {
         // Arrange
         var handlerCache = new HandlerCache();
@@ -180,10 +180,10 @@ public class NotificationHandlerProviderTests
         var sut = new NotificationHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<NotifierException>(() =>
-            sut.GetHandlers<EmailSentNotification>(serviceProvider));
+        var handlers = sut.GetHandlers<EmailSentNotification>(serviceProvider);
 
         // Assert
-        exception.Message.ShouldNotBeNullOrEmpty();
+        handlers.ShouldNotBeNull();
+        handlers.Count.ShouldBe(0);
     }
 }

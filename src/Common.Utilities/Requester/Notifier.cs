@@ -330,15 +330,13 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         {
             try
             {
-                var handlers = serviceProvider.GetServices(handlerInterface).Cast<INotificationHandler<TNotification>>().ToList();
-                if(handlers.Count == 0)
-                {
-                    throw new NotifierException($"No handlers found for notification type {notifierType.Name}");
-                }
-
-                return handlers;
+                return serviceProvider.GetServices(handlerInterface).Cast<INotificationHandler<TNotification>>().ToList();
             }
-            catch (Exception ex) when (ex is not NotifierException)
+            catch (InvalidOperationException)
+            {
+                return [];
+            }
+            catch (Exception ex)
             {
                 throw new NotifierException($"No handlers found for notification type {notifierType.Name}", ex);
             }
@@ -347,15 +345,13 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
         try
         {
-            var handlers = serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
-            if (handlers.Count == 0)
-            {
-                throw new NotifierException($"No handlers found for notification type {notifierType.Name}");
-            }
-
-            return handlers;
+            return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
         }
-        catch (Exception ex) when (ex is not NotifierException)
+        catch (InvalidOperationException)
+        {
+            return [];
+        }
+        catch (Exception ex) 
         {
             throw new NotifierException($"No handlers found for notification type {notifierType.Name}", ex);
         }

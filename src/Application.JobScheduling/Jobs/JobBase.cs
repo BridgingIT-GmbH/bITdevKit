@@ -26,17 +26,22 @@ public abstract partial class JobBase : IJob
     public Dictionary<string, string> Data { get; private set; }
 
     /// <summary>
-    /// Represents the date and time when the last processing occurred. It includes the time zone offset from UTC.
+    /// Represents the date and time when the last processing occurred. 
     /// </summary>
-    public DateTimeOffset LastProcessedDate { get; set; }
+    public DateTimeOffset RunDate { get; set; }
 
     /// <summary>
-    /// Represents the total elapsed time when the last processing occurred. It can be both retrieved and set.
+    /// Represents the date and time when the last processing was successful.
+    /// </summary>
+    public DateTimeOffset RunDateSuccess { get; set; }
+
+    /// <summary>
+    /// Represents the total elapsed time when the last processing occurred. 
     /// </summary>
     public long ElapsedMilliseconds { get; set; }
 
     /// <summary>
-    /// Represents the status of a job when the last processing occurred.
+    /// Represents the status when the last processing occurred. 
     /// </summary>
     public JobStatus Status { get; set; }
 
@@ -109,9 +114,14 @@ public abstract partial class JobBase : IJob
                 this.ErrorMessage = errorMessage;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.LastProcessedDate), out var processed))
+            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunDate), out var runDate))
             {
-                this.LastProcessedDate = processed;
+                this.RunDate = runDate;
+            }
+
+            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunDateSuccess), out var runDateSuccess))
+            {
+                this.RunDateSuccess = runDateSuccess;
             }
 
             if (context.JobDetail.JobDataMap.TryGetLong(nameof(this.ElapsedMilliseconds), out var elapsed))
@@ -128,7 +138,11 @@ public abstract partial class JobBase : IJob
         {
             this.Status = status;
             this.ErrorMessage = errorMessage;
-            this.LastProcessedDate = DateTimeOffset.UtcNow;
+            this.RunDate = DateTimeOffset.UtcNow;
+            if (status == JobStatus.Success)
+            {
+                this.RunDateSuccess = DateTimeOffset.UtcNow;
+            }
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
             context.JobDetail.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
@@ -136,7 +150,8 @@ public abstract partial class JobBase : IJob
             context.JobDetail.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
             context.JobDetail.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
             context.JobDetail.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
-            context.JobDetail.JobDataMap.Put(nameof(this.LastProcessedDate), this.LastProcessedDate);
+            context.JobDetail.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
+            context.JobDetail.JobDataMap.Put(nameof(this.RunDateSuccess), this.RunDateSuccess);
             context.JobDetail.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
 
             foreach (var key in this.Data.Keys)

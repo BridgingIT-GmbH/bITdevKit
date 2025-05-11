@@ -126,6 +126,7 @@ public static class FileStorageProviderCompressionExtensions
     /// <remarks>
     /// This method uses SharpCompress to read compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
+    /// Uses <see cref="DecryptionError"/> if password is wrong or decryption fails.
     /// </remarks>
     public static async Task<Result<Stream>> ReadCompressedFile(
         this IFileStorageProvider provider,
@@ -186,10 +187,26 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             var decompressedStream = new MemoryStream();
-            await using (var entryStream = entry.OpenEntryStream())
+            try
             {
-                await entryStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
+                await using (var entryStream = entry.OpenEntryStream())
+                {
+                    await entryStream.CopyToAsync(decompressedStream, options.BufferSize, cancellationToken);
+                }
             }
+            catch (CryptographicException cryptoEx)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new DecryptionError("Failed to decrypt archive entry: possibly due to an incorrect password.", path, cryptoEx))
+                    .WithMessage($"Could not extract entry from archive '{path}': decryption failed (possibly incorrect password).");
+            }
+            catch (InvalidOperationException invOpEx)
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new DecryptionError("Failed to extract archive entry: possibly due to an incorrect password or format.", path, invOpEx))
+                    .WithMessage($"Could not extract entry from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+            }
+
             decompressedStream.Position = 0;
             var length = decompressedStream.Length;
             ReportProgress(progress, path, length, 1);
@@ -204,6 +221,18 @@ public static class FileStorageProviderCompressionExtensions
             return Result<Stream>.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled during decompression"))
                 .WithMessage($"Cancelled decompressing file at '{path}'");
+        }
+        catch (CryptographicException cryptoEx)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new DecryptionError("Failed to decrypt archive: possibly due to an incorrect password.", path, cryptoEx))
+                .WithMessage($"Could not extract entry from archive '{path}': decryption failed (possibly incorrect password).");
+        }
+        catch (InvalidOperationException invOpEx)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new DecryptionError("Failed to extract archive: possibly due to an incorrect password or format.", path, invOpEx))
+                .WithMessage($"Could not extract entry from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
         }
         catch (Exception ex)
         {
@@ -413,6 +442,7 @@ public static class FileStorageProviderCompressionExtensions
     /// <remarks>
     /// This method uses SharpCompress to read and extract compressed files with password protection compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
+    /// Uses <see cref="DecryptionError"/> if password is wrong or decryption fails.
     /// </remarks>
     public static async Task<Result> UncompressAsync(
             this IFileStorageProvider provider,
@@ -570,6 +600,24 @@ public static class FileStorageProviderCompressionExtensions
         }
     }
 
+    /// <summary>
+    /// Reads a compressed file from the storage provider and uncompresses it to a readonly dictionary of <see cref="string"/> (file path) and <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="provider">The file storage provider to use for reading the compressed file.</param>
+    /// <param name="path">The path of the compressed file to uncompress (e.g., "input.zip").</param>
+    /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
+    /// <param name="progress">An optional progress reporter for tracking the uncompression process.</param>
+    /// <param name="options">Optional configuration settings for uncompression. If null, default settings are used.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="Result{IReadOnlyDictionary{string, MemoryStream}}"/> containing the dictionary on success, or an error on failure.<br/>
+    /// The dictionary maps archive entry paths (including names) to their decompressed <see cref="MemoryStream"/>s.
+    /// </returns>
+    /// <remarks>
+    /// This method does NOT write to storage, it only returns the contents in-memory as a readonly dictionary.
+    /// The caller is responsible for disposing the returned MemoryStreams.
+    /// Uses <see cref="DecryptionError"/> if password is wrong or decryption fails.
+    /// </remarks>
     public static async Task<Result<IReadOnlyDictionary<string, MemoryStream>>> UncompressToStreamAsync(
             this IFileStorageProvider provider,
             string path,
@@ -728,6 +776,7 @@ public static class FileStorageProviderCompressionExtensions
     /// This method uses SharpCompress to read archive entries compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. Returns all file names at once without pagination.
     /// Only file entries are included (directories are excluded).
+    /// Uses <see cref="DecryptionError"/> if password is wrong or decryption fails.
     /// </remarks>
     public static async Task<Result<IEnumerable<string>>> ListCompressedFilesAsync(
         this IFileStorageProvider provider,
@@ -789,10 +838,25 @@ public static class FileStorageProviderCompressionExtensions
                     .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
             }
 
-            var fileEntries = archive.Entries
-                .Where(e => !e.IsDirectory)
-                .Select(e => e.Key)
-                .ToList();
+            List<string> fileEntries;
+            try
+            {
+                fileEntries = [.. archive.Entries
+                    .Where(e => !e.IsDirectory)
+                    .Select(e => e.Key)];
+            }
+            catch (CryptographicException cryptoEx)
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithError(new DecryptionError("Failed to decrypt archive: possibly due to an incorrect password.", path, cryptoEx))
+                    .WithMessage($"Could not list files in archive '{path}': decryption failed (possibly incorrect password).");
+            }
+            catch (InvalidOperationException invOpEx)
+            {
+                return Result<IEnumerable<string>>.Failure()
+                    .WithError(new DecryptionError("Failed to extract archive: possibly due to an incorrect password or format.", path, invOpEx))
+                    .WithMessage($"Could not list files in archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+            }
 
             if (!fileEntries.Any())
             {
@@ -812,6 +876,18 @@ public static class FileStorageProviderCompressionExtensions
             return Result<IEnumerable<string>>.Failure()
                 .WithError(new OperationCancelledError("Operation cancelled during archive listing"))
                 .WithMessage($"Cancelled listing files in archive at '{path}'");
+        }
+        catch (CryptographicException cryptoEx)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new DecryptionError("Failed to decrypt archive: possibly due to an incorrect password.", path, cryptoEx))
+                .WithMessage($"Could not list files in archive '{path}': decryption failed (possibly incorrect password).");
+        }
+        catch (InvalidOperationException invOpEx)
+        {
+            return Result<IEnumerable<string>>.Failure()
+                .WithError(new DecryptionError("Failed to extract archive: possibly due to an incorrect password or format.", path, invOpEx))
+                .WithMessage($"Could not list files in archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
         }
         catch (Exception ex)
         {

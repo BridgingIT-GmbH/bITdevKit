@@ -260,6 +260,12 @@ public class LocalFileStorageProviderTests(ITestOutputHelper output, TestEnviron
     }
 
     [Fact]
+    public override async Task CompressUncompress_ToStream_Success()
+    {
+        await base.CompressUncompress_ToStream_Success();
+    }
+
+    [Fact]
     public override async Task Compress_NonExistentDirectory_Fails()
     {
         await base.Compress_NonExistentDirectory_Fails();

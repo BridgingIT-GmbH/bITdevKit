@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -414,13 +415,13 @@ public static class FileStorageProviderCompressionExtensions
     /// Supported formats: Zip, Tar, GZip. It supports Deflate64 decompression and traditional PKZIP or AES encryption, depending on the original file's configuration.
     /// </remarks>
     public static async Task<Result> UncompressAsync(
-        this IFileStorageProvider provider,
-        string path,
-        string outputPath,
-        string password = null,
-        IProgress<FileProgress> progress = null,
-        FileCompressionOptions options = null,
-        CancellationToken cancellationToken = default)
+            this IFileStorageProvider provider,
+            string path,
+            string outputPath,
+            string password = null,
+            IProgress<FileProgress> progress = null,
+            FileCompressionOptions options = null,
+            CancellationToken cancellationToken = default)
     {
         if (provider == null)
         {
@@ -508,19 +509,34 @@ public static class FileStorageProviderCompressionExtensions
                     }
                 }
 
-                await using var memoryStream = new MemoryStream();
-                await using (var entryStream = entry.OpenEntryStream())
+                try
                 {
-                    await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
+                    await using var memoryStream = new MemoryStream();
+                    await using (var entryStream = entry.OpenEntryStream())
+                    {
+                        await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
+                    }
+                    memoryStream.Position = 0;
+
+                    var length = entry.Size;
+                    await provider.WriteFileAsync(entryPath, memoryStream, progress, cancellationToken);
+
+                    totalBytes += length;
+                    filesProcessed++;
+                    ReportProgress(progress, entryPath, totalBytes, filesProcessed);
                 }
-                memoryStream.Position = 0;
-
-                var length = entry.Size;
-                await provider.WriteFileAsync(entryPath, memoryStream, progress, cancellationToken);
-
-                totalBytes += length;
-                filesProcessed++;
-                ReportProgress(progress, entryPath, totalBytes, filesProcessed);
+                catch (CryptographicException cryptoEx)
+                {
+                    return Result.Failure()
+                        .WithError(new DecryptionError("Failed to decrypt archive entry: possibly due to an incorrect password.", entryPath, cryptoEx))
+                        .WithMessage($"Could not extract '{entryPath}' from archive '{path}': decryption failed (possibly incorrect password).");
+                }
+                catch (InvalidOperationException invOpEx)
+                {
+                    return Result.Failure()
+                        .WithError(new DecryptionError("Failed to extract archive entry: possibly due to an incorrect password or format.", entryPath, invOpEx))
+                        .WithMessage($"Could not extract '{entryPath}' from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+                }
             }
 
             return Result.Success()
@@ -534,11 +550,167 @@ public static class FileStorageProviderCompressionExtensions
                 .WithError(new OperationCancelledError("Operation cancelled during file uncompression"))
                 .WithMessage($"Cancelled uncompressing file at '{path}' to '{outputPath}'");
         }
+        catch (CryptographicException cryptoEx)
+        {
+            return Result.Failure()
+                .WithError(new DecryptionError("Failed to decrypt archive: possibly due to an incorrect password.", path, cryptoEx))
+                .WithMessage($"Could not extract entries from archive '{path}': decryption failed (possibly incorrect password).");
+        }
+        catch (InvalidOperationException invOpEx)
+        {
+            return Result.Failure()
+                .WithError(new DecryptionError("Failed to extract archive: possibly due to an incorrect password or format.", path, invOpEx))
+                .WithMessage($"Could not extract entries from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+        }
         catch (Exception ex)
         {
             return Result.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage($"Unexpected error uncompressing file at '{path}' to '{outputPath}'");
+        }
+    }
+
+    public static async Task<Result<IReadOnlyDictionary<string, MemoryStream>>> UncompressToStreamAsync(
+            this IFileStorageProvider provider,
+            string path,
+            string password = null,
+            IProgress<FileProgress> progress = null,
+            FileCompressionOptions options = null,
+            CancellationToken cancellationToken = default)
+    {
+        if (provider == null)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new ArgumentError("Provider cannot be null"))
+                .WithMessage("Invalid provider provided for uncompressing file to dictionary");
+        }
+
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided for uncompressing file to dictionary");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled uncompressing file at '{path}' to dictionary");
+        }
+
+        var existsResult = await provider.FileExistsAsync(path, cancellationToken: cancellationToken);
+        if (existsResult.IsFailure)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithErrors(existsResult.Errors)
+                .WithMessages(existsResult.Messages);
+        }
+
+        options ??= FileCompressionOptions.Default;
+
+        try
+        {
+            var readResult = await provider.ReadFileAsync(path, progress, cancellationToken);
+            if (readResult.IsFailure)
+            {
+                return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                    .WithErrors(readResult.Errors)
+                    .WithMessages(readResult.Messages);
+            }
+
+            await using var zipStream = readResult.Value;
+            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+
+            // Validate the archive type matches the expected type
+            if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
+            {
+                return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                    .WithError(new FileSystemError($"Archive type mismatch: expected {options.ArchiveType}, but found {archive.Type}", path))
+                    .WithMessage($"Failed to read compressed file at '{path}' due to archive type mismatch. Please specify the correct archive format with the options (zip/gzip/7zip)");
+            }
+
+            long totalBytes = 0;
+            long filesProcessed = 0;
+            var dict = new Dictionary<string, MemoryStream>();
+
+            foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    foreach (var ms in dict.Values)
+                        ms.Dispose();
+
+                    return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                        .WithError(new OperationCancelledError("Operation cancelled during file uncompression"))
+                        .WithMessage($"Cancelled uncompressing file at '{path}' to dictionary after processing {filesProcessed} files");
+                }
+
+                var entryPath = entry.Key.Replace("\\", "/");
+                var memoryStream = new MemoryStream();
+                try
+                {
+                    await using (var entryStream = entry.OpenEntryStream())
+                    {
+                        await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
+                    }
+                    memoryStream.Position = 0;
+                    dict[entryPath] = memoryStream;
+
+                    totalBytes += entry.Size;
+                    filesProcessed++;
+                    ReportProgress(progress, entryPath, totalBytes, filesProcessed);
+                }
+                catch (CryptographicException cryptoEx)
+                {
+                    foreach (var ms in dict.Values)
+                        ms.Dispose();
+
+                    return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                        .WithError(new DecryptionError("Failed to decrypt archive entry: possibly due to an incorrect password.", entryPath, cryptoEx))
+                        .WithMessage($"Could not extract '{entryPath}' from archive '{path}': decryption failed (possibly incorrect password).");
+                }
+                catch (InvalidOperationException invOpEx)
+                {
+                    foreach (var ms in dict.Values)
+                        ms.Dispose();
+
+                    return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                        .WithError(new DecryptionError("Failed to extract archive entry: possibly due to an incorrect password or format.", entryPath, invOpEx))
+                        .WithMessage($"Could not extract '{entryPath}' from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+                }
+            }
+
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Success(
+                    new ReadOnlyDictionary<string, MemoryStream>(dict)
+                )
+                .WithMessage(!string.IsNullOrEmpty(password)
+                    ? $"Password-protected uncompressed file at '{path}' to memory dictionary"
+                    : $"Uncompressed file at '{path}' to memory dictionary");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during file uncompression"))
+                .WithMessage($"Cancelled uncompressing file at '{path}' to dictionary");
+        }
+        catch (CryptographicException cryptoEx)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new DecryptionError("Failed to decrypt archive: possibly due to an incorrect password.", path, cryptoEx))
+                .WithMessage($"Could not extract entries from archive '{path}': decryption failed (possibly incorrect password).");
+        }
+        catch (InvalidOperationException invOpEx)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new DecryptionError("Failed to extract archive: possibly due to an incorrect password or format.", path, invOpEx))
+                .WithMessage($"Could not extract entries from archive '{path}': extraction failed (possibly incorrect password or unsupported encryption).");
+        }
+        catch (Exception ex)
+        {
+            return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error uncompressing file at '{path}' to dictionary");
         }
     }
 

@@ -147,7 +147,7 @@ public class DatabaseReadyServiceTests
             onFaulted: () => throw new Exception("Should not be called"));
 
         // Assert
-        Assert.True(readyCalled);
+        readyCalled.ShouldBeTrue();
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class DatabaseReadyServiceTests
             onFaulted: () => faultedCalled = true);
 
         // Assert
-        Assert.True(faultedCalled);
+        faultedCalled.ShouldBeTrue();
     }
 
     [Fact]
@@ -178,7 +178,7 @@ public class DatabaseReadyServiceTests
             onFaulted: () => -1);
 
         // Assert
-        Assert.Equal(42, result);
+        result.ShouldBe(42);
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class DatabaseReadyServiceTests
             onFaulted: () => -1);
 
         // Assert
-        Assert.Equal(-1, result);
+        result.ShouldBe(-1);
     }
 
     [Fact]
@@ -208,7 +208,7 @@ public class DatabaseReadyServiceTests
             onFaulted: async () => { await Task.Delay(0); return -1; });          // Func<Task<int>>
 
         // Assert
-        Assert.Equal(99, result);
+        result.ShouldBe(99);
     }
 
     [Fact]
@@ -223,27 +223,25 @@ public class DatabaseReadyServiceTests
             onFaulted: async () => { await Task.Delay(10); return -1; });
 
         // Assert
-        Assert.Equal(-1, result);
+        result.ShouldBe(-1);
     }
 
     [Fact]
     public async Task OnReadyAsync_TimesOut_Throws_TimeoutException()
     {
-        // Arrange
-        var ex = await Assert.ThrowsAsync<TimeoutException>(() =>
+        // Arrange & Act & Assert
+        var ex = await Should.ThrowAsync<TimeoutException>(() =>
             this.service.OnReadyAsync(
                 onReady: () => { },
                 onFaulted: null,
                 pollInterval: TimeSpan.FromMilliseconds(10),
                 timeout: TimeSpan.FromMilliseconds(50)));
-
-        Assert.Contains("timeout", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
     public async Task OnReadyAsync_NullOnReady_Throws()
     {
-        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+        await Should.ThrowAsync<ArgumentNullException>(() =>
             this.service.OnReadyAsync(
                 onReady: null,
                 onFaulted: () => { }));

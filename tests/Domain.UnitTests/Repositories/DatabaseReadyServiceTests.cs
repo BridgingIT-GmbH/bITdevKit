@@ -348,6 +348,6 @@ public class DatabaseReadyServiceTests
 
         // Act & Assert
         await Should.ThrowAsync<TimeoutException>(async () =>
-            await this.service.WaitForReadyAsync(timeout: TimeSpan.FromMilliseconds(200)));
+            await this.service.WaitForReadyAsync("b", timeout: TimeSpan.FromMilliseconds(200)));
     }
 }

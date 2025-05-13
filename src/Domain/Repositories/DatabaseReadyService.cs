@@ -62,8 +62,12 @@ public class DatabaseReadyService : IDatabaseReadyService
     {
         if (name == null)
         {
-            // Return the first fault message found (if any)
-            return this.states.FirstOrDefault(x => x.Value.IsFaulted).Value?.FaultMessage;
+            // Return the first fault message found (in insertion order, if any)
+            var firstFaulted = this.states.Keys
+                .OrderBy(k => k, StringComparer.Ordinal)
+                .Select(k => this.states[k])
+                .FirstOrDefault(v => v.IsFaulted);
+            return firstFaulted?.FaultMessage;
         }
         return this.states.TryGetValue(this.GetName(name), out var state) ? state.FaultMessage : null;
     }

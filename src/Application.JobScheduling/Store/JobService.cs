@@ -196,6 +196,7 @@ public partial class JobService(
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         var jobKey = new JobKey(jobName, jobGroup);
         var triggers = await scheduler.GetTriggersOfJob(jobKey, cancellationToken);
+
         return await Task.WhenAll(triggers.Select(async t => new TriggerInfo
         {
             Name = t.Key.Name,
@@ -261,19 +262,28 @@ public partial class JobService(
         }
 
         jobGroup ??= "DEFAULT";
-        this.logger.LogDebug("{LogKey} jobservice: trigger jobs (count={JobCount}, group={JobGroup})", Constants.LogKey, jobNames.Count(), jobGroup);
+        var correlationId = GuidGenerator.CreateSequential().ToString("N");
 
-        var triggerTasks = new List<Task>();
-        foreach (var jobName in jobNames)
+        using (this.logger.BeginScope(new Dictionary<string, object>
         {
-            var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
-                ? jobSpecificData
-                : null;
+            [Constants.CorrelationIdKey] = correlationId,
+        }))
+        {
+            this.logger.LogDebug("{LogKey} jobservice: trigger jobs (count={JobCount}, group={JobGroup})", Constants.LogKey, jobNames.Count(), jobGroup);
 
-            triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
+            var triggerTasks = new List<Task>();
+            foreach (var jobName in jobNames)
+            {
+                var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
+                    ? jobSpecificData
+                    : new Dictionary<string, object>();
+                data.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
+
+                triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
+            }
+
+            await Task.WhenAll(triggerTasks);
         }
-
-        await Task.WhenAll(triggerTasks);
     }
 
     /// <summary>
@@ -365,93 +375,102 @@ public partial class JobService(
         EnsureArg.IsGte(checkInterval, 100, nameof(checkInterval)); // Minimum reasonable interval
         jobGroup ??= "DEFAULT";
         timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
+        var correlationId = GuidGenerator.CreateSequential().ToString("N");
 
-        this.logger.LogDebug("{LogKey} jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, sequentially, checkInterval, timeout);
-
-        var results = new Dictionary<string, JobInfo>();
-
-        if (sequentially)
+        using (this.logger.BeginScope(new Dictionary<string, object>
         {
-            // Run jobs one after the other
-            foreach (var jobName in jobNames)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
-                    ? jobSpecificData
-                    : null;
-
-                //this.logger.LogDebug("{LogKey} jobservice: trigger sequential job {JobName} in group {JobGroup}",
-                //    Constants.LogKey, jobName, jobGroup);
-
-                results[jobName] = await this.TriggerJobAndWaitAsync(jobName, jobGroup, data, checkInterval, timeout, cancellationToken);
-            }
-        }
-        else
+            [Constants.CorrelationIdKey] = correlationId,
+        }))
         {
-            // Start all jobs concurrently
-            var triggerTasks = new List<Task>();
-            foreach (var jobName in jobNames)
+            this.logger.LogDebug("{LogKey} jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, sequentially, checkInterval, timeout);
+
+            var results = new Dictionary<string, JobInfo>();
+
+            if (sequentially)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
-                    ? jobSpecificData
-                    : null;
-
-                //this.logger.LogDebug("{LogKey} jobservice: trigger concurrent job {JobName} in group {JobGroup}",
-                //    Constants.LogKey, jobName, jobGroup);
-
-                triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
-            }
-
-            await Task.WhenAll(triggerTasks); // Wait for all jobs to start
-            await Task.Delay(500, cancellationToken); // Initial delay to allow jobs to start
-
-            // Get initial job info
-            var jobInfos = new Dictionary<string, JobInfo>();
-            foreach (var jobName in jobNames)
-            {
-                var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken);
-                jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' not found after triggering.");
-            }
-
-            var startTime = DateTimeOffset.UtcNow;
-            var timeoutTime = startTime.Add(timeout.Value);
-            var runningJobs = new HashSet<string>(jobNames);
-
-            while (runningJobs.Count > 0) // Poll until all jobs complete or timeout occurs
-            {
-                if (DateTimeOffset.UtcNow >= timeoutTime)
+                // Run jobs one after the other
+                foreach (var jobName in jobNames)
                 {
-                    var stillRunning = string.Join(", ", runningJobs);
-                    throw new TimeoutException($"Jobs [{stillRunning}] in group '{jobGroup}' did not complete within the timeout period of {timeout.Value}.");
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
+                        ? jobSpecificData
+                        : new Dictionary<string, object>();
+                    data.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
+
+                    //this.logger.LogDebug("{LogKey} jobservice: trigger sequential job {JobName} in group {JobGroup}",
+                    //    Constants.LogKey, jobName, jobGroup);
+
+                    results[jobName] = await this.TriggerJobAndWaitAsync(jobName, jobGroup, data, checkInterval, timeout, cancellationToken);
+                }
+            }
+            else
+            {
+                // Start all jobs concurrently
+                var triggerTasks = new List<Task>();
+                foreach (var jobName in jobNames)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
+                        ? jobSpecificData
+                        : new Dictionary<string, object>();
+                    data.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
+
+                    //this.logger.LogDebug("{LogKey} jobservice: trigger concurrent job {JobName} in group {JobGroup}",
+                    //    Constants.LogKey, jobName, jobGroup);
+
+                    triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
                 }
 
-                await Task.Delay(checkInterval, cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
+                await Task.WhenAll(triggerTasks); // Wait for all jobs to start
+                await Task.Delay(500, cancellationToken); // Initial delay to allow jobs to start
 
-                foreach (var jobName in runningJobs.ToList()) // Check the status of each still-running job
+                // Get initial job info
+                var jobInfos = new Dictionary<string, JobInfo>();
+                foreach (var jobName in jobNames)
                 {
                     var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken);
-                    jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' could not be found during status polling.");
+                    jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' not found after triggering.");
+                }
 
-                    if (jobInfo.LastRun?.Status != "Started") // If job is no longer "Started", remove from running list
+                var startTime = DateTimeOffset.UtcNow;
+                var timeoutTime = startTime.Add(timeout.Value);
+                var runningJobs = new HashSet<string>(jobNames);
+
+                while (runningJobs.Count > 0) // Poll until all jobs complete or timeout occurs
+                {
+                    if (DateTimeOffset.UtcNow >= timeoutTime)
                     {
-                        runningJobs.Remove(jobName);
-                        this.logger.LogDebug("{LogKey} jobservice: job completion detected (name={JobName}, group={JobGroup}, status={Status})",
-                            Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status);
+                        var stillRunning = string.Join(", ", runningJobs);
+                        throw new TimeoutException($"Jobs [{stillRunning}] in group '{jobGroup}' did not complete within the timeout period of {timeout.Value}.");
+                    }
+
+                    await Task.Delay(checkInterval, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    foreach (var jobName in runningJobs.ToList()) // Check the status of each still-running job
+                    {
+                        var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken);
+                        jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' could not be found during status polling.");
+
+                        if (jobInfo.LastRun?.Status != "Started") // If job is no longer "Started", remove from running list
+                        {
+                            runningJobs.Remove(jobName);
+                            this.logger.LogDebug("{LogKey} jobservice: job completion detected (name={JobName}, group={JobGroup}, status={Status})",
+                                Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status);
+                        }
                     }
                 }
+
+                results = jobInfos;
             }
 
-            results = jobInfos;
+            var totalDuration = (DateTimeOffset.UtcNow - (results.Values.FirstOrDefault()?.LastRun?.StartTime ?? DateTimeOffset.UtcNow)).TotalMilliseconds;
+            this.logger.LogDebug("{LogKey} jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, sequentially ? "Sequential" : "Concurrent", (long)totalDuration);
+
+            return results;
         }
-
-        var totalDuration = (DateTimeOffset.UtcNow - (results.Values.FirstOrDefault()?.LastRun?.StartTime ?? DateTimeOffset.UtcNow)).TotalMilliseconds;
-        this.logger.LogDebug("{LogKey} jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, sequentially ? "Sequential" : "Concurrent", (long)totalDuration);
-
-        return results;
     }
 
     /// <summary>

@@ -84,6 +84,15 @@ public interface IJobService
     Task TriggerJobAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Triggers multiple jobs to run immediately with optional data for each job.
+    /// </summary>
+    /// <param name="jobNames">The collection of job names to trigger.</param>
+    /// <param name="jobGroup">The common group all jobs belong to.</param>
+    /// <param name="jobDatas">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task TriggerJobsAsync(IEnumerable<string> jobNames, string jobGroup = null, IDictionary<string, IDictionary<string, object>> jobDatas = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Triggers a job to run immediately with optional data and waits for its completion.
     /// </summary>
     /// <param name="jobName">The name of the job to trigger.</param>

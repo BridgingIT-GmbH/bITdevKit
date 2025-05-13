@@ -231,6 +231,12 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     }
 
     [Fact]
+    public override async Task CompressUncompress_ToStream_Success()
+    {
+        await base.CompressUncompress_ToStream_Success();
+    }
+
+    [Fact]
     public override async Task CompressUncompress_AsStream_Success()
     {
         await base.CompressUncompress_AsStream_Success();

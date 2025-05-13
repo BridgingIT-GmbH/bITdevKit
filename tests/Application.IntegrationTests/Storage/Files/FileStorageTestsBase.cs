@@ -675,6 +675,42 @@ public abstract class FileStorageTestsBase
         new StreamReader(fileStream).ReadToEnd().ShouldBe("Single file content");
     }
 
+    public virtual async Task CompressUncompress_ToStream_Success()
+    {
+        // Arrange
+        var provider = this.CreateProvider();
+        const string filePath = "test_file.txt";
+        const string zipPath = "test_file.zip";
+        var options = FileCompressionOptions.CreateBuilder()
+            .WithBufferSize(16384)
+            .WithCompressionLevel(5)
+            .WithUseZip64(true)
+            .WithEntryDateTime(new DateTime(2023, 1, 1))
+            .Build();
+
+        // Create a test file
+        await provider.WriteFileAsync(filePath, new MemoryStream(Encoding.UTF8.GetBytes("Single file content")), null, CancellationToken.None);
+
+        // Act
+        var result = await provider.CompressAsync(zipPath, filePath, null, options, cancellationToken: CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue($"CompressAsync (single file) failed: {string.Join(", ", result.Messages)}");
+
+        // Verify the ZIP file exists
+        var existsResult = await provider.FileExistsAsync(zipPath);
+        existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
+
+        // Uncompress and verify content
+        var uncompressResult = await provider.UncompressToStreamAsync(zipPath, "uncompressed", null, cancellationToken: CancellationToken.None);
+        uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
+
+        // Verify the uncompressed file
+        uncompressResult.Value.ContainsKey(filePath);
+        await using var fileStream = uncompressResult.Value[filePath];
+        new StreamReader(fileStream).ReadToEnd().ShouldBe("Single file content");
+    }
+
     public virtual async Task ReadCompressedFileAsync_Success()
     {
         // Arrange

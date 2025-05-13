@@ -242,6 +242,67 @@ public partial class JobService(
     }
 
     /// <summary>
+    /// Triggers a job to run immediately with optional data and waits for its completion.
+    /// </summary>
+    /// <param name="jobName">The name of the job to trigger.</param>
+    /// <param name="jobGroup">The group the job belongs to.</param>
+    /// <param name="data">Optional data to pass to the job execution.</param>
+    /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
+    /// <param name="timeout">The maximum time to wait for the job to complete. Default is 10 minutes.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The final job information with execution results.</returns>
+    /// <exception cref="TimeoutException">Thrown when the job does not complete within the specified timeout period.</exception>
+    public async Task<JobInfo> TriggerJobAndWaitAsync(
+        string jobName,
+        string jobGroup = null,
+        IDictionary<string, object> data = null,
+        int checkInterval = 1000,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureArg.IsNotNullOrEmpty(jobName, nameof(jobName));
+        EnsureArg.IsGte(checkInterval, 100, nameof(checkInterval)); // Minimum reasonable interval
+
+        jobGroup ??= "DEFAULT";
+        timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
+
+        this.logger.LogDebug("{LogKey} store: trigger job and wait (name={JobName}, group={JobGroup}, checkInterval={CheckInterval}ms, timeout={Timeout})",
+            Constants.LogKey, jobName, jobGroup, checkInterval, timeout);
+
+        // First trigger the job
+        await this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken);
+
+        // Add a small initial delay to allow job to start
+        await Task.Delay(500, cancellationToken);
+
+        var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken) ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' not found after triggering.");
+        var startTime = DateTimeOffset.UtcNow;
+        var timeoutTime = startTime.Add(timeout.Value);
+
+        while (jobInfo.LastRun?.Status == "Started") // Poll until job completes or timeout occurs
+        {
+            if (DateTimeOffset.UtcNow >= timeoutTime)
+            {
+                throw new TimeoutException($"Job '{jobName}' in group '{jobGroup}' did not complete within the timeout period of {timeout.Value}.");
+            }
+
+            await Task.Delay(checkInterval, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken); // Get the latest job info
+            if (jobInfo == null)
+            {
+                throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' could not be found during status polling.");
+            }
+            }
+
+        //var duration = DateTimeOffset.UtcNow - startTime;
+        //this.logger.LogDebug("{LogKey} store: job completion detected (name={JobName}, group={JobGroup}, status={Status}, duration={Duration}ms)", Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status, (long)duration.TotalMilliseconds);
+
+        return jobInfo;
+    }
+
+    /// <summary>
     /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
     /// token.
     /// </summary>

@@ -84,6 +84,19 @@ public interface IJobService
     Task TriggerJobAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Triggers a job to run immediately with optional data and waits for its completion.
+    /// </summary>
+    /// <param name="jobName">The name of the job to trigger.</param>
+    /// <param name="jobGroup">The group the job belongs to.</param>
+    /// <param name="data">Optional data to pass to the job execution.</param>
+    /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
+    /// <param name="timeout">The maximum time to wait for the job to complete. Default is 10 minutes.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The final job information with execution results.</returns>
+    /// <exception cref="TimeoutException">Thrown when the job does not complete within the specified timeout period.</exception>
+    Task<JobInfo> TriggerJobAndWaitAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, int checkInterval = 1000, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
     /// token.
     /// </summary>

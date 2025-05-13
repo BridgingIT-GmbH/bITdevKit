@@ -340,7 +340,7 @@ public partial class JobService(
     /// <param name="jobNames">The collection of job names to trigger.</param>
     /// <param name="jobGroup">The common group all jobs belong to.</param>
     /// <param name="jobDatas">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
-    /// <param name="runSequentially">Whether to run jobs sequentially (true) or concurrently (false). Default is false (concurrent).</param>
+    /// <param name="sequentially">Whether to run jobs sequentially (true) or concurrently (false). Default is true (sequentially).</param>
     /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
     /// <param name="timeout">The maximum time to wait for all jobs to complete. Default is 10 minutes.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -351,7 +351,7 @@ public partial class JobService(
         IEnumerable<string> jobNames,
         string jobGroup = null,
         IDictionary<string, IDictionary<string, object>> jobDatas = null,
-        bool runSequentially = false,
+        bool sequentially = true,
         int checkInterval = 1000,
         TimeSpan? timeout = null,
         CancellationToken cancellationToken = default)
@@ -366,11 +366,11 @@ public partial class JobService(
         jobGroup ??= "DEFAULT";
         timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
 
-        this.logger.LogDebug("{LogKey} jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, runSequentially, checkInterval, timeout);
+        this.logger.LogDebug("{LogKey} jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, sequentially, checkInterval, timeout);
 
         var results = new Dictionary<string, JobInfo>();
 
-        if (runSequentially)
+        if (sequentially)
         {
             // Run jobs one after the other
             foreach (var jobName in jobNames)
@@ -390,9 +390,11 @@ public partial class JobService(
         else
         {
             // Start all jobs concurrently
-            var startTasks = new List<Task>();
+            var triggerTasks = new List<Task>();
             foreach (var jobName in jobNames)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
                     ? jobSpecificData
                     : null;
@@ -400,10 +402,10 @@ public partial class JobService(
                 //this.logger.LogDebug("{LogKey} jobservice: trigger concurrent job {JobName} in group {JobGroup}",
                 //    Constants.LogKey, jobName, jobGroup);
 
-                startTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
+                triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
             }
 
-            await Task.WhenAll(startTasks); // Wait for all jobs to start
+            await Task.WhenAll(triggerTasks); // Wait for all jobs to start
             await Task.Delay(500, cancellationToken); // Initial delay to allow jobs to start
 
             // Get initial job info
@@ -447,7 +449,7 @@ public partial class JobService(
         }
 
         var totalDuration = (DateTimeOffset.UtcNow - (results.Values.FirstOrDefault()?.LastRun?.StartTime ?? DateTimeOffset.UtcNow)).TotalMilliseconds;
-        this.logger.LogDebug("{LogKey} jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, runSequentially ? "Sequential" : "Concurrent", (long)totalDuration);
+        this.logger.LogDebug("{LogKey} jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, sequentially ? "Sequential" : "Concurrent", (long)totalDuration);
 
         return results;
     }

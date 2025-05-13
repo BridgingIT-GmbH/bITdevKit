@@ -122,13 +122,18 @@ public class DatabaseReadyService : IDatabaseReadyService
             }
             else
             {
-                var dbName = this.GetName(name);
-                if (this.states.TryGetValue(dbName, out var state))
+                var stateName = this.GetName(name);
+                if (this.states.TryGetValue(stateName, out var state))
                 {
                     if (state.IsFaulted)
-                        throw new InvalidOperationException($"Database '{dbName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
+                    {
+                        throw new InvalidOperationException($"Database '{stateName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
+                    }
+
                     if (state.IsReady)
+                    {
                         return;
+                    }
                 }
             }
 
@@ -158,14 +163,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             throw new ArgumentNullException(nameof(onReady));
         }
 
-        var dbName = this.GetName(name);
+        var stateName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
         {
-            if (this.states.TryGetValue(dbName, out var state))
+            if (this.states.TryGetValue(stateName, out var state))
             {
                 if (state.IsFaulted)
                 {
@@ -180,7 +185,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+                throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }
 
             await Task.Delay(pollInterval.Value, cancellationToken);
@@ -201,14 +206,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             throw new ArgumentNullException(nameof(onReady));
         }
 
-        var dbName = this.GetName(name);
+        var stateName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
         {
-            if (this.states.TryGetValue(dbName, out var state))
+            if (this.states.TryGetValue(stateName, out var state))
             {
                 if (state.IsFaulted)
                 {
@@ -223,7 +228,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+                throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }
 
             await Task.Delay(pollInterval.Value, cancellationToken);
@@ -244,14 +249,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             throw new ArgumentNullException(nameof(onReady));
         }
 
-        var dbName = this.GetName(name);
+        var stateName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
         {
-            if (this.states.TryGetValue(dbName, out var state))
+            if (this.states.TryGetValue(stateName, out var state))
             {
                 if (state.IsFaulted)
                 {
@@ -267,7 +272,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+                throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }
 
             await Task.Delay(pollInterval.Value, cancellationToken);

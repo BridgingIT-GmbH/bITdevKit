@@ -97,6 +97,21 @@ public interface IJobService
     Task<JobInfo> TriggerJobAndWaitAsync(string jobName, string jobGroup = null, IDictionary<string, object> data = null, int checkInterval = 1000, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Triggers multiple jobs to run immediately with optional data for each job and waits for their completion.
+    /// </summary>
+    /// <param name="jobNames">The collection of job names to trigger.</param>
+    /// <param name="jobGroup">The common group all jobs belong to.</param>
+    /// <param name="jobData">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
+    /// <param name="runSequentially">Whether to run jobs sequentially (true) or concurrently (false). Default is false (concurrent).</param>
+    /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
+    /// <param name="timeout">The maximum time to wait for all jobs to complete. Default is 10 minutes.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A dictionary mapping job names to their final job information with execution results.</returns>
+    /// <exception cref="ArgumentException">Thrown when jobNames is null or empty.</exception>
+    /// <exception cref="TimeoutException">Thrown when one or more jobs do not complete within the specified timeout period.</exception>
+    Task<IDictionary<string, JobInfo>> TriggerJobsAndWaitAsync(IEnumerable<string> jobNames, string jobGroup = null, IDictionary<string, IDictionary<string, object>> jobData = null, bool runSequentially = false, int checkInterval = 1000, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Interrupts a scheduled job identified by its name and group. The operation can be canceled using a provided
     /// token.
     /// </summary>

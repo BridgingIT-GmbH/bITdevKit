@@ -294,12 +294,136 @@ public partial class JobService(
             {
                 throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' could not be found during status polling.");
             }
-            }
-
-        //var duration = DateTimeOffset.UtcNow - startTime;
-        //this.logger.LogDebug("{LogKey} store: job completion detected (name={JobName}, group={JobGroup}, status={Status}, duration={Duration}ms)", Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status, (long)duration.TotalMilliseconds);
+        }
 
         return jobInfo;
+    }
+
+    /// <summary>
+    /// Triggers multiple jobs to run immediately with optional data for each job and waits for their completion.
+    /// </summary>
+    /// <param name="jobNames">The collection of job names to trigger.</param>
+    /// <param name="jobGroup">The common group all jobs belong to.</param>
+    /// <param name="jobDatas">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
+    /// <param name="runSequentially">Whether to run jobs sequentially (true) or concurrently (false). Default is false (concurrent).</param>
+    /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
+    /// <param name="timeout">The maximum time to wait for all jobs to complete. Default is 10 minutes.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A dictionary mapping job names to their final job information with execution results.</returns>
+    /// <exception cref="ArgumentException">Thrown when jobNames is null or empty.</exception>
+    /// <exception cref="TimeoutException">Thrown when one or more jobs do not complete within the specified timeout period.</exception>
+    public async Task<IDictionary<string, JobInfo>> TriggerJobsAndWaitAsync(
+        IEnumerable<string> jobNames,
+        string jobGroup = null,
+        IDictionary<string, IDictionary<string, object>> jobDatas = null,
+        bool runSequentially = false,
+        int checkInterval = 1000,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureArg.IsNotNull(jobNames, nameof(jobNames));
+        if (!jobNames.Any())
+        {
+            throw new ArgumentException("At least one job name must be provided.", nameof(jobNames));
+        }
+
+        EnsureArg.IsGte(checkInterval, 100, nameof(checkInterval)); // Minimum reasonable interval
+        jobGroup ??= "DEFAULT";
+        timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
+
+        this.logger.LogDebug("{LogKey} store: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, runSequentially, checkInterval, timeout);
+
+        var results = new Dictionary<string, JobInfo>();
+
+        if (runSequentially)
+        {
+            // Run jobs one after the other
+            foreach (var jobName in jobNames)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
+                    ? jobSpecificData
+                    : null;
+
+                this.logger.LogDebug("{LogKey} store: trigger sequential job {JobName} in group {JobGroup}",
+                    Constants.LogKey, jobName, jobGroup);
+
+                var jobInfo = await this.TriggerJobAndWaitAsync(
+                    jobName,
+                    jobGroup,
+                    data,
+                    checkInterval,
+                    timeout,
+                    cancellationToken);
+
+                results[jobName] = jobInfo;
+            }
+        }
+        else
+        {
+            // Start all jobs concurrently
+            var startTasks = new List<Task>();
+            foreach (var jobName in jobNames)
+            {
+                var data = jobDatas != null && jobDatas.TryGetValue(jobName, out var jobSpecificData)
+                    ? jobSpecificData
+                    : null;
+
+                this.logger.LogDebug("{LogKey} store: trigger concurrent job {JobName} in group {JobGroup}",
+                    Constants.LogKey, jobName, jobGroup);
+
+                startTasks.Add(this.TriggerJobAsync(jobName, jobGroup, data, cancellationToken));
+            }
+
+
+            await Task.WhenAll(startTasks); // Wait for all jobs to start
+            await Task.Delay(500, cancellationToken); // Initial delay to allow jobs to start
+
+            // Get initial job info
+            var jobInfos = new Dictionary<string, JobInfo>();
+            foreach (var jobName in jobNames)
+            {
+                var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken);
+                jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' not found after triggering.");
+            }
+
+            var startTime = DateTimeOffset.UtcNow;
+            var timeoutTime = startTime.Add(timeout.Value);
+            var runningJobs = new HashSet<string>(jobNames);
+
+            while (runningJobs.Count > 0) // Poll until all jobs complete or timeout occurs
+            {
+                if (DateTimeOffset.UtcNow >= timeoutTime)
+                {
+                    var stillRunning = string.Join(", ", runningJobs);
+                    throw new TimeoutException($"Jobs [{stillRunning}] in group '{jobGroup}' did not complete within the timeout period of {timeout.Value}.");
+                }
+
+                await Task.Delay(checkInterval, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                foreach (var jobName in runningJobs.ToList()) // Check the status of each still-running job
+                {
+                    var jobInfo = await this.GetJobAsync(jobName, jobGroup, cancellationToken);
+                    jobInfos[jobName] = jobInfo ?? throw new InvalidOperationException($"Job '{jobName}' in group '{jobGroup}' could not be found during status polling.");
+
+                    if (jobInfo.LastRun?.Status != "Started") // If job is no longer "Started", remove from running list
+                    {
+                        runningJobs.Remove(jobName);
+                        this.logger.LogDebug("{LogKey} store: job completion detected (name={JobName}, group={JobGroup}, status={Status})",
+                            Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status);
+                    }
+                }
+            }
+
+            results = jobInfos;
+        }
+
+        var totalDuration = (DateTimeOffset.UtcNow - (results.Values.FirstOrDefault()?.LastRun?.StartTime ?? DateTimeOffset.UtcNow)).TotalMilliseconds;
+        this.logger.LogDebug("{LogKey} store: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, runSequentially ? "Sequential" : "Concurrent", (long)totalDuration);
+
+        return results;
     }
 
     /// <summary>

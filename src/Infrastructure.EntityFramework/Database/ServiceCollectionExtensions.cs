@@ -23,11 +23,13 @@ public static partial class ServiceCollectionExtensions
         DatabaseCreatorOptions options = null)
         where TContext : DbContext
     {
+        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
         services.AddHostedService(sp =>
             new DatabaseCreatorService<TContext>(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp,
+                sp.GetService<IDatabaseReadyService>(),
                 options));
 
         return services;
@@ -47,11 +49,13 @@ public static partial class ServiceCollectionExtensions
         DatabaseMigratorOptions options = null)
         where TContext : DbContext
     {
+        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
         services.AddHostedService(sp =>
             new DatabaseMigratorService<TContext>(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp,
+                sp.GetService<IDatabaseReadyService>(),
                 options));
 
         return services;

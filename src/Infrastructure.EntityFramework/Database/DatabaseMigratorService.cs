@@ -13,6 +13,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
 {
     private readonly ILogger<DatabaseMigratorService<TContext>> logger;
     private readonly IServiceProvider serviceProvider;
+    private readonly IDatabaseReadyService databaseReadyService;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseMigratorOptions options;
 
@@ -20,6 +21,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime applicationLifetime,
         IServiceProvider serviceProvider,
+        IDatabaseReadyService databaseReadyService = null,
         DatabaseMigratorOptions options = null)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
@@ -27,6 +29,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
         this.logger = loggerFactory?.CreateLogger<DatabaseMigratorService<TContext>>() ??
             NullLoggerFactory.Instance.CreateLogger<DatabaseMigratorService<TContext>>();
         this.serviceProvider = serviceProvider;
+        this.databaseReadyService = databaseReadyService;
         this.applicationLifetime = applicationLifetime;
         this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseMigratorOptions();
@@ -111,9 +114,12 @@ public class DatabaseMigratorService<TContext> : IHostedService
                             this.logger.LogDebug("{LogKey} database migrator skipped, no pending migrations (context={DbContextType})", Constants.LogKey, contextName);
                         }
                     }
+
+                    this.databaseReadyService.SetReady(contextName);
                 }
                 catch (Exception ex)
                 {
+                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
                     this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
                 }
             }, cancellationToken);

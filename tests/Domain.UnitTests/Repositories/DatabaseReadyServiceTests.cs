@@ -246,4 +246,108 @@ public class DatabaseReadyServiceTests
                 onReady: null,
                 onFaulted: () => { }));
     }
+
+    [Fact]
+    public void Should_IsReady_WithoutName_False_IfNoneReady()
+    {
+        // No set states
+        this.service.IsReady().ShouldBeFalse();
+
+        // One is faulted, none ready
+        this.service.SetFaulted("a", "fail");
+        this.service.IsReady().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Should_IsReady_WithoutName_True_IfAllReady()
+    {
+        this.service.SetReady("a");
+        this.service.SetReady("b");
+        this.service.IsReady().ShouldBeTrue();
+
+        this.service.SetFaulted("c", "broken");
+        this.service.IsReady().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Should_IsReady_WithoutName_False_IfAnyNotReadyOrFaulted()
+    {
+        this.service.SetReady("a");
+        this.service.SetReady("b");
+        this.service.SetFaulted("c", "fail");
+        this.service.IsReady().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Should_IsFaulted_WithoutName_True_IfAnyFaulted()
+    {
+        this.service.SetReady("a");
+        this.service.SetFaulted("b", "fail");
+        this.service.IsFaulted().ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Should_IsFaulted_WithoutName_False_IfNoneFaulted()
+    {
+        this.service.SetReady("a");
+        this.service.SetReady("b");
+        this.service.IsFaulted().ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Should_FaultMessage_WithoutName_Returns_FirstFaultedMessage()
+    {
+        this.service.SetReady("a");
+        this.service.SetFaulted("b", "problem-b");
+        this.service.SetFaulted("c", "problem-c");
+        this.service.FaultMessage().ShouldBe("problem-b");
+    }
+
+    [Fact]
+    public async Task Should_WaitForReadyAsync_WithoutName_WaitsForAll()
+    {
+        // Arrange
+        this.service.SetReady("a");
+        await Task.Run(async () =>
+        {
+            await Task.Delay(100);
+            this.service.SetReady("b");
+        });
+
+        // Act
+        await this.service.WaitForReadyAsync(timeout: TimeSpan.FromSeconds(2));
+
+        // Assert
+        this.service.IsReady().ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task Should_WaitForReadyAsync_WithoutName_ThrowsOnFaulted()
+    {
+        // Arrange
+        this.service.SetReady("a");
+        await Task.Run(async () =>
+        {
+            await Task.Delay(100);
+            this.service.SetFaulted("b", "fail-b");
+        });
+
+        // Act & Assert
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            this.service.WaitForReadyAsync(timeout: TimeSpan.FromSeconds(2)));
+
+        ex.Message.ShouldContain("fail-b");
+    }
+
+    [Fact]
+    public async Task Should_WaitForReadyAsync_WithoutName_ThrowsOnTimeout_WhenNotAllReady()
+    {
+        // Arrange
+        this.service.SetReady("a");
+        // "b" never set
+
+        // Act & Assert
+        await Should.ThrowAsync<TimeoutException>(async () =>
+            await this.service.WaitForReadyAsync(timeout: TimeSpan.FromMilliseconds(200)));
+    }
 }

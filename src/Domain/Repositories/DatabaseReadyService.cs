@@ -36,15 +36,37 @@ public class DatabaseReadyService : IDatabaseReadyService
 
     /// <inheritdoc />
     public bool IsReady(string name = null)
-        => this.states.TryGetValue(this.GetName(name), out var state) && state.IsReady;
+    {
+        if (name == null)
+        {
+            // If no name, all states must be ready and none faulted (if any exist)
+            return !this.states.IsEmpty &&
+                   this.states.All(x => x.Value.IsReady && !x.Value.IsFaulted);
+        }
+        return this.states.TryGetValue(this.GetName(name), out var state) && state.IsReady;
+    }
 
     /// <inheritdoc />
     public bool IsFaulted(string name = null)
-        => this.states.TryGetValue(this.GetName(name), out var state) && state.IsFaulted;
+    {
+        if (name == null)
+        {
+            // If any state is faulted, report faulted (if any exist)
+            return this.states.Any(x => x.Value.IsFaulted);
+        }
+        return this.states.TryGetValue(this.GetName(name), out var state) && state.IsFaulted;
+    }
 
     /// <inheritdoc />
     public string FaultMessage(string name = null)
-        => this.states.TryGetValue(this.GetName(name), out var state) ? state.FaultMessage : null;
+    {
+        if (name == null)
+        {
+            // Return the first fault message found (if any)
+            return this.states.FirstOrDefault(x => x.Value.IsFaulted).Value?.FaultMessage;
+        }
+        return this.states.TryGetValue(this.GetName(name), out var state) ? state.FaultMessage : null;
+    }
 
     /// <inheritdoc />
     public void SetReady(string name = null)
@@ -71,29 +93,47 @@ public class DatabaseReadyService : IDatabaseReadyService
         TimeSpan? timeout = null,
         CancellationToken cancellationToken = default)
     {
-        var dbName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
-        timeout ??= TimeSpan.FromSeconds(10);
+        timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
         {
-            if (this.states.TryGetValue(dbName, out var state))
+            if (name == null)
             {
-                if (state.IsFaulted)
+                if (!this.states.IsEmpty)
                 {
-                    throw new InvalidOperationException($"Database '{dbName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
+                    if (this.states.Any(x => x.Value.IsFaulted))
+                    {
+                        // Throw on the first faulted state
+                        var faulted = this.states.First(x => x.Value.IsFaulted);
+                        throw new InvalidOperationException($"Database '{faulted.Key}' is faulted: {faulted.Value.FaultMessage ?? "Unknown error"}");
+                    }
+                    if (this.states.All(x => x.Value.IsReady && !x.Value.IsFaulted))
+                    {
+                        // All are ready!
+                        return;
+                    }
                 }
-
-                if (state.IsReady)
+            }
+            else
+            {
+                var dbName = this.GetName(name);
+                if (this.states.TryGetValue(dbName, out var state))
                 {
-                    return;
+                    if (state.IsFaulted)
+                        throw new InvalidOperationException($"Database '{dbName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
+                    if (state.IsReady)
+                        return;
                 }
             }
 
             if (DateTime.UtcNow - start > timeout)
             {
-                throw new TimeoutException($"Database '{dbName}' was not ready within the timeout period.");
+                throw new TimeoutException(
+                    name == null
+                        ? "Not all databases were ready within the timeout period."
+                        : $"Database '{name}' was not ready within the timeout period.");
             }
 
             await Task.Delay(pollInterval.Value, cancellationToken);
@@ -116,7 +156,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
         var dbName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
-        timeout ??= TimeSpan.FromSeconds(10);
+        timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -159,7 +199,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
         var dbName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
-        timeout ??= TimeSpan.FromSeconds(10);
+        timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -202,7 +242,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
         var dbName = this.GetName(name);
         pollInterval ??= TimeSpan.FromMilliseconds(200);
-        timeout ??= TimeSpan.FromSeconds(10);
+        timeout ??= TimeSpan.FromSeconds(30);
 
         var start = DateTime.UtcNow;
         while (true)

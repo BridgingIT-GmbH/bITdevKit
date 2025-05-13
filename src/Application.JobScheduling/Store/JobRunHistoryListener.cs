@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobService jobStore) : IJobListener
+public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobService jobStore) : IJobListener, IDisposable
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
     private readonly List<Action<string, string, string, DateTimeOffset>> onJobStartedHandlers = [];
@@ -257,12 +257,19 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         }
     }
 
-    public static partial class TypedLogger
+    public void Dispose()
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
-        public static partial void LogJobStarting(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
-
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
-        public static partial void LogJobCompleted(ILogger logger, string logKey, string jobName, string jobGroup, string entryId, string status);
+        this.onJobStartedHandlers?.Clear();
+        this.onJobSuccessHandlers?.Clear();
+        this.onJobFailedHandlers?.Clear();
     }
+
+    public static partial class TypedLogger
+{
+    [LoggerMessage(0, LogLevel.Information, "{LogKey} job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+    public static partial void LogJobStarting(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
+
+    [LoggerMessage(1, LogLevel.Information, "{LogKey} job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
+    public static partial void LogJobCompleted(ILogger logger, string logKey, string jobName, string jobGroup, string entryId, string status);
+}
 }

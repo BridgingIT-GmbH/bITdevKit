@@ -69,4 +69,43 @@ public interface IDatabaseReadyService
         TimeSpan? pollInterval = null,
         TimeSpan? timeout = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Waits until ready or faulted, then calls either onReady or onFaulted async delegate (returning a result).
+    /// If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
+    /// Throws on timeout.
+    /// </summary>
+    Task<TResult> OnReadyAsync<TResult>(
+        Func<Task<TResult>> onReady,
+        Func<Task<TResult>> onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Waits until ready or faulted, then calls either onReady or onFaulted delegate (returning a result).
+    /// If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
+    /// Throws on timeout.
+    /// </summary>
+    Task<TResult> OnReadyAsync<TResult>(
+        Func<TResult> onReady,
+        Func<TResult> onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Waits until ready or faulted, then calls either onReady or onFaulted action.
+    /// If the database is ready, onReady is called; if faulted, onFaulted is called (if provided).
+    /// Throws on timeout.
+    /// </summary>
+    Task OnReadyAsync(
+        Action onReady,
+        Action onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default);
 }

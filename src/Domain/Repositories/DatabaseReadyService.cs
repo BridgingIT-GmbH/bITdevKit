@@ -81,13 +81,150 @@ public class DatabaseReadyService : IDatabaseReadyService
             if (this.states.TryGetValue(dbName, out var state))
             {
                 if (state.IsFaulted)
+                {
                     throw new InvalidOperationException($"Database '{dbName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
+                }
+
                 if (state.IsReady)
+                {
                     return;
+                }
             }
 
             if (DateTime.UtcNow - start > timeout)
+            {
                 throw new TimeoutException($"Database '{dbName}' was not ready within the timeout period.");
+            }
+
+            await Task.Delay(pollInterval.Value, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<TResult> OnReadyAsync<TResult>(
+        Func<Task<TResult>> onReady,
+        Func<Task<TResult>> onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (onReady is null)
+        {
+            throw new ArgumentNullException(nameof(onReady));
+        }
+
+        var dbName = this.GetName(name);
+        pollInterval ??= TimeSpan.FromMilliseconds(200);
+        timeout ??= TimeSpan.FromSeconds(10);
+
+        var start = DateTime.UtcNow;
+        while (true)
+        {
+            if (this.states.TryGetValue(dbName, out var state))
+            {
+                if (state.IsFaulted)
+                {
+                    return onFaulted != null ? await onFaulted().ConfigureAwait(false) : default;
+                }
+
+                if (state.IsReady)
+                {
+                    return await onReady().ConfigureAwait(false);
+                }
+            }
+
+            if (DateTime.UtcNow - start > timeout)
+            {
+                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+            }
+
+            await Task.Delay(pollInterval.Value, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<TResult> OnReadyAsync<TResult>(
+        Func<TResult> onReady,
+        Func<TResult> onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (onReady is null)
+        {
+            throw new ArgumentNullException(nameof(onReady));
+        }
+
+        var dbName = this.GetName(name);
+        pollInterval ??= TimeSpan.FromMilliseconds(200);
+        timeout ??= TimeSpan.FromSeconds(10);
+
+        var start = DateTime.UtcNow;
+        while (true)
+        {
+            if (this.states.TryGetValue(dbName, out var state))
+            {
+                if (state.IsFaulted)
+                {
+                    return onFaulted != null ? onFaulted() : default;
+                }
+
+                if (state.IsReady)
+                {
+                    return onReady();
+                }
+            }
+
+            if (DateTime.UtcNow - start > timeout)
+            {
+                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+            }
+
+            await Task.Delay(pollInterval.Value, cancellationToken);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task OnReadyAsync(
+        Action onReady,
+        Action onFaulted = null,
+        string name = null,
+        TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (onReady is null)
+        {
+            throw new ArgumentNullException(nameof(onReady));
+        }
+
+        var dbName = this.GetName(name);
+        pollInterval ??= TimeSpan.FromMilliseconds(200);
+        timeout ??= TimeSpan.FromSeconds(10);
+
+        var start = DateTime.UtcNow;
+        while (true)
+        {
+            if (this.states.TryGetValue(dbName, out var state))
+            {
+                if (state.IsFaulted)
+                {
+                    onFaulted?.Invoke();
+                    return;
+                }
+                if (state.IsReady)
+                {
+                    onReady();
+                    return;
+                }
+            }
+
+            if (DateTime.UtcNow - start > timeout)
+            {
+                throw new TimeoutException($"Database '{dbName}' was not ready or faulted within the timeout period.");
+            }
 
             await Task.Delay(pollInterval.Value, cancellationToken);
         }

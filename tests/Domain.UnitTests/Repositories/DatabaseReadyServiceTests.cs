@@ -133,4 +133,119 @@ public class DatabaseReadyServiceTests
         // assert
         this.service.IsReady(dbName).ShouldBeTrue();
     }
+
+    [Fact]
+    public async Task OnReadyAsync_Action_Calls_OnReady_When_Ready()
+    {
+        // Arrange
+        var readyCalled = false;
+        this.service.SetReady();
+
+        // Act
+        await this.service.OnReadyAsync(
+            onReady: () => readyCalled = true,
+            onFaulted: () => throw new Exception("Should not be called"));
+
+        // Assert
+        Assert.True(readyCalled);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_Action_Calls_OnFaulted_When_Faulted()
+    {
+        // Arrange
+        var faultedCalled = false;
+        this.service.SetFaulted();
+
+        // Act
+        await this.service.OnReadyAsync(
+            onReady: () => throw new Exception("Should not be called"),
+            onFaulted: () => faultedCalled = true);
+
+        // Assert
+        Assert.True(faultedCalled);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_FuncT_Calls_OnReady_And_Returns_Result()
+    {
+        // Arrange
+        this.service.SetReady();
+
+        // Act
+        var result = await this.service.OnReadyAsync(
+            onReady: () => 42,
+            onFaulted: () => -1);
+
+        // Assert
+        Assert.Equal(42, result);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_FuncT_Calls_OnFaulted_And_Returns_Result()
+    {
+        // Arrange
+        this.service.SetFaulted();
+
+        // Act
+        var result = await this.service.OnReadyAsync(
+            onReady: () => 42,
+            onFaulted: () => -1);
+
+        // Assert
+        Assert.Equal(-1, result);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_AsyncFuncT_Calls_OnReady_And_Returns_Result()
+    {
+        // Arrange
+        this.service.SetReady();
+
+        // Act
+        var result = await this.service.OnReadyAsync(
+            onReady: async () => { await Task.Delay(10); return 99; },           // Func<Task<int>>
+            onFaulted: async () => { await Task.Delay(0); return -1; });          // Func<Task<int>>
+
+        // Assert
+        Assert.Equal(99, result);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_AsyncFuncT_Calls_OnFaulted_And_Returns_Result()
+    {
+        // Arrange
+        this.service.SetFaulted();
+
+        // Act
+        var result = await this.service.OnReadyAsync(
+            onReady: async () => { await Task.Delay(10); return 99; },
+            onFaulted: async () => { await Task.Delay(10); return -1; });
+
+        // Assert
+        Assert.Equal(-1, result);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_TimesOut_Throws_TimeoutException()
+    {
+        // Arrange
+        var ex = await Assert.ThrowsAsync<TimeoutException>(() =>
+            this.service.OnReadyAsync(
+                onReady: () => { },
+                onFaulted: null,
+                pollInterval: TimeSpan.FromMilliseconds(10),
+                timeout: TimeSpan.FromMilliseconds(50)));
+
+        Assert.Contains("timeout", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task OnReadyAsync_NullOnReady_Throws()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            this.service.OnReadyAsync(
+                onReady: null,
+                onFaulted: () => { }));
+    }
 }

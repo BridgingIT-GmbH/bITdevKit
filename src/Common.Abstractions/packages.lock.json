@@ -10,9 +10,9 @@
       },
       "Microsoft.Net.Compilers.Toolset": {
         "type": "Direct",
-        "requested": "[4.13.0, )",
-        "resolved": "4.13.0",
-        "contentHash": "Otej3AvRjt79rOZGbq5BE/j0ywHNmPkqbQNF4q4zyyMK/CjDXCFCrT4cLFVsCIfExQsYlgaPuGjGbCRquwetjA=="
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "/F7wcMX7Al+nXbNII/6F4b33F3WCPL1I5VbY0+9QPiKdzlYPM0+R+nyYPBsxVZ4cwGXeU0yxrL0ITJWejsvN/Q=="
       },
       "MinVer": {
         "type": "Direct",

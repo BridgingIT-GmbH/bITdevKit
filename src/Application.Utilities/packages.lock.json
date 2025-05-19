@@ -294,7 +294,7 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[9.0.4, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[9.0.4, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "Serilog": "[4.2.0, )"
+          "Serilog": "[4.3.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Options": {
@@ -525,9 +525,9 @@
       },
       "Serilog": {
         "type": "CentralTransitive",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "gmoWVOvKgbME8TYR+gwMf7osROiWAURterc6Rt2dQyX7wtjZYpqFiA/pY6ztjGQKKV62GGCyOcmtP1UKMHgSmA=="
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "+cDryFR0GRhsGOnZSKwaDzRRl4MupvJ42FhCE4zhQRVanX0Jpg6WuCBk59OVhVDPmab1bB+nRykAnykYELA9qQ=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",

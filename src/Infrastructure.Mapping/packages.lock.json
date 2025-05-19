@@ -202,7 +202,7 @@
           "MediatR.Contracts": "[2.0.1, )",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.4, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.2, )"
+          "System.Linq.Dynamic.Core": "[1.6.4, )"
         }
       },
       "AutoMapper": {
@@ -355,9 +355,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.2, )",
-        "resolved": "1.6.2",
-        "contentHash": "piIcdelf4dGotuIjFlyu7JLIZkYTmYM0ZTLGpCcxs9iCJFflhJht0nchkIV+GS5wfA3OtC3QNjIcUqyOdBdOsA=="
+        "requested": "[1.6.4, )",
+        "resolved": "1.6.4",
+        "contentHash": "8+/9Iux+i/IJ9L4FdwGM7ilMCeif3cKw8iB4dXgCBtn67fkr7KuXEGTc05d52tgaUQpnmNr4TIFscmyiKWL84g=="
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

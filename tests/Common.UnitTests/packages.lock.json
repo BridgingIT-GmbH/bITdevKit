@@ -647,7 +647,7 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[9.0.4, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[9.0.4, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "Serilog": "[4.2.0, )"
+          "Serilog": "[4.3.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Options": {
@@ -725,7 +725,7 @@
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.AspNetCore.Mvc.Testing": "[9.0.4, )",
-          "Serilog": "[4.2.0, )",
+          "Serilog": "[4.3.0, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
           "Serilog.Sinks.XUnit": "[3.0.19, )",
           "Shouldly": "[4.3.0, )",
@@ -1020,9 +1020,9 @@
       },
       "Serilog": {
         "type": "CentralTransitive",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "gmoWVOvKgbME8TYR+gwMf7osROiWAURterc6Rt2dQyX7wtjZYpqFiA/pY6ztjGQKKV62GGCyOcmtP1UKMHgSmA=="
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "+cDryFR0GRhsGOnZSKwaDzRRl4MupvJ42FhCE4zhQRVanX0Jpg6WuCBk59OVhVDPmab1bB+nRykAnykYELA9qQ=="
       },
       "Serilog.Extensions.Hosting": {
         "type": "CentralTransitive",

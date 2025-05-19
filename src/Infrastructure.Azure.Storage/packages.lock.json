@@ -4,9 +4,9 @@
     "net9.0": {
       "Azure.Data.Tables": {
         "type": "Direct",
-        "requested": "[12.10.0, )",
-        "resolved": "12.10.0",
-        "contentHash": "fW6873rvhpAYUGXzu7JmbfSkYfppvfkKkiZqifSyOVJ0SsAWBMqHWL9VbUPsApP3DWTwakpU35nfpKTPqvFVww==",
+        "requested": "[12.11.0, )",
+        "resolved": "12.11.0",
+        "contentHash": "MabH2HegMvZA1ocaMhEfW/idyTa3CoH64s43/V9/KFRGdVqEj0EETvd3ItDe6Bbs2teiR40KE9Kz9NLDc5DJJw==",
         "dependencies": {
           "Azure.Core": "1.44.1"
         }

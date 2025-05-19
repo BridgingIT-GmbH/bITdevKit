@@ -104,9 +104,9 @@
       },
       "Microsoft.NET.Sdk.WebAssembly.Pack": {
         "type": "Direct",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "SbawDIBdWK+7UTkiIXquadlWAUPxV88+jytBdVsIFzvJXkxGGQKrufO4KPyYdS4shFtXLZyCuCckNt0YN5hZKw=="
+        "requested": "[9.0.5, )",
+        "resolved": "9.0.5",
+        "contentHash": "h1210SGJTqvciPbSMEJjSRa4yc+zCEDeyoc9o3Fc5hScP9v+26INSOMLf4OwNw+oTz4nAwBo+rc5V4FQLWB1pQ=="
       },
       "MinVer": {
         "type": "Direct",
@@ -545,6 +545,7 @@
       "BridgingIT.DevKit.Presentation.Web.Client": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.AspNetCore.Components.Authorization": "[9.0.4, )",
           "Microsoft.AspNetCore.Components.WebAssembly": "[9.0.4, )",

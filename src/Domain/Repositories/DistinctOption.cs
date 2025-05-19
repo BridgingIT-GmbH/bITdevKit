@@ -17,14 +17,12 @@ public class DistinctOption<TEntity>
     ///     Represents an option that allows for projection of distinct values
     ///     from a particular entity type.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public DistinctOption() { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DistinctOption{TEntity}" /> class.
     ///     Represents a distinct option for querying entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public DistinctOption(Expression<Func<TEntity, object>> expression)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));

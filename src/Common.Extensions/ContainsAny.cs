@@ -10,14 +10,8 @@ using System.Diagnostics;
 public static partial class Extensions
 {
     /// <summary>
-    ///     Determines whether the specified string contains any of the items.
+    /// Determines whether the specified string contains any of the items.
     /// </summary>
-    /// <param name="source">The source.</param>
-    /// <param name="items">The items.</param>
-    /// <param name="comp">The comp.</param>
-    /// <returns>
-    ///     <c>true</c> if the specified items contains any; otherwise, <c>false</c>.
-    /// </returns>
     [DebuggerStepThrough]
     public static bool ContainsAny(
         this string source,
@@ -42,6 +36,37 @@ public static partial class Extensions
             }
 
             if (source.Contains(item, comp))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether the source contains any of the specified items using the provided equality comparer.
+    /// </summary>
+    [DebuggerStepThrough]
+    public static bool ContainsAny<T>(
+        this IEnumerable<T> source,
+        IEnumerable<T> items,
+        IEqualityComparer<T> comparer = null)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        if (items is null)
+        {
+            return false;
+        }
+
+        var set = new HashSet<T>(source, comparer);
+        foreach (var item in items)
+        {
+            if (set.Contains(item))
             {
                 return true;
             }

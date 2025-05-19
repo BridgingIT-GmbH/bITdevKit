@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Xml.Linq;
 using Database;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -15,6 +16,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
 {
     private readonly ILogger<DatabaseCreatorService<TContext>> logger;
     private readonly IServiceProvider serviceProvider;
+    private readonly IDatabaseReadyService databaseReadyService;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseCreatorOptions options;
 
@@ -22,6 +24,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime applicationLifetime,
         IServiceProvider serviceProvider,
+        IDatabaseReadyService databaseReadyService = null,
         DatabaseCreatorOptions options = null)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
@@ -29,6 +32,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
         this.logger = loggerFactory?.CreateLogger<DatabaseCreatorService<TContext>>() ??
             NullLoggerFactory.Instance.CreateLogger<DatabaseCreatorService<TContext>>();
         this.serviceProvider = serviceProvider;
+        this.databaseReadyService = databaseReadyService;
         this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseCreatorOptions();
     }
@@ -111,11 +115,13 @@ public class DatabaseCreatorService<TContext> : IHostedService
                             await databaseCreator?.CreateTablesAsync(cancellationToken);
                         }
 
+                        this.databaseReadyService.SetReady(contextName);
                         this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
                     }
                 }
                 catch (Exception ex)
                 {
+                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
                     this.logger.LogError(ex, "{LogKey} database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
                 }
             }, cancellationToken);

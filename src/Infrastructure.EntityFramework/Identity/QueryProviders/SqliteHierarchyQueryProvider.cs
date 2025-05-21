@@ -11,21 +11,20 @@ public class SqliteHierarchyQueryProvider : IHierarchyQueryProvider
         // SQLite doesn't use schemas, so the schema parameter is ignored
         // SQLite does support recursive CTEs (Common Table Expressions) with the WITH RECURSIVE syntax since version 3.8.3
         return $@"
-            WITH RECURSIVE Hierarchy AS (
-                SELECT [{idColumn}], [{parentIdColumn}], 0 as Level
-                FROM [{tableName}]
-                WHERE [{idColumn}] = @p0
+        WITH RECURSIVE Hierarchy AS (
+            SELECT {idColumn}, {parentIdColumn}, 0 AS Level
+            FROM {tableName}
+            WHERE {idColumn} = @p0
 
-                UNION ALL
+            UNION ALL
 
-                SELECT p.[{idColumn}], p.[{parentIdColumn}], h.Level + 1
-                FROM [{tableName}] p
-                INNER JOIN Hierarchy h ON p.[{idColumn}] = h.[{parentIdColumn}]
-                WHERE p.[{parentIdColumn}] IS NOT NULL
-            )
-            SELECT [{idColumn}]
-            FROM Hierarchy
-            WHERE [{idColumn}] != @p0
-            ORDER BY Level;";
+            SELECT p.{idColumn}, p.{parentIdColumn}, h.Level + 1
+            FROM {tableName} p
+            INNER JOIN Hierarchy h ON p.{idColumn} = h.{parentIdColumn}
+        )
+        SELECT {idColumn}
+        FROM Hierarchy
+        WHERE {idColumn} != @p0
+        ORDER BY Level;";
     }
 }

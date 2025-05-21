@@ -229,7 +229,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         // Execute the query and return the list of parent IDs
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
         ////var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
-        var parentIds = ((IEnumerable)queryResult).Cast<object>()?.ToList();
+        var parentIds = ((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? [];
         //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - queryResult: {@queryResult}", queryResult);
 
         //// Dynamically cast queryResult to IQueryable<idType> and convert to IEnumerable< object >
@@ -240,9 +240,9 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         //var parentIds = enumerable?.Cast<object>()?.ToList(); // Box to object and materialize
         //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - parentIds: {@parentIds}", parentIds);
 
-        TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds?.Count ?? 0);
+        TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count());
 
-        return await Task.FromResult(parentIds?.AsEnumerable() ?? Array.Empty<object>().AsEnumerable()).AnyContext();
+        return await Task.FromResult(parentIds).AnyContext();
     }
 
     /// <inheritdoc/>

@@ -239,9 +239,9 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         var parentIds = enumerable?.Cast<object>()?.ToList(); // Box to object and materialize
         this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - parentIds: {@parentIds}", parentIds);
 
-        TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
+        TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds?.Count ?? 0);
 
-        return await Task.FromResult(parentIds?.AsEnumerable()).AnyContext();
+        return await Task.FromResult(parentIds?.AsEnumerable() ?? Array.Empty<object>().AsEnumerable()).AnyContext();
     }
 
     /// <inheritdoc/>

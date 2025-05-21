@@ -228,16 +228,17 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         // Execute the query and return the list of parent IDs
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
-        this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - queryResult: {@queryResult}", queryResult);
+        ////var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
+        var parentIds = ((IEnumerable)queryResult).Cast<object>()?.ToList();
+        //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - queryResult: {@queryResult}", queryResult);
 
-        // Dynamically cast queryResult to IQueryable<idType> and convert to IEnumerable< object >
-        var enumerableType = typeof(IQueryable<>).MakeGenericType(idType);
-        this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - enumerableType: {@enumerableType}", enumerableType);
-        var enumerable = enumerableType.GetMethod("AsEnumerable", Type.EmptyTypes).Invoke(queryResult, null) as IEnumerable;
-        this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - enumerable: {@enumerable}", enumerable);
-        //var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
-        var parentIds = enumerable?.Cast<object>()?.ToList(); // Box to object and materialize
-        this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - parentIds: {@parentIds}", parentIds);
+        //// Dynamically cast queryResult to IQueryable<idType> and convert to IEnumerable< object >
+        //var enumerableType = typeof(IQueryable<>).MakeGenericType(idType);
+        //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - enumerableType: {@enumerableType}", enumerableType);
+        //var enumerable = enumerableType.GetMethod("AsEnumerable", Type.EmptyTypes).Invoke(queryResult, null) as IEnumerable;
+        //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - enumerable: {@enumerable}", enumerable);
+        //var parentIds = enumerable?.Cast<object>()?.ToList(); // Box to object and materialize
+        //this.logger.LogInformation("+++++++++++++ GetHierarchyPathAsync - parentIds: {@parentIds}", parentIds);
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds?.Count ?? 0);
 

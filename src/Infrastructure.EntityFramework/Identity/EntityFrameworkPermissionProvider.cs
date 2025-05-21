@@ -230,7 +230,6 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
         var parentIds = (((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? []).ToList();
 
-        this.logger.LogInformation("+++++++++++++++++++++ parentIds={@parentIds}", parentIds);
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
 
         return await Task.FromResult(parentIds).AnyContext();

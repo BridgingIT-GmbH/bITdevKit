@@ -226,7 +226,8 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         var method = typeof(RelationalDatabaseFacadeExtensions).GetMethod(nameof(RelationalDatabaseFacadeExtensions.SqlQueryRaw)).MakeGenericMethod(idType);
 
         // Execute the query and return the list of parent IDs
-        var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
+        //var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
+        var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
         var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);

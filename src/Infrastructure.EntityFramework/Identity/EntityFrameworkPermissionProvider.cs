@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Collections;
 using System.Reflection;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
@@ -222,13 +223,17 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         // Use the same type as the entity ID for the query
-        var idType = entityConfiguration.ParentIdProperty.PropertyType;
+        var idType = entityConfiguration.ParentIdProperty.PropertyType; // Guid? (optional)
         var method = typeof(RelationalDatabaseFacadeExtensions).GetMethod(nameof(RelationalDatabaseFacadeExtensions.SqlQueryRaw)).MakeGenericMethod(idType);
 
         // Execute the query and return the list of parent IDs
-        //var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
-        var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
+
+        // Dynamically cast queryResult to IQueryable<idType> and convert to IEnumerable< object >
+        var enumerableType = typeof(IQueryable<>).MakeGenericType(idType);
+        var enumerable = enumerableType.GetMethod("AsEnumerable", Type.EmptyTypes).Invoke(queryResult, null) as IEnumerable;
+        //var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
+        var parentIds = enumerable.Cast<object>().ToList(); // Box to object and materialize
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
 

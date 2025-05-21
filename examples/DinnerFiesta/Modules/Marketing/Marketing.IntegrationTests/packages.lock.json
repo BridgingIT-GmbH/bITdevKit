@@ -2569,7 +2569,7 @@
           "BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Presentation": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentAssertions.Web": "[1.9.5, )",
-          "Microsoft.NET.Test.Sdk": "[17.13.0, )",
+          "Microsoft.NET.Test.Sdk": "[17.14.0, )",
           "NSubstitute": "[5.3.0, )",
           "Shouldly": "[4.3.0, )",
           "xunit": "[2.9.3, )"

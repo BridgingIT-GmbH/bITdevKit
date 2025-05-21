@@ -582,7 +582,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} permission evaluator - denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogPermissionDenied(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey}  permission evaluator - granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedFromParent(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
     }
 }

@@ -137,7 +137,7 @@
     <PackageVersion Include="Dumpify" Version="0.6.6" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.9.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.52.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.52.0" />
     <PackageVersion Include="MinVer" Version="6.0.0" />
@@ -170,6 +170,7 @@
     <PackageVersion Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
     <PackageVersion Include="System.Formats.Asn1" Version="9.0.5" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.8" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.10.0" />
   </ItemGroup>
 </Project>

@@ -1,75 +1,56 @@
 namespace BridgingIT.DevKit.Application.Notifications;
 
 using System;
-using BridgingIT.DevKit.Application.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 
 public class NotificationServiceBuilder
 {
-    private readonly IServiceCollection services;
-    private readonly NotificationServiceOptions options = new NotificationServiceOptions();
+    protected readonly IServiceCollection Services;
+    public readonly NotificationServiceOptions Options = new NotificationServiceOptions();
 
     public NotificationServiceBuilder(IServiceCollection services)
     {
-        this.services = services ?? throw new ArgumentNullException(nameof(services));
+        this.Services = services ?? throw new ArgumentNullException(nameof(services));
     }
 
-    public NotificationServiceBuilder WithSmtpSettings(Action<SmtpSettings> configure = null)
+    public virtual NotificationServiceBuilder WithSmtpSettings(Action<SmtpSettings> configure = null)
     {
         if (configure != null)
         {
-            configure(this.options.SmtpSettings);
+            configure(this.Options.SmtpSettings);
         }
         return this;
     }
 
-    public NotificationServiceBuilder WithEntityFrameworkProvider<TContext>()
-        where TContext : DbContext, INotificationEmailContext
+    public virtual NotificationServiceBuilder WithInMemoryProvider()
     {
-        this.services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationStorageProvider<TContext>>();
+        this.Services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();
         return this;
     }
 
-    public NotificationServiceBuilder WithInMemoryProvider()
+    public virtual NotificationServiceBuilder WithStorageProvider<TProvider>()
+        where TProvider : class, INotificationStorageProvider
     {
-        this.services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();
+        this.Services.AddScoped<INotificationStorageProvider, TProvider>();
         return this;
     }
 
-    public NotificationServiceBuilder WithOutbox<TContext>(
-        Builder<OutboxNotificationEmailOptionsBuilder, OutboxNotificationEmailOptions> optionsBuilder = null)
-        where TContext : DbContext, INotificationEmailContext
-    {
-        this.services.AddOutboxNotificationEmailService<TContext>(optionsBuilder);
-        this.options.IsOutboxConfigured = true;
-        return this;
-    }
-
-    public NotificationServiceBuilder WithRetryer(Action<RetryerBuilder> configure)
+    public virtual NotificationServiceBuilder WithRetryer(Action<RetryerBuilder> configure)
     {
         configure?.Invoke(new RetryerBuilder());
         return this;
     }
 
-    public NotificationServiceBuilder WithThrottler(Action<ThrottlerBuilder> configure)
+    public virtual NotificationServiceBuilder WithTimeout(TimeSpan timeout)
     {
-        configure?.Invoke(new ThrottlerBuilder());
+        this.Options.Timeout = timeout;
         return this;
     }
 
-    public NotificationServiceBuilder WithTimeout(TimeSpan timeout)
+    protected virtual void Validate()
     {
-        this.options.Timeout = timeout;
-        return this;
-    }
-
-    private void Validate()
-    {
-        if (string.IsNullOrEmpty(this.options.SmtpSettings.Host) || this.options.SmtpSettings.Port == 0)
+        if (string.IsNullOrEmpty(this.Options.SmtpSettings.Host) || this.Options.SmtpSettings.Port == 0)
         {
             throw new InvalidOperationException("SMTP host and port must be configured.");
         }
@@ -88,13 +69,13 @@ public static class NotificationServiceExtensions
 
         if (configuration != null)
         {
-            builder.options.SmtpSettings = configuration.GetSection("NotificationService:Email:Smtp").Get<SmtpSettings>() ?? new SmtpSettings();
-            builder.options.OutboxOptions = configuration.GetSection("NotificationService:Email:Outbox").Get<OutboxNotificationEmailOptions>() ?? new OutboxNotificationEmailOptions();
+            builder.Options.SmtpSettings = configuration.GetSection("NotificationService:Email:Smtp").Get<SmtpSettings>() ?? new SmtpSettings();
+            builder.Options.OutboxOptions = configuration.GetSection("NotificationService:Email:Outbox").Get<OutboxNotificationEmailOptions>() ?? new OutboxNotificationEmailOptions();
         }
 
         configure?.Invoke(builder);
 
-        builder.Validate();
+        //builder.Validate();
 
         if (typeof(TMessage) == typeof(EmailNotificationMessage))
         {
@@ -106,24 +87,9 @@ public static class NotificationServiceExtensions
             services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();
         }
 
-        services.AddSingleton(builder.options);
+        services.AddSingleton(builder.Options);
 
         return builder;
-    }
-
-    public static IServiceCollection AddOutboxNotificationEmailService<TContext>(
-        this IServiceCollection services,
-        Builder<OutboxNotificationEmailOptionsBuilder, OutboxNotificationEmailOptions> optionsBuilder = null)
-        where TContext : DbContext, INotificationEmailContext
-    {
-        var options = optionsBuilder?.Invoke(new OutboxNotificationEmailOptionsBuilder()).Build() ?? new OutboxNotificationEmailOptions();
-        services.AddSingleton(options);
-        services.AddSingleton<IOutboxNotificationEmailWorker, OutboxNotificationEmailWorker>();
-        services.AddSingleton<IOutboxNotificationEmailQueue>(sp => new OutboxNotificationEmailQueue(
-            sp.GetRequiredService<ILoggerFactory>(),
-            id => sp.GetRequiredService<IOutboxNotificationEmailWorker>().ProcessAsync(id)));
-        services.AddHostedService<OutboxNotificationEmailService>();
-        return services;
     }
 }
 
@@ -135,12 +101,4 @@ public class RetryerBuilder
     public RetryerBuilder WithProgress(IProgress<RetryProgress> progress) => this;
 }
 
-public class ThrottlerBuilder
-{
-    public ThrottlerBuilder Interval(TimeSpan interval) => this;
-    public ThrottlerBuilder WithProgress(IProgress<ThrottlerProgress> progress) => this;
-}
-
 public class RetryProgress { }
-
-public class ThrottlerProgress { }

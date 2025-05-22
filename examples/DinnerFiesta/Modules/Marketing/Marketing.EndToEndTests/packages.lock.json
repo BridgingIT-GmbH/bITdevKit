@@ -2141,6 +2141,7 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "MailKit": "[2.6.0, )",
+          "Microsoft.Extensions.Configuration.Binder": "[9.0.5, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.5, )"
         }
       },

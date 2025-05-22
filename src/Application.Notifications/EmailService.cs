@@ -15,14 +15,14 @@ public class EmailService : INotificationService<EmailMessage>
     private readonly INotificationStorageProvider storageProvider;
     private readonly NotificationServiceOptions options;
     private readonly ILogger<EmailService> logger;
-    private readonly ISmtpClient smtpClient;
+    private readonly SmtpClient smtpClient;
     private readonly IOutboxNotificationEmailQueue outboxQueue;
 
     public EmailService(
         INotificationStorageProvider storageProvider,
         NotificationServiceOptions options,
         ILogger<EmailService> logger,
-        ISmtpClient smtpClient,
+        SmtpClient smtpClient,
         IOutboxNotificationEmailQueue outboxQueue = null)
     {
         this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
@@ -130,16 +130,36 @@ public class EmailService : INotificationService<EmailMessage>
 
             await retryer.ExecuteAsync(
                 async ct => await timeoutHandler.ExecuteAsync(
-                    async ct => await this.smtpClient.SendAsync(mimeMessage, ct),
+                    async ct =>
+                    {
+                        await this.smtpClient.ConnectAsync(
+                            this.options.SmtpSettings.Host,
+                            this.options.SmtpSettings.Port,
+                            this.options.SmtpSettings.UseSsl,
+                            ct);
+
+                        if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&
+                            !string.IsNullOrEmpty(this.options.SmtpSettings.Password))
+                        {
+                            await this.smtpClient.AuthenticateAsync(
+                                this.options.SmtpSettings.Username,
+                                this.options.SmtpSettings.Password,
+                                ct);
+                        }
+
+                        await this.smtpClient.SendAsync(mimeMessage, ct);
+
+                        await this.smtpClient.DisconnectAsync(true, ct);
+                    },
                     cancellationToken),
                 cancellationToken);
 
-            this.logger.LogInformation("Successfully sent email with ID {MessageId}", message.Id);
+            this.logger.LogInformation("{LogKey} Successfully sent email with ID {MessageId}", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Failed to send email with ID {MessageId}", message.Id);
+            this.logger.LogError(ex, "{LogKey} Failed to send email with ID {MessageId}", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to send email: {ex.Message}")));
         }
     }

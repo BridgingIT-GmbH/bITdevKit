@@ -3,6 +3,9 @@ namespace BridgingIT.DevKit.Application.Notifications;
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using BridgingIT.DevKit.Infrastructure.Notifications;
+using MailKit.Net.Smtp;
 
 public class NotificationServiceBuilder
 {
@@ -20,6 +23,12 @@ public class NotificationServiceBuilder
         {
             configure(this.Options.SmtpSettings);
         }
+        return this;
+    }
+
+    public virtual NotificationServiceBuilder WithSmtpClient()
+    {
+        this.Services.AddSingleton<SmtpClient>();
         return this;
     }
 
@@ -75,7 +84,7 @@ public static class NotificationServiceExtensions
 
         configure?.Invoke(builder);
 
-        //builder.Validate();
+        // builder.Validate();
 
         if (typeof(TMessage) == typeof(EmailMessage))
         {

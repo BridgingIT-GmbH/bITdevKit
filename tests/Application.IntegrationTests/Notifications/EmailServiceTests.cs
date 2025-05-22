@@ -17,7 +17,6 @@ using Shouldly;
 using Xunit;
 using MimeKit;
 using BridgingIT.DevKit.Application.IntegrationTests;
-using MailKit.Net.Smtp;
 
 public class EmailServiceTests : IAsyncLifetime
 {
@@ -34,39 +33,31 @@ public class EmailServiceTests : IAsyncLifetime
         services.AddLogging(builder => builder.AddConsole());
         services.AddDbContext<StubDbContext>(options =>
             options.UseSqlServer(this.fixture.SqlConnectionString));
-        services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationStorageProvider<StubDbContext>>();
-        services.AddSingleton<IOutboxNotificationEmailQueue>(sp => Substitute.For<IOutboxNotificationEmailQueue>());
-        services.AddSingleton<ISmtpClient>(sp => new SmtpClient(new SmtpSettings
-        {
-            Host = "localhost",
-            Port = 1025,
-            UseSsl = false
-        }));
-        this.options = new NotificationServiceOptions
-        {
-            SmtpSettings = new SmtpSettings
-            {
-                Host = "localhost",
-                Port = 1025,
-                UseSsl = false,
-                SenderName = "Test App",
-                SenderAddress = "test@app.com"
-            },
-            OutboxOptions = new OutboxNotificationEmailOptions
-            {
-                Enabled = true,
-                ProcessingMode = OutboxNotificationEmailProcessingMode.Interval,
-                ProcessingCount = 100,
-                RetryCount = 3
-            },
-            IsOutboxConfigured = true
-        };
-        services.AddSingleton(this.options);
-        services.AddScoped<INotificationService<EmailMessage>, EmailService>();
+
+        // Use fluent builder to set up services
+        var builder = services.AddNotificationService<EmailMessage>(null, b =>
+            new NotificationServiceInfrastructureBuilder(services)
+                .WithSmtpSettings(s =>
+                {
+                    s.Host = new Uri(this.fixture.MailHogSmtpConnectionString).Host;
+                    s.Port = new Uri(this.fixture.MailHogSmtpConnectionString).Port;
+                    s.UseSsl = false;
+                    s.SenderName = "Test App";
+                    s.SenderAddress = "test@app.com";
+                })
+                .WithSmtpClient());
+                // .WithEntityFrameworkProvider<StubDbContext>()
+                // .WithOutbox<StubDbContext>(o => o
+                //     .ProcessingMode(OutboxNotificationEmailProcessingMode.Interval)
+                //     .ProcessingCount(100)
+                //     .RetryCount(3))
+                // .WithRetryer(r => r.MaxRetries(3).Delay(TimeSpan.FromSeconds(1)).UseExponentialBackoff())
+                // .WithTimeout(TimeSpan.FromSeconds(30)));
 
         this.serviceProvider = this.fixture.ServiceProvider;
         this.storageProvider = this.serviceProvider.GetRequiredService<INotificationStorageProvider>();
         this.outboxQueue = this.serviceProvider.GetRequiredService<IOutboxNotificationEmailQueue>();
+        this.options = this.serviceProvider.GetRequiredService<NotificationServiceOptions>();
     }
 
     public async Task InitializeAsync()
@@ -263,7 +254,9 @@ public class EmailServiceTests : IAsyncLifetime
     {
         // Arrange
         var emailService = this.serviceProvider.GetRequiredService<INotificationService<EmailMessage>>();
-        var worker = new OutboxNotificationEmailWorker(Substitute.For<ILoggerFactory>(), this.serviceProvider);
+        var worker = new OutboxNotificationEmailWorker(
+            Substitute.For<ILoggerFactory>(),
+            this.serviceProvider);
         var message = new EmailMessage
         {
             Id = Guid.NewGuid(),
@@ -290,7 +283,7 @@ public class EmailServiceTests : IAsyncLifetime
         storedMessage.ShouldNotBeNull();
         storedMessage.Status.ShouldBe(EmailStatus.Failed);
         storedMessage.SentAt.ShouldNotBeNull();
-        // storedMessage.PropertiesJson.ShouldContain("Max retries reached");
+        storedMessage.PropertiesJson.ShouldContain("Max retries reached");
     }
 }
 

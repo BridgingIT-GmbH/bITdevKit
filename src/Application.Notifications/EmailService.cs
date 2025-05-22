@@ -10,7 +10,7 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 
-public class EmailService : INotificationService<EmailNotificationMessage>
+public class EmailService : INotificationService<EmailMessage>
 {
     private readonly INotificationStorageProvider storageProvider;
     private readonly NotificationServiceOptions options;
@@ -33,7 +33,7 @@ public class EmailService : INotificationService<EmailNotificationMessage>
     }
 
     public async Task<Result> SendAsync(
-        EmailNotificationMessage message,
+        EmailMessage message,
         NotificationSendOptions options,
         CancellationToken cancellationToken)
     {
@@ -84,7 +84,7 @@ public class EmailService : INotificationService<EmailNotificationMessage>
         }
     }
 
-    public async Task<Result> QueueAsync(EmailNotificationMessage message, CancellationToken cancellationToken)
+    public async Task<Result> QueueAsync(EmailMessage message, CancellationToken cancellationToken)
     {
         if (message == null)
         {
@@ -120,7 +120,7 @@ public class EmailService : INotificationService<EmailNotificationMessage>
         }
     }
 
-    private async Task<Result> SendImmediatelyAsync(EmailNotificationMessage message, CancellationToken cancellationToken)
+    private async Task<Result> SendImmediatelyAsync(EmailMessage message, CancellationToken cancellationToken)
     {
         try
         {
@@ -144,7 +144,7 @@ public class EmailService : INotificationService<EmailNotificationMessage>
         }
     }
 
-    private MimeMessage MapToMimeMessage(EmailNotificationMessage message)
+    private MimeMessage MapToMimeMessage(EmailMessage message)
     {
         var mimeMessage = new MimeMessage();
 

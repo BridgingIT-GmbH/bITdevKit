@@ -248,7 +248,7 @@ public class FileProcessorTests
 // Simple in-memory logger for testing
 public class TestLogger<T> : ILogger<T>
 {
-    public List<string> Messages { get; } = new();
+    public List<string> Messages { get; } = [];
 
     public IDisposable BeginScope<TState>(TState state) => null;
 

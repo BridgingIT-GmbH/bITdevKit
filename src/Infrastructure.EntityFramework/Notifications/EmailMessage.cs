@@ -13,7 +13,7 @@ using BridgingIT.DevKit.Application.Notifications;
 [Index(nameof(Priority))]
 [Index(nameof(CreatedAt))]
 [Index(nameof(SentAt))]
-public class EmailMessage
+public class EmailMessageEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -93,11 +93,11 @@ public class EmailMessage
     [Timestamp]
     public byte[] RowVersion { get; set; }
 
-    public List<EmailAttachment> Attachments { get; set; } = new();
+    public List<EmailAttachmentEntity> Attachments { get; set; } = new();
 }
 
 [Table("__EmailMessage_Attachments")]
-public class EmailAttachment
+public class EmailAttachmentEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -122,5 +122,5 @@ public class EmailAttachment
     public bool IsEmbedded { get; set; }
 
     [ForeignKey(nameof(EmailMessageId))]
-    public EmailMessage EmailMessage { get; set; }
+    public EmailMessageEntity EmailMessage { get; set; }
 }

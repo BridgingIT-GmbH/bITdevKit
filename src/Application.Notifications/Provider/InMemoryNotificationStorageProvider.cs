@@ -12,20 +12,20 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 public class InMemoryNotificationStorageProvider : INotificationStorageProvider
 {
-    private readonly ConcurrentDictionary<Guid, EmailNotificationMessage> messages;
+    private readonly ConcurrentDictionary<Guid, EmailMessage> messages;
     private readonly ILogger<InMemoryNotificationStorageProvider> logger;
 
     public InMemoryNotificationStorageProvider(
         ILogger<InMemoryNotificationStorageProvider> logger = null)
     {
-        this.messages = new ConcurrentDictionary<Guid, EmailNotificationMessage>();
+        this.messages = new ConcurrentDictionary<Guid, EmailMessage>();
         this.logger = logger ?? NullLogger<InMemoryNotificationStorageProvider>.Instance;
     }
 
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -45,7 +45,7 @@ public class InMemoryNotificationStorageProvider : INotificationStorageProvider
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -70,7 +70,7 @@ public class InMemoryNotificationStorageProvider : INotificationStorageProvider
     public async Task<Result> DeleteAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -97,7 +97,7 @@ public class InMemoryNotificationStorageProvider : INotificationStorageProvider
         CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (typeof(TMessage) == typeof(EmailNotificationMessage))
+        if (typeof(TMessage) == typeof(EmailMessage))
         {
             try
             {

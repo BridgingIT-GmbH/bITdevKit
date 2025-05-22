@@ -3,7 +3,7 @@ namespace BridgingIT.DevKit.Application.Notifications;
 using System;
 using System.Collections.Generic;
 
-public class EmailNotificationMessage : INotificationMessage
+public class EmailMessage : INotificationMessage
 {
     public Guid Id { get; set; }
 

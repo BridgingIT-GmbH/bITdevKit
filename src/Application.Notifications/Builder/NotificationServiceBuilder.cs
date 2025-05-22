@@ -77,9 +77,9 @@ public static class NotificationServiceExtensions
 
         //builder.Validate();
 
-        if (typeof(TMessage) == typeof(EmailNotificationMessage))
+        if (typeof(TMessage) == typeof(EmailMessage))
         {
-            services.AddScoped<INotificationService<EmailNotificationMessage>, EmailService>();
+            services.AddScoped<INotificationService<EmailMessage>, EmailService>();
         }
 
         if (!services.Any(d => d.ServiceType == typeof(INotificationStorageProvider)))

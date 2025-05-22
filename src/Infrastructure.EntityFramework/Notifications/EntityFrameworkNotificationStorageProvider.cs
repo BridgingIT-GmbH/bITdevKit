@@ -28,7 +28,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -50,7 +50,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -85,7 +85,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
     public async Task<Result> DeleteAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (message is EmailNotificationMessage emailMessage)
+        if (message is EmailMessage emailMessage)
         {
             try
             {
@@ -116,7 +116,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
         CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
-        if (typeof(TMessage) == typeof(EmailNotificationMessage))
+        if (typeof(TMessage) == typeof(EmailMessage))
         {
             try
             {
@@ -139,9 +139,9 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
         return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
-    private EmailMessage MapToEntity(EmailNotificationMessage message)
+    private EmailMessageEntity MapToEntity(EmailMessage message)
     {
-        var entity = new EmailMessage
+        var entity = new EmailMessageEntity
         {
             Id = message.Id,
             Subject = message.Subject,
@@ -173,7 +173,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
         return entity;
     }
 
-    private void MapToEntity(EmailNotificationMessage message, EmailMessage entity)
+    private void MapToEntity(EmailMessage message, EmailMessageEntity entity)
     {
         entity.Subject = message.Subject;
         entity.Body = message.Body;
@@ -204,9 +204,9 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
         }));
     }
 
-    private EmailNotificationMessage MapToMessage(EmailMessage entity)
+    private EmailMessage MapToMessage(EmailMessageEntity entity)
     {
-        return new EmailNotificationMessage
+        return new EmailMessage
         {
             Id = entity.Id,
             To = JsonSerializer.Deserialize<List<string>>(entity.To, DefaultSystemTextJsonSerializerOptions.Create()),

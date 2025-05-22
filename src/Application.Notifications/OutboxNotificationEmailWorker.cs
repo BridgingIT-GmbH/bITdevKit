@@ -18,7 +18,7 @@ public class OutboxNotificationEmailWorker : IOutboxNotificationEmailWorker
     public OutboxNotificationEmailWorker(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
-        OutboxNotificationEmailOptions options)
+        OutboxNotificationEmailOptions options = null)
     {
         this.logger = loggerFactory?.CreateLogger<OutboxNotificationEmailWorker>() ?? NullLoggerFactory.Instance.CreateLogger<OutboxNotificationEmailWorker>();
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -29,14 +29,14 @@ public class OutboxNotificationEmailWorker : IOutboxNotificationEmailWorker
     {
         using var scope = this.serviceProvider.CreateScope();
         var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
-        var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailNotificationMessage>>();
+        var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
         var count = 0;
 
         this.logger.LogInformation("{LogKey} Outbox notification emails processing (messageId={MessageId})", "NOT", messageId);
 
         try
         {
-            var messagesResult = await storageProvider.GetPendingAsync<EmailNotificationMessage>(
+            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(
                 this.options.ProcessingCount,
                 this.options.RetryCount,
                 cancellationToken);
@@ -75,7 +75,7 @@ public class OutboxNotificationEmailWorker : IOutboxNotificationEmailWorker
 
         try
         {
-            var messagesResult = await storageProvider.GetPendingAsync<EmailNotificationMessage>(
+            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(
                 int.MaxValue,
                 int.MaxValue,
                 cancellationToken);
@@ -108,9 +108,9 @@ public class OutboxNotificationEmailWorker : IOutboxNotificationEmailWorker
     }
 
     private async Task ProcessEmail(
-        EmailNotificationMessage message,
+        EmailMessage message,
         INotificationStorageProvider storageProvider,
-        INotificationService<EmailNotificationMessage> emailService,
+        INotificationService<EmailMessage> emailService,
         CancellationToken cancellationToken)
     {
         if (message.RetryCount >= this.options.RetryCount)

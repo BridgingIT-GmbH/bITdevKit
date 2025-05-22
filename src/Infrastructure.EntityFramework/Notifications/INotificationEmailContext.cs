@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 public interface INotificationEmailContext
 {
-    DbSet<EmailMessage> OutboxNotificationEmails { get; set; }
+    DbSet<EmailMessageEntity> OutboxNotificationEmails { get; set; }
 
-    DbSet<EmailAttachment> OutboxNotificationEmailAttachments { get; set; }
+    DbSet<EmailAttachmentEntity> OutboxNotificationEmailAttachments { get; set; }
 }

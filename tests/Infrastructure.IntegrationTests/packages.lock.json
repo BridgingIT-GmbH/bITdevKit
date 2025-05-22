@@ -2085,6 +2085,7 @@
           "Bogus": "[35.6.3, )",
           "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
           "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Notifications": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities.Xunit": "[1.0.0, )",

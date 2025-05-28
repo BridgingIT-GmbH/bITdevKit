@@ -181,7 +181,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
 
     public async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
-        TypedLogger.LogRename(this.logger, Constants.LogKey, this.innerProvider.LocationName, oldPath, newPath);
+        TypedLogger.LogRenameFile(this.logger, Constants.LogKey, this.innerProvider.LocationName, oldPath, newPath);
         var result = await this.innerProvider.RenameFileAsync(oldPath, newPath, progress, cancellationToken);
         if (result.IsSuccess)
         {
@@ -190,6 +190,21 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         else
         {
             this.logger.LogWarning("{LogKey} file storage: failed to rename file from '{OldPath}' to '{NewPath}': {Errors}", Constants.LogKey, oldPath, newPath, result.Errors);
+        }
+        return result;
+    }
+
+    public async Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default)
+    {
+        TypedLogger.LogRenameDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, oldPath, newPath);
+        var result = await this.innerProvider.RenameDirectoryAsync(oldPath, newPath, cancellationToken);
+        if (result.IsSuccess)
+        {
+            this.logger.LogInformation("{LogKey} file storage: successfully renamed directory from '{OldPath}' to '{NewPath}'", Constants.LogKey, oldPath, newPath);
+        }
+        else
+        {
+            this.logger.LogWarning("{LogKey} file storage: failed to rename directory from '{OldPath}' to '{NewPath}': {Errors}", Constants.LogKey, oldPath, newPath, result.Errors);
         }
         return result;
     }
@@ -366,7 +381,10 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         public static partial void LogCopy(ILogger logger, string logKey, string locationName, string source, string destination);
 
         [LoggerMessage(10, LogLevel.Information, "{LogKey} file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
-        public static partial void LogRename(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
+        public static partial void LogRenameFile(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
+
+        [LoggerMessage(10, LogLevel.Information, "{LogKey} file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
+        public static partial void LogRenameDirectory(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
 
         [LoggerMessage(11, LogLevel.Information, "{LogKey} file storage: move (type={LocationName}, source={Source}, destination={Destination})")]
         public static partial void LogMove(ILogger logger, string logKey, string locationName, string source, string destination);

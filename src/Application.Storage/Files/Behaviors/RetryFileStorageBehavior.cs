@@ -266,6 +266,20 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    public async Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await this.ExecuteWithRetryAsync(() => this.innerProvider.RenameDirectoryAsync(oldPath, newPath, cancellationToken), "rename", oldPath, cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result.Failure()
+                .WithError(ex.InnerException as IResultError ?? new ExceptionError(ex))
+                .WithMessage($"Failed to rename directory from '{oldPath}' to '{newPath}' after retries");
+        }
+    }
+
     public async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try

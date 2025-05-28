@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using BridgingIT.DevKit.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -13,7 +14,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.
@@ -825,6 +825,89 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 return Result.Failure()
                     .WithError(new ExceptionError(ex))
                     .WithMessage($"Unexpected error renaming file from '{path}' to '{destinationPath}'");
+            }
+        }
+        finally
+        {
+            this.ReleaseSemaphore(fullOld, oldSemaphore);
+            this.ReleaseSemaphore(fullNew, newSemaphore);
+        }
+    }
+
+    public override async Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
+        {
+            return Result.Failure()
+                .WithError(new FileSystemError("Old or new path cannot be null or empty", $"{path ?? destinationPath}"))
+                .WithMessage("Invalid paths provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled renaming directory from '{path}' to '{destinationPath}'");
+        }
+
+        var fullOld = this.GetFullPath(path);
+        var fullNew = this.GetFullPath(destinationPath);
+        var oldSemaphore = this.GetSemaphore(fullOld);
+        var newSemaphore = this.GetSemaphore(fullNew);
+
+        try
+        {
+            if (!await oldSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for old directory access"))
+                    .WithMessage($"Failed to acquire lock for renaming directory from '{path}'");
+            }
+
+            if (!await newSemaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for new directory access"))
+                    .WithMessage($"Failed to acquire lock for renaming directory to '{destinationPath}'");
+            }
+
+            this.Initialize();
+            if (!Directory.Exists(fullOld))
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Directory not found", path))
+                    .WithMessage($"Failed to rename directory from '{path}' to '{destinationPath}'");
+            }
+
+            try
+            {
+                var parentDir = Path.GetDirectoryName(fullNew);
+                if (!string.IsNullOrEmpty(parentDir) && !Directory.Exists(parentDir))
+                {
+                    Directory.CreateDirectory(parentDir);
+                }
+
+                Directory.Move(fullOld, fullNew);
+                return Result.Success()
+                    .WithMessage($"Renamed directory from '{path}' to '{destinationPath}'");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Result.Failure()
+                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithMessage($"Permission denied for directory at '{path}' or '{destinationPath}'");
+            }
+            catch (IOException ex)
+            {
+                return Result.Failure()
+                    .WithError(new FileSystemError("Disk or file system error", path, ex))
+                    .WithMessage($"Failed to rename directory from '{path}' to '{destinationPath}'");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure()
+                    .WithError(new ExceptionError(ex))
+                    .WithMessage($"Unexpected error renaming directory from '{path}' to '{destinationPath}'");
             }
         }
         finally

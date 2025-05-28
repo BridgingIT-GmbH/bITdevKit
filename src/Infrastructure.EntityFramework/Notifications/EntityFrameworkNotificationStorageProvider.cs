@@ -159,16 +159,16 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
             ReplyTo = message.ReplyTo == null ? null : JsonSerializer.Serialize(message.ReplyTo, DefaultSystemTextJsonSerializerOptions.Create()),
             Headers = JsonSerializer.Serialize(message.Headers, DefaultSystemTextJsonSerializerOptions.Create()),
             PropertiesJson = JsonSerializer.Serialize(message.Properties, DefaultSystemTextJsonSerializerOptions.Create()),
-            Attachments = message.Attachments.Select(a => new EmailAttachment
-            {
-                Id = a.Id,
-                EmailMessageId = message.Id,
-                FileName = a.FileName,
-                ContentType = a.ContentType,
-                Content = a.Content,
-                ContentId = a.ContentId,
-                IsEmbedded = a.IsEmbedded
-            }).ToList()
+            //Attachments = message.Attachments.Select(a => new EmailAttachment
+            //{
+            //    Id = a.Id,
+            //    EmailMessageId = message.Id,
+            //    FileName = a.FileName,
+            //    ContentType = a.ContentType,
+            //    Content = a.Content,
+            //    ContentId = a.ContentId,
+            //    IsEmbedded = a.IsEmbedded
+            //}).ToList()
         };
         return entity;
     }
@@ -192,16 +192,16 @@ public class EntityFrameworkNotificationStorageProvider<TContext> : INotificatio
         entity.PropertiesJson = JsonSerializer.Serialize(message.Properties, DefaultSystemTextJsonSerializerOptions.Create());
 
         entity.Attachments.Clear();
-        entity.Attachments.AddRange(message.Attachments.Select(a => new EmailAttachment
-        {
-            Id = a.Id,
-            EmailMessageId = message.Id,
-            FileName = a.FileName,
-            ContentType = a.ContentType,
-            Content = a.Content,
-            ContentId = a.ContentId,
-            IsEmbedded = a.IsEmbedded
-        }));
+        //entity.Attachments.AddRange(message.Attachments.Select(a => new EmailAttachment
+        //{
+        //    Id = a.Id,
+        //    EmailMessageId = message.Id,
+        //    FileName = a.FileName,
+        //    ContentType = a.ContentType,
+        //    Content = a.Content,
+        //    ContentId = a.ContentId,
+        //    IsEmbedded = a.IsEmbedded
+        //}));
     }
 
     private EmailMessage MapToMessage(EmailMessageEntity entity)

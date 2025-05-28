@@ -52,6 +52,9 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
     public Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.RenameFileAsync(oldPath, newPath, progress, cancellationToken);
 
+    public Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default) =>
+        this.innerProvider.RenameDirectoryAsync(oldPath, newPath, cancellationToken);
+
     public Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.MoveFileAsync(sourcePath, destinationPath, progress, cancellationToken);
 

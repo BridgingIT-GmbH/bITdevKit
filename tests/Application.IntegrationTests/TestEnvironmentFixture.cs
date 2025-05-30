@@ -13,11 +13,11 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
-using System.Net.Http;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
@@ -54,6 +54,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
         this.MailHogContainer = new ContainerBuilder()
             .WithImage("mailhog/mailhog:latest")
             .WithNetworkAliases(this.NetworkName)
+            //.WithExposedPort(1025).WithExposedPort(8025)
             .WithPortBinding(1025, 1025) // SMTP port
             .WithPortBinding(8025, 8025) // HTTP API/UI port
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1025))
@@ -115,44 +116,59 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await this.Network.CreateAsync()
-            .AnyContext();
+        await this.Network.CreateAsync().AnyContext();
 
-        await this.SqlContainer.StartAsync()
-            .AnyContext();
+        try
+        {
+            await this.SqlContainer.StartAsync().AnyContext();
+        }
+        catch (Docker.DotNet.DockerApiException ex)
+        {
+            // Handle SQL Server startup failure gracefully, e.g., log the error
+            this.Output?.WriteLine($"Failed to start SQL Server container: {ex.Message}");
+        }
 
         if (!IsCIEnvironment)
         {
             //await this.CosmosContainer.StartAsync().AnyContext();
         }
 
-        await this.AzuriteContainer.StartAsync()
-            .AnyContext();
+        try
+        {
+            await this.AzuriteContainer.StartAsync().AnyContext();
+        }
+        catch (Docker.DotNet.DockerApiException ex)
+        {
+            // Handle Azurite startup failure gracefully, e.g., log the error
+            this.Output?.WriteLine($"Failed to start Azurite container: {ex.Message}");
+        }
 
-        await this.MailHogContainer.StartAsync()
-            .AnyContext();
+        try
+        {
+            await this.MailHogContainer.StartAsync().AnyContext();
+        }
+        catch (Docker.DotNet.DockerApiException ex)
+        {
+            // Handle MailHog startup failure gracefully, e.g., log the error
+            this.Output?.WriteLine($"Failed to start MailHog container: {ex.Message}");
+        }
 
         //await this.RabbitMQContainer.StartAsync().AnyContext();
     }
 
     public async Task DisposeAsync()
     {
-        await this.SqlContainer.DisposeAsync()
-            .AnyContext();
+        await this.SqlContainer.DisposeAsync().AnyContext();
 
-        await this.CosmosContainer.DisposeAsync()
-            .AnyContext();
+        await this.CosmosContainer.DisposeAsync().AnyContext();
 
-        await this.AzuriteContainer.DisposeAsync()
-            .AnyContext();
+        await this.AzuriteContainer.DisposeAsync().AnyContext();
 
-        await this.MailHogContainer.DisposeAsync()
-            .AnyContext();
+        await this.MailHogContainer.DisposeAsync().AnyContext();
 
         //await this.RabbitMQContainer.DisposeAsync().AnyContext();
 
-        await this.Network.DeleteAsync()
-            .AnyContext();
+        await this.Network.DeleteAsync().AnyContext();
     }
 
     public HttpClient GetMailHogApiClient()

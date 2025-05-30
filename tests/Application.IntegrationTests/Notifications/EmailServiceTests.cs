@@ -21,12 +21,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
+[IntegrationTest("Application")]
+[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EmailServiceTests : IAsyncLifetime
 {
     private readonly TestEnvironmentFixture fixture;
     private INotificationStorageProvider storageProvider;
-    private NotificationServiceOptions options;
-    private IServiceProvider serviceProvider;
+    private readonly NotificationServiceOptions options;
+    private readonly IServiceProvider serviceProvider;
     private IOutboxNotificationEmailQueue outboxQueue;
 
     public EmailServiceTests(ITestOutputHelper output)

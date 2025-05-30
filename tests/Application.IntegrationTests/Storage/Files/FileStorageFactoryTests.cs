@@ -14,7 +14,7 @@ using Xunit;
 using System.Threading.Tasks;
 using System.Text;
 
-[IntegrationTest("Storage")]
+[IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {

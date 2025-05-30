@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-[IntegrationTest("Storage")]
+[IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))]
 public class FileStorageProviderTreeTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {

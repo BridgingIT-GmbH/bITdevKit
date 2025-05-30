@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-[IntegrationTest("Storage")]
+[IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {

@@ -1,14 +1,19 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.Notifications;
 
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public class InMemoryNotificationStorageProvider(
     ILogger<InMemoryNotificationStorageProvider> logger = null) : INotificationStorageProvider
@@ -23,7 +28,7 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogInformation("Saving EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("Saving EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
@@ -48,7 +53,7 @@ public class InMemoryNotificationStorageProvider(
                     return await Task.FromResult(Result.Failure().WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogInformation("Updating EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("Updating EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
@@ -73,7 +78,7 @@ public class InMemoryNotificationStorageProvider(
                     return await Task.FromResult(Result.Failure().WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogInformation("Deleting EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("Deleting EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
@@ -87,7 +92,7 @@ public class InMemoryNotificationStorageProvider(
 
     public async Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(
         int batchSize,
-        int maxRetries,
+        //int maxRetries,
         CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -95,12 +100,11 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogInformation("Retrieving up to {BatchSize} pending EmailNotificationMessages with max retries {MaxRetries}", batchSize, maxRetries);
+                this.logger.LogDebug("Retrieving up to {BatchSize} pending EmailNotificationMessages with max retries", batchSize);
                 var pendingMessages = this.messages.Values
-                    .Where(m => m.Status == EmailStatus.Pending && m.RetryCount < maxRetries)
+                    .Where(m => m.Status == EmailStatus.Pending /*&& m.RetryCount < maxRetries*/)
                     .OrderBy(m => m.CreatedAt)
-                    .Take(batchSize)
-                    .ToList();
+                    .Take(batchSize).ToList();
                 return await Task.FromResult(Result<IEnumerable<TMessage>>.Success(pendingMessages.Cast<TMessage>()));
             }
             catch (Exception ex)

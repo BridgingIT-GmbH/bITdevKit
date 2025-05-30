@@ -28,11 +28,11 @@ public class OutboxNotificationEmailWorker(
         var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
         var count = 0;
 
-        this.logger.LogInformation("{LogKey} outbox notification emails processing (messageId={MessageId})", Constants.LogKey, messageId);
+        this.logger.LogDebug("{LogKey} outbox notification emails processing (messageId={MessageId})", Constants.LogKey, messageId);
 
         try
         {
-            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(this.options.ProcessingCount, this.options.RetryCount, cancellationToken);
+            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(this.options.ProcessingCount/*, this.options.RetryCount*/, cancellationToken);
             if (!messagesResult.IsSuccess)
             {
                 this.logger.LogError("{LogKey} failed to retrieve pending messages: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);
@@ -51,7 +51,7 @@ public class OutboxNotificationEmailWorker(
                 await this.ProcessEmail(message, storageProvider, emailService, cancellationToken);
             }
 
-            this.logger.LogInformation("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+            this.logger.LogDebug("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
         }
         catch (Exception ex)
         {
@@ -68,7 +68,7 @@ public class OutboxNotificationEmailWorker(
 
         try
         {
-            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(int.MaxValue, int.MaxValue, cancellationToken);
+            var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(int.MaxValue/*, int.MaxValue*/, cancellationToken);
             if (!messagesResult.IsSuccess)
             {
                 this.logger.LogError("{LogKey} failed to retrieve messages for purge: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);

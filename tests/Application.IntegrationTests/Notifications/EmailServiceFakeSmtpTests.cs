@@ -40,7 +40,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
         services.AddNotificationService<EmailMessage>(null, b => b
             .WithEntityFrameworkStorageProvider<StubDbContext>()
             .WithOutbox<StubDbContext>(o => o.Enabled(true))
-            .WithFakeSmtpClient()
+            .WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = 256 })
             .WithSmtpSettings(s =>
             {
                 s.Host = "127.0.0.1";

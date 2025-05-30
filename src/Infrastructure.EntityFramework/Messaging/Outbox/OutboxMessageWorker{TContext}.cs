@@ -207,12 +207,10 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string messageId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxMessageProcessedCount);
 
         [LoggerMessage(2, LogLevel.Information, "{LogKey} outbox messages purging (context={DbContextType})")]

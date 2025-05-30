@@ -14,6 +14,6 @@ public interface INotificationStorageProvider
     Task<Result> DeleteAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage;
 
-    Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(int batchSize, int maxRetries, CancellationToken cancellationToken)
+    Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(int batchSize/*, int maxRetries*/, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage;
 }

@@ -32,7 +32,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             try
             {
                 var entity = this.MapToEntity(emailMessage);
-                this.logger.LogInformation("{LogKey} saving EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} saving EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
                 this.context.NotificationsEmails.Add(entity);
 
                 await this.context.SaveChangesAsync(cancellationToken);
@@ -66,7 +66,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
                         .WithError(new Error($"EmailMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogInformation("{LogKey} updating EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} updating EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
                 this.context.NotificationsEmails.Update(entity);
                 await this.context.SaveChangesAsync(cancellationToken);
@@ -105,7 +105,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
                     return await Task.FromResult(Result.Failure().WithError(new Error($"EmailMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogInformation("{LogKey} deleting EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} deleting EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
                 this.context.NotificationsEmails.Remove(entity);
                 await this.context.SaveChangesAsync(cancellationToken);
 
@@ -124,7 +124,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
 
     public async Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(
         int batchSize,
-        int maxRetries,
+        //int maxRetries,
         CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -132,7 +132,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
         {
             try
             {
-                this.logger.LogInformation("{LogKey} retrieving up to {BatchSize} pending EmailMessages with max retries {MaxRetries}", Application.Notifications.Constants.LogKey, batchSize, maxRetries);
+                this.logger.LogDebug("{LogKey} retrieving up to {BatchSize} pending EmailMessages", Application.Notifications.Constants.LogKey, batchSize);
                 var entities = await this.context.NotificationsEmails
                     .Where(m => m.Status == EmailStatus.Pending/* && m.RetryCount < maxRetries*/)
                     .Include(m => m.Attachments)

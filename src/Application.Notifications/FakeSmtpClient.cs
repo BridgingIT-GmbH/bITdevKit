@@ -396,7 +396,7 @@ public class FakeSmtpClient : ISmtpClient
         var bcc = message.Bcc.Mailboxes;
 
         var sb = new StringBuilder();
-        sb.AppendLine("--- Email Message ---");
+        sb.AppendLine("--- email message ---");
         sb.AppendLine($"  Message-ID: {message.MessageId}");
         sb.AppendLine($"  From: {from}");
         sb.AppendLine($"  To: {string.Join("; ", to.Select(r => r.ToString()))}");

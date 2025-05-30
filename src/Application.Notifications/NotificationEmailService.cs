@@ -137,6 +137,7 @@ public class NotificationEmailService(
                 async ct => await timeoutHandler.ExecuteAsync(
                     async ct =>
                     {
+                        this.logger.LogInformation("{LogKey} mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
                         await this.smtpClient.ConnectAsync(this.options.SmtpSettings.Host, this.options.SmtpSettings.Port, this.options.SmtpSettings.UseSsl, ct);
 
                         if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&

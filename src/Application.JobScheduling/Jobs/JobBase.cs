@@ -71,7 +71,7 @@ public abstract partial class JobBase : IJob
 
             GetJobProperties(context);
 
-            this.Data = context.Trigger.JobDataMap.Keys.ToDictionary(k => k, k => context.Trigger.JobDataMap[k]?.ToString() ?? string.Empty);
+            this.Data = context.MergedJobDataMap.Keys.ToDictionary(k => k, k => context.MergedJobDataMap[k]?.ToString() ?? string.Empty);
 
             try
             {

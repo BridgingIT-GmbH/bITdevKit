@@ -166,7 +166,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
         command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
-        command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? DBNull.Value);
+        command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
         command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
         command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);

@@ -64,7 +64,7 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling()
             .WithScopedJob<ForecastImportJob>(CronExpressions.Every30Minutes)
-            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithScopedJob<EchoJob>(CronExpressions.EveryMinute); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
         // messaging
         services.AddMessaging(configuration)

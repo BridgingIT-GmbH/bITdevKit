@@ -121,7 +121,7 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, b =
     .WithEntityFrameworkStorageProvider<CoreDbContext>()
     .WithOutbox<CoreDbContext>(o => o
         .Enabled(true)
-        .ProcessingInterval(TimeSpan.Parse("00:00:05"))));
+        .ProcessingInterval(TimeSpan.Parse("00:03:59"))));
 
 ConfigureHealth(builder.Services);
 

@@ -71,7 +71,7 @@ public abstract partial class JobBase : IJob
 
             GetJobProperties(context);
 
-            this.Data = context.JobDetail.JobDataMap.Keys.ToDictionary(k => k, k => context.JobDetail.JobDataMap[k]?.ToString() ?? string.Empty);
+            this.Data = context.Trigger.JobDataMap.Keys.ToDictionary(k => k, k => context.Trigger.JobDataMap[k]?.ToString() ?? string.Empty);
 
             try
             {
@@ -103,28 +103,28 @@ public abstract partial class JobBase : IJob
 
         void GetJobProperties(IJobExecutionContext context)
         {
-            if (context.JobDetail.JobDataMap.TryGetString(nameof(this.Status), out var status))
+            if (context.MergedJobDataMap.TryGetString("Last" + nameof(this.Status), out var status))
             {
                 Enum.TryParse(status, out JobStatus s);
                 this.Status = s;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetString(nameof(this.ErrorMessage), out var errorMessage))
+            if (context.MergedJobDataMap.TryGetString("Last" + nameof(this.ErrorMessage), out var errorMessage))
             {
                 this.ErrorMessage = errorMessage;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunDate), out var runDate))
+            if (context.MergedJobDataMap.TryGetDateTimeOffset("Last" + nameof(this.RunDate), out var runDate))
             {
                 this.RunDate = runDate;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunSuccessDate), out var runSuccessDate))
+            if (context.MergedJobDataMap.TryGetDateTimeOffset("Last" + nameof(this.RunSuccessDate), out var runSuccessDate))
             {
                 this.RunSuccessDate = runSuccessDate;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetLong(nameof(this.ElapsedMilliseconds), out var elapsed))
+            if (context.MergedJobDataMap.TryGetLong("Last" + nameof(this.ElapsedMilliseconds), out var elapsed))
             {
                 this.ElapsedMilliseconds = elapsed;
             }
@@ -145,21 +145,28 @@ public abstract partial class JobBase : IJob
             }
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
-            context.JobDetail.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
-            context.JobDetail.JobDataMap.Put(Constants.FlowIdKey, context.Get(Constants.FlowIdKey));
-            context.JobDetail.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
-            context.JobDetail.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
-            context.JobDetail.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
-            context.JobDetail.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
-            context.JobDetail.JobDataMap.Put(nameof(this.RunSuccessDate), this.RunSuccessDate);
-            context.JobDetail.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+            context.Trigger.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
+            context.Trigger.JobDataMap.Put(Constants.FlowIdKey, context.Get(Constants.FlowIdKey));
+            context.Trigger.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
+            context.Trigger.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
+            context.Trigger.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
+            context.Trigger.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
+            context.Trigger.JobDataMap.Put(nameof(this.RunSuccessDate), this.RunSuccessDate);
+            context.Trigger.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.Status), this.Status.ToString());
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.ErrorMessage), this.ErrorMessage);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunDate), this.RunDate);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunSuccessDate), this.RunSuccessDate);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
 
             foreach (var key in this.Data.Keys)
             {
-                if (!context.JobDetail.JobDataMap.ContainsKey(key))
+                if (context.Trigger.JobDataMap.ContainsKey(key))
                 {
-                    context.JobDetail.JobDataMap.Put(key, this.Data[key]);
+                    context.Trigger.JobDataMap.Remove(key);
                 }
+
+                context.Trigger.JobDataMap.Put(key, this.Data[key]);
             }
         }
     }

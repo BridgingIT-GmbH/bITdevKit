@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Text.Json;
 using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -165,7 +166,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
         command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
         command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
-        command.Parameters.AddWithValue("@status", jobRun.Status);
+        command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? DBNull.Value);
         command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
         command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
         command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);

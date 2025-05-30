@@ -76,7 +76,7 @@ public class OutboxNotificationEmailWorker(
             }
 
             var messages = processedOnly
-                ? messagesResult.Value.Where(m => m.SentAt != null || m.Status != EmailStatus.Pending)
+                ? messagesResult.Value.Where(m => m.SentAt != null || m.Status != EmailMessageStatus.Pending)
                 : messagesResult.Value;
 
             foreach (var message in messages)
@@ -107,7 +107,7 @@ public class OutboxNotificationEmailWorker(
         {
             this.logger.LogWarning("{LogKey} outbox notification email processing skipped: max retries reached (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, message.Id, message.RetryCount);
 
-            message.Status = EmailStatus.Failed;
+            message.Status = EmailMessageStatus.Failed;
             message.SentAt = DateTimeOffset.UtcNow;
             message.Properties["ProcessMessage"] = $"Max retries reached (attempts={message.RetryCount})";
 
@@ -121,30 +121,31 @@ public class OutboxNotificationEmailWorker(
 
         try
         {
+            message.Properties["Outbox"] = true; // prevents readding (Save) in email service (SendAsync)
             message.RetryCount++;
             var sendResult = await emailService.SendAsync(
                 message, new NotificationSendOptions { SendImmediately = true }, cancellationToken);
 
-            message.Status = sendResult.IsSuccess ? EmailStatus.Sent : EmailStatus.Failed;
-            message.SentAt = DateTimeOffset.UtcNow;
-            message.Properties["ProcessMessage"] = sendResult.Errors?.FirstOrDefault()?.Message;
+            //message.Status = sendResult.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
+            //message.SentAt = DateTimeOffset.UtcNow;
+            //message.Properties["ProcessMessage"] = sendResult.Errors?.FirstOrDefault()?.Message;
 
-            var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);
-            if (!updateResult.IsSuccess)
-            {
-                this.logger.LogWarning("{LogKey} Failed to update message with ID {MessageId} after processing: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
-            }
+            //var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);
+            //if (!updateResult.IsSuccess)
+            //{
+            //    this.logger.LogWarning("{LogKey} failed to update message with ID {MessageId} after processing: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
+            //}
         }
         catch (Exception ex)
         {
             this.logger.LogError(ex, "{LogKey} outbox notification email processing failed: {ErrorMessage} (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, ex.Message, message.Id, message.RetryCount);
 
-            message.Status = EmailStatus.Failed;
+            message.Status = EmailMessageStatus.Failed;
             message.Properties["ProcessMessage"] = $"[{ex.GetType().Name}] {ex.Message}";
             var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);
             if (!updateResult.IsSuccess)
             {
-                this.logger.LogWarning("{LogKey} Failed to update message with ID {MessageId} after failure: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
+                this.logger.LogWarning("{LogKey} failed to update message with ID {MessageId} after failure: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
         }
     }

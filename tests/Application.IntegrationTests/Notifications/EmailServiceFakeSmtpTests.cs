@@ -81,7 +81,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "<p>This is a test email</p>",
             IsHtml = true,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             Attachments =
             [
                 new EmailAttachment
@@ -107,7 +107,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Sent);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Sent);
         storedMessage.SentAt.ShouldNotBeNull();
         storedMessage.Subject.ShouldBe("Test Email");
         storedMessage.Body.ShouldBe("<p>This is a test email</p>");
@@ -130,7 +130,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal
+            Priority = EmailMessagePriority.Normal
         };
 
         // Act
@@ -146,7 +146,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Pending);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
         storedMessage.SentAt.ShouldBeNull();
     }
 
@@ -164,7 +164,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal
+            Priority = EmailMessagePriority.Normal
         };
 
         // Act
@@ -194,7 +194,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             Subject = "Test Email with Embedded",
             Body = "<p>Embedded image: <img src='cid:test-image'></p>",
             IsHtml = true,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             Attachments =
             [
                 new EmailAttachment
@@ -230,7 +230,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             // Simulate max retries
             RetryCount = 3 // RetryCount is 3, so this is the 3rd attempt
         };
@@ -246,7 +246,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Failed);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Failed);
         storedMessage.SentAt.ShouldNotBeNull();
         storedMessage.PropertiesJson.ShouldContain("Max retries reached");
     }

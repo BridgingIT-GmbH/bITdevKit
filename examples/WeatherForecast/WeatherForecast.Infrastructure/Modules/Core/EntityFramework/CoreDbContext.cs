@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 
+using BridgingIT.DevKit.Infrastructure.Notifications;
 using DevKit.Infrastructure.EntityFramework;
 using Domain.Model;
 using EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext
+    IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext, INotificationEmailContext
 {
     // All aggregate roots and entities are exposed as dbsets
     public DbSet<Forecast> Forecasts { get; set; }
@@ -29,6 +30,10 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : ModuleDbCo
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public DbSet<EntityPermission> EntityPermissions { get; set; }
+
+    public DbSet<EmailMessageEntity> NotificationsEmails { get; set; }
+
+    public DbSet<EmailMessageAttachmentEntity> NotificationsEmailAttachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

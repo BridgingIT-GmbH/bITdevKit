@@ -5,10 +5,13 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.IntegrationTests;
 
-using System.Net.Http.Headers;
+using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure;
 using BridgingIT.DevKit.Presentation.Web;
 using DevKit.Presentation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 
 //[Collection(nameof(PresentationCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 [IntegrationTest("WeatherForecast.Presentation")]
@@ -17,6 +20,56 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     : IClassFixture<CustomWebApplicationFactoryFixture<Program>> // https://xunit.net/docs/shared-context#class-fixture
 {
     private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
+
+    [Fact]
+    public async Task EmailTest()
+    {
+        // arrang/act
+        var emailService = this.fixture.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Test Email",
+            Body = "<p>This is a test email</p>",
+            IsHtml = true,
+            Priority = EmailMessagePriority.Normal,
+            Attachments =
+            [
+                new EmailAttachment
+                {
+                    Id = Guid.NewGuid(),
+                    FileName = "test.txt",
+                    ContentType = "text/plain",
+                    Content = System.Text.Encoding.UTF8.GetBytes("Test content"),
+                    IsEmbedded = false
+                }
+            ]
+        };
+
+        // Act
+        var result = await emailService.SendAsync(
+            message, new NotificationSendOptions { SendImmediately = false }, CancellationToken.None);
+        result.IsSuccess.ShouldBeTrue();
+
+        await Task.Delay(25 * 1000); // Wait for the outbox processing to complete
+
+        // Assert
+        using var scope = this.fixture.ServiceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        var storedMessage = await dbContext.NotificationsEmails
+            .Include(e => e.Attachments)
+            .FirstOrDefaultAsync(m => m.Id == message.Id);
+        storedMessage.ShouldNotBeNull();
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Sent);
+        storedMessage.SentAt.ShouldNotBeNull();
+        storedMessage.Subject.ShouldBe("Test Email");
+        storedMessage.Body.ShouldBe("<p>This is a test email</p>");
+        storedMessage.IsHtml.ShouldBeTrue();
+        storedMessage.Attachments.ShouldNotBeEmpty();
+        storedMessage.Attachments.First().FileName.ShouldBe("test.txt");
+    }
 
     [Theory]
     [InlineData("api/_system/echo")]

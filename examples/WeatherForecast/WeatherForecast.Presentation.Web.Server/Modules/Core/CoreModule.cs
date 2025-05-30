@@ -74,8 +74,9 @@ public class CoreModule : WebModuleBase
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
                 .UseLogger().UseSimpleLogger())
-            .WithHealthChecks()
-            .WithDatabaseMigratorService();
+            //.WithHealthChecks()
+            .WithDatabaseCreatorService(o => o.Enabled().DeleteOnStartup(false));
+            //.WithDatabaseMigratorService();
 
         services.AddEntityAuthorization(o => // TODO: rename AddEntityAuthorization
         {

@@ -33,6 +33,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             {
                 var entity = this.MapToEntity(emailMessage);
                 this.logger.LogDebug("{LogKey} saving EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Add(entity);
 
                 await this.context.SaveChangesAsync(cancellationToken);
@@ -47,7 +48,8 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             }
         }
 
-        return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
+        return await Task.FromResult(Result.Failure()
+            .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
@@ -57,7 +59,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
         {
             try
             {
-                var entity = await this.context.NotificationsEmails
+                var entity = await this.context.NotificationsEmails.AsNoTracking()
                     .Include(e => e.Attachments)
                     .FirstOrDefaultAsync(e => e.Id == emailMessage.Id, cancellationToken);
                 if (entity == null)
@@ -68,7 +70,9 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
 
                 this.logger.LogDebug("{LogKey} updating EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
+                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Update(entity);
+
                 await this.context.SaveChangesAsync(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
@@ -106,7 +110,9 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
                 }
 
                 this.logger.LogDebug("{LogKey} deleting EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Remove(entity);
+
                 await this.context.SaveChangesAsync(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
@@ -133,8 +139,8 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             try
             {
                 this.logger.LogDebug("{LogKey} retrieving up to {BatchSize} pending EmailMessages", Application.Notifications.Constants.LogKey, batchSize);
-                var entities = await this.context.NotificationsEmails
-                    .Where(m => m.Status == EmailStatus.Pending/* && m.RetryCount < maxRetries*/)
+                var entities = await this.context.NotificationsEmails.AsNoTracking()
+                    .Where(m => m.Status == EmailMessageStatus.Pending/* && m.RetryCount < maxRetries*/)
                     .Include(m => m.Attachments)
                     .OrderBy(m => m.CreatedAt)
                     .Take(batchSize).ToListAsync(cancellationToken);

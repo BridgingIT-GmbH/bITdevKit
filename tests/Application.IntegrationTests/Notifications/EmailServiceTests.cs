@@ -42,7 +42,7 @@ public class EmailServiceTests : IAsyncLifetime
         // Use fluent builder to set up services
         services.AddNotificationService<EmailMessage>(null, b => b
             .WithEntityFrameworkStorageProvider<StubDbContext>()
-            .WithOutbox<StubDbContext>(o => o.Enabled(true))
+            .WithOutbox<StubDbContext>(o => o.Enabled(true).ProcessingInterval(TimeSpan.Parse("00:00:05")))
             .WithSmtpClient()
             .WithSmtpSettings(s =>
             {
@@ -84,7 +84,7 @@ public class EmailServiceTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "<p>This is a test email</p>",
             IsHtml = true,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             Attachments =
             [
                 new EmailAttachment
@@ -110,7 +110,7 @@ public class EmailServiceTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Sent);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Sent);
         storedMessage.SentAt.ShouldNotBeNull();
         storedMessage.Subject.ShouldBe("Test Email");
         storedMessage.Body.ShouldBe("<p>This is a test email</p>");
@@ -131,6 +131,68 @@ public class EmailServiceTests : IAsyncLifetime
         //sentMessage.Content.MimeParts.ShouldContain(part => part.MimeType == "text/plain" && part.FileName == "test.txt");
     }
 
+    //[Fact]
+    //public async Task SendAsync_QueuedWithOutbox_SavesAndSendsEmail() // WARNING: OUTBOX SERVICE/WORKER CURRENTLY NOT RUNNING
+    //{
+    //    // Arrange
+    //    var emailService = this.serviceProvider.GetRequiredService<INotificationService<EmailMessage>>();
+    //    var message = new EmailMessage
+    //    {
+    //        Id = Guid.NewGuid(),
+    //        To = ["recipient@example.com"],
+    //        From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+    //        Subject = "Test Email",
+    //        Body = "<p>This is a test email</p>",
+    //        IsHtml = true,
+    //        Priority = EmailMessagePriority.Normal,
+    //        Attachments =
+    //        [
+    //            new EmailAttachment
+    //            {
+    //                Id = Guid.NewGuid(),
+    //                FileName = "test.txt",
+    //                ContentType = "text/plain",
+    //                Content = System.Text.Encoding.UTF8.GetBytes("Test content"),
+    //                IsEmbedded = false
+    //            }
+    //        ]
+    //    };
+
+    //    // Act
+    //    var result = await emailService.SendAsync(
+    //        message, new NotificationSendOptions { SendImmediately = false }, CancellationToken.None);
+    //    result.IsSuccess.ShouldBeTrue();
+
+    //    await Task.Delay(20 * 1000); // Wait for the outbox processing to complete
+
+    //    // Assert
+    //    using var scope = this.serviceProvider.CreateScope();
+    //    var dbContext = scope.ServiceProvider.GetRequiredService<StubDbContext>();
+    //    var storedMessage = await dbContext.NotificationsEmails
+    //        .Include(e => e.Attachments)
+    //        .FirstOrDefaultAsync(m => m.Id == message.Id);
+    //    storedMessage.ShouldNotBeNull();
+    //    storedMessage.Status.ShouldBe(EmailMessageStatus.Sent);
+    //    storedMessage.SentAt.ShouldNotBeNull();
+    //    storedMessage.Subject.ShouldBe("Test Email");
+    //    storedMessage.Body.ShouldBe("<p>This is a test email</p>");
+    //    storedMessage.IsHtml.ShouldBeTrue();
+    //    storedMessage.Attachments.ShouldNotBeEmpty();
+    //    storedMessage.Attachments.First().FileName.ShouldBe("test.txt");
+
+    //    // Validate email content via MailHog API
+    //    using var client = this.fixture.GetMailHogApiClient();
+    //    var response = await client.GetAsync("/api/v2/messages");
+    //    var json = await response.Content.ReadAsStringAsync();
+    //    var messages = JsonSerializer.Deserialize<MailHogResponse>(json);
+    //    messages.Items.ShouldNotBeEmpty();
+    //    var sentMessage = messages.Items.First();
+    //    sentMessage.Raw.To.ShouldContain("recipient@example.com");
+    //    //sentMessage.Raw.Subject.ShouldBe("Test Email");
+    //    sentMessage.Content.Body.ShouldContain("<p>This is a test email</p>");
+    //    //sentMessage.Content.MimeParts.ShouldContain(part => part.MimeType == "text/plain" && part.FileName == "test.txt");
+    //}
+
     [Fact]
     public async Task SendAsync_QueuedWithOutbox_SavesAndEnqueues()
     {
@@ -145,7 +207,7 @@ public class EmailServiceTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal
+            Priority = EmailMessagePriority.Normal
         };
 
         // Act
@@ -161,7 +223,7 @@ public class EmailServiceTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Pending);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
         storedMessage.SentAt.ShouldBeNull();
     }
 
@@ -179,7 +241,7 @@ public class EmailServiceTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal
+            Priority = EmailMessagePriority.Normal
         };
 
         // Act
@@ -220,7 +282,7 @@ public class EmailServiceTests : IAsyncLifetime
             Subject = "Test Email with Embedded",
             Body = "<p>Embedded image: <img src='cid:test-image'></p>",
             IsHtml = true,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             Attachments =
             [
                 new EmailAttachment
@@ -266,7 +328,7 @@ public class EmailServiceTests : IAsyncLifetime
             Subject = "Test Email",
             Body = "This is a test email",
             IsHtml = false,
-            Priority = EmailPriority.Normal,
+            Priority = EmailMessagePriority.Normal,
             // Simulate max retries
             RetryCount = 3 // RetryCount is 3, so this is the 3rd attempt
         };
@@ -282,7 +344,7 @@ public class EmailServiceTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailStatus.Failed);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Failed);
         storedMessage.SentAt.ShouldNotBeNull();
         storedMessage.PropertiesJson.ShouldContain("Max retries reached");
     }

@@ -84,9 +84,9 @@ public class EmailMessageEntity
     }
     private Dictionary<string, object> properties = [];
 
-    public EmailPriority Priority { get; set; } = EmailPriority.Normal;
+    public EmailMessagePriority Priority { get; set; } = EmailMessagePriority.Normal;
 
-    public EmailStatus Status { get; set; } = EmailStatus.Pending;
+    public EmailMessageStatus Status { get; set; } = EmailMessageStatus.Pending;
 
     public int RetryCount { get; set; }
 

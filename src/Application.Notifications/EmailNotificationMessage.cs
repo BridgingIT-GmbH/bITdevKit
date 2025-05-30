@@ -27,9 +27,9 @@ public class EmailMessage : INotificationMessage
 
     public Dictionary<string, object> Properties { get; set; } = [];
 
-    public EmailPriority Priority { get; set; } = EmailPriority.Normal;
+    public EmailMessagePriority Priority { get; set; } = EmailMessagePriority.Normal;
 
-    public EmailStatus Status { get; set; } = EmailStatus.Pending;
+    public EmailMessageStatus Status { get; set; } = EmailMessageStatus.Pending;
 
     public int RetryCount { get; set; } // for outbox processing retries
 
@@ -64,16 +64,16 @@ public class EmailAttachment
     public bool IsEmbedded { get; set; }
 }
 
-public enum EmailPriority
+public enum EmailMessagePriority
 {
-    Low,
-    Normal,
-    High
+    High = 1,
+    Normal = 2,
+    Low = 3
 }
 
-public enum EmailStatus
+public enum EmailMessageStatus
 {
-    Pending,
-    Sent,
-    Failed
+    Pending = 0,
+    Sent = 1,
+    Failed = 3
 }

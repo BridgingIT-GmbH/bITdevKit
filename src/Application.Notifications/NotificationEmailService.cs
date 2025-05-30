@@ -45,17 +45,20 @@ public class NotificationEmailService(
                 return await this.SendImmediatelyAsync(message, cancellationToken);
             }
 
-            message.Status = EmailStatus.Pending;
-            var saveResult = await this.storageProvider.SaveAsync(message, cancellationToken);
-            if (!saveResult.IsSuccess)
+            if (!message.Properties.ContainsKey("Outbox"))
             {
-                return saveResult;
+                message.Status = EmailMessageStatus.Pending;
+                var saveResult = await this.storageProvider.SaveAsync(message, cancellationToken);
+                if (!saveResult.IsSuccess)
+                {
+                    return saveResult;
+                }
             }
 
             if (options?.SendImmediately == true)
             {
                 var result = await this.SendImmediatelyAsync(message, cancellationToken);
-                message.Status = result.IsSuccess ? EmailStatus.Sent : EmailStatus.Failed;
+                message.Status = result.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
                 message.SentAt = DateTimeOffset.UtcNow;
                 message.Properties["ProcessMessage"] = result.Errors?.FirstOrDefault()?.Message;
                 var updateResult = await this.storageProvider.UpdateAsync(message, cancellationToken);
@@ -99,7 +102,7 @@ public class NotificationEmailService(
                 return await Task.FromResult(Result.Success());
             }
 
-            message.Status = EmailStatus.Pending;
+            message.Status = EmailMessageStatus.Pending;
             var saveResult = await this.storageProvider.SaveAsync(message, cancellationToken);
             if (!saveResult.IsSuccess)
             {

@@ -33,10 +33,10 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             {
                 var entity = this.MapToEntity(emailMessage);
                 this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
-                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
+                //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Add(entity);
 
-                await this.context.SaveChangesAsync(cancellationToken);
+                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -70,10 +70,10 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
 
                 this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
-                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
+                //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Update(entity);
 
-                await this.context.SaveChangesAsync(cancellationToken);
+                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -110,10 +110,10 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                 }
 
                 this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
-                this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
+                //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Remove(entity);
 
-                await this.context.SaveChangesAsync(cancellationToken);
+                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }

@@ -16,10 +16,10 @@ using System.Threading;
 using System.Threading.Tasks;
 
 public class NotificationEmailService(
-    INotificationStorageProvider storageProvider,
-    NotificationServiceOptions options,
     ILogger<NotificationEmailService> logger,
+    INotificationStorageProvider storageProvider,
     ISmtpClient smtpClient,
+    NotificationServiceOptions options,
     IOutboxNotificationEmailQueue outboxQueue = null) : INotificationService<EmailMessage>
 {
     private readonly INotificationStorageProvider storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));

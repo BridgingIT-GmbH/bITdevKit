@@ -134,8 +134,8 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             Status = "Started",
             InstanceName = context.Scheduler.SchedulerInstanceId,
             Priority = context.Trigger.Priority,
-            Category = context.JobDetail.JobDataMap.ContainsKey("Category")
-                ? context.JobDetail.JobDataMap.GetString("Category")
+            Category = jobDataMap.ContainsKey("Category")
+                ? jobDataMap.GetString("Category")
                 : null
         };
 
@@ -217,7 +217,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             Priority = context.Trigger.Priority,
             Result = context.Result?.ToString(),
             RetryCount = context.RefireCount,
-            Category = context.JobDetail.JobDataMap.ContainsKey("Category") ? context.JobDetail.JobDataMap.GetString("Category") : null
+            Category = jobDataMap.ContainsKey("Category") ? jobDataMap.GetString("Category") : null
         };
 
         try

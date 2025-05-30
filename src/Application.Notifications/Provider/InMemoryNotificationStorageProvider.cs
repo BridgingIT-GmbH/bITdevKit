@@ -28,17 +28,18 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogDebug("saving EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "failed to save message with ID {MessageId}", message.Id);
+                this.logger.LogError(ex, "{LogKey} storage - failed to save message (id={MessageId})", Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to save message: {ex.Message}")));
             }
         }
-        return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
+        return await Task.FromResult(Result.Failure()
+            .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
@@ -50,17 +51,19 @@ public class InMemoryNotificationStorageProvider(
             {
                 if (!this.messages.ContainsKey(emailMessage.Id))
                 {
-                    return await Task.FromResult(Result.Failure().WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
+                    return await Task.FromResult(Result.Failure()
+                        .WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("updating EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "failed to update message with ID {MessageId}", message.Id);
-                return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to update message: {ex.Message}")));
+                this.logger.LogError(ex, "{LogKey} storage - failed to update message (id={MessageId})", Constants.LogKey, message.Id);
+                return await Task.FromResult(Result.Failure()
+                    .WithError(new Error($"Failed to update message: {ex.Message}")));
             }
         }
         return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
@@ -75,19 +78,21 @@ public class InMemoryNotificationStorageProvider(
             {
                 if (!this.messages.TryRemove(emailMessage.Id, out _))
                 {
-                    return await Task.FromResult(Result.Failure().WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
+                    return await Task.FromResult(Result.Failure()
+                        .WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("deleting EmailNotificationMessage with ID {MessageId}", emailMessage.Id);
+                this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "failed to delete message with ID {MessageId}", message.Id);
+                this.logger.LogError(ex, "{LogKey} storage - failed to delete message (id={MessageId})", Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to delete message: {ex.Message}")));
             }
         }
-        return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
+        return await Task.FromResult(Result.Failure()
+            .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
     public async Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(
@@ -100,7 +105,7 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogDebug("retrieving up to {BatchSize} pending EmailNotificationMessages with max retries", batchSize);
+                this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Constants.LogKey, batchSize);
                 var pendingMessages = this.messages.Values
                     .Where(m => m.Status == EmailMessageStatus.Pending /*&& m.RetryCount < maxRetries*/)
                     .OrderBy(m => m.CreatedAt)
@@ -109,10 +114,12 @@ public class InMemoryNotificationStorageProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "failed to retrieve pending messages for type {MessageType}", typeof(TMessage).Name);
-                return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure().WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
+                this.logger.LogError(ex, "{LogKey} storage - failed to retrieve pending messages for type {MessageType}", Constants.LogKey, typeof(TMessage).Name);
+                return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
+                    .WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
             }
         }
-        return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
+        return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
+            .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 }

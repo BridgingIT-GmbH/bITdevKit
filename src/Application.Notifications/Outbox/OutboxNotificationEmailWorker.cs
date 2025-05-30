@@ -51,7 +51,14 @@ public class OutboxNotificationEmailWorker(
                 await this.ProcessEmail(message, storageProvider, emailService, cancellationToken);
             }
 
-            this.logger.LogDebug("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+            if (count == 0)
+            {
+                this.logger.LogDebug("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+            }
+            else
+            {
+                this.logger.LogInformation("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+            }
         }
         catch (Exception ex)
         {

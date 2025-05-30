@@ -42,10 +42,10 @@ public class NotificationEmailService(
         {
             if (!this.options.IsOutboxConfigured)
             {
-                return await this.SendImmediatelyAsync(message, cancellationToken);
+                return await this.SendAsync(message, cancellationToken);
             }
 
-            if (!message.Properties.ContainsKey("Outbox"))
+            if (!message.Properties.ContainsKey("Outbox")) // store pending in outbox
             {
                 message.Status = EmailMessageStatus.Pending;
                 var saveResult = await this.storageProvider.SaveAsync(message, cancellationToken);
@@ -57,10 +57,11 @@ public class NotificationEmailService(
 
             if (options?.SendImmediately == true)
             {
-                var result = await this.SendImmediatelyAsync(message, cancellationToken);
+                var result = await this.SendAsync(message, cancellationToken);
                 message.Status = result.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
                 message.SentAt = DateTimeOffset.UtcNow;
                 message.Properties["ProcessMessage"] = result.Errors?.FirstOrDefault()?.Message;
+
                 var updateResult = await this.storageProvider.UpdateAsync(message, cancellationToken);
                 if (!updateResult.IsSuccess)
                 {
@@ -72,7 +73,7 @@ public class NotificationEmailService(
 
             if (this.options.OutboxOptions?.ProcessingMode == OutboxNotificationEmailProcessingMode.Immediate)
             {
-                outboxQueue?.Enqueue(message.Id.ToString());
+                outboxQueue?.Enqueue(message.Id.ToString()); // worker uses this to process immediately
             }
 
             return await Task.FromResult(Result.Success());
@@ -124,7 +125,7 @@ public class NotificationEmailService(
         }
     }
 
-    private async Task<Result> SendImmediatelyAsync(EmailMessage message, CancellationToken cancellationToken)
+    private async Task<Result> SendAsync(EmailMessage message, CancellationToken cancellationToken)
     {
         try
         {
@@ -151,12 +152,12 @@ public class NotificationEmailService(
                     cancellationToken),
                 cancellationToken);
 
-            this.logger.LogInformation("{LogKey} successfully sent email with ID {MessageId}", Constants.LogKey, message.Id);
+            this.logger.LogInformation("{LogKey} mailservice - successfully sent email (id={MessageId})", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} failed to send email with ID {MessageId}", Constants.LogKey, message.Id);
+            this.logger.LogError(ex, "{LogKey} mailservice - failed to send email (id={MessageId})", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Failure()
                 .WithError(new Error($"Failed to send email: {ex.Message}")));
         }

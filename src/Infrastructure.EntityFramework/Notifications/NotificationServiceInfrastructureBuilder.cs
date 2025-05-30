@@ -14,7 +14,7 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
     public NotificationServiceInfrastructureBuilder WithEntityFrameworkStorageProvider<TContext>()
         where TContext : DbContext, INotificationEmailContext
     {
-        this.Services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationStorageProvider<TContext>>();
+        this.Services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationEmailStorageProvider<TContext>>();
         return this;
     }
 
@@ -42,7 +42,7 @@ public static class NotificationServiceBuilderExtensions
     public static NotificationServiceBuilder WithEntityFrameworkStorageProvider<TContext>(this NotificationServiceBuilder serviceBuilder)
         where TContext : DbContext, INotificationEmailContext
     {
-        serviceBuilder.Services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationStorageProvider<TContext>>();
+        serviceBuilder.Services.AddScoped<INotificationStorageProvider, EntityFrameworkNotificationEmailStorageProvider<TContext>>();
         return serviceBuilder;
     }
 

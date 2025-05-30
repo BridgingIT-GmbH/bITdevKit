@@ -16,13 +16,13 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class EntityFrameworkNotificationStorageProvider<TContext>(
+public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
     TContext context,
-    ILogger<EntityFrameworkNotificationStorageProvider<TContext>> logger) : INotificationStorageProvider
+    ILogger<EntityFrameworkNotificationEmailStorageProvider<TContext>> logger) : INotificationStorageProvider
     where TContext : DbContext, INotificationEmailContext
 {
     private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
-    private readonly ILogger<EntityFrameworkNotificationStorageProvider<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ILogger<EntityFrameworkNotificationEmailStorageProvider<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
@@ -32,7 +32,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             try
             {
                 var entity = this.MapToEntity(emailMessage);
-                this.logger.LogDebug("{LogKey} saving EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Add(entity);
 
@@ -42,7 +42,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} failed to save message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "{LogKey} storage - failed to save message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to save message: {ex.Message}")));
             }
@@ -68,7 +68,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
                         .WithError(new Error($"EmailMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("{LogKey} updating EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
                 this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Update(entity);
@@ -79,13 +79,13 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                this.logger.LogWarning(ex, "{LogKey} concurrency conflict updating message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogWarning(ex, "{LogKey} storage - concurrency conflict updating message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Concurrency conflict: {ex.Message}")));
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} failed to update message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "{LogKey} storage - failed to update message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to update message: {ex.Message}")));
             }
@@ -109,7 +109,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
                     return await Task.FromResult(Result.Failure().WithError(new Error($"EmailMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("{LogKey} deleting EmailMessage with ID {MessageId}", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
                 this.context.NotificationsEmails.Remove(entity);
 
@@ -119,7 +119,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} failed to delete message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "{LogKey} storage - failed to delete message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to delete message: {ex.Message}")));
             }
@@ -138,7 +138,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
         {
             try
             {
-                this.logger.LogDebug("{LogKey} retrieving up to {BatchSize} pending EmailMessages", Application.Notifications.Constants.LogKey, batchSize);
+                this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Application.Notifications.Constants.LogKey, batchSize);
                 var entities = await this.context.NotificationsEmails.AsNoTracking()
                     .Where(m => m.Status == EmailMessageStatus.Pending/* && m.RetryCount < maxRetries*/)
                     .Include(m => m.Attachments)
@@ -149,7 +149,7 @@ public class EntityFrameworkNotificationStorageProvider<TContext>(
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} failed to retrieve pending messages for type {MessageType}", Application.Notifications.Constants.LogKey, typeof(TMessage).Name);
+                this.logger.LogError(ex, "{LogKey} storage - failed to retrieve pending messages for type {MessageType}", Application.Notifications.Constants.LogKey, typeof(TMessage).Name);
                 return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
                     .WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
             }

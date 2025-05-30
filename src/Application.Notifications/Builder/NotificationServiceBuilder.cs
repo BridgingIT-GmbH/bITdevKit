@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Notifications;
 
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 public class NotificationServiceBuilder(IServiceCollection Services)
@@ -33,12 +34,20 @@ public class NotificationServiceBuilder(IServiceCollection Services)
 
     public virtual NotificationServiceBuilder WithFakeSmtpClient(bool enabled = true)
     {
+        return this.WithFakeSmtpClient(null, enabled);
+    }
+
+    public virtual NotificationServiceBuilder WithFakeSmtpClient(FakeSmtpClientOptions options, bool enabled = true)
+    {
         if (!enabled)
         {
             return this;
         }
 
-        this.Services.AddSingleton<ISmtpClient, FakeSmtpClient>();
+        this.Services.AddSingleton<ISmtpClient>(sp =>
+            new FakeSmtpClient(
+                sp.GetRequiredService<ILogger<FakeSmtpClient>>(),
+                options));
         return this;
     }
 

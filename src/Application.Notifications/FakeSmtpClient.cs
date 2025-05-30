@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 public class FakeSmtpClient : ISmtpClient
 {
     private readonly ILogger<FakeSmtpClient> logger;
+    private readonly FakeSmtpClientOptions options;
     private bool isConnected;
     private bool isAuthenticated;
     private string localDomain;
@@ -47,9 +48,10 @@ public class FakeSmtpClient : ISmtpClient
     /// Initializes a new instance of the <see cref="FakeSmtpClient"/> class.
     /// </summary>
     /// <param name="logger">The logger instance to use for logging activities.</param>
-    public FakeSmtpClient(ILogger<FakeSmtpClient> logger)
+    public FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOptions options = null)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.options = options ?? new FakeSmtpClientOptions();
         this.AuthenticationMechanisms = ["PLAIN", "LOGIN", "XOAUTH2"]; // Mock common mechanisms
         this.Capabilities = SmtpCapabilities.Authentication | SmtpCapabilities.BinaryMime | SmtpCapabilities.UTF8 | SmtpCapabilities.Size; // Mock capabilities
         this.ClientCertificates = [];
@@ -403,9 +405,12 @@ public class FakeSmtpClient : ISmtpClient
         if (bcc.Any()) sb.AppendLine($"  Bcc: {string.Join("; ", bcc.Select(r => r.ToString()))}"); // Note: BCC usually not in headers for actual send
         sb.AppendLine($"  Subject: {message.Subject}");
         sb.AppendLine($"  Date: {message.Date}");
-        sb.AppendLine($"  Is HTML: {!string.IsNullOrEmpty(message.HtmlBody)}");
-        sb.AppendLine($"  TextBody: {(message.TextBody?.Length > 256 ? message.TextBody.Substring(0, 256) + "..." : message.TextBody)}");
-        sb.AppendLine($"  HtmlBody: {(message.HtmlBody?.Length > 256 ? message.HtmlBody.Substring(0, 256) + "..." : message.HtmlBody)}");
+        sb.AppendLine($"  IsHTML: {!string.IsNullOrEmpty(message.HtmlBody)}");
+        if (this.options.LogMessageBody)
+        {
+            sb.AppendLine($"  TextBody: {(message.TextBody?.Length > this.options.LogMessageBodyLength ? message.TextBody.Substring(0, this.options.LogMessageBodyLength) + "..." : message.TextBody)}");
+            sb.AppendLine($"  HtmlBody: {(message.HtmlBody?.Length > this.options.LogMessageBodyLength ? message.HtmlBody.Substring(0, this.options.LogMessageBodyLength) + "..." : message.HtmlBody)}");
+        }
         if (message.Attachments.SafeAny())
         {
             sb.AppendLine($"  Attachments ({message.Attachments.Count()}):");
@@ -413,6 +418,10 @@ public class FakeSmtpClient : ISmtpClient
             {
                 sb.AppendLine($"    - {attachment.FileName ?? "N/A"} ({attachment.ContentType}, {attachment.Content?.Stream?.Length ?? 0} bytes)");
             }
+        }
+        else
+        {
+            sb.AppendLine($"  Attachments: none");
         }
         this.logger.LogInformation(sb.ToString()); // LogInformation does not need LogKey prepended here as it's already in sb
     }
@@ -488,4 +497,11 @@ public class FakeSmtpClient : ISmtpClient
     public void Dispose()
     {
     }
+}
+
+public class FakeSmtpClientOptions
+{
+    public bool LogMessageBody { get; set; } = true;
+
+    public int LogMessageBodyLength { get; set; } = 512;
 }

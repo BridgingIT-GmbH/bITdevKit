@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
-using System.Text;
 using System.Threading;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;

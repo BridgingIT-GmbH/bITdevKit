@@ -1,14 +1,19 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.Notifications;
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Common.Utilities;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class NotificationEmailService(
     INotificationStorageProvider storageProvider,
@@ -125,23 +130,16 @@ public class NotificationEmailService(
                 async ct => await timeoutHandler.ExecuteAsync(
                     async ct =>
                     {
-                        await this.smtpClient.ConnectAsync(
-                            this.options.SmtpSettings.Host,
-                            this.options.SmtpSettings.Port,
-                            this.options.SmtpSettings.UseSsl,
-                            ct);
+                        await this.smtpClient.ConnectAsync(this.options.SmtpSettings.Host, this.options.SmtpSettings.Port, this.options.SmtpSettings.UseSsl, ct);
 
                         if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&
                             !string.IsNullOrEmpty(this.options.SmtpSettings.Password))
                         {
                             await this.smtpClient.AuthenticateAsync(
-                                this.options.SmtpSettings.Username,
-                                this.options.SmtpSettings.Password,
-                                ct);
+                                this.options.SmtpSettings.Username, this.options.SmtpSettings.Password, ct);
                         }
 
                         await this.smtpClient.SendAsync(mimeMessage, ct);
-
                         await this.smtpClient.DisconnectAsync(true, ct);
                     },
                     cancellationToken),

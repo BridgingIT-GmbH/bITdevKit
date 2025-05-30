@@ -26,6 +26,12 @@ public class NotificationServiceBuilder(IServiceCollection Services)
         return this;
     }
 
+    public virtual NotificationServiceBuilder WithFakeSmtpClient()
+    {
+        this.Services.AddSingleton<ISmtpClient, FakeSmtpClient>();
+        return this;
+    }
+
     public virtual NotificationServiceBuilder WithInMemoryStorageProvider()
     {
         this.Services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();

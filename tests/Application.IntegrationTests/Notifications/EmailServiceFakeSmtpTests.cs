@@ -13,15 +13,12 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-public class EmailServiceTests : IAsyncLifetime
+public class EmailServiceFakeSmtpTests : IAsyncLifetime
 {
     private readonly TestEnvironmentFixture fixture;
     private INotificationStorageProvider storageProvider;
@@ -29,7 +26,7 @@ public class EmailServiceTests : IAsyncLifetime
     private IServiceProvider serviceProvider;
     private IOutboxNotificationEmailQueue outboxQueue;
 
-    public EmailServiceTests(ITestOutputHelper output)
+    public EmailServiceFakeSmtpTests(ITestOutputHelper output)
     {
         this.fixture = new TestEnvironmentFixture().WithOutput(output);
         var services = this.fixture.Services;
@@ -41,11 +38,11 @@ public class EmailServiceTests : IAsyncLifetime
         services.AddNotificationService<EmailMessage>(null, b => b
             .WithEntityFrameworkStorageProvider<StubDbContext>()
             .WithOutbox<StubDbContext>(o => o.Enabled(true))
-            .WithSmtpClient()
+            .WithFakeSmtpClient()
             .WithSmtpSettings(s =>
             {
-                s.Host = new Uri(this.fixture.MailHogSmtpConnectionString).Host;
-                s.Port = new Uri(this.fixture.MailHogSmtpConnectionString).Port;
+                s.Host = "127.0.0.1";
+                s.Port = 25;
                 s.UseSsl = false;
                 s.SenderName = "Test App";
                 s.SenderAddress = "test@app.com";
@@ -115,18 +112,6 @@ public class EmailServiceTests : IAsyncLifetime
         storedMessage.IsHtml.ShouldBeTrue();
         storedMessage.Attachments.ShouldNotBeEmpty();
         storedMessage.Attachments.First().FileName.ShouldBe("test.txt");
-
-        // Validate email content via MailHog API
-        using var client = this.fixture.GetMailHogApiClient();
-        var response = await client.GetAsync("/api/v2/messages");
-        var json = await response.Content.ReadAsStringAsync();
-        var messages = JsonSerializer.Deserialize<MailHogResponse>(json);
-        messages.Items.ShouldNotBeEmpty();
-        var sentMessage = messages.Items.First();
-        sentMessage.Raw.To.ShouldContain("recipient@example.com");
-        //sentMessage.Raw.Subject.ShouldBe("Test Email");
-        sentMessage.Content.Body.ShouldContain("<p>This is a test email</p>");
-        //sentMessage.Content.MimeParts.ShouldContain(part => part.MimeType == "text/plain" && part.FileName == "test.txt");
     }
 
     [Fact]
@@ -191,17 +176,6 @@ public class EmailServiceTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldBeNull();
-
-        // Validate email content via MailHog API
-        using var client = this.fixture.GetMailHogApiClient();
-        var response = await client.GetAsync("/api/v2/messages");
-        var json = await response.Content.ReadAsStringAsync();
-        var messages = JsonSerializer.Deserialize<MailHogResponse>(json);
-        messages.Items.ShouldNotBeEmpty();
-        var sentMessage = messages.Items.First();
-        sentMessage.Raw.To.ShouldContain("recipient@example.com");
-        //sentMessage.Raw.Subject.ShouldBe("Test Email");
-        sentMessage.Content.Body.ShouldContain("This is a test email");
     }
 
     [Fact]
@@ -238,16 +212,6 @@ public class EmailServiceTests : IAsyncLifetime
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        using var client = this.fixture.GetMailHogApiClient();
-        var response = await client.GetAsync("/api/v2/messages");
-        var json = await response.Content.ReadAsStringAsync();
-        var messages = JsonSerializer.Deserialize<MailHogResponse>(json);
-        messages.Items.ShouldNotBeEmpty();
-        var sentMessage = messages.Items.First();
-        sentMessage.Raw.To.ShouldContain("recipient@example.com");
-        //sentMessage.Raw.Subject.ShouldBe("Test Email with Embedded");
-        sentMessage.Content.Body.ShouldContain("<img src='cid:test-image'>");
-        //sentMessage.Content.MimeParts.ShouldContain(part => part.MimeType == "image/jpeg" && part.ContentId == "test-image");
     }
 
     [Fact]
@@ -284,110 +248,4 @@ public class EmailServiceTests : IAsyncLifetime
         storedMessage.SentAt.ShouldNotBeNull();
         storedMessage.PropertiesJson.ShouldContain("Max retries reached");
     }
-}
-
-// Helper classes for MailHog API response deserialization
-public class MailHogResponse
-{
-    [JsonPropertyName("total")]
-    public int Total { get; set; }
-
-    [JsonPropertyName("count")]
-    public int Count { get; set; }
-
-    [JsonPropertyName("start")]
-    public int Start { get; set; }
-
-    [JsonPropertyName("items")]
-    public List<MailHogMailItem> Items { get; set; }
-}
-
-public class MailHogMailItem
-{
-    [JsonPropertyName("ID")]
-    public string ID { get; set; }
-
-    [JsonPropertyName("From")]
-    public MailHogEmailAddress From { get; set; }
-
-    [JsonPropertyName("To")]
-    public List<MailHogEmailAddress> To { get; set; }
-
-    [JsonPropertyName("Content")]
-    public MailHogMailContent Content { get; set; }
-
-    [JsonPropertyName("Created")]
-    public DateTime Created { get; set; }
-
-    [JsonPropertyName("MIME")]
-    public MailHogMimeStructure MIME { get; set; }
-
-    [JsonPropertyName("Raw")]
-    public MailHogRawMail Raw { get; set; }
-}
-
-public class MailHogEmailAddress
-{
-    [JsonPropertyName("Relays")]
-    public object Relays { get; set; }
-
-    [JsonPropertyName("Mailbox")]
-    public string Mailbox { get; set; }
-
-    [JsonPropertyName("Domain")]
-    public string Domain { get; set; }
-
-    [JsonPropertyName("Params")]
-    public string Params { get; set; }
-}
-
-public class MailHogMailContent
-{
-    [JsonPropertyName("Headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
-
-    [JsonPropertyName("Body")]
-    public string Body { get; set; }
-
-    [JsonPropertyName("Size")]
-    public int Size { get; set; }
-
-    [JsonPropertyName("MIME")]
-    public object MIME { get; set; }
-}
-
-public class MailHogMimeStructure
-{
-    [JsonPropertyName("Parts")]
-    public List<MailHogMimePart> Parts { get; set; }
-}
-
-public class MailHogMimePart
-{
-    [JsonPropertyName("Headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
-
-    [JsonPropertyName("Body")]
-    public string Body { get; set; }
-
-    [JsonPropertyName("Size")]
-    public int Size { get; set; }
-
-    [JsonPropertyName("MIME")]
-    public object MIME { get; set; }
-}
-
-public class MailHogRawMail
-{
-    [JsonPropertyName("From")]
-    public string From { get; set; }
-
-    [JsonPropertyName("To")]
-    public List<string> To { get; set; }
-
-    [JsonPropertyName("Data")]
-    public string Data { get; set; }
-
-    [JsonPropertyName("Helo")]
-    public string Helo { get; set; }
 }

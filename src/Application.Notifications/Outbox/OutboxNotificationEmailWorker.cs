@@ -28,14 +28,14 @@ public class OutboxNotificationEmailWorker(
         var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
         var count = 0;
 
-        this.logger.LogInformation("{LogKey} Outbox notification emails processing (messageId={MessageId})", Constants.LogKey, messageId);
+        this.logger.LogInformation("{LogKey} outbox notification emails processing (messageId={MessageId})", Constants.LogKey, messageId);
 
         try
         {
             var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(this.options.ProcessingCount, this.options.RetryCount, cancellationToken);
             if (!messagesResult.IsSuccess)
             {
-                this.logger.LogError("{LogKey} Failed to retrieve pending messages: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);
+                this.logger.LogError("{LogKey} failed to retrieve pending messages: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);
                 return;
             }
 
@@ -51,11 +51,11 @@ public class OutboxNotificationEmailWorker(
                 await this.ProcessEmail(message, storageProvider, emailService, cancellationToken);
             }
 
-            this.logger.LogInformation("{LogKey} Outbox notification emails processed (count={Count})", Constants.LogKey, count);
+            this.logger.LogInformation("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} Outbox notification email processing failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "{LogKey} outbox notification email processing failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
     }
 
@@ -64,14 +64,14 @@ public class OutboxNotificationEmailWorker(
         using var scope = this.serviceProvider.CreateScope();
         var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
 
-        this.logger.LogInformation("{LogKey} Outbox notification emails purging (processedOnly={ProcessedOnly})", Constants.LogKey, processedOnly);
+        this.logger.LogInformation("{LogKey} outbox notification emails purging (processedOnly={ProcessedOnly})", Constants.LogKey, processedOnly);
 
         try
         {
             var messagesResult = await storageProvider.GetPendingAsync<EmailMessage>(int.MaxValue, int.MaxValue, cancellationToken);
             if (!messagesResult.IsSuccess)
             {
-                this.logger.LogError("{LogKey} Failed to retrieve messages for purge: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);
+                this.logger.LogError("{LogKey} failed to retrieve messages for purge: {ErrorMessage}", Constants.LogKey, messagesResult.Errors?.FirstOrDefault()?.Message);
                 return;
             }
 
@@ -84,7 +84,7 @@ public class OutboxNotificationEmailWorker(
                 var deleteResult = await storageProvider.DeleteAsync(message, cancellationToken);
                 if (!deleteResult.IsSuccess)
                 {
-                    this.logger.LogWarning("{LogKey} Failed to delete message with ID {MessageId}: {ErrorMessage}",
+                    this.logger.LogWarning("{LogKey} failed to delete message with ID {MessageId}: {ErrorMessage}",
                         Constants.LogKey,
                         message.Id,
                         deleteResult.Errors?.FirstOrDefault()?.Message);
@@ -93,7 +93,7 @@ public class OutboxNotificationEmailWorker(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} Outbox notification email purge failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "{LogKey} outbox notification email purge failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
     }
 
@@ -105,7 +105,7 @@ public class OutboxNotificationEmailWorker(
     {
         if (message.RetryCount >= this.options.RetryCount)
         {
-            this.logger.LogWarning("{LogKey} Outbox notification email processing skipped: max retries reached (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, message.Id, message.RetryCount);
+            this.logger.LogWarning("{LogKey} outbox notification email processing skipped: max retries reached (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, message.Id, message.RetryCount);
 
             message.Status = EmailStatus.Failed;
             message.SentAt = DateTimeOffset.UtcNow;
@@ -114,7 +114,7 @@ public class OutboxNotificationEmailWorker(
             var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);
             if (!updateResult.IsSuccess)
             {
-                this.logger.LogWarning("{LogKey} Failed to update message with ID {MessageId} after max retries: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
+                this.logger.LogWarning("{LogKey} failed to update message with ID {MessageId} after max retries: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
             return;
         }
@@ -137,7 +137,7 @@ public class OutboxNotificationEmailWorker(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} Outbox notification email processing failed: {ErrorMessage} (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, ex.Message, message.Id, message.RetryCount);
+            this.logger.LogError(ex, "{LogKey} outbox notification email processing failed: {ErrorMessage} (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, ex.Message, message.Id, message.RetryCount);
 
             message.Status = EmailStatus.Failed;
             message.Properties["ProcessMessage"] = $"[{ex.GetType().Name}] {ex.Message}";

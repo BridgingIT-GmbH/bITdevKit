@@ -25,7 +25,7 @@ public class OutboxNotificationEmailQueue : IOutboxNotificationEmailQueue
     {
         if (string.IsNullOrEmpty(notificationId))
         {
-            this.logger.LogWarning("{LogKey} Attempted to enqueue null or empty notification ID", Constants.LogKey);
+            this.logger.LogWarning("{LogKey} attempted to enqueue null or empty notification ID", Constants.LogKey);
             return;
         }
 

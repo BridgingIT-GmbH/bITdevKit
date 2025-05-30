@@ -76,8 +76,9 @@ public class NotificationEmailService(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Failed to process message with ID {MessageId}", message.Id);
-            return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to process message: {ex.Message}")));
+            this.logger.LogError(ex, "{LogKey} failed to process message with ID {MessageId}", Constants.LogKey, message.Id);
+            return await Task.FromResult(Result.Failure()
+                .WithError(new Error($"Failed to process message: {ex.Message}")));
         }
     }
 
@@ -85,14 +86,15 @@ public class NotificationEmailService(
     {
         if (message == null)
         {
-            return await Task.FromResult(Result.Failure().WithError(new Error("Message cannot be null")));
+            return await Task.FromResult(Result.Failure()
+                .WithError(new Error("Message cannot be null")));
         }
 
         try
         {
             if (!this.options.IsOutboxConfigured)
             {
-                this.logger.LogWarning("Outbox not configured, queuing message with ID {MessageId} ignored", message.Id);
+                this.logger.LogWarning("{LogKey} outbox not configured, queuing message with ID {MessageId} ignored", Constants.LogKey, message.Id);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -113,8 +115,9 @@ public class NotificationEmailService(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Failed to queue message with ID {MessageId}", message.Id);
-            return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to queue message: {ex.Message}")));
+            this.logger.LogError(ex, "{LogKey} failed to queue message with ID {MessageId}", Constants.LogKey, message.Id);
+            return await Task.FromResult(Result.Failure()
+                .WithError(new Error($"Failed to queue message: {ex.Message}")));
         }
     }
 
@@ -145,13 +148,14 @@ public class NotificationEmailService(
                     cancellationToken),
                 cancellationToken);
 
-            this.logger.LogInformation("{LogKey} Successfully sent email with ID {MessageId}", Constants.LogKey, message.Id);
+            this.logger.LogInformation("{LogKey} successfully sent email with ID {MessageId}", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} Failed to send email with ID {MessageId}", Constants.LogKey, message.Id);
-            return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to send email: {ex.Message}")));
+            this.logger.LogError(ex, "{LogKey} failed to send email with ID {MessageId}", Constants.LogKey, message.Id);
+            return await Task.FromResult(Result.Failure()
+                .WithError(new Error($"Failed to send email: {ex.Message}")));
         }
     }
 
@@ -185,7 +189,8 @@ public class NotificationEmailService(
         // ReplyTo
         if (message.ReplyTo != null && !string.IsNullOrEmpty(message.ReplyTo.Address))
         {
-            mimeMessage.ReplyTo.Add(new MailboxAddress(message.ReplyTo.Name ?? string.Empty, message.ReplyTo.Address));
+            mimeMessage.ReplyTo.Add(
+                new MailboxAddress(message.ReplyTo.Name ?? string.Empty, message.ReplyTo.Address));
         }
 
         // Subject
@@ -213,7 +218,7 @@ public class NotificationEmailService(
         {
             var mimePart = new MimePart(attachment.ContentType)
             {
-                Content = new MimeContent(new System.IO.MemoryStream(attachment.Content)),
+                Content = new MimeContent(new MemoryStream(attachment.Content)),
                 ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                 ContentTransferEncoding = ContentEncoding.Base64,
                 FileName = attachment.FileName

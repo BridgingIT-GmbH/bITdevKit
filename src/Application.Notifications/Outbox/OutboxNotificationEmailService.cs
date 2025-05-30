@@ -24,7 +24,7 @@ public class OutboxNotificationEmailService(
     {
         if (!this.options.Enabled)
         {
-            this.logger.LogInformation("{LogKey} Outbox notification email service is disabled", Constants.LogKey);
+            this.logger.LogInformation("{LogKey} outbox notification email service is disabled", Constants.LogKey);
             return Task.CompletedTask;
         }
 
@@ -34,23 +34,23 @@ public class OutboxNotificationEmailService(
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    this.logger.LogDebug("{LogKey} Delaying outbox notification email service startup by {StartupDelay}ms", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds);
+                    this.logger.LogDebug("{LogKey} delaying outbox notification email service startup by {StartupDelay}ms", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds);
                     await Task.Delay(this.options.StartupDelay, cancellationToken);
                 }
 
                 if (this.options.PurgeOnStartup)
                 {
-                    this.logger.LogInformation("{LogKey} Purging all outbox notification emails on startup", Constants.LogKey);
+                    this.logger.LogInformation("{LogKey} purging all outbox notification emails on startup", Constants.LogKey);
                     await this.worker.PurgeAsync(false, cancellationToken);
                 }
                 else if (this.options.PurgeProcessedOnStartup)
                 {
-                    this.logger.LogInformation("{LogKey} Purging processed outbox notification emails on startup", Constants.LogKey);
+                    this.logger.LogInformation("{LogKey} purging processed outbox notification emails on startup", Constants.LogKey);
                     await this.worker.PurgeAsync(true, cancellationToken);
                 }
 
                 this.semaphore = new SemaphoreSlim(1);
-                this.logger.LogInformation("{LogKey} Outbox notification email service started", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox notification email service started", Constants.LogKey);
                 this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
 
                 while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
@@ -60,11 +60,11 @@ public class OutboxNotificationEmailService(
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} Outbox notification email service stopped due to cancellation", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox notification email service stopped due to cancellation", Constants.LogKey);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} Outbox notification email service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+                this.logger.LogError(ex, "{LogKey} outbox notification email service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
             }
         });
 
@@ -77,16 +77,16 @@ public class OutboxNotificationEmailService(
         {
             if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
             {
-                this.logger.LogWarning("{LogKey} Outbox notification email service timed out waiting for semaphore", Constants.LogKey);
+                this.logger.LogWarning("{LogKey} outbox notification email service timed out waiting for semaphore", Constants.LogKey);
                 return;
             }
 
-            this.logger.LogDebug("{LogKey} Processing outbox notification emails", Constants.LogKey);
+            this.logger.LogDebug("{LogKey} processing outbox notification emails", Constants.LogKey);
             await this.worker.ProcessAsync(cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} Outbox notification email service failed to process: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "{LogKey} outbox notification email service failed to process: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
         finally
         {
@@ -96,7 +96,7 @@ public class OutboxNotificationEmailService(
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} Outbox notification email service stopping", Constants.LogKey);
+        this.logger.LogInformation("{LogKey} outbox notification email service stopping", Constants.LogKey);
         await base.StopAsync(cancellationToken);
     }
 

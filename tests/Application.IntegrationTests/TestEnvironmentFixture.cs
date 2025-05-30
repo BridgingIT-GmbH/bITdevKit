@@ -78,7 +78,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public string RabbitMQConnectionString => this.RabbitMQContainer.GetConnectionString();
 
-    public string MailHogSmtpConnectionString => $"smtp://localhost:1025";
+    public string MailHogSmtpConnectionString => "smtp://localhost:1025";
 
     public INetwork Network { get; }
 

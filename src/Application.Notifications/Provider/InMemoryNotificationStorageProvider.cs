@@ -10,17 +10,11 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public class InMemoryNotificationStorageProvider : INotificationStorageProvider
+public class InMemoryNotificationStorageProvider(
+    ILogger<InMemoryNotificationStorageProvider> logger = null) : INotificationStorageProvider
 {
-    private readonly ConcurrentDictionary<Guid, EmailMessage> messages;
-    private readonly ILogger<InMemoryNotificationStorageProvider> logger;
-
-    public InMemoryNotificationStorageProvider(
-        ILogger<InMemoryNotificationStorageProvider> logger = null)
-    {
-        this.messages = new ConcurrentDictionary<Guid, EmailMessage>();
-        this.logger = logger ?? NullLogger<InMemoryNotificationStorageProvider>.Instance;
-    }
+    private readonly ConcurrentDictionary<Guid, EmailMessage> messages = new ConcurrentDictionary<Guid, EmailMessage>();
+    private readonly ILogger<InMemoryNotificationStorageProvider> logger = logger ?? NullLogger<InMemoryNotificationStorageProvider>.Instance;
 
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage

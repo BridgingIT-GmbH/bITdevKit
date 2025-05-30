@@ -10,27 +10,17 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 
-public class EmailService : INotificationService<EmailMessage>
+public class NotificationEmailService(
+    INotificationStorageProvider storageProvider,
+    NotificationServiceOptions options,
+    ILogger<NotificationEmailService> logger,
+    ISmtpClient smtpClient,
+    IOutboxNotificationEmailQueue outboxQueue = null) : INotificationService<EmailMessage>
 {
-    private readonly INotificationStorageProvider storageProvider;
-    private readonly NotificationServiceOptions options;
-    private readonly ILogger<EmailService> logger;
-    private readonly SmtpClient smtpClient;
-    private readonly IOutboxNotificationEmailQueue outboxQueue;
-
-    public EmailService(
-        INotificationStorageProvider storageProvider,
-        NotificationServiceOptions options,
-        ILogger<EmailService> logger,
-        SmtpClient smtpClient,
-        IOutboxNotificationEmailQueue outboxQueue = null)
-    {
-        this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
-        this.outboxQueue = outboxQueue;
-    }
+    private readonly INotificationStorageProvider storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
+    private readonly NotificationServiceOptions options = options ?? throw new ArgumentNullException(nameof(options));
+    private readonly ILogger<NotificationEmailService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ISmtpClient smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
 
     public async Task<Result> SendAsync(
         EmailMessage message,
@@ -39,7 +29,8 @@ public class EmailService : INotificationService<EmailMessage>
     {
         if (message == null)
         {
-            return await Task.FromResult(Result.Failure().WithError(new Error("Message cannot be null")));
+            return await Task.FromResult(Result.Failure()
+                .WithError(new Error("Message cannot be null")));
         }
 
         try
@@ -67,12 +58,13 @@ public class EmailService : INotificationService<EmailMessage>
                 {
                     return updateResult;
                 }
+
                 return result;
             }
 
             if (this.options.OutboxOptions?.ProcessingMode == OutboxNotificationEmailProcessingMode.Immediate)
             {
-                this.outboxQueue?.Enqueue(message.Id.ToString());
+                outboxQueue?.Enqueue(message.Id.ToString());
             }
 
             return await Task.FromResult(Result.Success());
@@ -96,6 +88,7 @@ public class EmailService : INotificationService<EmailMessage>
             if (!this.options.IsOutboxConfigured)
             {
                 this.logger.LogWarning("Outbox not configured, queuing message with ID {MessageId} ignored", message.Id);
+
                 return await Task.FromResult(Result.Success());
             }
 
@@ -108,7 +101,7 @@ public class EmailService : INotificationService<EmailMessage>
 
             if (this.options.OutboxOptions?.ProcessingMode == OutboxNotificationEmailProcessingMode.Immediate)
             {
-                this.outboxQueue?.Enqueue(message.Id.ToString());
+                outboxQueue?.Enqueue(message.Id.ToString());
             }
 
             return await Task.FromResult(Result.Success());

@@ -8,12 +8,12 @@ using Microsoft.Extensions.Logging.Abstractions;
 public class OutboxNotificationEmailQueue : IOutboxNotificationEmailQueue
 {
     private readonly ILogger<OutboxNotificationEmailQueue> logger;
-    private readonly ActionBlock<string> messageIds;
+    private readonly ActionBlock<string> notificationIds;
 
     public OutboxNotificationEmailQueue(ILoggerFactory loggerFactory, Action<string> action)
     {
         this.logger = loggerFactory?.CreateLogger<OutboxNotificationEmailQueue>() ?? NullLoggerFactory.Instance.CreateLogger<OutboxNotificationEmailQueue>();
-        this.messageIds = new ActionBlock<string>(action, new ExecutionDataflowBlockOptions
+        this.notificationIds = new ActionBlock<string>(action, new ExecutionDataflowBlockOptions
         {
             CancellationToken = CancellationToken.None,
             MaxDegreeOfParallelism = 1,
@@ -21,15 +21,15 @@ public class OutboxNotificationEmailQueue : IOutboxNotificationEmailQueue
         });
     }
 
-    public void Enqueue(string messageId)
+    public void Enqueue(string notificationId)
     {
-        if (string.IsNullOrEmpty(messageId))
+        if (string.IsNullOrEmpty(notificationId))
         {
-            this.logger.LogWarning("{LogKey} Attempted to enqueue null or empty message ID", "NOT");
+            this.logger.LogWarning("{LogKey} Attempted to enqueue null or empty notification ID", Constants.LogKey);
             return;
         }
 
-        this.logger.LogDebug("{LogKey} Outbox notification email queued (id={MessageId})", "NOT", messageId);
-        this.messageIds.Post(messageId);
+        this.logger.LogDebug("{LogKey} notification email queued (id={NotificationId})", Constants.LogKey, notificationId);
+        this.notificationIds.Post(notificationId);
     }
 }

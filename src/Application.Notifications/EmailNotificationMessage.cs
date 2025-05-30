@@ -7,11 +7,11 @@ public class EmailMessage : INotificationMessage
 {
     public Guid Id { get; set; }
 
-    public List<string> To { get; set; } = new();
+    public List<string> To { get; set; } = [];
 
-    public List<string> CC { get; set; } = new();
+    public List<string> CC { get; set; } = [];
 
-    public List<string> BCC { get; set; } = new();
+    public List<string> BCC { get; set; } = [];
 
     public EmailAddress From { get; set; }
 
@@ -23,21 +23,21 @@ public class EmailMessage : INotificationMessage
 
     public bool IsHtml { get; set; }
 
-    public Dictionary<string, string> Headers { get; set; } = new();
+    public Dictionary<string, string> Headers { get; set; } = [];
 
-    public Dictionary<string, object> Properties { get; set; } = new();
+    public Dictionary<string, object> Properties { get; set; } = [];
 
     public EmailPriority Priority { get; set; } = EmailPriority.Normal;
 
     public EmailStatus Status { get; set; } = EmailStatus.Pending;
 
-    public int RetryCount { get; set; }
+    public int RetryCount { get; set; } // for outbox processing retries
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? SentAt { get; set; }
 
-    public List<EmailAttachment> Attachments { get; set; } = new();
+    public List<EmailAttachment> Attachments { get; set; } = [];
 }
 
 public class EmailAddress

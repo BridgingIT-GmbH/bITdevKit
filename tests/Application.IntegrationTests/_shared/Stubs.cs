@@ -25,9 +25,9 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
 
-    public DbSet<EmailMessageEntity> OutboxNotificationEmails { get; set; }
+    public DbSet<EmailMessageEntity> NotificationsEmails { get; set; }
 
-    public DbSet<EmailAttachmentEntity> OutboxNotificationEmailAttachments { get; set; }
+    public DbSet<EmailMessageAttachmentEntity> NotificationsEmailAttachments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -1,38 +1,32 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Application.Notifications;
 
-using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using BridgingIT.DevKit.Infrastructure.Notifications;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
-public class NotificationServiceBuilder
+public class NotificationServiceBuilder(IServiceCollection Services)
 {
-    protected readonly IServiceCollection Services;
-    public readonly NotificationServiceOptions Options = new NotificationServiceOptions();
-
-    public NotificationServiceBuilder(IServiceCollection services)
-    {
-        this.Services = services ?? throw new ArgumentNullException(nameof(services));
-    }
+    public readonly IServiceCollection Services = Services ?? throw new ArgumentNullException(nameof(Services));
+    public readonly NotificationServiceOptions Options = new();
 
     public virtual NotificationServiceBuilder WithSmtpSettings(Action<SmtpSettings> configure = null)
     {
-        if (configure != null)
-        {
-            configure(this.Options.SmtpSettings);
-        }
+        configure?.Invoke(this.Options.SmtpSettings);
         return this;
     }
 
     public virtual NotificationServiceBuilder WithSmtpClient()
     {
-        this.Services.AddSingleton<SmtpClient>();
+        this.Services.AddSingleton<ISmtpClient, SmtpClient>();
         return this;
     }
 
-    public virtual NotificationServiceBuilder WithInMemoryProvider()
+    public virtual NotificationServiceBuilder WithInMemoryStorageProvider()
     {
         this.Services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();
         return this;
@@ -66,48 +60,15 @@ public class NotificationServiceBuilder
     }
 }
 
-public static class NotificationServiceExtensions
-{
-    public static NotificationServiceBuilder AddNotificationService<TMessage>(
-        this IServiceCollection services,
-        IConfiguration configuration = null,
-        Action<NotificationServiceBuilder> configure = null)
-        where TMessage : class, INotificationMessage
-    {
-        var builder = new NotificationServiceBuilder(services);
-
-        if (configuration != null)
-        {
-            builder.Options.SmtpSettings = configuration.GetSection("NotificationService:Email:Smtp").Get<SmtpSettings>() ?? new SmtpSettings();
-            builder.Options.OutboxOptions = configuration.GetSection("NotificationService:Email:Outbox").Get<OutboxNotificationEmailOptions>() ?? new OutboxNotificationEmailOptions();
-        }
-
-        configure?.Invoke(builder);
-
-        // builder.Validate();
-
-        if (typeof(TMessage) == typeof(EmailMessage))
-        {
-            services.AddScoped<INotificationService<EmailMessage>, EmailService>();
-        }
-
-        if (!services.Any(d => d.ServiceType == typeof(INotificationStorageProvider)))
-        {
-            services.AddSingleton<INotificationStorageProvider, InMemoryNotificationStorageProvider>();
-        }
-
-        services.AddSingleton(builder.Options);
-
-        return builder;
-    }
-}
-
 public class RetryerBuilder
 {
     public RetryerBuilder MaxRetries(int maxRetries) => this;
+
     public RetryerBuilder Delay(TimeSpan delay) => this;
+
     public RetryerBuilder UseExponentialBackoff() => this;
+
     public RetryerBuilder WithProgress(IProgress<RetryProgress> progress) => this;
 }
 
-public class RetryProgress { }
+public class RetryProgress;

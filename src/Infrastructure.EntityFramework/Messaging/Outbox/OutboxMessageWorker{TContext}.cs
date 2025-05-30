@@ -101,9 +101,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
             try
             {
-                var existingMessage = outboxMessage.Properties
-                    ?.GetValue(OutboxMessagePropertyConstants.ProcessMessageKey)
-                    ?.ToString();
+                var existingMessage = outboxMessage.Properties?.GetValue(OutboxMessagePropertyConstants.ProcessMessageKey)?.ToString();
                 outboxMessage.ProcessedDate ??= DateTime.UtcNow; // all attempts used, don't process again
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Failure");
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, $"max attempts reached (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]}, attempts={attempts - 1}) {existingMessage}");

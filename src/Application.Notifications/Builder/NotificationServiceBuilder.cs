@@ -20,14 +20,24 @@ public class NotificationServiceBuilder(IServiceCollection Services)
         return this;
     }
 
-    public virtual NotificationServiceBuilder WithSmtpClient()
+    public virtual NotificationServiceBuilder WithSmtpClient(bool enabled = true)
     {
+        if (!enabled)
+        {
+            return this;
+        }
+
         this.Services.AddSingleton<ISmtpClient, SmtpClient>();
         return this;
     }
 
-    public virtual NotificationServiceBuilder WithFakeSmtpClient()
+    public virtual NotificationServiceBuilder WithFakeSmtpClient(bool enabled = true)
     {
+        if (!enabled)
+        {
+            return this;
+        }
+
         this.Services.AddSingleton<ISmtpClient, FakeSmtpClient>();
         return this;
     }

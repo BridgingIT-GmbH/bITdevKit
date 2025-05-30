@@ -22,7 +22,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     private readonly CustomWebApplicationFactoryFixture<Program> fixture = fixture.WithOutput(output);
 
     [Fact]
-    public async Task EmailTest()
+    public async Task EmailOutboxTest()
     {
         // arrang/act
         var emailService = this.fixture.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
@@ -57,8 +57,8 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
 
         // Assert
         using var scope = this.fixture.ServiceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
-        var storedMessage = await dbContext.NotificationsEmails
+        var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        var storedMessage = await context.NotificationsEmails
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();

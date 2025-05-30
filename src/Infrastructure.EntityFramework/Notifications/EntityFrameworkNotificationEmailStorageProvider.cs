@@ -17,11 +17,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
-    TContext context,
+    IServiceProvider serviceProvider,
     ILogger<EntityFrameworkNotificationEmailStorageProvider<TContext>> logger) : INotificationStorageProvider
     where TContext : DbContext, INotificationEmailContext
 {
-    private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly ILogger<EntityFrameworkNotificationEmailStorageProvider<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
@@ -31,12 +31,16 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         {
             try
             {
+                using var scope = this.serviceProvider.CreateScope();
+                var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+                var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
                 var entity = this.MapToEntity(emailMessage);
                 this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
-                this.context.NotificationsEmails.Add(entity);
+                context.NotificationsEmails.Add(entity);
 
-                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -59,7 +63,11 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         {
             try
             {
-                var entity = await this.context.NotificationsEmails.AsNoTracking()
+                using var scope = this.serviceProvider.CreateScope();
+                var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+                var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+                var entity = await context.NotificationsEmails.AsNoTracking()
                     .Include(e => e.Attachments)
                     .FirstOrDefaultAsync(e => e.Id == emailMessage.Id, cancellationToken);
                 if (entity == null)
@@ -71,9 +79,9 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                 this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
                 //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
-                this.context.NotificationsEmails.Update(entity);
+                context.NotificationsEmails.Update(entity);
 
-                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -102,7 +110,11 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         {
             try
             {
-                var entity = await this.context.NotificationsEmails
+                using var scope = this.serviceProvider.CreateScope();
+                var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+                var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+                var entity = await context.NotificationsEmails
                     .FirstOrDefaultAsync(e => e.Id == emailMessage.Id, cancellationToken);
                 if (entity == null)
                 {
@@ -111,9 +123,9 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
 
                 this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 //this.context.ChangeTracker.Clear(); // Clear the change tracker to avoid entity already being tracked
-                this.context.NotificationsEmails.Remove(entity);
+                context.NotificationsEmails.Remove(entity);
 
-                await this.context.SaveChangesAsync<EmailMessageEntity>(cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -138,12 +150,17 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         {
             try
             {
+                using var scope = this.serviceProvider.CreateScope();
+                var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+                var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
                 this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Application.Notifications.Constants.LogKey, batchSize);
-                var entities = await this.context.NotificationsEmails.AsNoTracking()
+                var entities = await context.NotificationsEmails.AsNoTracking()
                     .Where(m => m.Status == EmailMessageStatus.Pending/* && m.RetryCount < maxRetries*/)
                     .Include(m => m.Attachments)
                     .OrderBy(m => m.CreatedAt)
                     .Take(batchSize).ToListAsync(cancellationToken);
+
                 var messages = entities.Select(this.MapToMessage).Cast<TMessage>();
                 return await Task.FromResult(Result<IEnumerable<TMessage>>.Success(messages));
             }

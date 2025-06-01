@@ -19,8 +19,8 @@ public static class FileStorageProviderTreeExtensions
     private class DirectoryNode
     {
         public string Path { get; set; }
-        public List<string> Files { get; set; } = new List<string>();
-        public List<DirectoryNode> Subdirectories { get; set; } = new List<DirectoryNode>();
+        public List<string> Files { get; set; } = [];
+        public List<DirectoryNode> Subdirectories { get; set; } = [];
         public long TotalSize { get; set; }
         public int FileCount { get; set; }
     }
@@ -206,7 +206,7 @@ public class TreeNode
     public DateTimeOffset? LastModified { get; set; }
     public int FileCount { get; set; }
     public long TotalSize { get; set; }
-    public List<TreeNode> Children { get; set; } = new List<TreeNode>();
+    public List<TreeNode> Children { get; set; } = [];
     public bool IsLast { get; set; }
     public string Prefix { get; set; } // For tracking indentation levels
 }

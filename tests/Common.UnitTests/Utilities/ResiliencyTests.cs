@@ -26,7 +26,7 @@ public class ResiliencyTests
     }
 
     // Helper to collect progress updates
-    private readonly List<object> progressUpdates = new();
+    private readonly List<object> progressUpdates = [];
 
     [Fact]
     public async Task Retryer_ExecutesWithRetries_ReportsProgressAndReturnsResult()

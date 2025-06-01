@@ -250,7 +250,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             DurationMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
             Status = reader.GetString(10),
             ErrorMessage = reader.IsDBNull(11) ? null : reader.GetString(11),
-            Data = reader.IsDBNull(12) ? new Dictionary<string, object>() : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),
+            Data = reader.IsDBNull(12) ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),
             InstanceName = reader.IsDBNull(13) ? null : reader.GetString(13),
             Priority = reader.IsDBNull(14) ? null : reader.GetInt32(14),
             Result = reader.IsDBNull(15) ? null : reader.GetString(15),

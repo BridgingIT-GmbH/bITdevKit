@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 public class InMemoryNotificationStorageProvider(
     ILogger<InMemoryNotificationStorageProvider> logger = null) : INotificationStorageProvider
 {
-    private readonly ConcurrentDictionary<Guid, EmailMessage> messages = new ConcurrentDictionary<Guid, EmailMessage>();
+    private readonly ConcurrentDictionary<Guid, EmailMessage> messages = [];
     private readonly ILogger<InMemoryNotificationStorageProvider> logger = logger ?? NullLogger<InMemoryNotificationStorageProvider>.Instance;
 
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)

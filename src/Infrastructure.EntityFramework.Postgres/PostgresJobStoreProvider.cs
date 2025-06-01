@@ -55,24 +55,31 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             ORDER BY start_time DESC
             {(take.HasValue ? $"LIMIT {take.Value}" : "")}";
 
-        await using var connection = new NpgsqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-        if (status != null) command.Parameters.AddWithValue("@status", status);
-        if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
-        if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
-        if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        while (await reader.ReadAsync(cancellationToken))
+        try
         {
-            runs.Add(this.MapJobRun(reader));
-        }
+            await using var connection = new NpgsqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
+            if (status != null) command.Parameters.AddWithValue("@status", status);
+            if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
+            if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
+            if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                runs.Add(this.MapJobRun(reader));
+            }
+        }
+        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
+        {
+            this.logger.LogWarning("{LogKey} PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return runs; // empty list
+        }
         return runs;
     }
 
@@ -96,29 +103,36 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 {(startDate.HasValue ? "AND start_time >= @startDate" : "")}
                 {(endDate.HasValue ? "AND start_time <= @endDate" : "")}";
 
-        await using var connection = new NpgsqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        if (await reader.ReadAsync(cancellationToken))
+        try
         {
-            return new JobRunStats
-            {
-                TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
-                MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
-                MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
-            };
-        }
+            await using var connection = new NpgsqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            if (await reader.ReadAsync(cancellationToken))
+            {
+                return new JobRunStats
+                {
+                    TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                    FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
+                    InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                    AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
+                    MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
+                    MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
+                };
+            }
+        }
+        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
+        {
+            this.logger.LogWarning("{LogKey} PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return new JobRunStats();
+        }
         return new JobRunStats();
     }
 
@@ -129,14 +143,22 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             DELETE FROM {tableName}
             WHERE job_name = @jobName AND job_group = @jobGroup AND start_time < @olderThan";
 
-        await using var connection = new NpgsqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
+        try
+        {
+            await using var connection = new NpgsqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
+        {
+            this.logger.LogWarning("{LogKey} PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return;
+        }
     }
 
     public async Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
@@ -171,44 +193,47 @@ public class PostgresJobStoreProvider : IJobStoreProvider
                 retry_count = EXCLUDED.retry_count,
                 category = EXCLUDED.category;";
 
-        await using var connection = new NpgsqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new NpgsqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@schedName", "Scheduler"); // Default scheduler name
-        command.Parameters.AddWithValue("@entryId", jobRun.Id);
-        command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
-        command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
-        command.Parameters.AddWithValue("@jobName", jobRun.JobName);
-        command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
-        command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
-        command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
-        command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
-        command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.DurationMs ?? DBNull.Value);
-        command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
-        command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
-        command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
-        command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
-        command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
-        command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
-        command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
-        command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
-
         try
         {
+            await using var connection = new NpgsqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@schedName", "Scheduler"); // Default scheduler name
+            command.Parameters.AddWithValue("@entryId", jobRun.Id);
+            command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
+            command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
+            command.Parameters.AddWithValue("@jobName", jobRun.JobName);
+            command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
+            command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
+            command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
+            command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
+            command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
+            command.Parameters.AddWithValue("@runTimeMs", (object)jobRun.DurationMs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
+            command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
+            command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
+            command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
+            command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
+            command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
+            command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
+            command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
+
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
-        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist, Silently ignore the error when the table doesn't exist
+        catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
         {
+            this.logger.LogWarning("{LogKey} PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
-        }
-        catch (Exception)
-        {
-            throw;
         }
     }
 
-    private JobRun MapJobRun(NpgsqlDataReader reader)
+    private string GetTableName(string table)
+    {
+        // Construct a properly quoted PostgreSQL table name
+        return $"\"{this.schema}\".\"{this.prefix}{table}\"";
+    }
+
+    private JobRun MapJobRun(Npgsql.NpgsqlDataReader reader)
     {
         return new JobRun
         {
@@ -231,11 +256,5 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             RetryCount = reader.GetInt32(16),
             Category = reader.IsDBNull(17) ? null : reader.GetString(17)
         };
-    }
-
-    private string GetTableName(string table)
-    {
-        // Construct a properly quoted PostgreSQL table name
-        return $"\"{this.schema}\".\"{this.prefix}{table}\"";
     }
 }

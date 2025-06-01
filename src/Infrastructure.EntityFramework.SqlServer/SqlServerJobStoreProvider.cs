@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Text.Json;
 using BridgingIT.DevKit.Application.JobScheduling;
-using BridgingIT.DevKit.Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -55,24 +54,31 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 {(resultContains != null ? "AND RESULT LIKE @resultContains" : "")}
             ORDER BY START_TIME DESC";
 
-        await using var connection = new SqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-        if (status != null) command.Parameters.AddWithValue("@status", status);
-        if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
-        if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
-        if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        while (await reader.ReadAsync(cancellationToken))
+        try
         {
-            runs.Add(this.MapJobRun(reader));
-        }
+            await using var connection = new SqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
+            if (status != null) command.Parameters.AddWithValue("@status", status);
+            if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
+            if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
+            if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                runs.Add(this.MapJobRun(reader));
+            }
+        }
+        catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
+        {
+            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return runs; // empty list
+        }
         return runs;
     }
 
@@ -96,29 +102,36 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
                 {(endDate.HasValue ? "AND START_TIME <= @endDate" : "")}";
 
-        await using var connection = new SqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        if (await reader.ReadAsync(cancellationToken))
+        try
         {
-            return new JobRunStats
-            {
-                TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
-                MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
-                MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
-            };
-        }
+            await using var connection = new SqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            if (await reader.ReadAsync(cancellationToken))
+            {
+                return new JobRunStats
+                {
+                    TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                    FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
+                    InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                    AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
+                    MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
+                    MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
+                };
+            }
+        }
+        catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
+        {
+            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return new JobRunStats();
+        }
         return new JobRunStats();
     }
 
@@ -152,36 +165,37 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                         @startTime, @endTime, @scheduledTime, @durationMs, @status, @errorMessage, @jobDataJson, 
                         @instanceName, @priority, @result, @retryCount, @category);";
 
-        await using var connection = new SqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@schedName", "Scheduler");
-        command.Parameters.AddWithValue("@entryId", jobRun.Id);
-        command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
-        command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
-        command.Parameters.AddWithValue("@jobName", jobRun.JobName);
-        command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
-        command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
-        command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
-        command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
-        command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
-        command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
-        command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
-        command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
-        command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
-        command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
-        command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
-        command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
-        command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
-
         try
         {
+            await using var connection = new SqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@schedName", "Scheduler");
+            command.Parameters.AddWithValue("@entryId", jobRun.Id);
+            command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
+            command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
+            command.Parameters.AddWithValue("@jobName", jobRun.JobName);
+            command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
+            command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
+            command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
+            command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
+            command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
+            command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
+            command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
+            command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
+            command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
+            command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
+            command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
+            command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
+            command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
+
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
-        catch (SqlException ex) when (ex.Number == 208) // Invalid object name (table doesn't exist)
+        catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
-            return; // Silently ignore the error when the table doesn't exist yet
+            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return;
         }
         catch (Exception)
         {
@@ -196,14 +210,28 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             DELETE FROM {tableName}
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup AND START_TIME < @olderThan";
 
-        await using var connection = new SqlConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
+        try
+        {
+            await using var connection = new SqlConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
+        {
+            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return;
+        }
+    }
+
+    private string GetTableName(string table)
+    {
+        // Handle both bracketed (e.g., "[dbo].[QRTZ_") and unbracketed (e.g., "dbo.QRTZ_") prefixes
+        return $"[{this.schema}].[{this.prefix}{table}]";
     }
 
     private JobRun MapJobRun(SqlDataReader reader)
@@ -222,18 +250,12 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             DurationMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
             Status = reader.GetString(10),
             ErrorMessage = reader.IsDBNull(11) ? null : reader.GetString(11),
-            Data = reader.IsDBNull(12) ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),
+            Data = reader.IsDBNull(12) ? new Dictionary<string, object>() : JsonSerializer.Deserialize<Dictionary<string, object>>(reader.GetString(12)),
             InstanceName = reader.IsDBNull(13) ? null : reader.GetString(13),
             Priority = reader.IsDBNull(14) ? null : reader.GetInt32(14),
             Result = reader.IsDBNull(15) ? null : reader.GetString(15),
             RetryCount = reader.GetInt32(16),
             Category = reader.IsDBNull(17) ? null : reader.GetString(17)
         };
-    }
-
-    private string GetTableName(string table)
-    {
-        // Handle both bracketed (e.g., "[dbo].[QRTZ_") and unbracketed (e.g., "dbo.QRTZ_") prefixes
-        return $"[{this.schema}].[{this.prefix}{table}]";
     }
 }

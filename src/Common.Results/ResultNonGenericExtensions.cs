@@ -658,11 +658,11 @@ public static class ResultNonGenericExtensions
         {
             if (result.IsSuccess)
             {
-                logger.Log(logLevel, result.ToString(message));
+                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
             }
             else
             {
-                logger.LogError(result.ToString(message));
+                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
             }
 
             return result;

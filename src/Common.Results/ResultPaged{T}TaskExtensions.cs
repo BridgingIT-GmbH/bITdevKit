@@ -1588,11 +1588,11 @@ public static partial class ResultPagedFunctionTaskExtensions
             var result = await resultTask;
             if (result.IsSuccess)
             {
-                logger.Log(logLevel, "Result succeeded: {Result}", result);
+                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
             }
             else
             {
-                logger.LogError("Result failed: {Result}", result);
+                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
             }
             return result;
         }

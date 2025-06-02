@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
 using FluentValidation.Internal;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 ///     Extension methods for Task<Result<T>> to enable proper chaining.
@@ -519,6 +520,37 @@ public static partial class ResultTTaskExtensions
         }
         catch (Exception ex)
         {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    public static async Task<Result<T>> Log<T>(
+        this Task<Result<T>> resultTask, ILogger logger, LogLevel logLevel = LogLevel.Trace)
+    {
+        if (logger is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Logger cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                logger.Log(logLevel, "Result succeeded: {Result}", result);
+            }
+            else
+            {
+                logger.LogError("Result failed: {Result}", result);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while logging Result");
             return Result<T>.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);

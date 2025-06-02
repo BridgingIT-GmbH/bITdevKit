@@ -1,5 +1,7 @@
 ﻿namespace BridgingIT.DevKit.Common;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides extension methods to enhance the functionality of the Result struct.
 /// </summary>
@@ -639,6 +641,36 @@ public static class ResultNonGenericExtensions
         catch (Exception ex)
         {
             return Result.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    public static Result Log(this Result result, ILogger logger, LogLevel logLevel = LogLevel.Trace)
+    {
+        if (logger is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Logger cannot be null"));
+        }
+
+        try
+        {
+            if (result.IsSuccess)
+            {
+                logger.Log(logLevel, "Result succeeded: {Result}", result);
+            }
+            else
+            {
+                logger.LogError("Result failed: {Result}", result);
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
         }

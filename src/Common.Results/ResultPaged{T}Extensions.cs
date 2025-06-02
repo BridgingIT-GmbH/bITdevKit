@@ -2,6 +2,7 @@ namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
 using FluentValidation.Internal;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Represents the result of an operation, which can either be a success or a failure.
@@ -660,6 +661,36 @@ public static class ResultPagedExtensions
         catch (Exception ex)
         {
             return ResultPaged<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    public static ResultPaged<T> Log<T>(this ResultPaged<T> result, ILogger logger, LogLevel logLevel = LogLevel.Trace)
+    {
+        if (logger is null)
+        {
+            return ResultPaged<T>.Failure()
+                .WithError(new Error("Logger cannot be null"));
+        }
+
+        try
+        {
+            if (result.IsSuccess)
+            {
+                logger.Log(logLevel, "Result succeeded: {Result}", result);
+            }
+            else
+            {
+                logger.LogError("Result failed: {Result}", result);
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<T>.Failure()
                 .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);

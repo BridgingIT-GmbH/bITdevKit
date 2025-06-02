@@ -914,4 +914,76 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
             return Failure().WithError(Result.Settings.ExceptionErrorFactory(ex));
         }
     }
+
+    /// <summary>
+    /// Returns a string representation of the Result.
+    /// </summary>
+    /// <example>
+    /// var result = Result.Success("Operation completed")
+    ///     .WithError(new ValidationError("Invalid input"));
+    /// Console.WriteLine(result.ToResultString());
+    /// // Output:
+    /// // Success: False
+    /// // Messages:
+    /// // - Operation completed
+    /// // Errors:
+    /// // - [ValidationError] Invalid input
+    /// </example>
+    public override string ToString()
+    {
+        return this.ToString(string.Empty);
+    }
+
+    public string ToString(string message)
+    {
+        var sb = new StringBuilder();
+
+        // Append success or failure message
+        if (this.IsSuccess)
+        {
+            sb.Append("Result succeeded ✓");
+        }
+        else
+        {
+            sb.Append("Result failed ✗");
+        }
+
+        // Append type name
+        sb.Append(" [").Append(typeof(T).Name).Append(']');
+
+        // Append message only if not null or empty
+        if (!string.IsNullOrEmpty(message))
+        {
+            sb.Append(' ').Append(message);
+        }
+
+        // Remove trailing spaces and add a single newline
+        while (sb.Length > 0 && sb[^1] == ' ')
+        {
+            sb.Length--;
+        }
+        sb.AppendLine();
+
+        // Append messages if any
+        if (!this.messages.IsEmpty)
+        {
+            sb.AppendLine("  messages:");
+            foreach (var m in this.messages.AsEnumerable())
+            {
+                sb.Append("  - ").AppendLine(m);
+            }
+        }
+
+        // Append errors if any
+        if (!this.errors.IsEmpty)
+        {
+            sb.AppendLine("  errors:");
+            foreach (var e in this.errors.AsEnumerable())
+            {
+                sb.Append("  - [").Append(e.GetType().Name).Append("] ").AppendLine(e.Message);
+            }
+        }
+
+        return sb.ToString();
+    }
 }

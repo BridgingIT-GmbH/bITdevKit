@@ -646,7 +646,7 @@ public static class ResultNonGenericExtensions
         }
     }
 
-    public static Result Log(this Result result, ILogger logger, LogLevel logLevel = LogLevel.Trace)
+    public static Result Log(this Result result, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
     {
         if (logger is null)
         {
@@ -658,11 +658,11 @@ public static class ResultNonGenericExtensions
         {
             if (result.IsSuccess)
             {
-                logger.Log(logLevel, "Result succeeded: {Result}", result);
+                logger.Log(logLevel, result.ToString(message));
             }
             else
             {
-                logger.LogError("Result failed: {Result}", result);
+                logger.LogError(result.ToString(message));
             }
 
             return result;

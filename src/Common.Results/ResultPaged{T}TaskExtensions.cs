@@ -1575,7 +1575,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     public static async Task<ResultPaged<T>> Log<T>(
-        this Task<ResultPaged<T>> resultTask, ILogger logger, LogLevel logLevel = LogLevel.Trace)
+        this Task<ResultPaged<T>> resultTask, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
     {
         if (logger is null)
         {

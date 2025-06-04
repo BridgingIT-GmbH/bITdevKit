@@ -64,8 +64,7 @@ public partial class FileMonitoringLocationScanJob(
 
     private FileScanOptions CreateScanOptions()
     {
-        // Configure scan options with some defaults
-        var scanOptions = new FileScanOptions
+        var scanOptions = new FileScanOptions // Configure scan options with some defaults
         {
             WaitForProcessing = true,
             //SkipChecksum = true,

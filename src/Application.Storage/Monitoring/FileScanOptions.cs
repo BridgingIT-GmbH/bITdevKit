@@ -67,7 +67,7 @@ public class FileScanOptions
     /// </summary>
     public int? MaxFilesToScan { get; set; } = null; // Default: No limit
 
-    public bool ThrownIfDirectoryNotExists { get; set; } = false;
+    public bool ThrowIfDirectoryNotExists { get; set; } = false;
 
     /// <summary>
     /// Gets the default scan options configuration.
@@ -115,6 +115,6 @@ public class FileScanOptions
         this.FileFilter = filePathFilter;
         this.SkipChecksum = skipChecksum;
         this.MaxFilesToScan = maxFilesToScan;
-        this.ThrownIfDirectoryNotExists = thrownIfDirectoryNotExists;
+        this.ThrowIfDirectoryNotExists = thrownIfDirectoryNotExists;
     }
 }

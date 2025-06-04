@@ -109,6 +109,11 @@ public partial class FileMonitoringLocationScanJob(
             scanOptions.MaxFilesToScan = maxFilesToScanValue;
         }
 
+        if (this.Data.TryGetValue(DataKeys.ThrowIfDirectoryNotExists, out var throwIfDirectoryNotExists) && bool.TryParse(throwIfDirectoryNotExists, out var throwIfDirectoryNotExistsValue))
+        {
+            scanOptions.ThrowIfDirectoryNotExists = throwIfDirectoryNotExistsValue;
+        }
+
         if (this.Data.TryGetValue(DataKeys.Timeout, out var timeout) && TimeSpan.TryParse(timeout, out var timeoutValue))
         {
             scanOptions.Timeout = timeoutValue;
@@ -148,6 +153,7 @@ public partial class FileMonitoringLocationScanJob(
         public const string FileFilter = "FileFilter";
         public const string FileBlackListFilter = "FileBlackListFilter";
         public const string MaxFilesToScan = "MaxFilesToScan";
+        public const string ThrowIfDirectoryNotExists = "ThrowIfDirectoryNotExists";
         public const string Timeout = "Timeout";
     }
 }

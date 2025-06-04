@@ -99,7 +99,7 @@ public class LocalLocationHandler : LocationHandlerBase
         {
             // TODO: maybe just use the provider capabilities here and not rely on the file system directly (perf?)
             var directoryExists = Directory.Exists(localProvider.RootPath);
-            if (options.ThrownIfDirectoryNotExists && !directoryExists)
+            if (options.ThrowIfDirectoryNotExists && !directoryExists)
             {
                 throw new DirectoryNotFoundException($"The {this.options.LocationName} directory {localProvider.RootPath} does not exist.");
             }

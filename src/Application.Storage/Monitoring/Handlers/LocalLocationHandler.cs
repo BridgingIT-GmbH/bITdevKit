@@ -98,7 +98,13 @@ public class LocalLocationHandler : LocationHandlerBase
         if (this.provider is LocalFileStorageProvider localProvider)
         {
             // TODO: maybe just use the provider capabilities here and not rely on the file system directly (perf?)
-            estimatedTotalFiles = Directory.Exists(localProvider.RootPath)
+            var directoryExists = Directory.Exists(localProvider.RootPath);
+            if (options.ThrownIfDirectoryNotExists && !directoryExists)
+            {
+                throw new DirectoryNotFoundException($"The {this.options.LocationName} directory {localProvider.RootPath} does not exist.");
+            }
+
+            estimatedTotalFiles = directoryExists
                 ? Directory.GetFiles(localProvider.RootPath, this.options.FileFilter, SearchOption.AllDirectories).Length
                 : 0;
         }

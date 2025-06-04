@@ -46,6 +46,9 @@ public partial class FileMonitoringLocationScanJob(
         if (scanContext.Events.SafeAny())
         {
             this.Data.AddOrUpdate("Detected events", scanContext.Events.Count.ToString());
+            this.Data.AddOrUpdate("Detected added events", scanContext.Events.Where(e => e.EventType == FileEventType.Added).Count().ToString());
+            this.Data.AddOrUpdate("Detected changed events", scanContext.Events.Where(e => e.EventType == FileEventType.Changed).Count().ToString());
+            this.Data.AddOrUpdate("Detected deleted events", scanContext.Events.Where(e => e.EventType == FileEventType.Deleted).Count().ToString());
             foreach (var evt in scanContext.Events.SafeNull())
             {
                 //TypedLogger.LogEventProcessed(this.Logger, Constants.LogKey, locationName, evt.EventType.ToString(), evt.FilePath, evt.FileSize, evt.DetectedDate);

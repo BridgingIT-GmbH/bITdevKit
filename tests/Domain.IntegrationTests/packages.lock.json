@@ -39,12 +39,12 @@
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[17.14.0, )",
-        "resolved": "17.14.0",
-        "contentHash": "rTtdOm6C96q9QgP3mS8nUGPGPh5Xm2HnBYJggNmNrJ3LDmX9lJuUIgnJEfvX6wSQY4swUMiCcIXd3OkjhYCgtw==",
+        "requested": "[17.14.1, )",
+        "resolved": "17.14.1",
+        "contentHash": "HJKqKOE+vshXra2aEHpi2TlxYX7Z9VFYkr+E5rwEvHC8eIXiyO+K9kNm8vmNom3e2rA56WqxU+/N9NJlLGXsJQ==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "17.14.0",
-          "Microsoft.TestPlatform.TestHost": "17.14.0"
+          "Microsoft.CodeCoverage": "17.14.1",
+          "Microsoft.TestPlatform.TestHost": "17.14.1"
         }
       },
       "MinVer": {
@@ -142,8 +142,8 @@
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "17.14.0",
-        "contentHash": "z2GYXGG6LjGoumT59xSB2dMnqSwQBjkxdDJmSJHwy5nPtZ435GXa6wj5hz/lRrAZ7NyXXxZNXVsiHXzHRru5eA=="
+        "resolved": "17.14.1",
+        "contentHash": "pmTrhfFIoplzFVbhVwUquT+77CbGH+h4/3mBpdmIlYtBi9nAB+kKI6dN3A/nV4DFi3wLLx/BlHIPK+MkbQ6Tpg=="
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
@@ -363,18 +363,18 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "17.14.0",
-        "contentHash": "3h7y7f/HuY8jdZa163p/55VmGw/fYJwrI8FOtsp4aEQAJaPgBr5LBS25uOfBwRYI95QDiByfaqSPBcWEvuHEwA==",
+        "resolved": "17.14.1",
+        "contentHash": "xTP1W6Mi6SWmuxd3a+jj9G9UoC850WGwZUps1Wah9r1ZxgXhdJfj1QqDLJkFjHDCvN42qDL2Ps5KjQYWUU0zcQ==",
         "dependencies": {
           "System.Reflection.Metadata": "8.0.0"
         }
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "17.14.0",
-        "contentHash": "8htQBKM92s/NXUI/U0/CKKLlvlDfWIo3/mbnY/GS/2XLkBGNIVQufmUpDIzznaZqUpdzspGSsJcLhVN8aRoMaA==",
+        "resolved": "17.14.1",
+        "contentHash": "d78LPzGKkJwsJXAQwsbJJ7LE7D1wB+rAyhHHAaODF+RDSQ0NgMjDFkSA1Djw18VrxO76GlKAjRUhl+H8NL8Z+Q==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "17.14.0",
+          "Microsoft.TestPlatform.ObjectModel": "17.14.1",
           "Newtonsoft.Json": "13.0.3"
         }
       },
@@ -1368,7 +1368,7 @@
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "CsvHelper": "[33.0.1, )",
+          "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
           "MessagePack": "[3.1.3, )",
           "Newtonsoft.Json": "[13.0.3, )",
@@ -1423,7 +1423,7 @@
           "MediatR.Contracts": "[2.0.1, )",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.5, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.4, )"
+          "System.Linq.Dynamic.Core": "[1.6.5, )"
         }
       },
       "BridgingIT.DevKit.Domain.Mediator": {
@@ -1464,9 +1464,9 @@
       },
       "CsvHelper": {
         "type": "CentralTransitive",
-        "requested": "[33.0.1, )",
-        "resolved": "33.0.1",
-        "contentHash": "fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ=="
+        "requested": "[33.1.0, )",
+        "resolved": "33.1.0",
+        "contentHash": "kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg=="
       },
       "FluentValidation": {
         "type": "CentralTransitive",
@@ -1766,9 +1766,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.4, )",
-        "resolved": "1.6.4",
-        "contentHash": "8+/9Iux+i/IJ9L4FdwGM7ilMCeif3cKw8iB4dXgCBtn67fkr7KuXEGTc05d52tgaUQpnmNr4TIFscmyiKWL84g=="
+        "requested": "[1.6.5, )",
+        "resolved": "1.6.5",
+        "contentHash": "NCldHajaCst63aFWXgkrRZOqt21LEDyQ/C0yKAlyuLRunbEaoxxrEm0qII0B6FXU7BE2qZjPRw2Dt5841VNE7w=="
       },
       "System.Net.Http": {
         "type": "CentralTransitive",

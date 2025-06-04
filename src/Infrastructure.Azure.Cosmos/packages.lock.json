@@ -732,8 +732,8 @@
       },
       "ZstdSharp.Port": {
         "type": "Transitive",
-        "resolved": "0.8.4",
-        "contentHash": "eieSXq3kakCUXbgdxkKaRqWS6hF0KBJcqok9LlDCs60GOyrynLvPOcQ0pRw7shdPF7lh/VepJ9cP9n9HHc759g=="
+        "resolved": "0.8.5",
+        "contentHash": "TR4j17WeVSEb3ncgL2NqlXEqcy04I+Kk9CaebNDplUeL8XOgjkZ7fP4Wg4grBdPLIqsV86p2QaXTkZoRMVOsew=="
       },
       "BridgingIT.DevKit.Application.Storage": {
         "type": "Project",
@@ -748,7 +748,7 @@
           "Polly": "[8.5.2, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpCompress": "[0.39.0, )"
+          "SharpCompress": "[0.40.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -809,7 +809,7 @@
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "CsvHelper": "[33.0.1, )",
+          "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
           "MessagePack": "[3.1.3, )",
           "Newtonsoft.Json": "[13.0.3, )",
@@ -847,14 +847,14 @@
           "MediatR.Contracts": "[2.0.1, )",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.5, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.4, )"
+          "System.Linq.Dynamic.Core": "[1.6.5, )"
         }
       },
       "CsvHelper": {
         "type": "CentralTransitive",
-        "requested": "[33.0.1, )",
-        "resolved": "33.0.1",
-        "contentHash": "fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ=="
+        "requested": "[33.1.0, )",
+        "resolved": "33.1.0",
+        "contentHash": "kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg=="
       },
       "FluentValidation": {
         "type": "CentralTransitive",
@@ -993,12 +993,12 @@
       },
       "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[0.39.0, )",
-        "resolved": "0.39.0",
-        "contentHash": "0esqIUDlg68Z7+Weuge4QzEvNtawUO4obTJFL7xuf4DBHMxVRr+wbNgiX9arMrj3kGXQSvLe0zbZG3oxpkwJOA==",
+        "requested": "[0.40.0, )",
+        "resolved": "0.40.0",
+        "contentHash": "yP/aFX1jqGikVF7u2f05VEaWN4aCaKNLxSas82UgA2GGVECxq/BcqZx3STHCJ78qilo1azEOk1XpBglIuGMb7w==",
         "dependencies": {
           "System.Buffers": "4.6.0",
-          "ZstdSharp.Port": "0.8.4"
+          "ZstdSharp.Port": "0.8.5"
         }
       },
       "System.Diagnostics.DiagnosticSource": {
@@ -1018,9 +1018,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.4, )",
-        "resolved": "1.6.4",
-        "contentHash": "8+/9Iux+i/IJ9L4FdwGM7ilMCeif3cKw8iB4dXgCBtn67fkr7KuXEGTc05d52tgaUQpnmNr4TIFscmyiKWL84g=="
+        "requested": "[1.6.5, )",
+        "resolved": "1.6.5",
+        "contentHash": "NCldHajaCst63aFWXgkrRZOqt21LEDyQ/C0yKAlyuLRunbEaoxxrEm0qII0B6FXU7BE2qZjPRw2Dt5841VNE7w=="
       },
       "System.Net.Http": {
         "type": "CentralTransitive",

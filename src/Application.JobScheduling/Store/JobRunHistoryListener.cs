@@ -116,6 +116,10 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
 
         TypedLogger.LogJobStarting(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
 
+        var jobDataMap = new JobDataMap(context.JobDetail.JobDataMap.Count + context.Trigger.JobDataMap.Count);
+        jobDataMap.PutAll(context.JobDetail.JobDataMap);
+        jobDataMap.PutAll(context.Trigger.JobDataMap);
+
         var jobRun = new JobRun
         {
             Id = entryId,
@@ -124,14 +128,14 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             TriggerName = triggerKey.Name,
             TriggerGroup = triggerKey.Group,
             Description = context.JobDetail.Description,
-            Data = context.JobDetail.JobDataMap.ToDictionary(),
+            Data = jobDataMap, //context.MergedJobDataMap.ToDictionary(),
             StartTime = startTime,
             ScheduledTime = scheduledTime,
             Status = "Started",
             InstanceName = context.Scheduler.SchedulerInstanceId,
             Priority = context.Trigger.Priority,
-            Category = context.JobDetail.JobDataMap.ContainsKey("Category")
-                ? context.JobDetail.JobDataMap.GetString("Category")
+            Category = jobDataMap.ContainsKey("Category")
+                ? jobDataMap.GetString("Category")
                 : null
         };
 
@@ -184,11 +188,15 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         var endTime = DateTimeOffset.UtcNow;
         var runTimeMs = (long)(endTime - context.FireTimeUtc).TotalMilliseconds; // or get from elapsedMilliseconds below
         //var status = jobException == null ? "Success" : "Failed";
-        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.Status), out var status);
-        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.ErrorMessage), out var errorMessage);
-        context.JobDetail.JobDataMap.TryGetString(nameof(JobBase.ElapsedMilliseconds), out var elapsedMilliseconds);
+        context.Trigger.JobDataMap.TryGetString(nameof(JobBase.Status), out var status);
+        context.Trigger.JobDataMap.TryGetString(nameof(JobBase.ErrorMessage), out var errorMessage);
+        context.Trigger.JobDataMap.TryGetString(nameof(JobBase.ElapsedMilliseconds), out var elapsedMilliseconds);
 
         TypedLogger.LogJobCompleted(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
+
+        var jobDataMap = new JobDataMap(context.JobDetail.JobDataMap.Count + context.Trigger.JobDataMap.Count);
+        jobDataMap.PutAll(context.JobDetail.JobDataMap);
+        jobDataMap.PutAll(context.Trigger.JobDataMap);
 
         var jobRun = new JobRun
         {
@@ -198,7 +206,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             TriggerName = context.Trigger.Key.Name,
             TriggerGroup = context.Trigger.Key.Group,
             Description = context.JobDetail.Description,
-            Data = context.JobDetail.JobDataMap.ToDictionary(),
+            Data = jobDataMap, //context.JobDetail.JobDataMap.ToDictionary(),
             StartTime = context.FireTimeUtc,
             EndTime = endTime,
             ScheduledTime = context.ScheduledFireTimeUtc ?? DateTimeOffset.UtcNow,
@@ -209,7 +217,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
             Priority = context.Trigger.Priority,
             Result = context.Result?.ToString(),
             RetryCount = context.RefireCount,
-            Category = context.JobDetail.JobDataMap.ContainsKey("Category") ? context.JobDetail.JobDataMap.GetString("Category") : null
+            Category = jobDataMap.ContainsKey("Category") ? jobDataMap.GetString("Category") : null
         };
 
         try

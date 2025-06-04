@@ -71,7 +71,7 @@ public abstract partial class JobBase : IJob
 
             GetJobProperties(context);
 
-            this.Data = context.JobDetail.JobDataMap.Keys.ToDictionary(k => k, k => context.JobDetail.JobDataMap[k]?.ToString() ?? string.Empty);
+            this.Data = context.MergedJobDataMap.Keys.ToDictionary(k => k, k => context.MergedJobDataMap[k]?.ToString() ?? string.Empty);
 
             try
             {
@@ -81,13 +81,13 @@ public abstract partial class JobBase : IJob
             {
                 BaseTypedLogger.LogInterrupted(this.Logger, Constants.LogKey, jobTypeName, this.Name, jobId);
 
-                PutJobProperties(context, JobStatus.Interrupted, $"[{oeex.GetType().Name}] {oeex.Message}", watch.GetElapsedMilliseconds());
+                await PutJobProperties(context, JobStatus.Interrupted, $"[{oeex.GetType().Name}] {oeex.Message}", watch.GetElapsedMilliseconds());
 
                 return;
             }
             catch (Exception ex)
             {
-                PutJobProperties(context, JobStatus.Failed, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
+                await PutJobProperties(context, JobStatus.Failed, $"[{ex.GetType().Name}] {ex.Message}", watch.GetElapsedMilliseconds());
 
                 throw;
             }
@@ -96,41 +96,41 @@ public abstract partial class JobBase : IJob
                 elapsedMilliseconds = watch.GetElapsedMilliseconds();
             }
 
-            PutJobProperties(context, JobStatus.Success, null, elapsedMilliseconds);
+            await PutJobProperties(context, JobStatus.Success, null, elapsedMilliseconds);
         }
 
         BaseTypedLogger.LogProcessed(this.Logger, Constants.LogKey, jobTypeName, this.Name, jobId, elapsedMilliseconds);
 
         void GetJobProperties(IJobExecutionContext context)
         {
-            if (context.JobDetail.JobDataMap.TryGetString(nameof(this.Status), out var status))
+            if (context.MergedJobDataMap.TryGetString("Last" + nameof(this.Status), out var status))
             {
                 Enum.TryParse(status, out JobStatus s);
                 this.Status = s;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetString(nameof(this.ErrorMessage), out var errorMessage))
+            if (context.MergedJobDataMap.TryGetString("Last" + nameof(this.ErrorMessage), out var errorMessage))
             {
                 this.ErrorMessage = errorMessage;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunDate), out var runDate))
+            if (context.MergedJobDataMap.TryGetDateTimeOffset("Last" + nameof(this.RunDate), out var runDate))
             {
                 this.RunDate = runDate;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetDateTimeOffset(nameof(this.RunSuccessDate), out var runSuccessDate))
+            if (context.MergedJobDataMap.TryGetDateTimeOffset("Last" + nameof(this.RunSuccessDate), out var runSuccessDate))
             {
                 this.RunSuccessDate = runSuccessDate;
             }
 
-            if (context.JobDetail.JobDataMap.TryGetLong(nameof(this.ElapsedMilliseconds), out var elapsed))
+            if (context.MergedJobDataMap.TryGetLong("Last" + nameof(this.ElapsedMilliseconds), out var elapsed))
             {
                 this.ElapsedMilliseconds = elapsed;
             }
         }
 
-        void PutJobProperties(
+        async Task PutJobProperties(
             IJobExecutionContext context,
             JobStatus status,
             string errorMessage,
@@ -145,22 +145,44 @@ public abstract partial class JobBase : IJob
             }
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
-            context.JobDetail.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
-            context.JobDetail.JobDataMap.Put(Constants.FlowIdKey, context.Get(Constants.FlowIdKey));
-            context.JobDetail.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
-            context.JobDetail.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
-            context.JobDetail.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
-            context.JobDetail.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
-            context.JobDetail.JobDataMap.Put(nameof(this.RunSuccessDate), this.RunSuccessDate);
-            context.JobDetail.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+            context.Trigger.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
+            context.Trigger.JobDataMap.Put(Constants.FlowIdKey, context.Get(Constants.FlowIdKey));
+            context.Trigger.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
+            context.Trigger.JobDataMap.Put(nameof(this.Status), this.Status.ToString());
+            context.Trigger.JobDataMap.Put(nameof(this.ErrorMessage), this.ErrorMessage);
+            context.Trigger.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
+            context.Trigger.JobDataMap.Put(nameof(this.RunSuccessDate), this.RunSuccessDate);
+            context.Trigger.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
 
             foreach (var key in this.Data.Keys)
             {
-                if (!context.JobDetail.JobDataMap.ContainsKey(key))
+                if (context.Trigger.JobDataMap.ContainsKey(key))
                 {
-                    context.JobDetail.JobDataMap.Put(key, this.Data[key]);
+                    context.Trigger.JobDataMap.Remove(key);
                 }
+
+                context.Trigger.JobDataMap.Put(key, this.Data[key]);
             }
+
+            // Persist Trigger.JobDataMap changes by updating the trigger
+            //var updatedTrigger = TriggerBuilder.Create()
+            //    .ForJob(context.JobDetail) // Associate with the same job
+            //    .WithIdentity(context.Trigger.Key) // Keep the same trigger key
+            //    .UsingJobData(context.Trigger.JobDataMap) // Use the updated JobDataMap
+            //    .WithSchedule(context.Trigger.GetScheduleBuilder()) // Preserve the original schedule
+            //    .StartAt(context.Trigger.StartTimeUtc) // Preserve start time
+            //    .Build();
+            //await context.Scheduler.RescheduleJob(context.Trigger.Key, updatedTrigger);
+            await Task.Delay(0); // Simulate async operation, replace with actual rescheduling if needed
+
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.Status), this.Status.ToString());
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.ErrorMessage), this.ErrorMessage);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunDate), this.RunDate);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunSuccessDate), this.RunSuccessDate);
+            context.JobDetail.JobDataMap.Put("Last" + nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+
+            //this.Logger.LogDebug("{LogKey} Stored Trigger.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.Trigger.JobDataMap.Keys));
+            //this.Logger.LogDebug("{LogKey} Stored JobDetail.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.JobDetail.JobDataMap.Keys));
         }
     }
 

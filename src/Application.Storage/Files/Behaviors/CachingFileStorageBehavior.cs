@@ -201,6 +201,23 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    public async Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)
+    {
+        var result = await this.InnerProvider.RenameDirectoryAsync(path, destinationPath, cancellationToken);
+        if (result.IsSuccess)
+        {
+            this.cache.Remove($"exists_{path}");
+            this.cache.Remove($"read_{path}");
+            this.cache.Remove($"checksum_{path}");
+            this.cache.Remove($"info_{path}");
+            this.cache.Remove($"exists_{destinationPath}");
+            this.cache.Remove($"read_{destinationPath}");
+            this.cache.Remove($"checksum_{destinationPath}");
+            this.cache.Remove($"info_{destinationPath}");
+        }
+        return result;
+    }
+
     public async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.MoveFileAsync(sourcePath, destinationPath, progress, cancellationToken);

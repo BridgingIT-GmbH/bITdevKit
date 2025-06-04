@@ -1,7 +1,13 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
 using FluentValidation.Internal;
+using Microsoft.Extensions.Logging;
 
 public static class ResultTExtensions
 {
@@ -416,6 +422,36 @@ public static class ResultTExtensions
                 .WithErrors(result.Errors)
                 .WithError(new OperationCancelledError())
                 .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    public static Result<T> Log<T>(this Result<T> result, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+    {
+        if (logger is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Logger cannot be null"));
+        }
+
+        try
+        {
+            if (result.IsSuccess)
+            {
+                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
+            }
+            else
+            {
+                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
+            }
+
+            return result;
         }
         catch (Exception ex)
         {

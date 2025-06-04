@@ -33,6 +33,7 @@
     <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
     <PackageVersion Include="Humanizer.Core" Version="2.14.1" />
     <PackageVersion Include="LiteDB" Version="5.0.21" />
+    <PackageVersion Include="MailKit" Version="2.6.0" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageVersion Include="MediatR" Version="12.5.0" />

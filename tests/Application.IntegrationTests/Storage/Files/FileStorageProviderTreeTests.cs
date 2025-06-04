@@ -6,14 +6,13 @@
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
-using System.Text;
 using System.Threading;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-[IntegrationTest("Storage")]
+[IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))]
 public class FileStorageProviderTreeTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {

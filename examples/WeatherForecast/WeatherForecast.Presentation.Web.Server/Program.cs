@@ -34,6 +34,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using BridgingIT.DevKit.Application.Notifications;
 
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
@@ -99,7 +100,7 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithBehavior<TimeoutStartupTaskBehavior>();
 
 builder.Services.AddMessaging(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+        .StartupDelay("00:05:00"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -108,11 +109,19 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
     .WithOutbox<CoreDbContext>(o => o // registers the outbox publisher behavior and worker service at once
-        .ProcessingInterval("00:00:30")
+        .ProcessingInterval("00:05:30")
         .ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
         .StartupDelay("00:00:15")
-        .PurgeOnStartup())
+        .PurgeOnStartup(false))
     .WithInProcessBroker(); //.WithRabbitMQBroker();
+
+builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, b => b
+    //.WithSmtpClient()
+    .WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = int.MaxValue, LogMessageBody = true })
+    .WithEntityFrameworkStorageProvider<CoreDbContext>()
+    .WithOutbox<CoreDbContext>(o => o
+        .Enabled(true)
+        .ProcessingInterval(TimeSpan.Parse("00:03:59"))));
 
 ConfigureHealth(builder.Services);
 

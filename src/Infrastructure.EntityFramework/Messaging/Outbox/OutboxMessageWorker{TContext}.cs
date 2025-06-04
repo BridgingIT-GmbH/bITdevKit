@@ -101,9 +101,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
             try
             {
-                var existingMessage = outboxMessage.Properties
-                    ?.GetValue(OutboxMessagePropertyConstants.ProcessMessageKey)
-                    ?.ToString();
+                var existingMessage = outboxMessage.Properties?.GetValue(OutboxMessagePropertyConstants.ProcessMessageKey)?.ToString();
                 outboxMessage.ProcessedDate ??= DateTime.UtcNow; // all attempts used, don't process again
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessStatusKey, "Failure");
                 outboxMessage.Properties.AddOrUpdate(OutboxMessagePropertyConstants.ProcessMessageKey, $"max attempts reached (messageId={outboxMessage.MessageId}, messageType={outboxMessage.Type.Split(',')[0]}, attempts={attempts - 1}) {existingMessage}");
@@ -209,12 +207,10 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0,
-            LogLevel.Information,
-            "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string messageId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxMessageProcessedCount);
 
         [LoggerMessage(2, LogLevel.Information, "{LogKey} outbox messages purging (context={DbContextType})")]

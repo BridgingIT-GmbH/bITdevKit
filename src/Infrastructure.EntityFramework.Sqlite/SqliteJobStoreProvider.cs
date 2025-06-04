@@ -63,24 +63,31 @@ public class SqliteJobStoreProvider : IJobStoreProvider
             ORDER BY START_TIME DESC
             {(take.HasValue ? $"LIMIT {take.Value}" : "")}";
 
-        await using var connection = new SQLiteConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SQLiteCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-        if (status != null) command.Parameters.AddWithValue("@status", status);
-        if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
-        if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
-        if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        while (await reader.ReadAsync(cancellationToken))
+        try
         {
-            runs.Add(this.MapJobRun(reader));
-        }
+            await using var connection = new SQLiteConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
+            if (status != null) command.Parameters.AddWithValue("@status", status);
+            if (priority.HasValue) command.Parameters.AddWithValue("@priority", priority.Value);
+            if (instanceName != null) command.Parameters.AddWithValue("@instanceName", instanceName);
+            if (resultContains != null) command.Parameters.AddWithValue("@resultContains", $"%{resultContains}%");
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                runs.Add(this.MapJobRun(reader));
+            }
+        }
+        catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
+        {
+            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return runs; // empty list
+        }
         return runs;
     }
 
@@ -112,29 +119,36 @@ public class SqliteJobStoreProvider : IJobStoreProvider
                 {(startDate.HasValue ? "AND START_TIME >= @startDate" : "")}
                 {(endDate.HasValue ? "AND START_TIME <= @endDate" : "")}";
 
-        await using var connection = new SQLiteConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SQLiteCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
-        if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
-
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        if (await reader.ReadAsync(cancellationToken))
+        try
         {
-            return new JobRunStats
-            {
-                TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
-                InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
-                AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
-                MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
-                MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
-            };
-        }
+            await using var connection = new SQLiteConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            if (startDate.HasValue) command.Parameters.AddWithValue("@startDate", startDate.Value.UtcDateTime);
+            if (endDate.HasValue) command.Parameters.AddWithValue("@endDate", endDate.Value.UtcDateTime);
 
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            if (await reader.ReadAsync(cancellationToken))
+            {
+                return new JobRunStats
+                {
+                    TotalRuns = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                    SuccessCount = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                    FailureCount = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
+                    InterruptCount = reader.IsDBNull(3) ? 0 : reader.GetInt32(3),
+                    AvgRunDurationMs = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
+                    MaxRunDurationMs = reader.IsDBNull(5) ? 0 : reader.GetInt64(5),
+                    MinRunDurationMs = reader.IsDBNull(6) ? 0 : reader.GetInt64(6)
+                };
+            }
+        }
+        catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
+        {
+            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return new JobRunStats();
+        }
         return new JobRunStats();
     }
 
@@ -151,14 +165,22 @@ public class SqliteJobStoreProvider : IJobStoreProvider
             DELETE FROM {this.tablePrefix}JOURNAL_TRIGGERS
             WHERE JOB_NAME = @jobName AND JOB_GROUP = @jobGroup AND START_TIME < @olderThan";
 
-        await using var connection = new SQLiteConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SQLiteCommand(sql, connection);
-        command.Parameters.AddWithValue("@jobName", jobName);
-        command.Parameters.AddWithValue("@jobGroup", jobGroup);
-        command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
+        try
+        {
+            await using var connection = new SQLiteConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@jobName", jobName);
+            command.Parameters.AddWithValue("@jobGroup", jobGroup);
+            command.Parameters.AddWithValue("@olderThan", olderThan.UtcDateTime);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
+        {
+            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            return;
+        }
     }
 
     /// <summary>
@@ -179,35 +201,36 @@ public class SqliteJobStoreProvider : IJobStoreProvider
                 @instanceName, @priority, @result, @retryCount, @category
             );";
 
-        await using var connection = new SQLiteConnection(this.connectionString);
-        await connection.OpenAsync(cancellationToken);
-        await using var command = new SQLiteCommand(sql, connection);
-        command.Parameters.AddWithValue("@schedName", "Scheduler"); // Assuming a default scheduler name
-        command.Parameters.AddWithValue("@entryId", jobRun.Id);
-        command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
-        command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
-        command.Parameters.AddWithValue("@jobName", jobRun.JobName);
-        command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
-        command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
-        command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
-        command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
-        command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
-        command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
-        command.Parameters.AddWithValue("@status", jobRun.Status);
-        command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
-        command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
-        command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
-        command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
-        command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
-        command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
-        command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
-
         try
         {
+            await using var connection = new SQLiteConnection(this.connectionString);
+            await connection.OpenAsync(cancellationToken);
+            await using var command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@schedName", "Scheduler"); // Assuming a default scheduler name
+            command.Parameters.AddWithValue("@entryId", jobRun.Id);
+            command.Parameters.AddWithValue("@triggerName", jobRun.TriggerName);
+            command.Parameters.AddWithValue("@triggerGroup", jobRun.TriggerGroup);
+            command.Parameters.AddWithValue("@jobName", jobRun.JobName);
+            command.Parameters.AddWithValue("@jobGroup", jobRun.JobGroup);
+            command.Parameters.AddWithValue("@description", (object)jobRun.Description ?? DBNull.Value);
+            command.Parameters.AddWithValue("@startTime", jobRun.StartTime.UtcDateTime);
+            command.Parameters.AddWithValue("@endTime", (object)jobRun.EndTime?.UtcDateTime ?? DBNull.Value);
+            command.Parameters.AddWithValue("@scheduledTime", jobRun.ScheduledTime.UtcDateTime);
+            command.Parameters.AddWithValue("@durationMs", (object)jobRun.DurationMs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@status", (object)jobRun.Status ?? string.Empty);
+            command.Parameters.AddWithValue("@errorMessage", (object)jobRun.ErrorMessage ?? DBNull.Value);
+            command.Parameters.AddWithValue("@jobDataJson", JsonSerializer.Serialize(jobRun.Data));
+            command.Parameters.AddWithValue("@instanceName", (object)jobRun.InstanceName ?? DBNull.Value);
+            command.Parameters.AddWithValue("@priority", (object)jobRun.Priority ?? DBNull.Value);
+            command.Parameters.AddWithValue("@result", (object)jobRun.Result ?? DBNull.Value);
+            command.Parameters.AddWithValue("@retryCount", jobRun.RetryCount);
+            command.Parameters.AddWithValue("@category", (object)jobRun.Category ?? DBNull.Value);
+
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
-        catch (SQLiteException ex) when (ex.Message.Contains("no such table")) // Silently ignore the error when the table doesn't exist yet
+        catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
+            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
         }
         catch (Exception)

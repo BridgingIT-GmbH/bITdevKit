@@ -123,7 +123,6 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         var entityType = typeof(TEntity).FullName;
-        this.logger.LogInformation("++++++++++++ CHECKING PERMISSIONS +++++++++++++++ " + entityType + " " + entityId);
 
         // Check cache first if available
         if (!bypassCache && cacheProvider != null && this.options.EnableCaching) // Try cache first if available
@@ -198,7 +197,6 @@ public partial class EntityPermissionEvaluator<TEntity>(
     public async Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false, CancellationToken cancellationToken = default) // wildcard permission
     {
         var entityType = typeof(TEntity).FullName;
-        this.logger.LogInformation("++++++++++++ CHECKING PERMISSIONS +++++++++++++++ " + entityType);
 
         // Check cache first if available
         if (!bypassCache && cacheProvider != null && this.options.EnableCaching)

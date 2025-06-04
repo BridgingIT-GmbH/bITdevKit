@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Collections;
 using System.Reflection;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
@@ -222,17 +223,16 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         // Use the same type as the entity ID for the query
-        var idType = entityConfiguration.ParentIdProperty.PropertyType;
+        var idType = entityConfiguration.ParentIdProperty.PropertyType; // Guid? (optional)
         var method = typeof(RelationalDatabaseFacadeExtensions).GetMethod(nameof(RelationalDatabaseFacadeExtensions.SqlQueryRaw)).MakeGenericMethod(idType);
 
         // Execute the query and return the list of parent IDs
-        //var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }, CancellationToken.None]);
         var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
-        var parentIds = ((IEnumerable<object>)queryResult).ToList(); // direct entity parents first
+        var parentIds = (((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? []).ToList();
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
 
-        return await Task.FromResult(parentIds.AsEnumerable()).AnyContext();
+        return await Task.FromResult(parentIds).AnyContext();
     }
 
     /// <inheritdoc/>

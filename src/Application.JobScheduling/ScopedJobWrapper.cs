@@ -32,9 +32,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
             try
             {
                 var behaviors = this.scope.ServiceProvider.GetServices<IJobSchedulingBehavior>();
-                logger?.LogDebug(
-                    $"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute",
-                    Constants.LogKey);
+                logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
                 context.Put(Constants.CorrelationIdKey, correlationId);
@@ -46,12 +44,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,
-                    "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}",
-                    Constants.LogKey,
-                    jobTypeName,
-                    jobId,
-                    ex.Message);
+                logger.LogError(ex, "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}", Constants.LogKey, jobTypeName, jobId, ex.Message);
             }
         }
     }

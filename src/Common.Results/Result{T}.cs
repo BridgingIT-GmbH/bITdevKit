@@ -1200,27 +1200,59 @@ public readonly partial struct Result<T> : IResult<T>
     /// </example>
     public override string ToString()
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"Success: {this.IsSuccess}");
+        return this.ToString(string.Empty);
+    }
 
+    public string ToString(string message)
+    {
+        var sb = new StringBuilder();
+
+        // Append success or failure message
+        if (this.IsSuccess)
+        {
+            sb.Append("Result succeeded ✓");
+        }
+        else
+        {
+            sb.Append("Result failed ✗");
+        }
+
+        // Append type name
+        sb.Append(" [").Append(typeof(T).Name).Append(']');
+
+        // Append message only if not null or empty
+        if (!string.IsNullOrEmpty(message))
+        {
+            sb.Append(' ').Append(message);
+        }
+
+        // Remove trailing spaces and add a single newline
+        while (sb.Length > 0 && sb[^1] == ' ')
+        {
+            sb.Length--;
+        }
+        sb.AppendLine();
+
+        // Append messages if any
         if (!this.messages.IsEmpty)
         {
-            sb.AppendLine("Messages:");
-            foreach (var message in this.messages.AsEnumerable())
+            sb.AppendLine("  messages:");
+            foreach (var m in this.messages.AsEnumerable())
             {
-                sb.AppendLine($"- {message}");
+                sb.Append("  - ").AppendLine(m);
             }
         }
 
+        // Append errors if any
         if (!this.errors.IsEmpty)
         {
-            sb.AppendLine("Errors:");
-            foreach (var error in this.errors.AsEnumerable())
+            sb.AppendLine("  errors:");
+            foreach (var e in this.errors.AsEnumerable())
             {
-                sb.AppendLine($"- [{error.GetType().Name}] {error.Message}");
+                sb.Append("  - [").Append(e.GetType().Name).Append("] ").AppendLine(e.Message);
             }
         }
 
-        return sb.ToString().TrimEnd();
+        return sb.ToString();
     }
 }

@@ -39,7 +39,9 @@ public class ResultSettingsBuilder
         this.ExceptionErrorFactory = (exception) => new ExceptionError(exception);
     }
 
+    /// <summary>
     /// Builds and returns a ResultSettings object.
+    /// </summary>
     /// <return>
     /// A ResultSettings object configured with the current properties of the ResultSettingsBuilder instance.
     /// </return>

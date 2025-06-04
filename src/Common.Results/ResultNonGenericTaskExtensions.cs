@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using Microsoft.Extensions.Logging;
+
 public static partial class ResultNonGenericTaskExtensions
 {
     /// <summary>
@@ -751,6 +753,37 @@ public static partial class ResultNonGenericTaskExtensions
         }
         catch (Exception ex)
         {
+            return Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    public static async Task<Result> Log(
+        this Task<Result> resultTask, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+    {
+        if (logger is null)
+        {
+            return Result.Failure()
+                .WithError(new Error("Logger cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+            if (result.IsSuccess)
+            {
+                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
+            }
+            else
+            {
+                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while logging Result");
             return Result.Failure()
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);

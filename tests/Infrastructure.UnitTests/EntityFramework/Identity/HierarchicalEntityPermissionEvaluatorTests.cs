@@ -101,6 +101,48 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         employeePermissions.ShouldContain(p => p.Permission == Permission.Write);
     }
 
+    [Fact]
+    public async Task HasPermission_NoGrants_ShouldNotGrantAccess()
+    {
+        // Arrange
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
+
+        await this.dbContext.Set<PersonStub>().AddRangeAsync([ceo, manager, employee]);
+        await this.dbContext.SaveChangesAsync();
+
+        var userId = DateTime.UtcNow.Ticks.ToString();
+
+        // Act & Assert
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager, Permission.Read);
+        hasManagerAccess.ShouldBeFalse();
+
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
+        hasEmployeeAccess.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasPermissionId_NoGrants_ShouldNotGrantAccess()
+    {
+        // Arrange
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
+
+        await this.dbContext.Set<PersonStub>().AddRangeAsync([ceo, manager, employee]);
+        await this.dbContext.SaveChangesAsync();
+
+        var userId = DateTime.UtcNow.Ticks.ToString();
+
+        // Act & Assert
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager.Id, Permission.Read);
+        hasManagerAccess.ShouldBeFalse();
+
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee.Id, Permission.Read);
+        hasEmployeeAccess.ShouldBeFalse();
+    }
+
     //[Fact]
     //public async Task GetPermissions_ShouldShowInheritanceChain()
     //{

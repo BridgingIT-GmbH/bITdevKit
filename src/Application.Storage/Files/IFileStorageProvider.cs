@@ -53,6 +53,19 @@ public interface IFileStorageProvider
     Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Renames a directory from the specified source path to the destination path asynchronously.
+    /// </summary>
+    /// <remarks>This method performs the renaming operation asynchronously and does not block the calling
+    /// thread. Ensure that both <paramref name="path"/> and <paramref name="destinationPath"/> are valid and accessible
+    /// paths.</remarks>
+    /// <param name="path">The full path of the directory to be renamed. Cannot be null or empty.</param>
+    /// <param name="destinationPath">The new full path for the directory. Cannot be null or empty.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests. Defaults to <see langword="default"/>.</param>
+    /// <returns>A <see cref="Result"/> object indicating the success or failure of the operation. The result contains details
+    /// about any errors encountered during the renaming process.</returns>
+    Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Writes the provided stream to the file or blob at the specified path, returning a Result with success or errors.
     /// Example: `using (var stream = new MemoryStream()) await provider.WriteFileAsync("folder/file.txt", stream, null, CancellationToken.None);`
     /// </summary>

@@ -331,6 +331,33 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    public virtual Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Placeholder for concrete implementation
+            throw new NotImplementedException("RenameDirectoryAsync must be implemented by concrete providers.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new FileSystemError("File not found", path, ex))
+                .WithMessage($"Failed to rename directory from '{path}' to '{destinationPath}'"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new PermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for directory at '{path}' or '{destinationPath}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error renaming directory from '{path}' to '{destinationPath}'"));
+        }
+    }
+
     public virtual Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try

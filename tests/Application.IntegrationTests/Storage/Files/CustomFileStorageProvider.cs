@@ -70,6 +70,11 @@ public class CustomFileStorageProvider : IFileStorageProvider
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
     }
 
+    public Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
+    }
+
     public Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));

@@ -7,14 +7,13 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-[IntegrationTest("Storage")]
+[IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {

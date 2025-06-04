@@ -60,4 +60,21 @@ public static partial class ServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddDatabaseCheckerService<TContext>(
+        this IServiceCollection services,
+        DatabaseCheckerOptions options = null)
+        where TContext : DbContext
+    {
+        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
+        services.AddHostedService(sp =>
+            new DatabaseCheckerService<TContext>(
+                sp.GetRequiredService<ILoggerFactory>(),
+                sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp,
+                sp.GetService<IDatabaseReadyService>(),
+                options));
+
+        return services;
+    }
 }

@@ -52,10 +52,13 @@ builder.Services.AddQueries()
     //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-// logging services and endpoints
-//builder.Services.AddScoped<BackgroundPurgeService<CoreDbContext>>(); // needed for LogQueryService
+// Register the purge queue as a singleton
+builder.Services.AddSingleton<LogPurgeQueue>();
+// Register LogQueryService and BackgroundPurgeService with the queue
 builder.Services.AddScoped<ILogQueryService, LogQueryService<CoreDbContext>>();
 builder.Services.AddHostedService<BackgroundPurgeService<CoreDbContext>>();
+
+// logging services and endpoints
 builder.Services.AddEndpoints<LogEndpoints>(builder.Environment.IsDevelopment());
 
 // Startup Tasks ==============================

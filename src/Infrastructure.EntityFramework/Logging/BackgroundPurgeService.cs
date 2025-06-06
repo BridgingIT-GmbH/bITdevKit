@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,28 +20,18 @@ using System.Threading.Tasks;
 /// <remarks>
 /// Initializes a new instance of the <see cref="BackgroundPurgeService{TContext}"/> class.
 /// </remarks>
-/// <param name="serviceProvider">The service provider for creating scoped services.</param>
-/// <param name="logger">The logger for recording background purge operations.</param>
-/// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceProvider"/> or <paramref name="logger"/> is null.</exception>
-public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TContext>> logger, IServiceProvider serviceProvider) : BackgroundService
+public class BackgroundPurgeService<TContext> : BackgroundService
     where TContext : DbContext, ILoggingContext
 {
-    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    private readonly ILogger<BackgroundPurgeService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly ConcurrentQueue<(DateTimeOffset OlderThan, bool Archive, int BatchSize, TimeSpan DelayInterval)> purgeQueue = [];
+    private readonly IServiceProvider serviceProvider;
+    private readonly ILogger<BackgroundPurgeService<TContext>> logger;
+    private readonly LogPurgeQueue purgeQueue;
 
-    /// <summary>
-    /// Queues a purge operation to be processed in the background.
-    /// </summary>
-    /// <param name="olderThan">The date threshold for logs to purge.</param>
-    /// <param name="archive">Whether to mark logs as archived before purging.</param>
-    /// <param name="batchSize">The number of logs to process per batch during archiving.</param>
-    /// <param name="delayInterval">The delay between batches during archiving.</param>
-    public void EnqueuePurge(DateTimeOffset olderThan, bool archive, int batchSize, TimeSpan delayInterval)
+    public BackgroundPurgeService(ILogger<BackgroundPurgeService<TContext>> logger, IServiceProvider serviceProvider, LogPurgeQueue purgeQueue)
     {
-        this.purgeQueue.Enqueue((olderThan, archive, batchSize, delayInterval));
-
-        this.logger.LogDebug("{LogKey}: Queued purge operation for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
+        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
     }
 
     /// <summary>
@@ -82,7 +71,7 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
                                 break;
                             }
 
-                            this.logger.LogDebug("{LogKey}: Marked {BatchCount} logs as archived, skip={Skip}", "Log", updatedCount, skip);
+                            this.logger.LogDebug("{LogKey}: Archived {BatchCount} logs older than {OlderThan}, skip={Skip}", "Log", updatedCount, olderThan, skip);
 
                             skip += batchSize;
 
@@ -92,12 +81,14 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
                             }
                         }
                     }
+                    else // delete
+                    {
+                        this.logger.LogDebug("{LogKey}: Deleting archived logs older than {OlderThan}", "Log", olderThan);
 
-                    this.logger.LogDebug("{LogKey}: Deleting archived logs older than {OlderThan}", "Log", olderThan);
-
-                    await context.LogEntries
-                        .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
-                        .ExecuteDeleteAsync(stoppingToken);
+                        await context.LogEntries
+                            .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
+                            .ExecuteDeleteAsync(stoppingToken);
+                    }
 
                     this.logger.LogDebug("{LogKey}: Completed purge for logs older than {OlderThan}", "Log", olderThan);
                 }

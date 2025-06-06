@@ -26,19 +26,23 @@ using System.Threading.Tasks;
 /// <remarks>
 /// Initializes a new instance of the <see cref="LogQueryService{TContext}"/> class.
 /// </remarks>
-/// <param name="logger">The logger for recording service operations, resolved from DI.</param>
-/// <param name="dbContext">The generic database context implementing <see cref="ILoggingContext"/>.</param>
-/// <param name="purgeService">The optional service for queuing background purge operations. If null, purging is not supported.</param>
-/// <exception cref="ArgumentNullException">Thrown when <paramref name="dbContext"/> or <paramref name="logger"/> is null.</exception>
-public class LogQueryService<TContext>(
-    ILogger<LogQueryService<TContext>> logger,
-    TContext dbContext,
-    BackgroundPurgeService<TContext> purgeService = null) : ILogQueryService
+public class LogQueryService<TContext> : ILogQueryService
     where TContext : DbContext, ILoggingContext
 {
-    private readonly TContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    private readonly ILogger<LogQueryService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly TContext dbContext;
+    private readonly ILogger<LogQueryService<TContext>> logger;
+    private readonly LogPurgeQueue purgeQueue;
     private static readonly string[] LogLevels = ["Verbose", "Debug", "Information", "Warning", "Error", "Fatal"];
+
+    public LogQueryService(
+        ILogger<LogQueryService<TContext>> logger,
+        TContext dbContext,
+        LogPurgeQueue purgeQueue)
+    {
+        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
+    }
 
     /// <inheritdoc/>
     public async Task<LogQueryResponse> QueryLogsAsync(LogQueryRequest request, CancellationToken cancellationToken = default)
@@ -341,17 +345,12 @@ public class LogQueryService<TContext>(
         TimeSpan? delayInterval = null,
         CancellationToken cancellationToken = default)
     {
-        if (purgeService == null)
-        {
-            throw new InvalidOperationException("Cannot purge logs: BackgroundPurgeService is not registered.");
-        }
-
         this.logger.LogDebug("{LogKey}: Queuing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
 
         batchSize = Math.Max(1, batchSize);
         var effectiveDelay = delayInterval ?? TimeSpan.FromMilliseconds(100);
 
-        purgeService.EnqueuePurge(olderThan, archive, batchSize, effectiveDelay);
+        this.purgeQueue.Enqueue(olderThan, archive, batchSize, effectiveDelay);
 
         this.logger.LogDebug("{LogKey}: Purge queued successfully", "Log");
 

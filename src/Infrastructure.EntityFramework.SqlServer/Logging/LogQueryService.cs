@@ -51,7 +51,7 @@ public class LogQueryService<TContext> : ILogQueryService
 
         request.Validate();
 
-        this.logger.LogDebug("{LogKey}: Starting query with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, ContinuationToken={ContinuationToken}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, request.ContinuationToken);
+        this.logger.LogTrace("{LogKey}: Starting query with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, ContinuationToken={ContinuationToken}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, request.ContinuationToken);
 
         var pageSize = Math.Max(1, Math.Min(request.PageSize, 10000)); // Cap at 10,000 for safety
         long? lastId = null;
@@ -187,7 +187,7 @@ public class LogQueryService<TContext> : ILogQueryService
 
         var continuationToken = hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null; // Reverse: use last (smallest) Id
 
-        this.logger.LogDebug("{LogKey}: Query completed with {ItemCount} items", "Log", dtos.Count);
+        this.logger.LogTrace("{LogKey}: Query completed with {ItemCount} items", "Log", dtos.Count);
 
         return new LogQueryResponse
         {
@@ -211,7 +211,7 @@ public class LogQueryService<TContext> : ILogQueryService
         TimeSpan? pollingInterval = null,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey}: Starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "Log", startTime, level, traceId, correlationId, logKey, searchText, pollingInterval);
+        this.logger.LogTrace("{LogKey}: Starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "Log", startTime, level, traceId, correlationId, logKey, searchText, pollingInterval);
 
         long? lastId = null;
         var interval = pollingInterval ?? TimeSpan.FromSeconds(1);
@@ -305,7 +305,6 @@ public class LogQueryService<TContext> : ILogQueryService
             }
 
             query = query.OrderByDescending(e => e.Id); // Reverse: newest first
-
             var items = await query.Take(100).ToListAsync(cancellationToken);
 
             if (items.Count != 0)
@@ -333,13 +332,13 @@ public class LogQueryService<TContext> : ILogQueryService
                     };
                 }
 
-                this.logger.LogDebug("{LogKey}: Streamed {ItemCount} log entries", "Log", items.Count);
+                this.logger.LogTrace("{LogKey}: Streamed {ItemCount} log entries", "Log", items.Count);
             }
 
             await Task.Delay(interval, cancellationToken);
         }
 
-        this.logger.LogDebug("{LogKey}: Log stream completed", "Log");
+        this.logger.LogTrace("{LogKey}: Log stream completed", "Log");
     }
 
     /// <inheritdoc/>
@@ -350,14 +349,14 @@ public class LogQueryService<TContext> : ILogQueryService
         TimeSpan? delayInterval = null,
         CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
+        this.logger.LogTrace("{LogKey}: Queuing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
 
         batchSize = Math.Max(1, batchSize);
         var effectiveDelay = delayInterval ?? TimeSpan.FromMilliseconds(100);
 
         this.purgeQueue.Enqueue(olderThan, archive, batchSize, effectiveDelay);
 
-        this.logger.LogDebug("{LogKey}: Purge queued successfully", "Log");
+        this.logger.LogTrace("{LogKey}: Purge queued successfully", "Log");
 
         return Task.CompletedTask;
     }
@@ -376,7 +375,7 @@ public class LogQueryService<TContext> : ILogQueryService
         }
 
         var olderThan = DateTimeOffset.UtcNow.EndOfDay() - age;
-        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than age {Age} (olderThan={OlderThan}) with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", age, olderThan, archive, batchSize, delayInterval);
+        this.logger.LogTrace("{LogKey}: Queuing purge for logs older than age {Age} (olderThan={OlderThan}) with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", age, olderThan, archive, batchSize, delayInterval);
 
         return this.PurgeLogsAsync(olderThan, archive, batchSize, delayInterval, cancellationToken);
     }
@@ -388,7 +387,7 @@ public class LogQueryService<TContext> : ILogQueryService
         TimeSpan? groupByInterval = null,
         CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey}: Retrieving statistics with StartTime={StartTime}, EndTime={EndTime}, GroupByInterval={GroupByInterval}", "Log", startTime, endTime, groupByInterval);
+        this.logger.LogTrace("{LogKey}: Retrieving statistics with StartTime={StartTime}, EndTime={EndTime}, GroupByInterval={GroupByInterval}", "Log", startTime, endTime, groupByInterval);
 
         var query = this.dbContext.LogEntries.AsNoTracking()
             .Where(e => e.IsArchived == null || e.IsArchived == false); // Only active logs (NULL or false)
@@ -453,7 +452,7 @@ public class LogQueryService<TContext> : ILogQueryService
             result.TimeIntervalCounts = groupedByTime;
         }
 
-        this.logger.LogDebug("{LogKey}: Statistics retrieved with {LevelCount} level counts", "Log", levelCounts.Count);
+        this.logger.LogTrace("{LogKey}: Statistics retrieved with {LevelCount} level counts", "Log", levelCounts.Count);
 
         return result;
     }
@@ -465,7 +464,7 @@ public class LogQueryService<TContext> : ILogQueryService
 
         request.Validate();
 
-        this.logger.LogDebug("{LogKey}: Starting export with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, Format={Format}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, format);
+        this.logger.LogTrace("{LogKey}: Starting export with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, Format={Format}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, format);
 
         var stream = new MemoryStream();
         await using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
@@ -590,7 +589,7 @@ public class LogQueryService<TContext> : ILogQueryService
 
         stream.Position = 0;
 
-        this.logger.LogDebug("{LogKey}: Export completed in {Format} format", "Log", format);
+        this.logger.LogTrace("{LogKey}: Export completed in {Format} format", "Log", format);
 
         return stream;
     }
@@ -600,16 +599,16 @@ public class LogQueryService<TContext> : ILogQueryService
     {
         ArgumentNullException.ThrowIfNull(callback);
 
-        this.logger.LogDebug("{LogKey}: Subscribing to high-severity log notifications", "Log");
+        this.logger.LogTrace("{LogKey}: Subscribing to high-severity log notifications", "Log");
 
         await foreach (var log in this.StreamLogsAsync(
             level: LogLevel.Error,
             cancellationToken: cancellationToken))
         {
             await callback(log);
-            this.logger.LogDebug("{LogKey}: Notified high-severity log: Id={Id}, Level={Level}", "Log", log.Id, log.Level);
+            this.logger.LogTrace("{LogKey}: Notified high-severity log: Id={Id}, Level={Level}", "Log", log.Id, log.Level);
         }
 
-        this.logger.LogDebug("{LogKey}: Notification subscription ended", "Log");
+        this.logger.LogTrace("{LogKey}: Notification subscription ended", "Log");
     }
 }

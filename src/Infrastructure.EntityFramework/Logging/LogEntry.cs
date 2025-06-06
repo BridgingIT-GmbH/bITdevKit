@@ -49,7 +49,7 @@ public class LogEntry
     /// <summary>
     /// Gets or sets the message template used for the log.
     /// </summary>
-    [MaxLength(4000)]
+    //[MaxLength(4000)]
     public string MessageTemplate { get; set; }
 
     /// <summary>

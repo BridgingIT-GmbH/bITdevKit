@@ -22,6 +22,9 @@ public interface ILogQueryService
         string traceId = null,
         string correlationId = null,
         string logKey = null,
+        string moduleName = null,
+        string threadId = null,
+        string shortTypeName = null,
         string searchText = null,
         TimeSpan? pollingInterval = null,
         CancellationToken cancellationToken = default);

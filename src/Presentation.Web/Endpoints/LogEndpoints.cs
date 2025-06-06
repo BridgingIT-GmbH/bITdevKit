@@ -75,7 +75,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
     }
 
     private async Task<IResult> GetLogs(
-        [FromServices] ILogQueryService logQueryService,
+        [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
         [FromQuery] double? ageDays,
@@ -91,7 +91,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         [FromQuery] string continuationToken,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(logQueryService);
+        ArgumentNullException.ThrowIfNull(queryService);
 
         this.logger?.LogDebug("{LogKey}: Fetching paged logs with filters: startTime={StartTime}, endTime={EndTime}, ageDays={AgeDays}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pageSize={PageSize}, continuationToken={ContinuationToken}", "Log", startTime, endTime, ageDays, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pageSize, continuationToken);
 
@@ -141,7 +141,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                         Detail = "AgeDays cannot be negative."
                     });
                 }
-                age = TimeSpan.FromDays(ageDays.Value);
+                age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 
             var request = new LogQueryRequest
@@ -161,7 +161,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                 ContinuationToken = continuationToken
             };
 
-            var response = await logQueryService.QueryLogsAsync(request, cancellationToken);
+            var response = await queryService.QueryLogsAsync(request, cancellationToken);
             this.logger?.LogDebug("{LogKey}: Retrieved {ItemCount} log entries", "Log", response.Items.Count);
             return Results.Ok(response);
         }
@@ -190,7 +190,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private async Task<IResult> StreamLogs(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        [FromServices] ILogQueryService logQueryService,
+        [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] double? ageDays,
         [FromQuery] LogLevel? level,
@@ -204,7 +204,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         [FromQuery] double? pollingIntervalSeconds,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(logQueryService);
+        ArgumentNullException.ThrowIfNull(queryService);
 
         this.logger?.LogDebug("{LogKey}: Starting log stream with filters: startTime={StartTime}, ageDays={AgeDays}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pollingIntervalSeconds={PollingIntervalSeconds}", "Log", startTime, ageDays, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pollingIntervalSeconds);
 
@@ -243,7 +243,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                         Detail = "AgeDays cannot be negative."
                     });
                 }
-                age = TimeSpan.FromDays(ageDays.Value);
+                age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
                 parsedStartTime = DateTimeOffset.UtcNow - age.Value;
             }
 
@@ -253,12 +253,15 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
 
             return Results.Stream(async stream =>
             {
-                await foreach (var log in logQueryService.StreamLogsAsync(
+                await foreach (var log in queryService.StreamLogsAsync(
                     parsedStartTime,
                     level,
                     traceId,
                     correlationId,
                     logKey,
+                    moduleName,
+                    threadId,
+                    shortTypeName,
                     searchText,
                     pollingInterval,
                     cancellationToken))
@@ -283,7 +286,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
     }
 
     private async Task<IResult> PurgeLogs(
-        [FromServices] ILogQueryService logQueryService,
+        [FromServices] ILogQueryService queryService,
         [FromQuery] string olderThan,
         [FromQuery] double? ageDays,
         [FromQuery] bool archive = false,
@@ -291,7 +294,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         [FromQuery] double? delayIntervalMilliseconds = 100,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(logQueryService);
+        ArgumentNullException.ThrowIfNull(queryService);
 
         this.logger?.LogDebug("{LogKey}: Queuing purge with olderThan={OlderThan}, ageDays={AgeDays}, archive={Archive}, batchSize={BatchSize}, delayIntervalMilliseconds={DelayIntervalMilliseconds}", "Log", olderThan, ageDays, archive, batchSize, delayIntervalMilliseconds);
 
@@ -333,8 +336,9 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                     });
                 }
 
-                await logQueryService.PurgeLogsAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
+                await queryService.PurgeLogsAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
                 this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {OlderThan}", "Log", olderThanValue);
+
                 return Results.Accepted($"Purge for logs older than {olderThanValue} queued successfully.");
             }
             else if (ageDays.HasValue)
@@ -349,8 +353,9 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                     });
                 }
 
-                var age = TimeSpan.FromDays(ageDays.Value);
-                await logQueryService.PurgeLogsAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
+                var age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
+                await queryService.PurgeLogsAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
+
                 this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {AgeDays} days", "Log", ageDays.Value);
                 return Results.Accepted($"Purge for logs older than {age.TotalDays} days queued successfully.");
             }
@@ -397,13 +402,13 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
     }
 
     private async Task<IResult> GetLogStatistics(
-        [FromServices] ILogQueryService logQueryService,
+        [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
         [FromQuery] double? groupByIntervalHours,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(logQueryService);
+        ArgumentNullException.ThrowIfNull(queryService);
 
         this.logger?.LogDebug("{LogKey}: Fetching log statistics: startTime={StartTime}, endTime={EndTime}, groupByIntervalHours={GroupByIntervalHours}", "Log", startTime, endTime, groupByIntervalHours);
 
@@ -431,7 +436,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                 });
             }
 
-            var stats = await logQueryService.GetLogStatisticsAsync(
+            var stats = await queryService.GetLogStatisticsAsync(
                 parsedStartTime,
                 parsedEndTime,
                 groupByIntervalHours.HasValue ? TimeSpan.FromHours(groupByIntervalHours.Value) : null,
@@ -462,7 +467,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
     }
 
     private async Task<IResult> ExportLogs(
-        [FromServices] ILogQueryService logQueryService,
+        [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] double? ageDays,
         [FromQuery] string endTime,
@@ -478,7 +483,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         [FromQuery] LogExportFormat format,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(logQueryService);
+        ArgumentNullException.ThrowIfNull(queryService);
 
         this.logger?.LogDebug("{LogKey}: Exporting logs with filters: startTime={StartTime}, ageDays={AgeDays}, endTime={EndTime}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pageSize={PageSize}, format={Format}", "Log", startTime, ageDays, endTime, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pageSize, format);
 
@@ -528,7 +533,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                         Detail = "AgeDays cannot be negative."
                     });
                 }
-                age = TimeSpan.FromDays(ageDays.Value);
+                age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 
             var request = new LogQueryRequest
@@ -547,7 +552,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
                 PageSize = pageSize ?? 1000
             };
 
-            var stream = await logQueryService.ExportLogsAsync(request, format, cancellationToken);
+            var stream = await queryService.ExportLogsAsync(request, format, cancellationToken);
             var contentType = format switch
             {
                 LogExportFormat.Csv => "text/csv",

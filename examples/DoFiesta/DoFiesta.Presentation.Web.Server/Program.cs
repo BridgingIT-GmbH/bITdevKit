@@ -3,11 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Configuration;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
@@ -18,11 +14,11 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation.Web;
-using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MudBlazor.Services;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 // ===============================================================================================
 // Create the webhost
@@ -57,6 +53,7 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
 // logging services and endpoints
+//builder.Services.AddScoped<BackgroundPurgeService<CoreDbContext>>(); // needed for LogQueryService
 builder.Services.AddScoped<ILogQueryService, LogQueryService<CoreDbContext>>();
 builder.Services.AddHostedService<BackgroundPurgeService<CoreDbContext>>();
 builder.Services.AddEndpoints<LogEndpoints>(builder.Environment.IsDevelopment());
@@ -65,7 +62,7 @@ builder.Services.AddEndpoints<LogEndpoints>(builder.Environment.IsDevelopment())
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
     .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-    //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+                                                                                                                                     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 //builder.Services.AddJobScheduling(o => o

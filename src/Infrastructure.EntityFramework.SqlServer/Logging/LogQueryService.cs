@@ -28,12 +28,12 @@ using System.Threading.Tasks;
 /// </remarks>
 /// <param name="logger">The logger for recording service operations, resolved from DI.</param>
 /// <param name="dbContext">The generic database context implementing <see cref="ILoggingContext"/>.</param>
-/// <param name="backgroundPurgeService">The optional service for queuing background purge operations. If null, purging is not supported.</param>
+/// <param name="purgeService">The optional service for queuing background purge operations. If null, purging is not supported.</param>
 /// <exception cref="ArgumentNullException">Thrown when <paramref name="dbContext"/> or <paramref name="logger"/> is null.</exception>
 public class LogQueryService<TContext>(
     ILogger<LogQueryService<TContext>> logger,
     TContext dbContext,
-    BackgroundPurgeService<TContext> backgroundPurgeService = null) : ILogQueryService
+    BackgroundPurgeService<TContext> purgeService = null) : ILogQueryService
     where TContext : DbContext, ILoggingContext
 {
     private readonly TContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -63,7 +63,7 @@ public class LogQueryService<TContext>(
         var effectiveStartTime = request.StartTime;
         if (request.Age.HasValue)
         {
-            effectiveStartTime = DateTimeOffset.UtcNow - request.Age.Value;
+            effectiveStartTime = request.Age.Value == TimeSpan.Zero ? DateTimeOffset.UtcNow.Date : DateTimeOffset.UtcNow.Date - request.Age.Value;
         }
         else if (!request.StartTime.HasValue && !request.Age.HasValue)
         {
@@ -101,6 +101,21 @@ public class LogQueryService<TContext>(
         if (!string.IsNullOrEmpty(request.LogKey))
         {
             query = query.Where(e => e.LogKey == request.LogKey);
+        }
+
+        if (!string.IsNullOrEmpty(request.ModuleName))
+        {
+            query = query.Where(e => e.ModuleName == request.ModuleName);
+        }
+
+        if (!string.IsNullOrEmpty(request.ThreadId))
+        {
+            query = query.Where(e => e.ThreadId == request.ThreadId);
+        }
+
+        if (!string.IsNullOrEmpty(request.ShortTypeName))
+        {
+            query = query.Where(e => e.ShortTypeName == request.ShortTypeName);
         }
 
         if (!string.IsNullOrEmpty(request.SearchText))
@@ -185,6 +200,9 @@ public class LogQueryService<TContext>(
         string traceId = null,
         string correlationId = null,
         string logKey = null,
+        string moduleName = null,
+        string threadId = null,
+        string shortTypeName = null,
         string searchText = null,
         TimeSpan? pollingInterval = null,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -233,6 +251,21 @@ public class LogQueryService<TContext>(
                 query = query.Where(e => e.LogKey == logKey);
             }
 
+            if (!string.IsNullOrEmpty(moduleName))
+            {
+                query = query.Where(e => e.ModuleName == moduleName);
+            }
+
+            if (!string.IsNullOrEmpty(threadId))
+            {
+                query = query.Where(e => e.ThreadId == threadId);
+            }
+
+            if (!string.IsNullOrEmpty(shortTypeName))
+            {
+                query = query.Where(e => e.ShortTypeName == shortTypeName);
+            }
+
             if (!string.IsNullOrEmpty(searchText))
             {
                 string searchPattern;
@@ -264,8 +297,7 @@ public class LogQueryService<TContext>(
 
             query = query.OrderBy(e => e.Id);
 
-            var items = await query
-                .Take(100).ToListAsync(cancellationToken);
+            var items = await query                .Take(100).ToListAsync(cancellationToken);
 
             if (items.Count != 0)
             {
@@ -309,7 +341,7 @@ public class LogQueryService<TContext>(
         TimeSpan? delayInterval = null,
         CancellationToken cancellationToken = default)
     {
-        if (backgroundPurgeService == null)
+        if (purgeService == null)
         {
             throw new InvalidOperationException("Cannot purge logs: BackgroundPurgeService is not registered.");
         }
@@ -319,7 +351,7 @@ public class LogQueryService<TContext>(
         batchSize = Math.Max(1, batchSize);
         var effectiveDelay = delayInterval ?? TimeSpan.FromMilliseconds(100);
 
-        backgroundPurgeService.EnqueuePurge(olderThan, archive, batchSize, effectiveDelay);
+        purgeService.EnqueuePurge(olderThan, archive, batchSize, effectiveDelay);
 
         this.logger.LogDebug("{LogKey}: Purge queued successfully", "Log");
 
@@ -339,9 +371,8 @@ public class LogQueryService<TContext>(
             throw new ArgumentOutOfRangeException(nameof(age), "Age cannot be negative.");
         }
 
-        var olderThan = DateTimeOffset.UtcNow - age;
-        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than age {Age} (olderThan={OlderThan}) with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}",
-            "Log", age, olderThan, archive, batchSize, delayInterval);
+        var olderThan = DateTimeOffset.UtcNow.EndOfDay() - age;
+        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than age {Age} (olderThan={OlderThan}) with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", age, olderThan, archive, batchSize, delayInterval);
 
         return this.PurgeLogsAsync(olderThan, archive, batchSize, delayInterval, cancellationToken);
     }
@@ -430,8 +461,7 @@ public class LogQueryService<TContext>(
 
         request.Validate();
 
-        this.logger.LogDebug("{LogKey}: Starting export with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, Format={Format}",
-            "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, format);
+        this.logger.LogDebug("{LogKey}: Starting export with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, Format={Format}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, format);
 
         var stream = new MemoryStream();
         await using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
@@ -456,7 +486,7 @@ public class LogQueryService<TContext>(
                     case LogExportFormat.Csv:
                         if (stream.Position == 0) // Write header only once
                         {
-                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,MessageTemplate,Exception,Properties,LogEvent,TraceId,SpanId,CorrelationId,LogKey,ModuleName,ThreadId,ShortTypeName");
+                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,MessageTemplate,Exception,TraceId,SpanId,CorrelationId,LogKey,ModuleName,ThreadId,ShortTypeName");
                         }
                         foreach (var log in logs)
                         {

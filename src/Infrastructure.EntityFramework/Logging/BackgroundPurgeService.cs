@@ -41,6 +41,7 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
     public void EnqueuePurge(DateTimeOffset olderThan, bool archive, int batchSize, TimeSpan delayInterval)
     {
         this.purgeQueue.Enqueue((olderThan, archive, batchSize, delayInterval));
+
         this.logger.LogDebug("{LogKey}: Queued purge operation for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
     }
 
@@ -71,10 +72,9 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
                         while (true)
                         {
                             var updatedCount = await context.LogEntries
-                                .Where(e => e.TimeStamp <= olderThan && !e.IsArchived.GetValueOrDefault())
+                                .Where(e => e.TimeStamp <= olderThan && (e.IsArchived == null || e.IsArchived == false))
                                 .OrderBy(e => e.Id)
-                                .Skip(skip)
-                                .Take(batchSize)
+                                .Skip(skip).Take(batchSize)
                                 .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsArchived, true), stoppingToken);
 
                             if (updatedCount == 0)
@@ -108,7 +108,7 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
             }
             else
             {
-                await Task.Delay(100, stoppingToken); // Avoid tight loop
+                await Task.Delay(1000, stoppingToken); // Avoid tight loop
             }
         }
 

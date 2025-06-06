@@ -12,11 +12,11 @@ using Microsoft.Extensions.Logging;
 public interface ILogQueryService
 {
     Task<Stream> ExportLogsAsync(LogQueryRequest request, LogExportFormat format, CancellationToken cancellationToken = default);
-    Task<LogStatisticsDto> GetLogStatisticsAsync(DateTimeOffset? startTime = null, DateTimeOffset? endTime = null, TimeSpan? groupByInterval = null, CancellationToken cancellationToken = default);
+    Task<LogStatisticsModel> GetLogStatisticsAsync(DateTimeOffset? startTime = null, DateTimeOffset? endTime = null, TimeSpan? groupByInterval = null, CancellationToken cancellationToken = default);
     Task PurgeLogsAsync(DateTimeOffset olderThan, bool archive = false, int batchSize = 1000, TimeSpan? delayInterval = null, CancellationToken cancellationToken = default);
     Task PurgeLogsAsync(TimeSpan age, bool archive = false, int batchSize = 1000, TimeSpan? delayInterval = null, CancellationToken cancellationToken = default);
     Task<LogQueryResponse> QueryLogsAsync(LogQueryRequest request, CancellationToken cancellationToken = default);
-    IAsyncEnumerable<LogEntryDto> StreamLogsAsync(
+    IAsyncEnumerable<LogEntryModel> StreamLogsAsync(
         DateTimeOffset? startTime = null,
         LogLevel? level = null,
         string traceId = null,
@@ -28,7 +28,7 @@ public interface ILogQueryService
         string searchText = null,
         TimeSpan? pollingInterval = null,
         CancellationToken cancellationToken = default);
-    Task SubscribeToNotificationsAsync(Func<LogEntryDto, Task> callback, CancellationToken cancellationToken = default);
+    Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -39,7 +39,7 @@ public class LogQueryResponse
     /// <summary>
     /// Gets or sets the list of log entries returned by the query.
     /// </summary>
-    public IReadOnlyList<LogEntryDto> Items { get; set; } = new List<LogEntryDto>();
+    public IReadOnlyList<LogEntryModel> Items { get; set; } = new List<LogEntryModel>();
 
     /// <summary>
     /// Gets or sets the continuation token for retrieving the next page of results.
@@ -150,7 +150,7 @@ public class LogQueryRequest
             throw new ArgumentException("StartTime and Age cannot both be specified.");
         }
 
-        if (this.Age.HasValue && this.Age.Value < TimeSpan.Zero)
+        if (this.Age < TimeSpan.Zero)
         {
             throw new ArgumentException("Age cannot be negative.");
         }
@@ -165,25 +165,25 @@ public class LogQueryRequest
             throw new ArgumentException("PageSize must be positive.");
         }
 
-        if (!string.IsNullOrEmpty(this.LogKey) && this.LogKey.Contains(";"))
-        {
-            throw new ArgumentException("LogKey contains invalid characters.");
-        }
+        //if (!string.IsNullOrEmpty(this.LogKey) && this.LogKey.Contains(";"))
+        //{
+        //    throw new ArgumentException("LogKey contains invalid characters.");
+        //}
 
-        if (!string.IsNullOrEmpty(this.ModuleName) && this.ModuleName.Contains(";"))
-        {
-            throw new ArgumentException("ModuleName contains invalid characters.");
-        }
+        //if (!string.IsNullOrEmpty(this.ModuleName) && this.ModuleName.Contains(";"))
+        //{
+        //    throw new ArgumentException("ModuleName contains invalid characters.");
+        //}
 
-        if (!string.IsNullOrEmpty(this.ThreadId) && this.ThreadId.Contains(";"))
-        {
-            throw new ArgumentException("ThreadId contains invalid characters.");
-        }
+        //if (!string.IsNullOrEmpty(this.ThreadId) && this.ThreadId.Contains(";"))
+        //{
+        //    throw new ArgumentException("ThreadId contains invalid characters.");
+        //}
 
-        if (!string.IsNullOrEmpty(this.ShortTypeName) && this.ShortTypeName.Contains(";"))
-        {
-            throw new ArgumentException("ShortTypeName contains invalid characters.");
-        }
+        //if (!string.IsNullOrEmpty(this.ShortTypeName) && this.ShortTypeName.Contains(";"))
+        //{
+        //    throw new ArgumentException("ShortTypeName contains invalid characters.");
+        //}
 
         if (!string.IsNullOrEmpty(this.SearchText) && Regex.IsMatch(this.SearchText, @"[\p{Cc}\p{Cf}]"))
         {
@@ -195,7 +195,7 @@ public class LogQueryRequest
 /// <summary>
 /// Data transfer object for representing a log entry in API responses.
 /// </summary>
-public class LogEntryDto
+public class LogEntryModel
 {
     /// <summary>
     /// Gets or sets the unique identifier for the log entry.
@@ -271,18 +271,18 @@ public class LogEntryDto
 /// <summary>
 /// Data transfer object for representing log statistics, including counts by level and time intervals.
 /// </summary>
-public class LogStatisticsDto
+public class LogStatisticsModel
 {
     /// <summary>
     /// Gets or sets the counts of log entries by level (e.g., Information, Error).
     /// </summary>
-    public Dictionary<LogLevel, int> LevelCounts { get; set; } = new Dictionary<LogLevel, int>();
+    public Dictionary<LogLevel, int> LevelCounts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the counts of log entries by time interval and level.
     /// Keys are the start times of intervals, values are dictionaries of level counts.
     /// </summary>
-    public Dictionary<DateTimeOffset, Dictionary<LogLevel, int>> TimeIntervalCounts { get; set; } = new Dictionary<DateTimeOffset, Dictionary<LogLevel, int>>();
+    public Dictionary<DateTimeOffset, Dictionary<LogLevel, int>> TimeIntervalCounts { get; set; } = [];
 }
 
 /// <summary>

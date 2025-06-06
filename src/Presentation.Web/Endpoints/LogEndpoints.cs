@@ -44,7 +44,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
             .WithDescription("Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapGet("stream", this.StreamLogs)
-            .Produces<IEnumerable<LogEntryDto>>()
+            .Produces<IEnumerable<LogEntryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
             .WithName("StreamLogs")
@@ -58,7 +58,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
             .WithDescription("Queues a purge operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
         group.MapGet("stats", this.GetLogStatistics)
-            .Produces<LogStatisticsDto>()
+            .Produces<LogStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
             .WithName("GetLogStatistics")

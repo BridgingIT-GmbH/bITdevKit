@@ -24,25 +24,18 @@ using System.Threading.Tasks;
 /// </summary>
 /// <typeparam name="TContext">The DbContext type, which must implement <see cref="ILoggingContext"/>.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="LogQueryService{TContext}"/> class.
+/// Initializes a new instance of the <see cref="LogEntryQueryService{TContext}"/> class.
 /// </remarks>
-public class LogQueryService<TContext> : ILogQueryService
+public class LogEntryQueryService<TContext>(
+    ILogger<LogEntryQueryService<TContext>> logger,
+    TContext dbContext,
+    LogEntryPurgeQueue purgeQueue) : ILogQueryService
     where TContext : DbContext, ILoggingContext
 {
-    private readonly TContext dbContext;
-    private readonly ILogger<LogQueryService<TContext>> logger;
-    private readonly LogPurgeQueue purgeQueue;
+    private readonly TContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    private readonly ILogger<LogEntryQueryService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly LogEntryPurgeQueue purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
     private static readonly string[] LogLevels = ["Verbose", "Debug", "Information", "Warning", "Error", "Fatal"];
-
-    public LogQueryService(
-        ILogger<LogQueryService<TContext>> logger,
-        TContext dbContext,
-        LogPurgeQueue purgeQueue)
-    {
-        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
-    }
 
     /// <inheritdoc/>
     public async Task<LogQueryResponse> QueryLogsAsync(LogQueryRequest request, CancellationToken cancellationToken = default)
@@ -167,7 +160,7 @@ public class LogQueryService<TContext> : ILogQueryService
             items = [.. items.Take(pageSize)];
         }
 
-        var dtos = items.ConvertAll(e => new LogEntryDto
+        var dtos = items.ConvertAll(e => new LogEntryModel
         {
             Id = e.Id,
             Message = e.Message,
@@ -198,7 +191,7 @@ public class LogQueryService<TContext> : ILogQueryService
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<LogEntryDto> StreamLogsAsync(
+    public async IAsyncEnumerable<LogEntryModel> StreamLogsAsync(
         DateTimeOffset? startTime = null,
         LogLevel? level = null,
         string traceId = null,
@@ -313,7 +306,7 @@ public class LogQueryService<TContext> : ILogQueryService
 
                 foreach (var item in items)
                 {
-                    yield return new LogEntryDto
+                    yield return new LogEntryModel
                     {
                         Id = item.Id,
                         Message = item.Message,
@@ -381,7 +374,7 @@ public class LogQueryService<TContext> : ILogQueryService
     }
 
     /// <inheritdoc/>
-    public async Task<LogStatisticsDto> GetLogStatisticsAsync(
+    public async Task<LogStatisticsModel> GetLogStatisticsAsync(
         DateTimeOffset? startTime = null,
         DateTimeOffset? endTime = null,
         TimeSpan? groupByInterval = null,
@@ -417,7 +410,7 @@ public class LogQueryService<TContext> : ILogQueryService
                 x => x.Count,
                 cancellationToken);
 
-        var result = new LogStatisticsDto
+        var result = new LogStatisticsModel
         {
             LevelCounts = levelCounts
         };
@@ -595,7 +588,7 @@ public class LogQueryService<TContext> : ILogQueryService
     }
 
     /// <inheritdoc/>
-    public async Task SubscribeToNotificationsAsync(Func<LogEntryDto, Task> callback, CancellationToken cancellationToken = default)
+    public async Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
 

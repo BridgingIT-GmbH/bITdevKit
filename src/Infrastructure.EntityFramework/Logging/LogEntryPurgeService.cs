@@ -18,16 +18,16 @@ using System.Threading.Tasks;
 /// </summary>
 /// <typeparam name="TContext">The DbContext type, which must implement <see cref="ILoggingContext"/>.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="BackgroundPurgeService{TContext}"/> class.
+/// Initializes a new instance of the <see cref="LogEntryPurgeService{TContext}"/> class.
 /// </remarks>
-public class BackgroundPurgeService<TContext> : BackgroundService
+public class LogEntryPurgeService<TContext> : BackgroundService
     where TContext : DbContext, ILoggingContext
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<BackgroundPurgeService<TContext>> logger;
-    private readonly LogPurgeQueue purgeQueue;
+    private readonly ILogger<LogEntryPurgeService<TContext>> logger;
+    private readonly LogEntryPurgeQueue purgeQueue;
 
-    public BackgroundPurgeService(ILogger<BackgroundPurgeService<TContext>> logger, IServiceProvider serviceProvider, LogPurgeQueue purgeQueue)
+    public LogEntryPurgeService(ILogger<LogEntryPurgeService<TContext>> logger, IServiceProvider serviceProvider, LogEntryPurgeQueue purgeQueue)
     {
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));

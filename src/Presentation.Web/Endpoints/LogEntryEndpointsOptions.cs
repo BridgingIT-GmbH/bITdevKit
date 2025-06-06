@@ -8,15 +8,15 @@ namespace BridgingIT.DevKit.Presentation.Web.Endpoints;
 /// <summary>
 /// Configuration options for the log endpoints.
 /// </summary>
-public class LogEndpointsOptions : EndpointsOptionsBase
+public class LogEntryEndpointsOptions : EndpointsOptionsBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="LogEndpointsOptions"/> class.
+    /// Initializes a new instance of the <see cref="LogEntryEndpointsOptions"/> class.
     /// </summary>
-    public LogEndpointsOptions()
+    public LogEntryEndpointsOptions()
     {
         this.GroupPath = "/api/_system/logging";
         this.GroupTag = "_system/logging";
-        this.RequireAuthorization = false;
+        this.RequireAuthorization = true;
     }
 }

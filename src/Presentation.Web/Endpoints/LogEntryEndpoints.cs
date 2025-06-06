@@ -21,10 +21,10 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>
 /// Configures HTTP endpoints for querying, streaming, purging, exporting, and retrieving statistics for log entries.
 /// </summary>
-public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoints> logger = null) : EndpointsBase
+public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<LogEntryEndpoints> logger = null) : EndpointsBase
 {
-    private readonly LogEndpointsOptions options = options ?? new LogEndpointsOptions();
-    private readonly ILogger<LogEndpoints> logger = logger;
+    private readonly LogEntryEndpointsOptions options = options ?? new LogEntryEndpointsOptions();
+    private readonly ILogger<LogEntryEndpoints> logger = logger;
 
     /// <inheritdoc/>
     public override void Map(IEndpointRouteBuilder app)
@@ -36,45 +36,45 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
 
         var group = this.MapGroup(app, this.options);
 
-        group.MapGet("", this.GetLogs)
+        group.MapGet("", this.GetLogEntries)
             .Produces<LogQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetLogs")
+            .WithName("GetLogEntries")
             .WithDescription("Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
-        group.MapGet("stream", this.StreamLogs)
+        group.MapGet("stream", this.StreamLogEntries)
             .Produces<IEnumerable<LogEntryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("StreamLogs")
+            .WithName("StreamLogEntries")
             .WithDescription("Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
-        group.MapDelete("", this.PurgeLogs)
+        group.MapDelete("", this.PurgeLogEntries)
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("PurgeLogs")
+            .WithName("PurgeLogEntries")
             .WithDescription("Queues a purge operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
-        group.MapGet("stats", this.GetLogStatistics)
+        group.MapGet("stats", this.GetLogEntriesStatistics)
             .Produces<LogStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetLogStatistics")
+            .WithName("GetLogEntriesStatistics")
             .WithDescription("Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
-        group.MapGet("export", this.ExportLogs)
+        group.MapGet("export", this.ExportLogEntries)
             //.Produces("text/csv")
             //.Produces("application/json")
             //.Produces("text/plain")
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("ExportLogs")
+            .WithName("ExportLogEntries")
             .WithDescription("Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
     }
 
-    private async Task<IResult> GetLogs(
+    private async Task<IResult> GetLogEntries(
         [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
@@ -188,7 +188,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
     }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    private async Task<IResult> StreamLogs(
+    private async Task<IResult> StreamLogEntries(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
@@ -285,7 +285,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         }
     }
 
-    private async Task<IResult> PurgeLogs(
+    private async Task<IResult> PurgeLogEntries(
         [FromServices] ILogQueryService queryService,
         [FromQuery] string olderThan,
         [FromQuery] double? ageDays,
@@ -401,7 +401,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         }
     }
 
-    private async Task<IResult> GetLogStatistics(
+    private async Task<IResult> GetLogEntriesStatistics(
         [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
@@ -466,7 +466,7 @@ public class LogEndpoints(LogEndpointsOptions options = null, ILogger<LogEndpoin
         }
     }
 
-    private async Task<IResult> ExportLogs(
+    private async Task<IResult> ExportLogEntries(
         [FromServices] ILogQueryService queryService,
         [FromQuery] string startTime,
         [FromQuery] double? ageDays,

@@ -215,7 +215,7 @@ public class LogEntryModel
     /// <summary>
     /// Gets or sets the log level (e.g., Information, Error).
     /// </summary>
-    public LogLevel? Level { get; set; }
+    public string Level { get; set; }
 
     /// <summary>
     /// Gets or sets the timestamp of the log entry.

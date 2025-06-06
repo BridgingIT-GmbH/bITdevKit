@@ -54,12 +54,11 @@ builder.Services.AddQueries()
 
 // Register the purge queue as a singleton
 builder.Services.AddSingleton<LogEntryPurgeQueue>();
-// Register LogQueryService and BackgroundPurgeService with the queue
 builder.Services.AddScoped<ILogQueryService, LogEntryQueryService<CoreDbContext>>();
 builder.Services.AddHostedService<LogEntryPurgeService<CoreDbContext>>();
+builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
 
 // logging services and endpoints
-builder.Services.AddEndpoints<LogEndpoints>(builder.Environment.IsDevelopment());
 
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o

@@ -49,7 +49,7 @@ public class LogEntryPurgeService<TContext> : BackgroundService
 
                 try
                 {
-                    this.logger.LogTrace("{LogKey}: Processing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "Log", olderThan, archive, batchSize);
+                    this.logger.LogTrace("{LogKey}: Processing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "LOG", olderThan, archive, batchSize);
 
                     using var scope = this.serviceProvider.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<TContext>();
@@ -71,7 +71,7 @@ public class LogEntryPurgeService<TContext> : BackgroundService
                                 break;
                             }
 
-                            this.logger.LogTrace("{LogKey}: Archived {BatchCount} logs older than {OlderThan}, skip={Skip}", "Log", updatedCount, olderThan, skip);
+                            this.logger.LogTrace("{LogKey}: Archived {BatchCount} logs older than {OlderThan}, skip={Skip}", "LOG", updatedCount, olderThan, skip);
 
                             skip += batchSize;
 
@@ -83,18 +83,18 @@ public class LogEntryPurgeService<TContext> : BackgroundService
                     }
                     else // delete
                     {
-                        this.logger.LogTrace("{LogKey}: Deleting archived logs older than {OlderThan}", "Log", olderThan);
+                        this.logger.LogTrace("{LogKey}: Deleting archived logs older than {OlderThan}", "LOG", olderThan);
 
                         await context.LogEntries
                             .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
                             .ExecuteDeleteAsync(stoppingToken);
                     }
 
-                    this.logger.LogTrace("{LogKey}: Completed purge for logs older than {OlderThan}", "Log", olderThan);
+                    this.logger.LogTrace("{LogKey}: Completed purge for logs older than {OlderThan}", "LOG", olderThan);
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, "{LogKey}: Error processing purge for logs older than {OlderThan}", "Log", olderThan);
+                    this.logger.LogError(ex, "{LogKey}: Error processing purge for logs older than {OlderThan}", "LOG", olderThan);
                 }
             }
             else
@@ -103,6 +103,6 @@ public class LogEntryPurgeService<TContext> : BackgroundService
             }
         }
 
-        this.logger.LogTrace("{LogKey}: Background purge service stopped", "Log");
+        this.logger.LogTrace("{LogKey}: Background purge service stopped", "LOG");
     }
 }

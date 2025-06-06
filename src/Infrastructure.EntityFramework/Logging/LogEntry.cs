@@ -5,8 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Represents a log entry entity for storing Serilog events in a database table.
@@ -17,82 +21,127 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// Indexes are applied to optimize common query patterns (e.g., filtering by Level, TimeStamp, or TraceId).
 /// </summary>
 [Table("__Logging_LogEntries")]
-[Index(nameof(Level), Name = "IX_LogEntries_Level")]
-[Index(nameof(TimeStamp), Name = "IX_LogEntries_TimeStamp")]
-[Index(nameof(TraceId), Name = "IX_LogEntries_TraceId")]
+[Index(nameof(Level), Name = "IX_Logging_LogEntries_Level")]
+[Index(nameof(TimeStamp), Name = "IX_Logging_LogEntries_TimeStamp")]
+[Index(nameof(TraceId), Name = "IX_Logging_LogEntries_TraceId")]
+[Index(nameof(CorrelationId), Name = "IX_Logging_LogEntries_CorrelationId")]
+[Index(nameof(Message), Name = "IX_Logging_LogEntries_Message")]
+[Index(nameof(LogKey), Name = "IX_Logging_LogEntries_LogKey")]
+[Index(nameof(IsArchived), Name = "IX_Logging_LogEntries_IsArchived")]
 public class LogEntry
 {
     /// <summary>
-    /// Gets or sets the primary key and auto-incrementing identifier for the log entry.
-    /// Maps to an auto-incrementing column (e.g., IDENTITY in SQL Server, SERIAL in PostgreSQL).
+    /// Gets or sets the unique identifier for the log entry (auto-increment).
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the formatted log message with property placeholders replaced.
-    /// Required and stored as a text-based column (e.g., nvarchar(max) in SQL Server).
+    /// Gets or sets the log message.
     /// </summary>
-    [Required]
+    [MaxLength(4000)]
     public string Message { get; set; }
 
     /// <summary>
-    /// Gets or sets the log message template containing property placeholders.
-    /// Required and stored as a text-based column (e.g., nvarchar(max) in SQL Server).
+    /// Gets or sets the message template used for the log.
     /// </summary>
-    [Required]
+    [MaxLength(4000)]
     public string MessageTemplate { get; set; }
 
     /// <summary>
-    /// Gets or sets the log event level (e.g., 'Error', 'Information').
-    /// Required and limited to 16 characters for efficiency.
-    /// Stored as a fixed-length string (e.g., nvarchar(16) in SQL Server).
-    /// Indexed to optimize filtering by log level.
+    /// Gets or sets the log level (e.g., Information, Error).
     /// </summary>
-    [Required]
-    [MaxLength(16)]
+    [MaxLength(50)]
     public string Level { get; set; }
 
     /// <summary>
-    /// Gets or sets the timestamp of the log event.
-    /// Required and stored as a date/time type (e.g., datetime2 in SQL Server, timestamp in PostgreSQL).
-    /// Indexed to optimize date range queries and sorting.
+    /// Gets or sets the timestamp of the log entry.
     /// </summary>
-    [Required]
-    public DateTime TimeStamp { get; set; }
+    //[Column(TypeName = "datetime")]
+    public DateTimeOffset TimeStamp { get; set; }
 
     /// <summary>
-    /// Gets or sets the exception message associated with the log event, if any.
-    /// Optional and stored as a nullable text-based column (e.g., nvarchar(max) NULL in SQL Server).
+    /// Gets or sets the exception details, if any.
     /// </summary>
     public string Exception { get; set; }
 
     /// <summary>
-    /// Gets or sets the XML representation of log event properties.
-    /// Optional and stored as a nullable text-based column (e.g., nvarchar(max) NULL in SQL Server).
-    /// Typically used when JSON-based LogEvent is not enabled.
+    /// Gets or sets the trace identifier for distributed tracing.
     /// </summary>
-    public string Properties { get; set; }
-
-    /// <summary>
-    /// Gets or sets the JSON representation of log event properties.
-    /// Optional and stored as a nullable text-based column (e.g., nvarchar(max) NULL in SQL Server).
-    /// Enabled by adding StandardColumn.LogEvent to ColumnOptions.Store in the Serilog sink.
-    /// </summary>
-    public string LogEvent { get; set; }
-
-    /// <summary>
-    /// Gets or sets the OpenTelemetry TraceId for distributed tracing.
-    /// Optional and stored as a nullable text-based column (e.g., nvarchar(max) NULL in SQL Server).
-    /// Enabled by adding StandardColumn.TraceId to ColumnOptions.Store in the Serilog sink.
-    /// Indexed to optimize tracing-related queries.
-    /// </summary>
+    [MaxLength(128)]
     public string TraceId { get; set; }
 
     /// <summary>
-    /// Gets or sets the OpenTelemetry SpanId for specific operations within a trace.
-    /// Optional and stored as a nullable text-based column (e.g., nvarchar(max) NULL in SQL Server).
-    /// Enabled by adding StandardColumn.SpanId to ColumnOptions.Store in the Serilog sink.
+    /// Gets or sets the span identifier for distributed tracing.
     /// </summary>
+    [MaxLength(128)]
     public string SpanId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the correlation identifier for tracking related operations.
+    /// </summary>
+    [MaxLength(128)]
+    public string CorrelationId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the custom log key for categorizing logs.
+    /// </summary>
+    [MaxLength(128)]
+    public string LogKey { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the log entry is archived.
+    /// Null or false indicates active logs, true indicates archived logs.
+    /// </summary>
+    public bool? IsArchived { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the module name associated with the log entry.
+    /// </summary>
+    [MaxLength(128)]
+    public string ModuleName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the thread ID associated with the log entry.
+    /// </summary>
+    [MaxLength(128)]
+    public string ThreadId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the short type name associated with the log entry.
+    /// </summary>
+    [MaxLength(128)]
+    public string ShortTypeName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the log event details as a dictionary (not stored directly).
+    /// </summary>
+    [NotMapped]
+    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+
+    /// <summary>
+    /// Gets or sets the JSON representation of the log event.
+    /// </summary>
+    [Column("LogEvent")]
+    public string PropertiesJson
+    {
+        get => this.Properties.IsNullOrEmpty()
+            ? null
+            : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+        set => this.Properties = value.IsNullOrEmpty()
+            ? []
+            : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+    }
+}
+
+/// <summary>
+/// Defines the interface for the logging database context.
+/// </summary>
+public interface ILoggingContext
+{
+    /// <summary>
+    /// Gets or sets the DbSet for log entries in the LogEntries table.
+    /// </summary>
+    DbSet<LogEntry> LogEntries { get; set; }
 }

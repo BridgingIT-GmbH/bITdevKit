@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
     IEntityPermissionContext,
-    IFileMonitoringContext
+    IFileMonitoringContext,
+    ILoggingContext
 {
     public DbSet<TodoItem> TodoItems { get; set; }
 
@@ -21,4 +22,6 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<EntityPermission> EntityPermissions { get; set; }
 
     public DbSet<FileEventEntity> FileEvents { get; set; }
+
+    public DbSet<LogEntry> LogEntries { get; set; }
 }

@@ -38,10 +38,11 @@
         <PackageReference Include="Serilog.Enrichers.Thread" />
         <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Serilog.Sinks.MSSqlServer" />
         <PackageReference Include="Serilog.Sinks.Seq" />
         <PackageReference Include="Serilog.Sinks.Trace" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
-        <PackageReference Include="Quartz.Serialization.Json"/>
+        <PackageReference Include="Quartz.Serialization.Json" />
     </ItemGroup>
 
     <ItemGroup>

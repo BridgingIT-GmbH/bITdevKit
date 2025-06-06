@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Pages;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
@@ -54,6 +55,11 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(ModuleScopeQueryBehavior<,>))
     //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
+
+// logging services and endpoints
+builder.Services.AddScoped<ILogQueryService, LogQueryService<CoreDbContext>>();
+builder.Services.AddHostedService<BackgroundPurgeService<CoreDbContext>>();
+builder.Services.AddEndpoints<LogEndpoints>(builder.Environment.IsDevelopment());
 
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o

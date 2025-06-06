@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 
 /// <summary>
 /// A background service that processes purge requests for log entries asynchronously using a generic DbContext.
@@ -41,8 +41,7 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
     public void EnqueuePurge(DateTimeOffset olderThan, bool archive, int batchSize, TimeSpan delayInterval)
     {
         this.purgeQueue.Enqueue((olderThan, archive, batchSize, delayInterval));
-        this.logger.LogDebug("{LogKey}: Queued purge operation for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}",
-            "Log", olderThan, archive, batchSize, delayInterval);
+        this.logger.LogDebug("{LogKey}: Queued purge operation for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
     }
 
     /// <summary>
@@ -60,8 +59,7 @@ public class BackgroundPurgeService<TContext>(ILogger<BackgroundPurgeService<TCo
 
                 try
                 {
-                    this.logger.LogDebug("{LogKey}: Processing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}",
-                        "Log", olderThan, archive, batchSize);
+                    this.logger.LogDebug("{LogKey}: Processing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "Log", olderThan, archive, batchSize);
 
                     using var scope = this.serviceProvider.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<TContext>();

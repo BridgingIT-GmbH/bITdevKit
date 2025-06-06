@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +17,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Utilities;
-using BridgingIT.DevKit.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Implements querying and management of log entries using a generic EF Core DbContext.
@@ -50,8 +50,8 @@ public class LogQueryService<TContext>(
         this.logger.LogDebug("{LogKey}: Starting query with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, ContinuationToken={ContinuationToken}", "Log", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, request.ContinuationToken);
 
         var pageSize = Math.Max(1, Math.Min(request.PageSize, 10000)); // Cap at 10,000 for safety
-        int? lastId = null;
-        if (!string.IsNullOrEmpty(request.ContinuationToken) && int.TryParse(request.ContinuationToken, out var parsedId))
+        long? lastId = null;
+        if (!string.IsNullOrEmpty(request.ContinuationToken) && long.TryParse(request.ContinuationToken, out var parsedId))
         {
             lastId = parsedId;
         }
@@ -84,6 +84,7 @@ public class LogQueryService<TContext>(
         {
             var levelIndex = (int)request.Level.Value;
             var allowedLevels = LogLevels.Skip(levelIndex).ToArray();
+
             query = query.Where(e => allowedLevels.Contains(e.Level));
         }
 
@@ -112,7 +113,7 @@ public class LogQueryService<TContext>(
                     query = query.Where(e =>
                         EF.Functions.Contains(e.Message, searchPattern) ||
                         EF.Functions.Contains(e.Exception, searchPattern) ||
-                        EF.Functions.Contains(e.PropertiesJson, searchPattern));
+                        EF.Functions.Contains(e.LogEventsJson, searchPattern));
                     break;
                 //case "Npgsql.EntityFrameworkCore.PostgreSQL":
                 //    query = query.Where(e =>
@@ -126,7 +127,7 @@ public class LogQueryService<TContext>(
                     query = query.Where(e =>
                         EF.Functions.Like(e.Message ?? "", searchPattern) ||
                         EF.Functions.Like(e.Exception ?? "", searchPattern) ||
-                        EF.Functions.Like(e.PropertiesJson ?? "", searchPattern));
+                        EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                     break;
             }
         }
@@ -139,13 +140,12 @@ public class LogQueryService<TContext>(
         query = query.OrderBy(e => e.Id);
 
         var items = await query
-            .Take(pageSize + 1)
-            .ToListAsync(cancellationToken);
+            .Take(pageSize + 1).ToListAsync(cancellationToken);
 
         var hasMore = items.Count > pageSize;
         if (hasMore)
         {
-            items = items.Take(pageSize).ToList();
+            items = [.. items.Take(pageSize)];
         }
 
         var dtos = items.ConvertAll(e => new LogEntryDto
@@ -156,14 +156,14 @@ public class LogQueryService<TContext>(
             Level = e.Level != null ? Enum.Parse<LogLevel>(e.Level) : null,
             TimeStamp = e.TimeStamp,
             Exception = e.Exception ?? "",
-            Properties = e.Properties,
             TraceId = e.TraceId ?? "",
             SpanId = e.SpanId ?? "",
             CorrelationId = e.CorrelationId ?? "",
             LogKey = e.LogKey ?? "",
             ModuleName = e.ModuleName,
             ThreadId = e.ThreadId,
-            ShortTypeName = e.ShortTypeName
+            ShortTypeName = e.ShortTypeName,
+            LogEvents = e.LogEvents,
         });
 
         var continuationToken = hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null;
@@ -191,7 +191,7 @@ public class LogQueryService<TContext>(
     {
         this.logger.LogDebug("{LogKey}: Starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "Log", startTime, level, traceId, correlationId, logKey, searchText, pollingInterval);
 
-        var lastId = 0;
+        long lastId = 0;
         var interval = pollingInterval ?? TimeSpan.FromSeconds(1);
 
         while (!cancellationToken.IsCancellationRequested)
@@ -243,7 +243,7 @@ public class LogQueryService<TContext>(
                         query = query.Where(e =>
                             EF.Functions.Contains(e.Message, searchPattern) ||
                             EF.Functions.Contains(e.Exception, searchPattern) ||
-                            EF.Functions.Contains(e.PropertiesJson, searchPattern));
+                            EF.Functions.Contains(e.LogEventsJson, searchPattern));
                         break;
                     //case "Npgsql.EntityFrameworkCore.PostgreSQL":
                     //    query = query.Where(e =>
@@ -257,7 +257,7 @@ public class LogQueryService<TContext>(
                         query = query.Where(e =>
                             EF.Functions.Like(e.Message ?? "", searchPattern) ||
                             EF.Functions.Like(e.Exception ?? "", searchPattern) ||
-                            EF.Functions.Like(e.PropertiesJson ?? "", searchPattern));
+                            EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                         break;
                 }
             }
@@ -265,8 +265,7 @@ public class LogQueryService<TContext>(
             query = query.OrderBy(e => e.Id);
 
             var items = await query
-                .Take(100)
-                .ToListAsync(cancellationToken);
+                .Take(100).ToListAsync(cancellationToken);
 
             if (items.Count != 0)
             {
@@ -282,14 +281,14 @@ public class LogQueryService<TContext>(
                         Level = item.Level != null ? Enum.Parse<LogLevel>(item.Level) : null,
                         TimeStamp = item.TimeStamp,
                         Exception = item.Exception ?? "",
-                        Properties = item.Properties,
                         TraceId = item.TraceId ?? "",
                         SpanId = item.SpanId ?? "",
                         CorrelationId = item.CorrelationId ?? "",
                         LogKey = item.LogKey ?? "",
                         ModuleName = item.ModuleName,
                         ThreadId = item.ThreadId,
-                        ShortTypeName = item.ShortTypeName
+                        ShortTypeName = item.ShortTypeName,
+                        LogEvents = item.LogEvents
                     };
                 }
 
@@ -315,8 +314,7 @@ public class LogQueryService<TContext>(
             throw new InvalidOperationException("Cannot purge logs: BackgroundPurgeService is not registered.");
         }
 
-        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}",
-            "Log", olderThan, archive, batchSize, delayInterval);
+        this.logger.LogDebug("{LogKey}: Queuing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "Log", olderThan, archive, batchSize, delayInterval);
 
         batchSize = Math.Max(1, batchSize);
         var effectiveDelay = delayInterval ?? TimeSpan.FromMilliseconds(100);
@@ -393,7 +391,6 @@ public class LogQueryService<TContext>(
         if (groupByInterval.HasValue)
         {
             var interval = groupByInterval.Value;
-
             var timeIntervalCounts = await query
                 .GroupBy(e => new
                 {
@@ -463,7 +460,7 @@ public class LogQueryService<TContext>(
                         }
                         foreach (var log in logs)
                         {
-                            var propertiesJson = JsonSerializer.Serialize(log.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+                            //var logEventsJson = JsonSerializer.Serialize(log.LogEvents, DefaultSystemTextJsonSerializerOptions.Create());
                             var escapedFields = new[]
                             {
                                 log.Id.ToString(),
@@ -472,7 +469,7 @@ public class LogQueryService<TContext>(
                                 $"\"{log.Message?.Replace("\"", "\"\"") ?? ""}\"",
                                 $"\"{log.MessageTemplate?.Replace("\"", "\"\"") ?? ""}\"",
                                 $"\"{log.Exception?.Replace("\"", "\"\"") ?? ""}\"",
-                                //$"\"{propertiesJson.Replace("\"", "\"\"")}\"",
+                                //$"\"{logEventsJson.Replace("\"", "\"\"")}\"",
                                 log.TraceId ?? "",
                                 log.SpanId ?? "",
                                 log.CorrelationId ?? "",
@@ -494,7 +491,7 @@ public class LogQueryService<TContext>(
                             await writer.WriteAsync(",");
                         }
 
-                        logs?.ForEach(e => e.Properties.Clear(), cancellationToken: cancellationToken);
+                        logs?.ForEach(e => e.LogEvents.Clear(), cancellationToken: cancellationToken);
 
                         await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken);
                         break;
@@ -534,8 +531,8 @@ public class LogQueryService<TContext>(
 
                             //if (log.Properties.Any())
                             //{
-                            //    var propertiesJson = JsonSerializer.Serialize(log.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-                            //    await writer.WriteLineAsync($"Properties: {propertiesJson}");
+                            //    var logEventsJson = JsonSerializer.Serialize(log.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+                            //    await writer.WriteLineAsync($"Properties: {logEventsJson}");
                             //}
                             await writer.WriteLineAsync("---");
                         }

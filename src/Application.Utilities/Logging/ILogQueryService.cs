@@ -197,7 +197,7 @@ public class LogEntryDto
     /// <summary>
     /// Gets or sets the unique identifier for the log entry.
     /// </summary>
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// Gets or sets the log message.
@@ -227,7 +227,7 @@ public class LogEntryDto
     /// <summary>
     /// Gets or sets the additional properties as a dictionary.
     /// </summary>
-    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+    public IDictionary<string, object> LogEvents { get; set; } = new Dictionary<string, object>();
 
     /// <summary>
     /// Gets or sets the trace identifier for distributed tracing.

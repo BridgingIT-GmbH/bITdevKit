@@ -21,12 +21,15 @@ using Microsoft.EntityFrameworkCore;
 /// Indexes are applied to optimize common query patterns (e.g., filtering by Level, TimeStamp, or TraceId).
 /// </summary>
 [Table("__Logging_LogEntries")]
+[Index(nameof(LogKey), Name = "IX_Logging_LogEntries_LogKey")]
 [Index(nameof(Level), Name = "IX_Logging_LogEntries_Level")]
 [Index(nameof(TimeStamp), Name = "IX_Logging_LogEntries_TimeStamp")]
 [Index(nameof(TraceId), Name = "IX_Logging_LogEntries_TraceId")]
 [Index(nameof(CorrelationId), Name = "IX_Logging_LogEntries_CorrelationId")]
-[Index(nameof(Message), Name = "IX_Logging_LogEntries_Message")]
-[Index(nameof(LogKey), Name = "IX_Logging_LogEntries_LogKey")]
+[Index(nameof(ModuleName), Name = "IX_Logging_LogEntries_ModuleName")]
+[Index(nameof(ThreadId), Name = "IX_Logging_LogEntries_ThreadId")]
+[Index(nameof(ShortTypeName), Name = "IX_Logging_LogEntries_ShortTypeName")]
+//[Index(nameof(Message), Name = "IX_Logging_LogEntries_Message")]
 [Index(nameof(IsArchived), Name = "IX_Logging_LogEntries_IsArchived")]
 public class LogEntry
 {
@@ -35,12 +38,12 @@ public class LogEntry
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// Gets or sets the log message.
     /// </summary>
-    [MaxLength(4000)]
+    //[MaxLength(4000)]
     public string Message { get; set; }
 
     /// <summary>
@@ -118,30 +121,19 @@ public class LogEntry
     /// Gets or sets the log event details as a dictionary (not stored directly).
     /// </summary>
     [NotMapped]
-    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+    public IDictionary<string, object> LogEvents { get; set; } = new Dictionary<string, object>();
 
     /// <summary>
     /// Gets or sets the JSON representation of the log event.
     /// </summary>
     [Column("LogEvent")]
-    public string PropertiesJson
+    public string LogEventsJson
     {
-        get => this.Properties.IsNullOrEmpty()
+        get => this.LogEvents.IsNullOrEmpty()
             ? null
-            : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.Properties = value.IsNullOrEmpty()
+            : JsonSerializer.Serialize(this.LogEvents, DefaultSystemTextJsonSerializerOptions.Create());
+        set => this.LogEvents = value.IsNullOrEmpty()
             ? []
             : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
     }
-}
-
-/// <summary>
-/// Defines the interface for the logging database context.
-/// </summary>
-public interface ILoggingContext
-{
-    /// <summary>
-    /// Gets or sets the DbSet for log entries in the LogEntries table.
-    /// </summary>
-    DbSet<LogEntry> LogEntries { get; set; }
 }

@@ -153,10 +153,10 @@ public class LogQueryService<TContext> : ILogQueryService
 
         if (lastId.HasValue)
         {
-            query = query.Where(e => e.Id > lastId.Value);
+            query = query.Where(e => e.Id < lastId.Value); // Reverse: fetch entries with Id < lastId
         }
 
-        query = query.OrderBy(e => e.Id);
+        query = query.OrderByDescending(e => e.Id); // Reverse: newest first
 
         var items = await query
             .Take(pageSize + 1).ToListAsync(cancellationToken);
@@ -185,7 +185,7 @@ public class LogQueryService<TContext> : ILogQueryService
             LogEvents = e.LogEvents,
         });
 
-        var continuationToken = hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null;
+        var continuationToken = hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null; // Reverse: use last (smallest) Id
 
         this.logger.LogDebug("{LogKey}: Query completed with {ItemCount} items", "Log", dtos.Count);
 
@@ -213,7 +213,7 @@ public class LogQueryService<TContext> : ILogQueryService
     {
         this.logger.LogDebug("{LogKey}: Starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "Log", startTime, level, traceId, correlationId, logKey, searchText, pollingInterval);
 
-        long lastId = 0;
+        long? lastId = null;
         var interval = pollingInterval ?? TimeSpan.FromSeconds(1);
 
         while (!cancellationToken.IsCancellationRequested)
@@ -299,13 +299,18 @@ public class LogQueryService<TContext> : ILogQueryService
                 }
             }
 
-            query = query.OrderBy(e => e.Id);
+            if (lastId.HasValue)
+            {
+                query = query.Where(e => e.Id < lastId.Value); // Reverse: fetch entries with Id < lastId
+            }
 
-            var items = await query                .Take(100).ToListAsync(cancellationToken);
+            query = query.OrderByDescending(e => e.Id); // Reverse: newest first
+
+            var items = await query.Take(100).ToListAsync(cancellationToken);
 
             if (items.Count != 0)
             {
-                lastId = items.Max(e => e.Id);
+                lastId = items.Min(e => e.Id); // Reverse: update lastId to smallest Id in this batch
 
                 foreach (var item in items)
                 {

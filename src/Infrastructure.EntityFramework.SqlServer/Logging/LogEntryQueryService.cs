@@ -38,7 +38,7 @@ public class LogEntryQueryService<TContext>(
     private static readonly string[] LogLevels = ["Verbose", "Debug", "Information", "Warning", "Error", "Fatal"];
 
     /// <inheritdoc/>
-    public async Task<LogQueryResponse> QueryLogsAsync(LogQueryRequest request, CancellationToken cancellationToken = default)
+    public async Task<LogEntryQueryResponse> QueryLogEntriesAsync(LogEntryQueryRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -182,7 +182,7 @@ public class LogEntryQueryService<TContext>(
 
         this.logger.LogTrace("{LogKey}: Query completed with {ItemCount} items", "LOG", dtos.Count);
 
-        return new LogQueryResponse
+        return new LogEntryQueryResponse
         {
             Items = dtos,
             ContinuationToken = continuationToken,
@@ -191,7 +191,7 @@ public class LogEntryQueryService<TContext>(
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<LogEntryModel> StreamLogsAsync(
+    public async IAsyncEnumerable<LogEntryModel> StreamLogEntriesAsync(
         DateTimeOffset? startTime = null,
         LogLevel? level = null,
         string traceId = null,
@@ -335,7 +335,7 @@ public class LogEntryQueryService<TContext>(
     }
 
     /// <inheritdoc/>
-    public Task PurgeLogsAsync(
+    public Task PurgeLogEntriesAsync(
         DateTimeOffset olderThan,
         bool archive = false,
         int batchSize = 1000,
@@ -355,7 +355,7 @@ public class LogEntryQueryService<TContext>(
     }
 
     /// <inheritdoc/>
-    public Task PurgeLogsAsync(
+    public Task PurgeLogEntriesAsync(
         TimeSpan age,
         bool archive = false,
         int batchSize = 1000,
@@ -370,11 +370,11 @@ public class LogEntryQueryService<TContext>(
         var olderThan = DateTimeOffset.UtcNow.EndOfDay() - age;
         this.logger.LogTrace("{LogKey}: Queuing purge for logs older than age {Age} (olderThan={OlderThan}) with archive={Archive}, batchSize={BatchSize}, delayInterval={DelayInterval}", "LOG", age, olderThan, archive, batchSize, delayInterval);
 
-        return this.PurgeLogsAsync(olderThan, archive, batchSize, delayInterval, cancellationToken);
+        return this.PurgeLogEntriesAsync(olderThan, archive, batchSize, delayInterval, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<LogStatisticsModel> GetLogStatisticsAsync(
+    public async Task<LogEntryStatisticsModel> GetLogEntriesStatisticsAsync(
         DateTimeOffset? startTime = null,
         DateTimeOffset? endTime = null,
         TimeSpan? groupByInterval = null,
@@ -410,7 +410,7 @@ public class LogEntryQueryService<TContext>(
                 x => x.Count,
                 cancellationToken);
 
-        var result = new LogStatisticsModel
+        var result = new LogEntryStatisticsModel
         {
             LevelCounts = levelCounts
         };
@@ -451,7 +451,7 @@ public class LogEntryQueryService<TContext>(
     }
 
     /// <inheritdoc/>
-    public async Task<Stream> ExportLogsAsync(LogQueryRequest request, LogExportFormat format, CancellationToken cancellationToken = default)
+    public async Task<Stream> ExportLogEntriesAsync(LogEntryQueryRequest request, LogEntryExportFormat format, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -472,17 +472,17 @@ public class LogEntryQueryService<TContext>(
             currentRequest.PageSize = pageSize;
             currentRequest.ContinuationToken = continuationToken;
 
-            var response = await this.QueryLogsAsync(currentRequest, cancellationToken);
+            var response = await this.QueryLogEntriesAsync(currentRequest, cancellationToken);
             var logs = response.Items;
 
             if (logs.Any())
             {
                 switch (format)
                 {
-                    case LogExportFormat.Csv:
+                    case LogEntryExportFormat.Csv:
                         if (stream.Position == 0) // Write header only once
                         {
-                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,MessageTemplate,Exception,TraceId,SpanId,CorrelationId,LogKey,ModuleName,ThreadId,ShortTypeName");
+                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,MessageTemplate,Exception,TraceId,SpanId,CorrelationId,LogKey,Module,ThreadId,Type");
                         }
                         foreach (var log in logs)
                         {
@@ -507,7 +507,7 @@ public class LogEntryQueryService<TContext>(
                             await writer.WriteLineAsync(string.Join(",", escapedFields));
                         }
                         break;
-                    case LogExportFormat.Json:
+                    case LogEntryExportFormat.Json:
                         if (stream.Position == 0)
                         {
                             await writer.WriteAsync("[");
@@ -521,38 +521,74 @@ public class LogEntryQueryService<TContext>(
 
                         await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken);
                         break;
-                    case LogExportFormat.Txt:
+                    case LogEntryExportFormat.Txt:
                         foreach (var log in logs)
                         {
                             await writer.WriteLineAsync($"[{log.TimeStamp:o}] {log.Level}: {log.Message}");
+                            var indent = false;
                             if (!string.IsNullOrEmpty(log.Exception))
                             {
-                                await writer.WriteLineAsync($"Exception: {log.Exception}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                    indent = true;
+                                }
+
+                                await writer.WriteAsync($" exception: {log.Exception}");
                             }
 
                             if (!string.IsNullOrEmpty(log.CorrelationId))
                             {
-                                await writer.WriteLineAsync($"CorrelationId: {log.CorrelationId}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                    indent = true;
+                                }
+
+                                await writer.WriteAsync($" correlationId: {log.CorrelationId}");
                             }
 
                             if (!string.IsNullOrEmpty(log.LogKey))
                             {
-                                await writer.WriteLineAsync($"LogKey: {log.LogKey}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                    indent = true;
+                                }
+
+                                await writer.WriteAsync($" logKey: {log.LogKey}");
                             }
 
                             if (!string.IsNullOrEmpty(log.ModuleName))
                             {
-                                await writer.WriteLineAsync($"ModuleName: {log.ModuleName}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                    indent = true;
+                                }
+
+                                await writer.WriteAsync($" module: {log.ModuleName}");
                             }
 
                             if (!string.IsNullOrEmpty(log.ThreadId))
                             {
-                                await writer.WriteLineAsync($"ThreadId: {log.ThreadId}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                    indent = true;
+                                }
+
+                                await writer.WriteAsync($" threadId: {log.ThreadId}");
                             }
 
                             if (!string.IsNullOrEmpty(log.ShortTypeName))
                             {
-                                await writer.WriteLineAsync($"ShortTypeName: {log.ShortTypeName}");
+                                if (!indent)
+                                {
+                                    await writer.WriteAsync("---------------------------------->");
+                                }
+
+                                await writer.WriteAsync($" Type: {log.ShortTypeName}");
                             }
 
                             //if (log.Properties.Any())
@@ -560,7 +596,7 @@ public class LogEntryQueryService<TContext>(
                             //    var logEventsJson = JsonSerializer.Serialize(log.Properties, DefaultSystemTextJsonSerializerOptions.Create());
                             //    await writer.WriteLineAsync($"Properties: {logEventsJson}");
                             //}
-                            await writer.WriteLineAsync("---");
+                            //await writer.WriteLineAsync("^---------------------------------^");
                         }
                         break;
                     default:
@@ -574,7 +610,7 @@ public class LogEntryQueryService<TContext>(
             await writer.FlushAsync(cancellationToken);
         } while (hasMore);
 
-        if (format == LogExportFormat.Json && stream.Position > 0)
+        if (format == LogEntryExportFormat.Json && stream.Position > 0)
         {
             await writer.WriteAsync("]");
             await writer.FlushAsync(cancellationToken);
@@ -594,7 +630,7 @@ public class LogEntryQueryService<TContext>(
 
         this.logger.LogTrace("{LogKey}: Subscribing to high-severity log notifications", "LOG");
 
-        await foreach (var log in this.StreamLogsAsync(
+        await foreach (var log in this.StreamLogEntriesAsync(
             level: LogLevel.Error,
             cancellationToken: cancellationToken))
         {

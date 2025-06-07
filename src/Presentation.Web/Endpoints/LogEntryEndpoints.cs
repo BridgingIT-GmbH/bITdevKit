@@ -37,7 +37,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         var group = this.MapGroup(app, this.options);
 
         group.MapGet("", this.GetLogEntries)
-            .Produces<LogQueryResponse>()
+            .Produces<LogEntryQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
             .WithName("GetLogEntries")
@@ -58,7 +58,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .WithDescription("Queues a purge operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
         group.MapGet("stats", this.GetLogEntriesStatistics)
-            .Produces<LogStatisticsModel>()
+            .Produces<LogEntryStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
             .WithName("GetLogEntriesStatistics")
@@ -144,7 +144,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 
-            var request = new LogQueryRequest
+            var request = new LogEntryQueryRequest
             {
                 StartTime = parsedStartTime,
                 EndTime = parsedEndTime,
@@ -161,7 +161,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 ContinuationToken = continuationToken
             };
 
-            var response = await queryService.QueryLogsAsync(request, cancellationToken);
+            var response = await queryService.QueryLogEntriesAsync(request, cancellationToken);
             this.logger?.LogDebug("{LogKey}: Retrieved {ItemCount} log entries", "Log", response.Items.Count);
             return Results.Ok(response);
         }
@@ -253,7 +253,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
 
             return Results.Stream(async stream =>
             {
-                await foreach (var log in queryService.StreamLogsAsync(
+                await foreach (var log in queryService.StreamLogEntriesAsync(
                     parsedStartTime,
                     level,
                     traceId,
@@ -336,7 +336,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                     });
                 }
 
-                await queryService.PurgeLogsAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
+                await queryService.PurgeLogEntriesAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
                 this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {OlderThan}", "Log", olderThanValue);
 
                 return Results.Accepted($"Purge for logs older than {olderThanValue} queued successfully.");
@@ -354,7 +354,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 }
 
                 var age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
-                await queryService.PurgeLogsAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
+                await queryService.PurgeLogEntriesAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
 
                 this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {AgeDays} days", "Log", ageDays.Value);
                 return Results.Accepted($"Purge for logs older than {age.TotalDays} days queued successfully.");
@@ -436,7 +436,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 });
             }
 
-            var stats = await queryService.GetLogStatisticsAsync(
+            var stats = await queryService.GetLogEntriesStatisticsAsync(
                 parsedStartTime,
                 parsedEndTime,
                 groupByIntervalHours.HasValue ? TimeSpan.FromHours(groupByIntervalHours.Value) : null,
@@ -480,7 +480,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         [FromQuery] string shortTypeName,
         [FromQuery] string searchText,
         [FromQuery] int? pageSize,
-        [FromQuery] LogExportFormat format,
+        [FromQuery] LogEntryExportFormat format,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
@@ -536,7 +536,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 
-            var request = new LogQueryRequest
+            var request = new LogEntryQueryRequest
             {
                 StartTime = parsedStartTime,
                 EndTime = parsedEndTime,
@@ -552,12 +552,12 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 PageSize = pageSize ?? 1000
             };
 
-            var stream = await queryService.ExportLogsAsync(request, format, cancellationToken);
+            var stream = await queryService.ExportLogEntriesAsync(request, format, cancellationToken);
             var contentType = format switch
             {
-                LogExportFormat.Csv => "text/csv",
-                LogExportFormat.Json => "application/json",
-                LogExportFormat.Txt => "text/plain",
+                LogEntryExportFormat.Csv => "text/csv",
+                LogEntryExportFormat.Json => "application/json",
+                LogEntryExportFormat.Txt => "text/plain",
                 _ => "application/octet-stream"
             };
             var fileName = $"logs_{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.{format.ToString().ToLower()}";

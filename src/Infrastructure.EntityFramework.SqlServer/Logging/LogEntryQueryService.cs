@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 public class LogEntryQueryService<TContext>(
     ILogger<LogEntryQueryService<TContext>> logger,
     TContext dbContext,
-    LogEntryPurgeQueue purgeQueue) : ILogQueryService
+    LogEntryPurgeQueue purgeQueue) : ILogEntryQueryService
     where TContext : DbContext, ILoggingContext
 {
     private readonly TContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

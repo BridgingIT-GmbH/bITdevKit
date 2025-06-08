@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-public interface ILogQueryService
+public interface ILogEntryQueryService
 {
     Task<Stream> ExportLogEntriesAsync(LogEntryQueryRequest request, LogEntryExportFormat format, CancellationToken cancellationToken = default);
 

@@ -31,7 +31,7 @@ public class LogEntryQueryServiceTests
         this.output = output;
 
         // register the services
-        this.fixture.Services.AddSingleton<LogEntryPurgeQueue>();
+        this.fixture.Services.AddSingleton<LogEntryMaintenanceQueue>();
         this.fixture.Services.AddScoped<ILogEntryQueryService, LogEntryQueryService<StubDbContext>>();
         //this.fixture.Services.AddHostedService<LogEntryPurgeService<StubDbContext>>();
 
@@ -117,7 +117,7 @@ public class LogEntryQueryServiceTests
         var request = new LogEntryQueryRequest { PageSize = 100 };
 
         // Act
-        var result = await sut.QueryLogEntriesAsync(request);
+        var result = await sut.QueryAsync(request);
 
         // Assert
         // There are 36 entries seeded in total
@@ -131,7 +131,7 @@ public class LogEntryQueryServiceTests
         var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
         var request = new LogEntryQueryRequest { Level = LogLevel.Error, PageSize = 100 };
 
-        var result = await sut.QueryLogEntriesAsync(request);
+        var result = await sut.QueryAsync(request);
 
         result.Items.Count.ShouldBe(8); // error and fatal
         result.Items.All(e => e.Level == "Error" || e.Level == "Fatal").ShouldBeTrue();
@@ -150,7 +150,7 @@ public class LogEntryQueryServiceTests
             PageSize = 100
         };
 
-        var result = await sut.QueryLogEntriesAsync(request);
+        var result = await sut.QueryAsync(request);
 
         // Entries in the last 3 minutes:
         // "Debug log" (-2), "Verbose: finished processing" (-2), "Warning log" (-1), "Fatal: kernel panic" (-1), "Contains special search" (0), "Info: batch complete" (0),
@@ -167,7 +167,7 @@ public class LogEntryQueryServiceTests
         var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
         var request = new LogEntryQueryRequest { SearchText = "special search", PageSize = 100 };
 
-        var result = await sut.QueryLogEntriesAsync(request);
+        var result = await sut.QueryAsync(request);
 
         // Only "Contains special search"
         result.Items.Count.ShouldBe(1);
@@ -181,22 +181,22 @@ public class LogEntryQueryServiceTests
         var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
         var request = new LogEntryQueryRequest { PageSize = 10 };
 
-        var firstPage = await sut.QueryLogEntriesAsync(request);
+        var firstPage = await sut.QueryAsync(request);
         firstPage.Items.Count.ShouldBe(10);
         firstPage.ContinuationToken.ShouldNotBeNull();
 
         request.ContinuationToken = firstPage.ContinuationToken;
-        var secondPage = await sut.QueryLogEntriesAsync(request);
+        var secondPage = await sut.QueryAsync(request);
         secondPage.Items.Count.ShouldBe(10);
         secondPage.ContinuationToken.ShouldNotBeNull();
 
         request.ContinuationToken = secondPage.ContinuationToken;
-        var thirdPage = await sut.QueryLogEntriesAsync(request);
+        var thirdPage = await sut.QueryAsync(request);
         thirdPage.Items.Count.ShouldBe(10);
         thirdPage.ContinuationToken.ShouldNotBeNull();
 
         request.ContinuationToken = thirdPage.ContinuationToken;
-        var fourthPage = await sut.QueryLogEntriesAsync(request);
+        var fourthPage = await sut.QueryAsync(request);
         fourthPage.Items.Count.ShouldBe(6);
         fourthPage.ContinuationToken.ShouldBeNull();
     }
@@ -208,7 +208,7 @@ public class LogEntryQueryServiceTests
         var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
         var request = new LogEntryQueryRequest { TraceId = "trace-1", PageSize = 100 };
 
-        var result = await sut.QueryLogEntriesAsync(request);
+        var result = await sut.QueryAsync(request);
 
         // Entries with TraceId == "trace-1":
         // "Info log", "Debug log", "Debug: test entry 1" to "Debug: test entry 10" (12 entries)

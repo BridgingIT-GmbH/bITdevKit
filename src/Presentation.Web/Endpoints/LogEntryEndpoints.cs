@@ -10,6 +10,7 @@ using System.Net;
 using System.Text.Json;
 using System.Threading;
 using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Endpoints;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -50,12 +51,12 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .WithName("StreamLogEntries")
             .WithDescription("Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
-        group.MapDelete("", this.PurgeLogEntries)
+        group.MapDelete("", this.CleanupLogEntries)
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("PurgeLogEntries")
-            .WithDescription("Queues a purge operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
+            .WithName("CleanupLogEntries")
+            .WithDescription("Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
         group.MapGet("stats", this.GetLogEntriesStatistics)
             .Produces<LogEntryStatisticsModel>()
@@ -92,8 +93,6 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
-
-        this.logger?.LogDebug("{LogKey}: Fetching paged logs with filters: startTime={StartTime}, endTime={EndTime}, ageDays={AgeDays}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pageSize={PageSize}, continuationToken={ContinuationToken}", "Log", startTime, endTime, ageDays, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pageSize, continuationToken);
 
         try
         {
@@ -161,13 +160,13 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 ContinuationToken = continuationToken
             };
 
-            var response = await queryService.QueryLogEntriesAsync(request, cancellationToken);
-            this.logger?.LogDebug("{LogKey}: Retrieved {ItemCount} log entries", "Log", response.Items.Count);
+            var response = await queryService.QueryAsync(request, cancellationToken);
+
             return Results.Ok(response);
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Invalid query request", "Log");
+            this.logger?.LogError(ex, "{LogKey}: invalid query request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -177,7 +176,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Error fetching logs", "Log");
+            this.logger?.LogError(ex, "{LogKey}: error fetching logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -205,8 +204,6 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
-
-        this.logger?.LogDebug("{LogKey}: Starting log stream with filters: startTime={StartTime}, ageDays={AgeDays}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pollingIntervalSeconds={PollingIntervalSeconds}", "Log", startTime, ageDays, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pollingIntervalSeconds);
 
         try
         {
@@ -253,7 +250,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
 
             return Results.Stream(async stream =>
             {
-                await foreach (var log in queryService.StreamLogEntriesAsync(
+                await foreach (var log in queryService.StreamAsync(
                     parsedStartTime,
                     level,
                     traceId,
@@ -266,16 +263,14 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                     pollingInterval,
                     cancellationToken))
                 {
-                    this.logger?.LogDebug("{LogKey}: Streaming log entry: Id={Id}, Level={Level}, LogKey={LogKey}", "Log", log.Id, log.Level, log.LogKey);
-                    await JsonSerializer.SerializeAsync(stream, log, cancellationToken: cancellationToken);
+                    await JsonSerializer.SerializeAsync(stream, log, options: DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken: cancellationToken);
                     await stream.WriteAsync(Encoding.UTF8.GetBytes("\n"), cancellationToken);
                 }
-                this.logger?.LogDebug("{LogKey}: Log stream completed", "Log");
             }, contentType: "application/x-ndjson");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            this.logger?.LogError(ex, "{LogKey}: Error streaming logs", "Log");
+            this.logger?.LogError(ex, "{LogKey}: error streaming logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -285,7 +280,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
     }
 
-    private async Task<IResult> PurgeLogEntries(
+    private async Task<IResult> CleanupLogEntries(
         [FromServices] ILogEntryQueryService queryService,
         [FromQuery] string olderThan,
         [FromQuery] double? ageDays,
@@ -295,8 +290,6 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(queryService);
-
-        this.logger?.LogDebug("{LogKey}: Queuing purge with olderThan={OlderThan}, ageDays={AgeDays}, archive={Archive}, batchSize={BatchSize}, delayIntervalMilliseconds={DelayIntervalMilliseconds}", "Log", olderThan, ageDays, archive, batchSize, delayIntervalMilliseconds);
 
         try
         {
@@ -336,10 +329,8 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                     });
                 }
 
-                await queryService.PurgeLogEntriesAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
-                this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {OlderThan}", "Log", olderThanValue);
-
-                return Results.Accepted($"Purge for logs older than {olderThanValue} queued successfully.");
+                await queryService.CleanupAsync(olderThanValue, archive, batchSize.Value, delayInterval, cancellationToken);
+                return Results.Accepted($"Maintenance for logs older than {olderThanValue} queued successfully.");
             }
             else if (ageDays.HasValue)
             {
@@ -354,10 +345,8 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 }
 
                 var age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
-                await queryService.PurgeLogEntriesAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
-
-                this.logger?.LogDebug("{LogKey}: Purge queued for logs older than {AgeDays} days", "Log", ageDays.Value);
-                return Results.Accepted($"Purge for logs older than {age.TotalDays} days queued successfully.");
+                await queryService.CleanupAsync(age, archive, batchSize.Value, delayInterval, cancellationToken);
+                return Results.Accepted($"Maintenance for logs older than {age.TotalDays} days queued successfully.");
             }
             else
             {
@@ -371,7 +360,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (InvalidOperationException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Purge operation failed", "Log");
+            this.logger?.LogError(ex, "{LogKey}: maintenance operation failed", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -381,7 +370,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Invalid purge request", "Log");
+            this.logger?.LogError(ex, "{LogKey}: invalid purge request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -391,7 +380,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Error queuing purge operation", "Log");
+            this.logger?.LogError(ex, "{LogKey}: error queuing purge operation", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -409,8 +398,6 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
-
-        this.logger?.LogDebug("{LogKey}: Fetching log statistics: startTime={StartTime}, endTime={EndTime}, groupByIntervalHours={GroupByIntervalHours}", "Log", startTime, endTime, groupByIntervalHours);
 
         try
         {
@@ -436,17 +423,16 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 });
             }
 
-            var stats = await queryService.GetLogEntriesStatisticsAsync(
+            var stats = await queryService.GetStatisticsAsync(
                 parsedStartTime,
                 parsedEndTime,
                 groupByIntervalHours.HasValue ? TimeSpan.FromHours(groupByIntervalHours.Value) : null,
                 cancellationToken);
-            this.logger?.LogDebug("{LogKey}: Retrieved statistics with {LevelCount} level counts", "Log", stats.LevelCounts.Count);
             return Results.Ok(stats);
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Invalid statistics request", "Log");
+            this.logger?.LogError(ex, "{LogKey}: invalid statistics request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -456,7 +442,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Error fetching log statistics", "Log");
+            this.logger?.LogError(ex, "{LogKey}: error fetching log statistics", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -484,8 +470,6 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
-
-        this.logger?.LogDebug("{LogKey}: Exporting logs with filters: startTime={StartTime}, ageDays={AgeDays}, endTime={EndTime}, level={Level}, traceId={TraceId}, correlationId={CorrelationId}, logKey={LogKey}, moduleName={ModuleName}, threadId={ThreadId}, shortTypeName={ShortTypeName}, searchText={SearchText}, pageSize={PageSize}, format={Format}", "Log", startTime, ageDays, endTime, level, traceId, correlationId, logKey, moduleName, threadId, shortTypeName, searchText, pageSize, format);
 
         try
         {
@@ -552,7 +536,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 PageSize = pageSize ?? 1000
             };
 
-            var stream = await queryService.ExportLogEntriesAsync(request, format, cancellationToken);
+            var stream = await queryService.ExportAsync(request, format, cancellationToken);
             var contentType = format switch
             {
                 LogEntryExportFormat.Csv => "text/csv",
@@ -562,12 +546,11 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             };
             var fileName = $"logs_{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.{format.ToString().ToLower()}";
 
-            this.logger?.LogDebug("{LogKey}: Export completed in {Format} format", "Log", format);
             return Results.File(stream, contentType, fileName, enableRangeProcessing: true);
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Invalid export request", "Log");
+            this.logger?.LogError(ex, "{LogKey}: invalid export request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -577,7 +560,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: Error exporting logs", "Log");
+            this.logger?.LogError(ex, "{LogKey}: error exporting logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,

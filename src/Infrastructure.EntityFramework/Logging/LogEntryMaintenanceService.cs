@@ -18,24 +18,27 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <typeparam name="TContext">The DbContext type, which must implement <see cref="ILoggingContext"/>.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="LogEntryPurgeService{TContext}"/> class.
+/// Initializes a new instance of the <see cref="LogEntryMaintenanceService{TContext}"/> class.
 /// </remarks>
-public class LogEntryPurgeService<TContext>(
-    ILogger<LogEntryPurgeService<TContext>> logger,
+public class LogEntryMaintenanceService<TContext>(
+    ILogger<LogEntryMaintenanceService<TContext>> logger,
     IServiceProvider serviceProvider,
-    LogEntryPurgeQueue purgeQueue,
+    LogEntryMaintenanceQueue queue,
     IHostApplicationLifetime applicationLifetime,
-    LogEntryPurgeServiceOptions options = null) : BackgroundService
-    where TContext : DbContext, ILoggingContext
+    LogEntryMaintenanceServiceOptions options = null) : BackgroundService
+    where TContext : DbContext, ILoggingContext, IDisposable
 {
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    private readonly ILogger<LogEntryPurgeService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly LogEntryPurgeQueue purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
+    private readonly ILogger<LogEntryMaintenanceService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly LogEntryMaintenanceQueue queue = queue ?? throw new ArgumentNullException(nameof(queue));
     private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
-    private readonly LogEntryPurgeServiceOptions options = options ?? new LogEntryPurgeServiceOptions();
+    private readonly LogEntryMaintenanceServiceOptions options = options ?? new LogEntryMaintenanceServiceOptions();
+
+    private PeriodicTimer timer;
+    private CancellationTokenSource timerCts;
 
     /// <summary>
-    /// Executes the background purge processing loop.
+    /// Executes the background maintenance processing loop.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token to stop the service.</param>
     /// <returns>A task representing the background operation.</returns>
@@ -45,20 +48,24 @@ public class LogEntryPurgeService<TContext>(
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                this.logger.LogDebug("{LogKey} log purge service startup delayed", "LOG");
+                this.logger.LogDebug("{LogKey} maintenance service startup delayed", "LOG");
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
-            this.logger.LogInformation("{LogKey} log purge service started", "LOG");
+            this.logger.LogInformation("{LogKey} maintenance service started", "LOG");
+
+            // Start background timer for periodic cleanup
+            this.timerCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _ = this.ExecuteCleanupAsync(this.timerCts.Token);
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (this.purgeQueue.TryDequeue(out var purgeRequest))
+                if (this.queue.TryDequeue(out var request)) // process next maintenance request
                 {
-                    var (olderThan, archive, batchSize, delayInterval) = purgeRequest;
+                    var (olderThan, archive, batchSize, delayInterval) = request;
 
                     try
                     {
-                        this.logger.LogDebug("{LogKey}: log purge processing older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "LOG", olderThan, archive, batchSize);
+                        this.logger.LogInformation("{LogKey}: starting log maintenance (olderThan={OlderThan}, archive={Archive}, batchSize={BatchSize})", "LOG", olderThan, archive, batchSize);
 
                         using var scope = this.serviceProvider.CreateScope();
                         var context = scope.ServiceProvider.GetRequiredService<TContext>();
@@ -80,7 +87,7 @@ public class LogEntryPurgeService<TContext>(
                                     break;
                                 }
 
-                                this.logger.LogDebug("{LogKey}: archiving {BatchCount} logs older than {OlderThan}, skip={Skip}", "LOG", updatedCount, olderThan, skip);
+                                this.logger.LogInformation("{LogKey}: archived {BatchCount} logs older than {OlderThan}, skip={Skip}", "LOG", updatedCount, olderThan, skip);
 
                                 skip += batchSize;
                                 if (delayInterval > TimeSpan.Zero)
@@ -91,18 +98,18 @@ public class LogEntryPurgeService<TContext>(
                         }
                         else // delete
                         {
-                            this.logger.LogDebug("{LogKey}: deleting archived logs older than {OlderThan}", "LOG", olderThan);
-
-                            await context.LogEntries
+                            var deletedCount = await context.LogEntries
                                 .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
                                 .ExecuteDeleteAsync(cancellationToken);
+
+                            this.logger.LogInformation("{LogKey}: deleted archived logs older than {OlderThan}", "LOG", olderThan);
                         }
 
-                        this.logger.LogDebug("{LogKey}: completed log purge older than {OlderThan}", "LOG", olderThan);
+                        this.logger.LogInformation("{LogKey}: completed log maintenance", "LOG");
                     }
                     catch (Exception ex)
                     {
-                        this.logger.LogError(ex, "{LogKey}: error processing purge for logs older than {OlderThan}", "LOG", olderThan);
+                        this.logger.LogError(ex, "{LogKey}: error processing maintenance for logs older than {OlderThan}", "LOG", olderThan);
                     }
                 }
                 else
@@ -115,10 +122,44 @@ public class LogEntryPurgeService<TContext>(
         return Task.CompletedTask;
     }
 
+    private async Task ExecuteCleanupAsync(CancellationToken cancellationToken)
+    {
+        this.timer = new PeriodicTimer(this.options.CleanupInterval);
+        try
+        {
+            while (await this.timer.WaitForNextTickAsync(cancellationToken))
+            {
+                // Enqueue archive request
+                var archiveOlderThan = DateTimeOffset.UtcNow.AddDays(-this.options.CleanupArchiveOlderThanDays);
+                this.logger.LogDebug("{LogKey}: enqueue archive maintenance request for logs older than {OlderThan}", "LOG", archiveOlderThan);
+                this.queue.Enqueue(archiveOlderThan, true, this.options.CleanupBatchSize, TimeSpan.Zero);
+
+                // Enqueue delete request
+                var deleteOlderThan = DateTimeOffset.UtcNow.AddDays(-this.options.CleanupDeleteOlderThanDays);
+                this.logger.LogDebug("{LogKey}: enqueue delete maintenance request for logs older than {OlderThan}", "LOG", deleteOlderThan);
+                this.queue.Enqueue(deleteOlderThan, false, this.options.CleanupBatchSize, TimeSpan.Zero);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Timer cancelled, exit gracefully
+        }
+    }
+
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} log purge service stopped", "LOG");
+        this.logger.LogInformation("{LogKey} log maintenance service stopped", "LOG");
+
+        this.timerCts?.Cancel();
+        this.timer?.Dispose();
 
         await base.StopAsync(cancellationToken);
+    }
+
+    public override void Dispose()
+    {
+        this.timerCts?.Dispose();
+
+        base.Dispose();
     }
 }

@@ -15,8 +15,8 @@ public class LogEntryEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public LogEntryEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/logging";
-        this.GroupTag = "_system/logging";
+        this.GroupPath = "/api/_system/logentries";
+        this.GroupTag = "_system/logentries";
         this.RequireAuthorization = true;
     }
 }

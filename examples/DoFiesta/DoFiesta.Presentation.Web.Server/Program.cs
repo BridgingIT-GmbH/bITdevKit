@@ -53,9 +53,9 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
 // Register the purge queue as a singleton
-builder.Services.AddSingleton<LogEntryPurgeQueue>();
 builder.Services.AddScoped<ILogEntryQueryService, LogEntryQueryService<CoreDbContext>>();
-builder.Services.AddHostedService<LogEntryPurgeService<CoreDbContext>>();
+builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
+builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
 
 // logging services and endpoints

@@ -3,7 +3,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using System;
 using System.Collections.Concurrent;
 
-public class LogEntryPurgeQueue
+public class LogEntryMaintenanceQueue
 {
     private readonly ConcurrentQueue<(DateTimeOffset OlderThan, bool Archive, int BatchSize, TimeSpan DelayInterval)> queue = [];
 

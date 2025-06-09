@@ -12,7 +12,7 @@ public static class DefaultSystemTextJsonSerializerOptions
 {
     public static JsonSerializerOptions Create()
     {
-        var options = new JsonSerializerOptions
+        return new JsonSerializerOptions
         {
             WriteIndented = true,
             PropertyNameCaseInsensitive = true,
@@ -35,7 +35,5 @@ public static class DefaultSystemTextJsonSerializerOptions
             //IncludeFields = true,
             //PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate // TODO: .NET8 https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
         };
-
-        return options;
     }
 }

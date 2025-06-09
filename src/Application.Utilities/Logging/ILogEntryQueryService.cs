@@ -32,5 +32,5 @@ public interface ILogEntryQueryService
         TimeSpan? pollingInterval = null,
         CancellationToken cancellationToken = default);
 
-    Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, CancellationToken cancellationToken = default);
+    Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, LogLevel logLevel = LogLevel.Error, CancellationToken cancellationToken = default);
 }

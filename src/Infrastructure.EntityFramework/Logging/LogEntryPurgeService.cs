@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 /// <summary>
 /// A background service that processes purge requests for log entries asynchronously using a generic DbContext.
@@ -20,89 +20,105 @@ using System.Threading.Tasks;
 /// <remarks>
 /// Initializes a new instance of the <see cref="LogEntryPurgeService{TContext}"/> class.
 /// </remarks>
-public class LogEntryPurgeService<TContext> : BackgroundService
+public class LogEntryPurgeService<TContext>(
+    ILogger<LogEntryPurgeService<TContext>> logger,
+    IServiceProvider serviceProvider,
+    LogEntryPurgeQueue purgeQueue,
+    IHostApplicationLifetime applicationLifetime,
+    LogEntryPurgeServiceOptions options = null) : BackgroundService
     where TContext : DbContext, ILoggingContext
 {
-    private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<LogEntryPurgeService<TContext>> logger;
-    private readonly LogEntryPurgeQueue purgeQueue;
-
-    public LogEntryPurgeService(ILogger<LogEntryPurgeService<TContext>> logger, IServiceProvider serviceProvider, LogEntryPurgeQueue purgeQueue)
-    {
-        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
-    }
+    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly ILogger<LogEntryPurgeService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly LogEntryPurgeQueue purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
+    private readonly IHostApplicationLifetime applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
+    private readonly LogEntryPurgeServiceOptions options = options ?? new LogEntryPurgeServiceOptions();
 
     /// <summary>
     /// Executes the background purge processing loop.
     /// </summary>
-    /// <param name="stoppingToken">Cancellation token to stop the service.</param>
+    /// <param name="cancellationToken">Cancellation token to stop the service.</param>
     /// <returns>A task representing the background operation.</returns>
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
         {
-            if (this.purgeQueue.TryDequeue(out var purgeRequest))
+            if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                var (olderThan, archive, batchSize, delayInterval) = purgeRequest;
+                this.logger.LogDebug("{LogKey} log purge service startup delayed", "LOG");
+                await Task.Delay(this.options.StartupDelay, cancellationToken);
+            }
+            this.logger.LogInformation("{LogKey} log purge service started", "LOG");
 
-                try
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                if (this.purgeQueue.TryDequeue(out var purgeRequest))
                 {
-                    this.logger.LogTrace("{LogKey}: Processing purge for logs older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "LOG", olderThan, archive, batchSize);
+                    var (olderThan, archive, batchSize, delayInterval) = purgeRequest;
 
-                    using var scope = this.serviceProvider.CreateScope();
-                    var context = scope.ServiceProvider.GetRequiredService<TContext>();
-
-                    if (archive)
+                    try
                     {
-                        var skip = 0;
+                        this.logger.LogDebug("{LogKey}: log purge processing older than {OlderThan} with archive={Archive}, batchSize={BatchSize}", "LOG", olderThan, archive, batchSize);
 
-                        while (true)
+                        using var scope = this.serviceProvider.CreateScope();
+                        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+
+                        if (archive)
                         {
-                            var updatedCount = await context.LogEntries
-                                .Where(e => e.TimeStamp <= olderThan && (e.IsArchived == null || e.IsArchived == false))
-                                .OrderBy(e => e.Id)
-                                .Skip(skip).Take(batchSize)
-                                .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsArchived, true), stoppingToken);
+                            var skip = 0;
 
-                            if (updatedCount == 0)
+                            while (true)
                             {
-                                break;
-                            }
+                                var updatedCount = await context.LogEntries
+                                    .Where(e => e.TimeStamp <= olderThan && (e.IsArchived == null || e.IsArchived == false))
+                                    .OrderBy(e => e.Id)
+                                    .Skip(skip).Take(batchSize)
+                                    .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsArchived, true), cancellationToken);
 
-                            this.logger.LogTrace("{LogKey}: Archived {BatchCount} logs older than {OlderThan}, skip={Skip}", "LOG", updatedCount, olderThan, skip);
+                                if (updatedCount == 0)
+                                {
+                                    break;
+                                }
 
-                            skip += batchSize;
+                                this.logger.LogDebug("{LogKey}: archiving {BatchCount} logs older than {OlderThan}, skip={Skip}", "LOG", updatedCount, olderThan, skip);
 
-                            if (delayInterval > TimeSpan.Zero)
-                            {
-                                await Task.Delay(delayInterval, stoppingToken);
+                                skip += batchSize;
+                                if (delayInterval > TimeSpan.Zero)
+                                {
+                                    await Task.Delay(delayInterval, cancellationToken);
+                                }
                             }
                         }
+                        else // delete
+                        {
+                            this.logger.LogDebug("{LogKey}: deleting archived logs older than {OlderThan}", "LOG", olderThan);
+
+                            await context.LogEntries
+                                .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
+                                .ExecuteDeleteAsync(cancellationToken);
+                        }
+
+                        this.logger.LogDebug("{LogKey}: completed log purge older than {OlderThan}", "LOG", olderThan);
                     }
-                    else // delete
+                    catch (Exception ex)
                     {
-                        this.logger.LogTrace("{LogKey}: Deleting archived logs older than {OlderThan}", "LOG", olderThan);
-
-                        await context.LogEntries
-                            .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
-                            .ExecuteDeleteAsync(stoppingToken);
+                        this.logger.LogError(ex, "{LogKey}: error processing purge for logs older than {OlderThan}", "LOG", olderThan);
                     }
-
-                    this.logger.LogTrace("{LogKey}: Completed purge for logs older than {OlderThan}", "LOG", olderThan);
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.logger.LogError(ex, "{LogKey}: Error processing purge for logs older than {OlderThan}", "LOG", olderThan);
+                    await Task.Delay(this.options.ProcessingInterval, cancellationToken); // Avoid tight loop
                 }
             }
-            else
-            {
-                await Task.Delay(1000, stoppingToken); // Avoid tight loop
-            }
-        }
+        });
 
-        this.logger.LogTrace("{LogKey}: Background purge service stopped", "LOG");
+        return Task.CompletedTask;
+    }
+
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("{LogKey} log purge service stopped", "LOG");
+
+        await base.StopAsync(cancellationToken);
     }
 }

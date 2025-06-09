@@ -5,10 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Application.Utilities;
-using BridgingIT.DevKit.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +13,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Implements querying and management of log entries using a generic EF Core DbContext.
@@ -624,18 +624,16 @@ public class LogEntryQueryService<TContext>(
     }
 
     /// <inheritdoc/>
-    public async Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, CancellationToken cancellationToken = default)
+    public async Task SubscribeToNotificationsAsync(Func<LogEntryModel, Task> callback, LogLevel logLevel = LogLevel.Error, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(callback);
 
-        this.logger.LogTrace("{LogKey}: Subscribing to high-severity log notifications", "LOG");
+        this.logger.LogTrace("{LogKey}: Subscribing to {LogLevel} log notifications", "LOG", logLevel);
 
-        await foreach (var log in this.StreamLogEntriesAsync(
-            level: LogLevel.Error,
-            cancellationToken: cancellationToken))
+        await foreach (var log in this.StreamLogEntriesAsync(level: logLevel, cancellationToken: cancellationToken))
         {
             await callback(log);
-            this.logger.LogTrace("{LogKey}: Notified high-severity log: Id={Id}, Level={Level}", "LOG", log.Id, log.Level);
+            this.logger.LogTrace("{LogKey}: Notified log notification: Id={Id}, Level={Level}", "LOG", log.Id, log.Level);
         }
 
         this.logger.LogTrace("{LogKey}: Notification subscription ended", "LOG");

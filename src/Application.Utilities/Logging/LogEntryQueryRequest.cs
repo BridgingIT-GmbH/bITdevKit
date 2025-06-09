@@ -57,11 +57,11 @@ public class LogEntryQueryRequest
     /// </summary>
     public string ModuleName { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ThreadId to filter by.
-    /// If null or empty, no ThreadId filter is applied.
-    /// </summary>
-    public string ThreadId { get; set; }
+    ///// <summary>
+    ///// Gets or sets the ThreadId to filter by.
+    ///// If null or empty, no ThreadId filter is applied.
+    ///// </summary>
+    //public string ThreadId { get; set; }
 
     /// <summary>
     /// Gets or sets the ShortTypeName to filter by.

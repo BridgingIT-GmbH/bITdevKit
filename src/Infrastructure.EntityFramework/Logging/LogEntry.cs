@@ -27,7 +27,7 @@ using Microsoft.EntityFrameworkCore;
 [Index(nameof(TraceId), Name = "IX_Logging_LogEntries_TraceId")]
 [Index(nameof(CorrelationId), Name = "IX_Logging_LogEntries_CorrelationId")]
 [Index(nameof(ModuleName), Name = "IX_Logging_LogEntries_ModuleName")]
-[Index(nameof(ThreadId), Name = "IX_Logging_LogEntries_ThreadId")]
+//[Index(nameof(ThreadId), Name = "IX_Logging_LogEntries_ThreadId")]
 [Index(nameof(ShortTypeName), Name = "IX_Logging_LogEntries_ShortTypeName")]
 //[Index(nameof(Message), Name = "IX_Logging_LogEntries_Message")]
 [Index(nameof(IsArchived), Name = "IX_Logging_LogEntries_IsArchived")]

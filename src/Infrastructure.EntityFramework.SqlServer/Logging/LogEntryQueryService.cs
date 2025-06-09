@@ -105,10 +105,10 @@ public class LogEntryQueryService<TContext>(
             query = query.Where(e => e.ModuleName == request.ModuleName);
         }
 
-        if (!string.IsNullOrEmpty(request.ThreadId))
-        {
-            query = query.Where(e => e.ThreadId == request.ThreadId);
-        }
+        //if (!string.IsNullOrEmpty(request.ThreadId))
+        //{
+        //    query = query.Where(e => e.ThreadId == request.ThreadId);
+        //}
 
         if (!string.IsNullOrEmpty(request.ShortTypeName))
         {
@@ -121,11 +121,11 @@ public class LogEntryQueryService<TContext>(
             switch (this.dbContext.Database.ProviderName)
             {
                 case "Microsoft.EntityFrameworkCore.SqlServer":
-                    searchPattern = $"\"{request.SearchText}\"";
+                    searchPattern = $"%{request.SearchText}%";
                     query = query.Where(e =>
-                        EF.Functions.Contains(e.Message, searchPattern) ||
-                        EF.Functions.Contains(e.Exception, searchPattern) ||
-                        EF.Functions.Contains(e.LogEventsJson, searchPattern));
+                        EF.Functions.Like(e.Message ?? "", searchPattern) ||
+                        EF.Functions.Like(e.Exception ?? "", searchPattern) ||
+                        EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                     break;
                 //case "Npgsql.EntityFrameworkCore.PostgreSQL":
                 //    query = query.Where(e =>
@@ -269,11 +269,11 @@ public class LogEntryQueryService<TContext>(
                 switch (this.dbContext.Database.ProviderName)
                 {
                     case "Microsoft.EntityFrameworkCore.SqlServer":
-                        searchPattern = $"\"{searchText}\"";
+                        searchPattern = $"%{searchText}%";
                         query = query.Where(e =>
-                            EF.Functions.Contains(e.Message, searchPattern) ||
-                            EF.Functions.Contains(e.Exception, searchPattern) ||
-                            EF.Functions.Contains(e.LogEventsJson, searchPattern));
+                            EF.Functions.Like(e.Message ?? "", searchPattern) ||
+                            EF.Functions.Like(e.Exception ?? "", searchPattern) ||
+                            EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                         break;
                     //case "Npgsql.EntityFrameworkCore.PostgreSQL":
                     //    query = query.Where(e =>

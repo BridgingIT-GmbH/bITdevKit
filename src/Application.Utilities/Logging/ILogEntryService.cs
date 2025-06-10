@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-public interface ILogEntryQueryService
+public interface ILogEntryService
 {
     /// <summary>
     /// Exports log entries matching the specified request in the given format.

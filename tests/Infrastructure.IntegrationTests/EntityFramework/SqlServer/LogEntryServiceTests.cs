@@ -19,20 +19,20 @@ using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class LogEntryQueryServiceTests
+public class LogEntryServiceTests
 {
     private readonly TestEnvironmentFixture fixture;
     private readonly ITestOutputHelper output;
     private readonly StubDbContext context;
 
-    public LogEntryQueryServiceTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
+    public LogEntryServiceTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
         this.output = output;
 
         // register the services
         this.fixture.Services.AddSingleton<LogEntryMaintenanceQueue>();
-        this.fixture.Services.AddScoped<ILogEntryQueryService, LogEntryQueryService<StubDbContext>>();
+        this.fixture.Services.AddScoped<ILogEntryService, LogEntryService<StubDbContext>>();
         //this.fixture.Services.AddHostedService<LogEntryPurgeService<StubDbContext>>();
 
         this.fixture.Services.AddSqlServerDbContext<StubDbContext>(this.fixture.SqlConnectionString)
@@ -102,7 +102,7 @@ public class LogEntryQueryServiceTests
     {
         // Arrange
         // Act
-        var sut = this.fixture.ServiceProvider.GetService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetService<ILogEntryService>();
 
         // Assert
         sut.ShouldNotBeNull();
@@ -113,7 +113,7 @@ public class LogEntryQueryServiceTests
     {
         // Arrange
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { PageSize = 100 };
 
         // Act
@@ -128,7 +128,7 @@ public class LogEntryQueryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByLevel()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { Level = LogLevel.Error, PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -141,7 +141,7 @@ public class LogEntryQueryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByTimeRange()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var now = DateTimeOffset.UtcNow;
         var request = new LogEntryQueryRequest
         {
@@ -164,7 +164,7 @@ public class LogEntryQueryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterBySearchText()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { SearchText = "special search", PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -178,7 +178,7 @@ public class LogEntryQueryServiceTests
     public async Task QueryLogEntriesAsync_ShouldPaginateResults()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { PageSize = 10 };
 
         var firstPage = await sut.QueryAsync(request);
@@ -205,7 +205,7 @@ public class LogEntryQueryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByTraceId()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryQueryService>();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { TraceId = "trace-1", PageSize = 100 };
 
         var result = await sut.QueryAsync(request);

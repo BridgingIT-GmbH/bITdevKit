@@ -24,16 +24,16 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <typeparam name="TContext">The DbContext type, which must implement <see cref="ILoggingContext"/>.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="LogEntryQueryService{TContext}"/> class.
+/// Initializes a new instance of the <see cref="LogEntryService{TContext}"/> class.
 /// </remarks>
-public class LogEntryQueryService<TContext>(
-    ILogger<LogEntryQueryService<TContext>> logger,
+public class LogEntryService<TContext>(
+    ILogger<LogEntryService<TContext>> logger,
     TContext dbContext,
-    LogEntryMaintenanceQueue purgeQueue) : ILogEntryQueryService
+    LogEntryMaintenanceQueue purgeQueue) : ILogEntryService
     where TContext : DbContext, ILoggingContext
 {
     private readonly TContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-    private readonly ILogger<LogEntryQueryService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ILogger<LogEntryService<TContext>> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly LogEntryMaintenanceQueue purgeQueue = purgeQueue ?? throw new ArgumentNullException(nameof(purgeQueue));
     private static readonly string[] LogLevels = ["Verbose", "Debug", "Information", "Warning", "Error", "Fatal"];
 

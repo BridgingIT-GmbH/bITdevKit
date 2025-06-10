@@ -1162,7 +1162,6 @@ public abstract class FileStorageTestsBase
         //    destContent.ShouldBeSuccess($"Reading file {file} failed: {string.Join(", ", destContent.Messages)}");
         //    destContent.Value.ShouldBeSameAs(sourceContent.Value);
         //}
-
         // Verify progress
         //var lastProgress = progressItems.Last();
         //lastProgress.FilesProcessed.ShouldBe(expectedDirs.Count + expectedFiles.Count, "Should process all directories and filtered files");

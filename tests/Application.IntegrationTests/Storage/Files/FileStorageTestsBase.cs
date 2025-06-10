@@ -619,7 +619,7 @@ public abstract class FileStorageTestsBase
 
         // Act: Uncompress the ZIP file
         var uncompressStopwatch = Stopwatch.StartNew();
-        var uncompressResult = await provider.UncompressAsync(zipPath, uncompressedPath, null, null, null, CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, uncompressedPath, null, null, null, null, CancellationToken.None);
         uncompressStopwatch.Stop();
 
         // Assert: Uncompression should succeed
@@ -665,7 +665,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Uncompress and verify content
-        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", null, cancellationToken: CancellationToken.None);
+        var uncompressResult = await provider.UncompressAsync(zipPath, "uncompressed", password: null, cancellationToken: CancellationToken.None);
         uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
 
         // Verify the uncompressed file
@@ -702,7 +702,7 @@ public abstract class FileStorageTestsBase
         existsResult.IsSuccess.ShouldBeTrue($"ZIP file should exist: {string.Join(", ", existsResult.Messages)}");
 
         // Uncompress and verify content
-        var uncompressResult = await provider.UncompressToStreamAsync(zipPath, "uncompressed", null, cancellationToken: CancellationToken.None);
+        var uncompressResult = await provider.UncompressToStreamAsync(zipPath, null, "uncompressed", cancellationToken: CancellationToken.None);
         uncompressResult.IsSuccess.ShouldBeTrue($"UncompressAsync failed: {string.Join(", ", uncompressResult.Messages)}");
 
         // Verify the uncompressed file

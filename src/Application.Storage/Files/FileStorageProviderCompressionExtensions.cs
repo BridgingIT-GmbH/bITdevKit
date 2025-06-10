@@ -448,6 +448,7 @@ public static class FileStorageProviderCompressionExtensions
             this IFileStorageProvider provider,
             string path,
             string outputPath,
+            string searchPattern = null,
             string password = null,
             IProgress<FileProgress> progress = null,
             FileCompressionOptions options = null,
@@ -526,6 +527,11 @@ public static class FileStorageProviderCompressionExtensions
                     return Result.Failure()
                         .WithError(new OperationCancelledError("Operation cancelled during file uncompression"))
                         .WithMessage($"Cancelled uncompressing file at '{path}' to '{outputPath}' after processing {filesProcessed} files");
+                }
+
+                if (!searchPattern.IsNullOrEmpty() && !entry.Key.Match(searchPattern))
+                {
+                    continue; // skip entries that do not match the optional search pattern
                 }
 
                 var entryPath = Path.Combine(outputPath, entry.Key).Replace("\\", "/");
@@ -621,6 +627,7 @@ public static class FileStorageProviderCompressionExtensions
     public static async Task<Result<IReadOnlyDictionary<string, MemoryStream>>> UncompressToStreamAsync(
             this IFileStorageProvider provider,
             string path,
+            string searchPattern = null,
             string password = null,
             IProgress<FileProgress> progress = null,
             FileCompressionOptions options = null,
@@ -687,11 +694,18 @@ public static class FileStorageProviderCompressionExtensions
                 if (cancellationToken.IsCancellationRequested)
                 {
                     foreach (var ms in dict.Values)
+                    {
                         ms.Dispose();
+                    }
 
                     return Result<IReadOnlyDictionary<string, MemoryStream>>.Failure()
                         .WithError(new OperationCancelledError("Operation cancelled during file uncompression"))
                         .WithMessage($"Cancelled uncompressing file at '{path}' to dictionary after processing {filesProcessed} files");
+                }
+
+                if (!searchPattern.IsNullOrEmpty() && !entry.Key.Match(searchPattern))
+                {
+                    continue; // skip entries that do not match the optional search pattern
                 }
 
                 var entryPath = entry.Key.Replace("\\", "/");

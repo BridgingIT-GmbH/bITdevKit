@@ -76,7 +76,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
     }
 
     private async Task<IResult> GetLogEntries(
-        [FromServices] ILogEntryQueryService queryService,
+        [FromServices] ILogEntryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
         [FromQuery] double? ageDays,
@@ -189,7 +189,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private async Task<IResult> StreamLogEntries(
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        [FromServices] ILogEntryQueryService queryService,
+        [FromServices] ILogEntryService queryService,
         [FromQuery] string startTime,
         [FromQuery] double? ageDays,
         [FromQuery] LogLevel? level,
@@ -281,7 +281,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
     }
 
     private async Task<IResult> CleanupLogEntries(
-        [FromServices] ILogEntryQueryService queryService,
+        [FromServices] ILogEntryService queryService,
         [FromQuery] string olderThan,
         [FromQuery] double? ageDays,
         [FromQuery] bool archive = false,
@@ -391,7 +391,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
     }
 
     private async Task<IResult> GetLogEntriesStatistics(
-        [FromServices] ILogEntryQueryService queryService,
+        [FromServices] ILogEntryService queryService,
         [FromQuery] string startTime,
         [FromQuery] string endTime,
         [FromQuery] double? groupByIntervalHours,
@@ -453,7 +453,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
     }
 
     private async Task<IResult> ExportLogEntries(
-        [FromServices] ILogEntryQueryService queryService,
+        [FromServices] ILogEntryService queryService,
         [FromQuery] string startTime,
         [FromQuery] double? ageDays,
         [FromQuery] string endTime,

@@ -114,7 +114,14 @@ public class LogEntryMaintenanceService<TContext>(
                 }
                 else
                 {
-                    await Task.Delay(this.options.ProcessingInterval, cancellationToken); // Avoid tight loop
+                    try
+                    {
+                        await Task.Delay(this.options.ProcessingInterval, cancellationToken); // Avoid tight loop
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        break; // Gracefully handle cancellation and exit the loop
+                    }
                 }
             }
         });

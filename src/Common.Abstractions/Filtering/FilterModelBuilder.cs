@@ -13,7 +13,7 @@ using System.Linq.Expressions;
 /// </summary>
 public static class FilterModelBuilder
 {
-    private static readonly ThreadLocal<FilterModel> ThreadLocalFilterModel = new(() => new FilterModel());
+    private static readonly ThreadLocal<FilterModel> FilterModel = new(() => new FilterModel());
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Builder{T}"/> class for a specified type.
@@ -26,17 +26,18 @@ public static class FilterModelBuilder
     /// </example>
     public static Builder<T> For<T>()
     {
-        return new Builder<T>(ThreadLocalFilterModel.Value);
+        return new Builder<T>(FilterModel.Value);
     }
 
-    public class Builder<T>
+    public static Builder<T> For<T>(FilterModel filterModel)
     {
-        private readonly FilterModel filterModel;
+        filterModel ??= FilterModel.Value;
+        return new Builder<T>(filterModel);
+    }
 
-        internal Builder(FilterModel model)
-        {
-            this.filterModel = model;
-        }
+    public class Builder<T>(FilterModel model)
+    {
+        private readonly FilterModel filterModel = model;
 
         /// <summary>
         /// Sets the paging options for the filter model.
@@ -47,8 +48,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
         /// </example>
-        public Builder<T> SetPaging(int page, int pageSize)
+        public Builder<T> SetPaging(int page, int pageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (page < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(page), page, "Page must be greater than or equal to 1.");
@@ -73,11 +79,16 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
         /// </example>
-        public Builder<T> SetPaging(int pageSize)
+        public Builder<T> SetPaging(int pageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (pageSize < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than or equal to 1.");
+                throw new ArgumentOutOfRangeException(nameof(pageSize), pageSize, "Page size must be greater than or equal to 1.");
             }
 
             this.filterModel.Page = 1;
@@ -95,8 +106,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(1, PageSize.Medium);
         /// </example>
-        public Builder<T> SetPaging(int page, PageSize standardPageSize)
+        public Builder<T> SetPaging(int page, PageSize standardPageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             if (page < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(page), page, "Page must be greater than or equal to 1.");
@@ -116,8 +132,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.SetPaging(PageSize.Medium);
         /// </example>
-        public Builder<T> SetPaging(PageSize standardPageSize)
+        public Builder<T> SetPaging(PageSize standardPageSize, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             this.filterModel.Page = 1;
             this.filterModel.PageSize = (int)standardPageSize;
 
@@ -135,10 +156,14 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddFilter(person => person.FirstName, FilterOperator.Equal, "John");
         /// </example>
-        public Builder<T> AddFilter(Expression<Func<T, object>> propertySelector, FilterOperator filterOperator, object value)
+        public Builder<T> AddFilter(Expression<Func<T, object>> propertySelector, FilterOperator filterOperator, object value, bool? condition = null)
         {
-            var memberExpression = GetMemberExpression(propertySelector);
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
 
+            var memberExpression = GetMemberExpression(propertySelector);
             if (memberExpression == null)
             {
                 throw new ArgumentException("Invalid property selector. Must be a member expression.");
@@ -146,15 +171,22 @@ public static class FilterModelBuilder
 
             var criteria = new FilterCriteria
             {
-                Field = memberExpression.Member.Name,
+                Field = memberExpression.GetFullPropertyName(),
                 Operator = filterOperator,
                 Value = value
             };
 
+            this.filterModel.Filters ??= [];
             this.filterModel.Filters.Add(criteria);
 
             return this;
         }
+
+        /// <summary>
+        /// Determines whether any filters are currently applied.
+        /// </summary>
+        public bool HasFilters() =>
+            this.filterModel.Filters?.Any() == true;
 
         /// <summary>
         /// Adds a collection filter based on a property that represents a collection of objects.
@@ -173,10 +205,14 @@ public static class FilterModelBuilder
         public Builder<T> AddFilter<TCollection>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionSelector,
             FilterOperator filterOperator,
-            Action<Builder<TCollection>> configure)
+            Action<Builder<TCollection>> configure, bool? condition = null)
         {
-            var memberExpression = GetMemberExpression(collectionSelector);
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
 
+            var memberExpression = GetMemberExpression(collectionSelector);
             if (memberExpression == null)
             {
                 throw new ArgumentException("Invalid collection selector. Must be a member expression.");
@@ -184,7 +220,7 @@ public static class FilterModelBuilder
 
             var criteria = new FilterCriteria
             {
-                Field = memberExpression.Member.Name,
+                Field = memberExpression.GetFullPropertyName(),
                 Operator = filterOperator,
                 Filters = []
             };
@@ -197,6 +233,45 @@ public static class FilterModelBuilder
             if (filters.Any()) // Check if there are any filters added
             {
                 criteria.Filters.AddRange(filters);
+                this.filterModel.Filters ??= [];
+                this.filterModel.Filters.Add(criteria);
+            }
+
+            return this;
+        }
+
+        public Builder<T> AddFilter<T2>(
+            Expression<Func<T, T2>> propertySelector,
+            FilterOperator filterOperator,
+            Action<Builder<T2>> configure, bool? condition = null)
+        {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
+            var memberExpression = GetMemberExpression(propertySelector);
+            if (memberExpression == null)
+            {
+                throw new ArgumentException("Invalid property selector. Must be a member expression.");
+            }
+
+            var criteria = new FilterCriteria
+            {
+                Field = memberExpression.GetFullPropertyName(),
+                Operator = filterOperator,
+                Filters = []
+            };
+
+            var collectionBuilder = new Builder<T2>(new FilterModel());
+            configure(collectionBuilder);
+
+            // Only add criteria if it has filters
+            var filters = collectionBuilder.GetFilters();
+            if (filters.Any()) // Check if there are any filters added
+            {
+                criteria.Filters.AddRange(filters);
+                this.filterModel.Filters ??= [];
                 this.filterModel.Filters.Add(criteria);
             }
 
@@ -212,17 +287,30 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddOrdering(person => person.LastName, OrderDirection.Ascending);
         /// </example>
-        public Builder<T> AddOrdering(Expression<Func<T, object>> orderBy, OrderDirection direction)
+        public Builder<T> AddOrdering(Expression<Func<T, object>> orderBy, OrderDirection direction, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             var ordering = new FilterOrderCriteria
             {
                 Field = GetMemberName(orderBy),
                 Direction = direction
             };
+
+            this.filterModel.Orderings ??= [];
             this.filterModel.Orderings.Add(ordering);
 
             return this;
         }
+
+        /// <summary>
+        /// Determines whether the current filter model contains any orderings.
+        /// </summary>
+        public bool HasOrderings() =>
+            this.filterModel.Orderings?.Any() == true;
 
         /// <summary>
         /// Adds an include criterion to the filter model, specifying related entities to include.
@@ -232,12 +320,24 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddInclude(person => person.Addresses);
         /// </example>
-        public Builder<T> AddInclude(Expression<Func<T, object>> includeSelector)
+        public Builder<T> AddInclude(Expression<Func<T, object>> includeSelector, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
+            this.filterModel.Includes ??= [];
             this.filterModel.Includes.Add(GetMemberName(includeSelector));
 
             return this;
         }
+
+        /// <summary>
+        /// Determines whether the filter model contains any included items.
+        /// </summary>
+        public bool HasIncludes() =>
+            this.filterModel.Includes?.Any() == true;
 
         /// <summary>
         /// Adds an hierarchy criterion to the filter model, specifying the children to include.
@@ -247,8 +347,13 @@ public static class FilterModelBuilder
         /// <example>
         /// builder.AddHierarchy(manager => manager.Employees);
         /// </example>
-        public Builder<T> AddHierarchy(Expression<Func<T, object>> hierarchySelector, int maxDepth = 5)
+        public Builder<T> AddHierarchy(Expression<Func<T, object>> hierarchySelector, int maxDepth = 5, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
             this.filterModel.Hierarchy = GetMemberName(hierarchySelector);
             this.filterModel.HierarchyMaxDepth = maxDepth;
 
@@ -264,31 +369,36 @@ public static class FilterModelBuilder
         /// var customFilter = builder.AddCustomFilter(FilterCustomType.FullTextSearch);
         /// customFilter.AddParameter("searchTerm", "John");
         /// </example>
-        public CustomFilterBuilder AddCustomFilter(FilterCustomType customType)
+        public CustomFilterBuilder AddCustomFilter(FilterCustomType customType, bool? condition = null)
         {
+            if (condition.HasValue && !condition.Value)
+            {
+                return new CustomFilterBuilder([], this);
+            }
+
             var customFilter = new FilterCriteria
             {
                 CustomType = customType,
                 CustomParameters = []
             };
 
+            this.filterModel.Filters ??= [];
             this.filterModel.Filters.Add(customFilter);
 
-            // Pass the parent builder instance to allow `Done()` to return control.
-            return new CustomFilterBuilder(customFilter.CustomParameters, this);
+            return new CustomFilterBuilder(customFilter.CustomParameters, this); // Pass the parent builder instance to allow `Done()` to return control.
         }
 
         /// <summary>
-        /// Builds and returns the final <see cref="FilterModel"/> instance.
+        /// Builds and returns the final <see cref="Common.FilterModel"/> instance.
         /// This resets the thread-local filter model for subsequent builds.
         /// </summary>
-        /// <returns>A <see cref="FilterModel"/> containing the built filter criteria, orderings, includes, and paging options.</returns>
+        /// <returns>A <see cref="Common.FilterModel"/> containing the built filter criteria, orderings, includes, and paging options.</returns>
         /// <example>
         /// var filterModel = builder.Build();
         /// </example>
         public FilterModel Build()
         {
-            ThreadLocalFilterModel.Value = new FilterModel();
+            FilterModel.Value = new FilterModel();
 
             return this.filterModel;
         }
@@ -313,9 +423,25 @@ public static class FilterModelBuilder
             /// <summary>
             /// Adds a parameter to the custom filter.
             /// </summary>
-            public CustomFilterBuilder AddParameter(string key, object value)
+            public CustomFilterBuilder AddParameter(string key, object value, bool? condition = null)
             {
+                if (condition.HasValue && !condition.Value)
+                {
+                    return this;
+                }
+
                 this.parameters.TryAdd(key, value);
+                return this;
+            }
+
+            public CustomFilterBuilder AddParameter(string key, string[] values, bool? condition = null)
+            {
+                if (condition.HasValue && !condition.Value)
+                {
+                    return this;
+                }
+
+                this.parameters.TryAdd(key, values);
                 return this;
             }
 
@@ -329,6 +455,16 @@ public static class FilterModelBuilder
         }
 
         private static MemberExpression GetMemberExpression(Expression<Func<T, object>> selector)
+        {
+            return selector.Body switch
+            {
+                UnaryExpression { Operand: MemberExpression member } => member,
+                MemberExpression memberExpression => memberExpression,
+                _ => null
+            };
+        }
+
+        private static MemberExpression GetMemberExpression<T2>(Expression<Func<T, T2>> selector)
         {
             return selector.Body switch
             {
@@ -359,5 +495,49 @@ public static class FilterModelBuilder
         {
             return this.filterModel.Filters;
         }
+    }
+}
+
+public static class ExpressionExtensions
+{
+    /// <summary>
+    /// Gets the full property path from a MemberExpression.
+    /// For example, for the expression (x => x.Details.IsGift), it returns "Details.IsGift".
+    /// </summary>
+    /// <param name="expression">The MemberExpression.</param>
+    /// <returns>The full property path as a string.</returns>
+    public static string GetFullPropertyName(this MemberExpression expression)
+    {
+        var parts = new Stack<string>();
+        var currentExpression = expression;
+
+        while (currentExpression != null)
+        {
+            parts.Push(currentExpression.Member.Name);
+            currentExpression = currentExpression.Expression as MemberExpression;
+        }
+
+        return string.Join(".", parts);
+    }
+
+    /// <summary>
+    /// Overload to handle lambda expressions directly.
+    /// It extracts the MemberExpression from the lambda's body.
+    /// </summary>
+    public static string GetFullPropertyName<T, TProperty>(this Expression<Func<T, TProperty>> lambda)
+    {
+        // The body of the lambda might be a UnaryExpression (e.g., for boxing value types)
+        // or the MemberExpression directly.
+        if (lambda.Body is UnaryExpression unaryExpression && unaryExpression.Operand is MemberExpression memberExpression)
+        {
+            return GetFullPropertyName(memberExpression);
+        }
+
+        if (lambda.Body is MemberExpression memberExpr)
+        {
+            return GetFullPropertyName(memberExpr);
+        }
+
+        throw new ArgumentException("The lambda expression's body must be a MemberExpression.", nameof(lambda));
     }
 }

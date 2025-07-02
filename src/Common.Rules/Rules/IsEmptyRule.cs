@@ -19,7 +19,7 @@ public class IsEmptyRule(string value) : RuleBase
     /// Executes the rule associated with the current instance.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating the success or failure of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(string.IsNullOrEmpty(value));
 }
 
@@ -37,6 +37,6 @@ public class IsEmptyRule<T>(IEnumerable<T> value) : RuleBase
     /// Executes the rule associated with the current instance.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating the success or failure of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.IsNullOrEmpty());
 }

@@ -11,7 +11,7 @@ public class PriceShouldBeInRangeRule(decimal amount) : RuleBase
 
     public override string Message => "Price should be between 1 and 100";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(this.amount >= 1 && this.amount <= 100);
     }

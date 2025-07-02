@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 
 /// <summary>
 /// Service to get user information from a token

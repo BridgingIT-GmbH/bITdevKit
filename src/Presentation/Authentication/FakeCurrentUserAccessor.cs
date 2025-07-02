@@ -14,7 +14,7 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
 
     static FakeCurrentUserAccessor()
     {
-        foreach (var user in Fakes.Users)
+        foreach (var user in Fakes.UsersStarwars)
         {
             UserStore[user.Id] = user;
         }

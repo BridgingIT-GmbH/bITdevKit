@@ -402,5 +402,5 @@ public class TypeExtensionsTests
         public string Property1 { get; set; }
     }
 
-    private class MyDerivedClass : MyClass { }
+    private class MyDerivedClass : MyClass;
 }

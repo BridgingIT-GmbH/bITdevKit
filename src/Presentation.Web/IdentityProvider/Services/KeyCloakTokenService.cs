@@ -11,7 +11,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using BridgingIT.DevKit.Common;
-using Microsoft.IdentityModel.Tokens;
 
 public class KeyCloakTokenService(FakeIdentityProviderEndpointsOptions options) : TokenServiceBase(options)
 {

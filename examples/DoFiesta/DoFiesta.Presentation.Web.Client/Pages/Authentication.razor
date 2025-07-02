@@ -1,0 +1,48 @@
+﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject ILogger<Authentication> Logger
+
+<RemoteAuthenticatorView Action="@Action">
+    <LogInFailed Context="errorContext">
+        <MudAlert Severity="Severity.Error">
+            There was an error trying to log you in: @errorContext
+        </MudAlert>
+    </LogInFailed>
+    @* <CompletingLoggingIn>
+        <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column gap-4 justify-center mt-4">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudText>Completing login...</MudText>
+        </MudContainer>
+    </CompletingLoggingIn> *@
+    <LogOutSucceeded>
+        <MudText>You have been logged out successfully.</MudText>
+        @{
+            navigationManager.NavigateTo("/");
+        }
+    </LogOutSucceeded>
+    <LogOutFailed Context="errorContext">
+        <MudAlert Severity="Severity.Error">
+            There was an error trying to log you out: @errorContext
+        </MudAlert>
+    </LogOutFailed>
+    @* <LogOutSucceeded>
+        <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex justify-center mt-4">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        </MudContainer>
+    </LogOutSucceeded> *@
+</RemoteAuthenticatorView>
+
+@code {
+
+    [Parameter] public string Action { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Logger.LogInformation("Authentication action: {Action}", Action);
+    }
+
+    // private void OnRemoteAuthenticationError(RemoteAuthenticationState state)
+    // {
+    //     Logger.LogError("Authentication error: {Error}, Message: {Message}", state.ErrorCode, state.ErrorMessage);
+    // }
+}

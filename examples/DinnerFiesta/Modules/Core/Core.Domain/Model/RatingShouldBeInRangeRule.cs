@@ -11,7 +11,7 @@ public class RatingShouldBeInRangeRule(int value) : RuleBase
 
     public override string Message => "Rating should be between 1 and 5";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(this.value >= 1 && this.value <= 5);
     }

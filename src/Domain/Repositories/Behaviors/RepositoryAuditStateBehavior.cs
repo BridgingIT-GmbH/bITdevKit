@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
 ///     <para>
@@ -17,18 +20,22 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
+public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAuditable
 {
+    private readonly string type = typeof(TEntity).Name;
     private readonly RepositoryAuditStateBehaviorOptions options;
     private readonly ICurrentUserAccessor currentUserAccessor;
 
     public RepositoryAuditStateBehavior(
+        ILoggerFactory loggerFactory,
         IGenericRepository<TEntity> ínner,
         RepositoryAuditStateBehaviorOptions options = null,
         ICurrentUserAccessor currentUserAccessor = null)
         : this(ínner)
     {
+        this.Logger = loggerFactory?.CreateLogger<IGenericRepository<TEntity>>() ??
+            NullLoggerFactory.Instance.CreateLogger<IGenericRepository<TEntity>>();
         this.options = options ?? new RepositoryAuditStateBehaviorOptions();
         this.currentUserAccessor = currentUserAccessor ?? new NullCurrentUserAccessor();
     }
@@ -40,25 +47,19 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         this.Inner = ínner;
     }
 
+    protected ILogger<IGenericRepository<TEntity>> Logger { get; }
+
     protected IGenericRepository<TEntity> Inner { get; }
 
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id != default && this.options.SoftDeleteEnabled)
         {
-            return RepositoryActionResult.None;
+            var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
+            return await this.DeleteAsync(entity, cancellationToken);
         }
 
-        var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
-        if (entity is not null && this.options.SoftDeleteEnabled)
-        {
-            entity.AuditState ??= new AuditState();
-            entity.AuditState.SetDeleted(this.GetByValue());
-
-            return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
-        }
-
-        return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
+        return await this.Inner.DeleteAsync(id, cancellationToken).AnyContext();
     }
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -68,7 +69,15 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
             entity.AuditState ??= new AuditState();
             entity.AuditState.SetDeleted(this.GetByValue());
 
-            return (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
+            TypedLogger.LogSoftDelete(this.Logger, Constants.LogKey, this.type, entity.Id);
+
+            var result = (await this.UpsertAsync(entity, cancellationToken).AnyContext()).action;
+            if (result == RepositoryActionResult.Updated)
+            {
+                return RepositoryActionResult.Deleted;
+            }
+
+            return result;
         }
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
@@ -152,7 +161,14 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await this.FindOneAsync([], options, cancellationToken).AnyContext();
+        var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
+        if (entity != null && this.options.SoftDeleteEnabled)
+        {
+            var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
+            return notDeletedSpecification.IsSatisfiedBy(entity) ? entity : default;
+        }
+
+        return entity;
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -243,6 +259,12 @@ public class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<TEntity>
         }
 
         return this.currentUserAccessor.UserId;
+    }
+
+    public static partial class TypedLogger
+    {
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} repository: soft delete (type={EntityType}, id={EntityId})")]
+        public static partial void LogSoftDelete(ILogger logger, string logKey, string entityType, object entityId);
     }
 }
 

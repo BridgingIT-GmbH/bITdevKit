@@ -26,7 +26,7 @@ public abstract class AsyncRuleBase : IRule
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task containing the Result indicating success or failure of the rule.</returns>
-    protected abstract Task<Result> ExecuteAsync(CancellationToken cancellationToken);
+    public abstract Task<Result> ExecuteAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Throws NotSupportedException as async rules must be executed asynchronously.

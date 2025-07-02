@@ -24,6 +24,6 @@ public class DateRelativeRule(DateTime value, DateUnit unit, int amount, DateTim
     /// Executes the rule, determining if it passes or fails.
     /// </summary>
     /// <returns>A result indicating the success or failure of the rule.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.IsInRelativeRange(unit, amount, direction));
 }

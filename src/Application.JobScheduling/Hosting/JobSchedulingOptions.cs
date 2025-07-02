@@ -10,4 +10,6 @@ public class JobSchedulingOptions : OptionsBase
     public bool Enabled { get; set; } = true;
 
     public TimeSpan StartupDelay { get; set; } = TimeSpan.Zero;
+
+    public JobGroupOptions GroupOptions { get; set; }
 }

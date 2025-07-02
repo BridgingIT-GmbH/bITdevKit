@@ -12,7 +12,7 @@ public class DinnerScheduleMustNotOverlapRule(
 {
     public override string Message => "Dinners for same host cannot overlap";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var dinners = await repository.FindAllAsync(DinnerSpecifications.ForSchedule(hostId, schedule),
             cancellationToken: cancellationToken);

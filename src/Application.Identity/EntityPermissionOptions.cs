@@ -62,7 +62,7 @@ public class EntityPermissionOptions
     {
         var entityType = typeof(TEntity);
 
-        if (this.EntityConfigurations.Any(c => c.EntityType == entityType))
+        if (this.EntityConfigurations.SafeAny(c => c.EntityType == entityType))
         {
             throw new InvalidOperationException($"Entity type {entityType.Name} already configured");
         }
@@ -79,7 +79,8 @@ public class EntityPermissionOptions
     /// Configures hierarchical permissions for an entity type.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="parentIdExpression">The expression to get the parent ID.</param>
+    /// <param name="parentIdExpression">The expression to get the parent ID. The property type must match the entity ID type,
+    /// but can be nullable.</param>
     /// <returns>The options instance for chaining.</returns>
     public EntityPermissionOptions AddHierarchicalEntity<TEntity>(
         Expression<Func<TEntity, object>> parentIdExpression, params Permission[] permissions)
@@ -87,7 +88,7 @@ public class EntityPermissionOptions
     {
         var entityType = typeof(TEntity);
 
-        if (this.EntityConfigurations.Any(c => c.EntityType == typeof(TEntity)))
+        if (this.EntityConfigurations.SafeAny(c => c.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException(
                 $"Entity type {typeof(TEntity).Name} allready configured");
@@ -110,12 +111,14 @@ public class EntityPermissionOptions
         }
 
         // Verify that parent ID type matches entity ID type
-        //var idProperty = typeof(TEntity).GetProperty(nameof(IEntity.Id));
         var idPropertyType = GetEntityIdPropertyType<TEntity>();
         var parentProperty = memberExpression.Member as PropertyInfo;
-        if (idPropertyType != parentProperty.PropertyType)
+        var parentPropertyType = parentProperty.PropertyType;
+
+        // Get the underlying type if it's nullable
+        if (idPropertyType != (Nullable.GetUnderlyingType(parentPropertyType) ?? parentPropertyType))
         {
-            throw new ArgumentException($"Parent ID type must match entity ID for type {entityType.Name}");
+            throw new ArgumentException($"Parent ID type must match entity ID type (nullable allowed) for type {entityType.Name}");
         }
 
         this.EntityConfigurations.Add(
@@ -134,7 +137,7 @@ public class EntityPermissionOptions
     public EntityPermissionOptions AddDefaultPermissions<TEntity>(params Permission[] permissions)
         where TEntity : class, IEntity
     {
-        if (!this.EntityConfigurations.Any(c => c.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(c => c.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException(
                 $"Entity type {typeof(TEntity).Name} must be configured using AddEntity before adding default permissions");
@@ -165,7 +168,7 @@ public class EntityPermissionOptions
         where TEntity : class, IEntity
         where TEValuator : class, IEntityPermissionEvaluator<TEntity>
     {
-        if (!this.EntityConfigurations.Any(e => e.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(e => e.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException($"Entity type {typeof(TEntity).Name} must be configured using AddEntity before adding a custom evaluator");
         }
@@ -226,7 +229,7 @@ public class EntityPermissionOptions
     public EntityTypeConfiguration GetEntityTypeConfiguration<TEntity>()
         where TEntity : class, IEntity
     {
-        if (!this.EntityConfigurations.Any(e => e.EntityType == typeof(TEntity)))
+        if (!this.EntityConfigurations.SafeAny(e => e.EntityType == typeof(TEntity)))
         {
             throw new InvalidOperationException($"Entity type {typeof(TEntity).Name} not valid");
         }

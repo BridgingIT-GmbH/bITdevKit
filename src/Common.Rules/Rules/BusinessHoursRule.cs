@@ -9,7 +9,7 @@ public class BusinessHoursRule(DateTime dateTime) : RuleBase
 {
     public override string Message { get; } = "Datetime should be during business hours (MO-FR: 9 AM - 5 PM)";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(
             dateTime.DayOfWeek != DayOfWeek.Saturday &&

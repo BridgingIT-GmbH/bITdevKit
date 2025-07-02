@@ -39,8 +39,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// Provides a generic read-only repository implementation based on Entity Framework Core.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of database entity.</typeparam>
     protected EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
@@ -54,8 +52,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// A generic read-only repository implementation using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The entity type in the domain model.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The entity type in the database model.</typeparam>
     /// <remarks>
     /// This class provides basic read-only operations. The repository must be
     /// configured with Entity Framework options, such as DbContext and Logger.
@@ -72,8 +68,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// A read-only generic repository for use with Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     protected EntityFrameworkReadOnlyGenericRepository(
         ILoggerFactory loggerFactory,
         DbContext context,
@@ -144,8 +138,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// Asynchronously retrieves all entities matching the given specifications and options.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     /// <param name="specifications">A collection of specifications to filter the entities.</param>
     /// <param name="options">Optional find options to apply to the query.</param>
     /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
@@ -272,6 +264,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
             return (await this.Options.DbContext.Set<TDatabaseEntity>()
                     .AsNoTrackingIf(options, this.Options.Mapper)
                     .IncludeIf(options, this.Options.Mapper)
+                    .HierarchyIf(options, this.Options.Mapper)
                     .WhereExpressions(expressions)
                     .OrderByIf(options, this.Options.Mapper)
                     .DistinctByIf(options, this.Options.Mapper)
@@ -286,6 +279,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         return (await this.Options.DbContext.Set<TDatabaseEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options, this.Options.Mapper)
+                .HierarchyIf(options, this.Options.Mapper)
                 .WhereExpressions(expressions)
                 .DistinctByIf(options, this.Options.Mapper)
                 .SkipIf(options?.Skip)
@@ -299,7 +293,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// Asynchronously counts the number of entities in the repository that match the given specifications.
     /// </summary>
-    /// <param name="specifications">A collection of specifications to filter the entities to be counted.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the count of entities that match the given specifications.</returns>
     /// <example>
@@ -412,8 +405,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <summary>
     /// Asynchronously finds one entity that matches the provided specifications.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the domain entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     /// <param name="specifications">The list of specifications the entity must satisfy.</param>
     /// <param name="options">Optional find options to include or track entities during the search.</param>
     /// <param name="cancellationToken">Optional token to cancel the operation.</param>
@@ -436,6 +427,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
         return this.Options.Mapper.Map<TEntity>(await this.Options.DbContext.Set<TDatabaseEntity>()
             .AsNoTrackingIf(options, this.Options.Mapper)
             .IncludeIf(options, this.Options.Mapper)
+            .HierarchyIf(options, this.Options.Mapper)
             .WhereExpressions(expressions)
             .FirstOrDefaultAsync(cancellationToken).AnyContext());
     }

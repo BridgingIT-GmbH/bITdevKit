@@ -99,5 +99,5 @@ public class DomainEventTests
         hashCode1.ShouldNotBe(hashCode2);
     }
 
-    private class StubDomainEvent : DomainEventBase { }
+    private class StubDomainEvent : DomainEventBase;
 }

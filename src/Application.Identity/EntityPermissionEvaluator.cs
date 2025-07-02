@@ -26,16 +26,77 @@ public partial class EntityPermissionEvaluator<TEntity>(
     private readonly EntityPermissionOptions options = options ?? new EntityPermissionOptions();
 
     /// <summary>
-    /// Checks if the user has the specified permission on the given entity.
+    /// Checks if the user has the specified permission on the entity type.
     /// </summary>
-    /// <param name="userId">The ID of the user.</param>
-    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string permission, bool bypassCache = false)
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        return await this.HasPermissionAsync(userId, roles, entity?.Id, permission, bypassCache);
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has the specified permission on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has the specified permission on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, object entityId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets the permissions for the user on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+
+        return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, cancellationToken);
     }
 
     /// <summary>
@@ -43,10 +104,23 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permission">The permission to check.</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        return await this.HasPermissionAsync(userId, roles, entity?.Id, permission, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user/roles has the specified permission on the given entity.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false)
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
         var entityType = typeof(TEntity).FullName;
 
@@ -64,7 +138,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         }
 
         // Check actual direct permissions
-        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, entityId, permission);
+        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, entityId, permission, cancellationToken);
         if (hasPermission)
         {
             TypedLogger.LogPermissionGranted(this.logger, Constants.LogKey, entityType, entityId?.ToString(), permission, userId, "Direct");
@@ -77,10 +151,10 @@ public partial class EntityPermissionEvaluator<TEntity>(
         var entityTypeConfiguration = this.options.GetEntityTypeConfiguration<TEntity>();
         if (entityTypeConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
-            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId);
-            foreach (var parentId in parentIds)
+            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
+            foreach (var parentId in parentIds.SafeNull()) // check all parents, if any has the permission granted we return true. this means the permission is inherited for entityId
             {
-                var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission);
+                var hasParentPermission = await provider.HasPermissionAsync(userId, roles, entityType, parentId, permission, cancellationToken);
                 if (hasParentPermission)
                 {
                     TypedLogger.LogPermissionGrantedFromParent(this.logger, Constants.LogKey, entityType, entityId?.ToString(), permission, userId, $"Parent:{parentId}");
@@ -94,9 +168,9 @@ public partial class EntityPermissionEvaluator<TEntity>(
 
         if (defaultProviders?.Any() == true) // Check default providers if available
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
-                if (defaultProvider.GetDefaultPermissions().Contains(permission))
+                if (defaultProvider.GetDefaultPermissions().SafeNull().Contains(permission))
                 {
                     TypedLogger.LogPermissionGrantedDefault(this.logger, Constants.LogKey, entityType, entityId?.ToString(), permission, userId, $"Default:{defaultProvider.GetType().PrettyName()}");
 
@@ -113,14 +187,14 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Checks if the user has the specified permission on the entity type.
+    /// Checks if the user/roles has the specified permission on the entity type.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the user has the permission.</returns>
-    public async Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false) // wildcard permission
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false, CancellationToken cancellationToken = default) // wildcard permission
     {
         var entityType = typeof(TEntity).FullName;
 
@@ -138,7 +212,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         }
 
         // Check type-wide permissions through provider
-        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, permission);
+        var hasPermission = await provider.HasPermissionAsync(userId, roles, entityType, permission, cancellationToken);
         if (hasPermission)
         {
             TypedLogger.LogPermissionGranted(this.logger, Constants.LogKey, entityType, null, permission, userId, "Direct");
@@ -149,9 +223,9 @@ public partial class EntityPermissionEvaluator<TEntity>(
         // Check default providers
         if (defaultProviders?.Any() == true)
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
-                if (defaultProvider.GetDefaultPermissions().Contains(permission))
+                if (defaultProvider.GetDefaultPermissions().SafeNull().Contains(permission))
                 {
                     TypedLogger.LogPermissionGrantedDefault(this.logger, Constants.LogKey, entityType, null, permission, userId, $"Default:{defaultProvider.GetType().PrettyName()}");
                     this.UpdateCache(userId, entityType, null, permission, $"Default:{defaultProvider.GetType().PrettyName()}");
@@ -165,57 +239,158 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permissions, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the given entity.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="entity">The entity to check permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        return await this.HasPermissionAsync(userId, roles, entity?.Id, permissions, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permissions, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the given entity.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        if (permissions?.Length > 0 != true)
+        {
+            return false;
+        }
+
+        foreach (var permission in permissions)
+        {
+            if (await this.HasPermissionAsync(userId, roles, entityId, permission, bypassCache, cancellationToken))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permissions, bypassCache, cancellationToken);
+    }
+
+    /// <summary>
+    /// Checks if the user has any of the specified permissions on the entity type.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
+    /// <param name="bypassCache">Whether to bypass the cache.</param>
+    public async Task<bool> HasPermissionAsync(string userId, string[] roles, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
+    {
+        if (permissions?.Length > 0 != true)
+        {
+            return false;
+        }
+
+        foreach (var permission in permissions)
+        {
+            if (await this.HasPermissionAsync(userId, roles, permission, bypassCache, cancellationToken))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Gets the permissions for the user on the given entity.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entity">The entity to get permissions for.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(
-        string userId,
-        string[] roles,
-        TEntity entity)
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, TEntity entity, CancellationToken cancellationToken = default)
     {
-        return await this.GetPermissionsAsync(userId, roles, entity?.Id);
+        return await this.GetPermissionsAsync(userId, roles, entity?.Id, cancellationToken);
     }
 
     /// <summary>
-    /// Gets the permissions for the user for the given entity id.
+    /// Gets the permissions for the user/roles for the given entity id.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entityId">The entity id to get permissions for.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, object entityId)
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, object entityId, CancellationToken cancellationToken = default)
     {
         var entityType = typeof(TEntity).FullName;
         var result = new List<EntityPermissionInfo>();
 
         // Get direct user permissions
-        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, entityId);
-        foreach (var permission in directPermissions)
+        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, entityId, cancellationToken);
+        foreach (var permission in directPermissions.SafeNull())
         {
             result.Add(new EntityPermissionInfo
             {
                 Permission = permission,
                 Source = "Direct",
                 //SourceId = entityId,
+                UserId = userId,
                 EntityType = entityType,
                 //EntityId = entity.Id
             });
         }
 
         // Get role permissions
-        if (roles?.Any() == true)
+        if (roles?.Length > 0 == true)
         {
             foreach (var role in roles)
             {
-                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, entityId);
-                foreach (var permission in rolePermissions)
+                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, entityId, cancellationToken);
+                foreach (var permission in rolePermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
                         Permission = permission,
                         Source = $"Role:{role}",
                         //SourceId = entityId,
+                        RoleName = role,
                         EntityType = entityType,
                         //EntityId = entity.Id
                     });
@@ -227,36 +402,38 @@ public partial class EntityPermissionEvaluator<TEntity>(
         var entityConfiguration = this.options.GetEntityTypeConfiguration<TEntity>();
         if (entityConfiguration.IsHierarchical && this.options.EnableHierarchicalPermissions)
         {
-            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId);
+            var parentIds = await provider.GetHierarchyPathAsync(typeof(TEntity), entityId, cancellationToken);
             foreach (var parentId in parentIds)
             {
                 // Get parent direct permissions
-                var parentDirectPermissions = await provider.GetUserPermissionsAsync(userId, entityType, parentId);
-                foreach (var permission in parentDirectPermissions)
+                var parentDirectPermissions = await provider.GetUserPermissionsAsync(userId, entityType, parentId, cancellationToken);
+                foreach (var permission in parentDirectPermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
                         Permission = permission,
                         Source = $"Parent:Entity:{parentId}",
                         //SourceId = parentId,
+                        UserId = userId,
                         EntityType = entityType,
                         //EntityId = entity.Id
                     });
                 }
 
                 // Get parent role permissions
-                if (roles?.Any() == true)
+                if (roles?.Length > 0 == true)
                 {
                     foreach (var role in roles)
                     {
-                        var parentRolePermissions = await provider.GetRolePermissionsAsync(role, entityType, parentId);
-                        foreach (var permission in parentRolePermissions)
+                        var parentRolePermissions = await provider.GetRolePermissionsAsync(role, entityType, parentId, cancellationToken);
+                        foreach (var permission in parentRolePermissions.SafeNull())
                         {
                             result.Add(new EntityPermissionInfo
                             {
                                 Permission = permission,
                                 Source = $"Parent:Role:{role}",
                                 //SourceId = parentId,
+                                RoleName = role,
                                 EntityType = entityType,
                                 //EntityId = entity.Id
                             });
@@ -271,7 +448,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
         {
             foreach (var defaultProvider in defaultProviders)
             {
-                foreach (var permission in defaultProvider.GetDefaultPermissions())
+                foreach (var permission in defaultProvider.GetDefaultPermissions().SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -289,42 +466,44 @@ public partial class EntityPermissionEvaluator<TEntity>(
     }
 
     /// <summary>
-    /// Gets the permissions for the user on the entity type.
+    /// Gets the permissions for the user/roles on the entity type.
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
-    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles) // wildcard permission
+    public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, CancellationToken cancellationToken = default) // wildcard permission
     {
         var entityType = typeof(TEntity).FullName;
         var result = new List<EntityPermissionInfo>();
 
         // Get direct user type-wide permissions
-        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, null);
-        foreach (var permission in directPermissions)
+        var directPermissions = await provider.GetUserPermissionsAsync(userId, entityType, null, cancellationToken);
+        foreach (var permission in directPermissions.SafeNull())
         {
             result.Add(new EntityPermissionInfo
             {
                 Permission = permission,
                 Source = "Direct",
                 //SourceId = null,
+                UserId = userId,
                 EntityType = entityType,
                 //EntityId = null  // type-wide permission
             });
         }
 
         // Get role type-wide permissions
-        if (roles?.Any() == true)
+        if (roles?.Length > 0 == true)
         {
             foreach (var role in roles)
             {
-                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, null);
-                foreach (var permission in rolePermissions)
+                var rolePermissions = await provider.GetRolePermissionsAsync(role, entityType, null, cancellationToken);
+                foreach (var permission in rolePermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
                         Permission = permission,
                         Source = $"Role:{role}",
                         //SourceId = null,
+                        RoleName = role,
                         EntityType = entityType,
                         //EntityId = null  // type-wide permission
                     });
@@ -335,10 +514,10 @@ public partial class EntityPermissionEvaluator<TEntity>(
         // Get default permissions
         if (defaultProviders?.Any() == true)
         {
-            foreach (var defaultProvider in defaultProviders)
+            foreach (var defaultProvider in defaultProviders.SafeNull())
             {
                 var defaultPermissions = defaultProvider.GetDefaultPermissions();
-                foreach (var permission in defaultPermissions)
+                foreach (var permission in defaultPermissions.SafeNull())
                 {
                     result.Add(new EntityPermissionInfo
                     {
@@ -391,19 +570,19 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted from cache: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted from cache: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionCacheHit(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGranted(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} evaluator - permission granted (default): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted (default): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedDefault(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
-        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} evaluator - permission denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
+        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} permission evaluator - denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogPermissionDenied(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
-        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey}  evaluator - permission granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
+        [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "{LogKey} permission evaluator - granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedFromParent(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
     }
 }

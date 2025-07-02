@@ -29,7 +29,7 @@ public class NonHierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubD
         services.AddSingleton(fixture.Context);
         services.AddSingleton(this.loggerFactory);
 
-        services.AddIdentity(o =>
+        services.AddEntityAuthorization(o =>
             o.WithEntityPermissions<StubDbContext>(e =>
             {
                 e.AddEntity<PersonStub>();  // No hierarchy configuration
@@ -250,7 +250,7 @@ public class NonHierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubD
         services.AddSingleton(this.dbContext);
         services.AddSingleton(this.loggerFactory);
 
-        services.AddIdentity(o =>
+        services.AddEntityAuthorization(o =>
            o.WithEntityPermissions<StubDbContext>(e =>
            {
                e.AddEntity<PersonStub>();

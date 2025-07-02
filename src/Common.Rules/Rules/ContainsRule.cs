@@ -24,7 +24,7 @@ public class ContainsRule(string value, string substring, StringComparison compa
     /// Executes the specified rule.
     /// </summary>
     /// <returns>The result of the executed rule.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value) &&
             value.Contains(substring, comparison));
 }

@@ -26,7 +26,7 @@ public class DoesNotEndWithRule(string value, string suffix, StringComparison co
     /// <returns>
     /// A result object representing the outcome of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(string.IsNullOrEmpty(value) ||
             !value.EndsWith(suffix, comparison));
 }

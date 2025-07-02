@@ -51,8 +51,7 @@ public class ResilientTransaction
 
                         throw;
                     }
-                })
-                .AnyContext();
+                }).AnyContext();
         }
         else
         {

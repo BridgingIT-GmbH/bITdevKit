@@ -58,8 +58,10 @@
 
     private async Task OnCreate()
     {
-        var dialog = await dialogService.Show<CityEditor>(localizer["Title_CreateCity"]).Result;
-        if (dialog is not null && dialog.Data is CityModel model)
+        var dialog = await dialogService.ShowAsync<CityEditor>(localizer["Title_CreateCity"]);
+        var result = await dialog.Result;
+
+        if (!result.Canceled && result.Data is CityModel model)
         {
             try
             {

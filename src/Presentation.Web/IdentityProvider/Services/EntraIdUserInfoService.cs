@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
-using BridgingIT.DevKit.Common;
 
 public class EntraIdUserInfoService(ITokenService tokenService, FakeIdentityProviderEndpointsOptions options)
     : IUserInfoService

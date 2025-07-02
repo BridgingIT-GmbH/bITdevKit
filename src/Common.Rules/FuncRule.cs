@@ -29,6 +29,6 @@ public class FuncRule(Func<bool> predicate, string message = "Predicate rule not
     /// <returns>
     /// A Result indicating success if the predicate function evaluates to true, otherwise a Result indicating failure.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(predicate());
 }

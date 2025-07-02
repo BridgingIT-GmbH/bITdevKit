@@ -27,6 +27,6 @@ public class EnumValuesRule<TEnum>(TEnum value, IEnumerable<TEnum> allowedValues
     /// <param name="rule">The rule to be executed.</param>
     /// <param name="context">The context in which the rule is executed.</param>
     /// <returns>The result of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(allowedValues.Contains(value));
 }

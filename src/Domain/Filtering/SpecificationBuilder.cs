@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain;
 
 using System.Globalization;
+using System.Reflection;
 using System.Text.Json;
 
 /// <summary>
@@ -36,7 +37,7 @@ public static class SpecificationBuilder
     public static IEnumerable<ISpecification<TEntity>> Build<TEntity>(IEnumerable<FilterCriteria> filters, IEnumerable<ISpecification<TEntity>> specifications = null)
         where TEntity : class, IEntity
     {
-        if (filters == null || !filters.Any())
+        if (filters == null) //  || !filters.Any()
         {
             return [];
         }
@@ -122,6 +123,46 @@ public static class SpecificationBuilder
         var property = BuildPropertyExpression(parameter, filter.Field);
         var value = ConvertValueType(filter.Value, property.Type);
         var constant = Expression.Constant(value);
+        var underlyingType = Nullable.GetUnderlyingType(property.Type) ?? property.Type;
+
+        // Handle comparisons for Enumeration types (both nullable and non-nullable)
+        if (typeof(Enumeration).IsAssignableFrom(underlyingType) &&
+            IsComparisonOperator(filter.Operator))
+        {
+            // For nullable types, we need to handle the null case
+            if (property.Type.IsNullableType())
+            {
+                var propertyId = Expression.Property(Expression.Property(property, "Value"), nameof(Enumeration.Id));
+                var valueId = Expression.Constant(value != null ? ((Enumeration)value).Id : 0);
+
+                var hasValueProperty = Expression.Property(property, "HasValue");
+                var nullCheckExpression = Expression.NotEqual(property, Expression.Constant(null, property.Type));
+
+                var comparisonExpression = filter.Operator switch
+                {
+                    FilterOperator.GreaterThan => Expression.GreaterThan(propertyId, valueId),
+                    FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(propertyId, valueId),
+                    FilterOperator.LessThan => Expression.LessThan(propertyId, valueId),
+                    FilterOperator.LessThanOrEqual => Expression.LessThanOrEqual(propertyId, valueId),
+                    _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
+                };
+
+                return Expression.AndAlso(nullCheckExpression, comparisonExpression);
+            }
+
+            // Non-nullable Enumeration handling
+            var nonNullablePropertyId = Expression.Property(property, nameof(Enumeration.Id));
+            var nonNullableValueId = Expression.Constant(((Enumeration)value).Id);
+
+            return filter.Operator switch
+            {
+                FilterOperator.GreaterThan => Expression.GreaterThan(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.LessThan => Expression.LessThan(nonNullablePropertyId, nonNullableValueId),
+                FilterOperator.LessThanOrEqual => Expression.LessThanOrEqual(nonNullablePropertyId, nonNullableValueId),
+                _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
+            };
+        }
 
         // For nullable properties, we need to ensure we're comparing the value part
         if (property.Type.IsNullableType())
@@ -180,6 +221,14 @@ public static class SpecificationBuilder
             FilterOperator.DoesNotEndWith => Expression.Not(Expression.Call(property, typeof(string).GetMethod("EndsWith", [typeof(string)]), constant)),
             _ => throw new NotSupportedException($"Operator {filter.Operator} is not supported.")
         };
+    }
+
+    private static bool IsComparisonOperator(FilterOperator @operator)
+    {
+        return @operator is FilterOperator.GreaterThan
+            or FilterOperator.GreaterThanOrEqual
+            or FilterOperator.LessThan
+            or FilterOperator.LessThanOrEqual;
     }
 
     private static Expression BuildPropertyExpression(ParameterExpression parameter, string field)
@@ -360,7 +409,7 @@ public static class SpecificationBuilder
 
         return value is string stringValue
             ? ConvertStringValue(stringValue)
-            : Convert.ChangeType(value, nullableTargetType);
+            : TypeConverter.ChangeType(value, nullableTargetType); // Convert.ChangeType(value, nullableTargetType);
 
         object ConvertStringValue(string stringValue) => nullableTargetType switch
         {
@@ -369,7 +418,41 @@ public static class SpecificationBuilder
             not null when nullableTargetType == typeof(DateOnly) => DateOnly.Parse(stringValue, CultureInfo.InvariantCulture),
             not null when nullableTargetType == typeof(TimeOnly) => TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture),
             not null when nullableTargetType == typeof(Guid) => Guid.Parse(stringValue),
-            _ => Convert.ChangeType(stringValue, nullableTargetType)
+            _ => TypeConverter.ChangeType(stringValue, nullableTargetType)
         };
+    }
+}
+
+public static class TypeConverter
+{
+    public static object ChangeType(object value, Type targetType)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        var sourceType = value.GetType();
+
+        // Check if types are already compatible
+        if (targetType.IsAssignableFrom(sourceType))
+        {
+            return value;
+        }
+
+        // Check for implicit conversion operator
+        var implicitOperator = targetType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .FirstOrDefault(m =>
+                m.Name == "op_Implicit" &&
+                m.ReturnType == targetType &&
+                m.GetParameters().FirstOrDefault()?.ParameterType == sourceType);
+
+        if (implicitOperator != null)
+        {
+            return implicitOperator.Invoke(null, new[] { value });
+        }
+
+        // Fallback to standard conversion
+        return Convert.ChangeType(value, targetType);
     }
 }

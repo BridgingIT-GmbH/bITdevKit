@@ -4,9 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
-
-using BridgingIT.DevKit.Application.Identity;
-
 public class InMemoryHierarchyQueryProvider : IHierarchyQueryProvider
 {
     public string CreatePathQuery(

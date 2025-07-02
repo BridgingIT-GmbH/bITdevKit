@@ -25,8 +25,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableEvaluationEndpoints(
-        this IdentityOptionsBuilder source)
+    public static AuthorizationOptionsBuilder EnableEvaluationEndpoints(
+        this AuthorizationOptionsBuilder source)
     {
         source.Services.AddEndpoints<IdentityEntityPermissionEvaluationEndpoints>();
 
@@ -50,8 +50,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableEvaluationEndpoints(
-        this IdentityOptionsBuilder source,
+    public static AuthorizationOptionsBuilder EnableEvaluationEndpoints(
+        this AuthorizationOptionsBuilder source,
         bool enabled)
     {
         source.Services.AddEndpoints<IdentityEntityPermissionEvaluationEndpoints>(enabled);
@@ -79,8 +79,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableEvaluationEndpoints(
-       this IdentityOptionsBuilder source,
+    public static AuthorizationOptionsBuilder EnableEvaluationEndpoints(
+       this AuthorizationOptionsBuilder source,
        Action<IdentityEntityPermissionEvaluationEndpointsOptions> configure = null)
     {
         var options = new IdentityEntityPermissionEvaluationEndpointsOptions();
@@ -108,8 +108,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableManagementEndpoints(
-        this IdentityOptionsBuilder source)
+    public static AuthorizationOptionsBuilder EnableManagementEndpoints(
+        this AuthorizationOptionsBuilder source)
     {
         source.Services.AddEndpoints<IdentityEntityPermissionManagementEndpoints>();
 
@@ -133,8 +133,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableManagementEndpoints(
-        this IdentityOptionsBuilder source,
+    public static AuthorizationOptionsBuilder EnableManagementEndpoints(
+        this AuthorizationOptionsBuilder source,
         bool enabled)
     {
         source.Services.AddEndpoints<IdentityEntityPermissionManagementEndpoints>(enabled);
@@ -161,8 +161,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder EnableManagementEndpoints(
-       this IdentityOptionsBuilder source,
+    public static AuthorizationOptionsBuilder EnableManagementEndpoints(
+       this AuthorizationOptionsBuilder source,
        Action<IdentityEntityPermissionManagementEndpointsOptions> configure = null)
     {
         var options = new IdentityEntityPermissionManagementEndpointsOptions();

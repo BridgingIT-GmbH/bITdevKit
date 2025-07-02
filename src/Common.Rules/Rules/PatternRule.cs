@@ -25,7 +25,7 @@ public class PatternRule(string value, string pattern) : RuleBase
     /// <param name="rule">The rule to be executed.</param>
     /// <param name="parameters">Parameters required for the rule execution.</param>
     /// <returns>The result of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value) &&
             System.Text.RegularExpressions.Regex.IsMatch(value, pattern));
 }

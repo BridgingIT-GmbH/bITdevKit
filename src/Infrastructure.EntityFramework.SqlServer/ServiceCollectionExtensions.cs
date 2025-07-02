@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
@@ -13,6 +14,7 @@ using EntityFrameworkCore.Diagnostics;
 using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Quartz;
 
 public static class ServiceCollectionExtensions
 {
@@ -23,9 +25,8 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
-        return services.AddSqlServerDbContext<TContext>(optionsBuilder(new SqlServerOptionsBuilder()).Build(),
-            sqlServerOptionsBuilder,
-            lifetime);
+        return services.AddSqlServerDbContext<TContext>(
+            optionsBuilder(new SqlServerOptionsBuilder()).Build(), sqlServerOptionsBuilder, lifetime);
     }
 
     public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
@@ -71,9 +72,7 @@ public static class ServiceCollectionExtensions
                         options.MigrationsAssemblyName ?? typeof(TContext).Assembly.GetName().Name));
                     if (options.MigrationsSchemaEnabled)
                     {
-                        var schema = options.MigrationsSchemaName ??
-                            typeof(TContext).Name.ToLowerInvariant()
-                                .Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
+                        var schema = options.MigrationsSchemaName ?? typeof(TContext).Name.ToLowerInvariant().Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
                         if (!string.IsNullOrEmpty(schema))
                         {
                             if (schema.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
@@ -82,9 +81,8 @@ public static class ServiceCollectionExtensions
                                 schema = schema.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
 
-                            sqlServerOptionsBuilder(new SqlServerDbContextOptionsBuilder(o).MigrationsHistoryTable(
-                                "__MigrationsHistory",
-                                schema));
+                            sqlServerOptionsBuilder(
+                                new SqlServerDbContextOptionsBuilder(o).MigrationsHistoryTable("__MigrationsHistory", schema));
                         }
                     }
                 }
@@ -134,6 +132,30 @@ public static class ServiceCollectionExtensions
             lifetime,
             connectionString: connectionString,
             provider: Provider.SqlServer);
+    }
+
+    /// <summary>
+    /// Configures the job scheduling to use SQL Server persistence with the specified connection string and table prefix.
+    /// </summary>
+    /// <param name="context">The job scheduling builder context from AddJobScheduling.</param>
+    /// <param name="connectionString">The SQL Server connection string.</param>
+    /// <param name="tablePrefix">The table prefix for Quartz tables (default: "[dbo].[QRTZ_").</param>
+    /// <returns>The updated job scheduling builder context.</returns>
+    public static JobSchedulingBuilderContext WithSqlServerStore(
+        this JobSchedulingBuilderContext context,
+        string connectionString,
+        string tablePrefix = "[dbo].[QRTZ_")
+    {
+        context.Services.AddSingleton<IJobStoreProvider>(sp => new SqlServerJobStoreProvider(
+            sp.GetService<ILoggerFactory>(),
+            connectionString,
+            tablePrefix));
+        context.Services.AddSingleton<IJobService>(sp => new JobService(
+            sp.GetService<ILoggerFactory>(),
+            sp.GetRequiredService<ISchedulerFactory>(),
+            sp.GetRequiredService<IJobStoreProvider>()));
+
+        return context;
     }
 
     private static void RegisterInterceptors(

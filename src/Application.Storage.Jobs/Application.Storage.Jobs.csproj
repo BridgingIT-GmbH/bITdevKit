@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Application.Storage.Jobs</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Application.Storage</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

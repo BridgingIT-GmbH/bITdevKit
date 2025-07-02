@@ -9,19 +9,17 @@ using Bogus;
 using Xunit;
 using System;
 using Shouldly;
+using System.Runtime.Intrinsics.X86;
 
 public class FilterModelBuilderTests
 {
     private readonly Faker<PersonStub> faker;
 
-    public FilterModelBuilderTests()
-    {
-        this.faker = new Faker<PersonStub>()
+    public FilterModelBuilderTests() => this.faker = new Faker<PersonStub>()
             .RuleFor(p => p.FirstName, f => f.Name.FirstName())
             .RuleFor(p => p.LastName, f => f.Name.LastName())
             .RuleFor(p => p.Age, f => f.Random.Int(18, 99))
             .RuleFor(p => p.Email, f => EmailAddressStub.Create(f.Internet.Email()));
-    }
 
     [Fact]
     public void SetPaging_ValidPageAndPageSize_ShouldSetPagingCorrectly()
@@ -140,6 +138,32 @@ public class FilterModelBuilderTests
         filterModel.Filters[0].Filters[0].Field.ShouldBe("City");
         filterModel.Filters[0].Filters[0].Operator.ShouldBe(FilterOperator.StartsWith);
         filterModel.Filters[0].Filters[0].Value.ShouldBe("B");
+    }
+
+    [Fact]
+    public void AddAllFilter_ValidParameters_ShouldAddFilter2()
+    {
+        // Arrange
+        var builder = FilterModelBuilder.For<PersonStub>();
+
+        // Act
+        builder.AddFilter(
+            p => p.Locations, // collection property
+            FilterOperator.All,
+            lb => lb.AddFilter(l => l.Dummy, FilterOperator.Equal, // nested object property
+                db => db.AddFilter(d => d.Text, FilterOperator.Equal, "ABC")));
+
+        var filterModel = builder.Build();
+
+        // Assert
+        filterModel.Filters.ShouldHaveSingleItem();
+        filterModel.Filters[0].Filters.ShouldNotBeNull();
+        filterModel.Filters[0].Filters.ShouldHaveSingleItem();
+        filterModel.Filters[0].Filters[0].Field.ShouldBe("Dummy");
+        filterModel.Filters[0].Filters[0].Operator.ShouldBe(FilterOperator.Equal);
+        filterModel.Filters[0].Filters[0].Filters[0].Field.ShouldBe("Text");
+        filterModel.Filters[0].Filters[0].Filters[0].Operator.ShouldBe(FilterOperator.Equal);
+        filterModel.Filters[0].Filters[0].Filters[0].Value.ShouldBe("ABC");
     }
 
     [Fact]
@@ -282,7 +306,7 @@ public class FilterModelBuilderTests
                     .AddFilter(loc => loc.PostalCode, FilterOperator.StartsWith, "100")) // Any location with City = New York or ZipCode starts with "100"
             .AddCustomFilter(FilterCustomType.FullTextSearch)
             .AddParameter("searchTerm", "John")
-            .AddParameter("fields", new[] { "FirstName", "LastName" }).Done()
+            .AddParameter("fields", ["FirstName", "LastName"]).Done()
             .AddOrdering(p => p.LastName, OrderDirection.Descending) // Order by LastName Descending
             .AddOrdering(p => p.FirstName, OrderDirection.Ascending) // Then order by FirstName Ascending
             .AddInclude(p => p.Locations)

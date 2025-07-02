@@ -136,23 +136,23 @@ public class ExcludeNullTests
         result.ShouldBeEmpty();
     }
 
-    [Fact]
-    public void ExcludeNull_StackWithNullValues_ReturnsCleanStack()
-    {
-        // Arrange
-        var value = this.faker.Lorem.Word();
-        var source = new Stack<string>();
-        source.Push(null);
-        source.Push(value);
-        source.Push(null);
+    //[Fact]
+    //public void ExcludeNull_StackWithNullValues_ReturnsCleanStack()
+    //{
+    //    // Arrange
+    //    var value = this.faker.Lorem.Word();
+    //    var source = new Stack<string>();
+    //    source.Push(null);
+    //    source.Push(value);
+    //    source.Push(null);
 
-        // Act
-        var result = source.ExcludeNull();
+    //    // Act
+    //    var result = source.ExcludeNull();
 
-        // Assert
-        result.Count.ShouldBe(1);
-        result.Pop().ShouldBe(value);
-    }
+    //    // Assert
+    //    result.Count.ShouldBe(1);
+    //    result.Pop().ShouldBe(value);
+    //}
 
     [Fact]
     public void ExcludeNull_NullQueue_ReturnsEmptyQueue()
@@ -168,23 +168,23 @@ public class ExcludeNullTests
         result.ShouldBeEmpty();
     }
 
-    [Fact]
-    public void ExcludeNull_QueueWithNullValues_ReturnsCleanQueue()
-    {
-        // Arrange
-        var value = this.faker.Lorem.Word();
-        var source = new Queue<string>();
-        source.Enqueue(null);
-        source.Enqueue(value);
-        source.Enqueue(null);
+    //[Fact]
+    //public void ExcludeNull_QueueWithNullValues_ReturnsCleanQueue()
+    //{
+    //    // Arrange
+    //    var value = this.faker.Lorem.Word();
+    //    var source = new Queue<string>();
+    //    source.Enqueue(null);
+    //    source.Enqueue(value);
+    //    source.Enqueue(null);
 
-        // Act
-        var result = source.ExcludeNull();
+    //    // Act
+    //    var result = source.ExcludeNull();
 
-        // Assert
-        result.Count.ShouldBe(1);
-        result.Dequeue().ShouldBe(value);
-    }
+    //    // Assert
+    //    result.Count.ShouldBe(1);
+    //    result.Dequeue().ShouldBe(value);
+    //}
 
     [Fact]
     public void ExcludeNull_NullLinkedList_ReturnsEmptyLinkedList()

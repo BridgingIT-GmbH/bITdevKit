@@ -11,7 +11,7 @@ public class DeleteMustBeProvidedReasonRule(string reason) : RuleBase
 {
     public override string Message => "Reason of deleting a must be provided";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(!string.IsNullOrEmpty(reason));
     }

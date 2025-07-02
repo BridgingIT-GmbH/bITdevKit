@@ -53,7 +53,7 @@ public class RequestLoggingMiddleware
     {
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));
 
-        if (GetPath(httpContext).EqualsPatternAny(this.options.PathBlackListPatterns))
+        if (GetPath(httpContext).MatchAny(this.options.PathBlackListPatterns))
         {
             await this.next(httpContext); // continue pipeline
         }

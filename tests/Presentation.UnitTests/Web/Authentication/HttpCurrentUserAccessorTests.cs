@@ -128,7 +128,7 @@ public class HttpCurrentUserAccessorTests
         var result = this.sut.Roles;
 
         // Assert
-        result.ShouldBeNull();
+        result.ShouldBeEmpty();
     }
 
     private void SetupHttpContext(string claimType, string claimValue)

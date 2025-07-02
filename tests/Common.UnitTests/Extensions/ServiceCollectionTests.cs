@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 [UnitTest("Common")]
 public class ServiceCollectionExtensionsTests
 {
-    private interface ITestService { }
+    private interface ITestService;
 
     [Fact]
     public void IsAdded_WhenServiceIsAdded_ShouldReturnTrue()
@@ -190,5 +190,5 @@ public class ServiceCollectionExtensionsTests
         result.ShouldBe(2);
     }
 
-    private class StubService : ITestService { }
+    private class StubService : ITestService;
 }

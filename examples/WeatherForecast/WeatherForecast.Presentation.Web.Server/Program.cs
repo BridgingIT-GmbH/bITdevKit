@@ -6,7 +6,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 #pragma warning disable SA1200 // Using directives should be placed correctly
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Azure.Monitor.OpenTelemetry.Exporter;
@@ -35,6 +34,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using BridgingIT.DevKit.Application.Notifications;
 
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
@@ -100,7 +100,7 @@ builder.Services.AddStartupTasks(o => o.Enabled().StartupDelay("00:00:05"))
     .WithBehavior<TimeoutStartupTaskBehavior>();
 
 builder.Services.AddMessaging(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+        .StartupDelay("00:05:00"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -109,11 +109,19 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
     .WithOutbox<CoreDbContext>(o => o // registers the outbox publisher behavior and worker service at once
-        .ProcessingInterval("00:00:30")
+        .ProcessingInterval("00:05:30")
         .ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
         .StartupDelay("00:00:15")
-        .PurgeOnStartup())
+        .PurgeOnStartup(false))
     .WithInProcessBroker(); //.WithRabbitMQBroker();
+
+builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, b => b
+    //.WithSmtpClient()
+    .WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = int.MaxValue, LogMessageBody = true })
+    .WithEntityFrameworkStorageProvider<CoreDbContext>()
+    .WithOutbox<CoreDbContext>(o => o
+        .Enabled(true)
+        .ProcessingInterval(TimeSpan.Parse("00:03:59"))));
 
 ConfigureHealth(builder.Services);
 
@@ -145,7 +153,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
     //    .TokenPath("/oauth2/v2.0/token")
     //    .UserInfoPath("/oidc/userinfo")
     //    .LogoutPath("/oauth2/v2.0/logout"))
-    .WithUsers(Fakes.Users)
+    .WithUsers(Fakes.UsersStarwars)
     //.WithUserProvider() // TODO: use a provider model for the users, should support password validation, user creation, get user by id, get user by username
     .WithTokenLifetimes(
         accessToken: TimeSpan.FromMinutes(2),
@@ -300,7 +308,7 @@ void ConfigureHealth(IServiceCollection services)
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()
 
-    ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+    //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
     services.AddHealthChecksUI() // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
         .AddInMemoryStorage();
     //.AddSqliteStorage($"Data Source=data_health.db");
@@ -354,13 +362,13 @@ void ConfigureTracing(TracerProviderBuilder provider)
         {
             options.RecordException = true;
             options.Filter = context =>
-                !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
+                !context.Request.Path.ToString().MatchAny(new RequestLoggingOptions().PathBlackListPatterns);
         })
         .AddHttpClientInstrumentation(options =>
         {
             options.RecordException = true;
             options.FilterHttpRequestMessage = request =>
-                !request.RequestUri.PathAndQuery.EqualsPatternAny(
+                !request.RequestUri.PathAndQuery.MatchAny(
                     new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
         })
         .AddSqlClientInstrumentation(options =>

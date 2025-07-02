@@ -33,8 +33,8 @@ public static class IdentityOptionsBuilderExtensions
     /// });
     /// </code>
     /// </example>
-    public static IdentityOptionsBuilder WithEntityPermissions<TContext>(
-        this IdentityOptionsBuilder source,
+    public static AuthorizationOptionsBuilder WithEntityPermissions<TContext>(
+        this AuthorizationOptionsBuilder source,
         Action<EntityPermissionOptionsBuilder<TContext>> configure)
         where TContext : DbContext, IEntityPermissionContext
     {

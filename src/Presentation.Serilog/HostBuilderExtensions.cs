@@ -16,7 +16,8 @@ public static class HostBuilderExtensions
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         IConfiguration configuration = null,
-        string[] exclusionPatterns = null)
+        string[] exclusionPatterns = null,
+        bool selfLogEnabled = false)
     {
         //    return builder.ConfigureLogging();
         //}
@@ -25,7 +26,10 @@ public static class HostBuilderExtensions
         //{
         EnsureArg.IsNotNull(builder, nameof(builder));
 
-        SelfLog.Enable(Console.Error);
+        if (selfLogEnabled)
+        {
+            SelfLog.Enable(Console.Error);
+        }
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {
@@ -65,12 +69,18 @@ public static class HostBuilderExtensions
         return builder;
     }
 
-    public static IHostBuilder ConfigureLogging(this IHostBuilder builder, Action<LoggerConfiguration> configure)
+    public static IHostBuilder ConfigureLogging(
+        this IHostBuilder builder,
+        Action<LoggerConfiguration> configure,
+        bool selfLogEnabled = false)
     {
         EnsureArg.IsNotNull(builder, nameof(builder));
         EnsureArg.IsNotNull(configure, nameof(configure));
 
-        SelfLog.Enable(Console.Error);
+        if (selfLogEnabled)
+        {
+            SelfLog.Enable(Console.Error);
+        }
 
         if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
         {

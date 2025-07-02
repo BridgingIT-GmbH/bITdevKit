@@ -9,6 +9,8 @@ using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Collections.Generic;
 
 /// <summary>
 ///     Middleware to add the current user's ID to the response headers.
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Logging;
 public class CurrentUserLoggingMiddleware
 {
     private const string UserIdKey = "UserId";
+    private const string UserRolesKey = "UserRoles";
     private readonly ILogger logger;
     private readonly RequestDelegate next;
 
@@ -39,10 +42,16 @@ public class CurrentUserLoggingMiddleware
         if (currentUserAccessor != null)
         {
             userId = currentUserAccessor.UserId;
-
             if (!string.IsNullOrEmpty(userId))
             {
                 httpContext.Response.Headers.AddOrUpdate(UserIdKey, userId);
+
+                if (currentUserAccessor.Roles != null)
+                {
+                    httpContext.Response.Headers.AddOrUpdate(
+                        UserRolesKey,
+                        string.Join(",", currentUserAccessor.Roles.Select(SanitizeHeaderValue)));
+                }
             }
         }
 
@@ -53,6 +62,7 @@ public class CurrentUserLoggingMiddleware
                 [UserIdKey] = userId,
             }))
             {
+                //this.logger.LogInformation("User {UserId} has roles {UserRoles}", userId, currentUserAccessor.Roles);
                 await this.next(httpContext); // continue pipeline
             }
         }
@@ -60,5 +70,25 @@ public class CurrentUserLoggingMiddleware
         {
             await this.next(httpContext); // continue pipeline
         }
+    }
+
+    /// <summary>
+    /// Sanitizes a string value to be used in HTTP headers by removing characters that could cause issues.
+    /// </summary>
+    /// <param name="value">The string value to sanitize.</param>
+    /// <returns>A sanitized string that is safe to use in HTTP headers.</returns>
+    private static string SanitizeHeaderValue(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
+
+        // Remove characters that could cause issues in HTTP headers
+        return value.Replace("\"", string.Empty)
+                    .Replace("'", string.Empty)
+                    .Replace(":", string.Empty)
+                    .Replace(";", string.Empty)
+                    .Replace(",", string.Empty);
     }
 }

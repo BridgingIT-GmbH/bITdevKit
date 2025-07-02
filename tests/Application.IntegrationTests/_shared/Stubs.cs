@@ -5,11 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests;
 
+using BridgingIT.DevKit.Infrastructure.Notifications;
 using Domain.Model;
 using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
-public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext
+public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, INotificationEmailContext
 {
     public StubDbContext() { }
 
@@ -23,6 +24,10 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+    public DbSet<EmailMessageEntity> NotificationsEmails { get; set; }
+
+    public DbSet<EmailMessageAttachmentEntity> NotificationsEmailAttachments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

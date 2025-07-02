@@ -21,7 +21,7 @@ public class LatitudeShouldBeInRangeRule : RuleBase
 
     public override string Message => "Latitude should be between -90 and 90";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(this.value is null || (this.value >= -180 && this.value <= 180));
     }

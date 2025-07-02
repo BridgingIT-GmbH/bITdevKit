@@ -3,7 +3,6 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -249,7 +248,7 @@ void ConfigureHealth(IServiceCollection services)
     //.AddCheck<RandomHealthCheck>("random")
     //.AddAp/plicationInsightsPublisher()
 
-    ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+    //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
     services.AddHealthChecksUI() // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
         .AddInMemoryStorage();
     //.AddSqliteStorage($"Data Source=data_health.db");
@@ -303,13 +302,13 @@ void ConfigureTracing(TracerProviderBuilder provider)
         {
             options.RecordException = true;
             options.Filter = context =>
-                !context.Request.Path.ToString().EqualsPatternAny(new RequestLoggingOptions().PathBlackListPatterns);
+                !context.Request.Path.ToString().MatchAny(new RequestLoggingOptions().PathBlackListPatterns);
         })
         .AddHttpClientInstrumentation(options =>
         {
             options.RecordException = true;
             options.FilterHttpRequestMessage = request =>
-                !request.RequestUri.PathAndQuery.EqualsPatternAny(
+                !request.RequestUri.PathAndQuery.MatchAny(
                     new RequestLoggingOptions().PathBlackListPatterns.Insert("*api/events/raw*"));
         })
         .AddSqlClientInstrumentation(options =>

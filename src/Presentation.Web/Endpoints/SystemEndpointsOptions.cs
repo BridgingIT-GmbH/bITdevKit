@@ -20,4 +20,6 @@ public class SystemEndpointsOptions : EndpointsOptionsBase
     public bool ModulesEnabled { get; set; } = true;
 
     public bool HideSensitiveInformation { get; set; }
+
+    public Dictionary<string, string> CustomMetadata { get; set; } = [];
 }

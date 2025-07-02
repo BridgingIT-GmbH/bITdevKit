@@ -6,4 +6,4 @@
 namespace BridgingIT.DevKit.Common;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class NoTraceActivityAttribute : Attribute { }
+public class NoTraceActivityAttribute : Attribute;

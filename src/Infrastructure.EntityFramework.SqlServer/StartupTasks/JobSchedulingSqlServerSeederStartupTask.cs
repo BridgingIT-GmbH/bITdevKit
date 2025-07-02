@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using BridgingIT.DevKit.Domain.Repositories;
 using Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -18,12 +19,15 @@ public class JobSchedulingSqlServerSeederStartupTask
     private readonly ILogger<JobSchedulingSqlServerSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
+    private readonly IDatabaseReadyService databaseReadyService;
 
-    public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
+    public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration, IDatabaseReadyService databaseReadyService = null)
         : this(loggerFactory,
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.dataSource.default.connectionString"],
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.jobStore.tablePrefix"])
-    { }
+    {
+        this.databaseReadyService = databaseReadyService;
+    }
 
     public JobSchedulingSqlServerSeederStartupTask(
         ILoggerFactory loggerFactory,
@@ -46,6 +50,11 @@ public class JobSchedulingSqlServerSeederStartupTask
     {
         try
         {
+            if (this.databaseReadyService != null)
+            {
+                await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken).AnyContext();
+            }
+
             var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
             var database = connectionStringBuilder.InitialCatalog;
             var sql = SqlStatements.QuartzTables(database, this.tablePrefix);

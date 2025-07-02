@@ -16,11 +16,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
+using Version = BridgingIT.DevKit.Common.Version;
 
-public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsBase
+public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<SystemEndpoints> logger = null) : EndpointsBase
 {
     private readonly SystemEndpointsOptions options = options ?? new SystemEndpointsOptions();
+    private readonly ILogger<SystemEndpoints> logger = logger;
+    private readonly Stopwatch uptimeStopwatch = Stopwatch.StartNew();
 
     public override void Map(IEndpointRouteBuilder app)
     {
@@ -32,14 +36,12 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetSystem)
-            //.AllowAnonymous()
             .Produces<Dictionary<string, string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
-                //.AllowAnonymous()
                 .Produces<string>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -47,7 +49,6 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         if (this.options.InfoEnabled)
         {
             group.MapGet("info", this.GetInfo)
-                //.AllowAnonymous()
                 .Produces<SystemInfo>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -55,8 +56,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         if (this.options.ModulesEnabled)
         {
             group.MapGet("modules", this.GetModules)
-                //.AllowAnonymous()
-                .Produces<IEnumerable<IModule>>()
+                .Produces<IEnumerable<SystemModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -85,59 +85,108 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
 
     public async Task<IResult> GetEcho(IMediator mediator, HttpContext httpContext)
     {
-        var response = await mediator.Send(new EchoQuery());
-
-        return Results.Ok(response.Result);
+        try
+        {
+            var response = await mediator.Send(new EchoQuery());
+            return Results.Ok(response.Result);
+        }
+        catch (Exception ex)
+        {
+            this.logger?.LogError(ex, "Failed to process echo request.");
+            return Results.Problem(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.InternalServerError,
+                Title = "Echo Failed",
+                Detail = "An error occurred while processing the echo request."
+            });
+        }
     }
 
     public async Task<IResult> GetInfo(IMediator mediator, HttpContext httpContext, CancellationToken cancellationToken)
     {
-        var result = new SystemInfo
+        try
         {
-            Request =
-                new Dictionary<string, object>
+            var process = Process.GetCurrentProcess();
+            var result = new SystemInfo
+            {
+                Request = new Dictionary<string, object>
                 {
                     ["isLocal"] = !this.options.HideSensitiveInformation ? IsLocal(httpContext?.Request) : string.Empty,
                     ["host"] = !this.options.HideSensitiveInformation ? Dns.GetHostName() : string.Empty,
-                    ["ip"] = !this.options.HideSensitiveInformation ? (await Dns.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)).Select(i => i.ToString()).Where(i => i.Contains('.')) : string.Empty
+                    ["ip"] = !this.options.HideSensitiveInformation ? (await GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)) : string.Empty
                 },
-            Runtime = new Dictionary<string, string>
-            {
-                ["name"] = Assembly.GetEntryAssembly().GetName().Name,
-                ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-                ["version"] = Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                ["versionInformation"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
-                ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
-                ["processName"] = !this.options.HideSensitiveInformation ? Process.GetCurrentProcess().ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{Process.GetCurrentProcess().ProcessName} (kestrel)" : Process.GetCurrentProcess().ProcessName : string.Empty,
-                ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,
-                ["framework"] = !this.options.HideSensitiveInformation ? RuntimeInformation.FrameworkDescription : string.Empty,
-                ["runtime"] = !this.options.HideSensitiveInformation ? RuntimeInformation.RuntimeIdentifier : string.Empty,
-                ["machineName"] = !this.options.HideSensitiveInformation ? Environment.MachineName : string.Empty,
-                ["processorCount"] = !this.options.HideSensitiveInformation ? Environment.ProcessorCount.ToString() : string.Empty,
-                ["osDescription"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSDescription : string.Empty,
-                ["osArchitecture"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSArchitecture.ToString() : string.Empty
-            }
-        };
+                Runtime = new Dictionary<string, string>
+                {
+                    ["name"] = Assembly.GetEntryAssembly().GetName().Name,
+                    ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
+                    ["version"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease),
+                    ["versionFull"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(),
+                    ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
+                    ["processName"] = !this.options.HideSensitiveInformation ? (process.ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{process.ProcessName} (kestrel)" : process.ProcessName) : string.Empty,
+                    ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,
+                    ["framework"] = !this.options.HideSensitiveInformation ? RuntimeInformation.FrameworkDescription : string.Empty,
+                    ["runtime"] = !this.options.HideSensitiveInformation ? RuntimeInformation.RuntimeIdentifier : string.Empty,
+                    ["machineName"] = !this.options.HideSensitiveInformation ? Environment.MachineName : string.Empty,
+                    ["processorCount"] = !this.options.HideSensitiveInformation ? Environment.ProcessorCount.ToString() : string.Empty,
+                    ["osDescription"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSDescription : string.Empty,
+                    ["osArchitecture"] = !this.options.HideSensitiveInformation ? RuntimeInformation.OSArchitecture.ToString() : string.Empty
+                },
+                Memory = new Dictionary<string, string>
+                {
+                    ["workingSet"] = !this.options.HideSensitiveInformation ? $"{process.WorkingSet64 / 1024 / 1024} MB" : string.Empty,
+                    ["privateMemory"] = !this.options.HideSensitiveInformation ? $"{process.PrivateMemorySize64 / 1024 / 1024} MB" : string.Empty,
+                    ["gcTotalMemory"] = !this.options.HideSensitiveInformation ? $"{GC.GetTotalMemory(false) / 1024 / 1024} MB" : string.Empty
+                },
+                Configuration = new Dictionary<string, string>
+                {
+                    ["urls"] = !this.options.HideSensitiveInformation ? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ?? "N/A" : string.Empty,
+                    ["timezone"] = !this.options.HideSensitiveInformation ? TimeZoneInfo.Local.StandardName : string.Empty
+                },
+                CustomMetadata = this.options.CustomMetadata,
+                Uptime = this.uptimeStopwatch.Elapsed.ToString(@"dd\.hh\:mm\:ss")
+            };
 
-        return Results.Ok(result);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            this.logger?.LogError(ex, "Failed to retrieve system info.");
+            return Results.Problem(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.InternalServerError,
+                Title = "System Info Failed",
+                Detail = "An error occurred while retrieving system information."
+            });
+        }
     }
 
-    public IResult GetModules(IEnumerable<IModule> modules)
+    public IResult GetModules(IEnumerable<SystemModule> modules)
     {
-        return Results.Ok(modules);
+        try
+        {
+            return Results.Ok(modules.Select(e =>
+                new SystemModule { Enabled = e.Enabled, IsRegistered = e.IsRegistered, Name = e.Name, Priority = e.Priority }));
+        }
+        catch (Exception ex)
+        {
+            this.logger?.LogError(ex, "Failed to retrieve system modules.");
+            return Results.Problem(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.InternalServerError,
+                Title = "Modules Retrieval Failed",
+                Detail = "An error occurred while retrieving system modules."
+            });
+        }
     }
 
     private static bool IsLocal(HttpRequest source)
     {
-        // https://stackoverflow.com/a/41242493/7860424
         var connection = source?.HttpContext?.Connection;
         if (IsIpAddressSet(connection?.RemoteIpAddress))
         {
             return IsIpAddressSet(connection.LocalIpAddress)
-                ? connection.RemoteIpAddress.Equals(connection
-                    .LocalIpAddress) //if local is same as remote, then we are local
-                : IPAddress.IsLoopback(connection
-                    .RemoteIpAddress); //else we are remote if the remote IP address is not a loopback address
+                ? connection.RemoteIpAddress.Equals(connection.LocalIpAddress)
+                : IPAddress.IsLoopback(connection.RemoteIpAddress);
         }
 
         return true;
@@ -145,6 +194,20 @@ public class SystemEndpoints(SystemEndpointsOptions options = null) : EndpointsB
         static bool IsIpAddressSet(IPAddress address)
         {
             return address is not null && address.ToString() != "::1";
+        }
+    }
+
+    private async Task<string> GetHostAddressesAsync(string hostName, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var addresses = await Dns.GetHostAddressesAsync(hostName, cancellationToken);
+            return string.Join(", ", addresses.Select(i => i.ToString()).Where(i => i.Contains('.')));
+        }
+        catch (Exception ex)
+        {
+            this.logger?.LogWarning(ex, "Failed to resolve host addresses for {HostName}.", hostName);
+            return "N/A";
         }
     }
 }

@@ -13,6 +13,11 @@ using System.Runtime.Serialization;
 /// </summary>
 public class FilterModel
 {
+    public static FilterModel FromQueryString(string queryString)
+    {
+        return FilterModelExtensions.FromQueryString(queryString);
+    }
+
     /// <summary>
     /// Gets or sets the page number for pagination.
     /// Default value is 1.
@@ -24,6 +29,12 @@ public class FilterModel
     /// Default value is 10.
     /// </summary>
     public int PageSize { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to disable change tracking for the query.
+    /// Default value is <c>true</c>.
+    /// </summary>
+    public bool NoTracking { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the list of ordering criteria.
@@ -333,7 +344,7 @@ public class CompositeSpecification
 /// <summary>
 /// Represents a base class for specification nodes.
 /// </summary>
-public abstract class SpecificationNode { }
+public abstract class SpecificationNode;
 
 /// <summary>
 /// Represents a leaf node in a specification tree.

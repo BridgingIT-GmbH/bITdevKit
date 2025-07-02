@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 public class FromQueryFilterAttribute()
-    : ModelBinderAttribute(typeof(FromQueryFilterModelBinder));
+    : ModelBinderAttribute(typeof(FromQueryFilterModelBinder))
+    , IBindingSourceMetadata, IModelNameProvider, IFromQueryMetadata
+{
+    public override BindingSource BindingSource => BindingSource.Query;
+}

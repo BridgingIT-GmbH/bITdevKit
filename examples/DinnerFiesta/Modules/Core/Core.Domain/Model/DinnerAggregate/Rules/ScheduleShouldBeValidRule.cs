@@ -9,7 +9,7 @@ public class ScheduleShouldBeValidRule(DateTimeOffset startDateTime, DateTimeOff
 {
     public override string Message => "StartDate should be earlier than the EndDate";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(startDateTime < endDateTime);
     }

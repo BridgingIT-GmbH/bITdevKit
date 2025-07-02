@@ -30,7 +30,7 @@ public class AsyncItemRule<T>(Func<T, CancellationToken, Task<IRule>> ruleFactor
     /// </summary>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="Result"/> indicating the outcome of the rule execution.</returns>
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var rule = await ruleFactory(this.item, cancellationToken);
         return await rule.IsSatisfiedAsync(cancellationToken);

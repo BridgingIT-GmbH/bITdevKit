@@ -63,6 +63,17 @@ public static class QueryResult
     }
 
     /// <summary>
+    /// Creates a <see cref="QueryResponse{Result{TValue}}"/> from a given <see cref="Result{TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value contained in the result.</typeparam>
+    /// <param name="result">The result to wrap in a <see cref="QueryResponse{Result{TValue}}"/>.</param>
+    /// <returns>A <see cref="QueryResponse{Result{TValue}}"/> containing the given result.</returns>
+    public static QueryResponse<ResultPaged<TValue>> For<TValue>(ResultPaged<TValue> result)
+    {
+        return new QueryResponse<ResultPaged<TValue>> { Result = result };
+    }
+
+    /// <summary>
     /// Creates a QueryResponse with a Result containing a new output value mapped from the provided Result and TValue.
     /// </summary>
     /// <param name="result">The original Result containing a TValue.</param>

@@ -44,8 +44,7 @@ public class StorageDocument
     public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
     [Column("Properties")]
-    public string
-        PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections
+    public string PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections
     {
         get =>
             this.Properties.IsNullOrEmpty()

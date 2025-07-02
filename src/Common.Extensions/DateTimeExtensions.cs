@@ -344,7 +344,10 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static DateTime AddBusinessDays(this DateTime dateTime, int days, DateTime[] holidays, params DayOfWeek[] nonWorkingDays)
     {
-        if (days == 0) return dateTime;
+        if (days == 0)
+        {
+            return dateTime;
+        }
 
         // Use default non-working days if none specified
         if (nonWorkingDays == null || nonWorkingDays.Length == 0)

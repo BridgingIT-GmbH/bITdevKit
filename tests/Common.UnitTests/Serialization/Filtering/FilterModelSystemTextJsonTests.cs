@@ -44,6 +44,23 @@ public class FilterModelSystemTextJsonTests
     }
 
     [Fact]
+    public void RoundtripSerialization_FilterModel_ShouldProduceValidFilterModel()
+    {
+        // Arrange
+        var filterModel = this.CreateSampleFilterModel();
+
+        // Act
+        var jsonString = this.serializer.SerializeToString(filterModel);
+        var deserializedModel = this.serializer.Deserialize<FilterModel>(jsonString);
+
+        // Assert
+        //this.AssertJsonStringContains(jsonString, filterModel);
+        deserializedModel.HasFilters().ShouldBeTrue();
+        deserializedModel.HasFilters("Status").ShouldBeTrue();
+        deserializedModel.GetFilter("Status", FilterOperator.Equal).Value.ShouldBe(ActiveStatus.Active);
+    }
+
+    [Fact]
     public void DeserializeFromJsonString_FilterModel_ShouldProduceValidObject()
     {
         // Arrange
@@ -126,6 +143,12 @@ public class FilterModelSystemTextJsonTests
                     Filters = [
                         new FilterCriteria { Field = "City", Operator = FilterOperator.Equal, Value = "Berlin" }
                     ]
+                },
+                new FilterCriteria
+                {
+                    Field = "Status",
+                    Operator = FilterOperator.Equal,
+                    Value = ActiveStatus.Active
                 },
                 new FilterCriteria(FilterCustomType.DateRange,
                     new Dictionary<string, object>
@@ -240,7 +263,7 @@ public class FilterModelSystemTextJsonTests
         model.ShouldNotBeNull();
         model.Page.ShouldBe(2);
         model.PageSize.ShouldBe(15);
-        model.Filters.Count.ShouldBe(3);
+        model.Filters.Count.ShouldBe(4);
         model.Orderings.Count.ShouldBe(1);
         model.Includes.Count.ShouldBe(2);
 
@@ -480,6 +503,20 @@ public class EnumConverterTests
         // Act
         var json = JsonSerializer.Serialize(originalEnum, this.options);
         var deserializedEnum = JsonSerializer.Deserialize<TestEnum>(json, this.options);
+
+        // Assert
+        deserializedEnum.ShouldBe(originalEnum);
+    }
+
+    [Fact]
+    public void ReadWrite_RoundTrip_PreservesSmartEnumValue() // does not need EnumConverter
+    {
+        // Arrange
+        var originalEnum = ActiveStatus.Active;
+
+        // Act
+        var json = JsonSerializer.Serialize(originalEnum, this.options);
+        var deserializedEnum = JsonSerializer.Deserialize<ActiveStatus>(json, this.options);
 
         // Assert
         deserializedEnum.ShouldBe(originalEnum);

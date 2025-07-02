@@ -34,16 +34,12 @@ public class
     /// <summary>
     /// Provides generic repository functionalities for entities in an Entity Framework context.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     public EntityFrameworkGenericRepository(EntityFrameworkRepositoryOptions options)
         : base(options) { }
 
     /// <summary>
     /// Provides a generic repository for entities using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type of the database entity.</typeparam>
     protected EntityFrameworkGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
@@ -51,8 +47,6 @@ public class
     /// <summary>
     /// Represents a generic repository implementation using Entity Framework for read/write operations.
     /// </summary>
-    /// <typeparam name="TEntity">The type representing the domain entity.</typeparam>
-    /// <typeparam name="TDatabaseEntity">The type representing the database entity.</typeparam>
     protected EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
 
@@ -106,14 +100,13 @@ public class
             return (null, RepositoryActionResult.None);
         }
 
-        var isNew = entity.Id == default;
-        var existingEntity = isNew
-            ? null
-            : await this.Options.DbContext.Set<TDatabaseEntity>()
-                .FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken)
-                .AnyContext();
-
-        isNew = isNew || existingEntity is null;
+        TDatabaseEntity existingEntity = null;
+        var isNew = IsDefaultId(entity.Id);
+        if (!isNew) // Check if the entity already exists in the database
+        {
+            existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync([this.ConvertEntityId(entity.Id)], cancellationToken).AnyContext();
+            isNew = existingEntity == null;
+        }
 
         if (isNew)
         {
@@ -187,12 +180,10 @@ public class
     {
         if (id == default)
         {
-            return RepositoryActionResult.None;
+            return RepositoryActionResult.NotFound;
         }
 
-        var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>()
-            .FindAsync([this.ConvertEntityId(id) /*, cancellationToken: cancellationToken*/], cancellationToken)
-            .AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
+        var existingEntity = await this.Options.DbContext.Set<TDatabaseEntity>().FindAsync([this.ConvertEntityId(id) /*, cancellationToken: cancellationToken*/], cancellationToken).AnyContext(); // INFO: don't use this.FindOne here, existingEntity should be a TDatabaseEntity for the Remove to work
         if (existingEntity is not null)
         {
             this.Options.DbContext.Remove(existingEntity);
@@ -205,7 +196,7 @@ public class
             return RepositoryActionResult.Deleted;
         }
 
-        return RepositoryActionResult.None;
+        return RepositoryActionResult.NotFound;
     }
 
     /// <summary>
@@ -228,5 +219,30 @@ public class
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    // Helper method to check if Id is at its default value
+    private static bool IsDefaultId(object id)
+    {
+        if (id == null)
+        {
+            return true; // null is considered default for reference types like string
+        }
+
+        var idType = id.GetType();
+
+        return idType switch
+        {
+            Type t when t == typeof(Guid) => (Guid)id == Guid.Empty,
+            Type t when t == typeof(int) => (int)id == 0,
+            Type t when t == typeof(long) => (long)id == 0,
+            Type t when t == typeof(string) => string.IsNullOrEmpty((string)id),
+            Type t when typeof(EntityId<Guid>).IsAssignableFrom(t) => ((EntityId<Guid>)id).Value == Guid.Empty,
+            Type t when typeof(EntityId<int>).IsAssignableFrom(t) => ((EntityId<int>)id).Value == 0,
+            Type t when typeof(EntityId<long>).IsAssignableFrom(t) => ((EntityId<long>)id).Value == 0,
+            Type t when typeof(EntityId<string>).IsAssignableFrom(t) => string.IsNullOrEmpty(((EntityId<string>)id).Value),
+            // Add other types as needed (e.g., short, byte, custom structs)
+            _ => Equals(id, Activator.CreateInstance(idType)) // Fallback for value types
+        };
     }
 }

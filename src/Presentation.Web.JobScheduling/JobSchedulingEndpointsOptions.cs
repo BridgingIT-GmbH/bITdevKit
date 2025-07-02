@@ -10,6 +10,6 @@ public class JobSchedulingEndpointsOptions : EndpointsOptionsBase
     public JobSchedulingEndpointsOptions()
     {
         this.GroupPath = "/api/_system/jobs";
-        this.GroupTag = "_system";
+        this.GroupTag = "_system/jobs";
     }
 }

@@ -17,7 +17,7 @@ public interface IAuthorizationCodeService
 
 public class AuthorizationCodeService : IAuthorizationCodeService
 {
-    private readonly Dictionary<string, AuthorizationCodeModel> authCodes = new();
+    private readonly Dictionary<string, AuthorizationCodeModel> authCodes = [];
 
     public string GenerateCode(FakeUser user, AuthorizeRequest request)
     {
@@ -40,7 +40,7 @@ public class AuthorizationCodeService : IAuthorizationCodeService
     {
         if (!this.authCodes.TryGetValue(code, out var data))
         {
-            throw new OAuth2Exception("invalid_grant", "Invalid authorization code");
+            throw new OAuth2Exception("invalid_grant", "Invalid authorization code (data)");
         }
 
         if (data.ExpiresAt < DateTime.UtcNow)

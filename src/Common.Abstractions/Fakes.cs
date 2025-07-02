@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 public static class Fakes
 {
-    public static readonly FakeUser[] Users =
+    public static readonly FakeUser[] UsersStarwars =
     [
         new(
             "luke.skywalker@starwars.com",
@@ -149,87 +149,147 @@ public static class Fakes
                     """
                 }
             }),
-        new(
-            "r2d2@starwars.com",
-            "R2-D2",
-            [Role.Readers],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="5"/>
-                        <rect x="8" y="13" width="8" height="8" rx="1"/>
-                        <circle cx="12" cy="8" r="2"/>
-                        <path d="M9 16h6"/>
-                        <path d="M9 18h6"/>
-                    </svg>
-                    """
-                }
-            }),
-        new(
-            "c3po@starwars.com",
-            "C-3PO",
-            [Role.Writers],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="7" r="4"/>
-                        <rect x="8" y="11" width="8" height="10" rx="2"/>
-                        <circle cx="10" cy="7" r="1" fill="currentColor"/>
-                        <circle cx="14" cy="7" r="1" fill="currentColor"/>
-                        <path d="M10 16h4"/>
-                    </svg>
-                    """
-                }
-            }),
-        new(
-            "boba.fett@starwars.com",
-            "Boba Fett",
-            [Role.Guests],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 3L4 9v2h16V9L12 3z"/>
-                        <path d="M4 11v10h16V11"/>
-                        <path d="M8 13h8"/>
-                        <path d="M6 15l12 0"/>
-                        <circle cx="12" cy="17" r="1"/>
-                    </svg>
-                    """
-                }
-            }),
-        new(
-            "mace.windu@starwars.com",
-            "Mace Windu",
-            [Role.Contributors],
-            "starwars",
-            new Dictionary<string, string>
-            {
-                {
-                    "avatar",
-                    """
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="3"/>
-                        <path d="M7 21v-4a5 5 0 0 1 10 0v4"/>
-                        <path d="M3 21h18"/>
-                        <path d="M12 12v2"/>
-                        <path d="M10 14h4"/>
-                    </svg>
-                    """
-                }
-            })
+        //new(
+        //    "r2d2@starwars.com",
+        //    "R2-D2",
+        //    [Role.Readers],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <circle cx="12" cy="8" r="5"/>
+        //                <rect x="8" y="13" width="8" height="8" rx="1"/>
+        //                <circle cx="12" cy="8" r="2"/>
+        //                <path d="M9 16h6"/>
+        //                <path d="M9 18h6"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
+        //new(
+        //    "c3po@starwars.com",
+        //    "C-3PO",
+        //    [Role.Writers],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <circle cx="12" cy="7" r="4"/>
+        //                <rect x="8" y="11" width="8" height="10" rx="2"/>
+        //                <circle cx="10" cy="7" r="1" fill="currentColor"/>
+        //                <circle cx="14" cy="7" r="1" fill="currentColor"/>
+        //                <path d="M10 16h4"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
+        //new(
+        //    "boba.fett@starwars.com",
+        //    "Boba Fett",
+        //    [Role.Guests],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <path d="M12 3L4 9v2h16V9L12 3z"/>
+        //                <path d="M4 11v10h16V11"/>
+        //                <path d="M8 13h8"/>
+        //                <path d="M6 15l12 0"/>
+        //                <circle cx="12" cy="17" r="1"/>
+        //            </svg>
+        //            """
+        //        }
+        //    }),
+        //new(
+        //    "mace.windu@starwars.com",
+        //    "Mace Windu",
+        //    [Role.Contributors],
+        //    "starwars",
+        //    new Dictionary<string, string>
+        //    {
+        //        {
+        //            "avatar",
+        //            """
+        //            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        //                <circle cx="12" cy="8" r="3"/>
+        //                <path d="M7 21v-4a5 5 0 0 1 10 0v4"/>
+        //                <path d="M3 21h18"/>
+        //                <path d="M12 12v2"/>
+        //                <path d="M10 14h4"/>
+        //            </svg>
+        //            """
+        //        }
+        //    })
     ];
+
+    public static readonly FakeUser[] UsersGerman =
+    [
+        new(
+            "johannes.schmidt@example.de",
+            "Johannes Schmidt",
+            [Role.Administrators, Role.Users, Role.Writers],
+            "passwort",
+            isDefault: true),
+        new(
+            "anna.mueller@example.de",
+            "Anna Müller",
+            [Role.Users, Role.Writers],
+            "passwort"),
+        new(
+            "thomas.weber@example.de",
+            "Thomas Weber",
+            [Role.Readers, Role.Contributors],
+            "passwort"),
+        new(
+            "elisabeth.fischer@example.de",
+            "Elisabeth Fischer",
+            [Role.Writers, Role.Contributors],
+            "passwort"),
+        new(
+            "michael.wagner@example.de",
+            "Michael Wagner",
+            [Role.Users, Role.Readers],
+            "passwort")
+    ];
+
+    public static readonly FakeUser[] UsersEnglish =
+    [
+       new(
+            "john.smith@example.com",
+            "John Smith",
+            [Role.Administrators, Role.Users, Role.Writers],
+            "password",
+            isDefault: true),
+        new(
+            "anna.miller@example.com",
+            "Anna Miller",
+            [Role.Users, Role.Writers],
+            "password"),
+        new(
+            "thomas.walker@example.com",
+            "Thomas Walker",
+            [Role.Readers, Role.Contributors],
+            "password"),
+        new(
+            "elizabeth.fisher@example.com",
+            "Elizabeth Fisher",
+            [Role.Writers, Role.Contributors],
+            "password"),
+        new(
+            "michael.warren@example.com",
+            "Michael Warren",
+            [Role.Users, Role.Readers],
+            "password")
+   ];
 }
 
 [DebuggerDisplay("Id={Id}, Email={Email}")]

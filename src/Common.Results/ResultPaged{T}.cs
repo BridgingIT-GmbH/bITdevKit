@@ -22,7 +22,7 @@
 /// }
 /// </example>
 [DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages} {FirstMessageOrError}")]
-public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
+public readonly partial struct ResultPaged<T> : IResultPaged<T>
 {
     private readonly bool success;
     private readonly ValueList<string> messages;
@@ -119,7 +119,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// <summary>
     /// Gets the collection of values for the current page.
     /// </summary>
-    public IEnumerable<T> Value => this.value ?? Array.Empty<T>();
+    public IEnumerable<T> Value => this.value ?? [];
 
     /// <summary>
     /// Gets the collection of messages associated with the result.
@@ -134,6 +134,79 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         this.errors.AsEnumerable().ToList().AsReadOnly();
 
     /// <summary>
+    /// Tries to perform an operation on the current page collection.
+    /// </summary>
+    /// <example>
+    /// var result = ResultPaged{User}.Try(() => {
+    ///     var users = _repository.GetPagedUsers(page, pageSize);
+    ///     return (users, totalCount: _repository.GetTotalCount());
+    /// });
+    /// </example>
+    public static ResultPaged<T> From(
+        Func<(IEnumerable<T> Values, long TotalCount)> operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var (values, totalCount) = operation();
+            return Success(values, totalCount, 1, values.Count());
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously tries to perform an operation that returns a paged collection.
+    /// </summary>
+    /// <example>
+    /// var result = await ResultPaged{User}.TryAsync(
+    ///     async ct => {
+    ///         var users = await _repository.GetPagedUsersAsync(page, pageSize, ct);
+    ///         var count = await _repository.GetTotalCountAsync(ct);
+    ///         return (users, count);
+    ///     },
+    ///     cancellationToken
+    /// );
+    /// </example>
+    public static async Task<ResultPaged<T>> FromAsync(
+        Func<CancellationToken, Task<(IEnumerable<T> Values, long TotalCount)>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var (values, totalCount) = await operation(cancellationToken);
+            return Success(values, 1, values.Count());
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Creates a successful paged result with the specified values and pagination details.
     /// </summary>
     /// <example>
@@ -146,11 +219,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     pageSize: 10
     /// );
     /// </example>
-    public static ResultPaged<T> Success(
-        IEnumerable<T> values,
-        long count = 0,
-        int page = 1,
-        int pageSize = 10)
+    public static ResultPaged<T> Success(IEnumerable<T> values, long count = 0, int page = 1, int pageSize = 10)
     {
         return new ResultPaged<T>(values, true, count, page, pageSize);
     }
@@ -217,7 +286,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// </example>
     public static ResultPaged<T> Failure()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false);
+        return new ResultPaged<T>([], false);
     }
 
     /// <summary>
@@ -250,7 +319,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     public static ResultPaged<T> Failure<TError>()
         where TError : IResultError, new()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithError<TError>();
     }
 
@@ -267,7 +336,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        var result = new ResultPaged<T>(Array.Empty<T>(), false)
+        var result = new ResultPaged<T>([], false)
             .WithMessage(message);
 
         return error is null ? result : result.WithError(error);
@@ -288,7 +357,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         IEnumerable<string> messages,
         IEnumerable<IResultError> errors = null)
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessages(messages)
             .WithErrors(errors);
     }
@@ -306,7 +375,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessage(message)
             .WithError<TError>();
     }
@@ -324,7 +393,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     public static ResultPaged<T> Failure<TError>(IEnumerable<string> messages)
         where TError : IResultError, new()
     {
-        return new ResultPaged<T>(Array.Empty<T>(), false)
+        return new ResultPaged<T>([], false)
             .WithMessages(messages)
             .WithError<TError>();
     }
@@ -555,67 +624,8 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     {
         return this.WithError(Activator.CreateInstance<TError>());
     }
-
     /// <summary>
-    /// Executes different functions based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var message = result.Match(
-    ///     onSuccess: r => $"Found {r.TotalCount} users across {r.TotalPages} pages",
-    ///     onFailure: errors => $"Failed with {errors.Count} errors"
-    /// );
-    /// </example>
-    public TResult Match<TResult>(
-        Func<ResultPaged<T>, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? onSuccess(this)
-            : onFailure(this.Errors);
-    }
-
-    /// <summary>
-    /// Returns different values based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var status = result.Match(
-    ///     success: "Users retrieved successfully",
-    ///     failure: "Failed to retrieve users"
-    /// );
-    /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        return this.IsSuccess ? success : failure;
-    }
-
-    /// <summary>
-    /// Asynchronously executes different functions based on the result's success state.
-    /// </summary>
-    /// <example>
-    /// var status = await result.MatchAsync(
-    ///     async (r, ct) => await FormatSuccessMessageAsync(r, ct),
-    ///     async (errors, ct) => await FormatErrorMessageAsync(errors, ct),
-    ///     cancellationToken
-    /// );
-    /// </example>
-    public Task<TResult> MatchAsync<TResult>(
-        Func<ResultPaged<T>, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? onSuccess(this, cancellationToken)
-            : onFailure(this.Errors, cancellationToken);
-    }
-
-    /// <summary>
-    /// Converts to a regular Result.
+    /// Converts a generic ResultPaged{T} to a non-generic Result.
     /// </summary>
     /// <example>
     /// var result = resultPaged.For();
@@ -624,7 +634,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("Operation successful");
     /// }
     /// </example>
-    public Result For()
+    public Result Unwrap()
     {
         var result = this;
 
@@ -645,7 +655,7 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
 
         return this.Match(
             _ => ResultPaged<TOutput>.Success(
-                    Array.Empty<TOutput>(),
+                    [],
                     result.TotalCount,
                     result.CurrentPage,
                     result.PageSize)
@@ -700,7 +710,9 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     /// Result baseResult = resultPaged; // Implicitly converts
     /// </example>
     public static implicit operator Result(ResultPaged<T> result) =>
-        result.For();
+        result.Match(
+            _ => Result.Success().WithMessages(result.Messages).WithErrors(result.Errors),
+            _ => Result.Failure().WithMessages(result.Messages).WithErrors(result.Errors));
 
     /// <summary>
     /// Implicit conversion to Result{IEnumerable{TValue}}.
@@ -744,9 +756,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("Validation error found");
     /// }
     /// </example>
-    public bool HasError<TError>() where TError : IResultError
+    public bool HasError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
+
         return this.errors.AsEnumerable().Any(e => e.GetType() == errorType);
     }
 
@@ -763,10 +777,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine("No validation errors found");
     /// }
     /// </example>
-    public bool TryGetError<TError>(out IResultError error) where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError));
+            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
 
         return error is not null;
     }
@@ -783,12 +798,13 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     }
     /// }
     /// </example>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors) where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable()
+        errors = [.. this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
-            .ToList();
+            .Cast<TError>()];
 
         return errors.Any();
     }
@@ -803,10 +819,11 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine($"Found error: {error.Message}");
     /// }
     /// </example>
-    public IResultError GetError<TError>() where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         return this.errors.AsEnumerable()
-            .FirstOrDefault(e => e.GetType() == typeof(TError));
+            .FirstOrDefault(e => e.GetType() == typeof(TError)) as TError;
     }
 
     /// <summary>
@@ -819,12 +836,13 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
     ///     Console.WriteLine($"Validation error: {error.Message}");
     /// }
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>() where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        return this.errors.AsEnumerable()
+        return [.. this.errors.AsEnumerable()
             .Where(e => e.GetType() == errorType)
-            .ToList();
+            .Cast<TError>()];
     }
 
     /// <summary>
@@ -895,5 +913,77 @@ public readonly partial struct ResultPaged<T> : IResult<IEnumerable<T>>
         {
             return Failure().WithError(Result.Settings.ExceptionErrorFactory(ex));
         }
+    }
+
+    /// <summary>
+    /// Returns a string representation of the Result.
+    /// </summary>
+    /// <example>
+    /// var result = Result.Success("Operation completed")
+    ///     .WithError(new ValidationError("Invalid input"));
+    /// Console.WriteLine(result.ToResultString());
+    /// // Output:
+    /// // Success: False
+    /// // Messages:
+    /// // - Operation completed
+    /// // Errors:
+    /// // - [ValidationError] Invalid input
+    /// </example>
+    public override string ToString()
+    {
+        return this.ToString(string.Empty);
+    }
+
+    public string ToString(string message)
+    {
+        var sb = new StringBuilder();
+
+        // Append success or failure message
+        if (this.IsSuccess)
+        {
+            sb.Append("Result succeeded ✓");
+        }
+        else
+        {
+            sb.Append("Result failed ✗");
+        }
+
+        // Append type name
+        sb.Append(" [").Append(typeof(T).Name).Append(']');
+
+        // Append message only if not null or empty
+        if (!string.IsNullOrEmpty(message))
+        {
+            sb.Append(' ').Append(message);
+        }
+
+        // Remove trailing spaces and add a single newline
+        while (sb.Length > 0 && sb[^1] == ' ')
+        {
+            sb.Length--;
+        }
+        sb.AppendLine();
+
+        // Append messages if any
+        if (!this.messages.IsEmpty)
+        {
+            sb.AppendLine("  messages:");
+            foreach (var m in this.messages.AsEnumerable())
+            {
+                sb.Append("  - ").AppendLine(m);
+            }
+        }
+
+        // Append errors if any
+        if (!this.errors.IsEmpty)
+        {
+            sb.AppendLine("  errors:");
+            foreach (var e in this.errors.AsEnumerable())
+            {
+                sb.Append("  - [").Append(e.GetType().Name).Append("] ").AppendLine(e.Message);
+            }
+        }
+
+        return sb.ToString();
     }
 }

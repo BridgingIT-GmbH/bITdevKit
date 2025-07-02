@@ -13,7 +13,7 @@ public static partial class Extensions
         where T : class
     {
         return source.IsNullOrEmpty()
-            ? Enumerable.Empty<T>()
+            ? []
             : source.Where(x => x != null);
     }
 
@@ -24,7 +24,7 @@ public static partial class Extensions
     public static IEnumerable<T> ExcludeNull<T>(this IEnumerable<T?> source) where T : struct
     {
         return source.IsNullOrEmpty()
-            ? Enumerable.Empty<T>()
+            ? []
             : source.Where(x => x.HasValue).Select(x => x.Value);
     }
 
@@ -48,32 +48,32 @@ public static partial class Extensions
         where TValue : class
     {
         return source.IsNullOrEmpty()
-            ? new Dictionary<TKey, TValue>()
+            ? []
             : source.Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
     }
 
-    /// <summary>
-    ///     Removes null values from a Stack and returns a new Stack.
-    ///     Returns empty stack if source is null.
-    /// </summary>
-    public static Stack<T> ExcludeNull<T>(this Stack<T> source) where T : class
-    {
-        return source == null
-            ? new Stack<T>()
-            : new Stack<T>(source.Where(x => x != null).Reverse());
-    }
+    ///// <summary>
+    /////     Removes null values from a Stack and returns a new Stack.
+    /////     Returns empty stack if source is null.
+    ///// </summary>
+    //public static Stack<T> ExcludeNull<T>(this Stack<T> source) where T : class
+    //{
+    //    return source == null
+    //        ? []
+    //        : [.. source.Where(x => x != null).Reverse()];
+    //}
 
-    /// <summary>
-    ///     Removes null values from a Queue and returns a new Queue.
-    ///     Returns empty queue if source is null.
-    /// </summary>
-    public static Queue<T> ExcludeNull<T>(this Queue<T> source) where T : class
-    {
-        return source.IsNullOrEmpty()
-            ? new Queue<T>()
-            : new Queue<T>(source.Where(x => x != null));
-    }
+    ///// <summary>
+    /////     Removes null values from a Queue and returns a new Queue.
+    /////     Returns empty queue if source is null.
+    ///// </summary>
+    //public static Queue<T> ExcludeNull<T>(this Queue<T> source) where T : class
+    //{
+    //    return source.IsNullOrEmpty()
+    //        ? []
+    //        : [.. source.Where(x => x != null)];
+    //}
 
     /// <summary>
     ///     Removes null values from a LinkedList and returns a new LinkedList.
@@ -82,8 +82,8 @@ public static partial class Extensions
     public static LinkedList<T> ExcludeNull<T>(this LinkedList<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new LinkedList<T>()
-            : new LinkedList<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public static partial class Extensions
     public static T[] ExcludeNull<T>(this T[] source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? Array.Empty<T>()
+            ? []
             : source.Where(x => x != null).ToArray();
     }
 
@@ -104,8 +104,8 @@ public static partial class Extensions
     public static HashSet<T> ExcludeNull<T>(this HashSet<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new HashSet<T>()
-            : new HashSet<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -115,8 +115,8 @@ public static partial class Extensions
     public static SortedSet<T> ExcludeNull<T>(this SortedSet<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new SortedSet<T>()
-            : new SortedSet<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -126,8 +126,8 @@ public static partial class Extensions
     public static ObservableCollection<T> ExcludeNull<T>(this ObservableCollection<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new ObservableCollection<T>()
-            : new ObservableCollection<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public static partial class Extensions
     public static ConcurrentBag<T> ExcludeNull<T>(this ConcurrentBag<T> source) where T : class
     {
         return source.IsNullOrEmpty()
-            ? new ConcurrentBag<T>()
-            : new ConcurrentBag<T>(source.Where(x => x != null));
+            ? []
+            : [.. source.Where(x => x != null)];
     }
 }

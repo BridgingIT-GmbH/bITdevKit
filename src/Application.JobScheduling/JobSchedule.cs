@@ -7,15 +7,24 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 
 public class JobSchedule
 {
-    public JobSchedule(Type jobType, string cronExpression)
+    public JobSchedule(Type jobType, string cronExpression, string name = null, string group = null, Dictionary<string, string> data = null)
     {
         EnsureArg.IsNotNull(jobType, nameof(jobType));
 
         this.JobType = jobType;
         this.CronExpression = cronExpression ?? CronExpressions.Every5Seconds;
+        this.Name = name ?? jobType.FullName;
+        this.Group = group ?? "DEFAULT";
+        this.Data = data ?? [];
     }
+
+    public string Name { get; }
+
+    public string Group { get; }
 
     public Type JobType { get; }
 
     public string CronExpression { get; }
+
+    public Dictionary<string, string> Data { get; }
 }

@@ -36,7 +36,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <summary>
     /// Represents a read-only generic repository using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     protected EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
@@ -49,7 +48,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <summary>
     /// Provides a read-only generic repository implementation using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity the repository is managing.</typeparam>
     protected EntityFrameworkReadOnlyGenericRepository(
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
@@ -57,7 +55,6 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <summary>
     /// A read-only generic repository implementation using Entity Framework.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity being managed by the repository.</typeparam>
     public EntityFrameworkReadOnlyGenericRepository(ILoggerFactory loggerFactory, DbContext context)
         : this(o => o.LoggerFactory(loggerFactory).DbContext(context)) { }
 
@@ -233,6 +230,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
             return await this.Options.DbContext.Set<TEntity>()
                 .AsNoTrackingIf(options, this.Options.Mapper)
                 .IncludeIf(options)
+                .HierarchyIf(options)
                 .WhereExpressions(expressions)
                 .OrderByIf(options)
                 .Select(projection)
@@ -246,6 +244,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         return await this.Options.DbContext.Set<TEntity>()
             .AsNoTrackingIf(options, this.Options.Mapper)
             .IncludeIf(options)
+            .HierarchyIf(options)
             .WhereExpressions(expressions)
             .Select(projection)
             .DistinctIf(options, this.Options.Mapper)
@@ -276,8 +275,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
             return null;
         }
 
-        return await this.Options.DbContext.FindAsync(this.ConvertEntityId(id), options, cancellationToken)
-            .AnyContext();
+        return await this.Options.DbContext.FindAsync(this.ConvertEntityId(id), options, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -322,6 +320,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         return await this.Options.DbContext.Set<TEntity>()
             .AsNoTrackingIf(options, this.Options.Mapper)
             .IncludeIf(options)
+            .HierarchyIf(options)
             .WhereExpressions(expressions)
             .FirstOrDefaultAsync(cancellationToken)
             .AnyContext();

@@ -205,7 +205,9 @@ public class StreamExtensionsTests
         // Act
         using var stream = testBytes.ToStream();
         var resultBytes = new byte[testBytes.Length];
+#pragma warning disable CA2022 // Avoid inexact read with 'Stream.Read'
         stream.Read(resultBytes, 0, resultBytes.Length);
+#pragma warning restore CA2022 // Avoid inexact read with 'Stream.Read'
 
         // Assert
         resultBytes.ShouldBe(testBytes);
@@ -220,7 +222,9 @@ public class StreamExtensionsTests
         // Act
         using var resultStream = testBytes.ToStream();
         var resultBytes = new byte[testBytes.Length];
+#pragma warning disable CA2022 // Avoid inexact read with 'Stream.Read'
         resultStream.Read(resultBytes, 0, resultBytes.Length);
+#pragma warning restore CA2022 // Avoid inexact read with 'Stream.Read'
 
         // Assert
         resultBytes.ShouldBe(testBytes);
@@ -238,7 +242,9 @@ public class StreamExtensionsTests
         // Act
         using var resultStream = sourceStream.ToStream(bufferSize);
         var resultBytes = new byte[testBytes.Length];
+#pragma warning disable CA2022 // Avoid inexact read with 'Stream.Read'
         resultStream.Read(resultBytes, 0, resultBytes.Length);
+#pragma warning restore CA2022 // Avoid inexact read with 'Stream.Read'
 
         // Assert
         resultBytes.ShouldBe(testBytes);
@@ -253,7 +259,9 @@ public class StreamExtensionsTests
         // Act
         await using var resultStream = await testBytes.ToStreamAsync();
         var resultBytes = new byte[testBytes.Length];
+#pragma warning disable CA2022 // Avoid inexact read with 'Stream.Read'
         await resultStream.ReadAsync(resultBytes);
+#pragma warning restore CA2022 // Avoid inexact read with 'Stream.Read'
 
         // Assert
         resultBytes.ShouldBe(testBytes);
@@ -286,7 +294,9 @@ public class StreamExtensionsTests
         // Act
         await using var resultStream = await sourceStream.ToStreamAsync(bufferSize);
         var resultBytes = new byte[testBytes.Length];
+#pragma warning disable CA2022 // Avoid inexact read with 'Stream.Read'
         await resultStream.ReadAsync(resultBytes);
+#pragma warning restore CA2022 // Avoid inexact read with 'Stream.Read'
 
         // Assert
         resultBytes.ShouldBe(testBytes);

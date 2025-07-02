@@ -30,6 +30,6 @@ public class DateRangeRule(DateTime value, DateTime start, DateTime end, bool in
     /// <returns>
     /// A boolean indicating whether the rule execution was successful.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.IsInRange(start, end, inclusive));
 }

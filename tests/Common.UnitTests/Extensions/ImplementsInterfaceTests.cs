@@ -23,22 +23,22 @@ public class ImplementsInterfaceTests
     }
 
 #pragma warning disable SA1201 // Elements should appear in the correct order
-    public interface IFoo { }
+    public interface IFoo;
 
-    public interface IFoo<T> : IFoo { }
+    public interface IFoo<T> : IFoo;
 
-    public interface IFoo<T, TM> : IFoo<T> { }
+    public interface IFoo<T, TM> : IFoo<T>;
 
-    public class Foo : IFoo { }
+    public class Foo : IFoo;
 
-    public class Foo<T> : IFoo { }
+    public class Foo<T> : IFoo;
 
-    public class Foo<T, TM> : IFoo<T> { }
+    public class Foo<T, TM> : IFoo<T>;
 
-    public class FooInt : IFoo<int> { }
+    public class FooInt : IFoo<int>;
 
-    public class FooStringInt : IFoo<string, int> { }
+    public class FooStringInt : IFoo<string, int>;
 
-    public class Foo2 : Foo { }
+    public class Foo2 : Foo;
 }
 #pragma warning restore SA1201 // Elements should appear in the correct order

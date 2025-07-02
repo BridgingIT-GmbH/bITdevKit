@@ -1,7 +1,7 @@
 {
   "version": 2,
   "dependencies": {
-    "net8.0": {
+    "net9.0": {
       "Ensure.That": {
         "type": "Direct",
         "requested": "[10.1.0, )",
@@ -10,9 +10,9 @@
       },
       "Microsoft.Net.Compilers.Toolset": {
         "type": "Direct",
-        "requested": "[4.12.0, )",
-        "resolved": "4.12.0",
-        "contentHash": "xXDdIgDfcbMr+2bLzVJHg+/oCHwcYs808TlooX0M9+BVCeHITaROsjdbWSJNdyzeMe/K8iB2NeHmaAOUcqkKWw=="
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "/F7wcMX7Al+nXbNII/6F4b33F3WCPL1I5VbY0+9QPiKdzlYPM0+R+nyYPBsxVZ4cwGXeU0yxrL0ITJWejsvN/Q=="
       },
       "MinVer": {
         "type": "Direct",

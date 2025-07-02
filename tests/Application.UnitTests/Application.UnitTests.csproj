@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Application.UnitTests</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Application.UnitTests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,24 +9,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="BridgingIT.DevKit.Common"/>
-    <Using Include="Bogus"/>
-    <Using Include="Bogus.DataSets"/>
-    <Using Include="NSubstitute"/>
-    <Using Include="Shouldly"/>
-    <Using Include="Xunit"/>
-    <Using Include="Xunit.Abstractions"/>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="Bogus" />
+    <Using Include="Bogus.DataSets" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-    <PackageReference Include="NBuilder"/>
-    <PackageReference Include="NSubstitute"/>
-    <PackageReference Include="BenchmarkDotNet"/>
-    <PackageReference Include="Shouldly"/>
-    <PackageReference Include="xunit"/>
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NBuilder" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,13 +38,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Application.Storage\Application.Storage.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
-    <ProjectReference Include="..\..\src\Application.Commands\Application.Commands.csproj"/>
-    <ProjectReference Include="..\..\src\Application.JobScheduling\Application.JobScheduling.csproj"/>
-    <ProjectReference Include="..\..\src\Application.Messaging\Application.Messaging.csproj"/>
-    <ProjectReference Include="..\..\src\Application.Queries\Application.Queries.csproj"/>
+    <ProjectReference Include="..\..\src\Application.Identity\Application.Identity.csproj" />
+    <ProjectReference Include="..\..\src\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+    <ProjectReference Include="..\..\src\Application.Commands\Application.Commands.csproj" />
+    <ProjectReference Include="..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\..\src\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\..\src\Application.Queries\Application.Queries.csproj" />
   </ItemGroup>
 
 </Project>

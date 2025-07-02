@@ -26,7 +26,7 @@ public class NoneRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
     /// <param name="ruleName">The name of the rule to execute.</param>
     /// <param name="context">The context in which the rule is to be executed.</param>
     /// <returns>The result of the rule execution.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         if (collection?.Any() != true)
         {

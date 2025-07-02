@@ -11,18 +11,18 @@ using Microsoft.Extensions.Configuration;
 /// </summary>
 public static partial class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddIdentity(
+    public static IServiceCollection AddEntityAuthorization(
         this IServiceCollection services,
-        Action<IdentityOptionsBuilder> configure, IConfiguration configuration = null)
+        Action<AuthorizationOptionsBuilder> configure, IConfiguration configuration = null)
     {
-        var builder = new IdentityOptionsBuilder(services, configuration);
+        var builder = new AuthorizationOptionsBuilder(services, configuration);
         configure(builder);
 
         return services;
     }
 }
 
-public class IdentityOptionsBuilder(IServiceCollection services, IConfiguration configuration = null)
+public class AuthorizationOptionsBuilder(IServiceCollection services, IConfiguration configuration = null)
 {
     public IServiceCollection Services { get; } = services;
 

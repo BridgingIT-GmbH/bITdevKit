@@ -44,11 +44,12 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         [FromServices] ICurrentUserAccessor currentUserAccessor,
         [FromRoute] string permission, // permissionrequirement
         [FromQuery] string entityType, // fullname required
-        [FromQuery] string entityId) // optional
+        [FromQuery] string entityId, // optional, otherwise type wide
+        CancellationToken cancellationToken = default)
     {
         if (currentUserAccessor?.UserId.IsNullOrEmpty() == true)
         {
-            return TypedResults.Problem("User not valid.", null, (int)HttpStatusCode.BadRequest);
+            return TypedResults.Problem("Current user not valid.", null, (int)HttpStatusCode.BadRequest);
         }
 
         if (permission.IsNullOrEmpty())
@@ -75,7 +76,8 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
                 typeof(string[]),         // roles
                 typeof(object),           // entityId
                 typeof(string),           // permission
-                typeof(bool)              // bypassCache
+                typeof(bool),             // bypassCache
+                typeof(CancellationToken)
             ]);
 
         var result = await (Task<bool>)method.Invoke(
@@ -85,11 +87,12 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
                 currentUserAccessor.Roles,
                 entityId,
                 permission,
-                this.options.BypassCache
+                this.options.BypassCache,
+                cancellationToken
             ]);
 
         return TypedResults.Ok(
-            new EntityPermissionModel(entityType, permission, default, result));
+            new EntityPermissionModel(entityType, entityId, permission, default, result));
     }
 
     private async Task<Results<Ok<IEnumerable<EntityPermissionModel>>, BadRequest, ProblemHttpResult>> GetEffectivePermissions(
@@ -97,11 +100,12 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         [FromServices] EntityPermissionOptions options,
         [FromServices] ICurrentUserAccessor currentUserAccessor,
         [FromQuery] string entityType, // fullname required
-        [FromQuery] string entityId) // optional
+        [FromQuery] string entityId, // optional, otherwise type wide
+        CancellationToken cancellationToken = default)
     {
         if (currentUserAccessor?.UserId.IsNullOrEmpty() == true)
         {
-            return TypedResults.Problem("User not valid.", null, (int)HttpStatusCode.BadRequest);
+            return TypedResults.Problem("Current user not valid.", null, (int)HttpStatusCode.BadRequest);
         }
 
         if (entityType.IsNullOrEmpty())
@@ -121,7 +125,8 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
             [
                 typeof(string),           // userId
                 typeof(string[]),         // roles
-                typeof(object)            // entityId
+                typeof(object),           // entityId
+                typeof(CancellationToken)
             ]);
 
         var result = await (Task<IReadOnlyCollection<EntityPermissionInfo>>)method.Invoke(
@@ -129,15 +134,16 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
             [
                 currentUserAccessor.UserId,
                 currentUserAccessor.Roles,
-                entityId
+                entityId,
+                cancellationToken
             ]);
 
-        return TypedResults.Ok(result.Select(r =>
-            new EntityPermissionModel(r.EntityType, r.Permission, r.Source, true)));
+        return TypedResults.Ok(result?.Select(r =>
+            new EntityPermissionModel(r.EntityType, entityId, r.Permission, r.Source, true)));
     }
 }
 
 /// <summary>
 /// Respoonse Model for the entity permission information.
 /// </summary>
-public record EntityPermissionModel(string EntityType, string Permission, string Source, bool HasAccess);
+public record EntityPermissionModel(string EntityType, string EntityId, string Permission, string Source, bool HasAccess);

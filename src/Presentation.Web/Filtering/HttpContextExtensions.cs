@@ -31,7 +31,10 @@ public static class HttpContextExtensions
     /// <returns></returns>
     public static async Task<FilterModel> FromQueryFilterAsync(this HttpContext context, string queryParameter = "filter")
     {
-        ArgumentNullException.ThrowIfNull(context);
+        if (context == null)
+        {
+            return new FilterModel();
+        }
 
         // Default maximum query string length: 2,048 characters
         var query = context.Request.Query[queryParameter].FirstOrDefault();
@@ -67,7 +70,10 @@ public static class HttpContextExtensions
     /// <returns></returns>
     public static async Task<FilterModel> FromBodyFilterAsync(this HttpContext context, bool enableBuffering = false)
     {
-        ArgumentNullException.ThrowIfNull(context);
+        if (context == null)
+        {
+            return new FilterModel();
+        }
 
         try
         {

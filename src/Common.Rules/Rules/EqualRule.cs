@@ -24,6 +24,6 @@ public class EqualRule<T>(T value, T other) : RuleBase
     /// Executes the rule logic associated with this rule.
     /// </summary>
     /// <returns>A Result object indicating the outcome of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(EqualityComparer<T>.Default.Equals(value, other));
 }

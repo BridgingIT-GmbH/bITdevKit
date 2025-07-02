@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Common.Utilities</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,21 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation"/>
-    <PackageReference Include="Humanizer.Core"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
-    <PackageReference Include="NewId"/>
-    <PackageReference Include="System.Diagnostics.DiagnosticSource"/>
-    <PackageReference Include="Polly"/>
-    <PackageReference Include="Polly.Contrib.Simmy"/>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="NewId" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="Polly" />
+    <PackageReference Include="Polly.Contrib.Simmy" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj"/>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\Common.Options\Common.Options.csproj"/>
-    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj"/>
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

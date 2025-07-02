@@ -34,6 +34,15 @@ public class PersonStub : Entity<Guid>
 public class OrderStub
 {
     public decimal TotalAmount { get; set; }
+
+    public OrderDetails Details { get; set; }
+}
+
+public class OrderDetails
+{
+    public bool IsGift { get; set; }
+
+    public string GiftMessage { get; set; }
 }
 
 public enum EmploymentStatus

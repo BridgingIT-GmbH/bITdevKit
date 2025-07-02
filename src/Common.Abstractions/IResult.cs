@@ -54,7 +54,7 @@ public interface IResult
     ///     A boolean value indicating whether any errors are present in the result.
     /// </returns>
     bool HasError<TError>()
-        where TError : IResultError;
+        where TError : class, IResultError;
 
     /// <summary>
     ///     Checks if the result contains any specific error.
@@ -62,8 +62,8 @@ public interface IResult
     /// <param name="error">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one error of the specified type; otherwise, false.</returns>
-    bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError;
+    bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError;
 
     /// <summary>
     ///     Checks if the result contains any specific errors.
@@ -71,19 +71,109 @@ public interface IResult
     /// <param name="errors">An output parameter that will contain all the errors found in the result if any exist.</param>
     /// <typeparam name="TError">The type of error to check for, which must implement IResultError.</typeparam>
     /// <returns>True if the result contains one or more errors of the specified type; otherwise, false.</returns>
-    bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError;
+    bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError;
+
+    //IResult WithMessage(string message);
+
+    //IResult WithMessages(IEnumerable<string> messages);
+
+    //IResult WithError(IResultError error);
+
+    //IResult WithError(Exception ex);
+
+    //IResult WithErrors(IEnumerable<IResultError> errors);
+
+    //IResult WithError<TError>()
+    //    where TError : IResultError, new();
 }
 
 /// <summary>
-///     Represents the result of an operation, encapsulating messages, errors,
-///     and the success or failure state.
+/// Represents the result of an operation, encapsulating messages, errors and the success or failure state.
 /// </summary>
-public interface IResult<out TValue> : IResult
+public interface IResult<out T> : IResult
 {
     /// <summary>
-    ///     Gets the values associated with the result.
+    /// Represents a read-only property that retrieves a value of type T. The value cannot be modified.
     /// </summary>
-    /// <typeparam name="TValue">The type of the values.</typeparam>
-    TValue Value { get; }
+    T Value { get; }
+
+    //IResult Unwrap();
+
+    //IResult<TOutput> ToResult<TOutput>();
+
+    //IResult<TOutput> ToResult<TOutput>(TOutput value);
+
+    //new IResult<T> WithMessage(string message);
+
+    //new IResult<T> WithMessages(IEnumerable<string> messages);
+
+    //new IResult<T> WithError(IResultError error);
+
+    //new IResult<T> WithError(Exception ex);
+
+    //new IResult<T> WithErrors(IEnumerable<IResultError> errors);
+
+    //new IResult<T> WithError<TError>()
+    //    where TError : IResultError, new();
+}
+
+/// <summary>
+/// Represents a paged result that can be enumerated. It extends a result interface to include pagination functionality.
+/// </summary>
+public interface IResultPaged<out T> : IResult
+{
+    /// <summary>
+    /// Retrieves a collection of values of type T. The collection is enumerable, allowing iteration over its elements.
+    /// </summary>
+    IEnumerable<T> Value { get; }
+
+    /// <summary>
+    /// Gets the current page number (1-based).
+    /// </summary>
+    int CurrentPage { get; }
+
+    /// <summary>
+    /// Gets the total number of pages based on total count and page size.
+    /// </summary>
+    int TotalPages { get; }
+
+    /// <summary>
+    /// Gets the total count of items across all pages.
+    /// </summary>
+    long TotalCount { get; }
+
+    /// <summary>
+    /// Gets the number of items per page.
+    /// </summary>
+    int PageSize { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether there is a previous page available.
+    /// </summary>
+    bool HasPreviousPage { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether there is a next page available.
+    /// </summary>
+    bool HasNextPage { get; }
+
+    //IResult Unwrap();
+
+    //IResultPaged<TOutput> For<TOutput>();
+
+    //IResultPaged<TOutput> For<TOutput>(IEnumerable<TOutput> values);
+
+    //new IResultPaged<T> WithMessage(string message);
+
+    //new IResultPaged<T> WithMessages(IEnumerable<string> messages);
+
+    //new IResultPaged<T> WithError(IResultError error);
+
+    //new IResultPaged<T> WithError(Exception ex);
+
+    //new IResultPaged<T> WithErrors(IEnumerable<IResultError> errors);
+
+    //new IResultPaged<T> WithError<TError>()
+    //    where TError : IResultError, new();
 }

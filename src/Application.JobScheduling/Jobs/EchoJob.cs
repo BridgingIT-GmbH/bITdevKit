@@ -14,10 +14,14 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRe
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        this.Logger.LogInformation("{LogKey} echo (jobKey={JobKey}, lastProcessed={LastProcessed})",
+        var dataMap = context.JobDetail.JobDataMap;
+        dataMap.TryGetString("message", out var message);
+
+        this.Logger.LogInformation("{LogKey} {JobMessage} (jobKey={JobKey}, lastRun={LastRun})",
             Constants.LogKey,
+            message ?? "echo",
             context.JobDetail.Key,
-            this.ProcessedDate);
+            this.RunDate);
 
         await Task.Delay(5000, cancellationToken);
     }

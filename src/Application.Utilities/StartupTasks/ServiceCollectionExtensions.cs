@@ -30,13 +30,9 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         StartupTaskServiceOptions options)
     {
-        contextOptions ??= options;
+        contextOptions ??= options ?? new StartupTaskServiceOptions();
 
-        if (contextOptions is not null)
-        {
-            services.TryAddSingleton(contextOptions);
-        }
-
+        services.TryAddSingleton(contextOptions);
         services.AddHostedService<StartupTasksService>();
 
         return new StartupTasksBuilderContext(services);

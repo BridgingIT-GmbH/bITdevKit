@@ -15,16 +15,3 @@ public class RuleError(IRule rule) : ResultErrorBase(rule?.Message)
         throw new RuleException(this.Rule, string.Empty);
     }
 }
-
-[DebuggerDisplay("Rule={Rule.GetType().Name}, Message={Message}")]
-public class RuleExceptionError(IRule rule, Exception exception) : ResultErrorBase(rule?.Message)
-{
-    public IRule Rule { get; } = rule;
-
-    public Exception Exception { get; } = exception;
-
-    public override void Throw()
-    {
-        throw new RuleException(this.Rule, string.Empty);
-    }
-}

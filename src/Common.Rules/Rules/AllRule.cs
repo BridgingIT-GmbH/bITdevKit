@@ -23,7 +23,7 @@ public class AllRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
     /// Executes the defined rule and returns a <see cref="Result"/> indicating success or failure.
     /// </summary>
     /// <returns>A <see cref="Result"/> object representing the outcome of the rule execution.</returns>
-    protected override Result Execute()
+    public override Result Execute()
     {
         if (collection?.Any() != true)
         {

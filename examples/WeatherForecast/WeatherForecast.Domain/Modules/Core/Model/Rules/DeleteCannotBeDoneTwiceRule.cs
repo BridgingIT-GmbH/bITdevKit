@@ -11,7 +11,7 @@ public class DeleteCannotBeDoneTwiceRule(bool isDeleted) : RuleBase
 {
     public override string Message => "Deleting can only be done once";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(!isDeleted);
     }

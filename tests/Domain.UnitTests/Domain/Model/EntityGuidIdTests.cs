@@ -136,7 +136,7 @@ public class EntityGuidIdTests
         Assert.False(entity1.Equals(entity2)); // because types are different
     }
 
-    private class StubEntity : Entity<Guid> { }
+    private class StubEntity : Entity<Guid>;
 
-    private class StubEntityProxy : StubEntity { }
+    private class StubEntityProxy : StubEntity;
 }

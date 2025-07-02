@@ -27,4 +27,4 @@ public interface IDomainEventHandler<in TEvent> : INotificationHandler<TEvent>, 
 ///     Marker interface for domain event handlers. Implementations of this interface are designed to handle
 ///     domain events to encapsulate the handling logic for specific event types.
 /// </summary>
-public interface IDomainEventHandler { }
+public interface IDomainEventHandler;

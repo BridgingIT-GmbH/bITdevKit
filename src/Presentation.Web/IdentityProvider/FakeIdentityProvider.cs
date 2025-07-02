@@ -75,13 +75,14 @@ public class FakeIdentityProvider : IFakeIdentityProvider
 
         if (code.IsNullOrEmpty())
         {
-            throw new OAuth2Exception("invalid_grant", "Invalid authorization code");
+            throw new OAuth2Exception("invalid_grant", "Invalid authorization code (code)");
         }
 
+        this.logger.LogDebug("Validation authentication code {AuthCode}", code);
         var data = this.authorizationCodeService.ValidateCode(code);
         if (data == null)
         {
-            throw new OAuth2Exception("invalid_grant", "Invalid authorization code");
+            throw new OAuth2Exception("invalid_grant", "Invalid authorization code (data)");
         }
 
         var user = this.options.Users?.FirstOrDefault(u => u.Id == data.UserId)

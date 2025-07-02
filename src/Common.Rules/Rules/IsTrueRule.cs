@@ -12,6 +12,6 @@ public class IsTrueRule(bool value) : RuleBase
 {
     public override string Message => "Value must be true";
 
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value);
 }

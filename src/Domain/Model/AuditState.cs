@@ -103,9 +103,7 @@ public class AuditState
     /// </summary>
     public DateTimeOffset? LastActionDate =>
         new List<DateTimeOffset?> { this.CreatedDate, this.UpdatedDate, this.DeletedDate, this.DeactivatedDate }
-            .Where(d => d is not null)
-            .SafeNull()
-            .Max();
+            .Where(d => d is not null).SafeNull().Max();
 
     /// <summary>
     ///     Gets a value indicating whether this entity is deactivated.
@@ -115,7 +113,18 @@ public class AuditState
     /// </returns>
     public virtual bool IsDeactivated()
     {
-        return (this.Deactivated is not null && (bool)this.Deactivated) || !this.DeactivatedReasons.IsNullOrEmpty();
+        return (this.Deactivated is not null && (bool)this.Deactivated) || this.IsDeleted();
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether this entity is activated.
+    /// </summary>
+    /// <returns>
+    ///     <c>true</c> if this entity is activated; otherwise, <c>false</c>.
+    /// </returns>
+    public virtual bool IsActive()
+    {
+        return (this.Deactivated is null || !(bool)this.Deactivated) && !this.IsDeleted();
     }
 
     /// <summary>
@@ -126,7 +135,7 @@ public class AuditState
     /// </returns>
     public virtual bool IsDeleted()
     {
-        return (this.Deleted is not null && (bool)this.Deleted) || !this.DeletedReason.IsNullOrEmpty();
+        return (this.Deleted is not null && (bool)this.Deleted);
     }
 
     /// <summary>
@@ -221,8 +230,43 @@ public class AuditState
                 .. this.DeactivatedReasons,
                 .. new[]
                 {
-                    $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}"
-                        .Trim()
+                    $"{by}: ({this.DeactivatedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim()
+                }
+            ];
+        }
+    }
+
+    /// <summary>
+    ///     Sets the activated information (reverses deactivation).
+    /// </summary>
+    /// <param name="by">Name of the activator.</param>
+    /// <param name="reason">The reason for activation.</param>
+    public virtual void SetActivated(string by = null, string reason = null)
+    {
+        var now = DateTimeOffset.UtcNow;
+        this.Deactivated = false;
+        this.UpdatedDate = now;
+        this.DeactivatedDate = null;
+        this.DeactivatedBy = null;
+
+        if (!by.IsNullOrEmpty())
+        {
+            this.UpdatedBy = by;
+        }
+
+        if (!reason.IsNullOrEmpty())
+        {
+            if (this.UpdatedReasons.IsNullOrEmpty())
+            {
+                this.UpdatedReasons = Enumerable.Empty<string>().ToArray();
+            }
+
+            this.UpdatedReasons =
+            [
+                .. this.UpdatedReasons,
+                .. new[]
+                {
+                    $"{by}: ({now.ToString(CultureInfo.InvariantCulture)}) Activated: {reason}".Trim()
                 }
             ];
         }
@@ -246,8 +290,44 @@ public class AuditState
 
         if (!reason.IsNullOrEmpty())
         {
-            this.DeletedReason =
-                $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
+            this.DeletedReason = $"{by}: ({this.DeletedDate.Value.ToString(CultureInfo.InvariantCulture)}) {reason}".Trim();
+        }
+    }
+
+    /// <summary>
+    ///     Sets the undeleted information (reverses deletion).
+    /// </summary>
+    /// <param name="by">Name of the user who undeleted the entity.</param>
+    /// <param name="reason">The reason for undeletion.</param>
+    public virtual void SetUndeleted(string by = null, string reason = null)
+    {
+        var now = DateTimeOffset.UtcNow;
+        this.Deleted = false;
+        this.DeletedDate = null;
+        this.UpdatedDate = now;
+        this.DeletedReason = null;
+        this.DeletedBy = null;
+
+        if (!by.IsNullOrEmpty())
+        {
+            this.UpdatedBy = by;
+        }
+
+        if (!reason.IsNullOrEmpty())
+        {
+            if (this.UpdatedReasons.IsNullOrEmpty())
+            {
+                this.UpdatedReasons = Enumerable.Empty<string>().ToArray();
+            }
+
+            this.UpdatedReasons =
+            [
+                .. this.UpdatedReasons,
+                .. new[]
+                {
+                    $"{by}: ({now.ToString(CultureInfo.InvariantCulture)}) Undeleted: {reason}".Trim()
+                }
+            ];
         }
     }
 }

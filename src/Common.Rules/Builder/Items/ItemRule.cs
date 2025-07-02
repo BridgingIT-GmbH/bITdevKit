@@ -31,7 +31,7 @@ public class ItemRule<T>(Func<T, IRule> ruleFactory) : RuleBase, IItemRule<T>
     /// <returns>
     /// A <see cref="Result"/> representing whether the rule is satisfied.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         ruleFactory(this.item).IsSatisfied();
 
     /// <summary>

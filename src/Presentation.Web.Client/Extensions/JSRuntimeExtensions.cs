@@ -21,9 +21,120 @@ public static class JsRuntimeExtensions
     /// <example>
     ///     LogAsync("data", myData) //same as console.log('data', myData)
     /// </example>
-    public static async Task LogAsync(this IJSRuntime source, params object[] args)
+    public static async Task ConsoleLogAsync(this IJSRuntime source, params object[] args)
     {
-        await source.InvokeVoidAsync("console.log", args);
+        try
+        {
+            await source.InvokeVoidAsync("console.log", args);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleInfoAsync(this IJSRuntime source, params object[] args)
+    {
+        try
+        {
+            await source.InvokeVoidAsync("console.info", args);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleWarnAsync(this IJSRuntime source, params object[] args)
+    {
+        try
+        {
+            await source.InvokeVoidAsync("console.warn", args);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleErrorAsync(this IJSRuntime source, params object[] args)
+    {
+        try
+        {
+            await source.InvokeVoidAsync("console.error", args);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+    }
+
+    /// <summary>
+    ///     Calls "console.log" on the client passing the args along with it.
+    /// </summary>
+    /// <example>
+    ///     LogAsync("data") //same as console.log('data')
+    /// </example>
+    /// <example>
+    ///     LogAsync("data", myData) //same as console.log('data', myData)
+    /// </example>
+    public static async Task ConsoleExceptionAsync(this IJSRuntime source, Exception exception)
+    {
+        try
+        {
+            await source.InvokeVoidAsync("console.error", $"Exception: {exception}");
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     /// <summary>
@@ -37,7 +148,18 @@ public static class JsRuntimeExtensions
     /// </example>
     public static async Task TableAsync(this IJSRuntime source, object data, string[] fields = null)
     {
-        await source.InvokeVoidAsync("console.table", data, fields);
+        try
+        {
+            await source.InvokeVoidAsync("console.table", data, fields);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     /// <summary>
@@ -48,7 +170,18 @@ public static class JsRuntimeExtensions
     /// </example>
     public static async Task SetGlobalAsync(this IJSRuntime source, string name, object data)
     {
-        await source.InvokeVoidAsync("setGlobal", name, JsonSerializer.Serialize(data));
+        try
+        {
+            await source.InvokeVoidAsync("setGlobal", name, JsonSerializer.Serialize(data));
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     /// <summary>
@@ -59,7 +192,34 @@ public static class JsRuntimeExtensions
     /// </example>
     public static async Task CopyToClipboardAsync(this IJSRuntime source, string text)
     {
-        await source.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        try
+        {
+            await source.InvokeVoidAsync("navigator.clipboard.writeText", text);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+    }
+
+    public static async Task NavigateTo(this IJSRuntime source, string url, string target = "_blank")
+    {
+        try
+        {
+            await source.InvokeVoidAsync("window.open", url, target);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     /// <summary>
@@ -77,9 +237,22 @@ public static class JsRuntimeExtensions
         return source.InvokeAsync<T>("eval", code);
     }
 
-    public static ValueTask<string> GetLocalStorageItemAsync(this IJSRuntime source, string key)
+    public static async ValueTask<string> GetLocalStorageItemAsync(this IJSRuntime source, string key)
     {
-        return source.InvokeAsync<string>("localStorage.getItem", key);
+        try
+        {
+            return await source.InvokeAsync<string>("localStorage.getItem", key);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+
+        return default;
     }
 
     public static async ValueTask<T> GetLocalStorageItemAsync<T>(this IJSRuntime source, string key)
@@ -88,9 +261,21 @@ public static class JsRuntimeExtensions
         return json == null ? default : JsonSerializer.Deserialize<T>(json);
     }
 
-    public static ValueTask SetLocalStorageItemAsync(this IJSRuntime source, string key, string value)
+    public static async ValueTask SetLocalStorageItemAsync(this IJSRuntime source, string key, string value)
     {
-        return source.InvokeVoidAsync("localStorage.setItem", key, value);
+        try
+        {
+            await source.InvokeVoidAsync("localStorage.setItem", key, value);
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     public static ValueTask SetLocalStorageItemAsync<T>(this IJSRuntime source, string key, T value)
@@ -98,24 +283,74 @@ public static class JsRuntimeExtensions
         return source.SetLocalStorageItemAsync(key, JsonSerializer.Serialize(value));
     }
 
-    public static ValueTask RemoveLocalStorageItemAsync(this IJSRuntime source, string key)
+    public static async ValueTask RemoveLocalStorageItemAsync(this IJSRuntime source, string key)
     {
-        return source.InvokeVoidAsync("localStorage.removeItem", key);
+        try
+        {
+            await source.InvokeVoidAsync("localStorage.removeItem", key);
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
-    public static ValueTask ClearLocalStorageAsync(this IJSRuntime source)
+    public static async ValueTask ClearLocalStorageAsync(this IJSRuntime source)
     {
-        return source.InvokeVoidAsync("localStorage.clear");
+        try
+        {
+            await source.InvokeVoidAsync("localStorage.clear");
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
-    public static ValueTask<int> GetLocalStorageItemCountAsync(this IJSRuntime source)
+    public static async ValueTask<int> GetLocalStorageItemCountAsync(this IJSRuntime source)
     {
-        return source.InvokeAsync<int>("eval", "localStorage.length");
+        try
+        {
+            return await source.InvokeAsync<int>("eval", "localStorage.length");
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+
+        return default;
     }
 
-    public static ValueTask<string> GetSessionStorageItemAsync(this IJSRuntime source, string key)
+    public static async ValueTask<string> GetSessionStorageItemAsync(this IJSRuntime source, string key)
     {
-        return source.InvokeAsync<string>("sessionStorage.getItem", key);
+        try
+        {
+            return await source.InvokeAsync<string>("sessionStorage.getItem", key);
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+
+        return default;
     }
 
     public static async ValueTask<T> GetSessionStorageItemAsync<T>(this IJSRuntime source, string key)
@@ -124,9 +359,21 @@ public static class JsRuntimeExtensions
         return json == null ? default : JsonSerializer.Deserialize<T>(json);
     }
 
-    public static ValueTask SetSessionStorageItemAsync(this IJSRuntime source, string key, string value)
+    public static async ValueTask SetSessionStorageItemAsync(this IJSRuntime source, string key, string value)
     {
-        return source.InvokeVoidAsync("sessionStorage.setItem", key, value);
+        try
+        {
+            await source.InvokeVoidAsync("sessionStorage.setItem", key, value);
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     public static ValueTask SetSessionStorageItemAsync<T>(this IJSRuntime source, string key, T value)
@@ -134,14 +381,38 @@ public static class JsRuntimeExtensions
         return source.SetSessionStorageItemAsync(key, JsonSerializer.Serialize(value));
     }
 
-    public static ValueTask RemoveSessionStorageItemAsync(this IJSRuntime source, string key)
+    public static async ValueTask RemoveSessionStorageItemAsync(this IJSRuntime source, string key)
     {
-        return source.InvokeVoidAsync("sessionStorage.removeItem", key);
+        try
+        {
+            await source.InvokeVoidAsync("sessionStorage.removeItem", key);
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
-    public static ValueTask ClearSessionStorageAsync(this IJSRuntime source)
+    public static async ValueTask ClearSessionStorageAsync(this IJSRuntime source)
     {
-        return source.InvokeVoidAsync("sessionStorage.clear");
+        try
+        {
+            await source.InvokeVoidAsync("sessionStorage.clear");
+            return;
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
     }
 
     public static ValueTask<int> GetSessionStorageItemCountAsync(this IJSRuntime source)
@@ -152,12 +423,40 @@ public static class JsRuntimeExtensions
     public static async ValueTask<bool> HasStorageKeyAsync(this IJSRuntime source, string key, bool useSessionStorage = false)
     {
         var storageType = useSessionStorage ? "sessionStorage" : "localStorage";
-        return await source.InvokeAsync<bool>("eval", $"{storageType}.hasOwnProperty('{key}')");
+
+        try
+        {
+            return await source.InvokeAsync<bool>("eval", $"{storageType}.hasOwnProperty('{key}')");
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+
+        return false;
     }
 
     public static async ValueTask<string[]> GetStorageKeysAsync(this IJSRuntime source, bool useSessionStorage = false)
     {
         var storageType = useSessionStorage ? "sessionStorage" : "localStorage";
-        return await source.InvokeAsync<string[]>("eval", $"Object.keys({storageType})");
+
+        try
+        {
+            return await source.InvokeAsync<string[]>("eval", $"Object.keys({storageType})");
+        }
+        catch (JSDisconnectedException)
+        {
+            // do nothing, jsruntime not available
+        }
+        catch (InvalidOperationException)
+        {
+            // do nothing, jsruntime not available
+        }
+
+        return [];
     }
 }

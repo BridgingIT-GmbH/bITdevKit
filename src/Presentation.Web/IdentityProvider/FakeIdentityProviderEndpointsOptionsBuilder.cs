@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation.Web.IdentityProvider;
 
 public class FakeIdentityProviderEndpointsOptionsBuilder
 {
@@ -17,7 +16,7 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
         this.options = new FakeIdentityProviderEndpointsOptions();
     }
 
-    public FakeIdentityProviderEndpointsOptionsBuilder Enabled(bool enabled)
+    public FakeIdentityProviderEndpointsOptionsBuilder Enabled(bool enabled = true)
     {
         this.options.Enabled = enabled;
 

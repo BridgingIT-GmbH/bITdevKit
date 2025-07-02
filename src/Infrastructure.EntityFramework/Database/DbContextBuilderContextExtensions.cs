@@ -46,4 +46,14 @@ public static partial class DbContextBuilderContextExtensions
 
         return context;
     }
+
+    public static DbContextBuilderContext<TContext> WithDatabaseCheckerService<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        DatabaseCheckerOptions options = null)
+        where TContext : DbContext
+    {
+        context.Services.AddDatabaseCheckerService<TContext>(options);
+
+        return context;
+    }
 }

@@ -5,4 +5,4 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
-public interface IDomainEventPropagatorRoot { }
+public interface IDomainEventPropagatorRoot;

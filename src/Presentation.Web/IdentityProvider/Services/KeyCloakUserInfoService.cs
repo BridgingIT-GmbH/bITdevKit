@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
 
 // Keycloak implementation
 public class KeyCloakUserInfoService(ITokenService tokenService, FakeIdentityProviderEndpointsOptions options)

@@ -103,9 +103,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public T Value => this.success
-        ? this.value
-        : throw new InvalidOperationException("Cannot access Value of failed result");
+    public T Value => this.value;
+
+    //public T Value => this.success
+    //    ? this.value
+    //    : throw new InvalidOperationException("Cannot access Value of failed result");
 
     /// <summary>
     /// Gets a read-only list of messages associated with the result.
@@ -257,6 +259,83 @@ public readonly partial struct Result<T> : IResult<T>
         result.Match(
             () => Success().WithMessages(result.Messages).WithErrors(result.Errors),
             _ => Failure().WithMessages(result.Messages).WithErrors(result.Errors));
+
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.From(() => {
+    ///     userRepository.DeleteAll();
+    /// });
+    /// </code>
+    /// </example>
+    public static Result<T> From(Func<T> operation)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = operation();
+
+            return Success(value);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    /// </summary>
+    /// <param name="operation">The async operation to execute.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A Result representing the outcome of the operation.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.FromAsync(
+    ///     async ct => await DeleteAllUsersAsync(ct),
+    ///     cancellationToken
+    /// );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> FromAsync(
+        Func<CancellationToken, Task<T>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = await operation(cancellationToken);
+
+            return Success(value);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
 
     // /// <summary>
     // /// Implicitly converts a Result{T} to a Result{TOutput}.
@@ -608,7 +687,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <param name="predicate">Function to evaluate the value for failure.</param>
     /// <param name="value">The value to evaluate and include in the Result.</param>
     /// <param name="error">Optional error to include if predicate returns true.</param>
-    /// <returns>A failure Result if predicate returns true; otherwise, a successful Result.</returns>
+    /// <returns>A failure Result if predicate returns true; otherwise, a successful Result.</param>
     /// <example>
     /// <code>
     /// var user = new User { LastLoginDate = DateTime.Now.AddDays(-31) };
@@ -800,7 +879,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public bool HasError<TError>()
-        where TError : IResultError
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
@@ -846,11 +925,11 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public bool TryGetErrors<TError>(out IEnumerable<IResultError> errors)
-        where TError : IResultError
+    public bool TryGetErrors<TError>(out IEnumerable<TError> errors)
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
-        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        errors = this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
 
         return errors.Any();
     }
@@ -869,12 +948,12 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public IResultError GetError<TError>()
-        where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
     }
 
     /// <summary>
@@ -895,8 +974,8 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public bool TryGetError<TError>(out IResultError error)
-        where TError : IResultError
+    public bool TryGetError<TError>(out TError error)
+        where TError : class, IResultError
     {
         error = default;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
@@ -905,10 +984,20 @@ public readonly partial struct Result<T> : IResult<T>
             return false;
         }
 
-        error = (TError)foundError;
+        error = foundError as TError;
 
         return true;
     }
+
+    //bool IResult.TryGetError<TError>(out TError error)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //bool IResult.TryGetErrors<TError>(out IEnumerable<TError> errors)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     /// <summary>
     /// Gets all errors of a specific type from the Result.
@@ -928,202 +1017,88 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .ToList();
     /// </code>
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>()
-        where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
     }
 
     /// <summary>
-    /// Executes different functions based on the Result's success state.
+    ///     Creates a Result from an operation, handling any exceptions that occur.
     /// </summary>
-    /// <typeparam name="TResult">The type of the return value.</typeparam>
-    /// <param name="onSuccess">Function to execute if the Result is successful, receiving the value.</param>
-    /// <param name="onFailure">Function to execute if the Result failed, receiving the errors.</param>
-    /// <returns>The result of either the success or failure function.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <param name="operation">The operation to execute.</param>
+    /// <returns>A Result representing the outcome of the operation.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{User}.Success(user);
-    ///
-    /// // Pattern matching with different return types
-    /// string message = result.Match(
-    ///     onSuccess: user => $"Found user: {user.Name}",
-    ///     onFailure: errors => $"Failed with {errors.Count} errors"
-    /// );
-    ///
-    /// // Pattern matching with complex logic
-    /// var apiResponse = result.Match(
-    ///     onSuccess: user => new ApiResponse
-    ///     {
-    ///         Data = user,
-    ///         Status = 200
-    ///     },
-    ///     onFailure: errors => new ApiResponse
-    ///     {
-    ///         Errors = errors.Select(e => e.Message).ToList(),
-    ///         Status = 400
-    ///     }
-    /// );
+    /// var result = Result{int}.Try(() => int.Parse("42")); // Success(42)
     /// </code>
     /// </example>
-    public TResult Match<TResult>(
-        Func<T, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure)
+    public static Result<T> Try(Func<T> operation)
     {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
 
-        return this.IsSuccess
-            ? onSuccess(this.value)
-            : onFailure(this.Errors);
+        try
+        {
+            var result = operation();
+
+            return Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
     }
 
     /// <summary>
-    /// Returns different values based on the Result's success state.
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
     /// </summary>
-    /// <typeparam name="TResult">The type of the return value.</typeparam>
-    /// <param name="success">Value to return if successful.</param>
-    /// <param name="failure">Value to return if failed.</param>
-    /// <returns>Either the success or failure value.</returns>
-    /// <example>
-    /// <code>
-    /// var result = Result{User}.Success(user);
-    ///
-    /// // Simple value matching
-    /// string status = result.Match(
-    ///     success: "User is valid",
-    ///     failure: "User is invalid"
-    /// );
-    ///
-    /// // Status code matching
-    /// int statusCode = result.Match(
-    ///     success: 200,
-    ///     failure: 400
-    /// );
-    /// </code>
-    /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        return this.IsSuccess ? success : failure;
-    }
-
-    /// <summary>
-    /// Asynchronously executes different functions based on the Result's success state.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the return value.</typeparam>
-    /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
-    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
+    /// <param name="operation">The async operation to execute.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
+    /// <returns>A Result representing the outcome of the async operation.</returns>
     /// <example>
     /// <code>
-    /// var result = Result{User}.Success(user);
-    ///
-    /// var response = await result.MatchAsync(
-    ///     async (user, ct) =>
-    ///     {
-    ///         await _userService.LogAccessAsync(user, ct);
-    ///         return new SuccessResponse(user);
-    ///     },
-    ///     async (errors, ct) =>
-    ///     {
-    ///         await _logger.LogErrorsAsync(errors, ct);
-    ///         return new ErrorResponse(errors);
-    ///     },
+    /// var result = await Result{User}.TryAsync(
+    ///     async ct => await repository.GetUserAsync(userId, ct),
     ///     cancellationToken
     /// );
     /// </code>
     /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
+    public static async Task<Result<T>> TryAsync(
+        Func<CancellationToken, Task<T>> operation,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
+        if (operation is null)
+        {
+            return Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
 
-        return this.IsSuccess
-            ? await onSuccess(this.value, cancellationToken)
-            : await onFailure(this.Errors, cancellationToken);
-    }
+        try
+        {
+            var result = await operation(cancellationToken);
 
-    /// <summary>
-    /// Asynchronously executes a success function with a synchronous failure handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the return value.</typeparam>
-    /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
-    /// <param name="onFailure">Synchronous function to execute if failed, receiving the errors.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
-    /// <example>
-    /// <code>
-    /// var result = Result{User}.Success(user);
-    ///
-    /// var message = await result.MatchAsync(
-    ///     async (user, ct) =>
-    ///     {
-    ///         await _userService.UpdateLastLoginAsync(user, ct);
-    ///         return $"Updated login time for {user.Name}";
-    ///     },
-    ///     errors => $"Login failed: {errors.First().Message}",
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, CancellationToken, Task<TResult>> onSuccess,
-        Func<IReadOnlyList<IResultError>, TResult> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? await onSuccess(this.value, cancellationToken)
-            : onFailure(this.Errors);
-    }
-
-    /// <summary>
-    /// Executes a synchronous success function with an async failure handler.
-    /// </summary>
-    /// <typeparam name="TResult">The type of the return value.</typeparam>
-    /// <param name="onSuccess">Synchronous function to execute if successful, receiving the value.</param>
-    /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>A Task containing the result of either the success or failure function.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when onSuccess or onFailure is null.</exception>
-    /// <example>
-    /// <code>
-    /// var result = Result{User}.Failure()
-    ///     .WithError(new ValidationError("Invalid email"));
-    ///
-    /// var response = await result.MatchAsync(
-    ///     user => new SuccessResponse(user),
-    ///     async (errors, ct) =>
-    ///     {
-    ///         await _errorService.LogValidationErrorsAsync(errors, ct);
-    ///         return new ErrorResponse(await FormatErrorsAsync(errors, ct));
-    ///     },
-    ///     cancellationToken
-    /// );
-    /// </code>
-    /// </example>
-    public async Task<TResult> MatchAsync<TResult>(
-        Func<T, TResult> onSuccess,
-        Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(onSuccess);
-        ArgumentNullException.ThrowIfNull(onFailure);
-
-        return this.IsSuccess
-            ? onSuccess(this.value)
-            : await onFailure(this.Errors, cancellationToken);
+            return Success(result);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
     }
 
     /// <summary>
@@ -1139,7 +1114,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine(result.IsSuccess); // Still maintains success state
     /// </code>
     /// </example>
-    public Result ToResult()
+    public Result Unwrap()
     {
         return this; // Uses implicit operator
     }
@@ -1225,27 +1200,59 @@ public readonly partial struct Result<T> : IResult<T>
     /// </example>
     public override string ToString()
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"Success: {this.IsSuccess}");
+        return this.ToString(string.Empty);
+    }
 
+    public string ToString(string message)
+    {
+        var sb = new StringBuilder();
+
+        // Append success or failure message
+        if (this.IsSuccess)
+        {
+            sb.Append("Result succeeded ✓");
+        }
+        else
+        {
+            sb.Append("Result failed ✗");
+        }
+
+        // Append type name
+        sb.Append(" [").Append(typeof(T).Name).Append(']');
+
+        // Append message only if not null or empty
+        if (!string.IsNullOrEmpty(message))
+        {
+            sb.Append(' ').Append(message);
+        }
+
+        // Remove trailing spaces and add a single newline
+        while (sb.Length > 0 && sb[^1] == ' ')
+        {
+            sb.Length--;
+        }
+        sb.AppendLine();
+
+        // Append messages if any
         if (!this.messages.IsEmpty)
         {
-            sb.AppendLine("Messages:");
-            foreach (var message in this.messages.AsEnumerable())
+            sb.AppendLine("  messages:");
+            foreach (var m in this.messages.AsEnumerable())
             {
-                sb.AppendLine($"- {message}");
+                sb.Append("  - ").AppendLine(m);
             }
         }
 
+        // Append errors if any
         if (!this.errors.IsEmpty)
         {
-            sb.AppendLine("Errors:");
-            foreach (var error in this.errors.AsEnumerable())
+            sb.AppendLine("  errors:");
+            foreach (var e in this.errors.AsEnumerable())
             {
-                sb.AppendLine($"- [{error.GetType().Name}] {error.Message}");
+                sb.Append("  - [").Append(e.GetType().Name).Append("] ").AppendLine(e.Message);
             }
         }
 
-        return sb.ToString().TrimEnd();
+        return sb.ToString();
     }
 }

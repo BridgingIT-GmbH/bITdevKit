@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework.Sqlite</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,14 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.Sqlite"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Sqlite" />
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" />-->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
-    <PackageReference Include="System.Data.SQLite"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="System.Data.SQLite" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
 </Project>

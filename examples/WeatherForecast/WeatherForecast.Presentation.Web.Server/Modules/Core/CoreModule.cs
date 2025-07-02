@@ -64,7 +64,7 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling()
             .WithScopedJob<ForecastImportJob>(CronExpressions.Every30Minutes)
-            .WithScopedJob<EchoJob>(CronExpressions.Every5Minutes); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
+            .WithScopedJob<EchoJob>(CronExpressions.EveryMinute); // .WithSingletonJob<EchoJob>(CronExpressions.Every5Minutes)
 
         // messaging
         services.AddMessaging(configuration)
@@ -73,12 +73,12 @@ public class CoreModule : WebModuleBase
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
-                .UseLogger()
-                .UseSimpleLogger())
-            .WithHealthChecks()
-            .WithDatabaseMigratorService();
+                .UseLogger().UseSimpleLogger())
+            //.WithHealthChecks()
+            .WithDatabaseCreatorService(o => o.Enabled().DeleteOnStartup(false));
+            //.WithDatabaseMigratorService();
 
-        services.AddIdentity(o => // rename .AddAuthorization
+        services.AddEntityAuthorization(o => // TODO: rename AddEntityAuthorization
         {
             o.WithEntityPermissions<CoreDbContext>(o =>
             {

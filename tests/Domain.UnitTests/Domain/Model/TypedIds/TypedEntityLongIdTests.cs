@@ -165,5 +165,5 @@ public class TypedEntityLongIdTests
     }
 
     [TypedEntityId<long>]
-    public class StubLongEntity : Entity<StubLongEntityId> { }
+    public class StubLongEntity : Entity<StubLongEntityId>;
 }

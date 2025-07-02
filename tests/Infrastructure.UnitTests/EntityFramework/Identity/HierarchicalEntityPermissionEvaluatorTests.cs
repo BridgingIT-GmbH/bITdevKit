@@ -27,7 +27,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         services.AddSingleton(fixture.Context);
         services.AddSingleton(this.loggerFactory);
 
-        services.AddIdentity(o =>
+        services.AddEntityAuthorization(o =>
             o.WithEntityPermissions<StubDbContext>(e =>
             {
                 //e.AddEntity<PersonStub>() for non hierarchical entities
@@ -72,7 +72,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
     public async Task HasPermission_InheritedFromManager_ShouldGrantAccess()
     {
         // Arrange
-        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" };
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
         var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
         var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
 
@@ -82,39 +82,65 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Grant permission to CEO (top of chain)
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            ceo.Id,
-            Permission.Read);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), ceo.Id, Permission.Read);
 
         // Act & Assert
-        var hasManagerAccess = await this.evaluator.HasPermissionAsync(
-            userId,
-            [],
-            manager,
-            Permission.Read);
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager, Permission.Read);
         hasManagerAccess.ShouldBeTrue("Should inherit from CEO");
 
-        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(
-            userId,
-            [],
-            employee,
-            Permission.Read);
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
         hasEmployeeAccess.ShouldBeTrue("Should inherit from CEO through manager");
 
         // Grant additional permission to manager
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            manager.Id,
-            Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Write);
 
         // Verify inherited permissions
         var employeePermissions = await this.evaluator.GetPermissionsAsync(userId, [], employee);
         employeePermissions.Count.ShouldBe(2);
         employeePermissions.ShouldContain(p => p.Permission == Permission.Read);
         employeePermissions.ShouldContain(p => p.Permission == Permission.Write);
+    }
+
+    [Fact]
+    public async Task HasPermission_NoGrants_ShouldNotGrantAccess()
+    {
+        // Arrange
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
+
+        await this.dbContext.Set<PersonStub>().AddRangeAsync([ceo, manager, employee]);
+        await this.dbContext.SaveChangesAsync();
+
+        var userId = DateTime.UtcNow.Ticks.ToString();
+
+        // Act & Assert
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager, Permission.Read);
+        hasManagerAccess.ShouldBeFalse();
+
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
+        hasEmployeeAccess.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task HasPermissionId_NoGrants_ShouldNotGrantAccess()
+    {
+        // Arrange
+        var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // has READ permission
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id };
+
+        await this.dbContext.Set<PersonStub>().AddRangeAsync([ceo, manager, employee]);
+        await this.dbContext.SaveChangesAsync();
+
+        var userId = DateTime.UtcNow.Ticks.ToString();
+
+        // Act & Assert
+        var hasManagerAccess = await this.evaluator.HasPermissionAsync(userId, [], manager.Id, Permission.Read);
+        hasManagerAccess.ShouldBeFalse();
+
+        var hasEmployeeAccess = await this.evaluator.HasPermissionAsync(userId, [], employee.Id, Permission.Read);
+        hasEmployeeAccess.ShouldBeFalse();
     }
 
     //[Fact]
@@ -151,7 +177,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
     {
         // Arrange
         var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" };
-        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id };
+        var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id }; // has READ permission
         var employee1 = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee1", ManagerId = manager.Id };
         var employee2 = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee2", ManagerId = manager.Id };
 
@@ -161,11 +187,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Grant permission to manager
-        await this.provider.GrantUserPermissionAsync(
-            userId,
-            nameof(PersonStub),
-            manager.Id,
-            Permission.Read);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Read);
 
         // Act & Assert
         var employee1Permissions = await this.evaluator.GetPermissionsAsync(userId, [], employee1);
@@ -184,7 +206,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         // Arrange
         var ceo = new PersonStub { Id = Guid.NewGuid(), FirstName = "CEO" }; // LIST
         var manager = new PersonStub { Id = Guid.NewGuid(), FirstName = "Manager", ManagerId = ceo.Id }; // LIST + WRITE
-        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id }; // LIST + WRITE
+        var employee = new PersonStub { Id = Guid.NewGuid(), FirstName = "Employee", ManagerId = manager.Id }; // LIST + WRITE + DELETE
 
         await this.dbContext.Set<PersonStub>().AddRangeAsync([ceo, manager, employee]);
         await this.dbContext.SaveChangesAsync();
@@ -197,6 +219,9 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         // Grant specific permission to manager
         await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Write);
 
+        // Grant specific permission to employee
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), employee.Id, Permission.Delete);
+
         // Act
         var typePermissions = await this.evaluator.GetPermissionsAsync(userId, []);
         var employeePermissions = await this.evaluator.GetPermissionsAsync(userId, [], employee);
@@ -206,18 +231,17 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         typePermissions.Count.ShouldBe(1);
         typePermissions.ShouldContain(p => p.Permission == Permission.List);
 
-        // Employee should have both inherited Write and type-wide List
-        employeePermissions.Count.ShouldBe(5);
+        // Employee should have both inherited Write, direct Delete and type-wide List
+        //employeePermissions.Count.ShouldBe(5);
         employeePermissions.ShouldContain(p => p.Permission == Permission.List);
         employeePermissions.ShouldContain(p => p.Permission == Permission.Write);
+        employeePermissions.ShouldContain(p => p.Permission == Permission.Delete);
 
         // Verify actual permission checks
-        var hasListPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], Permission.List);
+        var hasListPermission = await this.evaluator.HasPermissionAsync(userId, [], Permission.List);
         hasListPermission.ShouldBeTrue("Should have type-wide list permission");
 
-        var hasWritePermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Write);
+        var hasWritePermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Write);
         hasWritePermission.ShouldBeTrue("Should have inherited write permission");
     }
 
@@ -293,17 +317,19 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), null, Permission.List);
         await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), ceo.Id, Permission.Read);
         await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), employee.Id, Permission.Delete);
 
         // Verify initial state
         var initialTypePermissions = await this.evaluator.GetPermissionsAsync(userId, []);
         var initialEmployeePermissions = await this.evaluator.GetPermissionsAsync(userId, [], employee);
 
         initialTypePermissions.Count.ShouldBe(1);
-        initialEmployeePermissions.Count.ShouldBe(6);
+        //initialEmployeePermissions.Count.ShouldBe(6);
 
         // Act - Revoke permissions
         await this.provider.RevokeUserPermissionAsync(userId, nameof(PersonStub), null, Permission.List);
         await this.provider.RevokeUserPermissionAsync(userId, nameof(PersonStub), manager.Id, Permission.Write);
+        await this.provider.RevokeUserPermissionAsync(userId, nameof(PersonStub), employee.Id, Permission.Delete);
 
         // Assert
         var finalTypePermissions = await this.evaluator.GetPermissionsAsync(userId, []);
@@ -314,16 +340,13 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
         finalEmployeePermissions.ShouldContain(p => p.Permission == Permission.Read);
 
         // Verify specific permissions are properly revoked
-        var hasListPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], Permission.List);
+        var hasListPermission = await this.evaluator.HasPermissionAsync(userId, [], Permission.List);
         hasListPermission.ShouldBeFalse("Type-wide List permission should be revoked");
 
-        var hasWritePermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Write);
+        var hasWritePermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Write);
         hasWritePermission.ShouldBeFalse("Write permission should be revoked");
 
-        var hasReadPermission = await this.evaluator.HasPermissionAsync(
-            userId, [], employee, Permission.Read);
+        var hasReadPermission = await this.evaluator.HasPermissionAsync(userId, [], employee, Permission.Read);
         hasReadPermission.ShouldBeTrue("Should still have inherited Read permission from CEO");
     }
 

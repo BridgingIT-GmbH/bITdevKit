@@ -12,7 +12,7 @@ public class EntityCannotBeSoftDeletedAgainRule<TEntity>(TEntity entity) : RuleB
 
     public override string Message => "An already deleted entity cannot be deleted again.";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(this.deleted is null or false);
     }

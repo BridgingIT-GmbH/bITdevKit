@@ -16,15 +16,15 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity being authorized.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="EntityPermissionAuthorizationHandler{TEntity, TId}"/> class.
+/// Initializes a new instance of the <see cref="EntityPermissionInstanceAuthorizationHandler{TEntity, TId}"/> class.
 /// </remarks>
 /// <param name="loggerFactory">Factory for creating loggers.</param>
-/// <param name="currentUserAccessor">Accessor for current user information.</param>
-/// <param name="permissionEvaluator">Actual evaluator for the entity permission requirement.</param>
+/// <param name="userAccessor">Accessor for current user information.</param>
+/// <param name="evaluator">Actual evaluator for the entity permission requirement.</param>
 public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // TODO:move to Presentation.Web because dependend on ASP.NET Core IDENTITY
     ILoggerFactory loggerFactory,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TEntity> permissionEvaluator) // TODO: move to Presentation.Web because dependend on ASP.NET Core IDENTITY
+    ICurrentUserAccessor userAccessor,
+    IEntityPermissionEvaluator<TEntity> evaluator) // TODO: move to Presentation.Web because dependend on ASP.NET Core IDENTITY
     : AuthorizationHandler<EntityPermissionRequirement, TEntity>
     where TEntity : class, IEntity
 {
@@ -40,9 +40,9 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
     /// <returns>A task representing the authorization operation.</returns>
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, TEntity entity)
     {
-        TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permission);
+        TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
-        var userId = currentUserAccessor.UserId;
+        var userId = userAccessor.UserId;
         if (string.IsNullOrEmpty(userId))
         {
             TypedLogger.LogNoUserIdentified(this.logger, Constants.LogKey);
@@ -62,7 +62,8 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
             return;
         }
 
-        if (await permissionEvaluator.HasPermissionAsync(userId, currentUserAccessor.Roles, entity, requirement.Permission))
+        // Call the type instance permission check
+        if (await evaluator.HasPermissionAsync(userAccessor, entity, requirement.Permissions))
         {
             context.Succeed(requirement);
         }
@@ -70,8 +71,8 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (instance) - check permission requirement: permission={Permission}")]
-        public static partial void LogAuthHandler(ILogger logger, string logKey, string permission);
+        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (instance) - check permission requirement: permissions={Permissions}")]
+        public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
         [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for permission requirement check")]
         public static partial void LogNoUserIdentified(ILogger logger, string logKey);

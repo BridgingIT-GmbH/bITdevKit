@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests;
 
 using Domain.Model;
+using Microsoft.AspNetCore.Http;
 
 public class PersonStub : Entity<Guid>
 {
@@ -18,5 +19,16 @@ public class PersonStub : Entity<Guid>
     public static PersonStub Create(long ticks)
     {
         return new PersonStub { FirstName = $"John{ticks}", LastName = $"Doe{ticks}", Age = 42 };
+    }
+}
+
+public class CustomHttpResult(string message) : IResult, IStatusCodeHttpResult
+{
+    public int? StatusCode => 418; // I'm a teapot, for fun
+
+    public Task ExecuteAsync(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = this.StatusCode ?? 500;
+        return httpContext.Response.WriteAsync(message);
     }
 }

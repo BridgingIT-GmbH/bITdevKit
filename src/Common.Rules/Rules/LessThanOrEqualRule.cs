@@ -22,6 +22,6 @@ public class LessThanOrEqualRule<T>(T value, T other)
     /// Executes the defined rule and returns the result of the execution.
     /// </summary>
     /// <returns>The outcome of the rule execution as a Result object.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.CompareTo(other) <= 0);
 }

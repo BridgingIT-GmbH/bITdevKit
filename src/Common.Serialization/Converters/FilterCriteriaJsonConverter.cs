@@ -3,11 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace BridgingIT.DevKit.Common;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 /// <summary>
 /// A custom JSON converter for the <see cref="FilterCriteria"/> class.
 /// </summary>
@@ -35,7 +34,7 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
         }
 
         var filterCriteria = new FilterCriteria();
-        var enumConverter = new EnumConverter<FilterOperator>();
+        var enumConverter = new EnumMemberConverter<FilterOperator>();
 
         while (reader.Read())
         {
@@ -64,7 +63,83 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
 
                     break;
                 case nameof(FilterCriteria.Value):
-                    filterCriteria.Value = JsonSerializer.Deserialize<object>(ref reader, options);
+                    if (reader.TokenType == JsonTokenType.Number)
+                    {
+                        if (reader.TryGetInt32(out var intValue))
+                        {
+                            filterCriteria.Value = intValue;
+                        }
+                        else if (reader.TryGetInt64(out var longValue))
+                        {
+                            filterCriteria.Value = longValue;
+                        }
+                        else if (reader.TryGetDouble(out var doubleValue))
+                        {
+                            filterCriteria.Value = doubleValue;
+                        }
+                        else
+                        {
+                            filterCriteria.Value = reader.GetDecimal();
+                        }
+                    }
+                    else if (reader.TokenType == JsonTokenType.String)
+                    {
+                        filterCriteria.Value = reader.GetString();
+                    }
+                    else if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
+                    {
+                        filterCriteria.Value = reader.GetBoolean();
+                    }
+                    else if (reader.TokenType == JsonTokenType.Null)
+                    {
+                        filterCriteria.Value = null;
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartArray)
+                    {
+                        filterCriteria.Value = JsonSerializer.Deserialize<object[]>(ref reader, options);
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartObject)
+                    {
+                        using var doc = JsonDocument.ParseValue(ref reader);
+                        var root = doc.RootElement;
+
+                        if (root.TryGetProperty("$type", out var typeProp))
+                        {
+                            var typeName = typeProp.GetString();
+                            var type = Type.GetType(typeName);
+                            if (type != null && IsSmartEnumType(type))
+                            {
+                                if (root.TryGetProperty("Id", out var idProp) && idProp.ValueKind == JsonValueKind.Number)
+                                {
+                                    var id = idProp.GetInt32();
+                                    var fromIdMethod = type.GetMethod("FromId", new[] { typeof(int) });
+                                    filterCriteria.Value = fromIdMethod.Invoke(null, new object[] { id });
+                                }
+                                else if (root.TryGetProperty("Value", out var valueProp) && valueProp.ValueKind == JsonValueKind.String)
+                                {
+                                    var value = valueProp.GetString();
+                                    var fromValueMethod = type.GetMethod("FromValue", new[] { typeof(string) });
+                                    filterCriteria.Value = fromValueMethod.Invoke(null, new object[] { value });
+                                }
+                                else
+                                {
+                                    filterCriteria.Value = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
+                                }
+                            }
+                            else
+                            {
+                                filterCriteria.Value = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
+                            }
+                        }
+                        else
+                        {
+                            filterCriteria.Value = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
+                        }
+                    }
+                    //else if (reader.TokenType == JsonTokenType.StartObject)
+                    //{
+                    //    filterCriteria.Value = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
+                    //}
 
                     break;
                 case nameof(FilterCriteria.Logic):
@@ -101,6 +176,11 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
         throw new JsonException();
     }
 
+    private static bool IsSmartEnumType(Type type)
+    {
+        return typeof(IEnumeration).IsAssignableFrom(type);
+    }
+
     /// <summary>
     /// Writes the <see cref="FilterCriteria"/> object to JSON using the specified <see cref="Utf8JsonWriter"/>.
     /// </summary>
@@ -114,8 +194,20 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
         writer.WriteString(nameof(FilterCriteria.Field), value.Field);
         writer.WritePropertyName(nameof(FilterCriteria.Operator));
         JsonSerializer.Serialize(writer, value.Operator, options);
-        writer.WritePropertyName(nameof(FilterCriteria.Value));
-        JsonSerializer.Serialize(writer, value.Value, options);
+        if (value.Value is IEnumeration enumeration)
+        {
+            writer.WritePropertyName(nameof(FilterCriteria.Value));
+            writer.WriteStartObject();
+            writer.WriteString("$type", enumeration.GetType().AssemblyQualifiedName); // or a short type key
+            writer.WriteNumber("Id", enumeration.Id);
+            writer.WriteString("Value", enumeration.Value?.ToString());
+            writer.WriteEndObject();
+        }
+        else
+        {
+            writer.WritePropertyName(nameof(FilterCriteria.Value));
+            JsonSerializer.Serialize(writer, value.Value, options);
+        }
         writer.WritePropertyName(nameof(FilterCriteria.Logic));
         JsonSerializer.Serialize(writer, value.Logic, options);
 

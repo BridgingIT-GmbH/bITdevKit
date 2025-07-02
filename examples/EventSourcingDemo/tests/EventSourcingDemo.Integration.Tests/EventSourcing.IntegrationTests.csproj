@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ModuleName>EventSourcing</ModuleName>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests</RootNamespace>
     <IsPackable>false</IsPackable>

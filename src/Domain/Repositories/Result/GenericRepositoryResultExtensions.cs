@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
@@ -59,6 +60,10 @@ public static class GenericRepositoryResultExtensions
             var updatedEntity = await source.UpdateAsync(entity, cancellationToken).AnyContext();
             return Result<TEntity>.Success(updatedEntity);
         }
+        catch (Exception cex) when (cex.IsConcurrencyException())
+        {
+            return Result<TEntity>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
+        }
         catch (Exception ex) when (!ex.IsTransientException())
         {
             return Result<TEntity>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
@@ -84,6 +89,10 @@ public static class GenericRepositoryResultExtensions
             var (upsertedEntity, action) = await source.UpsertAsync(entity, cancellationToken).AnyContext();
             return Result<(TEntity, RepositoryActionResult)>.Success((upsertedEntity, action));
         }
+        catch (Exception cex) when (cex.IsConcurrencyException())
+        {
+            return Result<(TEntity, RepositoryActionResult)>.Failure(cex.GetFullMessage(), new ConcurrencyError() { EntityType = typeof(TEntity).Name, EntityId = entity.Id?.ToString() });
+        }
         catch (Exception ex) when (!ex.IsTransientException())
         {
             return Result<(TEntity, RepositoryActionResult)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
@@ -107,7 +116,18 @@ public static class GenericRepositoryResultExtensions
         try
         {
             var result = await source.DeleteAsync(id, cancellationToken).AnyContext();
-            return Result<RepositoryActionResult>.Success(result);
+            if (result == RepositoryActionResult.Deleted)
+            {
+                return Result<RepositoryActionResult>.Success(result);
+            }
+            else if (result == RepositoryActionResult.NotFound)
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not found", new NotFoundError());
+            }
+            else
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not deleted", new Error("Entity not deleted"));
+            }
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
@@ -132,11 +152,26 @@ public static class GenericRepositoryResultExtensions
         try
         {
             var result = await source.DeleteAsync(entity, cancellationToken).AnyContext();
-            return Result<RepositoryActionResult>.Success(result);
+            if (result == RepositoryActionResult.Deleted)
+            {
+                return Result<RepositoryActionResult>.Success(result);
+            }
+            else if (result == RepositoryActionResult.NotFound)
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not found", new NotFoundError());
+            }
+            else
+            {
+                return Result<RepositoryActionResult>.Failure("Entity not deleted", new Error("Entity not deleted"));
+            }
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
             return Result<RepositoryActionResult>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
+
+    public static bool IsConcurrencyException(this Exception ex) =>
+        ex is DBConcurrencyException || ex is ConcurrencyException ||
+        ex.GetType().Name == "DbUpdateConcurrencyException" || ex.GetType().Name == "OptimisticConcurrencyException"; // check for EF Core by string
 }

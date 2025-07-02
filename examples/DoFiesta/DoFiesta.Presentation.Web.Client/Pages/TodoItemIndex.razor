@@ -1,0 +1,408 @@
+﻿@page "/todos"
+@using Microsoft.AspNetCore.Authorization
+@inject IStringLocalizer<Global> localizer
+@inject IApiClient ApiClient
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Todos</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 20px;">
+    <MudGrid>
+        <MudItem xs="12" Class="d-flex align-center">
+            @* <MudSelect T="int" @bind-Value="newTodoPriority">
+                <MudSelectItem Value="1">-</MudSelectItem>
+                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
+                {
+                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                }
+            </MudSelect> *@
+            <MudTextField @bind-Value="newTodoTitle"
+                          Immediate="false"
+                          Label="New Todo"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense" />
+            <MudTooltip Text="Add Todo">
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               Size="Size.Large"
+                               OnClick="@(() => AddNewTodo())" />
+            </MudTooltip>
+            <MudSpacer />
+            <MudTooltip Text="Refresh">
+                <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                               Color="Color.Secondary"
+                               Size="Size.Large"
+                               OnClick="@(() => LoadItems())" />
+            </MudTooltip>
+
+            <MudTooltip Text="Complete all items which are InProgress">
+                <MudIconButton Icon="@Icons.Material.Filled.Checklist"
+                               Color="Color.Success"
+                               Size="Size.Large"
+                               OnClick="@(() => CompleteAll())" />
+            </MudTooltip>
+        </MudItem>
+
+        <MudItem xs="12">
+            @if (enums == null || items == null)
+            {
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+                <MudSkeleton Animation="Animation.Pulse" Width="80%" />
+            }
+            else
+            {
+                <MudTable Items="@items" AllowUnsorted="false" Hover="true" Dense="true"
+                    Striped="false" Bordered="false" Loading="@loading" LoadingProgressColor="Color.Info">
+                    <ToolBarContent>
+                        <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                        Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
+                                @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
+                                {
+                                    <MudTooltip Text="@e.Description">
+                                        <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
+                                    </MudTooltip>
+                                }
+                            </MudChipSet>
+                            <MudDivider Vertical="true" FlexItem="true" />
+                            <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
+                                        Color="Color.Secondary" CheckMark SelectedValueChanged="OnPriorityChipChanged">
+                                @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
+                                {
+                                    <MudTooltip Text="@e.Description">
+                                        <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
+                                    </MudTooltip>
+                                }
+                            </MudChipSet>
+                            <MudSpacer />
+                            <MudTextField @bind-Value="filterTitle" Immediate="false" Label="Search"
+                                          Variant="Variant.Text" Margin="Margin.Dense" Clearable="true"
+                                          Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="() => _ = LoadItems()" />
+                        </MudHidden>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh></MudTh>
+                        <MudTh Style="width: 40%">Title</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Priority</MudTh>
+                        <MudTh Style="width: 25%">
+                            <MudTableSortLabel T="string" @onclick="@OnDueDateSortClick"
+                                               SortDirection="@currentSortDirection" InitialDirection="SortDirection.Ascending">
+                                Due
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="todoItem">
+                        <MudTd>
+                            <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
+                                @{
+                                    var (icon, color) = GetStatusIcon(todoItem.Status);
+                                    <MudIcon Icon="@icon" Color="@color" />
+                                }
+                            </MudHidden>
+                        </MudTd>
+                        <MudTd DataLabel="Title" Style="width: 100%">
+                            <MudTooltip Text="@todoItem.Description">
+                                <MudTextField @bind-Value="todoItem.Title" Variant="Variant.Text" Margin="Margin.Dense"
+                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 350px;" AutoGrow Lines="1"
+                                              OnBlur="@(() => UpdateTodo(todoItem))" />
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd DataLabel="Status">
+                            <MudSelect Value="todoItem.Status" T="int"
+                                       ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
+                                @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
+                                {
+                                    <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Priority">
+                            <MudSelect Value="todoItem.Priority" T="int" ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
+                                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
+                                {
+                                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTd>
+                        <MudTd DataLabel="Due Date" HideSmall="true">
+                            <MudDatePicker Date="todoItem.DueDate" DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
+                                           DateFormat="yyyy-MM-dd" Style="min-width: 150px;" Editable="true" Placeholder="Select Date" />
+                        </MudTd>
+                        <MudTd HideSmall="true">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private bool loading = true;
+    private ICollection<TodoItemModel> items;
+    private EnumerationModel enums;
+    private string newTodoTitle;
+    private int newTodoPriority = 1;
+    private int? filterStatusId;
+    private int? filterPriorityId;
+    private string filterTitle = string.Empty;
+    private SortDirection currentSortDirection = SortDirection.Ascending;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEnumerations();
+        await LoadItems();
+    }
+
+    private async Task LoadEnumerations()
+    {
+        try
+        {
+            var response = await ApiClient.Enumeration_GetAsync();
+            enums = response.Result;
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error loading enumerations: {ex.Message}", Severity.Error);
+            items = new List<TodoItemModel>();
+        }
+    }
+
+    private async Task LoadItems()
+    {
+        loading = true;
+
+        try
+        {
+            @* var filter2 = FilterModelBuilder.For<TodoItemModel>() // use the typed builder
+                .AddFilter(p => p.Status, Common.FilterOperator.Equal, filterStatusId.Value)
+                .Build(); *@
+
+            var filter = new Client.FilterModel() { Filters = new List<Client.FilterCriteria>(), Orderings = new List<Client.FilterOrderCriteria>() };
+            if (filterStatusId.HasValue)
+            {
+                filter.Filters.Add(
+                    new Client.FilterCriteria
+                        {
+                            Field = "Status",
+                            Operator = Client.FilterOperator.Equal,
+                            Value = filterStatusId.Value
+                        });
+            }
+
+            if (filterPriorityId.HasValue)
+            {
+                filter.Filters.Add(
+                    new Client.FilterCriteria
+                        {
+                            Field = "Priority",
+                            Operator = Client.FilterOperator.GreaterThanOrEqual,
+                            Value = filterPriorityId.Value
+                        });
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterTitle))
+            {
+                filter.Filters.Add(
+                    new Client.FilterCriteria
+                        {
+                            Field = "Title",
+                            Operator = Client.FilterOperator.Contains,
+                            Value = filterTitle
+                        });
+            }
+
+            // set ordering
+            filter.Orderings.Add(new Client.FilterOrderCriteria
+                {
+                    Field = "DueDate",
+                    Direction = currentSortDirection == SortDirection.Ascending
+                                    ? Client.OrderDirection.Ascending
+                                    : Client.OrderDirection.Descending
+                });
+
+            // filter.Filters.Add(
+            //     new FilterCriteria
+            //         {
+            //             CustomType = FilterCustomType.NamedSpecification,
+            //             SpecificationName = "TodoItemIsNotDeleted",
+            //         });
+
+            //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
+            var response = await ApiClient.TodoItem_PostSearchAsync(filter);
+            items = response.Result.ToList();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error loading items: {ex.Message}", Severity.Error);
+            enums = new EnumerationModel();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task OnStatusFilterChanged(int? statusId)
+    {
+        filterStatusId = statusId;
+        await LoadItems();
+    }
+
+    private async Task OnStatusChipChanged(int id)
+    {
+        filterStatusId = id;
+
+        if (id == 0)
+            filterStatusId = null;
+
+        await LoadItems();
+    }
+
+    private async Task OnPriorityChipChanged(int id)
+    {
+        filterPriorityId = id;
+
+        if (id == 0)
+            filterPriorityId = null;
+
+        await LoadItems();
+    }
+
+    private async Task AddNewTodo()
+    {
+        if (string.IsNullOrWhiteSpace(newTodoTitle))
+            return;
+
+        loading = true;
+        var newItem = new TodoItemModel
+            {
+                Title = newTodoTitle,
+                Status = enums.TodoStatuses.First().Id,
+                Priority = newTodoPriority //enums.TodoPriorities.First().Id
+            };
+        newTodoTitle = string.Empty;
+        items.Add(newItem);
+
+        try
+        {
+
+            var response = await ApiClient.TodoItem_PostAsync(newItem);
+
+            Snackbar.Add("Added successfully", Severity.Success);
+            await LoadItems();
+        }
+        catch (ApiException<ProblemDetails> pex)
+        {
+            Snackbar.Add($"Problem adding todo: [{pex.StatusCode}] {pex.Result.Detail}", Severity.Warning);
+        }
+        catch (ApiException ex)
+        {
+            items.Remove(newItem);
+            Snackbar.Add($"Error adding todo: [{ex.StatusCode}] {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task UpdateTodo(TodoItemModel item)
+    {
+        loading = true;
+        Console.WriteLine($"Updating todo: {item.Id}");
+
+        try
+        {
+            await ApiClient.TodoItem_PutAsync(item.Id, item);
+
+            Snackbar.Add("Updated successfully", Severity.Success);
+            await LoadItems();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task CompleteAll()
+    {
+        loading = true;
+        Console.WriteLine($"Completing all");
+
+        try
+        {
+            await ApiClient.TodoItem_CompleteAllAsync();
+
+            Snackbar.Add("Completed successfully", Severity.Success);
+            await LoadItems();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Error completing todos: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task DeleteTodo(TodoItemModel item)
+    {
+        loading = true;
+        var removeItem = items.FirstOrDefault(e => e.Id == item.Id);
+        items.Remove(removeItem);
+
+        try
+        {
+            await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
+
+            Snackbar.Add("Deleted successfully", Severity.Success);
+            await LoadItems();
+        }
+        catch (ApiException ex)
+        {
+            items.Add(removeItem);
+            Snackbar.Add($"Error deleting todo: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task OnDueDateSortClick()
+    {
+        currentSortDirection = currentSortDirection switch
+        {
+            SortDirection.None => SortDirection.Ascending,
+            SortDirection.Ascending => SortDirection.Descending,
+            SortDirection.Descending => SortDirection.None,
+            _ => SortDirection.None
+        };
+
+        await LoadItems();
+    }
+
+    private (string icon, Color color) GetStatusIcon(int statusId)
+    {
+        return statusId switch
+        {
+            1 => (Icons.Material.Filled.FiberNew, Color.Info),        // New
+            2 => (Icons.Material.Filled.RunCircle, Color.Warning),    // InProgress
+            3 => (Icons.Material.Filled.CheckCircle, Color.Success),  // Completed
+            _ => (Icons.Material.Filled.Circle, Color.Default)        // Default
+        };
+    }
+}

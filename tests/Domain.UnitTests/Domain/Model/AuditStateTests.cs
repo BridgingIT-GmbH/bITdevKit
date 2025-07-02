@@ -65,6 +65,26 @@ public class AuditStateTests
     }
 
     [Fact]
+    public void SetActivated_WithValidInput_ShouldSetActivatedProperties()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeactivated("Admin", "Test deactivation");
+        const string activatedBy = "Manager";
+        const string reason = "Account restored";
+
+        // Act
+        auditState.SetActivated(activatedBy, reason);
+
+        // Assert
+        auditState.Deactivated.Value.ShouldBeFalse();
+        auditState.DeactivatedDate.ShouldBeNull();
+        auditState.UpdatedDate.ShouldNotBeNull();
+        auditState.UpdatedBy.ShouldBe(activatedBy);
+        auditState.UpdatedReasons.ShouldContain(reason => reason.Contains(activatedBy) && reason.Contains("Activated") && reason.Contains(reason));
+    }
+
+    [Fact]
     public void SetDeleted_WithValidInput_ShouldSetDeletedProperties()
     {
         // Arrange
@@ -85,6 +105,27 @@ public class AuditStateTests
     }
 
     [Fact]
+    public void SetUndeleted_WithValidInput_ShouldSetUndeletedProperties()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeleted("System", "Data purge");
+        const string undeletedBy = "Support";
+        const string reason = "Deletion reversal";
+
+        // Act
+        auditState.SetUndeleted(undeletedBy, reason);
+
+        // Assert
+        auditState.Deleted.Value.ShouldBeFalse();
+        auditState.DeletedDate.ShouldBeNull();
+        auditState.DeletedReason.ShouldBeNull();
+        auditState.UpdatedDate.ShouldNotBeNull();
+        auditState.UpdatedBy.ShouldBe(undeletedBy);
+        auditState.UpdatedReasons.ShouldContain(reason => reason.Contains(undeletedBy) && reason.Contains("Undeleted") && reason.Contains(reason));
+    }
+
+    [Fact]
     public void IsDeactivated_WhenDeactivated_ShouldReturnTrue()
     {
         // Arrange
@@ -93,6 +134,78 @@ public class AuditStateTests
 
         // Act
         var result = auditState.IsDeactivated();
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsActive_WhenNewlyCreated_ShouldReturnTrue()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetCreated("Creator", "Initial creation");
+
+        // Act
+        var result = auditState.IsActive();
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsActive_WhenDeactivated_ShouldReturnFalse()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeactivated("Admin", "Test deactivation");
+
+        // Act
+        var result = auditState.IsActive();
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsActive_WhenDeleted_ShouldReturnFalse()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeleted("Admin", "Test deletion");
+
+        // Act
+        var result = auditState.IsActive();
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsActive_AfterActivation_ShouldReturnTrue()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeactivated("Admin", "Test deactivation");
+        auditState.SetActivated("Manager", "Test activation");
+
+        // Act
+        var result = auditState.IsActive();
+
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsActive_AfterUndeletion_ShouldReturnTrue()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeleted("Admin", "Test deletion");
+        auditState.SetUndeleted("Support", "Test undeletion");
+
+        // Act
+        var result = auditState.IsActive();
 
         // Assert
         result.ShouldBeTrue();
@@ -110,6 +223,21 @@ public class AuditStateTests
 
         // Assert
         result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void IsDeleted_AfterUndeletion_ShouldReturnFalse()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetDeleted("Admin", "Test deletion");
+        auditState.SetUndeleted("Support", "Test undeletion");
+
+        // Act
+        var result = auditState.IsDeleted();
+
+        // Assert
+        result.ShouldBeFalse();
     }
 
     [Fact]
@@ -143,5 +271,43 @@ public class AuditStateTests
         // Assert
         lastActionDate.ShouldNotBeNull();
         lastActionDate.Value.Ticks.ShouldBe(auditState.DeactivatedDate.Value.Ticks);
+    }
+
+    [Fact]
+    public void LastActionDate_WhenActivationPerformed_ShouldReturnActivationDate()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetCreated("Creator", "Initial creation");
+        Thread.Sleep(10); // Ensure time difference
+        auditState.SetDeactivated("Deactivator", "Deactivation action");
+        Thread.Sleep(10); // Ensure time difference
+        auditState.SetActivated("Activator", "Activation action");
+
+        // Act
+        var lastActionDate = auditState.LastActionDate;
+
+        // Assert
+        lastActionDate.ShouldNotBeNull();
+        lastActionDate.Value.Ticks.ShouldBe(auditState.UpdatedDate.Value.Ticks);
+    }
+
+    [Fact]
+    public void LastActionDate_WhenUndeletionPerformed_ShouldReturnUndeletionDate()
+    {
+        // Arrange
+        var auditState = new AuditState();
+        auditState.SetCreated("Creator", "Initial creation");
+        Thread.Sleep(10); // Ensure time difference
+        auditState.SetDeleted("Deleter", "Deletion action");
+        Thread.Sleep(10); // Ensure time difference
+        auditState.SetUndeleted("Restorer", "Restoration action");
+
+        // Act
+        var lastActionDate = auditState.LastActionDate;
+
+        // Assert
+        lastActionDate.ShouldNotBeNull();
+        lastActionDate.Value.Ticks.ShouldBe(auditState.UpdatedDate.Value.Ticks);
     }
 }

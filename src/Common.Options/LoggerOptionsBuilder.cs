@@ -9,4 +9,4 @@ namespace BridgingIT.DevKit.Common.Options;
 ///     A builder class for constructing <see cref="LoggerOptions" /> instances. Inherits from
 ///     <see cref="OptionsBuilderBase{LoggerOptions, LoggerOptionsBuilder}" />.
 /// </summary>
-public class LoggerOptionsBuilder : OptionsBuilderBase<LoggerOptions, LoggerOptionsBuilder> { }
+public class LoggerOptionsBuilder : OptionsBuilderBase<LoggerOptions, LoggerOptionsBuilder>;

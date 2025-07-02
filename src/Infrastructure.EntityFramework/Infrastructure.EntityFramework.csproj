@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -24,7 +24,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
     <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />

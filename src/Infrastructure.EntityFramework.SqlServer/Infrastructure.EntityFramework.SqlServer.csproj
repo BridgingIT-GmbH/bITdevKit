@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Infrastructure.EntityFramework</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,14 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.SqlServer"/>
-    <PackageReference Include="Microsoft.Data.SqlClient"/>
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" />-->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
 </Project>

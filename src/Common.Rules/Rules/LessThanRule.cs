@@ -22,6 +22,6 @@ public class LessThanRule<T>(T value, T other)
     /// Executes the rule and returns a success result if validation passes.
     /// </summary>
     /// <returns>A Result indicating the success or failure of the rule execution.</returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(value.CompareTo(other) < 0);
 }

@@ -1,10 +1,14 @@
 variables:
   - group: global
   - group: NuGetOrg
+  - name: dotnetVersion
+    value: '9.0.300'
   - name: solution
     value: "**/*.sln"
   - name: buildConfiguration
     value: 'Release'
+  - name: publishableBranches
+    value: 'main,features/dotnet9'  # Comma-separated list of branch names to publish packages for
 
 trigger:
   tags:
@@ -27,7 +31,7 @@ pr:
 
 resources:
   - repo: self
-    fetchDepth: '0'
+    fetchDepth: 0
 
 #######################################################################################################
 # VERSION
@@ -45,13 +49,13 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
             displayName: Use .NET SDK
             condition: succeeded()
             inputs:
-              version: '8.0.x'
+              version: $(dotnetVersion)
               performMultiLevelLookup: true
               includePreviewVersions: false
 
@@ -96,13 +100,13 @@ stages:
           NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
         steps:
           - checkout: self
-            fetchDepth: '0'
+            fetchDepth: 0
 
           - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
             displayName: Use .NET SDK
             condition: succeeded()
             inputs:
-              version: '8.0.x'
+              version: $(dotnetVersion)
               performMultiLevelLookup: true
               includePreviewVersions: false
 
@@ -139,6 +143,7 @@ stages:
               script: |
                 # Copy secure file
                 cp -fr $(signkey.secureFilePath) $(Build.SourcesDirectory)/src/bIT.snk
+
           - task: DotNetCoreCLI@2
             displayName: Dotnet restore (nuget)
             condition: succeeded()
@@ -171,6 +176,37 @@ stages:
                     exit 0
                 fi
 
+          - task: PublishPipelineArtifact@1
+            displayName: Publish build artifacts
+            inputs:
+              targetPath: $(Build.SourcesDirectory)/src
+              artifact: 'BuildOutput'
+
+  - stage: test
+    displayName: Test stage
+    dependsOn: [ build ]
+    jobs:
+      - job: tests
+        displayName: Run Tests
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: DownloadPipelineArtifact@2 # Download build artifacts
+            inputs:
+              artifactName: 'BuildOutput'
+              targetPath: '$(Build.SourcesDirectory)/src'
+
+          - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+            displayName: Use .NET SDK
+            condition: succeeded()
+            inputs:
+              version: $(dotnetVersion)
+              performMultiLevelLookup: true
+              includePreviewVersions: false
+
           - bash: |
               docker compose up -d
             displayName: Docker start containers
@@ -178,11 +214,9 @@ stages:
           - bash: |
               docker ps -a
             displayName: Docker list containers
-            condition: succeeded()
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (unit)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*UnitTests.csproj"
@@ -190,7 +224,6 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (integration)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*IntegrationTests.csproj"
@@ -198,7 +231,6 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Dotnet test (end2end)
-            condition: succeeded()
             inputs:
               command: test
               projects: "**/*[Tt]ests/*EndToEndTests.csproj"
@@ -209,21 +241,52 @@ stages:
               docker container stop $(docker container ls -aq)
               docker container rm $(docker container ls -aq)
             displayName: Docker cleanup
+            condition: always()
+
+  - stage: publish
+    displayName: Publish stage
+    dependsOn: [ test ]
+    condition: succeeded()
+    jobs:
+      - job: publish
+        displayName: Publish Packages
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: DownloadPipelineArtifact@2 # Download build artifacts
+            inputs:
+              artifactName: 'BuildOutput'
+              targetPath: '$(Build.SourcesDirectory)/src'
+
+          - task: UseDotNet@2 # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+            displayName: Use .NET SDK
             condition: succeeded()
-            continueOnError: true
+            inputs:
+              version: $(dotnetVersion)
+              performMultiLevelLookup: true
+              includePreviewVersions: false
+
+          - powershell: |
+              $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')
+              $publishableBranches = "$(publishableBranches)".Split(',')
+
+              $isPublishableBranch = $publishableBranches -contains $currentBranch -or "$(Build.SourceBranch)".StartsWith('refs/tags/')
+              Write-Host "##vso[task.setvariable variable=IsPublishableBranch]$isPublishableBranch"
+            displayName: 'Evaluate Publishing Criteria'
+
+          - task: DotNetCoreCLI@2
+            displayName: Dotnet restore (nuget)
+            condition: succeeded()
+            inputs:
+              command: restore
+              verbosityRestore: Normal
 
           - task: DotNetCoreCLI@2
             displayName: Package pack (nuget)
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
             inputs:
               command: pack
               configuration: $(buildConfiguration)
@@ -235,16 +298,7 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Package push (nuget)
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
             inputs:
               command: custom
               custom: nuget
@@ -256,16 +310,7 @@ stages:
 
           - task: PublishPipelineArtifact@1
             displayName: Publish package artifacts
-            condition: |
-              and
-              (
-                succeeded(),
-                or
-                (
-                  eq(variables['Build.SourceBranch'], 'refs/heads/main'),
-                  contains(variables['Build.SourceBranch'], 'refs/tags')
-                )
-              )
+            condition: and(succeeded(), eq(variables.IsPublishableBranch, 'True'))
             inputs:
               targetPath: "$(Build.ArtifactStagingDirectory)/packages"
               artifactName: packages

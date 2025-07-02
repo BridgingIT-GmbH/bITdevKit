@@ -72,7 +72,7 @@ public class TraceActivityDecorator<TDecorated> : DispatchProxy
         }
         catch (Exception e)
         {
-            activity.RecordException(e);
+            activity.AddException(e);
 
             throw;
         }

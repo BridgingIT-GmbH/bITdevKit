@@ -6,5 +6,5 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.IntegrationTests;
 
 [CollectionDefinition(nameof(TestEnvironmentCollection))]
-public class TestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture> { }
+public class TestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 // https://xunit.net/docs/shared-context#collection-fixture

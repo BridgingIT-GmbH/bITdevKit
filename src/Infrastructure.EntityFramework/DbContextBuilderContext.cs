@@ -31,5 +31,6 @@ public enum Provider
     SqlServer,
     Sqlite,
     InMemory,
-    Cosmos
+    Cosmos,
+    Postgres
 }

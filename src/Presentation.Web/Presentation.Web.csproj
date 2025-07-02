@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Presentation.Web</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Presentation.Web</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -21,11 +21,13 @@
     <PackageReference Include="RazorSlices" />
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj" />

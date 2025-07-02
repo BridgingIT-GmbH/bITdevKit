@@ -14,6 +14,8 @@ using System.Text.Json;
 [Index(nameof(RoleName))]
 [Index(nameof(EntityType))]
 [Index(nameof(EntityId))]
+[Index(nameof(Permission))]
+[Index(nameof(IsRevoked))]
 [Index(nameof(CreatedDate))]
 public class EntityPermission
 {
@@ -36,6 +38,9 @@ public class EntityPermission
     [Required]
     [MaxLength(64)]
     public string Permission { get; set; }
+
+    [Required]
+    public bool IsRevoked { get; set; } // not used yet, revoked permissions are currently deleted from the table. maybe needed to revoke permissions in hierarchical tree where permissions are inherited (to break the inheritance at a deeper level)
 
     [MaxLength(128)]
     public string Module { get; set; }

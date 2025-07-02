@@ -25,7 +25,7 @@ public abstract class RuleBase : IRule
     /// Implements the core validation logic for the rule.
     /// </summary>
     /// <returns>A <see cref="Result"/> indicating success or failure of the rule.</returns>
-    protected abstract Result Execute();
+    public abstract Result Execute();
 
     /// <summary>
     /// Applies the rule with proper error handling and disabled state checking.

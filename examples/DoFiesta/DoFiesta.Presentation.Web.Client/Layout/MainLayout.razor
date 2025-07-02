@@ -1,0 +1,151 @@
+﻿@inherits LayoutComponentBase
+@* @inject IStringLocalizer<Global> localizer *@
+@*@implements IAsyncDisposable*@
+
+<MudThemeProvider @ref="@mudThemeProvider" @bind-IsDarkMode="@isDarkMode" Theme="theme" />
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
+        <MudLink Href="/" Underline="Underline.None" Color="Color.Inherit">
+            <MudText Typo="Typo.h6" Color="Color.Inherit">DoFiesta</MudText>
+        </MudLink>
+        <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
+        <MudIconButton Icon="@Icons.Material.Filled.Help" Color="Color.Tertiary" Href="todos/help" />
+        <MudSpacer />
+
+        <AuthorizeView>
+            <Authorized>
+                <MudMenu Icon="@Icons.Material.Filled.Person" Color="Color.Inherit">
+                    @* <MudText Typo="Typo.body2" Class="px-4 py-2">
+                        @context.User?.Identity?.Name
+                    </MudText> *@
+                    <MudNavLink Href="/user-profile" Match="NavLinkMatch.Prefix">@context.User?.Identity?.Name</MudNavLink>
+                    <MudDivider />
+                    <MudMenuItem OnClick="BeginSignOut">Logout</MudMenuItem>
+                </MudMenu>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Color="Color.Inherit" OnClick="BeginSignIn">Login</MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+            @* <MudTooltip Text="User Profile">
+                <MudIconButton Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Inherit" Href="/user-profile" />
+            </MudTooltip> *@
+            <MudTooltip Text="Swagger API documentation">
+                <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="openapi/index.html" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Logs">
+                <MudIconButton Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Inherit" Href="http://localhost:15347" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Traces">
+                <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Health">
+                <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
+            </MudTooltip>
+            <MudTooltip Text="Theme">
+                <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />
+            </MudTooltip>
+        </MudHidden>
+    </MudAppBar>
+    <MudDrawer @bind-Open="drawerOpen" Elevation="1" Width="150px">
+        <MudDrawerHeader>
+            @* <MudText Typo="Typo.h6">DoFiesta</MudText> *@
+        </MudDrawerHeader>
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        @* <LoginDisplay /> *@
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private MudThemeProvider mudThemeProvider;
+    private MudTheme theme = Themes.Custom;
+    private bool isDarkMode;
+    private bool drawerOpen = false;
+    private HubConnection hubConnection;
+    private bool IsConnected { get; set; }
+    private bool IsHealthy { get; set; } = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder().WithUrl(navigationManager.ToAbsoluteUri("/signalrhub")).Build();
+        hubConnection.On<string>("CheckHealth", notification =>
+        {
+            IsHealthy = !notification.Contains("Unhealthy");
+            StateHasChanged();
+        });
+        await hubConnection.StartAsync();
+
+        IsConnected = hubConnection.State == HubConnectionState.Connected;
+        if (IsConnected)
+        {
+            snackbar.Add("signalr connected", Severity.Success);
+        }
+        else
+        {
+            snackbar.Add("signalr not connected", Severity.Error);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isDarkMode = await mudThemeProvider.GetSystemDarkModeAsync();
+            StateHasChanged();
+        }
+    }
+
+    void DrawerToggle()
+    {
+        drawerOpen = !drawerOpen;
+    }
+
+    private void BeginSignIn()
+    {
+        navigationManager.NavigateToLogin("authentication/login");
+    }
+
+    private void BeginSignOut()
+    {
+        navigationManager.NavigateToLogout("authentication/logout");
+    }
+
+    private void ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+    }
+
+    private string ThemeToggleIcon => isDarkMode ? Icons.Material.Filled.DarkMode : Icons.Material.Filled.LightMode;
+
+    //public async ValueTask DisposeAsync()
+    //{
+    //	await hubConnection.DisposeAsync();
+    //}
+
+    // private string Localize(string value)
+    // {
+    //     if (string.IsNullOrEmpty(value))
+    //     {
+    //         return value;
+    //     }
+
+    //     // localize specific parts of a string, parts marked with [TEXT] will be localized
+    //     return System.Text.RegularExpressions.Regex.Replace(
+    //         value,
+    //         @"\[(.*?)\]", (match) => Localizer[match.Value.Replace("[", string.empty).Replace("]", string.empty)],
+    //         System.Text.RegularExpressions.RegexOptions.IgnoreCase,
+    //         new TimeSpan(0, 0, 3));
+    // }
+}

@@ -34,7 +34,6 @@ public static class SpecificationResolver
     /// Registers a specification type for a given entity type with an optional name.
     /// </summary>
     /// <typeparam name="TEntity">The entity type that the specification is for.</typeparam>
-    /// <typeparam name="TSpecification">The specification type to be registered.</typeparam>
     /// <param name="name">An optional name for the specification. If not provided, the name of the specification type will be used.</param>
     public static void Register<TEntity>(Type specificationType, string name = null)
         where TEntity : class, IEntity

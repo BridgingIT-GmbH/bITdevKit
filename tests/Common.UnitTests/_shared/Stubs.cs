@@ -68,10 +68,7 @@ public class EmailAddressStub
 {
     private EmailAddressStub() { }
 
-    private EmailAddressStub(string value)
-    {
-        this.Value = value;
-    }
+    private EmailAddressStub(string value) => this.Value = value;
 
     public string Value { get; }
 
@@ -126,6 +123,8 @@ public class LocationStub
 
     public string Country { get; private set; }
 
+    public Dummy Dummy { get; set; } = new Dummy();
+
     public static LocationStub Create(
         string name,
         string addressLine1,
@@ -141,6 +140,11 @@ public class LocationStub
             city,
             country);
     }
+}
+
+public class Dummy
+{
+    public string Text { get; set; } = "ABC";
 }
 
 public class PersonDtoStub
@@ -198,8 +202,24 @@ public class IsAdultRule(PersonStub person) : RuleBase
 
     public override string Message => $"Person must be at least {AdultAge} years old";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(person?.Age >= AdultAge);
     }
+}
+
+public class ActiveStatus(int id, string value, string code, string description) : Enumeration(id, value)
+{
+    public static readonly ActiveStatus Active = new(0, "Active", "AKT", "Lorem Ipsum");
+    public static readonly ActiveStatus Inactive = new(1, "Inactive", "INA", "Lorem Ipsum");
+
+    public string Code { get; } = code;
+
+    public string Description { get; } = description;
+
+    public static ActiveStatus FromId(int id) => FromId<ActiveStatus>(id);
+
+    public static IEnumerable<ActiveStatus> GetAll() => GetAll<ActiveStatus>();
+
+    public static ActiveStatus GetByCode(string code) => GetAll<ActiveStatus>().FirstOrDefault(e => e.Code == code);
 }

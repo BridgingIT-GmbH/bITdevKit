@@ -141,7 +141,7 @@ public class EntityFrameworkGenericRepositoryTests
         var result = await sut.DeleteAsync(Guid.NewGuid());
 
         // Assert
-        result.ShouldBe(RepositoryActionResult.None);
+        result.ShouldBe(RepositoryActionResult.NotFound);
     }
 
     [Fact]
@@ -174,6 +174,6 @@ public class EntityFrameworkGenericRepositoryTests
         var result = await sut.DeleteAsync(person);
 
         // Assert
-        result.ShouldBe(RepositoryActionResult.None);
+        result.ShouldBe(RepositoryActionResult.NotFound);
     }
 }

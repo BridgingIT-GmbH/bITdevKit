@@ -41,4 +41,27 @@ public class JobSchedulingOptionsBuilder : OptionsBuilderBase<JobSchedulingOptio
 
         return this;
     }
+
+    public JobSchedulingOptionsBuilder DisallowConcurrentExecutionDefaultGroup()
+    {
+        this.Target.GroupOptions ??= new JobGroupOptions();
+        this.Target.GroupOptions.DisallowConcurrentExecutionDefaultGroup = true;
+
+        return this;
+    }
+
+    public JobSchedulingOptionsBuilder DisallowConcurrentExecutionGroups(string[] groups)
+    {
+        this.Target.GroupOptions ??= new JobGroupOptions();
+        this.Target.GroupOptions.DisallowConcurrentExecutionGroups = groups;
+
+        return this;
+    }
+
+    public JobSchedulingOptionsBuilder Group(JobGroupOptions options)
+    {
+        this.Target.GroupOptions = options;
+
+        return this;
+    }
 }

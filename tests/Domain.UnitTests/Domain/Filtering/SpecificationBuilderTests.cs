@@ -87,6 +87,31 @@ public class SpecificationBuilderTests
     }
 
     [Fact]
+    public void BuildSpecifications_WithAnyAndEqualOperator_ReturnsCorrectSpecification()
+    {
+        // Arrange
+        //var filterModel = FilterModelBuilder.For<PersonStub>()
+        //    .AddFilter(p => p.Orders, FilterOperator.Any, pb => pb // collection propery
+        //        .AddFilter(o => o.Details, FilterOperator.NotEqual, odb => odb // object property
+        //            .AddFilter(od => od.IsGift, FilterOperator.Equal, true)))
+        //    .Build();
+
+        var filterModel = FilterModelBuilder.For<PersonStub>()
+            .AddFilter(p => p.Orders, FilterOperator.Any, pb => pb // collection propery
+                .AddFilter(o => o.Details.IsGift, FilterOperator.Equal, true))
+            .Build();
+
+        // Act
+        var result = SpecificationBuilder.Build<PersonStub>(filterModel);
+
+        // Assert
+        result.Count().ShouldBe(1);
+        var spec = result.First();
+        spec.IsSatisfiedBy(new PersonStub { FirstName = "John", Orders = [new() { Details = new() { IsGift = true } }] }).ShouldBeTrue();
+        spec.IsSatisfiedBy(new PersonStub { FirstName = "John", Orders = [new() { Details = new() { IsGift = false } }] }).ShouldBeFalse();
+    }
+
+    [Fact]
     public void BuildSpecifications_WithNotEqualOperator_ReturnsCorrectSpecification()
     {
         // Arrange

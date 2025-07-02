@@ -915,8 +915,7 @@ public class StringOrNumber : Either<string, int>
         : base(value) { }
 }
 
-public struct None
-{ }
+public struct None;
 
 public class InstanceOrNone<T> : Either<T, None>
 {
@@ -937,9 +936,9 @@ public class InstanceOrNone<T> : Either<T, None>
 
 public class Exists : Either<Exists.Yes, Exists.No>
 {
-    public class Yes { }
+    public class Yes;
 
-    public class No { }
+    public class No;
 
     public Exists() : base()
     {

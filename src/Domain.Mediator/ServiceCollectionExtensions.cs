@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
         {
             services.Scan(scan => scan
             .FromApplicationDependencies(a =>
-                !a.FullName.EqualsPatternAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
+                !a.FullName.MatchAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&

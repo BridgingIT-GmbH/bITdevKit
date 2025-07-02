@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Application.Storage</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Application.Storage</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -10,10 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Polly" />
     <PackageReference Include="Polly.Contrib.Simmy" />
     <PackageReference Include="Scrutor" />
+    <PackageReference Include="SharpCompress" />
   </ItemGroup>
 
   <ItemGroup>

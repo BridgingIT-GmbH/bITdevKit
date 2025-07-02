@@ -1,0 +1,10 @@
+﻿{
+  "runtime": "Net80",
+  "documentGenerator": {
+    "fromDocument": {
+      "url": "https://localhost:5001/swagger/v1/swagger.json",
+      "output": "./wwwroot/swagger.json",
+      "newLineBehavior": "Auto"
+    }
+  }
+}

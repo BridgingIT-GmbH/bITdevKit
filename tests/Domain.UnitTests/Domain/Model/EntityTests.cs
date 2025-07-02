@@ -124,7 +124,7 @@ public class EntityTests
         intEntity.Id.ShouldBe(newIntId);
     }
 
-    private class GuidEntity : Entity<Guid> { }
+    private class GuidEntity : Entity<Guid>;
 
-    private class IntEntity : Entity<int> { }
+    private class IntEntity : Entity<int>;
 }

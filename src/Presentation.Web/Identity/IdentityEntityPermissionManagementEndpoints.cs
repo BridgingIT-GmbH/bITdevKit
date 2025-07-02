@@ -47,9 +47,15 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapGet("/users/{userId}", this.GetGrantedUserPermissions)
+        group.MapGet("/users/{userId}", this.GetUserGrantedPermissions)
             .WithDescription("Retrieves all granted permissions for a user for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<string>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
+
+        group.MapGet("/users", this.GetUsersGrantedPermissions)
+            .WithDescription("Retrieves all granted permissions for all users for a specific entity.") // does not take the defaults into account
+            .Produces<IReadOnlyCollection<EntityPermissionInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
@@ -72,21 +78,26 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapGet("/roles/{role}", this.GetGrantedRolePermissions)
+        group.MapGet("/roles/{role}", this.GetRoleGrantedPermissions)
             .WithDescription("Retrieves all granted permissions for a role for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
+
+        group.MapGet("/roles", this.GetRolesGrantedPermissions)
+            .WithDescription("Retrieves all granted permissions for all roles for a specific entity.") // does not take the defaults into account
+            .Produces<IReadOnlyCollection<EntityPermissionInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
     }
 
-    // Request model
-    private record PermissionRequest(string EntityType, string EntityId, string Permission);
+    private record PermissionRequestModel(string EntityType, string EntityId, string Permission);
 
     private async Task<Results<NoContent, BadRequest<ProblemDetails>, ProblemHttpResult>> GrantUserPermission(
         [FromServices] IEntityPermissionProvider provider,
         [FromServices] EntityPermissionOptions options,
         [FromRoute] string userId,
-        [FromBody] PermissionRequest request)
+        [FromBody] PermissionRequestModel request)
     {
         if (userId.IsNullOrEmpty())
         {
@@ -104,11 +115,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{request.EntityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        await provider.GrantUserPermissionAsync(
-            userId,
-            entityConfiguration.EntityType.FullName,
-            request.EntityId,
-            request.Permission);
+        await provider.GrantUserPermissionAsync(userId, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
 
         return TypedResults.NoContent();
     }
@@ -117,7 +124,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
         [FromServices] IEntityPermissionProvider provider,
         [FromServices] EntityPermissionOptions options,
         [FromRoute] string userId,
-        [FromBody] PermissionRequest request)
+        [FromBody] PermissionRequestModel request)
     {
         if (userId.IsNullOrEmpty())
         {
@@ -130,11 +137,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{request.EntityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        await provider.RevokeUserPermissionAsync(
-            userId,
-            entityConfiguration.EntityType.FullName,
-            request.EntityId,
-            request.Permission);
+        await provider.RevokeUserPermissionAsync(userId, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
 
         return TypedResults.NoContent();
     }
@@ -152,7 +155,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
         return TypedResults.NoContent();
     }
 
-    private async Task<Results<Ok<IReadOnlyCollection<string>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetGrantedUserPermissions(
+    private async Task<Results<Ok<IReadOnlyCollection<string>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetUserGrantedPermissions(
         [FromServices] IEntityPermissionProvider provider,
         [FromServices] EntityPermissionOptions options,
         [FromRoute] string userId,
@@ -165,10 +168,23 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{entityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        var permissions = await provider.GetUserPermissionsAsync(
-            userId,
-            entityConfiguration.EntityType.FullName,
-            entityId);
+        var permissions = await provider.GetUserPermissionsAsync(userId, entityConfiguration.EntityType.FullName, entityId);
+        return TypedResults.Ok(permissions);
+    }
+
+    private async Task<Results<Ok<IReadOnlyCollection<EntityPermissionInfo>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetUsersGrantedPermissions(
+        [FromServices] IEntityPermissionProvider provider,
+        [FromServices] EntityPermissionOptions options,
+        [FromQuery] string entityType,
+        [FromQuery] string entityId)
+    {
+        var entityConfiguration = options.GetEntityTypeConfiguration(entityType, false);
+        if (entityConfiguration == null)
+        {
+            return TypedResults.Problem($"EntityType '{entityType}' not valid.", null, (int)HttpStatusCode.NotFound);
+        }
+
+        var permissions = await provider.GetUsersPermissionsAsync(entityConfiguration.EntityType.FullName, entityId);
         return TypedResults.Ok(permissions);
     }
 
@@ -177,7 +193,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
         [FromServices] IEntityPermissionProvider provider,
         [FromServices] EntityPermissionOptions options,
         [FromRoute] string role,
-        [FromBody] PermissionRequest request)
+        [FromBody] PermissionRequestModel request)
     {
         if (role.IsNullOrEmpty())
         {
@@ -190,11 +206,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{request.EntityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        await provider.GrantRolePermissionAsync(
-            role,
-            entityConfiguration.EntityType.FullName,
-            request.EntityId,
-            request.Permission);
+        await provider.GrantRolePermissionAsync(role, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
 
         return TypedResults.NoContent();
     }
@@ -203,7 +215,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
     [FromServices] IEntityPermissionProvider provider,
     [FromServices] EntityPermissionOptions options,
     [FromRoute] string role,
-    [FromBody] PermissionRequest request)
+    [FromBody] PermissionRequestModel request)
     {
         if (role.IsNullOrEmpty())
         {
@@ -216,11 +228,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{request.EntityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        await provider.RevokeRolePermissionAsync(
-            role,
-            entityConfiguration.EntityType.FullName,
-            request.EntityId,
-            request.Permission);
+        await provider.RevokeRolePermissionAsync(role, entityConfiguration.EntityType.FullName, request.EntityId, request.Permission);
 
         return TypedResults.NoContent();
     }
@@ -238,7 +246,7 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
         return TypedResults.NoContent();
     }
 
-    private async Task<Results<Ok<IReadOnlyCollection<string>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetGrantedRolePermissions(
+    private async Task<Results<Ok<IReadOnlyCollection<string>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetRoleGrantedPermissions(
         [FromServices] IEntityPermissionProvider provider,
         [FromServices] EntityPermissionOptions options,
         [FromRoute] string role,
@@ -256,10 +264,23 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             return TypedResults.Problem($"EntityType '{entityType}' not valid.", null, (int)HttpStatusCode.NotFound);
         }
 
-        var permissions = await provider.GetRolePermissionsAsync(
-            role,
-            entityConfiguration.EntityType.FullName,
-            entityId);
+        var permissions = await provider.GetRolePermissionsAsync(role, entityConfiguration.EntityType.FullName, entityId);
+        return TypedResults.Ok(permissions);
+    }
+
+    private async Task<Results<Ok<IReadOnlyCollection<EntityPermissionInfo>>, BadRequest<ProblemDetails>, ProblemHttpResult>> GetRolesGrantedPermissions(
+        [FromServices] IEntityPermissionProvider provider,
+        [FromServices] EntityPermissionOptions options,
+        [FromQuery] string entityType,
+        [FromQuery] string entityId)
+    {
+        var entityConfiguration = options.GetEntityTypeConfiguration(entityType, false);
+        if (entityConfiguration == null)
+        {
+            return TypedResults.Problem($"EntityType '{entityType}' not valid.", null, (int)HttpStatusCode.NotFound);
+        }
+
+        var permissions = await provider.GetRolesPermissionsAsync(entityConfiguration.EntityType.FullName, entityId);
         return TypedResults.Ok(permissions);
     }
 }

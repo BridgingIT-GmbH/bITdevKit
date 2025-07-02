@@ -33,7 +33,7 @@ public class TextNotInRule(
     /// <returns>
     /// The result of the rule execution.
     /// </returns>
-    protected override Result Execute() =>
+    public override Result Execute() =>
         Result.SuccessIf(!disallowedValues.Any(disallowed =>
             string.Equals(value, disallowed, comparison)));
 }

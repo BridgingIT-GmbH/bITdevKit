@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class ResultException(string message)
-    : Exception(message)
+public class ResultException(string message, Exception innerException = null)
+    : Exception(message, innerException)
 {
     public ResultException(Result result) : this(result.ToString())
     {

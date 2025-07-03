@@ -138,6 +138,12 @@ public class NotificationEmailService(
                     async ct =>
                     {
                         this.logger.LogInformation("{LogKey} mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
+
+                        if (this.options.SmtpSettings.SkipServerCertificateValidation)
+                        {
+                            this.smtpClient.ServerCertificateValidationCallback = (s, c, h, e) => true; // not adviced to use in production
+                        }
+
                         await this.smtpClient.ConnectAsync(this.options.SmtpSettings.Host, this.options.SmtpSettings.Port, this.options.SmtpSettings.UseSsl, ct);
 
                         if (!string.IsNullOrEmpty(this.options.SmtpSettings.Username) &&

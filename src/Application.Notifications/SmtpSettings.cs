@@ -12,6 +12,8 @@ public class SmtpSettings
 
     public bool UseSsl { get; set; }
 
+    public bool SkipServerCertificateValidation { get; set; }
+
     public string SenderName { get; set; }
 
     public string SenderAddress { get; set; }

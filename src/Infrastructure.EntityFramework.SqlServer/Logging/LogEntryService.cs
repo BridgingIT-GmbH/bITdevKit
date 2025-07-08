@@ -534,7 +534,7 @@ public class LogEntryService<TContext>(
                         await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken);
                         break;
                     case LogEntryExportFormat.Txt:
-                        const string indentSpaces = "                                   "; // 35 spaces
+                        const string indentSpaces = "                         ";
                         var newlineIndent = $"\n{indentSpaces}";
 
                         foreach (var log in logs)
@@ -545,7 +545,7 @@ public class LogEntryService<TContext>(
                             await writer.WriteAsync("] ");
                             await writer.WriteAsync(log.Level);
                             await writer.WriteAsync(": ");
-                            await writer.WriteLineAsync(log.Message);
+                            await writer.WriteAsync(log.Message);
 
                             // Track if we need newline + indent
                             var needsNewlineIndent = true;

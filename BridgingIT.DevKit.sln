@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{452268
 		azure-pipelines.yml = azure-pipelines.yml
 		CODE-OF-CONDUCT.md = CODE-OF-CONDUCT.md
 		CONTRIBUTION.md = CONTRIBUTION.md
+		.github\copilot-instructions.md = .github\copilot-instructions.md
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		docker-compose.yml = docker-compose.yml

@@ -829,7 +829,19 @@ public static class FileStorageProviderCompressionExtensions
                 .WithMessages(existsResult.Messages);
         }
 
-        options ??= FileCompressionOptions.Default;
+        if (options == null)
+        {
+            options = FileCompressionOptions.Default;
+            options.ArchiveType = Path.GetExtension(path)?.ToLowerInvariant() switch // try the set the correct archive type based on the path extension
+            {
+                ".zip" => FileCompressionArchiveType.Zip,
+                ".gz" or ".gzip" => FileCompressionArchiveType.GZip,
+                ".7z" => FileCompressionArchiveType.SevenZip,
+                ".rar" => FileCompressionArchiveType.Rar,
+                ".tar" => FileCompressionArchiveType.Tar,
+                _ => FileCompressionArchiveType.Zip // Default to Zip if unknown
+            };
+        }
 
         try
         {

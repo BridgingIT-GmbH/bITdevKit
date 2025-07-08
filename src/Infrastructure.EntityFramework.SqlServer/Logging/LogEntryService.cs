@@ -481,31 +481,42 @@ public class LogEntryService<TContext>(
                 switch (format)
                 {
                     case LogEntryExportFormat.Csv:
+                        var buffer = new StringBuilder(512);
+                        const string TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff";
+
                         if (stream.Position == 0) // Write header only once
                         {
-                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,MessageTemplate,Exception,TraceId,SpanId,CorrelationId,LogKey,Module,ThreadId,Type");
+                            await writer.WriteLineAsync("Id,TimeStamp,Level,Message,Exception,TraceId,SpanId,CorrelationId,LogKey,Module,ThreadId,Type");
                         }
                         foreach (var log in logs)
                         {
-                            //var logEventsJson = JsonSerializer.Serialize(log.LogEvents, DefaultSystemTextJsonSerializerOptions.Create());
-                            var escapedFields = new[]
-                            {
-                                log.Id.ToString(),
-                                log.TimeStamp.ToString("o") ?? "",
-                                log.Level?.ToString() ?? "",
-                                $"\"{log.Message?.Replace("\"", "\"\"") ?? ""}\"",
-                                $"\"{log.MessageTemplate?.Replace("\"", "\"\"") ?? ""}\"",
-                                $"\"{log.Exception?.Replace("\"", "\"\"") ?? ""}\"",
-                                //$"\"{logEventsJson.Replace("\"", "\"\"")}\"",
-                                log.TraceId ?? "",
-                                log.SpanId ?? "",
-                                log.CorrelationId ?? "",
-                                log.LogKey ?? "",
-                                log.ModuleName ?? "",
-                                log.ThreadId ?? "",
-                                log.ShortTypeName ?? ""
-                            };
-                            await writer.WriteLineAsync(string.Join(",", escapedFields));
+                            buffer.Clear(); // Reuse the same StringBuilder
+
+                            buffer.Append(log.Id);
+                            buffer.Append(',');
+                            buffer.Append(log.TimeStamp.ToString(TimestampFormat));
+                            buffer.Append(',');
+                            buffer.Append(log.Level?.ToString() ?? "");
+                            buffer.Append(',');
+                            AppendCsvField(buffer, log.Message);
+                            buffer.Append(',');
+                            AppendCsvField(buffer, log.Exception);
+                            buffer.Append(',');
+                            buffer.Append(log.TraceId ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.SpanId ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.CorrelationId ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.LogKey ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.ModuleName ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.ThreadId ?? "");
+                            buffer.Append(',');
+                            buffer.Append(log.ShortTypeName ?? "");
+
+                            await writer.WriteLineAsync(buffer.ToString());
                         }
                         break;
                     case LogEntryExportFormat.Json:
@@ -523,81 +534,79 @@ public class LogEntryService<TContext>(
                         await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken);
                         break;
                     case LogEntryExportFormat.Txt:
+                        const string indentSpaces = "                         ";
+                        var newlineIndent = $"\n{indentSpaces}";
+
                         foreach (var log in logs)
                         {
-                            await writer.WriteLineAsync($"[{log.TimeStamp:o}] {log.Level}: {log.Message}");
-                            var indent = false;
+                            // Write main log line
+                            await writer.WriteAsync('[');
+                            await writer.WriteAsync(log.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                            await writer.WriteAsync("] ");
+                            await writer.WriteAsync(log.Level);
+                            await writer.WriteAsync(": ");
+                            await writer.WriteAsync(log.Message);
+
+                            // Track if we need newline + indent
+                            var needsNewlineIndent = true;
+
+                            // Write additional fields directly without string concatenation
                             if (!string.IsNullOrEmpty(log.Exception))
                             {
-                                if (!indent)
+                                if (needsNewlineIndent)
                                 {
-                                    await writer.WriteAsync("---------------------------------->");
-                                    indent = true;
+                                    await writer.WriteAsync(newlineIndent);
+                                    needsNewlineIndent = false;
                                 }
-
-                                await writer.WriteAsync($" exception: {log.Exception}");
+                                await writer.WriteAsync(" exception: ");
+                                await writer.WriteAsync(log.Exception);
                             }
 
                             if (!string.IsNullOrEmpty(log.CorrelationId))
                             {
-                                if (!indent)
+                                if (needsNewlineIndent)
                                 {
-                                    await writer.WriteAsync("---------------------------------->");
-                                    indent = true;
+                                    await writer.WriteAsync(newlineIndent);
+                                    needsNewlineIndent = false;
                                 }
-
-                                await writer.WriteAsync($" correlationId: {log.CorrelationId}");
+                                await writer.WriteAsync(" correlationId: ");
+                                await writer.WriteAsync(log.CorrelationId);
                             }
 
                             if (!string.IsNullOrEmpty(log.LogKey))
                             {
-                                if (!indent)
+                                if (needsNewlineIndent)
                                 {
-                                    await writer.WriteAsync("---------------------------------->");
-                                    indent = true;
+                                    await writer.WriteAsync(newlineIndent);
+                                    needsNewlineIndent = false;
                                 }
-
-                                await writer.WriteAsync($" logKey: {log.LogKey}");
+                                await writer.WriteAsync(" logKey: ");
+                                await writer.WriteAsync(log.LogKey);
                             }
 
                             if (!string.IsNullOrEmpty(log.ModuleName))
                             {
-                                if (!indent)
+                                if (needsNewlineIndent)
                                 {
-                                    await writer.WriteAsync("---------------------------------->");
-                                    indent = true;
+                                    await writer.WriteAsync(newlineIndent);
+                                    needsNewlineIndent = false;
                                 }
-
-                                await writer.WriteAsync($" module: {log.ModuleName}");
+                                await writer.WriteAsync(" module: ");
+                                await writer.WriteAsync(log.ModuleName);
                             }
-
-                            //if (!string.IsNullOrEmpty(log.ThreadId))
-                            //{
-                            //    if (!indent)
-                            //    {
-                            //        await writer.WriteAsync("---------------------------------->");
-                            //        indent = true;
-                            //    }
-
-                            //    await writer.WriteAsync($" threadId: {log.ThreadId}");
-                            //}
 
                             if (!string.IsNullOrEmpty(log.ShortTypeName))
                             {
-                                if (!indent)
+                                if (needsNewlineIndent)
                                 {
-                                    await writer.WriteAsync("---------------------------------->");
+                                    await writer.WriteAsync(indentSpaces);
+                                    needsNewlineIndent = false;
                                 }
-
-                                await writer.WriteAsync($" type: {log.ShortTypeName}");
+                                await writer.WriteAsync(" type: ");
+                                await writer.WriteAsync(log.ShortTypeName);
                             }
 
-                            //if (log.Properties.Any())
-                            //{
-                            //    var logEventsJson = JsonSerializer.Serialize(log.Properties, DefaultSystemTextJsonSerializerOptions.Create());
-                            //    await writer.WriteLineAsync($"Properties: {logEventsJson}");
-                            //}
-                            //await writer.WriteLineAsync("^---------------------------------^");
+                            await writer.WriteAsync('\n');
                         }
                         break;
                     default:
@@ -622,6 +631,32 @@ public class LogEntryService<TContext>(
         this.logger.LogTrace("{LogKey}: export completed in {Format} format", "LOG", format);
 
         return stream;
+
+        static void AppendCsvField(StringBuilder sb, string field)
+        {
+            if (string.IsNullOrEmpty(field))
+            {
+                return;
+            }
+
+            if (field.IndexOfAny(['"', ',', '\n', '\r']) >= 0)
+            {
+                sb.Append('"');
+                if (field.Contains('"'))
+                {
+                    sb.Append(field.Replace("\"", "\"\""));
+                }
+                else
+                {
+                    sb.Append(field);
+                }
+                sb.Append('"');
+            }
+            else
+            {
+                sb.Append(field);
+            }
+        }
     }
 
     /// <inheritdoc/>

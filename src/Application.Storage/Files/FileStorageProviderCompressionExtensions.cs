@@ -73,7 +73,11 @@ public static class FileStorageProviderCompressionExtensions
                 .WithMessage($"Cancelled writing compressed file at '{path}'");
         }
 
-        options ??= FileCompressionOptions.Default;
+        if (options == null)
+        {
+            options = FileCompressionOptions.Default;
+            options.ArchiveType = GetArchiveTypeFromPath(path);
+        }
 
         try
         {
@@ -163,7 +167,11 @@ public static class FileStorageProviderCompressionExtensions
             return readResult;
         }
 
-        options ??= FileCompressionOptions.Default;
+        if (options == null)
+        {
+            options = FileCompressionOptions.Default;
+            options.ArchiveType = GetArchiveTypeFromPath(path);
+        }
 
         try
         {
@@ -496,7 +504,11 @@ public static class FileStorageProviderCompressionExtensions
             return existsResult;
         }
 
-        options ??= FileCompressionOptions.Default;
+        if (options == null)
+        {
+            options = FileCompressionOptions.Default;
+            options.ArchiveType = GetArchiveTypeFromPath(path);
+        }
 
         try
         {
@@ -662,7 +674,11 @@ public static class FileStorageProviderCompressionExtensions
                 .WithMessages(existsResult.Messages);
         }
 
-        options ??= FileCompressionOptions.Default;
+        if (options == null)
+        {
+            options = FileCompressionOptions.Default;
+            options.ArchiveType = GetArchiveTypeFromPath(path);
+        }
 
         try
         {
@@ -832,15 +848,7 @@ public static class FileStorageProviderCompressionExtensions
         if (options == null)
         {
             options = FileCompressionOptions.Default;
-            options.ArchiveType = Path.GetExtension(path)?.ToLowerInvariant() switch // try the set the correct archive type based on the path extension
-            {
-                ".zip" => FileCompressionArchiveType.Zip,
-                ".gz" or ".gzip" => FileCompressionArchiveType.GZip,
-                ".7z" => FileCompressionArchiveType.SevenZip,
-                ".rar" => FileCompressionArchiveType.Rar,
-                ".tar" => FileCompressionArchiveType.Tar,
-                _ => FileCompressionArchiveType.Zip // Default to Zip if unknown
-            };
+            options.ArchiveType = GetArchiveTypeFromPath(path);
         }
 
         try
@@ -971,6 +979,19 @@ public static class FileStorageProviderCompressionExtensions
             ArchiveType.SevenZip => CompressionType.LZMA, // 7-Zip uses LZMA compression
             ArchiveType.Rar => CompressionType.Rar, // Rar uses RAR compression
             _ => throw new ArgumentException($"Unsupported archive type for compression: {archiveType}", nameof(archiveType))
+        };
+    }
+
+    private static FileCompressionArchiveType GetArchiveTypeFromPath(string path)
+    {
+        return Path.GetExtension(path)?.ToLowerInvariant() switch // try the set the correct archive type based on the path extension
+        {
+            ".zip" => FileCompressionArchiveType.Zip,
+            ".gz" or ".gzip" => FileCompressionArchiveType.GZip,
+            ".7z" => FileCompressionArchiveType.SevenZip,
+            ".rar" => FileCompressionArchiveType.Rar,
+            ".tar" => FileCompressionArchiveType.Tar,
+            _ => FileCompressionArchiveType.Zip // Default to Zip if unknown
         };
     }
 

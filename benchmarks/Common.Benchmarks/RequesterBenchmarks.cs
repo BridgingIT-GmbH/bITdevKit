@@ -27,7 +27,7 @@ public class RequesterBenchmarks
     }
 
     [Benchmark]
-    public async Task Baseline_Request()
+    public async Task Requester_Baseline()
     {
         var request = new MyTestRequest();
         var result = await requester.SendAsync(request);

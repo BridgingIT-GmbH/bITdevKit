@@ -26,7 +26,7 @@ public class MediatRBenchmarks
     }
 
     [Benchmark]
-    public async Task Baseline_MediatRRequest()
+    public async Task MediatR_Baseline()
     {
         var request = new MediatRTestRequest();
         var result = await mediator.Send(request);

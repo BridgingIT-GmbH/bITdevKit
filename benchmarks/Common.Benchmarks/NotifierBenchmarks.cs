@@ -27,7 +27,7 @@ public class NotifierBenchmarks
     }
 
     [Benchmark]
-    public async Task Baseline_Notification()
+    public async Task Notifier_Baseline()
     {
         var notification = new MyTestNotification();
         var result = await notifier.PublishAsync(notification);

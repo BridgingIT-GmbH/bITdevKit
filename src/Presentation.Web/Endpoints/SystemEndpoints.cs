@@ -113,7 +113,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
                 {
                     ["isLocal"] = !this.options.HideSensitiveInformation ? IsLocal(httpContext?.Request) : string.Empty,
                     ["host"] = !this.options.HideSensitiveInformation ? Dns.GetHostName() : string.Empty,
-                    ["ip"] = !this.options.HideSensitiveInformation ? (await GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)) : string.Empty
+                    ["ip"] = !this.options.HideSensitiveInformation ? (await this.GetHostAddressesAsync(Dns.GetHostName(), cancellationToken)) : string.Empty
                 },
                 Runtime = new Dictionary<string, string>
                 {

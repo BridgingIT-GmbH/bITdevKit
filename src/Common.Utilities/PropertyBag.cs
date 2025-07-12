@@ -18,7 +18,7 @@ using System.Threading;
 public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
 {
     private readonly Dictionary<string, object> items = new(StringComparer.OrdinalIgnoreCase);
-    private readonly ReaderWriterLockSlim _lock = new();
+    private readonly ReaderWriterLockSlim @lock = new();
     public event Action<string, object> ItemChanged;
 
     public PropertyBag() { }
@@ -39,16 +39,17 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public void Set(string key, object value)
     {
-        this._lock.EnterWriteLock();
+        this.@lock.EnterWriteLock();
         try
         {
             this.items[key] = value;
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            this.@lock.ExitWriteLock();
         }
-        ItemChanged?.Invoke(key, value);
+
+        this.ItemChanged?.Invoke(key, value);
     }
 
     /// <summary>
@@ -56,14 +57,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public object Get(string key)
     {
-        this._lock.EnterReadLock();
+        this.@lock.EnterReadLock();
         try
         {
             return this.items.TryGetValue(key, out var value) ? value : null;
         }
         finally
         {
-            this._lock.ExitReadLock();
+            this.@lock.ExitReadLock();
         }
     }
 
@@ -97,14 +98,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public bool Remove(string key)
     {
-        this._lock.EnterWriteLock();
+        this.@lock.EnterWriteLock();
         try
         {
             return this.items.Remove(key);
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            this.@lock.ExitWriteLock();
         }
     }
 
@@ -113,7 +114,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public void RemoveAll(Func<string, object, bool> predicate)
     {
-        this._lock.EnterWriteLock();
+        this.@lock.EnterWriteLock();
         try
         {
             foreach (var key in new List<string>(this.items.Keys))
@@ -126,7 +127,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            this.@lock.ExitWriteLock();
         }
     }
 
@@ -135,14 +136,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public void Clear()
     {
-        this._lock.EnterWriteLock();
+        this.@lock.EnterWriteLock();
         try
         {
             this.items.Clear();
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            this.@lock.ExitWriteLock();
         }
     }
 
@@ -151,14 +152,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public bool Contains(string key)
     {
-        this._lock.EnterReadLock();
+        this.@lock.EnterReadLock();
         try
         {
             return this.items.ContainsKey(key);
         }
         finally
         {
-            this._lock.ExitReadLock();
+            this.@lock.ExitReadLock();
         }
     }
 
@@ -178,14 +179,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     {
         get
         {
-            this._lock.EnterReadLock();
+            this.@lock.EnterReadLock();
             try
             {
                 return [.. this.items.Keys];
             }
             finally
             {
-                this._lock.ExitReadLock();
+                this.@lock.ExitReadLock();
             }
         }
     }
@@ -197,14 +198,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     {
         get
         {
-            this._lock.EnterReadLock();
+            this.@lock.EnterReadLock();
             try
             {
                 return [.. this.items.Values];
             }
             finally
             {
-                this._lock.ExitReadLock();
+                this.@lock.ExitReadLock();
             }
         }
     }
@@ -214,14 +215,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public PropertyBag Clone()
     {
-        this._lock.EnterReadLock();
+        this.@lock.EnterReadLock();
         try
         {
             return [.. new Dictionary<string, object>(this.items)];
         }
         finally
         {
-            this._lock.ExitReadLock();
+            this.@lock.ExitReadLock();
         }
     }
 
@@ -231,7 +232,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     public void Merge(PropertyBag other)
     {
         if (other == null) return;
-        this._lock.EnterWriteLock();
+        this.@lock.EnterWriteLock();
         try
         {
             foreach (var kv in other)
@@ -239,13 +240,13 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            this.@lock.ExitWriteLock();
         }
     }
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
     {
-        this._lock.EnterReadLock();
+        this.@lock.EnterReadLock();
         try
         {
             foreach (var kv in this.items)
@@ -253,7 +254,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         }
         finally
         {
-            this._lock.ExitReadLock();
+            this.@lock.ExitReadLock();
         }
     }
 

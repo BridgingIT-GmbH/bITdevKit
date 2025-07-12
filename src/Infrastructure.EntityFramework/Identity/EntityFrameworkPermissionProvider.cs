@@ -211,8 +211,13 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             // For this to work we need to call GetHierarchyPathLinqAsync with a generic type (TEntity) which is not known
             // so reflection is used to call the method with the correct generic type
             var getPathMethod = typeof(EntityFrameworkPermissionProvider<TContext>)
-                .GetMethod(nameof(GetHierarchyPathLinqAsync), BindingFlags.NonPublic | BindingFlags.Instance)
-                .MakeGenericMethod(entityType);
+                .GetMethod(nameof(this.GetHierarchyPathLinqAsync), BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.MakeGenericMethod(entityType);
+
+            if (getPathMethod == null)
+            {
+                throw new InvalidOperationException($"Unable to find method '{nameof(this.GetHierarchyPathLinqAsync)}' for entity type '{entityType.FullName}'");
+            }
 
             return await (Task<IEnumerable<object>>)getPathMethod.Invoke(this,
             [

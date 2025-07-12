@@ -94,7 +94,7 @@ public class PersistentAuthenticationStateProvider(
     /// </summary>
     public void TriggerRefresh()
     {
-        this.NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        this.NotifyAuthenticationStateChanged(this.GetAuthenticationStateAsync());
     }
 
     private async Task<OpenIdConfiguration> GetOpenIdConfigurationAsync()

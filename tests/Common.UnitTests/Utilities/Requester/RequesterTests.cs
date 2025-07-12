@@ -972,7 +972,8 @@ public class CreateCustomerCommand : RequestBase<string>
     {
         public Validator()
         {
-            RuleFor(x => x.Email)
+            this
+                .RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email cannot be empty.")
                 .EmailAddress().WithMessage("Invalid email format.");
         }
@@ -1019,8 +1020,8 @@ public class ProcessDataRequest<TData> : RequestBase<string>
     {
         public Validator()
         {
-            RuleFor(x => x.Data).NotNull().WithMessage("Data cannot be null.");
-            RuleFor(x => x.Data.GetIdentifier()).NotEmpty().WithMessage("Data identifier cannot be empty.");
+            this.RuleFor(x => x.Data).NotNull().WithMessage("Data cannot be null.");
+            this.RuleFor(x => x.Data.GetIdentifier()).NotEmpty().WithMessage("Data identifier cannot be empty.");
         }
     }
 }

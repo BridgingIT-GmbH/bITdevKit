@@ -147,7 +147,7 @@ public class ResiliencyTests
     public async Task CircuitBreaker_HandlesFailuresAndRecovery_ReportsProgress()
     {
         // Arrange
-        var progress = new Progress<CircuitBreakerProgress>(p => progressUpdates.Add(p));
+        var progress = new Progress<CircuitBreakerProgress>(p => this.progressUpdates.Add(p));
         var circuitBreaker = new CircuitBreakerBuilder(2, TimeSpan.FromSeconds(1))
             .WithProgress(progress)
             .HandleErrors(new ConsoleLogger()) // Handle errors to avoid exception propagation
@@ -155,19 +155,19 @@ public class ResiliencyTests
         var cts = new CancellationTokenSource();
 
         // Act
-        await circuitBreaker.ExecuteAsync(ct => SimulateWorkAsync(ct, true), cts.Token); // First failure
-        await circuitBreaker.ExecuteAsync(ct => SimulateWorkAsync(ct, true), cts.Token); // Second failure (opens circuit)
+        await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // First failure
+        await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // Second failure (opens circuit)
         await Task.Delay(1100); // Wait for reset
-        await circuitBreaker.ExecuteAsync(ct => SimulateWorkAsync(ct, false), cts.Token); // Should succeed
+        await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, false), cts.Token); // Should succeed
 
         // Assert
-        progressUpdates.Count.ShouldBeGreaterThanOrEqualTo(3); // At least three updates (failures and state changes)
-        progressUpdates.ShouldAllBe(p => p is CircuitBreakerProgress);
-        var openUpdate = progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.Open);
+        this.progressUpdates.Count.ShouldBeGreaterThanOrEqualTo(3); // At least three updates (failures and state changes)
+        this.progressUpdates.ShouldAllBe(p => p is CircuitBreakerProgress);
+        var openUpdate = this.progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.Open);
         openUpdate.ShouldNotBeNull();
-        var halfOpenUpdate = progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.HalfOpen);
+        var halfOpenUpdate = this.progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.HalfOpen);
         halfOpenUpdate.ShouldNotBeNull();
-        var closedUpdate = progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.Closed);
+        var closedUpdate = this.progressUpdates.Find(p => ((CircuitBreakerProgress)p).State == CircuitBreakerState.Closed);
         closedUpdate.ShouldNotBeNull();
     }
 

@@ -179,7 +179,8 @@ public class EmailSentNotification : NotificationBase
     {
         public Validator()
         {
-            RuleFor(x => x.EmailAddress)
+            this
+                .RuleFor(x => x.EmailAddress)
                 .NotEmpty().WithMessage("Email cannot be empty.")
                 .EmailAddress().WithMessage("Invalid email format.");
         }
@@ -197,7 +198,8 @@ public class InvalidEmailNotification : NotificationBase
     {
         public Validator()
         {
-            RuleFor(x => x.EmailAddress)
+            this
+                .RuleFor(x => x.EmailAddress)
                 .NotEmpty().WithMessage("Email cannot be empty.")
                 .EmailAddress().WithMessage("Invalid email format.");
         }

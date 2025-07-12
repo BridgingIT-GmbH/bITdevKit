@@ -272,7 +272,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     public async Task RefreshTokenFlow_ShouldProvideNewTokens()
     {
         // First, get initial tokens through authorization code flow
-        var initialTokens = await GetTokensThroughAuthorizationFlow();
+        var initialTokens = await this.GetTokensThroughAuthorizationFlow();
 
         // Now test the refresh token functionality
         var refreshRequest = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -369,7 +369,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     public async Task TokenEndpoint_WithValidScopes_ShouldSucceed(string scope)
     {
         // Get authorization code first
-        var code = await GetAuthorizationCode(scope);
+        var code = await this.GetAuthorizationCode(scope);
 
         // Exchange code for tokens
         var tokenRequest = new FormUrlEncodedContent(new Dictionary<string, string>

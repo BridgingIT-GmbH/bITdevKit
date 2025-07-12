@@ -99,7 +99,7 @@ public class BackgroundWorker(
         {
             var legacyProgress = new Progress<int>(value =>
             {
-                ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(value));
+                this.ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(value));
                 progress?.Report(new BackgroundWorkerProgress(value, $"Progress updated to {value}%"));
             });
             this.task = Task.Run(async () =>
@@ -161,9 +161,9 @@ public class ProgressChangedEventArgs(int progressPercentage) : EventArgs
 /// <param name="work">The asynchronous work to execute in the background, accepting a CancellationToken and IProgress<int> for progress reporting.</param>
 public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Task> work)
 {
-    private bool handleErrors = false;
-    private ILogger logger = null;
-    private IProgress<BackgroundWorkerProgress> progress = null;
+    private bool handleErrors;
+    private ILogger logger;
+    private IProgress<BackgroundWorkerProgress> progress;
 
     /// <summary>
     /// Configures the background worker to handle errors by logging them instead of throwing.

@@ -181,8 +181,8 @@ public class ContainsAnyTests
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public override bool Equals(object obj) => obj is CustomType other && Id == other.Id;
-        public override int GetHashCode() => Id.GetHashCode();
+        public override bool Equals(object obj) => obj is CustomType other && this.Id == other.Id;
+        public override int GetHashCode() => this.Id.GetHashCode();
     }
 
     private class CustomTypeComparer : IEqualityComparer<CustomType>

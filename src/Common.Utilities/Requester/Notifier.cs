@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Reflection;
 using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
@@ -326,7 +324,7 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         var notifierType = typeof(TNotification);
 
         // Only use the handlerCache for non-generic request types
-        if (!notifierType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out var handlerType))
+        if (!notifierType.IsGenericType && this.handlerCache.TryGetValue(handlerInterface, out _))
         {
             try
             {
@@ -345,13 +343,13 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
         try
         {
-            return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly(); ;
+            return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList().AsReadOnly();
         }
         catch (InvalidOperationException)
         {
             return [];
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             throw new NotifierException($"No handlers found for notification type {notifierType.Name}", ex);
         }
@@ -781,7 +779,7 @@ public class NotifierBuilder
         this.services.AddSingleton(this.handlerCache);
         this.services.AddSingleton(this.policyCache);
         this.services.AddSingleton<INotificationHandlerProvider, NotificationHandlerProvider>();
-        this.services.AddSingleton<INotificationBehaviorsProvider>(sp => new NotificationBehaviorsProvider(this.pipelineBehaviorTypes));
+        this.services.AddSingleton<INotificationBehaviorsProvider>(_ => new NotificationBehaviorsProvider(this.pipelineBehaviorTypes));
         this.services.AddScoped<INotifier>(sp => new Notifier(
             sp,
             sp.GetRequiredService<ILogger<Notifier>>(),

@@ -215,14 +215,14 @@ public class FakeAssembly : Assembly
 
     public FakeAssembly(string informationalVersion)
     {
-        _informationalVersion = informationalVersion;
+        this._informationalVersion = informationalVersion;
     }
 
     public override object[] GetCustomAttributes(Type attributeType, bool inherit)
     {
         if (attributeType == typeof(AssemblyInformationalVersionAttribute))
         {
-            return new[] { new AssemblyInformationalVersionAttribute(_informationalVersion) };
+            return new[] { new AssemblyInformationalVersionAttribute(this._informationalVersion) };
         }
         return Array.Empty<object>();
     }

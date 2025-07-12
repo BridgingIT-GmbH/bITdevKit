@@ -97,6 +97,27 @@ Join us in advancing the world of software development with the bITDevKit!
 - [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
 - [Shop](https://github.com/bridgingit/bitdevkit/examples)
 
+## Performance Benchmarks
+
+The bITDevKit includes a dedicated benchmark project using [BenchmarkDotNet](https://benchmarkdotnet.org/) to measure the performance of core components such as the `Requester` (CQRS/MediatR alternative).
+
+**How to run benchmarks:**
+
+```sh
+dotnet run -c Release --project benchmarks/Common.Benchmarks/Common.Benchmarks.csproj
+```
+
+- This will execute all benchmarks and generate detailed reports in the `BenchmarkDotNet.Artifacts/results/` directory (HTML, Markdown, CSV).
+- The default benchmark covers the baseline request/response pipeline. You can extend the benchmarks to cover additional scenarios and compare different configurations.
+
+**Why benchmarks?**
+
+- Ensure high performance and low allocations for core infrastructure.
+- Detect regressions and compare with other libraries (e.g., MediatR).
+- Guide optimization and architectural decisions.
+
+For more details, see the `Common.Benchmarks` project in the `benchmarks/` folder.
+
 ## Collaboration
 
 Simply create a pull request with your ideas or contact us.

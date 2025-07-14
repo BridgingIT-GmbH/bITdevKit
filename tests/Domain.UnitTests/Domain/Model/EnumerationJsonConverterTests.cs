@@ -1,7 +1,6 @@
 ﻿namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
 using System.Text.Json;
-using DevKit.Domain.Model;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]

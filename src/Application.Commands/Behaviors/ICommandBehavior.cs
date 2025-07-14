@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 public interface ICommandBehavior;
 
 public interface ICommandBehavior<TRequest, TResponse> : ICommandBehavior
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     Task<TResponse> Handle(
         TRequest request,

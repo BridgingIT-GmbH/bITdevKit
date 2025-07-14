@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Domain;
 ///     for processing specific types of domain events.
 /// </summary>
 /// <typeparam name="TEvent">The type of event to handle. Must implement <see cref="IDomainEvent" />.</typeparam>
-public interface IDomainEventHandler<in TEvent> : INotificationHandler<TEvent>, IDomainEventHandler
+public interface IDomainEventHandler<in TEvent> : MediatR.INotificationHandler<TEvent>, IDomainEventHandler
     where TEvent : class, IDomainEvent
 {
     /// <summary>

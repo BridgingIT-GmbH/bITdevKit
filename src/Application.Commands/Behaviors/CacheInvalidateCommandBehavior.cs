@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
     : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
 

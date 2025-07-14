@@ -29,10 +29,7 @@ public class RetryStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTas
                 options.Attempts = 1;
             }
 
-            await this.CreatePolicy(options, taskName).ExecuteAsync(async _ =>
-                {
-                    await next().AnyContext();
-                },
+            await this.CreatePolicy(options, taskName).ExecuteAsync(async _ => await next().AnyContext(),
                 cancellationToken).AnyContext();
         }
         else

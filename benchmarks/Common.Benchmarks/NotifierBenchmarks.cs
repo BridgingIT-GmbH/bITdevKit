@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.Benchmarks;
 
 using BenchmarkDotNet.Attributes;
-using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 

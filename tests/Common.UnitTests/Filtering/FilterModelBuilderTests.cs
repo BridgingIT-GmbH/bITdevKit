@@ -9,7 +9,6 @@ using Bogus;
 using Xunit;
 using System;
 using Shouldly;
-using System.Runtime.Intrinsics.X86;
 
 public class FilterModelBuilderTests
 {

@@ -11,7 +11,7 @@ using Polly.Retry;
 
 public class CircuitBreakerCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
     : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)
     {

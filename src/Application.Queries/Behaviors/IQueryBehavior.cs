@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Queries;
 public interface IQueryBehavior;
 
 public interface IQueryBehavior<TRequest, TResponse> : IQueryBehavior
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     Task<TResponse> Handle(
         TRequest request,

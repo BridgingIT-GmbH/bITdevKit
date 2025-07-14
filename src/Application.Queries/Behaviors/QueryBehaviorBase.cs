@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 // https://github.com/jbogard/MediatR/wiki/Behaviors
 public abstract class QueryBehaviorBase<TRequest, TResponse>
-    : IPipelineBehavior<TRequest, TResponse>, IQueryBehavior<TRequest, TResponse>
-    where TRequest : class, IRequest<TResponse>
+    : MediatR.IPipelineBehavior<TRequest, TResponse>, IQueryBehavior<TRequest, TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     protected QueryBehaviorBase(ILoggerFactory loggerFactory)
     {
@@ -26,23 +26,18 @@ public abstract class QueryBehaviorBase<TRequest, TResponse>
         CancellationToken cancellationToken)
     {
         if (!this.CanProcess(request) || !request.GetType().ImplementsInterface(typeof(IQueryRequest<>)))
-        {
             return await next().AnyContext();
+        {
         }
 
         //try
         //{
-        this.Logger.LogDebug("{LogKey} behavior processing (type={BehaviorType})",
-            Constants.LogKey,
-            this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} behavior processing (type={BehaviorType})", Constants.LogKey, this.GetType().Name);
 
         var watch = ValueStopwatch.StartNew();
         var response = await this.Process(request, next, cancellationToken).AnyContext();
 
-        this.Logger.LogDebug("{LogKey} behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms",
-            Constants.LogKey,
-            this.GetType().Name,
-            watch.GetElapsedMilliseconds());
+        this.Logger.LogDebug("{LogKey} behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, this.GetType().Name, watch.GetElapsedMilliseconds());
 
         return response;
         //}

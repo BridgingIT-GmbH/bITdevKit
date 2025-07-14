@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
 using System.Reflection;
-using OpenTelemetry.Trace;
 
 public class TraceActivityDecorator<TDecorated> : DispatchProxy
     where TDecorated : class

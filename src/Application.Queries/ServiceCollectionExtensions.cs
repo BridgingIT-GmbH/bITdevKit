@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
             services.Scan(scan => scan
                 .FromApplicationDependencies(a =>
                     !a.FullName.MatchAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
-                .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+                .AddClasses(classes => classes.AssignableTo(typeof(MediatR.IRequestHandler<,>))
                     .Where(c => !c.IsAbstract &&
                         !c.IsGenericTypeDefinition &&
                         c.ImplementsInterface(typeof(IQueryHandler))))
@@ -57,7 +57,7 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan.FromAssemblies(types.Select(t => t.Assembly).Distinct())
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+            .AddClasses(classes => classes.AssignableTo(typeof(MediatR.IRequestHandler<,>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(IQueryHandler))))
@@ -85,7 +85,7 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan.FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+            .AddClasses(classes => classes.AssignableTo(typeof(MediatR.IRequestHandler<,>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(IQueryHandler))))
@@ -111,7 +111,7 @@ public static class ServiceCollectionExtensions
         ServiceRegistrar.AddRequiredServices(services, new MediatRServiceConfiguration());
 
         services.Scan(scan => scan.FromAssemblies(typeof(T).Assembly)
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+            .AddClasses(classes => classes.AssignableTo(typeof(MediatR.IRequestHandler<,>))
                 .Where(c => !c.IsAbstract &&
                     !c.IsGenericTypeDefinition &&
                     c.ImplementsInterface(typeof(IQueryHandler))))
@@ -147,7 +147,7 @@ public static class ServiceCollectionExtensions
                     $"Query behavior {behavior.Name} does not implement {nameof(IQueryBehavior)}.");
             }
 
-            context.Services.AddTransient(typeof(IPipelineBehavior<,>), behavior);
+            context.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), behavior);
         }
 
         return context;

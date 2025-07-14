@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
                 $"Command behavior {behavior.Name} does not implement {nameof(ICommandBehavior)}.");
         }
 
-        context.Services.AddTransient(typeof(IPipelineBehavior<,>), behavior);
+        context.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), behavior);
         if (options != null)
         {
             context.Services.TryAddSingleton(options);

@@ -11,7 +11,7 @@ using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub)
-    : INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
+    : MediatR.INotificationHandler<ForecastsImportedEvent> // TODO: umstellen auf Message (Handler)
 {
     private readonly IHubContext<NotificationHub> hub = hub;
 

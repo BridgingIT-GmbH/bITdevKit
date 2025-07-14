@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System;
-using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;

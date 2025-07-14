@@ -10,7 +10,7 @@ using Polly.Contrib.Simmy.Outcomes;
 
 public class ChaosExceptionQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
     : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     protected override bool CanProcess(TRequest request)
     {

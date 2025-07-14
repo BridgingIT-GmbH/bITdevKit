@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common.Resiliancy;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Provides debouncing functionality to delay execution of an action until a specified interval has passed since the last call.

@@ -359,7 +359,7 @@ public class CircuitBreakerBuilder(int failureThreshold, TimeSpan resetTimeout)
 /// </summary>
 public class NullLogger : ILogger
 {
-    public static readonly NullLogger Instance = new NullLogger();
+    public static readonly NullLogger Instance = new();
 
     public IDisposable BeginScope<TState>(TState state) => null;
 

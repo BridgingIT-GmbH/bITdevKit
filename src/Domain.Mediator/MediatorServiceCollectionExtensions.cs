@@ -22,7 +22,7 @@ public static class MediatorServiceCollectionExtensions
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.FullName.MatchAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
             .SafeGetTypes(
-                typeof(INotificationHandler<>), typeof(IRequestHandler<,>), typeof(IRequestHandler<>), typeof(IStreamRequestHandler<,>),
+                typeof(MediatR.INotificationHandler<>), typeof(MediatR.IRequestHandler<,>), typeof(IRequestHandler<>), typeof(IStreamRequestHandler<,>),
                 typeof(IRequestExceptionHandler<,,>), typeof(IRequestExceptionAction<,>))
             .Select(t => t.Assembly)
             .Distinct().ToArray();
@@ -97,7 +97,7 @@ public static class MediatorServiceCollectionExtensions
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
                 !a.FullName.MatchAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>))
+            .AddClasses(classes => classes.AssignableTo(typeof(MediatR.INotificationHandler<>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime)); // WARN: causes double registrations due to open-generic handler types (domain event handlers are registered twice and thus handled twice)
@@ -105,7 +105,7 @@ public static class MediatorServiceCollectionExtensions
         services.Scan(scan => scan
             .FromApplicationDependencies(a =>
                 !a.FullName.MatchAny(Blacklists.ApplicationDependencies.Add(assemblyExcludePatterns)))
-            .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>))
+            .AddClasses(classes => classes.AssignableTo(typeof(MediatR.IRequestHandler<,>))
                 .Where(c => !c.IsAbstract && !c.IsGenericTypeDefinition))
             .AsSelfWithInterfaces()
             .WithLifetime(lifetime));

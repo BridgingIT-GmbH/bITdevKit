@@ -10,7 +10,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract partial class QueryHandlerBase<TQuery, TResult>
-    : IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
+    : MediatR.IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
     where TQuery : class, IQueryRequest<QueryResponse<TResult>>
 {
     private const string QueryIdKey = "QueryRequestId";

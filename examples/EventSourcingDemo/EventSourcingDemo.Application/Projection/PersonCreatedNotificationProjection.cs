@@ -16,17 +16,17 @@ using MediatR;
 
 public sealed class PersonCreatedNotificationProjection(
     IPersonOverviewRepository personOverviewRepository,
-    IEntityMapper mapper) : INotificationHandler<PublishAggregateEvent<Person>> // <1>
+    IEntityMapper mapper) : MediatR.INotificationHandler<PublishAggregateEvent<Person>> // <1>
 {
     private readonly IPersonOverviewRepository personOverviewRepository = personOverviewRepository;
     private readonly IEntityMapper mapper = mapper;
 
-    async Task INotificationHandler<PublishAggregateEvent<Person>>.Handle(
+    async Task MediatR.INotificationHandler<PublishAggregateEvent<Person>>.Handle(
         PublishAggregateEvent<Person> notification,
         CancellationToken cancellationToken) // <3>
     {
-        Debug.WriteLine("Do projection of " + notification.Aggregate.Id);
-        if (!(notification.AggregateEvent is UserDeactivatedEvent)) // <4>
+        //Debug.WriteLine("Do projection of " + notification.Aggregate.Id);
+        if (notification.AggregateEvent is not UserDeactivatedEvent) // <4>
         {
             var pov = this.mapper.Map<PersonOverview>(notification.Aggregate);
             await this.personOverviewRepository.UpsertAsync(pov, cancellationToken).AnyContext();

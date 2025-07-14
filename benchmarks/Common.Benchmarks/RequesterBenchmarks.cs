@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.Benchmarks;
 
 using BenchmarkDotNet.Attributes;
-using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 

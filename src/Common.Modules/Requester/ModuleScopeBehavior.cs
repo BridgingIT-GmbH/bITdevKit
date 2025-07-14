@@ -4,29 +4,23 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common.Requester;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Requester;
 using Microsoft.Extensions.Logging;
 
-public class ModuleScopeBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRequest, TResponse>
+public class ModuleScopeBehavior<TRequest, TResponse>(
+    ILoggerFactory loggerFactory,
+    IEnumerable<IModuleContextAccessor> moduleAccessors = null,
+    IEnumerable<ActivitySource> activitySources = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
-    private readonly IEnumerable<ActivitySource> activitySources;
-
-    public ModuleScopeBehavior(
-        ILoggerFactory loggerFactory,
-        IEnumerable<IModuleContextAccessor> moduleAccessors = null,
-        IEnumerable<ActivitySource> activitySources = null)
-        : base(loggerFactory)
-    {
-        this.moduleAccessors = moduleAccessors;
-        this.activitySources = activitySources;
-    }
+    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
+    private readonly IEnumerable<ActivitySource> activitySources = activitySources;
+    private const string ModuleNameLogKey = "ModuleName";
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -44,10 +38,10 @@ public class ModuleScopeBehavior<TRequest, TResponse> : PipelineBehaviorBase<TRe
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
         {
-            ["ModuleName"] = moduleName
+            [ModuleNameLogKey] = moduleName
         }))
         {
-            if (module != null && !module.Enabled)
+            if (module?.Enabled == false)
             {
                 throw new ModuleNotEnabledException(moduleName);
             }

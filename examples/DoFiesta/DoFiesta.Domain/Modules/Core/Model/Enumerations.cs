@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 using System.Diagnostics;
 using BridgingIT.DevKit.Common;
-using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, Value={Value}")]
 public class TodoStatus : Enumeration

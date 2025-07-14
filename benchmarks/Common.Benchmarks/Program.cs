@@ -13,7 +13,7 @@ public static class Program
     {
         BenchmarkRunner.Run<RequesterBenchmarks>();
         //BenchmarkRunner.Run<MediatRBenchmarks>();
-        //BenchmarkRunner.Run<NotifierBenchmarks>();
+        BenchmarkRunner.Run<NotifierBenchmarks>();
         //BenchmarkRunner.Run<ResultBenchmarks>();
         //BenchmarkRunner.Run<ResultNonGenericBenchmarks>();
     }

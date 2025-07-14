@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Requester;
 using Shouldly;
 using Xunit;
 

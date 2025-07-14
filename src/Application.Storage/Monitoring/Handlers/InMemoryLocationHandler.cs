@@ -5,11 +5,9 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SharpCompress.Common;
 
 public class InMemoryLocationHandler(
     ILogger logger,

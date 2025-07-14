@@ -218,7 +218,10 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         this.@lock.EnterReadLock();
         try
         {
-            return [.. new Dictionary<string, object>(this.items)];
+            //return [.. this.items];
+#pragma warning disable IDE0028 // Simplify collection initialization
+            return new PropertyBag(this.items);
+#pragma warning restore IDE0028 // Simplify collection initialization
         }
         finally
         {
@@ -260,11 +263,14 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-    // ------------ Strongly-typed key support (optional) ------------
     public void Set<T>(PropertyBagKey<T> key, T value) => this.Set(key.Name, value);
+
     public T Get<T>(PropertyBagKey<T> key, T defaultValue = default) => this.Get(key.Name, defaultValue);
+
     public bool TryGet<T>(PropertyBagKey<T> key, out T value) => this.TryGet(key.Name, out value);
+
     public bool Contains<T>(PropertyBagKey<T> key) => this.Contains(key.Name);
+
     public bool Remove<T>(PropertyBagKey<T> key) => this.Remove(key.Name);
 }
 

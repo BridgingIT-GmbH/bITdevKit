@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 // https://github.com/jbogard/MediatR/wiki/Behaviors
 public abstract class CommandBehaviorBase<TRequest, TResponse>
-    : IPipelineBehavior<TRequest, TResponse>, ICommandBehavior<TRequest, TResponse>
-    where TRequest : class, IRequest<TResponse>
+    : MediatR.IPipelineBehavior<TRequest, TResponse>, ICommandBehavior<TRequest, TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     protected CommandBehaviorBase(ILoggerFactory loggerFactory)
     {

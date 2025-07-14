@@ -7,8 +7,6 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
 using System;
 using System.Collections.Generic;
-using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;

@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Mapster;

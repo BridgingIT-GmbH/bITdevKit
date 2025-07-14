@@ -17,7 +17,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     IMessageBroker messageBroker = null,
     EntityCommandMessagingBehaviorOptions options = null) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     private readonly IMessageBroker messageBroker = messageBroker;
 

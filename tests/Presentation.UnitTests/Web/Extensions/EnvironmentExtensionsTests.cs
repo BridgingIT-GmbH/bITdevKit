@@ -1,6 +1,5 @@
 ﻿namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
-using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.Extensions.Hosting;
 
 public class EnvironmentExtensionsTests

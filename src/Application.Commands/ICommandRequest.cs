@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using FluentValidation.Results;
 
-public interface ICommandRequest : IRequest
+public interface ICommandRequest : MediatR.IRequest
 {
     Guid RequestId { get; }
 
@@ -16,7 +16,7 @@ public interface ICommandRequest : IRequest
     ValidationResult Validate();
 }
 
-public interface ICommandRequest<out TResult> : IRequest<TResult>
+public interface ICommandRequest<out TResult> : MediatR.IRequest<TResult>
 {
     Guid RequestId { get; }
 

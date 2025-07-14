@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Infrastructure;
 
 using BridgingIT.DevKit.Common;
-using DevKit.Domain.Model;
 using DevKit.Infrastructure.EntityFramework;
 using Domain;
 using Microsoft.EntityFrameworkCore;

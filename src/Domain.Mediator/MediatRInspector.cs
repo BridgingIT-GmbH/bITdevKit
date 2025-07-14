@@ -16,10 +16,10 @@ public static class MediatRInspector
 {
     private static readonly Type[] MediatRHandlerTypes =
     [
-        typeof(INotificationHandler<>),
-        typeof(IRequestHandler<,>),
-        typeof(IRequestHandler<>),
-        typeof(IStreamRequestHandler<,>),
+        typeof(MediatR.INotificationHandler < >),
+        typeof(MediatR.IRequestHandler <,   >),
+        typeof(MediatR.IRequestHandler < >),
+        typeof(MediatR.IStreamRequestHandler <, >),
         typeof(IRequestExceptionHandler<,,>),
         typeof(IRequestExceptionAction<,>)
     ];

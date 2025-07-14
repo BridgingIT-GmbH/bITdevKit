@@ -26,18 +26,12 @@ public class DomainEvent<TId> : IDomainEvent<TId>
         this.AggregateId = aggregateId;
     }
 
-    [JsonProperty(DefaultValueHandling =
-        DefaultValueHandling
-            .Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     public Guid EventId { get; private set; }
 
-    [JsonProperty(DefaultValueHandling =
-        DefaultValueHandling
-            .Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     public DateTimeOffset Timestamp { get; private set; }
 
-    [JsonProperty(DefaultValueHandling =
-        DefaultValueHandling
-            .Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     public TId AggregateId { get; private set; }
 }

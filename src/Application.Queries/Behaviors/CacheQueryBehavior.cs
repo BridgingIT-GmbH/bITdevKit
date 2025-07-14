@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Queries;
 
 public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, ICacheProvider provider)
     : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
 

@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
-using System.Diagnostics;
 using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics;
 
 public abstract partial class CommandHandlerBase<TCommand>
-    : IRequestHandler<TCommand, CommandResponse>, ICommandRequestHandler
+    : MediatR.IRequestHandler<TCommand, CommandResponse>, ICommandRequestHandler
     where TCommand : class, ICommandRequest<CommandResponse>
 {
     private const string CommandIdKey = "CommandRequestId";
@@ -58,12 +58,7 @@ public abstract partial class CommandHandlerBase<TCommand>
                     {
                         a?.AddEvent(new ActivityEvent(
                             $"processing (type={command.GetType().Name}, id={command.RequestId.ToString("N")}, handler={handlerType})"));
-                        TypedLogger.LogProcessing(this.Logger,
-                            Constants.LogKey,
-                            requestType,
-                            command.RequestId.ToString("N"),
-                            handlerType,
-                            moduleName);
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, requestType, command.RequestId.ToString("N"), handlerType, moduleName);
 
                         this.ValidateRequest(command);
                         var watch = ValueStopwatch.StartNew();
@@ -71,13 +66,7 @@ public abstract partial class CommandHandlerBase<TCommand>
 
                         if (response?.Cancelled == true || cancellationToken.IsCancellationRequested)
                         {
-                            this.Logger.LogWarning(
-                                "{LogKey} processing cancelled (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, reason={CommandCancelledReason})",
-                                Constants.LogKey,
-                                requestType,
-                                command.RequestId.ToString("N"),
-                                handlerType,
-                                response?.CancelledReason);
+                            this.Logger.LogWarning("{LogKey} processing cancelled (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, reason={CommandCancelledReason})", Constants.LogKey, requestType, command.RequestId.ToString("N"), handlerType, response?.CancelledReason);
                             a?.AddEvent(new ActivityEvent(
                                 $"processing cancelled (type={requestType}, id={command.RequestId.ToString("N")}, handler={handlerType}, reason={response?.CancelledReason})"));
 
@@ -107,12 +96,7 @@ public abstract partial class CommandHandlerBase<TCommand>
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex,
-                    "{LogKey} processing error (type={CommandType}, id={CommandRequestId}): {ErrorMessage}",
-                    Constants.LogKey,
-                    requestType,
-                    command.RequestId.ToString("N"),
-                    ex.Message);
+                this.Logger.LogError(ex, "{LogKey} processing error (type={CommandType}, id={CommandRequestId}): {ErrorMessage}", Constants.LogKey, requestType, command.RequestId.ToString("N"), ex.Message);
 
                 throw;
             }
@@ -146,7 +130,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
     IEnumerable<ActivitySource> activitySources = null)
-    : IRequestHandler<TCommand, CommandResponse<TResult>>, ICommandRequestHandler
+    : MediatR.IRequestHandler<TCommand, CommandResponse<TResult>>, ICommandRequestHandler
     where TCommand : class, ICommandRequest<CommandResponse<TResult>>
 {
     private const string CommandIdKey = "CommandRequestId";

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using Application.Modules.Core;
 using BridgingIT.DevKit.Application;
-using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;

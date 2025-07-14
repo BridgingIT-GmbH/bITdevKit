@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Application.Requester;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;

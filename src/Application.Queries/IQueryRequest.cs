@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Queries;
 
 using FluentValidation.Results;
 
-public interface IQueryRequest<out TResult> : IRequest<TResult>
+public interface IQueryRequest<out TResult> : MediatR.IRequest<TResult>
 {
     Guid RequestId { get; }
 

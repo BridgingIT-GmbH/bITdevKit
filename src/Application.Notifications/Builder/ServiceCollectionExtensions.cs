@@ -3,7 +3,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System;
 using BridgingIT.DevKit.Application.Notifications;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {

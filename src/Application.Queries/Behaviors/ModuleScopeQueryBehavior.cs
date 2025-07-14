@@ -11,7 +11,7 @@ public class ModuleScopeQueryBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
     IEnumerable<ActivitySource> activitySources = null) : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
-    where TRequest : class, IRequest<TResponse>
+    where TRequest : class, MediatR.IRequest<TResponse>
 {
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;

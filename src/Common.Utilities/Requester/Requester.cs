@@ -11,7 +11,6 @@ using System.Data;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
-using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -487,25 +486,34 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
         }
 
         var behaviorType = typeof(IPipelineBehavior<TRequest, IResult<TValue>>);
-        var allBehaviors = serviceProvider.GetServices(behaviorType)
-            .Cast<IPipelineBehavior<TRequest, IResult<TValue>>>().ToList();
+        var allBehaviorsArray = serviceProvider.GetServices(behaviorType)
+            .Cast<IPipelineBehavior<TRequest, IResult<TValue>>>().ToArray();
 
         // If no behaviors are registered but pipelineBehaviorTypes expects some, throw an exception
-        if (allBehaviors.Count == 0 && this.pipelineBehaviorTypes.Count > 0)
+        if (allBehaviorsArray.Length == 0 && this.pipelineBehaviorTypes.Count > 0)
         {
             throw new InvalidOperationException($"No service for type '{behaviorType}' has been registered.");
         }
 
         // Order behaviors according to the pipelineBehaviorTypes list
-        var orderedBehaviors = new List<IPipelineBehavior<TRequest, IResult<TValue>>>();
-        var remainingBehaviors = new List<IPipelineBehavior<TRequest, IResult<TValue>>>(allBehaviors);
-        foreach (var type in this.pipelineBehaviorTypes)
+        var orderedBehaviors = new IPipelineBehavior<TRequest, IResult<TValue>>[this.pipelineBehaviorTypes.Count];
+        var orderedCount = 0;
+        for (var i = 0; i < this.pipelineBehaviorTypes.Count; i++)
         {
-            var matchingBehavior = remainingBehaviors.FirstOrDefault(b => b.GetType().GetGenericTypeDefinition() == type);
+            var type = this.pipelineBehaviorTypes[i];
+            IPipelineBehavior<TRequest, IResult<TValue>> matchingBehavior = null;
+            for (var j = 0; j < allBehaviorsArray.Length; j++)
+            {
+                if (allBehaviorsArray[j].GetType().GetGenericTypeDefinition() == type)
+                {
+                    matchingBehavior = allBehaviorsArray[j];
+                    break;
+                }
+            }
+
             if (matchingBehavior != null)
             {
-                orderedBehaviors.Add(matchingBehavior);
-                remainingBehaviors.Remove(matchingBehavior);
+                orderedBehaviors[orderedCount++] = matchingBehavior;
             }
             else
             {
@@ -515,15 +523,13 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
         }
 
         // Validate that all registered behaviors implement the expected interface
-        foreach (var behavior in allBehaviors)
+        var matchedCount = orderedCount;
+        if (allBehaviorsArray.Length != matchedCount)
         {
-            if (!this.pipelineBehaviorTypes.Any(type => type == behavior.GetType().GetGenericTypeDefinition()))
-            {
-                throw new InvalidOperationException($"Behavior type '{behavior.GetType()}' does not match any registered behavior types for '{behaviorType}'.");
-            }
+            throw new InvalidOperationException("Mismatch in registered behaviors for '{behaviorType}'.");
         }
 
-        return orderedBehaviors.AsReadOnly();
+        return orderedBehaviors.AsSpan(0, orderedCount).ToArray();
     }
 }
 
@@ -666,6 +672,8 @@ public partial class Requester(
     private readonly IHandlerCache handlerCache = handlerCache ?? throw new ArgumentNullException(nameof(handlerCache));
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
 
+    private static readonly ConcurrentDictionary<Type, string> TypeNameCache = [];
+
     /// <summary>
     /// Dispatches a request to its handler asynchronously.
     /// </summary>
@@ -683,7 +691,10 @@ public partial class Requester(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        TypedLogger.LogProcessing(this.logger, "REQ", typeof(TRequest).Name, request.RequestId.ToString("N"));
+        var requestTypeName = TypeNameCache.GetOrAdd(typeof(TRequest), static t => t.Name);
+        var requestIdString = request.RequestId.ToString("N");
+
+        TypedLogger.LogProcessing(this.logger, "REQ", requestTypeName, requestIdString);
         cancellationToken.ThrowIfCancellationRequested();
         options ??= new SendOptions();
         var watch = ValueStopwatch.StartNew();
@@ -695,29 +706,30 @@ public partial class Requester(
             Func<Task<IResult<TValue>>> next = async () =>
                 await handler.HandleAsync(request, options, cancellationToken);
 
-            foreach (var behavior in behaviors.Reverse())
+            for (var i = behaviors.Count - 1; i >= 0; i--)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var behaviorType = behavior.GetType().Name;
-                TypedLogger.LogProcessing(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"));
+                var behavior = behaviors[i];
+                var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
+                TypedLogger.LogProcessing(this.logger, behaviorTypeName, requestTypeName, requestIdString);
                 var behaviorWatch = ValueStopwatch.StartNew();
                 var currentNext = next;
                 next = async () =>
                 {
                     var result = await behavior.HandleAsync(request, options, handler.GetType(), currentNext, cancellationToken);
-                    TypedLogger.LogProcessed(this.logger, behaviorType, typeof(TRequest).Name, request.RequestId.ToString("N"), behaviorWatch.GetElapsedMilliseconds());
+                    TypedLogger.LogProcessed(this.logger, behaviorTypeName, requestTypeName, requestIdString, behaviorWatch.GetElapsedMilliseconds());
                     return result;
                 };
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             var result = await next().ConfigureAwait(false);
-            TypedLogger.LogProcessed(this.logger, "REQ", typeof(TRequest).Name, request.RequestId.ToString("N"), watch.GetElapsedMilliseconds());
+            TypedLogger.LogProcessed(this.logger, "REQ", requestTypeName, requestIdString, watch.GetElapsedMilliseconds());
             return (Result<TValue>)result;
         }
         catch (Exception ex) when (options.HandleExceptionsAsResultError)
         {
-            TypedLogger.LogError(this.logger, ex, typeof(TRequest).Name, request.RequestId.ToString("N"));
+            TypedLogger.LogError(this.logger, ex, requestTypeName, requestIdString);
             return Result<TValue>.Failure().WithError(new ExceptionError(ex));
         }
     }
@@ -785,7 +797,7 @@ public partial class Requester(
         [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={RequestType}, id={RequestId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string requestType, string requestId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={RequestType}, id={RequestId}) -> took {TimeElapsed:0.0000} ms")]
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
         [LoggerMessage(2, LogLevel.Error, "Request processing failed for {RequestType} ({RequestId})")]
@@ -1222,7 +1234,7 @@ public static class ServiceCollectionExtensions
     /// services.AddRequester()
     ///     .AddHandlers(new[] { "^System\\..*" }); // Exclude System assemblies
     /// var provider = services.BuildServiceProvider();
-    /// var requester = provider.GetRequiredService&lt;IRequester&gt;();
+    /// var requester = provider.GetRequiredService<IRequester>();
     /// var result = await requester.SendAsync(new MyRequest());
     ///
     /// // Usage with pipeline behaviors
@@ -1230,10 +1242,10 @@ public static class ServiceCollectionExtensions
     /// services.AddLogging();
     /// services.AddRequester()
     ///     .AddHandlers(new[] { "^System\\..*" })
-    ///     .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;() // Add validation behavior
-    ///     .WithBehavior&lt;RetryBehavior&lt;,&gt;&gt;();    // Add retry behavior
+    ///     .WithBehavior<ValidationBehavior<,>>() // Add validation behavior
+    ///     .WithBehavior<RetryBehavior<,>>();    // Add retry behavior
     /// var provider = services.BuildServiceProvider();
-    /// var requester = provider.GetRequiredService&lt;IRequester&gt;();
+    /// var requester = provider.GetRequiredService<IRequester>();
     /// var result = await requester.SendAsync(new MyRequest());
     /// </code>
     /// </example>
@@ -1476,7 +1488,6 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
-        //return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Retry != null;
         return true;
     }
 
@@ -1501,16 +1512,12 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
                 retryAttempt => delay,
                 (exception, timespan, retryAttempt, context) =>
                 {
-                    this.Logger.LogWarning("{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs}ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.Humanize(), exception.Exception?.Message);
+                    this.Logger.LogWarning("{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs} ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.TotalMilliseconds, exception.Exception?.Message);
                 });
 
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
     }
 
-    /// <summary>
-    /// Indicates that this behavior is handler-specific and should run for each handler.
-    /// </summary>
-    /// <returns><c>true</c> to indicate this is a handler-specific behavior.</returns>
     public override bool IsHandlerSpecific()
     {
         return true;
@@ -1547,7 +1554,7 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
             TimeoutStrategy.Pessimistic,
             (context, timespan, task, exception) =>
             {
-                this.Logger.LogWarning("{LogKey} timeout behavior triggered (timeout={Timeout}, type={BehaviorType})", LogKey, timespan.Humanize(), this.GetType().Name);
+                this.Logger.LogWarning("{LogKey} timeout behavior triggered (timeout={TimeoutMs} ms, type={BehaviorType})", LogKey, timespan.TotalMilliseconds, this.GetType().Name);
                 return Task.CompletedTask;
             });
 
@@ -1701,7 +1708,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
                     attempt => TimeSpan.FromMilliseconds(options.Backoff.Milliseconds * Math.Pow(2, attempt)),
                     (ex, wait) =>
                     {
-                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.Humanize(), this.GetType().Name, ex.Message);
+                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
                         attempts++;
                     })
             : Policy.Handle<Exception>()
@@ -1709,7 +1716,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
                     attempt => options.Backoff,
                     (ex, wait) =>
                     {
-                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.Humanize(), this.GetType().Name, ex.Message);
+                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attempts, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
                         attempts++;
                     });
 
@@ -1720,7 +1727,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
                 options.BreakDuration,
                 (ex, wait) =>
                 {
-                    this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}", LogKey, wait.Humanize(), this.GetType().Name, ex.Message);
+                    this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (circuit=open, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
                 },
                 () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name),
                 () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name));

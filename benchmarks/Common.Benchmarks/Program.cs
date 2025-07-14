@@ -12,8 +12,8 @@ public static class Program
     public static void Main(string[] args)
     {
         BenchmarkRunner.Run<RequesterBenchmarks>();
-        // BenchmarkRunner.Run<MediatRBenchmarks>();
-        BenchmarkRunner.Run<NotifierBenchmarks>();
+        //BenchmarkRunner.Run<MediatRBenchmarks>();
+        //BenchmarkRunner.Run<NotifierBenchmarks>();
         //BenchmarkRunner.Run<ResultBenchmarks>();
         //BenchmarkRunner.Run<ResultNonGenericBenchmarks>();
     }

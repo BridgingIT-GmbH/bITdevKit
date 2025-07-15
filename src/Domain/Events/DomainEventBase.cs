@@ -23,6 +23,12 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
     /// </remarks>
     public virtual Guid EventId { get; protected set; } = GuidGenerator.CreateSequential();
 
+    public Guid NotificationId
+    {
+        get => this.EventId;
+        protected set => this.EventId = value;
+    }
+
     /// <summary>
     ///     Gets the timestamp indicating when the domain event was created.
     /// </summary>
@@ -30,6 +36,12 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
     ///     This property is set to the current UTC date and time when the event is instantiated.
     /// </remarks>
     public virtual DateTimeOffset Timestamp { get; protected set; } = DateTime.UtcNow;
+
+    public DateTimeOffset NotificationTimestamp
+    {
+        get => this.Timestamp;
+        protected set => this.Timestamp = value;
+    }
 
     /// <summary>
     ///     Compares this instance with another DomainEventBase instance

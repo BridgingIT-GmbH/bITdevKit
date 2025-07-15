@@ -5,13 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using MediatR;
-
 /// <summary>
 ///     Represents a domain event which is used to signal changes within the domain.
 ///     Domain events are used to encapsulate changes to the state of an aggregate.
 /// </summary>
-public interface IDomainEvent : INotification
+public interface IDomainEvent : MediatR.INotification, Common.INotification
 {
     /// <summary>
     ///     Gets the unique identifier for the domain event.

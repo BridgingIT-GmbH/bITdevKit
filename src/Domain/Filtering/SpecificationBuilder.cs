@@ -43,7 +43,7 @@ public static class SpecificationBuilder
         }
 
         var result = new List<ISpecification<TEntity>>();
-        ISpecification<TEntity> currentSpeciification = null;
+        ISpecification<TEntity> currentSpecification = null;
 
         for (var i = 0; i < filters.Count(); i++)
         {
@@ -51,19 +51,19 @@ public static class SpecificationBuilder
             var isLastFilter = i == filters.Count() - 1;
             var specification = BuildSpecification<TEntity>(filter);
 
-            if (currentSpeciification == null)
+            if (currentSpecification == null)
             {
-                currentSpeciification = specification;
+                currentSpecification = specification;
             }
             else
             {
-                currentSpeciification = currentSpeciification.Or(specification);
+                currentSpecification = currentSpecification.Or(specification);
             }
 
             if (isLastFilter || filter.Logic == FilterLogicOperator.And)
             {
-                result.Add(currentSpeciification);
-                currentSpeciification = null;
+                result.Add(currentSpecification);
+                currentSpecification = null;
             }
         }
 

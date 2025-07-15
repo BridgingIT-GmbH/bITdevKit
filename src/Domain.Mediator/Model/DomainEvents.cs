@@ -88,6 +88,23 @@ public class DomainEvents // TODO: create interface?
     }
 
     /// <summary>
+    ///     Dispatches all registered domain events asynchronously using the provided notifier.
+    /// </summary>
+    /// <param name="notifier">The mediator used to publish the events.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task DispatchAsync(INotifier notifier, CancellationToken cancellationToken)
+    {
+        EnsureArg.IsNotNull(notifier, nameof(notifier));
+
+        foreach (var @event in this.GetAll())
+        {
+            await notifier.PublishAsync(@event, cancellationToken: cancellationToken).AnyContext();
+        }
+
+        this.Clear();
+    }
+
+    /// <summary>
     ///     Clears the registered domain events.
     /// </summary>
     public void Clear()

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 /// Provides a request/response pattern for handling commands and queries.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the Requester class with the specified settings.
+/// Initializes a new instance of the SimpleRequester class with the specified settings.
 /// </remarks>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from request handlers; otherwise, throws them. Defaults to false.</param>
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var requester = new Requester(progress: new Progress<RequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
+/// var requester = new SimpleRequester(progress: new Progress<SimpleRequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
 /// requester.RegisterHandler(new MyRequestHandler());
 /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
 /// Console.WriteLine(response.Result);
@@ -41,7 +41,7 @@ public class SimpleRequester(
     /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered.</exception>
     /// <example>
     /// <code>
-    /// var requester = new Requester();
+    /// var requester = new SimpleRequester();
     /// requester.RegisterHandler(new MyRequestHandler());
     /// </code>
     /// </example>
@@ -60,6 +60,26 @@ public class SimpleRequester(
     }
 
     /// <summary>
+    /// Registers a handler function for a specific request type.
+    /// </summary>
+    /// <typeparam name="TRequest">The type of request to handle.</typeparam>
+    /// <typeparam name="TResponse">The type of response returned by the handler.</typeparam>
+    /// <param name="handlerFunc">The handler function to register.</param>
+    /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered.</exception>
+    /// <example>
+    /// <code>
+    /// var requester = new SimpleRequester();
+    /// requester.RegisterHandler<MyRequest, MyResponse>(async (req, ct) => new MyResponse { Result = req.Data });
+    /// </code>
+    /// </example>
+    public void RegisterHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc)
+        where TRequest : ISimpleRequest<TResponse>
+    {
+        var handler = new SimpleRequestHandler<TRequest, TResponse>(handlerFunc);
+        this.RegisterHandler(handler);
+    }
+
+    /// <summary>
     /// Sends a request to its registered handler and returns the response.
     /// </summary>
     /// <typeparam name="TRequest">The type of request to send.</typeparam>
@@ -73,8 +93,8 @@ public class SimpleRequester(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<RequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
-    /// var requester = new Requester();
+    /// var progress = new Progress<SimpleRequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
+    /// var requester = new SimpleRequester();
     /// requester.RegisterHandler(new MyRequestHandler());
     /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token, progress);
     /// Console.WriteLine(response.Result);
@@ -161,6 +181,22 @@ public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestH
 }
 
 /// <summary>
+/// Implements a handler for a specific request type using a function.
+/// </summary>
+/// <typeparam name="TRequest">The type of request to handle.</typeparam>
+/// <typeparam name="TResponse">The type of response returned by the handler.</typeparam>
+public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc) : ISimpleRequestHandler<TRequest, TResponse>
+    where TRequest : ISimpleRequest<TResponse>
+{
+    private readonly Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc = handlerFunc;
+
+    public async Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
+    {
+        return await this.handlerFunc(request, cancellationToken);
+    }
+}
+
+/// <summary>
 /// Defines a pipeline behavior for pre- and post-processing of requests.
 /// </summary>
 public interface ISimpleRequestPipelineBehavior
@@ -191,23 +227,22 @@ public class LoggingRequestPipelineBehavior(ILogger logger) : ISimpleRequestPipe
 }
 
 /// <summary>
-/// A fluent builder for configuring and creating a Requester instance.
+/// A fluent builder for configuring and creating a SimpleRequester instance.
 /// </summary>
 public class SimpleRequesterBuilder
 {
     private bool handleErrors;
     private ILogger logger;
-    private readonly List<ISimpleRequestPipelineBehavior> pipelineBehaviors;
+    private readonly List<ISimpleRequestPipelineBehavior> pipelineBehaviors = [];
     private IProgress<SimpleRequesterProgress> progress;
 
     /// <summary>
-    /// Initializes a new instance of the RequesterBuilder.
+    /// Initializes a new instance of the SimpleRequesterBuilder.
     /// </summary>
     public SimpleRequesterBuilder()
     {
         this.handleErrors = false;
         this.logger = null;
-        this.pipelineBehaviors = [];
         this.progress = null;
     }
 
@@ -215,7 +250,7 @@ public class SimpleRequesterBuilder
     /// Configures the requester to handle errors by logging them instead of throwing.
     /// </summary>
     /// <param name="logger">The logger to use for error logging. If null, errors are silently ignored.</param>
-    /// <returns>The RequesterBuilder instance for chaining.</returns>
+    /// <returns>The SimpleRequesterBuilder instance for chaining.</returns>
     public SimpleRequesterBuilder HandleErrors(ILogger logger = null)
     {
         this.handleErrors = true;
@@ -227,7 +262,7 @@ public class SimpleRequesterBuilder
     /// Adds a pipeline behavior to the requester for pre- and post-processing of requests.
     /// </summary>
     /// <param name="behavior">The pipeline behavior to add.</param>
-    /// <returns>The RequesterBuilder instance for chaining.</returns>
+    /// <returns>The SimpleRequesterBuilder instance for chaining.</returns>
     public SimpleRequesterBuilder AddPipelineBehavior(ISimpleRequestPipelineBehavior behavior)
     {
         this.pipelineBehaviors.Add(behavior);
@@ -238,7 +273,7 @@ public class SimpleRequesterBuilder
     /// Configures the requester to report progress using the specified progress reporter.
     /// </summary>
     /// <param name="progress">The progress reporter to use for request operations.</param>
-    /// <returns>The RequesterBuilder instance for chaining.</returns>
+    /// <returns>The SimpleRequesterBuilder instance for chaining.</returns>
     public SimpleRequesterBuilder WithProgress(IProgress<SimpleRequesterProgress> progress)
     {
         this.progress = progress;
@@ -246,9 +281,9 @@ public class SimpleRequesterBuilder
     }
 
     /// <summary>
-    /// Builds and returns a configured Requester instance.
+    /// Builds and returns a configured SimpleRequester instance.
     /// </summary>
-    /// <returns>A configured Requester instance.</returns>
+    /// <returns>A configured SimpleRequester instance.</returns>
     public SimpleRequester Build()
     {
         return new SimpleRequester(

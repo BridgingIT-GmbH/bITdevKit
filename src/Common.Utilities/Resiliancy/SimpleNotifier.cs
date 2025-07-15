@@ -1,13 +1,24 @@
-﻿namespace BridgingIT.DevKit.Common.Utilities;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Common.Utilities;
+
+using System.Reflection;
 using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
+
+/// <summary>
+/// Defines a non-generic base interface for all notifications.
+/// </summary>
+public interface ISimpleNotification;
 
 /// <summary>
 /// Provides a publish-subscribe pattern for loosely coupled event handling.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the Notifier class with the specified settings.
+/// Initializes a new instance of the SimpleNotifier class with the specified settings.
 /// </remarks>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from event handlers; otherwise, throws them. Defaults to false.</param>
@@ -15,7 +26,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
 /// <example>
 /// <code>
-/// var notifier = new Notifier(progress: new Progress<NotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
+/// var notifier = new SimpleNotifier(progress: new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
 /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
 /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);
 /// </code>
@@ -23,11 +34,11 @@ using Microsoft.Extensions.Logging;
 public class SimpleNotifier(
     ILogger logger = null,
     bool handleErrors = false,
-    IEnumerable<ISimpleNotifcationPipelineBehavior> pipelineBehaviors = null,
+    IEnumerable<ISimpleNotificationPipelineBehavior> pipelineBehaviors = null,
     IProgress<SimpleNotifierProgress> progress = null)
 {
     private readonly Dictionary<Type, List<(ISimpleNotificationHandler Handler, int Order)>> subscribers = [];
-    private readonly List<ISimpleNotifcationPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToList() ?? [];
+    private readonly List<ISimpleNotificationPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToList() ?? [];
     private readonly Lock lockObject = new();
     private readonly IProgress<SimpleNotifierProgress> progress = progress;
 
@@ -39,24 +50,132 @@ public class SimpleNotifier(
     /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
     /// <example>
     /// <code>
-    /// var notifier = new Notifier();
+    /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message), order: 1);
     /// </code>
     /// </example>
     public void Subscribe<TNotification>(Func<TNotification, CancellationToken, Task> handler, int order = 0)
+        where TNotification : ISimpleNotification
     {
         var notificationHandler = new SimpleNotificationHandler<TNotification>(handler);
         lock (this.lockObject)
         {
             var notificationType = typeof(TNotification);
-            if (!this.subscribers.TryGetValue(notificationType, out var handlers))
-                handlers = [];
+            if (!this.subscribers.TryGetValue(notificationType, out var handlers)
+)
             {
+                handlers = [];
                 this.subscribers[notificationType] = handlers;
             }
 
             handlers.Add((notificationHandler, order));
             handlers.Sort((a, b) => a.Order.CompareTo(b.Order));
+        }
+    }
+
+    /// <summary>
+    /// Subscribes a handler to events of the specified type with an optional execution order.
+    /// </summary>
+    /// <typeparam name="TNotification">The type of event to subscribe to.</typeparam>
+    /// <param name="handler">The handler to invoke when the event is published.</param>
+    /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
+    /// <example>
+    /// <code>
+    /// var notifier = new SimpleNotifier();
+    /// notifier.Subscribe<MyEvent>(new MyEventHandler(), order: 1);
+    /// </code>
+    /// </example>
+    public void Subscribe<TNotification>(ISimpleNotificationHandler<TNotification> handler, int order = 0)
+        where TNotification : ISimpleNotification
+    {
+        lock (this.lockObject)
+        {
+            var notificationType = typeof(TNotification);
+            if (!this.subscribers.TryGetValue(notificationType, out var handlers)
+)
+            {
+                handlers = [];
+                this.subscribers[notificationType] = handlers;
+            }
+
+            handlers.Add((handler, order));
+            handlers.Sort((a, b) => a.Order.CompareTo(b.Order));
+        }
+    }
+
+    /// <summary>
+    /// Subscribes a handler to events of the specified type with an optional execution order.
+    /// </summary>
+    /// <param name="handler">The handler to invoke when the event is published.</param>
+    /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
+    /// <example>
+    /// <code>
+    /// var notifier = new SimpleNotifier();
+    /// notifier.Subscribe(new MyEventHandler(), order: 1);
+    /// </code>
+    /// </example>
+    public void Subscribe(ISimpleNotificationHandler handler, int order = 0)
+    {
+        var handlerType = handler.GetType();
+        var interfaceType = handlerType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISimpleNotificationHandler<>));
+        if (interfaceType == null)
+        {
+            throw new InvalidOperationException("The handler does not implement ISimpleNotificationHandler<TNotification>.");
+        }
+
+        var tNotification = interfaceType.GetGenericArguments()[0];
+        var method = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).First(m => m.Name == nameof(Subscribe) && m.GetParameters().Length == 2 && m.GetParameters()[0].ParameterType.IsGenericType && m.GetGenericArguments().Length == 1 && m.GetParameters()[0].ParameterType.GetGenericTypeDefinition() == typeof(ISimpleNotificationHandler<>));
+        var genericMethod = method.MakeGenericMethod(tNotification);
+        genericMethod.Invoke(this, [handler, order]);
+    }
+
+    /// <summary>
+    /// Subscribes a handler to events of the specified type with an optional execution order.
+    /// </summary>
+    /// <typeparam name="THandler">The type of the handler to instantiate and subscribe.</typeparam>
+    /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
+    /// <example>
+    /// <code>
+    /// var notifier = new SimpleNotifier();
+    /// notifier.Subscribe<MyEventHandler>(order: 1);
+    /// </code>
+    /// </example>
+    public void Subscribe<TNotification, THandler>(int order = 0)
+        where THandler : ISimpleNotificationHandler<TNotification>, new()
+        where TNotification : ISimpleNotification
+    {
+        var instance = new THandler();
+        this.Subscribe(instance, order);
+    }
+
+    /// <summary>
+    /// Unsubscribe s a handler from events of the specified type.
+    /// </summary>
+    /// <typeparam name="TNotification">The type of event to unsubscribe from.</typeparam>
+    /// <param name="handler">The handler to remove.</param>
+    /// <example>
+    /// <code>
+    /// var notifier = new SimpleNotifier();
+    /// Func<MyEvent, CancellationToken, Task> handler = async (e, ct) => Console.WriteLine(e.Message);
+    /// notifier.Subscribe<MyEvent>(handler);
+    /// notifier.Unsubscribe<MyEvent>(handler);
+    /// </code>
+    /// </example>
+    public void Unsubscribe<TNotification>(Func<TNotification, CancellationToken, Task> handler)
+        where TNotification : ISimpleNotification
+    {
+        lock (this.lockObject)
+        {
+            var notificationType = typeof(TNotification);
+            if (this.subscribers.TryGetValue(notificationType, out var handlers))
+            {
+                var notificationHandler = new SimpleNotificationHandler<TNotification>(handler);
+                handlers.RemoveAll(h => h.Handler.Equals(notificationHandler));
+                if (handlers.Count == 0)
+                {
+                    this.subscribers.Remove(notificationType);
+                }
+            }
         }
     }
 
@@ -67,21 +186,21 @@ public class SimpleNotifier(
     /// <param name="handler">The handler to remove.</param>
     /// <example>
     /// <code>
-    /// var notifier = new Notifier();
-    /// Func<MyEvent, CancellationToken, Task> handler = async (e, ct) => Console.WriteLine(e.Message);
+    /// var notifier = new SimpleNotifier();
+    /// var handler = new MyEventHandler();
     /// notifier.Subscribe<MyEvent>(handler);
     /// notifier.Unsubscribe<MyEvent>(handler);
     /// </code>
     /// </example>
-    public void Unsubscribe<TNotification>(Func<TNotification, CancellationToken, Task> handler)
+    public void Unsubscribe<TNotification>(ISimpleNotificationHandler<TNotification> handler)
+        where TNotification : ISimpleNotification
     {
         lock (this.lockObject)
         {
             var notificationType = typeof(TNotification);
             if (this.subscribers.TryGetValue(notificationType, out var handlers))
             {
-                var notificationHandler = new SimpleNotificationHandler<TNotification>(handler);
-                handlers.RemoveAll(h => h.Handler.Equals(notificationHandler));
+                handlers.RemoveAll(h => h.Handler == handler);
                 if (handlers.Count == 0)
                 {
                     this.subscribers.Remove(notificationType);
@@ -102,14 +221,15 @@ public class SimpleNotifier(
     /// <example>
     /// <code>
     /// var cts = new CancellationTokenSource();
-    /// var progress = new Progress<NotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
-    /// var notifier = new Notifier();
+    /// var progress = new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
+    /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
     /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
     /// </code>
     /// </example>
     public async Task PublishAsync<TNotification>(TNotification notification, IProgress<SimpleNotifierProgress> progress = null, CancellationToken cancellationToken = default)
+        where TNotification : ISimpleNotification
     {
         progress ??= this.progress; // Use instance-level progress if provided
         List<(ISimpleNotificationHandler Handler, int Order)> handlers;
@@ -128,7 +248,7 @@ public class SimpleNotifier(
             try
             {
                 // Apply pipeline behaviors (already reversed during initialization)
-                Func<Task> next = async () => await handler.HandleAsync(notification, cancellationToken);
+                Func<Task> next = async () => await ((ISimpleNotificationHandler<TNotification>)handler).HandleAsync(notification, cancellationToken);
                 foreach (var behavior in this.pipelineBehaviors)
                 {
                     var currentNext = next;
@@ -152,7 +272,7 @@ public class SimpleNotifier(
 }
 
 /// <summary>
-/// Defines a handler for a specific event type.
+/// Non-generic base interface for notification handlers.
 /// </summary>
 public interface ISimpleNotificationHandler
 {
@@ -160,19 +280,49 @@ public interface ISimpleNotificationHandler
 }
 
 /// <summary>
-/// Implements a handler for a specific event type.
+/// Defines a handler for a specific event type.
 /// </summary>
 /// <typeparam name="TNotification">The type of event to handle.</typeparam>
-public class SimpleNotificationHandler<TNotification>(Func<TNotification, CancellationToken, Task> handler) : ISimpleNotificationHandler, IEquatable<SimpleNotificationHandler<TNotification>>
+public interface ISimpleNotificationHandler<in TNotification> : ISimpleNotificationHandler
+    where TNotification : ISimpleNotification
 {
-    private readonly Func<TNotification, CancellationToken, Task> handler = handler;
+    Task HandleAsync(TNotification notification, CancellationToken cancellationToken = default);
 
-    public async Task HandleAsync(object notification, CancellationToken cancellationToken = default)
+#pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
+    Task ISimpleNotificationHandler.HandleAsync(object notification, CancellationToken cancellationToken = default)
+#pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
     {
         if (notification is TNotification typedNotification)
         {
-            await this.handler(typedNotification, cancellationToken);
+            return this.HandleAsync(typedNotification, cancellationToken);
         }
+
+        throw new InvalidOperationException($"Notification type {notification.GetType().Name} does not match expected type {typeof(TNotification).Name}.");
+    }
+}
+
+/// <summary>
+/// Implements a handler for a specific event type using a function.
+/// </summary>
+/// <typeparam name="TNotification">The type of event to handle.</typeparam>
+public class SimpleNotificationHandler<TNotification>(Func<TNotification, CancellationToken, Task> handler) : ISimpleNotificationHandler<TNotification>, IEquatable<SimpleNotificationHandler<TNotification>>
+    where TNotification : ISimpleNotification
+{
+    private readonly Func<TNotification, CancellationToken, Task> handler = handler;
+
+    public async Task HandleAsync(TNotification notification, CancellationToken cancellationToken = default)
+    {
+        await this.handler(notification, cancellationToken);
+    }
+
+    async Task ISimpleNotificationHandler.HandleAsync(object notification, CancellationToken cancellationToken)
+    {
+        if (notification is TNotification typedNotification)
+        {
+            await this.HandleAsync(typedNotification, cancellationToken);
+        }
+
+        throw new InvalidOperationException($"Notification type {notification.GetType().Name} does not match expected type {typeof(TNotification).Name}.");
     }
 
     public bool Equals(SimpleNotificationHandler<TNotification> other)
@@ -193,50 +343,49 @@ public class SimpleNotificationHandler<TNotification>(Func<TNotification, Cancel
 /// <summary>
 /// Defines a pipeline behavior for pre- and post-processing of events.
 /// </summary>
-public interface ISimpleNotifcationPipelineBehavior
+public interface ISimpleNotificationPipelineBehavior
 {
-    Task HandleAsync<TNotification>(TNotification notification, Func<Task> next, CancellationToken cancellationToken = default);
+    Task HandleAsync(ISimpleNotification notification, Func<Task> next, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
 /// A sample pipeline behavior that logs event handling.
 /// </summary>
-public class LoggingPipelineBehavior(ILogger logger) : ISimpleNotifcationPipelineBehavior
+public class LoggingNotificationPipelineBehavior(ILogger logger) : ISimpleNotificationPipelineBehavior
 {
-    public async Task HandleAsync<TNotification>(TNotification notification, Func<Task> next, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(ISimpleNotification notification, Func<Task> next, CancellationToken cancellationToken = default)
     {
-        logger?.LogInformation($"Handling notification of type {typeof(TNotification).Name}");
+        logger?.LogInformation($"Handling notification of type {notification.GetType().Name}");
         try
         {
             await next();
-            logger?.LogInformation($"Successfully handled notification of type {typeof(TNotification).Name}");
+            logger?.LogInformation($"Successfully handled notification of type {notification.GetType().Name}");
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, $"Failed to notification notification of type {typeof(TNotification).Name}");
+            logger?.LogError(ex, $"Failed to handle notification of type {notification.GetType().Name}");
             throw;
         }
     }
 }
 
 /// <summary>
-/// A fluent builder for configuring and creating an Notifier instance.
+/// A fluent builder for configuring and creating an SimpleNotifier instance.
 /// </summary>
 public class SimpleNotifierBuilder
 {
     private bool handleErrors;
     private ILogger logger;
-    private readonly List<ISimpleNotifcationPipelineBehavior> pipelineBehaviors;
+    private readonly List<ISimpleNotificationPipelineBehavior> pipelineBehaviors = [];
     private IProgress<SimpleNotifierProgress> progress;
 
     /// <summary>
-    /// Initializes a new instance of the NotifierBuilder.
+    /// Initializes a new instance of the SimpleNotifierBuilder.
     /// </summary>
     public SimpleNotifierBuilder()
     {
         this.handleErrors = false;
         this.logger = null;
-        this.pipelineBehaviors = [];
         this.progress = null;
     }
 
@@ -244,7 +393,7 @@ public class SimpleNotifierBuilder
     /// Configures the event aggregator to handle errors by logging them instead of throwing.
     /// </summary>
     /// <param name="logger">The logger to use for error logging. If null, errors are silently ignored.</param>
-    /// <returns>The NotifierBuilder instance for chaining.</returns>
+    /// <returns>The SimpleNotifierBuilder instance for chaining.</returns>
     public SimpleNotifierBuilder HandleErrors(ILogger logger = null)
     {
         this.handleErrors = true;
@@ -256,8 +405,8 @@ public class SimpleNotifierBuilder
     /// Adds a pipeline behavior to the event aggregator for pre- and post-processing of events.
     /// </summary>
     /// <param name="behavior">The pipeline behavior to add.</param>
-    /// <returns>The NotifierBuilder instance for chaining.</returns>
-    public SimpleNotifierBuilder AddPipelineBehavior(ISimpleNotifcationPipelineBehavior behavior)
+    /// <returns>The SimpleNotifierBuilder instance for chaining.</returns>
+    public SimpleNotifierBuilder AddPipelineBehavior(ISimpleNotificationPipelineBehavior behavior)
     {
         this.pipelineBehaviors.Add(behavior);
         return this;
@@ -267,7 +416,7 @@ public class SimpleNotifierBuilder
     /// Configures the notifier to report progress using the specified progress reporter.
     /// </summary>
     /// <param name="progress">The progress reporter to use for notification operations.</param>
-    /// <returns>The NotifierBuilder instance for chaining.</returns>
+    /// <returns>The SimpleNotifierBuilder instance for chaining.</returns>
     public SimpleNotifierBuilder WithProgress(IProgress<SimpleNotifierProgress> progress)
     {
         this.progress = progress;
@@ -275,9 +424,9 @@ public class SimpleNotifierBuilder
     }
 
     /// <summary>
-    /// Builds and returns a configured Notifier instance.
+    /// Builds and returns a configured SimpleNotifier instance.
     /// </summary>
-    /// <returns>A configured Notifier instance.</returns>
+    /// <returns>A configured SimpleNotifier instance.</returns>
     public SimpleNotifier Build()
     {
         return new SimpleNotifier(

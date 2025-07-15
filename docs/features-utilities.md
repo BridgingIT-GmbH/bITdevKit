@@ -145,14 +145,19 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   - Monitor `window` to match usage patterns.
   - Use `IProgress<RateLimiterProgress>` to track operation counts and rate limit status in real-time.
 
-### 6. Notifier
+### 6. SimpleNotifier
 - **Purpose**: Provides a feature-rich notification system with handler ordering and pipeline behaviors.
 - **Supporting Classes**:
   ```csharp
   /// <summary>
+  /// Defines a non-generic base interface for all notifications.
+  /// </summary>
+  public interface ISimpleNotification;
+
+  /// <summary>
   /// A sample notification event.
   /// </summary>
-  public class MyEvent : INotification
+  public class MyEvent : ISimpleNotification
   {
       public string Message { get; set; }
   }
@@ -160,7 +165,7 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   /// <summary>
   /// A sample handler for MyEvent notifications.
   /// </summary>
-  public class MyEventHandler : INotificationHandler<MyEvent>
+  public class MyEventHandler : ISimpleNotificationHandler<MyEvent>
   {
       public async Task HandleAsync(MyEvent notification, CancellationToken cancellationToken)
       {
@@ -172,23 +177,24 @@ The **Resiliency** utilities are a collection of robust, reusable components des
 - **Usage Example**:
   ```csharp
   var cts = new CancellationTokenSource();
-  var progress = new Progress<NotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
-  var notifier = new NotifierBuilder()
+  var progress = new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
+  var notifier = new SimpleNotifierBuilder()
       .HandleErrors(new ConsoleLogger())
       .AddPipelineBehavior(new LoggingPipelineBehavior(new ConsoleLogger()))
       .WithProgress(progress)
       .Build();
-  notifier.Subscribe(new MyEventHandler());
+  notifier.Subscribe<MyEvent>(new MyEventHandler());
+  notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
   await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token);
   ```
 - **Configuration Options**:
   - `handleErrors`: Log errors instead of throwing (with optional logger).
   - `pipelineBehaviors`: Add pre- and post-processing behaviors.
-  - `progress`: An optional progress reporter of type `IProgress<NotifierProgress>` for notification operations (configured via `WithProgress`).
+  - `progress`: An optional progress reporter of type `IProgress<SimpleNotifierProgress>` for notification operations (configured via `WithProgress`).
 - **Best Practices**:
   - Use pipeline behaviors for logging or validation.
   - Order handlers for sequential processing.
-  - Use `IProgress<NotifierProgress>` to monitor the number of handlers processed in real-time.
+  - Use `IProgress<SimpleNotifierProgress>` to monitor the number of handlers processed in real-time.
 
 ### 7. BackgroundWorker
 - **Purpose**: Manages long-running background tasks with cancellation and progress reporting.
@@ -218,14 +224,14 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   - Handle `ProgressChanged` for UI updates using the legacy event, or use `IProgress<BackgroundWorkerProgress>` for custom updates.
   - Use `IProgress<BackgroundWorkerProgress>` to monitor task execution in real-time.
 
-### 8. Requester
+### 8. SimpleRequester
 - **Purpose**: Handles request/response patterns with a single handler per request type.
 - **Supporting Classes**:
   ```csharp
   /// <summary>
   /// A sample request class.
   /// </summary>
-  public class MyRequest : IRequest<MyResponse>
+  public class MyRequest : ISimpleRequest<MyResponse>
   {
       public string Data { get; set; }
   }
@@ -241,7 +247,7 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   /// <summary>
   /// A sample handler for MyRequest.
   /// </summary>
-  public class MyRequestHandler : IRequestHandler<MyRequest, MyResponse>
+  public class MyRequestHandler : ISimpleRequestHandler<MyRequest, MyResponse>
   {
       public async Task<MyResponse> HandleAsync(MyRequest request, CancellationToken cancellationToken)
       {
@@ -253,24 +259,25 @@ The **Resiliency** utilities are a collection of robust, reusable components des
 - **Usage Example**:
   ```csharp
   var cts = new CancellationTokenSource();
-  var progress = new Progress<RequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
-  var requester = new RequesterBuilder()
+  var progress = new Progress<SimpleRequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
+  var requester = new SimpleRequesterBuilder()
       .HandleErrors(new ConsoleLogger())
       .AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger()))
       .WithProgress(progress)
       .Build();
   requester.RegisterHandler(new MyRequestHandler());
-  var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token);
+  requester.RegisterHandler<MyRequest, MyResponse>(async (req, ct) => new MyResponse { Result = $"Processed func: {req.Data}" });
+  var response = await requester.SendAsync<MyRequest, MyResponse>(new MyRequest { Data = "Test" }, cts.Token);
   Console.WriteLine(response.Result);
   ```
 - **Configuration Options**:
   - `handleErrors`: Log errors instead of throwing (with optional logger).
   - `pipelineBehaviors`: Add pre- and post-processing behaviors.
-  - `progress`: An optional progress reporter of type `IProgress<RequesterProgress>` for request operations (configured via `WithProgress`).
+  - `progress`: An optional progress reporter of type `IProgress<SimpleRequesterProgress>` for request operations (configured via `WithProgress`).
 - **Best Practices**:
   - Use for commands or queries in a CQRS pattern.
   - Validate requests in pipeline behaviors.
-  - Use `IProgress<RequesterProgress>` to monitor request processing in real-time.
+  - Use `IProgress<SimpleRequesterProgress>` to monitor request processing in real-time.
 
 ### 9. TimeoutHandler
 - **Purpose**: Enforces a timeout on operations, canceling them if they exceed the duration.
@@ -399,4 +406,3 @@ class Program
 ### Notes
 - Each utility’s progress type (e.g., `RetryProgress`, `TimeoutHandlerProgress`) inherits from `ResiliencyProgress`, enabling type-safe access to utility-specific data.
 - Clients can extend this approach to other environments (e.g., WPF, ASP.NET) by replacing console output with UI updates or API responses.
-- 

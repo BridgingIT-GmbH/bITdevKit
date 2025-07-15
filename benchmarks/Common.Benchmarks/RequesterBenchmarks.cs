@@ -21,15 +21,15 @@ public class RequesterBenchmarks
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddRequester().AddHandlers();
-        serviceProvider = services.BuildServiceProvider();
-        requester = serviceProvider.GetRequiredService<IRequester>();
+        this.serviceProvider = services.BuildServiceProvider();
+        this.requester = this.serviceProvider.GetRequiredService<IRequester>();
     }
 
     [Benchmark]
     public async Task Requester_Baseline()
     {
         var request = new MyTestRequest();
-        var result = await requester.SendAsync(request);
+        var result = await this.requester.SendAsync(request);
     }
 }
 

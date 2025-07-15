@@ -21,15 +21,15 @@ public class NotifierBenchmarks
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddNotifier().AddHandlers();
-        serviceProvider = services.BuildServiceProvider();
-        notifier = serviceProvider.GetRequiredService<INotifier>();
+        this.serviceProvider = services.BuildServiceProvider();
+        this.notifier = this.serviceProvider.GetRequiredService<INotifier>();
     }
 
     [Benchmark]
     public async Task Notifier_Baseline()
     {
         var notification = new MyTestNotification();
-        var result = await notifier.PublishAsync(notification);
+        var result = await this.notifier.PublishAsync(notification);
     }
 }
 

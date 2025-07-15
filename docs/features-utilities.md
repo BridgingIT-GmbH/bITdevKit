@@ -1,3 +1,17 @@
+Yes, the documentation needs to be updated to align with the recent optimizations and changes in the `SimpleNotifier` and `SimpleRequester` implementations. Here's a summary of why and what should be changed, followed by the fully revised document.
+
+### Why Update?
+- **Signature Changes**: Handlers and pipelines now use `ValueTask` instead of `Task` for better performance and reduced allocations in asynchronous operations. Examples and interface descriptions must reflect this to avoid compilation errors or outdated guidance.
+- **Delegate Types**: Functional handlers (e.g., `Func<..., ValueTask>`) need updating in subscribe/register examples.
+- **Pipeline Execution**: The internal loop-based pipeline (to reduce delegate allocations) doesn't change user-facing API, but any mentions of extensibility should be consistent.
+- **Thread Safety and Storage**: Upgrades like `ReaderWriterLockSlim` and array-based storage are internal, so no major doc changes needed, but best practices can mention improved concurrency.
+- **Consistency**: Ensure all code snippets compile and run with the new code. No other utilities (e.g., Retryer) were changed, so they remain intact.
+- **Currency**: As of July 15, 2025, confirm no breaking .NET changes (e.g., via quick search if needed), but the doc looks stable otherwise.
+
+I recommend testing the updated examples with a code interpreter or build to verify. Below is the revised `features-utilities.md` with targeted updates (primarily in sections 6 and 8, plus minor tweaks for consistency).
+
+---
+
 # Utilities Feature Documentation
 
 [TOC]
@@ -167,10 +181,11 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   /// </summary>
   public class MyEventHandler : ISimpleNotificationHandler<MyEvent>
   {
-      public async Task HandleAsync(MyEvent notification, CancellationToken cancellationToken)
+      public ValueTask HandleAsync(MyEvent notification, CancellationToken cancellationToken)
       {
-          await Task.Delay(100, cancellationToken); // Simulate processing
+          // Simulate processing (ValueTask for sync/async)
           Console.WriteLine($"Handler processed: {notification.Message}");
+          return ValueTask.CompletedTask;
       }
   }
   ```
@@ -180,11 +195,11 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   var progress = new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
   var notifier = new SimpleNotifierBuilder()
       .HandleErrors(new ConsoleLogger())
-      .AddPipelineBehavior(new LoggingPipelineBehavior(new ConsoleLogger()))
+      .AddPipelineBehavior(new LoggingNotificationPipelineBehavior(new ConsoleLogger()))
       .WithProgress(progress)
       .Build();
   notifier.Subscribe<MyEvent>(new MyEventHandler());
-  notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
+  notifier.Subscribe<MyEvent>((e, ct) => { Console.WriteLine(e.Message); return ValueTask.CompletedTask; });
   await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token);
   ```
 - **Configuration Options**:
@@ -195,6 +210,7 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   - Use pipeline behaviors for logging or validation.
   - Order handlers for sequential processing.
   - Use `IProgress<SimpleNotifierProgress>` to monitor the number of handlers processed in real-time.
+  - Prefer `ValueTask` in handlers for performance in synchronous or fast-async scenarios.
 
 ### 7. BackgroundWorker
 - **Purpose**: Manages long-running background tasks with cancellation and progress reporting.
@@ -249,10 +265,10 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   /// </summary>
   public class MyRequestHandler : ISimpleRequestHandler<MyRequest, MyResponse>
   {
-      public async Task<MyResponse> HandleAsync(MyRequest request, CancellationToken cancellationToken)
+      public ValueTask<MyResponse> HandleAsync(MyRequest request, CancellationToken cancellationToken)
       {
-          await Task.Delay(100, cancellationToken); // Simulate work
-          return new MyResponse { Result = $"Processed: {request.Data}" };
+          // Simulate work (ValueTask for sync/async)
+          return ValueTask.FromResult(new MyResponse { Result = $"Processed: {request.Data}" });
       }
   }
   ```
@@ -266,7 +282,7 @@ The **Resiliency** utilities are a collection of robust, reusable components des
       .WithProgress(progress)
       .Build();
   requester.RegisterHandler(new MyRequestHandler());
-  requester.RegisterHandler<MyRequest, MyResponse>(async (req, ct) => new MyResponse { Result = $"Processed func: {req.Data}" });
+  requester.RegisterHandler<MyRequest, MyResponse>((req, ct) => ValueTask.FromResult(new MyResponse { Result = $"Processed func: {req.Data}" }));
   var response = await requester.SendAsync<MyRequest, MyResponse>(new MyRequest { Data = "Test" }, cts.Token);
   Console.WriteLine(response.Result);
   ```
@@ -278,6 +294,7 @@ The **Resiliency** utilities are a collection of robust, reusable components des
   - Use for commands or queries in a CQRS pattern.
   - Validate requests in pipeline behaviors.
   - Use `IProgress<SimpleRequesterProgress>` to monitor request processing in real-time.
+  - Prefer `ValueTask` in handlers for performance in synchronous or fast-async scenarios.
 
 ### 9. TimeoutHandler
 - **Purpose**: Enforces a timeout on operations, canceling them if they exceed the duration.
@@ -353,11 +370,11 @@ The **Resiliency** utilities provide progress reporting through specific `IProgr
 To handle progress updates as a client:
 1. Create an instance of the appropriate `Progress<T>` class, where `T` is the specific progress type for the utility (e.g., `Progress<RetryProgress>`).
 2. Provide a callback to process the progress data, which can display, log, or otherwise react to the updates.
-3. Configure the utility with the progress instance using the fluent builder’s `WithProgress` method.
+3. Configure the utility with the progress instance using the fluent builderâ€™s `WithProgress` method.
 
 ### Example: Demonstrating Progress Handling
 
-Here’s a minimal example using a console app to illustrate progress handling across utilities:
+Hereâ€™s a minimal example using a console app to illustrate progress handling across utilities:
 
 ```csharp
 using BridgingIT.DevKit.Common.Utilities;
@@ -400,9 +417,9 @@ class Program
 ### General Guidelines
 - **Flexibility**: The `Progress<T>` callback can be adapted to any hosting environment (console, UI, logging framework) by adjusting the callback logic.
 - **Lightweight Callbacks**: Keep the callback logic minimal to avoid performance overhead, such as using simple console output or asynchronous logging.
-- **Context Awareness**: Use the specific progress type’s properties (e.g., `RemainingInterval` for `ThrottlerProgress`) to provide meaningful feedback tailored to the utility.
+- **Context Awareness**: Use the specific progress typeâ€™s properties (e.g., `RemainingInterval` for `ThrottlerProgress`) to provide meaningful feedback tailored to the utility.
 - **Cancellation Support**: Ensure the callback handles cancellation scenarios gracefully, especially for long-running operations.
 
 ### Notes
-- Each utility’s progress type (e.g., `RetryProgress`, `TimeoutHandlerProgress`) inherits from `ResiliencyProgress`, enabling type-safe access to utility-specific data.
+- Each utilityâ€™s progress type (e.g., `RetryProgress`, `TimeoutHandlerProgress`) inherits from `ResiliencyProgress`, enabling type-safe access to utility-specific data.
 - Clients can extend this approach to other environments (e.g., WPF, ASP.NET) by replacing console output with UI updates or API responses.

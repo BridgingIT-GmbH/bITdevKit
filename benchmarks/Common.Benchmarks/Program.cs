@@ -7,13 +7,16 @@ namespace BridgingIT.DevKit.Common.Benchmarks;
 
 using BenchmarkDotNet.Running;
 
+// dotnet run -c Release --project benchmarks/Common.Benchmarks/Common.Benchmarks.csproj
 public static class Program
 {
     public static void Main(string[] args)
     {
-        BenchmarkRunner.Run<RequesterBenchmarks>();
         //BenchmarkRunner.Run<MediatRBenchmarks>();
-        BenchmarkRunner.Run<NotifierBenchmarks>();
+        //BenchmarkRunner.Run<RequesterBenchmarks>();
+        BenchmarkRunner.Run<SimpleRequesterBenchmarks>();
+        //BenchmarkRunner.Run<NotifierBenchmarks>();
+        BenchmarkRunner.Run<SimpleNotifierBenchmarks>();
         //BenchmarkRunner.Run<ResultBenchmarks>();
         //BenchmarkRunner.Run<ResultNonGenericBenchmarks>();
     }

@@ -21,14 +21,14 @@ public class MediatRBenchmarks
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<MediatRTestRequest>());
-        serviceProvider = services.BuildServiceProvider();
-        mediator = serviceProvider.GetRequiredService<IMediator>();
+        this.serviceProvider = services.BuildServiceProvider();
+        this.mediator = this.serviceProvider.GetRequiredService<IMediator>();
     }
 
     [Benchmark]
     public async Task MediatR_Baseline()
     {
         var request = new MediatRTestRequest();
-        var result = await mediator.Send(request);
+        var result = await this.mediator.Send(request);
     }
 }

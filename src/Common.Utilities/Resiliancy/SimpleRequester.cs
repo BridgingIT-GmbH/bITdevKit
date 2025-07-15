@@ -1,5 +1,6 @@
 ﻿namespace BridgingIT.DevKit.Common.Utilities;
 
+using System.Reflection;
 using BridgingIT.DevKit.Common.Resiliancy;
 using Microsoft.Extensions.Logging;
 
@@ -28,8 +29,8 @@ public class SimpleRequester(
     IProgress<SimpleRequesterProgress> progress = null)
 {
     private readonly Dictionary<Type, (ISimpleRequestHandler Handler, Type ResponseType)> handlers = [];
-    private readonly List<ISimpleRequestPipelineBehavior> pipelineBehaviors = pipelineBehaviors?.Reverse().ToList() ?? [];
-    private readonly Lock lockObject = new();
+    private readonly ISimpleRequestPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToArray() ?? [];
+    private readonly ReaderWriterLockSlim lockObject = new(); // Upgraded to RW lock for potential concurrency
     private readonly IProgress<SimpleRequesterProgress> progress = progress;
 
     /// <summary>
@@ -48,7 +49,8 @@ public class SimpleRequester(
     public void RegisterHandler<TRequest, TResponse>(ISimpleRequestHandler<TRequest, TResponse> handler)
         where TRequest : ISimpleRequest<TResponse>
     {
-        lock (this.lockObject)
+        this.lockObject.EnterWriteLock();
+        try
         {
             var requestType = typeof(TRequest);
             if (this.handlers.ContainsKey(requestType))
@@ -56,6 +58,10 @@ public class SimpleRequester(
                 throw new InvalidOperationException($"A handler for request type {requestType.Name} is already registered.");
             }
             this.handlers[requestType] = (handler, typeof(TResponse));
+        }
+        finally
+        {
+            this.lockObject.ExitWriteLock();
         }
     }
 
@@ -72,11 +78,38 @@ public class SimpleRequester(
     /// requester.RegisterHandler<MyRequest, MyResponse>(async (req, ct) => new MyResponse { Result = req.Data });
     /// </code>
     /// </example>
-    public void RegisterHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc)
+    public void RegisterHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc)
         where TRequest : ISimpleRequest<TResponse>
     {
         var handler = new SimpleRequestHandler<TRequest, TResponse>(handlerFunc);
         this.RegisterHandler(handler);
+    }
+
+    /// <summary>
+    /// Registers a handler for a specific request type.
+    /// </summary>
+    /// <param name="handler">The handler to register.</param>
+    /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered or the handler does not implement ISimpleRequestHandler<TRequest, TResponse>.</exception>
+    /// <example>
+    /// <code>
+    /// var requester = new SimpleRequester();
+    /// requester.RegisterHandler(new MyRequestHandler());
+    /// </code>
+    /// </example>
+    public void RegisterHandler(ISimpleRequestHandler handler)
+    {
+        var handlerType = handler.GetType();
+        var interfaceType = handlerType.GetInterfaces().FirstOrDefault(static i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISimpleRequestHandler<,>));
+        if (interfaceType == null)
+        {
+            throw new InvalidOperationException("The handler does not implement ISimpleRequestHandler<TRequest, TResponse>.");
+        }
+
+        var tRequest = interfaceType.GetGenericArguments()[0];
+        var tResponse = interfaceType.GetGenericArguments()[1];
+        var method = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).First(static m => m.Name == nameof(RegisterHandler) && m.GetGenericArguments().Length == 2 && m.GetParameters().Length == 1);
+        var genericMethod = method.MakeGenericMethod(tRequest, tResponse);
+        genericMethod.Invoke(this, [handler]);
     }
 
     /// <summary>
@@ -104,29 +137,38 @@ public class SimpleRequester(
     public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<SimpleRequesterProgress> progress = null, CancellationToken cancellationToken = default)
         where TRequest : ISimpleRequest<TResponse>
     {
-        progress ??= this.progress; // Use instance-level progress if provided
+        progress ??= this.progress;
         var requestType = typeof(TRequest);
         (ISimpleRequestHandler Handler, Type ResponseType) handlerInfo;
-        lock (this.lockObject)
+        this.lockObject.EnterReadLock();
+        try
         {
             if (!this.handlers.TryGetValue(requestType, out handlerInfo))
             {
                 throw new InvalidOperationException($"No handler registered for request type {requestType.Name}.");
             }
         }
+        finally
+        {
+            this.lockObject.ExitReadLock();
+        }
 
         progress?.Report(new SimpleRequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
         try
         {
-            // Apply pipeline behaviors
-            Func<Task<object>> next = async () => await ((ISimpleRequestHandler<TRequest, TResponse>)handlerInfo.Handler).HandleAsync(request, cancellationToken);
-            foreach (var behavior in this.pipelineBehaviors)
+            if (this.pipelineBehaviors.Length == 0)
             {
+                return await ((ISimpleRequestHandler<TRequest, TResponse>)handlerInfo.Handler).HandleAsync(request, cancellationToken);
+            }
+
+            RequestHandlerDelegate<TResponse> next = () => ((ISimpleRequestHandler<TRequest, TResponse>)handlerInfo.Handler).HandleAsync(request, cancellationToken);
+            for (var i = this.pipelineBehaviors.Length - 1; i >= 0; i--)
+            {
+                var behavior = this.pipelineBehaviors[i];
                 var currentNext = next;
                 next = () => behavior.HandleAsync(request, currentNext, cancellationToken);
             }
-            var result = await next();
-            return (TResponse)result;
+            return await next();
         }
         catch (OperationCanceledException)
         {
@@ -156,7 +198,7 @@ public interface ISimpleRequest<TResponse> : ISimpleRequest;
 /// </summary>
 public interface ISimpleRequestHandler
 {
-    Task<object> HandleAsync(object request, CancellationToken cancellationToken = default);
+    ValueTask<object> HandleAsync(object request, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -167,13 +209,15 @@ public interface ISimpleRequestHandler
 public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestHandler
     where TRequest : ISimpleRequest<TResponse>
 {
-    Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
+    ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
 
-    async Task<object> ISimpleRequestHandler.HandleAsync(object request, CancellationToken cancellationToken)
+#pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
+    ValueTask<object> ISimpleRequestHandler.HandleAsync(object request, CancellationToken cancellationToken = default)
+#pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
     {
         if (request is TRequest typedRequest)
         {
-            return await this.HandleAsync(typedRequest, cancellationToken);
+            return new ValueTask<object>(this.HandleAsync(typedRequest, cancellationToken).AsTask().ContinueWith(static t => t.Result));
         }
 
         throw new InvalidOperationException($"Request type {request.GetType().Name} does not match expected type {typeof(TRequest).Name}.");
@@ -185,14 +229,14 @@ public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestH
 /// </summary>
 /// <typeparam name="TRequest">The type of request to handle.</typeparam>
 /// <typeparam name="TResponse">The type of response returned by the handler.</typeparam>
-public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc) : ISimpleRequestHandler<TRequest, TResponse>
+public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc) : ISimpleRequestHandler<TRequest, TResponse>
     where TRequest : ISimpleRequest<TResponse>
 {
-    private readonly Func<TRequest, CancellationToken, Task<TResponse>> handlerFunc = handlerFunc;
+    private readonly Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc = handlerFunc;
 
-    public async Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
+    public ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
     {
-        return await this.handlerFunc(request, cancellationToken);
+        return this.handlerFunc(request, cancellationToken);
     }
 }
 
@@ -201,15 +245,20 @@ public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, Cancellati
 /// </summary>
 public interface ISimpleRequestPipelineBehavior
 {
-    Task<object> HandleAsync(ISimpleRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default);
+    ValueTask<TResponse> HandleAsync<TResponse>(ISimpleRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Delegate for request handler in pipeline.
+/// </summary>
+public delegate ValueTask<TResponse> RequestHandlerDelegate<TResponse>();
 
 /// <summary>
 /// A sample pipeline behavior that logs request handling.
 /// </summary>
 public class LoggingRequestPipelineBehavior(ILogger logger) : ISimpleRequestPipelineBehavior
 {
-    public async Task<object> HandleAsync(ISimpleRequest request, Func<Task<object>> next, CancellationToken cancellationToken = default)
+    public async ValueTask<TResponse> HandleAsync<TResponse>(ISimpleRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling request of type {request.GetType().Name}");
         try

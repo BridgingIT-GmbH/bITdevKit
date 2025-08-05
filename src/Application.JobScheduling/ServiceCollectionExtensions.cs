@@ -105,7 +105,7 @@ public static class ServiceCollectionExtensions
         properties ??= [];
         if (configuration != null)
         {
-            var section = configuration.GetSection("Quartz");
+            var section = configuration.GetSection("JobScheduling:Quartz");
             services.Configure<QuartzOptions>(section);
             foreach (var key in section.GetChildren().Select(c => c.Key))
             {

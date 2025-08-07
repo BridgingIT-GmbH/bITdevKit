@@ -83,12 +83,12 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
             {
                 while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
                 {
-                    await this.ProcessWorkAsync(cancellationToken);
+                    await this.ProcessWorkAsync(cancellationToken); // TODO: add processing delay with jitter (see OutboxNotificationEmailService)
                 }
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} outbox domain event service stopped", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox domain event service stopped due to cancellation", Constants.LogKey);
             }
         });
 

@@ -25,8 +25,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
     {
         EnsureArg.IsNotNull(worker, nameof(worker));
 
-        this.logger = loggerFactory?.CreateLogger<OutboxMessageService>() ??
-            NullLoggerFactory.Instance.CreateLogger<OutboxMessageService>();
+        this.logger = loggerFactory?.CreateLogger<OutboxMessageService>() ?? NullLoggerFactory.Instance.CreateLogger<OutboxMessageService>();
         this.worker = worker;
         this.applicationLifetime = applicationLifetime;
         this.options = options ?? new OutboxMessageOptions();
@@ -80,12 +79,12 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
             {
                 while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
                 {
-                    await this.ProcessWorkAsync(cancellationToken);
+                    await this.ProcessWorkAsync(cancellationToken); // TODO: add processing delay with jitter (see OutboxNotificationEmailService)
                 }
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox message service stopped due to cancellation", Constants.LogKey);
             }
         });
 

@@ -35,6 +35,30 @@ public class OutboxNotificationEmailOptionsBuilder : OptionsBuilderBase<OutboxNo
         return this;
     }
 
+    public OutboxNotificationEmailOptionsBuilder ProcessingDelay(TimeSpan timeSpan)
+    {
+        this.Target.ProcessingDelay = timeSpan;
+        return this;
+    }
+
+    public OutboxNotificationEmailOptionsBuilder ProcessingDelay(int milliseconds)
+    {
+        this.Target.ProcessingDelay = TimeSpan.FromMilliseconds(milliseconds);
+        return this;
+    }
+
+    public OutboxNotificationEmailOptionsBuilder ProcessingJitter(TimeSpan timeSpan)
+    {
+        this.Target.ProcessingJitter = timeSpan;
+        return this;
+    }
+
+    public OutboxNotificationEmailOptionsBuilder ProcessingJitter(int milliseconds)
+    {
+        this.Target.ProcessingJitter = TimeSpan.FromMilliseconds(milliseconds);
+        return this;
+    }
+
     public OutboxNotificationEmailOptionsBuilder ProcessingMode(OutboxNotificationEmailProcessingMode mode)
     {
         this.Target.ProcessingMode = mode;

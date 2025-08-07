@@ -11,7 +11,9 @@ public class OutboxNotificationEmailOptions : OptionsBase
 
     public TimeSpan ProcessingInterval { get; set; } = TimeSpan.FromSeconds(30);
 
-    public TimeSpan ProcessingDelay { get; set; } = TimeSpan.FromMilliseconds(1);
+    public TimeSpan ProcessingDelay { get; set; } = TimeSpan.FromMilliseconds(0);
+
+    public TimeSpan ProcessingJitter { get; set; } = TimeSpan.FromMilliseconds(0);
 
     public OutboxNotificationEmailProcessingMode ProcessingMode { get; set; } = OutboxNotificationEmailProcessingMode.Interval;
 

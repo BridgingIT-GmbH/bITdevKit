@@ -75,5 +75,6 @@ public enum EmailMessageStatus
 {
     Pending = 0,
     Sent = 1,
+    Locked = 2,
     Failed = 3
 }

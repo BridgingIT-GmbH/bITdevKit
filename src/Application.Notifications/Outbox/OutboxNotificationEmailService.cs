@@ -55,6 +55,16 @@ public class OutboxNotificationEmailService(
 
                 while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
                 {
+                    var jitter = this.options.ProcessingJitter.TotalMilliseconds > 0
+                        ? TimeSpan.FromMilliseconds(Random.Shared.Next(0, (int)this.options.ProcessingJitter.TotalMilliseconds))
+                        : TimeSpan.Zero;
+                    var processingDelay = this.options.ProcessingDelay + jitter;
+                    if (processingDelay > TimeSpan.Zero) // Apply processing delay with jitter before processing
+                    {
+                        this.logger.LogDebug("{LogKey} outbox notification delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
+                        await Task.Delay(processingDelay, cancellationToken);
+                    }
+
                     await this.ProcessWorkAsync(cancellationToken);
                 }
             }

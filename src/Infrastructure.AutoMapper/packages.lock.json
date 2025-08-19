@@ -4,7 +4,7 @@
     "net9.0": {
       "AutoMapper.Extensions.ExpressionMapping": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
+        "requested": "[8.0.0, 8.0.0]",
         "resolved": "8.0.0",
         "contentHash": "fR55QEOt8GiaVQPuEpyWJAzZxFSInCIYg6E1EoqQByWnjzQnQ5zHwQvMMF3E+AdtvAzbG7Intm08/8pK8eUTvQ==",
         "dependencies": {
@@ -121,7 +121,7 @@
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "[14.0.0, )",
+          "AutoMapper": "[14.0.0, 14.0.0]",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -199,7 +199,7 @@
           "BridgingIT.DevKit.Common.Rules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MediatR.Contracts": "[2.0.1, )",
+          "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.6, )",
           "Scrutor": "[4.2.2, 5.0.0)",
           "System.Linq.Dynamic.Core": "[1.6.6, )"
@@ -208,7 +208,7 @@
       "BridgingIT.DevKit.Infrastructure.Mapping": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper.Extensions.ExpressionMapping": "[8.0.0, )",
+          "AutoMapper.Extensions.ExpressionMapping": "[8.0.0, 8.0.0]",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
@@ -216,7 +216,7 @@
       },
       "AutoMapper": {
         "type": "CentralTransitive",
-        "requested": "[14.0.0, )",
+        "requested": "[14.0.0, 14.0.0]",
         "resolved": "14.0.0",
         "contentHash": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
         "dependencies": {
@@ -262,7 +262,7 @@
       },
       "MediatR.Contracts": {
         "type": "CentralTransitive",
-        "requested": "[2.0.1, )",
+        "requested": "[2.0.1, 2.0.1]",
         "resolved": "2.0.1",
         "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },

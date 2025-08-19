@@ -1,69 +1,75 @@
 <Project>
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <!--package-->
-    <Authors>BridgingIT GmbH</Authors>
-    <Description>
-      BridgingIT DevKit: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles. Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
-    </Description>
-    <Copyright>Copyright 2024 (c) BridgingIT GmbH. All rights reserved.</Copyright>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
-    <DebugType>embedded</DebugType>
-    <EmbedAllSources>true</EmbedAllSources>
-    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>  <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
-    <NoWarn>NU1903</NoWarn>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <!--package-->
+        <Authors>BridgingIT GmbH</Authors>
+        <Description>
+            BridgingIT DevKit: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles. Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
+        </Description>
+        <Copyright>Copyright 2024 (c) BridgingIT GmbH. All rights reserved.</Copyright>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+        <DebugType>embedded</DebugType>
+        <EmbedAllSources>true</EmbedAllSources>
+        <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+        <NoWarn>NU1903</NoWarn>
+    </PropertyGroup>
 
-  <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
+    <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASES.md"))</PackageReleaseNotes>
   </PropertyGroup>-->
 
-  <!--<ItemGroup>
+    <!--<ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>-->
 
-  <ItemGroup>
-    <Content Update="package*.json" CopyToPublishDirectory="Never" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Update="package*.json" CopyToPublishDirectory="Never" />
+    </ItemGroup>
 
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors>true</WarningsAsErrors>
+    <PropertyGroup>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors>true</WarningsAsErrors>
 
-    <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
-    <!--<UseSharedCompilation>true</UseSharedCompilation>-->
-    <!--roslyn build speed-->
-  </PropertyGroup>
+        <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
+        <!--<UseSharedCompilation>true</UseSharedCompilation>-->
+        <!--roslyn build speed-->
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Using Include="System"/>
-    <Using Include="System.Text"/>
-    <Using Include="System.Linq"/>
-    <Using Include="EnsureThat"/>
-  </ItemGroup>
+    <ItemGroup>
+        <Using Include="System"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Linq"/>
+        <Using Include="EnsureThat"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="**\*.lock.json" Visible="false"/>
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="**\*.lock.json" Visible="false"/>
+    </ItemGroup>
 
-  <!--<ItemGroup>
+    <!--<ItemGroup>
     <Compile Include="..\..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
   </ItemGroup>-->
 
-  <ItemGroup>
-    <PackageReference Include="Ensure.That"/>
-    <PackageReference Include="MinVer" PrivateAssets="All"/>
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <ItemGroup>
+        <PackageReference Include="Ensure.That"/>
+        <PackageReference Include="MinVer" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.Net.Compilers.Toolset">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
 
-  </ItemGroup>
+    </ItemGroup>
+
+    <Target Name="CheckPackageVersion" BeforeTargets="Build"> <!-- prevent some unwanted package upgrades due to licensing -->
+        <Error Condition="'%(PackageVersion.Identity)' == 'AutoMapper' AND '%(PackageVersion.Version)' != '[14.0.0]'" Text="Invalid package version for AutoMapper. Expected: 14.0.0." />
+        <Error Condition="'%(PackageVersion.Identity)' == 'MediatR' AND '%(PackageVersion.Version)' != '[12.5.0]'" Text="Invalid package version for MediatR. Expected: 12.5.0." />
+    </Target>
 
 </Project>

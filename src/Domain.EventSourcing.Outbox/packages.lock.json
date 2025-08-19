@@ -189,7 +189,7 @@
           "BridgingIT.DevKit.Common.Rules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MediatR.Contracts": "[2.0.1, )",
+          "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.6, )",
           "Scrutor": "[4.2.2, 5.0.0)",
           "System.Linq.Dynamic.Core": "[1.6.6, )"
@@ -217,7 +217,7 @@
         "dependencies": {
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MediatR": "[12.5.0, )",
+          "MediatR": "[12.5.0, 12.5.0]",
           "Scrutor": "[4.2.2, 5.0.0)"
         }
       },
@@ -250,7 +250,7 @@
       },
       "MediatR": {
         "type": "CentralTransitive",
-        "requested": "[12.5.0, )",
+        "requested": "[12.5.0, 12.5.0]",
         "resolved": "12.5.0",
         "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
         "dependencies": {
@@ -260,7 +260,7 @@
       },
       "MediatR.Contracts": {
         "type": "CentralTransitive",
-        "requested": "[2.0.1, )",
+        "requested": "[2.0.1, 2.0.1]",
         "resolved": "2.0.1",
         "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },

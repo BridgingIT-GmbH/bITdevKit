@@ -16,7 +16,7 @@
       },
       "MediatR": {
         "type": "Direct",
-        "requested": "[12.5.0, )",
+        "requested": "[12.5.0, 12.5.0]",
         "resolved": "12.5.0",
         "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
         "dependencies": {
@@ -342,7 +342,7 @@
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "[14.0.0, )",
+          "AutoMapper": "[14.0.0, 14.0.0]",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -417,7 +417,7 @@
       },
       "AutoMapper": {
         "type": "CentralTransitive",
-        "requested": "[14.0.0, )",
+        "requested": "[14.0.0, 14.0.0]",
         "resolved": "14.0.0",
         "contentHash": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
         "dependencies": {
@@ -457,7 +457,7 @@
       },
       "MediatR.Contracts": {
         "type": "CentralTransitive",
-        "requested": "[2.0.1, )",
+        "requested": "[2.0.1, 2.0.1]",
         "resolved": "2.0.1",
         "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },

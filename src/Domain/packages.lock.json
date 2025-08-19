@@ -10,7 +10,7 @@
       },
       "MediatR.Contracts": {
         "type": "Direct",
-        "requested": "[2.0.1, )",
+        "requested": "[2.0.1, 2.0.1]",
         "resolved": "2.0.1",
         "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },

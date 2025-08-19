@@ -28,7 +28,7 @@
       },
       "MediatR": {
         "type": "Direct",
-        "requested": "[12.5.0, )",
+        "requested": "[12.5.0, 12.5.0]",
         "resolved": "12.5.0",
         "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
         "dependencies": {
@@ -298,7 +298,7 @@
       },
       "MediatR.Contracts": {
         "type": "CentralTransitive",
-        "requested": "[2.0.1, )",
+        "requested": "[2.0.1, 2.0.1]",
         "resolved": "2.0.1",
         "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },

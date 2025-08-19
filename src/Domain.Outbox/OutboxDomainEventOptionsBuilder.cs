@@ -85,6 +85,27 @@ public class OutboxDomainEventOptionsBuilder
         return this;
     }
 
+    public OutboxDomainEventOptionsBuilder ProcessingJitter(TimeSpan timeSpan)
+    {
+        this.Target.ProcessingJitter = timeSpan;
+
+        return this;
+    }
+
+    public OutboxDomainEventOptionsBuilder ProcessingJitter(int milliseconds)
+    {
+        this.Target.ProcessingJitter = TimeSpan.FromMilliseconds(milliseconds);
+
+        return this;
+    }
+
+    public OutboxDomainEventOptionsBuilder ProcessingJitter(string value)
+    {
+        this.Target.ProcessingJitter = TimeSpan.Parse(value);
+
+        return this;
+    }
+
     public OutboxDomainEventOptionsBuilder ProcessingMode(OutboxDomainEventProcessMode mode)
     {
         this.Target.ProcessingMode = mode;

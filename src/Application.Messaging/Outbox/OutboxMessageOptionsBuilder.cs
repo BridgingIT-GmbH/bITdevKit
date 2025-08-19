@@ -84,6 +84,27 @@ public class OutboxMessageOptionsBuilder : OptionsBuilderBase<OutboxMessageOptio
         return this;
     }
 
+    public OutboxMessageOptionsBuilder ProcessingJitter(TimeSpan timeSpan)
+    {
+        this.Target.ProcessingJitter = timeSpan;
+
+        return this;
+    }
+
+    public OutboxMessageOptionsBuilder ProcessingJitter(int milliseconds)
+    {
+        this.Target.ProcessingJitter = TimeSpan.FromMilliseconds(milliseconds);
+
+        return this;
+    }
+
+    public OutboxMessageOptionsBuilder ProcessingJitter(string value)
+    {
+        this.Target.ProcessingJitter = TimeSpan.Parse(value);
+
+        return this;
+    }
+
     public OutboxMessageOptionsBuilder ProcessingMode(OutboxMessageProcessingMode mode)
     {
         this.Target.ProcessingMode = mode;

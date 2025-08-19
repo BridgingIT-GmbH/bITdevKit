@@ -9,11 +9,13 @@ public class OutboxMessageOptions : OptionsBase
 {
     public bool Enabled { get; set; } = true;
 
-    public TimeSpan StartupDelay { get; set; } = new(0, 0, 15);
+    public TimeSpan StartupDelay { get; set; } = TimeSpan.FromSeconds(15);
 
-    public TimeSpan ProcessingInterval { get; set; } = new(0, 0, 30);
+    public TimeSpan ProcessingInterval { get; set; } = TimeSpan.FromSeconds(30);
 
-    public TimeSpan ProcessingDelay { get; set; } = new(0, 0, 0, 0, 1);
+    public TimeSpan ProcessingDelay { get; set; } = TimeSpan.FromMilliseconds(0);
+
+    public TimeSpan ProcessingJitter { get; set; } = TimeSpan.FromMilliseconds(0);
 
     public OutboxMessageProcessingMode ProcessingMode { get; set; }
 

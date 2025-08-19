@@ -110,11 +110,29 @@ public class LogEntryMaintenanceService<TContext>(
                         }
                         else // delete
                         {
-                            var deletedCount = await context.LogEntries
-                                .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
-                                .ExecuteDeleteAsync(cancellationToken);
+                            var skip = 0;
 
-                            this.logger.LogDebug("{LogKey}: deleted archived logs older than {OlderThan}", "LOG", olderThan);
+                            while (true)
+                            {
+                                var deletedCount = await context.LogEntries
+                                    .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
+                                    .OrderBy(e => e.Id)
+                                    .Skip(skip).Take(batchSize)
+                                    .ExecuteDeleteAsync(cancellationToken);
+
+                                if (deletedCount == 0)
+                                {
+                                    break;
+                                }
+
+                                this.logger.LogDebug("{LogKey}: deleted {BatchCount} archived logs older than {OlderThan}, skip={Skip}", "LOG", deletedCount, olderThan, skip);
+
+                                skip += batchSize;
+                                if (delayInterval > TimeSpan.Zero)
+                                {
+                                    await Task.Delay(delayInterval, cancellationToken);
+                                }
+                            }
                         }
 
                         this.logger.LogDebug("{LogKey}: completed log maintenance", "LOG");

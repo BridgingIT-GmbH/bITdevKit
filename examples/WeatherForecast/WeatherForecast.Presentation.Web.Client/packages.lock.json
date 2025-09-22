@@ -127,18 +127,18 @@
       },
       "Newtonsoft.Json": {
         "type": "Direct",
-        "requested": "[13.0.3, )",
-        "resolved": "13.0.3",
-        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+        "requested": "[13.0.4, )",
+        "resolved": "13.0.4",
+        "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
       },
       "NSwag.ApiDescription.Client": {
         "type": "Direct",
-        "requested": "[14.5.0, )",
-        "resolved": "14.5.0",
-        "contentHash": "AEx1LMMHAooBx7ROUa4RRJmV0BVhgn792veWZnojrml0/V9UVVjhP/4q9L/Qj/8C1CkrthFe9ec7lrCBcwBo8A==",
+        "requested": "[14.6.0, )",
+        "resolved": "14.6.0",
+        "contentHash": "DxYOEWu4r295Kz8/I0Xw+TtthTYfdgrqt6qu2MkfhJzZCP0TvghqU5Qopahp+Hlyel0L7LR5PmfPEGcCkP8Vuw==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Client": "8.0.14",
-          "NSwag.MSBuild": "14.5.0"
+          "NSwag.MSBuild": "14.6.0"
         }
       },
       "System.ComponentModel.Annotations": {
@@ -454,7 +454,7 @@
           "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
           "MessagePack": "[3.1.4, )",
-          "Newtonsoft.Json": "[13.0.3, )",
+          "Newtonsoft.Json": "[13.0.4, )",
           "System.Threading.Tasks.Extensions": "[4.6.3, )"
         }
       },
@@ -624,9 +624,9 @@
       },
       "NSwag.MSBuild": {
         "type": "CentralTransitive",
-        "requested": "[14.5.0, )",
-        "resolved": "14.5.0",
-        "contentHash": "XuKXUCUl+TVcHRAPHT8xQly/KbOMT7XEfotOqhy7iq+R0QYDK+axEZ6kfwW9ZN+MBsWczkJYgb7/i6CF35Z3Rw=="
+        "requested": "[14.6.0, )",
+        "resolved": "14.6.0",
+        "contentHash": "RwEj96gQ0RjUanyvgC4lUaeY3p3ClI9J6VNOT5wrBgwVj7Nf9VzTVDOR9ruKcWPcxoa75kudE4aq22TSx2mb3A=="
       },
       "Polly": {
         "type": "CentralTransitive",

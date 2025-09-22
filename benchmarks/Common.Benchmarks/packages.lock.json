@@ -4,11 +4,11 @@
     "net9.0": {
       "BenchmarkDotNet": {
         "type": "Direct",
-        "requested": "[0.15.2, )",
-        "resolved": "0.15.2",
-        "contentHash": "5vl4nQFUGTKgOVE5LNoLpv/X/wFQ7wE5yiaJAXCpzgNtUADtfEwbuufKI4o5E2De0VTXNEeom5Hnv8S8vuBZtg==",
+        "requested": "[0.15.3, )",
+        "resolved": "0.15.3",
+        "contentHash": "rkv733NK71YyaQF5pnXjCTvOIjq9hQZF+Sn8KHMeeMxGDHQ5aXG2iEZ365VwPPLBwflzdHwi28wGvR804DZ9Yw==",
         "dependencies": {
-          "BenchmarkDotNet.Annotations": "0.15.2",
+          "BenchmarkDotNet.Annotations": "0.15.3",
           "CommandLineParser": "2.9.1",
           "Gee.External.Capstone": "2.3.0",
           "Iced": "1.21.0",
@@ -50,8 +50,8 @@
       },
       "BenchmarkDotNet.Annotations": {
         "type": "Transitive",
-        "resolved": "0.15.2",
-        "contentHash": "a7rVlVmXQRrp3J+HF/FtjwiFcshU6BAuv6U1xtAbqCUYepOEnNGaPeOFvy4It17QZwwofm6U/GAfW3JrFMXszg=="
+        "resolved": "0.15.3",
+        "contentHash": "cGQi6GZIAPFSH5WXK7sT3xhJwT1LhEgp6qlsBBgCPz+720hn70+E4QbA2sTp+/hZGJBWPaP0b+Myv0xhD8bg/A=="
       },
       "CommandLineParser": {
         "type": "Transitive",
@@ -256,7 +256,7 @@
           "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
           "MessagePack": "[3.1.4, )",
-          "Newtonsoft.Json": "[13.0.3, )",
+          "Newtonsoft.Json": "[13.0.4, )",
           "System.Threading.Tasks.Extensions": "[4.6.3, )"
         }
       },
@@ -379,9 +379,9 @@
       },
       "Newtonsoft.Json": {
         "type": "CentralTransitive",
-        "requested": "[13.0.3, )",
-        "resolved": "13.0.3",
-        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+        "requested": "[13.0.4, )",
+        "resolved": "13.0.4",
+        "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
       },
       "Polly": {
         "type": "CentralTransitive",

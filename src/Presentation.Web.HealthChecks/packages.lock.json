@@ -63,31 +63,6 @@
         "resolved": "7.3.0",
         "contentHash": "2bETFWLBc8b7Ut2SVi+bxhGVwiSpknHYGBh2PADyGWONLkTxT7bKyDRhF8ao+XUv90tq8Fl7GTPxSI5bacIRJw=="
       },
-      "IdentityModel": {
-        "type": "Transitive",
-        "resolved": "5.2.0",
-        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
-      },
-      "IdentityModel.OidcClient": {
-        "type": "Transitive",
-        "resolved": "5.2.1",
-        "contentHash": "OuPhDNAw/EoJVEmYO6/ChZUBcug4OGoGKTKLUyBCsGhlKegxJk25LYQ0EL7GCBMgkEL+BYNJukNZyaJ+JNaWog==",
-        "dependencies": {
-          "IdentityModel": "5.2.0",
-          "Microsoft.Extensions.Logging": "6.0.0"
-        }
-      },
-      "KubernetesClient": {
-        "type": "Transitive",
-        "resolved": "15.0.1",
-        "contentHash": "IOsMJaBpiHELr7ZeiJQypdtLDbc/HqxbEh9UMaDvLpBvGIzS+KhjA0LJVEbGgvubmhWHxLPfgHAL0le1zr2RwA==",
-        "dependencies": {
-          "Fractions": "7.3.0",
-          "IdentityModel.OidcClient": "5.2.1",
-          "System.IdentityModel.Tokens.Jwt": "7.1.2",
-          "YamlDotNet": "16.0.0"
-        }
-      },
       "Microsoft.Build": {
         "type": "Transitive",
         "resolved": "17.7.2",
@@ -219,28 +194,6 @@
         "type": "Transitive",
         "resolved": "9.0.9",
         "contentHash": "z4pyMePOrl733ltTowbN565PxBw1oAr8IHmIXNDiDqd22nFpYltX9KhrNC/qBWAG1/Zx5MHX+cOYhWJQYCO/iw=="
-      },
-      "Microsoft.IdentityModel.Abstractions": {
-        "type": "Transitive",
-        "resolved": "8.14.0",
-        "contentHash": "iwbCpSjD3ehfTwBhtSNEtKPK0ICun6ov7Ibx6ISNA9bfwIyzI2Siwyi9eJFCJBwxowK9xcA1mj+jBWiigeqgcQ=="
-      },
-      "Microsoft.IdentityModel.Logging": {
-        "type": "Transitive",
-        "resolved": "8.14.0",
-        "contentHash": "eqqnemdW38CKZEHS6diA50BV94QICozDZEvSrsvN3SJXUFwVB9gy+/oz76gldP7nZliA16IglXjXTCTdmU/Ejg==",
-        "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "8.14.0"
-        }
-      },
-      "Microsoft.IdentityModel.Tokens": {
-        "type": "Transitive",
-        "resolved": "8.14.0",
-        "contentHash": "lKIZiBiGd36k02TCdMHp1KlNWisyIvQxcYJvIkz7P4gSQ9zi8dgh6S5Grj8NNG7HWYIPfQymGyoZ6JB5d1Lo1g==",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
-          "Microsoft.IdentityModel.Logging": "8.14.0"
-        }
       },
       "Microsoft.NET.StringTools": {
         "type": "Transitive",
@@ -402,14 +355,24 @@
       },
       "YamlDotNet": {
         "type": "Transitive",
-        "resolved": "16.0.0",
-        "contentHash": "kZ4jR5ltFhnjaUqK9x81zXRIUTH4PTXTTEmJDNQdkDLQhcv+2Nl19r0dCSvPW1mstOYBfXTnjdieRbUO6gHMDw=="
+        "resolved": "16.3.0",
+        "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",
         "requested": "[2.14.1, )",
         "resolved": "2.14.1",
         "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
+      },
+      "KubernetesClient": {
+        "type": "CentralTransitive",
+        "requested": "[17.0.14, )",
+        "resolved": "17.0.14",
+        "contentHash": "FMGWjGtN8WEUKAAQxs96PK2tYvPrvwhoJzay/6HiByVTvHoJ0i9u7ykvYb7E3vLTSlfv26Q2Ktxr41zYCppu8A==",
+        "dependencies": {
+          "Fractions": "7.3.0",
+          "YamlDotNet": "16.3.0"
+        }
       },
       "Microsoft.Build.Tasks.Core": {
         "type": "CentralTransitive",
@@ -678,30 +641,11 @@
           "Microsoft.Extensions.Primitives": "9.0.9"
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens": {
-        "type": "CentralTransitive",
-        "requested": "[8.14.0, )",
-        "resolved": "8.14.0",
-        "contentHash": "4jOpiA4THdtpLyMdAb24dtj7+6GmvhOhxf5XHLYWmPKF8ApEnApal1UnJsKO4HxUWRXDA6C4WQVfYyqsRhpNpQ==",
-        "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "8.14.0"
-        }
-      },
       "Newtonsoft.Json": {
         "type": "CentralTransitive",
         "requested": "[13.0.4, )",
         "resolved": "13.0.4",
         "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
-      },
-      "System.IdentityModel.Tokens.Jwt": {
-        "type": "CentralTransitive",
-        "requested": "[8.14.0, )",
-        "resolved": "8.14.0",
-        "contentHash": "EYGgN/S+HK7S6F3GaaPLFAfK0UzMrkXFyWCvXpQWFYmZln3dqtbyIO7VuTM/iIIPMzkelg8ZLlBPvMhxj6nOAA==",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "8.14.0",
-          "Microsoft.IdentityModel.Tokens": "8.14.0"
-        }
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

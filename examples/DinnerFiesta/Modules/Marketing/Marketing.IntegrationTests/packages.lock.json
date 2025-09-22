@@ -391,31 +391,6 @@
         "resolved": "1.21.0",
         "contentHash": "dv5+81Q1TBQvVMSOOOmRcjJmvWcX3BZPZsIq31+RLc5cNft0IHAyNlkdb7ZarOWG913PyBoFDsDXoCIlKmLclg=="
       },
-      "IdentityModel": {
-        "type": "Transitive",
-        "resolved": "5.2.0",
-        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
-      },
-      "IdentityModel.OidcClient": {
-        "type": "Transitive",
-        "resolved": "5.2.1",
-        "contentHash": "OuPhDNAw/EoJVEmYO6/ChZUBcug4OGoGKTKLUyBCsGhlKegxJk25LYQ0EL7GCBMgkEL+BYNJukNZyaJ+JNaWog==",
-        "dependencies": {
-          "IdentityModel": "5.2.0",
-          "Microsoft.Extensions.Logging": "6.0.0"
-        }
-      },
-      "KubernetesClient": {
-        "type": "Transitive",
-        "resolved": "15.0.1",
-        "contentHash": "IOsMJaBpiHELr7ZeiJQypdtLDbc/HqxbEh9UMaDvLpBvGIzS+KhjA0LJVEbGgvubmhWHxLPfgHAL0le1zr2RwA==",
-        "dependencies": {
-          "Fractions": "7.3.0",
-          "IdentityModel.OidcClient": "5.2.1",
-          "System.IdentityModel.Tokens.Jwt": "7.1.2",
-          "YamlDotNet": "16.0.0"
-        }
-      },
       "Mapster.Core": {
         "type": "Transitive",
         "resolved": "1.2.1",
@@ -2952,6 +2927,16 @@
         "requested": "[2.14.1, )",
         "resolved": "2.14.1",
         "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
+      },
+      "KubernetesClient": {
+        "type": "CentralTransitive",
+        "requested": "[17.0.14, )",
+        "resolved": "17.0.14",
+        "contentHash": "FMGWjGtN8WEUKAAQxs96PK2tYvPrvwhoJzay/6HiByVTvHoJ0i9u7ykvYb7E3vLTSlfv26Q2Ktxr41zYCppu8A==",
+        "dependencies": {
+          "Fractions": "7.3.0",
+          "YamlDotNet": "16.3.0"
+        }
       },
       "MailKit": {
         "type": "CentralTransitive",

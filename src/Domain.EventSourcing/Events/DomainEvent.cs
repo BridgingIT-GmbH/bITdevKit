@@ -6,9 +6,7 @@
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
 using Common;
-using Newtonsoft.Json;
-
-// TODO: get rid of Newtonsoft dependency
+using Newtonsoft.Json; // TODO: get rid of Newtonsoft dependency
 
 public class DomainEvent<TId> : IDomainEvent<TId>
 {
@@ -42,4 +40,7 @@ public class DomainEvent<TId> : IDomainEvent<TId>
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     public DateTimeOffset NotificationTimestamp { get; private set; }
+
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
+    public virtual IDictionary<string, object> Properties { get; protected set; } = new Dictionary<string, object>();
 }

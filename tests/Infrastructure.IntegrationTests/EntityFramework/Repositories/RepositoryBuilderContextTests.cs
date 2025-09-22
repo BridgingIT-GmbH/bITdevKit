@@ -10,10 +10,9 @@ using Infrastructure.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
-public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output,
-    s =>
+public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, services =>
     {
-        s.AddMediatR()
+        services.AddMediatR()
             .AddSqlServerDbContext<StubDbContext>("dummy")
             .WithHealthChecks()
             .WithDatabaseCreatorService(o => o.DeleteOnStartup())
@@ -26,7 +25,7 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
                 .StartupDelay("00:00:05")
                 .PurgeOnStartup());
 
-        s.AddEntityFrameworkRepository<PersonStub, StubDbContext>()
+        services.AddEntityFrameworkRepository<PersonStub, StubDbContext>()
             //.WithTransactions()
             .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
             .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()

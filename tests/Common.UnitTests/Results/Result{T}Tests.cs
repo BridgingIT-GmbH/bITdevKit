@@ -97,7 +97,7 @@ public class ResultValueTests
         var successResult = Result<int>.Success(value).WithMessage(message);
         var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
 
-        return failureResult.ToResult<string>(); //explicit  conversion
+        return failureResult.Wrap<string>(); //explicit  conversion
     }
 
     [Fact]
@@ -115,8 +115,8 @@ public class ResultValueTests
         var nonGenericSuccess = successResult.Unwrap();
         var nonGenericFailure = failureResult.Unwrap();
 
-        var genericSuccess = successResult.ToResult<string>();
-        var genericFailureWithValue = failureResult.ToResult("test");
+        var genericSuccess = successResult.Wrap<string>();
+        var genericFailureWithValue = failureResult.Wrap("test");
 
         // Assert
         nonGenericSuccess.ShouldBeSuccess();
@@ -1023,9 +1023,9 @@ public class ResultValueTests
         // Act
         // ReSharper disable once SuggestVarOrType_Elsewhere
 #pragma warning disable IDE0007 // Use implicit type
-        Result<string> convertedSuccessResult = successResult.ToResult<string>();
+        Result<string> convertedSuccessResult = successResult.Wrap<string>();
         // ReSharper disable once SuggestVarOrType_Elsewhere
-        Result<string> convertedFailureResult = failureResult.ToResult<string>();
+        Result<string> convertedFailureResult = failureResult.Wrap<string>();
 #pragma warning restore IDE0007 // Use implicit type
 
         // Assert

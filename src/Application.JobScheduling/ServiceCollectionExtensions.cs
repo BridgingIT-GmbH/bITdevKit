@@ -5,12 +5,12 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Collections.Specialized;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Configuration;
 using Extensions;
 using Quartz.Impl;
+using System.Collections.Specialized;
 
 public static class ServiceCollectionExtensions
 {
@@ -35,8 +35,9 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        return services.AddJobScheduling(optionsBuilder(
-            new JobSchedulingOptionsBuilder()).Build(),
+        contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
+
+        return services.AddJobScheduling(contextOptions,
             null,
             configuration,
             properties);
@@ -65,8 +66,10 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
+        contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
+
         return services.AddJobScheduling(
-            optionsBuilder(new JobSchedulingOptionsBuilder()).Build(),
+            contextOptions,
             configure,
             configuration,
             properties);
@@ -100,7 +103,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        contextOptions ??= options ?? new JobSchedulingOptions();
+        contextOptions ??= options;
 
         properties ??= [];
         if (configuration != null)
@@ -132,15 +135,18 @@ public static class ServiceCollectionExtensions
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));
 
-        if (options.GroupOptions != null)
+        if(contextOptions != null)
         {
-            services.AddSingleton(options.GroupOptions);
+            services.TryAddSingleton(contextOptions);
+        }
+
+        if (contextOptions?.GroupOptions != null)
+        {
+            services.AddSingleton(contextOptions.GroupOptions);
             services.AddSingleton<ConcurrentGroupExecutionListener>(); // scheduler.ListenerManager.AddJobListener called in JobSchedulingService
         }
 
         services.AddSingleton<JobRunHistoryListener>(); // scheduler.ListenerManager.AddJobListener called in JobSchedulingService
-        services.TryAddSingleton(contextOptions);
-
         services.AddHostedService<JobSchedulingService>();
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);

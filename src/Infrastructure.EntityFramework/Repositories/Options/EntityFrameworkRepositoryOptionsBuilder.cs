@@ -19,7 +19,9 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 public class EntityFrameworkRepositoryOptionsBuilder
     : OptionsBuilderBase<EntityFrameworkRepositoryOptions, EntityFrameworkRepositoryOptionsBuilder>
 {
+    /// <summary>
     /// Configures the DbContext for the EntityFrameworkRepositoryOptions.
+    /// </summary>
     /// <param name="context">The DbContext to be used for the repository options.</param>
     /// <returns>Returns the same instance of EntityFrameworkRepositoryOptionsBuilder for further configuration chaining.</returns>
     /// Example usage:

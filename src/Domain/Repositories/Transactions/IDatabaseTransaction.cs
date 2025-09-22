@@ -7,12 +7,8 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 public interface IDatabaseTransaction
 {
-    Task ExecuteScopedAsync(Func<Task> action);
+    Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default);
 
-    [Obsolete("Please use ExecuteScopedAsync from now on")]
-    Task<TEntity> ExecuteScopedWithResultAsync<TEntity>(Func<Task<TEntity>> action)
-        where TEntity : class, IEntity;
-
-    Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action)
+    Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
         where TEntity : class, IEntity;
 }

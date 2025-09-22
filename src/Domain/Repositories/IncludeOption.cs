@@ -16,7 +16,6 @@ public class IncludeOption<TEntity>
     ///     Initializes a new instance of the <see cref="IncludeOption{TEntity}" /> class.
     ///     Represents an option for including a related entity in the query.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public IncludeOption(Expression<Func<TEntity, object>> expression)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));
@@ -28,7 +27,6 @@ public class IncludeOption<TEntity>
     ///     Initializes a new instance of the <see cref="IncludeOption{TEntity}" /> class.
     ///     Represents an option for including related entities in a query.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="path">The navigation property path to include in the query.</param>
     public IncludeOption(string path)
     {

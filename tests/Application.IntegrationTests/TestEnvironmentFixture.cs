@@ -36,7 +36,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1433))
             .Build();
 
         this.CosmosContainer =
@@ -57,7 +57,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //.WithExposedPort(1025).WithExposedPort(8025)
             .WithPortBinding(1025, 1025) // SMTP port
             .WithPortBinding(8025, 8025) // HTTP API/UI port
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1025))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1025))
             .Build();
 
         //this.RabbitMQContainer = new RabbitMqBuilder()

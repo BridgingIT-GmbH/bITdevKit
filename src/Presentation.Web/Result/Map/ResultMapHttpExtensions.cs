@@ -1013,8 +1013,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                              "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
                 typeof(TUnauthorized).Name, customResult.GetType().Name);
         }
 
@@ -1055,8 +1054,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
                 typeof(TBadRequest).Name, customResult.GetType().Name);
         }
 
@@ -1076,8 +1074,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
                 typeof(TProblem).Name, customResult.GetType().Name);
         }
 

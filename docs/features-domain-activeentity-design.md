@@ -1,8 +1,8 @@
-# Active Record Pattern Implementation Design Document
+IEntityIdGenerator# Active Record Pattern Implementation Design Document
 
 ## Overview
 
-This design implements the Active Record pattern in .NET, built on EF Core for persistence, with decoupling via providers, pluggable behaviors, DI integration, and consistent use of the `Result` pattern for all operations (success/failure with messages/errors). Entities inherit from `ActiveRecordBase<T, TId>`, which extends your framework's `Entity<TId>` for ID handling/equality/transient checks.
+This design implements the Active Record pattern in .NET, built on EF Core for persistence, with decoupling via providers, pluggable behaviors, DI integration, and consistent use of the `Result` pattern for all operations (success/failure with messages/errors). Entities inherit from `ActiveRecord<T, TId>`, which extends your framework's `Entity<TId>` for ID handling/equality/transient checks.
 
 Key goals:
 - Simplify data access: Embed CRUD/queries/domain logic in entities.
@@ -25,7 +25,7 @@ classDiagram
         -IsTransient()
     }
 
-    class ActiveRecordBase~T, TId~ {
+    class ActiveRecord~T, TId~ {
         <<abstract>>
         +InsertAsync() Result~T~
         +UpdateAsync() Result~T~
@@ -98,15 +98,15 @@ classDiagram
         +Register() void
     }
 
-    Entity <|-- ActiveRecordBase
-    ActiveRecordBase ..> IEntityProvider : uses
-    ActiveRecordBase ..> IEntityBehavior : uses
+    Entity <|-- ActiveRecord
+    ActiveRecord ..> IEntityProvider : uses
+    ActiveRecord ..> IEntityBehavior : uses
     IEntityProvider <|.. EfCoreProvider
     IEntityBehavior <|.. EntityBehaviorBase
     ActiveRecordBuilder ..> EntityConfigurator : creates
     EntityConfigurator <.. EntityConfiguratorExtensions : extends
 
-    note for ActiveRecordBase "Inherits Entity<TId> for ID/equality/transient; optional IConcurrency for versioning"
+    note for ActiveRecord "Inherits Entity<TId> for ID/equality/transient; optional IConcurrency for versioning"
     note for EfCoreProvider "Scoped DI; Builds queries from FilterModel/specs/options/where; Handles concurrency"
     note for EntityBehaviorBase "Pluggable hooks (e.g., logging); Resolved scoped"
     note for ActiveRecordBuilder "DI registrations via AddActiveRecord()"
@@ -281,7 +281,7 @@ Assume entities (`Customer` with several `Addresses` as below); optional IConcur
 
 ### Entity Examples
 ```csharp
-public class Customer : ActiveRecordBase<Customer, Guid>, IAuditable
+public class Customer : ActiveRecord<Customer, Guid>, IAuditable
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -291,7 +291,7 @@ public class Customer : ActiveRecordBase<Customer, Guid>, IAuditable
     public AuditState AuditState { get; set; }
 }
 
-public class Address : ActiveRecordBase<Address, Guid>
+public class Address : ActiveRecord<Address, Guid>
 {
     public Guid CustomerId { get; set; }
     public string Street { get; set; }
@@ -403,7 +403,7 @@ For Customer implementing IConcurrency:
 ### AuditState Example
 For Customer implementing IAuditable:
 ```csharp
-public class Customer : ActiveRecordBase<Customer, Guid>, IAuditable
+public class Customer : ActiveRecord<Customer, Guid>, IAuditable
 {
     // Properties as above
     public AuditState AuditState { get; set; }
@@ -529,7 +529,7 @@ Based on the design's mitigations, all standard AR cons are addressed. No unmiti
 ```mermaid
 sequenceDiagram
     participant Client
-    participant Entity as Customer (ActiveRecordBase)
+    participant Entity as Customer (ActiveRecord)
     participant Behaviors as IEntityBehavior(s)
     participant Provider as IEntityProvider (EfCoreProvider)
     participant DbContext as AppDbContext
@@ -551,11 +551,11 @@ sequenceDiagram
 
 ## Appendix: Customer/Order/Book Sample Implementation
 
-This appendix demonstrates how the Active Record design can implement a sample with models like Customer (has_many :orders), Order (belongs_to :customer, has_many :books via "OrdersBooks" join table), Book (has_many :orders via join, has_many :reviews, has_many :authors via "BookAuthors" join table, has_many :suppliers via "SupplierBooks" join table), Review (belongs_to :book), Supplier (has_many :books via join), and Author (has_many :books via join). Entities use GUID IDs, inherit from ActiveRecordBase<T, Guid>, and implement IAuditable and IConcurrency for auditing/soft delete and optimistic locking.
+This appendix demonstrates how the Active Record design can implement a sample with models like Customer (has_many :orders), Order (belongs_to :customer, has_many :books via "OrdersBooks" join table), Book (has_many :orders via join, has_many :reviews, has_many :authors via "BookAuthors" join table, has_many :suppliers via "SupplierBooks" join table), Review (belongs_to :book), Supplier (has_many :books via join), and Author (has_many :books via join). Entities use GUID IDs, inherit from ActiveRecord<T, Guid>, and implement IAuditable and IConcurrency for auditing/soft delete and optimistic locking.
 
 ### Models
 ```csharp
-public class Customer : ActiveRecordBase<Customer, Guid>, IAuditable, IConcurrency
+public class Customer : ActiveRecord<Customer, Guid>, IAuditable, IConcurrency
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -566,7 +566,7 @@ public class Customer : ActiveRecordBase<Customer, Guid>, IAuditable, IConcurren
     public Guid ConcurrencyVersion { get; set; }
 }
 
-public class Order : ActiveRecordBase<Order, Guid>, IAuditable, IConcurrency
+public class Order : ActiveRecord<Order, Guid>, IAuditable, IConcurrency
 {
     public Guid CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
@@ -577,7 +577,7 @@ public class Order : ActiveRecordBase<Order, Guid>, IAuditable, IConcurrency
     public Guid ConcurrencyVersion { get; set; }
 }
 
-public class Book : ActiveRecordBase<Book, Guid>, IAuditable, IConcurrency
+public class Book : ActiveRecord<Book, Guid>, IAuditable, IConcurrency
 {
     public string Title { get; set; }
     public bool OutOfPrint { get; set; }
@@ -590,7 +590,7 @@ public class Book : ActiveRecordBase<Book, Guid>, IAuditable, IConcurrency
     public Guid ConcurrencyVersion { get; set; }
 }
 
-public class Review : ActiveRecordBase<Review, Guid>, IAuditable, IConcurrency
+public class Review : ActiveRecord<Review, Guid>, IAuditable, IConcurrency
 {
     public Guid BookId { get; set; }
     public virtual Book Book { get; set; }
@@ -600,7 +600,7 @@ public class Review : ActiveRecordBase<Review, Guid>, IAuditable, IConcurrency
     public Guid ConcurrencyVersion { get; set; }
 }
 
-public class Supplier : ActiveRecordBase<Supplier, Guid>, IAuditable, IConcurrency
+public class Supplier : ActiveRecord<Supplier, Guid>, IAuditable, IConcurrency
 {
     public string Name { get; set; }
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
@@ -608,7 +608,7 @@ public class Supplier : ActiveRecordBase<Supplier, Guid>, IAuditable, IConcurren
     public Guid ConcurrencyVersion { get; set; }
 }
 
-public class Author : ActiveRecordBase<Author, Guid>, IAuditable, IConcurrency
+public class Author : ActiveRecord<Author, Guid>, IAuditable, IConcurrency
 {
     public string Name { get; set; }
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();

@@ -278,7 +278,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
         // Act
         var result = await Rule.CheckAsync(adultRule);
         var emailResult = await Rule.CheckAsync(emailRule);
-        var combinedResult = Result.Combine(result, emailResult);
+        var combinedResult = Result.Merge(result, emailResult);
 
         // Assert
         combinedResult.ShouldBeFailure();
@@ -306,7 +306,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
         var result2 = Rule.Check(emailRule);
         var result3 = Rule.Check(firstNameRule);
         var result4 = Rule.Check(lastNameRule);
-        var combinedResult = Result.Combine(result1, result2, result3, result4);
+        var combinedResult = Result.Merge(result1, result2, result3, result4);
 
         // Assert
         combinedResult.ShouldBeSuccess();
@@ -333,7 +333,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 
         // Act
         var results = await Task.WhenAll(rules.Select(rule => Rule.CheckAsync(rule)));
-        var combinedResult = Result.Combine(results);
+        var combinedResult = Result.Merge(results);
 
         // Assert
         combinedResult.ShouldBeFailure();

@@ -58,7 +58,11 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                await Task.Delay(this.options.StartupDelay, cancellationToken);
+                this.logger.LogDebug("{LogKey} outbox message service startup delayed", Constants.LogKey);
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    await Task.Delay(this.options.StartupDelay, cancellationToken);
+                }
             }
 
             if (this.options.PurgeProcessedOnStartup)

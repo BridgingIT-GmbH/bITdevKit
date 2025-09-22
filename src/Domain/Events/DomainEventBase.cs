@@ -44,6 +44,11 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
     }
 
     /// <summary>
+    ///     Hold extra properties for this event.
+    /// </summary>
+    public virtual IDictionary<string, object> Properties { get; protected set; } = new Dictionary<string, object>();
+
+    /// <summary>
     ///     Compares this instance with another DomainEventBase instance
     ///     to determine if they are equal based on their EventId.
     /// </summary>

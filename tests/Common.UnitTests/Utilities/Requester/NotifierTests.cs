@@ -11,7 +11,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
@@ -43,6 +45,21 @@ public class NotifierTests
         // Arrange
         var notifier = this.serviceProvider.GetService<INotifier>();
         var notification = new EmailSentNotification();
+
+        // Act
+        var result = await notifier.PublishAsync(notification);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task PublishAsync_SuccessfulDomainEvent_ReturnsSuccessResult()
+    {
+        // Arrange
+        var notifier = this.serviceProvider.GetService<INotifier>();
+        var person = new PersonStub { FirstName = "John", LastName = "Doe" };
+        var notification = new PersonStubCreatedDomainEvent(person);
 
         // Act
         var result = await notifier.PublishAsync(notification);
@@ -697,5 +714,20 @@ public class ChaosTestNotificationHandler : NotificationHandlerBase<ChaosTestNot
     protected override Task<Result> HandleAsync(ChaosTestNotification notification, PublishOptions options, CancellationToken cancellationToken)
     {
         return Task.FromResult(Result.Success());
+    }
+}
+
+public class PersonStubCreatedDomainEvent(PersonStub person) : DomainEventBase
+{
+    public PersonStub PersonStub { get; } = person;
+}
+
+public class CustomerCreatedHandler : NotificationHandlerBase<PersonStubCreatedDomainEvent>
+{
+    protected override async Task<Result> HandleAsync(PersonStubCreatedDomainEvent notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken); // Delay longer than the timeout
+        //logger.LogInformation($"PersonStub Created ================ {notification.PersonStub.LastName}");
+        return Result.Success();
     }
 }

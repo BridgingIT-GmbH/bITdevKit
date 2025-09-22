@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-public class AggregateDeletedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
+public class EntityCreatedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
     where TEntity : class, IEntity, IAggregateRoot
 {
     public TEntity Entity { get; } = entity;

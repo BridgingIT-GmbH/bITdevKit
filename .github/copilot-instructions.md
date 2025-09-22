@@ -1,6 +1,6 @@
 # General Guidelines
 - Strictly follow the coding conventions and formatting rules defined in the project's .editorconfig file.
-- Use C# 12 and .NET 8 features where appropriate.
+- Use C# 12+ and .NET 8+ features where appropriate.
 - Write clean, maintainable, and well-documented code.
 - Follow SOLID principles and modern .NET best practices.
 - Structure code using Onion/Clean Architecture: Domain, Application, Infrastructure, Presentation.
@@ -8,10 +8,10 @@
 # Library and Package Usage
 - Always prefer the .NET Base Class Library (BCL) for all functionality.
 - Only use external NuGet packages if the required functionality is not available in the BCL or if the external package is an established industry standard for the task.
-- When using external packages, ensure they are well-maintained, widely adopted, and compatible with the project’s .NET version.
+- When using external packages, ensure they are well-maintained, widely adopted, and compatible with the projectï¿½s .NET version.
 
 # Key Packages Used
-- MediatR: For CQRS and mediator pattern.
+- MediatR: For CQS and mediator pattern.
 - FluentValidation: For model validation.
 - Polly: For resilience and transient-fault handling.
 - Serilog: For structured logging.

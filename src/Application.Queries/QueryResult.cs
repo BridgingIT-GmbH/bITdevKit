@@ -83,7 +83,7 @@ public static class QueryResult
     /// <returns>A QueryResponse containing a Result with the new output value.</returns>
     public static QueryResponse<Result<TOuput>> For<TValue, TOuput>(Result<TValue> result, TOuput value = default)
     {
-        return new QueryResponse<Result<TOuput>> { Result = result.ToResult(value) };
+        return new QueryResponse<Result<TOuput>> { Result = result.Wrap(value) };
     }
 
     /// <summary>

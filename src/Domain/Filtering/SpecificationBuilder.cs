@@ -449,7 +449,7 @@ public static class TypeConverter
 
         if (implicitOperator != null)
         {
-            return implicitOperator.Invoke(null, new[] { value });
+            return implicitOperator.Invoke(null, [value]);
         }
 
         // Fallback to standard conversion

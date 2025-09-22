@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,8 @@ public static class ApplicationBuilderExtensions
     /// <returns>The configured application builder.</returns>
     public static IApplicationBuilder UseResultLogger(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         var logger = app.ApplicationServices.GetService<ILogger<ResultLogger>>();
         Result.Setup(s => s.Logger = new ResultLogger(logger));
 
@@ -35,9 +38,40 @@ public static class ApplicationBuilderExtensions
     /// <returns>The IApplicationBuilder instance for further configuration.</returns>
     public static IApplicationBuilder UseRuleLogger(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         var logger = app.ApplicationServices.GetService<ILogger<RuleLogger>>();
         Rule.Setup(s => s.SetLogger(new RuleLogger(logger)));
 
+        return app;
+    }
+
+    /// <summary>
+    /// Sets the global service provider for Active Entity configuration.
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <param name="services">The service provider to set.</param>
+    /// <returns>The application builder for fluent chaining.</returns>
+    /// <example>
+    /// <code>
+    /// app.UseActiveEntity(app.Services);
+    /// </code>
+    /// </example>
+    public static IApplicationBuilder UseActiveEntity(this IApplicationBuilder app, IServiceProvider services)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+        ArgumentNullException.ThrowIfNull(services);
+
+        ActiveEntityConfigurator.SetGlobalServiceProvider(services);
+        return app;
+    }
+
+    public static IApplicationBuilder UseActiveEntity(this IApplicationBuilder app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+        ArgumentNullException.ThrowIfNull(app.ApplicationServices);
+
+        ActiveEntityConfigurator.SetGlobalServiceProvider(app.ApplicationServices);
         return app;
     }
 }

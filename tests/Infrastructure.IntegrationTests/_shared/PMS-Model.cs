@@ -3,10 +3,4 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Domain;
-
-public class AggregateCreatedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
-    where TEntity : class, IEntity, IAggregateRoot
-{
-    public TEntity Entity { get; } = entity;
-}
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;

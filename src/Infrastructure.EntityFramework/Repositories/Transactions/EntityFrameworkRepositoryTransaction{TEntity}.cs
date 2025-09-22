@@ -6,43 +6,36 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 public class EntityFrameworkTransactionWrapper<TEntity, TContext>(TContext context)
-    : EntityFrameworkTransaction<TEntity>(context)
+    : EntityFrameworkRepositoryTransaction<TEntity>(context)
     where TEntity : class, IEntity
     where TContext : DbContext
 { }
 
-[Obsolete("Use EntityFrameworkTransaction instead")]
-public class GenericRepositoryTransaction<TEntity>(DbContext context) : EntityFrameworkTransaction<TEntity>(context)
-    where TEntity : class, IEntity
-{ }
-
-public class EntityFrameworkTransaction<TEntity> : IRepositoryTransaction<TEntity>
+public class EntityFrameworkRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity
 {
     private readonly DbContext context;
 
-    public EntityFrameworkTransaction(DbContext context)
+    public EntityFrameworkRepositoryTransaction(DbContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
         this.context = context;
     }
 
-    public async Task ExecuteScopedAsync(Func<Task> action)
+    public async Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
         await ResilientTransaction.Create(this.context)
-            .ExecuteAsync(async () => await action().AnyContext())
-            .AnyContext();
+            .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
 
-    public async Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action)
+    public async Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
         return await ResilientTransaction.Create(this.context)
-            .ExecuteAsync(async () => await action().AnyContext())
-            .AnyContext();
+            .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
 }

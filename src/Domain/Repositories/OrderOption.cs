@@ -16,7 +16,6 @@ public class OrderOption<TEntity>
     ///     Initializes a new instance of the <see cref="OrderOption{TEntity}" /> class.
     ///     Represents an ordering option for querying entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity being queried.</typeparam>
     public OrderOption(
         Expression<Func<TEntity, object>> orderingExpression,
         OrderDirection direction = OrderDirection.Ascending)
@@ -31,7 +30,6 @@ public class OrderOption<TEntity>
     ///     Initializes a new instance of the <see cref="OrderOption{TEntity}" /> class.
     ///     The OrderOption class is used to specify ordering information for entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public OrderOption(string ordering)
     {
         EnsureArg.IsNotNull(ordering, nameof(ordering));

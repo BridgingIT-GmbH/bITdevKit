@@ -10,14 +10,14 @@ using Domain.Model;
 using Microsoft.Extensions.Logging;
 
 public class CityCreatedDomainEventHandler(ILoggerFactory loggerFactory)
-    : DomainEventHandlerBase<AggregateCreatedDomainEvent<City>>(loggerFactory)
+    : DomainEventHandlerBase<EntityCreatedDomainEvent<City>>(loggerFactory)
 {
-    public override bool CanHandle(AggregateCreatedDomainEvent<City> notification)
+    public override bool CanHandle(EntityCreatedDomainEvent<City> notification)
     {
         return true;
     }
 
-    public override Task Process(AggregateCreatedDomainEvent<City> notification, CancellationToken cancellationToken)
+    public override Task Process(EntityCreatedDomainEvent<City> notification, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(notification.Entity, nameof(notification.Entity));
 

@@ -23,7 +23,6 @@ public class Specification<T> : ISpecification<T>
     /// <summary>
     /// Represents a specification pattern used to define a query criteria for entities of type <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The type of entity to which the specification is applied.</typeparam>
     public Specification(Expression<Func<T, bool>> expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
@@ -34,7 +33,6 @@ public class Specification<T> : ISpecification<T>
     /// <summary>
     /// Represents a specification pattern that is used to check if an entity satisfies certain criteria.
     /// </summary>
-    /// <typeparam name="T">The type of entity that this specification will be applied to.</typeparam>
     public Specification(string dynamicExpression, params object[] dynamicExpressionValues)
     {
         ArgumentException.ThrowIfNullOrEmpty(dynamicExpression);
@@ -46,7 +44,6 @@ public class Specification<T> : ISpecification<T>
     /// <summary>
     /// Represents a specification pattern that encapsulates an expression used to filter objects of type <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The type of entity this specification applies to.</typeparam>
     protected Specification() { }
 
     /// <summary>

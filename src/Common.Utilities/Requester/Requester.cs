@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Collections.Concurrent;
-using System.Data;
-using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.Data;
+using System.Reflection;
 
 /// <summary>
 /// Defines a request that can be dispatched to a handler.
@@ -468,6 +468,30 @@ public interface IRequester
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Dispatches a request to its handler asynchronously
+    /// </summary>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    Task<Result> SendDynamicAsync(
+        IRequest request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Dispatches a request to its handler asynchronously
+    /// </summary>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    Task<Result<TValue>> SendDynamicAsync<TValue>(
+        IRequest<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Returns information about registered request handlers and behaviors.
     /// </summary>
     /// <returns>An object containing handler mappings and behavior types.</returns>
@@ -521,6 +545,7 @@ public partial class Requester(
     private const string RequestTypeLogKey = "RequestType";
     private static readonly ConcurrentDictionary<Type, string> TypeNameCache = [];
     private static readonly SendOptions DefaultOptions = new();
+
     /// <summary>
     /// Dispatches a request to its handler asynchronously.
     /// </summary>
@@ -614,6 +639,79 @@ public partial class Requester(
     }
 
     /// <summary>
+    /// Dispatches a request to its handler asynchronously.
+    /// </summary>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    public Task<Result> SendDynamicAsync(
+        IRequest request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        // Find the generic SendAsync<TRequest, TValue> method
+        var method = typeof(IRequester).GetMethod(nameof(IRequester.SendAsync), [request.GetType(), typeof(SendOptions), typeof(CancellationToken)]);
+        if (method?.IsGenericMethod != true) // fallback: search by name and generic args
+        {
+            method = typeof(IRequester)
+                .GetMethods()
+                .FirstOrDefault(m =>
+                    m.Name == nameof(IRequester.SendAsync) &&
+                    m.IsGenericMethod &&
+                    m.GetGenericArguments().Length == 2);
+        }
+
+        if (method == null)
+        {
+            throw new InvalidOperationException($"Generic method '{nameof(IRequester.SendAsync)}' not found.");
+        }
+
+        var genericMethod = method.MakeGenericMethod(request.GetType());
+
+        return (Task<Result>)genericMethod.Invoke(this, [request, options, cancellationToken])!;
+    }
+
+    /// <summary>
+    /// Dispatches a request to its handler asynchronously.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the response value.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    public Task<Result<TValue>> SendDynamicAsync<TValue>(
+        IRequest<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        // Find the generic SendAsync<TRequest, TValue> method
+        var method = typeof(IRequester).GetMethod(nameof(IRequester.SendAsync), [request.GetType(), typeof(SendOptions), typeof(CancellationToken)]);
+        if (method?.IsGenericMethod != true) // fallback: search by name and generic args
+        {
+            method = typeof(IRequester)
+                .GetMethods()
+                .FirstOrDefault(m =>
+                    m.Name == nameof(IRequester.SendAsync) &&
+                    m.IsGenericMethod &&
+                    m.GetGenericArguments().Length == 2);
+        }
+
+        if (method == null)
+        {
+            throw new InvalidOperationException($"Generic method '{nameof(IRequester.SendAsync)}' not found.");
+        }
+
+        var genericMethod = method.MakeGenericMethod(request.GetType(), typeof(TValue)); // Make generic with runtime request type + TValue
+
+        return (Task<Result<TValue>>)genericMethod.Invoke(this, [request, options, cancellationToken])!;
+    }
+
+    /// <summary>
     /// Returns information about registered request handlers and behaviors, logging the details.
     /// </summary>
     /// <returns>An object containing handler mappings and behavior types.</returns>
@@ -691,3 +789,45 @@ public class RegistrationInformation(
     /// </summary>
     public IReadOnlyList<string> BehaviorTypes { get; } = behaviorTypes ?? throw new ArgumentNullException(nameof(behaviorTypes));
 }
+
+//public static class RequesterExtensions
+//{
+//    /// <summary>
+//    /// Dispatches a request to its handler asynchronously.
+//    /// </summary>
+//    /// <typeparam name="TValue">The type of the response value.</typeparam>
+//    /// <param name="request">The request to dispatch.</param>
+//    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+//    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+//    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+//    public static Task<Result<TValue>> SendDynamicAsync<TValue>(
+//        this IRequester requester,
+//        IRequest<TValue> request,
+//        SendOptions options = null,
+//        CancellationToken cancellationToken = default)
+//    {
+//        ArgumentNullException.ThrowIfNull(request);
+
+//        // Find the generic SendAsync<TRequest, TValue> method
+//        var method = typeof(IRequester).GetMethod(nameof(IRequester.SendAsync), [request.GetType(), typeof(SendOptions), typeof(CancellationToken)]);
+
+//        if (method?.IsGenericMethod != true) // fallback: search by name and generic args
+//        {
+//            method = typeof(IRequester)
+//                .GetMethods()
+//                .FirstOrDefault(m =>
+//                    m.Name == nameof(IRequester.SendAsync) &&
+//                    m.IsGenericMethod &&
+//                    m.GetGenericArguments().Length == 2);
+//        }
+
+//        if (method == null)
+//        {
+//            throw new InvalidOperationException($"Generic method '{nameof(IRequester.SendAsync)}' not found.");
+//        }
+
+//        var genericMethod = method.MakeGenericMethod(request.GetType(), typeof(TValue)); // Make generic with runtime request type + TValue
+
+//        return (Task<Result<TValue>>)genericMethod.Invoke(requester, new object[] { request, options, cancellationToken })!;
+//    }
+//}

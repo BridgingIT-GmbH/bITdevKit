@@ -59,11 +59,11 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new AggregateDeletedDomainEvent<TEntity>(entity);
+        var @event = new EntityDeletedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
             @event.EventId.ToString("N"),
-            typeof(AggregateDeletedDomainEvent<TEntity>).Name);
+            typeof(EntityDeletedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
@@ -151,11 +151,11 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new AggregateCreatedDomainEvent<TEntity>(entity);
+        var @event = new EntityCreatedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
             @event.EventId.ToString("N"),
-            typeof(AggregateInsertedDomainEvent<TEntity>).Name);
+            typeof(EntityInsertedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
@@ -165,11 +165,11 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
+        var @event = new EntityUpdatedDomainEvent<TEntity>(entity);
         TypedLogger.LogRegister(this.Logger,
             Constants.LogKey,
             @event.EventId.ToString("N"),
-            typeof(AggregateUpdatedDomainEvent<TEntity>).Name);
+            typeof(EntityUpdatedDomainEvent<TEntity>).Name);
         entity.DomainEvents.Register(@event);
 
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
@@ -184,11 +184,11 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         DomainEventBase @event;
         if (entity.Id == default || !await this.Inner.ExistsAsync(entity.Id, cancellationToken).AnyContext())
         {
-            @event = new AggregateCreatedDomainEvent<TEntity>(entity);
+            @event = new EntityCreatedDomainEvent<TEntity>(entity);
         }
         else
         {
-            @event = new AggregateUpdatedDomainEvent<TEntity>(entity);
+            @event = new EntityUpdatedDomainEvent<TEntity>(entity);
         }
 
         TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId.ToString("N"), @event.GetType().Name);

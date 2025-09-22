@@ -212,6 +212,7 @@ public class ActiveStatus(int id, string value, string code, string description)
 {
     public static readonly ActiveStatus Active = new(0, "Active", "AKT", "Lorem Ipsum");
     public static readonly ActiveStatus Inactive = new(1, "Inactive", "INA", "Lorem Ipsum");
+    public static readonly ActiveStatus Unknown = new(99, "Unknown", "UNK", "Lorem Ipsum");
 
     public string Code { get; } = code;
 

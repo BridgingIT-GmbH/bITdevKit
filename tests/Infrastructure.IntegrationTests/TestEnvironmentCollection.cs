@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
+// https://xunit.net/docs/shared-context#collection-fixture
 [CollectionDefinition(nameof(TestEnvironmentCollection))]
 public class TestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
@@ -16,4 +17,9 @@ public class TestEnvironmentCollection3 : ICollectionFixture<TestEnvironmentFixt
 
 [CollectionDefinition(nameof(TestEnvironmentCollection4))]
 public class TestEnvironmentCollection4 : ICollectionFixture<TestEnvironmentFixture>;
-// https://xunit.net/docs/shared-context#collection-fixture
+
+[CollectionDefinition(nameof(TestEnvironmentCollection5))]
+public class TestEnvironmentCollection5 : ICollectionFixture<TestEnvironmentFixture>;
+
+[CollectionDefinition(nameof(TestEnvironmentCollection6))]
+public class TestEnvironmentCollection6 : ICollectionFixture<TestEnvironmentFixture>;

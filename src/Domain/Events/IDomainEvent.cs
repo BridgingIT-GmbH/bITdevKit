@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Domain;
 ///     Represents a domain event which is used to signal changes within the domain.
 ///     Domain events are used to encapsulate changes to the state of an aggregate.
 /// </summary>
-public interface IDomainEvent : MediatR.INotification, Common.INotification
+public interface IDomainEvent : MediatR.INotification, INotification // TODO: double interface for now to support old (mediator) and new (Notifier) domain events
 {
     /// <summary>
     ///     Gets the unique identifier for the domain event.
@@ -20,7 +20,12 @@ public interface IDomainEvent : MediatR.INotification, Common.INotification
     ///     Gets the timestamp indicating when the domain event occurred.
     /// </summary>
     /// <value>
-    ///     A <see cref="System.DateTimeOffset" /> representing the exact date and time the event was generated.
+    ///     A <see cref="DateTimeOffset" /> representing the exact date and time the event was generated.
     /// </value>
     DateTimeOffset Timestamp { get; }
+
+    /// <summary>
+    ///     Hold extra properties for this event.
+    /// </summary>
+    IDictionary<string, object> Properties { get; }
 }

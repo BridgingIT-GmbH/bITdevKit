@@ -64,8 +64,7 @@ public class NotifierBuilder
 
         foreach (var assembly in assemblies)
         {
-            var types = this.SafeGetTypes(assembly);
-            foreach (var type in types)
+            foreach (var type in this.SafeGetTypes(assembly))
             {
                 if (type.IsGenericTypeDefinition)
                 {

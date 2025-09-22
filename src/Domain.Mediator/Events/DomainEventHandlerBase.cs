@@ -18,7 +18,6 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
     ///     Abstract base class representing a handler for domain events.
     ///     Includes common logic for handling domain events, such as logging.
     /// </summary>
-    /// <typeparam name="TEvent">The type of the domain event that the handler processes.</typeparam>
     protected DomainEventHandlerBase(ILoggerFactory loggerFactory)
     {
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??

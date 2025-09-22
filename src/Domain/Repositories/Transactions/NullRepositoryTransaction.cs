@@ -8,12 +8,12 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 public class NullRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity
 {
-    public async Task ExecuteScopedAsync(Func<Task> action)
+    public async Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellation = default)
     {
         await action();
     }
 
-    public async Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action)
+    public async Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellation = default)
     {
         return await action();
     }

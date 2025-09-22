@@ -12,17 +12,18 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 public class FindOptions<TEntity> : IFindOptions<TEntity>
     where TEntity : class, IEntity
 {
+    private List<OrderOption<TEntity>> orders = [];
+    private List<IncludeOption<TEntity>> includes = [];
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindOptions{TEntity}" /> class.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public FindOptions() { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindOptions{TEntity}" /> class.
     ///     Provides options for finding entities in the repository.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public FindOptions(
         int? skip = null,
         int? take = null,
@@ -38,9 +39,21 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
         this.Take = take;
         this.Skip = skip;
         this.Order = orderExpression is not null ? new OrderOption<TEntity>(orderExpression) : order;
-        this.Orders = orders;
+        if (orders != null)
+        {
+            foreach (var o in orders)
+            {
+                this.AddOrder(o);
+            }
+        }
         this.Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) : include;
-        this.Includes = includes;
+        if (includes != null)
+        {
+            foreach (var i in includes)
+            {
+                this.AddInclude(i);
+            }
+        }
         this.Distinct = distinctExpression is not null ? new DistinctOption<TEntity>(distinctExpression) : distinct;
     }
 
@@ -85,12 +98,19 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     public OrderOption<TEntity> Order { get; set; }
 
     /// <summary>
-    ///     Gets or sets a collection of order options for sorting the query results.
+    ///     Gets or sets the collection of order options for sorting the query results.
     /// </summary>
     /// <value>
     ///     The collection of order options.
     /// </value>
-    public IEnumerable<OrderOption<TEntity>> Orders { get; set; }
+    public IEnumerable<OrderOption<TEntity>> Orders
+    {
+        get => this.orders.AsReadOnly();
+        set
+        {
+            this.orders = value?.ToList() ?? [];
+        }
+    }
 
     /// <summary>
     ///     Gets or sets the inclusion option for related entities.
@@ -106,7 +126,14 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// <value>
     ///     A collection of <see cref="IncludeOption{TEntity}" /> to specify related entities to include in the query result.
     /// </value>
-    public IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
+    public IEnumerable<IncludeOption<TEntity>> Includes
+    {
+        get => this.includes.AsReadOnly();
+        set
+        {
+            this.includes = value?.ToList() ?? [];
+        }
+    }
 
     /// <summary>
     ///     Gets or sets the inclusion option for related child entities.
@@ -117,6 +144,38 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     public HierarchyOption<TEntity> Hierarchy { get; set; }
 
     /// <summary>
+    ///     Adds an order option to the query.
+    /// </summary>
+    /// <param name="order">The order option to add.</param>
+    /// <returns>The current instance for chaining.</returns>
+    /// <example>
+    /// var options = new FindOptions<Customer>()
+    ///     .AddOrder(new OrderOption<Customer>(c => c.LastName, OrderDirection.Ascending));
+    /// </example>
+    public FindOptions<TEntity> AddOrder(OrderOption<TEntity> order)
+    {
+        EnsureArg.IsNotNull(order, nameof(order));
+        this.orders.Add(order);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an include option to the query.
+    /// </summary>
+    /// <param name="include">The include option to add.</param>
+    /// <returns>The current instance for chaining.</returns>
+    /// <example>
+    /// var options = new FindOptions<Customer>()
+    ///     .AddInclude(new IncludeOption<Customer>(c => c.Orders));
+    /// </example>
+    public FindOptions<TEntity> AddInclude(IncludeOption<TEntity> include)
+    {
+        EnsureArg.IsNotNull(include, nameof(include));
+        this.includes.Add(include);
+        return this;
+    }
+
+    /// <summary>
     ///     Determines whether this instance has orders.
     /// </summary>
     /// <returns>
@@ -124,7 +183,7 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// </returns>
     public bool HasOrders()
     {
-        return this.Order is not null || this.Orders.SafeAny();
+        return this.Order is not null || this.orders.Count != 0;
     }
 
     /// <summary>
@@ -135,7 +194,7 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// </returns>
     public bool HasIncludes()
     {
-        return this.Include is not null || this.Includes.SafeAny();
+        return this.Include is not null || this.includes.Count != 0;
     }
 
     public bool HasHierarchy()

@@ -30,7 +30,7 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         await inner.Received()
             .InsertAsync(Arg.Any<PersonDtoStub>());
         await mediator.Received()
-            .Publish(Arg.Any<AggregateCreatedDomainEvent<PersonDtoStub>>());
+            .Publish(Arg.Any<EntityCreatedDomainEvent<PersonDtoStub>>());
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         await inner.Received()
             .UpdateAsync(Arg.Any<PersonDtoStub>());
         await mediator.Received()
-            .Publish(Arg.Any<AggregateUpdatedDomainEvent<PersonDtoStub>>());
+            .Publish(Arg.Any<EntityUpdatedDomainEvent<PersonDtoStub>>());
     }
 
     [Fact]
@@ -72,6 +72,6 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         await inner.Received()
             .DeleteAsync(Arg.Any<PersonDtoStub>());
         await mediator.Received()
-            .Publish(Arg.Any<AggregateDeletedDomainEvent<PersonDtoStub>>());
+            .Publish(Arg.Any<EntityDeletedDomainEvent<PersonDtoStub>>());
     }
 }

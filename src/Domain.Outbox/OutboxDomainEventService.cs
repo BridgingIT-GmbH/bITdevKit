@@ -62,7 +62,10 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
                 this.logger.LogDebug("{LogKey} outbox domain event service startup delayed", Constants.LogKey);
-                await Task.Delay(this.options.StartupDelay, cancellationToken);
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    await Task.Delay(this.options.StartupDelay, cancellationToken);
+                }
             }
 
             if (this.options.PurgeProcessedOnStartup)

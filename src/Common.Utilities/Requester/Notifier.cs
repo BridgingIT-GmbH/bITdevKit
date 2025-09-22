@@ -246,7 +246,7 @@ public interface INotificationHandlerProvider
     /// <returns>A read-only list of handlers for the notification.</returns>
     /// <exception cref="NotifierException">Thrown when no handlers are found for the notification type.</exception>
     IReadOnlyList<INotificationHandler<TNotification>> GetHandlers<TNotification>(IServiceProvider serviceProvider)
-        where TNotification : INotification;
+        where TNotification : class, INotification;
 }
 
 /// <summary>
@@ -279,7 +279,7 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
     /// <returns>A read-only list of handlers for the notification.</returns>
     /// <exception cref="NotifierException">Thrown when no handlers are found for the notification type.</exception>
     public IReadOnlyList<INotificationHandler<TNotification>> GetHandlers<TNotification>(IServiceProvider serviceProvider)
-        where TNotification : INotification
+        where TNotification : class, INotification
     {
         var handlerInterface = typeof(INotificationHandler<TNotification>);
         var notifierType = typeof(TNotification);
@@ -449,6 +449,18 @@ public interface INotifier
         PublishOptions options = null,
         CancellationToken cancellationToken = default)
         where TNotification : class, INotification;
+
+    /// <summary>
+    /// Dispatches a notification to its handlers asynchronously.
+    /// </summary>
+    /// <param name="notification">The notification to dispatch.</param>
+    /// <param name="options">The options for notification processing, including execution mode and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the notification, returning a <see cref="Result"/>.</returns>
+    Task<IResult> PublishDynamicAsync(
+        INotification notification,
+        PublishOptions options = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns information about registered notification handlers and behaviors.
@@ -680,6 +692,28 @@ public partial class Notifier(
     }
 
     /// <summary>
+    /// Dispatches a notification to its handlers asynchronously.
+    /// </summary>
+    /// <param name="notification">The notification to dispatch.</param>
+    /// <param name="options">The options for notification processing, including execution mode and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the notification, returning a <see cref="IResult"/>.</returns>
+    public Task<IResult> PublishDynamicAsync(
+        INotification notification,
+        PublishOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(notification);
+
+        // Find the generic PublishAsync<TNotification> method
+        var method = typeof(INotifier).GetMethod(nameof(INotifier.PublishAsync))! ?? throw new InvalidOperationException($"Generic method '{nameof(INotifier.PublishAsync)}' not found.");
+        var genericMethod = method.MakeGenericMethod(notification.GetType());
+
+        // dynamically call the generic PublishAsync<TNotification> with the runtime type of the notification.
+        return (Task<IResult>)genericMethod.Invoke(this, [notification, options, cancellationToken])!;
+    }
+
+    /// <summary>
     /// Returns information about registered notification handlers and behaviors, logging the details.
     /// </summary>
     /// <returns>An object containing handler mappings and behavior types.</returns>
@@ -719,3 +753,33 @@ public partial class Notifier(
         public static partial void LogError(ILogger logger, Exception ex, string notificationType, string notificationId);
     }
 }
+
+//public static class NotifierExtensions
+//{
+//    /// <summary>
+//    /// Dispatches a notification to its handlers asynchronously.
+//    /// </summary>
+//    /// <param name="notification">The notification to dispatch.</param>
+//    /// <param name="options">The options for notification processing, including execution mode and progress reporting.</param>
+//    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+//    /// <returns>A task representing the result of the notification, returning a <see cref="Result"/>.</returns>
+//    public static Task<IResult> PublishDynamicAsync(
+//        this INotifier notifier,
+//        INotification notification,
+//        PublishOptions options = null,
+//        CancellationToken cancellationToken = default)
+//    {
+//        ArgumentNullException.ThrowIfNull(notification);
+
+//        var method = typeof(INotifier).GetMethod(nameof(INotifier.PublishAsync))!;
+//        if (method == null)
+//        {
+//            throw new InvalidOperationException($"Generic method '{nameof(INotifier.PublishAsync)}' not found.");
+//        }
+
+//        var genericMethod = method.MakeGenericMethod(notification.GetType());
+
+//        // dynamically call the generic PublishAsync<TNotification> with the runtime type of the notification.
+//        return (Task<IResult>)genericMethod.Invoke(notifier, [notification, options, cancellationToken])!;
+//    }
+//}

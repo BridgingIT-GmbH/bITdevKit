@@ -48,6 +48,7 @@
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Tracing\Common.Utilities.Tracing.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+    <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>

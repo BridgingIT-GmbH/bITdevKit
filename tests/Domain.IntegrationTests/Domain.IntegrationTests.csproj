@@ -9,24 +9,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="BridgingIT.DevKit.Common"/>
-    <Using Include="Bogus"/>
-    <Using Include="Bogus.DataSets"/>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="Bogus" />
+    <Using Include="Bogus.DataSets" />
     <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
-    <Using Include="NSubstitute"/>
-    <Using Include="Shouldly"/>
-    <Using Include="Xunit"/>
-    <Using Include="Xunit.Abstractions"/>
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-    <PackageReference Include="NBuilder"/>
-    <PackageReference Include="NSubstitute"/>
-    <PackageReference Include="Shouldly"/>
-    <PackageReference Include="xunit"/>
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NBuilder" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,11 +38,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj"/>
-    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj"/>
-    <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj"/>
-    <ProjectReference Include="..\..\src\Domain\Domain.csproj"/>
-    <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj"/>
+    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+    <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
+    <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ActiveRecord\" />
   </ItemGroup>
 
 </Project>

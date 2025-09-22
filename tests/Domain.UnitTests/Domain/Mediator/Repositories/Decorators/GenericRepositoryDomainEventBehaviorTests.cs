@@ -29,7 +29,7 @@ public class GenericRepositoryDomainEventBehaviorTests
             .ShouldBe(1);
         entity.DomainEvents.GetAll()
             .First()
-            .ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
+            .ShouldBeOfType<EntityCreatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class GenericRepositoryDomainEventBehaviorTests
             .ShouldBe(1);
         entity.DomainEvents.GetAll()
             .First()
-            .ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
+            .ShouldBeOfType<EntityUpdatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class GenericRepositoryDomainEventBehaviorTests
             .ShouldBe(1);
         entity.DomainEvents.GetAll()
             .First()
-            .ShouldBeOfType<AggregateCreatedDomainEvent<PersonDtoStub>>();
+            .ShouldBeOfType<EntityCreatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class GenericRepositoryDomainEventBehaviorTests
             .ShouldBe(1);
         entity.DomainEvents.GetAll()
             .First()
-            .ShouldBeOfType<AggregateUpdatedDomainEvent<PersonDtoStub>>();
+            .ShouldBeOfType<EntityUpdatedDomainEvent<PersonDtoStub>>();
     }
 
     [Fact]
@@ -120,6 +120,6 @@ public class GenericRepositoryDomainEventBehaviorTests
             .ShouldBe(1);
         entity.DomainEvents.GetAll()
             .First()
-            .ShouldBeOfType<AggregateDeletedDomainEvent<PersonDtoStub>>();
+            .ShouldBeOfType<EntityDeletedDomainEvent<PersonDtoStub>>();
     }
 }

@@ -349,6 +349,13 @@ public readonly partial struct Result : IResult
         FailureResult.WithError<TError>();
 
     /// <summary>
+    /// Creates a new failure Result with the specified error.
+    /// </summary>
+    /// <param name="error"></param>
+    /// <returns></returns>
+    public static Result Failure(IResultError error) => FailureResult.WithError(error);
+
+    /// <summary>
     /// Creates a new failure Result with a message and specified error type.
     /// </summary>
     /// <example>
@@ -494,10 +501,7 @@ public readonly partial struct Result : IResult
     /// }
     /// </example>
     public Result WithError<TError>()
-        where TError : IResultError, new()
-    {
-        return this.WithError(Activator.CreateInstance<TError>());
-    }
+        where TError : IResultError, new() => this.WithError(Activator.CreateInstance<TError>());
 
     /// <summary>
     /// Checks if the Result contains an error of the specified type.
@@ -528,10 +532,7 @@ public readonly partial struct Result : IResult
     ///     Console.WriteLine("No errors found");
     /// }
     /// </example>
-    public bool HasError()
-    {
-        return !this.errors.IsEmpty;
-    }
+    public bool HasError() => !this.errors.IsEmpty;
 
     /// <summary>
     /// Gets all errors of the specified type from the Result.
@@ -623,10 +624,7 @@ public readonly partial struct Result : IResult
     /// bool IsValid(string email) => email.contains("@");
     /// var result = Result.SuccessIf(IsValid(email), new ValidationError("Invalid email"));
     /// </example>
-    public static Result SuccessIf(bool isSuccess, IResultError error = null)
-    {
-        return isSuccess ? Success() : Failure().WithError(error);
-    }
+    public static Result SuccessIf(bool isSuccess, IResultError error = null) => isSuccess ? Success() : Failure().WithError(error);
 
     /// <summary>
     /// Determines the Result based on a predicate function.
@@ -663,10 +661,7 @@ public readonly partial struct Result : IResult
     ///     string.IsNullOrEmpty(email),
     ///     new ValidationError("Email is required"));
     /// </example>
-    public static Result FailureIf(bool isFailure, IResultError error = null)
-    {
-        return isFailure ? Failure().WithError(error) : Success();
-    }
+    public static Result FailureIf(bool isFailure, IResultError error = null) => isFailure ? Failure().WithError(error) : Success();
 
     /// <summary>
     /// Determines the Result based on a failure predicate function.
@@ -739,10 +734,7 @@ public readonly partial struct Result : IResult
     ///     failure: 500
     /// ); // Returns 500
     /// </example>
-    public TResult Match<TResult>(TResult success, TResult failure)
-    {
-        return this.IsSuccess ? success : failure;
-    }
+    public TResult Match<TResult>(TResult success, TResult failure) => this.IsSuccess ? success : failure;
 
     /// <summary>
     /// Asynchronously executes different functions based on the Result's success state.
@@ -993,12 +985,13 @@ public readonly partial struct Result : IResult
     /// var result = Result.Success().WithMessage("Valid");
     /// var typedResult = result.ToResult{User}(); // Creates Result{User} keeping messages/erros
     /// </example>
-    public Result<TValue> ToResult<TValue>()
-    {
-        return this.Match(
+    public Result<TValue> ToResult<TValue>() => this.Match(
             Result<TValue>.Success().WithMessages(this.Messages).WithErrors(this.Errors),
             Result<TValue>.Failure().WithMessages(this.Messages).WithErrors(this.Errors));
-    }
+
+    public ResultPaged<T> ToResultPaged<T>() => this.Match(
+            ResultPaged<T>.Success([]).WithMessages(this.Messages).WithErrors(this.Errors),
+            ResultPaged<T>.Failure().WithMessages(this.Messages).WithErrors(this.Errors));
 
     /// <summary>
     /// Creates a new generic Result with a value.
@@ -1013,16 +1006,9 @@ public readonly partial struct Result : IResult
     ///     Console.WriteLine($"Created: {result.Value.Name}");
     /// }
     /// </example>
-    public Result<TValue> ToResult<TValue>(TValue value)
-    {
-        return this.Match(
-            Result<TValue>.Success(value)
-                .WithMessages(this.Messages)
-                .WithErrors(this.Errors),
-            Result<TValue>.Failure(value)
-                .WithMessages(this.Messages)
-                .WithErrors(this.Errors));
-    }
+    public Result<TValue> ToResult<TValue>(TValue value) => this.Match(
+            Result<TValue>.Success(value).WithMessages(this.Messages).WithErrors(this.Errors),
+            Result<TValue>.Failure(value).WithMessages(this.Messages).WithErrors(this.Errors));
 
     /// <summary>
     /// Creates a new Result instance.
@@ -1045,7 +1031,7 @@ public readonly partial struct Result : IResult
     /// // combined.IsFailure == true
     /// // combined.Messages contains all three messages
     /// </example>
-    public static Result Combine(params Result[] results)
+    public static Result Merge(params Result[] results)
     {
         if (results is null || results.Length == 0)
         {
@@ -1103,10 +1089,7 @@ public readonly partial struct Result : IResult
     /// // Errors:
     /// // - [ValidationError] Invalid input
     /// </example>
-    public override string ToString()
-    {
-        return this.ToString(string.Empty);
-    }
+    public override string ToString() => this.ToString(string.Empty);
 
     public string ToString(string message)
     {

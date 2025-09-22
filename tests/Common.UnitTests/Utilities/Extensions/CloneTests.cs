@@ -11,19 +11,17 @@ public class CloneTests
     [Fact]
     public void CanCloneInstance()
     {
-        var stub = new CloneStub { FirstName = "John", LastName = "Doe", BirthYear = 1980 };
+        var stub = new CloneStub { FirstName = "John", LastName = "Doe", BirthYear = 1980, Status = ActiveStatus.Unknown }; // status 1
         stub.SetAge(25);
 
-        stub.Clone()
-            .ShouldNotBeNull();
-        stub.Clone()
-            .FirstName.ShouldBe("John");
-        stub.Clone()
-            .LastName.ShouldBe("Doe");
-        stub.Clone()
-            .Age.ShouldBe(25); // private setters are not set with System.Text.Json when not using the JsonInclude attribute
-        stub.Clone()
-            .BirthYear.ShouldBe(1980);
+        var sut = stub.Clone();
+
+        sut.ShouldNotBeNull();
+        sut.FirstName.ShouldBe("John");
+        sut.LastName.ShouldBe("Doe");
+        sut.Age.ShouldBe(25); // private setters are not set with System.Text.Json when not using the JsonInclude attribute
+        sut.Status.ShouldBe(ActiveStatus.Unknown);
+        sut.BirthYear.ShouldBe(1980);
     }
 
     public class CloneStub
@@ -39,6 +37,8 @@ public class CloneTests
         public int Age { get; private set; }
 
         public int BirthYear { get; set; }
+
+        public ActiveStatus Status { get; set; }
 
         public void SetAge(int age)
         {

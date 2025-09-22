@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Reflection;
 
-public static partial class Extensions
+public static partial class DbContextExtensions
 {
     public static async Task<TEntity> FindAsync<TEntity>(
         this DbContext source,

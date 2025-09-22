@@ -495,7 +495,7 @@ public class RuleBuilder
         var matchResult = matchHandler(matchedItems);
         var unmatchResult = unmatchHandler(unmachedItems);
 
-        return Result.Combine(matchResult, unmatchResult);
+        return Result.Merge(matchResult, unmatchResult);
     }
 
     /// <summary>
@@ -528,7 +528,7 @@ public class RuleBuilder
         var matchResult = await matchHandler(matchedItems);
         var unmatchResult = await unmatchHandler(unMatchedItems);
 
-        return Result.Combine(matchResult, unmatchResult);
+        return Result.Merge(matchResult, unmatchResult);
     }
 
     public async Task<Result> SwitchAsync<T>(
@@ -542,7 +542,7 @@ public class RuleBuilder
         var matchResult = matchHandler(matchedItems);
         var unmatchResult = unmatchHandler(unMatchedItems);
 
-        return Result.Combine(matchResult, unmatchResult);
+        return Result.Merge(matchResult, unmatchResult);
     }
 
     /// <summary>

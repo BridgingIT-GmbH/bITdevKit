@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -13,6 +14,31 @@ using System.Reflection.Emit;
 /// </summary>
 public static class ReflectionHelper
 {
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache = [];
+    private static readonly ConcurrentDictionary<Type, MethodInfo[]> MethodCache = [];
+
+    /// <summary>
+    ///     Gets the cached properties for the specified type. If not already cached, retrieves all public and non-public instance properties and caches them.
+    /// </summary>
+    /// <param name="type">The type whose properties are to be retrieved.</param>
+    /// <returns>An array of <see cref="PropertyInfo"/> representing the properties of the type.</returns>
+    public static PropertyInfo[] GetCachedProperties(Type type)
+    {
+        return PropertyCache.GetOrAdd(type, t =>
+            t.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+    }
+
+    /// <summary>
+    ///     Gets the cached methods for the specified type. If not already cached, retrieves all public and non-public instance methods and caches them.
+    /// </summary>
+    /// <param name="type">The type whose methods are to be retrieved.</param>
+    /// <returns>An array of <see cref="MethodInfo"/> representing the methods of the type.</returns>
+    public static MethodInfo[] GetCachedMethods(Type type)
+    {
+        return MethodCache.GetOrAdd(type, t =>
+            t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+    }
+
     /// <summary>
     ///     Sets the properties of the specified instance with the values provided in the propertyValues dictionary.
     /// </summary>

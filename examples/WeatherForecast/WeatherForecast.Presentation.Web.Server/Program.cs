@@ -78,7 +78,7 @@ builder.Services.AddQueries()
     .WithBehavior(typeof(RetryQueryBehavior<,>))
     .WithBehavior(typeof(TimeoutQueryBehavior<,>));
 
-builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
+builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:30"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
@@ -109,7 +109,8 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
     .WithOutbox<CoreDbContext>(o => o // registers the outbox publisher behavior and worker service at once
-        .ProcessingInterval("00:05:30")
+        .Enabled()
+        .ProcessingInterval("00:00:30")
         .ProcessingModeImmediate() // forwards the outbox message, through a queue, to the outbox worker
         .StartupDelay("00:00:15")
         .PurgeOnStartup(false))
@@ -120,8 +121,8 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, b =
     .WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = int.MaxValue, LogMessageBody = true })
     .WithEntityFrameworkStorageProvider<CoreDbContext>()
     .WithOutbox<CoreDbContext>(o => o
-        .Enabled(true)
-        .ProcessingInterval(TimeSpan.Parse("00:03:59"))
+        .Enabled()
+        .ProcessingInterval(TimeSpan.Parse("00:00:10"))
         .ProcessingDelay(TimeSpan.FromMilliseconds(100))
         .ProcessingJitter(TimeSpan.FromMilliseconds(500))));
 

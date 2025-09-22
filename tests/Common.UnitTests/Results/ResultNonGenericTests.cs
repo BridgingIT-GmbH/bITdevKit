@@ -220,7 +220,7 @@ public class ResultNonGenericTests
         var result = sut.ToString();
 
         // Assert
-        result.ShouldContain("Success: True");
+        result.ShouldContain("Result succeeded");
         result.ShouldContain(message);
     }
 
@@ -236,7 +236,7 @@ public class ResultNonGenericTests
         var result = sut.ToString();
 
         // Assert
-        result.ShouldContain("Success: False");
+        result.ShouldContain("Result failed");
         result.ShouldContain(message);
         result.ShouldContain("EntityNotFoundError");
     }
@@ -704,7 +704,7 @@ public class ResultNonGenericTests
 
         // Act
         var result = await sut.HandleAsync(
-            onSuccess: ct => 
+            onSuccess: ct =>
             {
                 successExecuted = true;
                 return Task.CompletedTask;

@@ -75,7 +75,7 @@ public class DomainEvents // TODO: create interface?
     /// </summary>
     /// <param name="mediator">The mediator used to publish the events.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task DispatchAsync(IMediator mediator)
+    public async Task DispatchAsync(IMediator mediator) // TODO: rename to publish?
     {
         EnsureArg.IsNotNull(mediator, nameof(mediator));
 

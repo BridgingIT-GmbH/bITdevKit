@@ -15,8 +15,6 @@ using Quartz;
 /// <remarks>This listener uses semaphores to enforce that only one job within a specified group can execute at a
 /// time. It is configured with a set of groups for which mutual exclusion is required. Jobs in other groups are not
 /// affected.</remarks>
-/// <param name="loggerFactory"></param>
-/// <param name="options"></param>
 public partial class ConcurrentGroupExecutionListener(
     ILoggerFactory loggerFactory,
     JobGroupOptions options) : IJobListener, IDisposable

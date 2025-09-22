@@ -33,7 +33,7 @@ public partial class MediatorDomainEventPublisher : IDomainEventPublisher
     /// <param name="event">The domain event to send.</param>
     /// <param name="cancellationToken">A cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous send operation.</returns>
-    public async Task Send(IDomainEvent @event, CancellationToken cancellationToken = default)
+    public async Task<IResult> Send(IDomainEvent @event, CancellationToken cancellationToken = default)
     {
         if (@event is not null)
         {
@@ -41,6 +41,8 @@ public partial class MediatorDomainEventPublisher : IDomainEventPublisher
 
             await this.mediator.Publish(@event, cancellationToken).AnyContext();
         }
+
+        return Result.Success();
     }
 
     /// <summary>

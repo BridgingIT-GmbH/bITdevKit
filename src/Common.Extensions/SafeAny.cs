@@ -10,7 +10,18 @@ using System.Diagnostics;
 public static partial class Extensions
 {
     [DebuggerStepThrough]
-    public static bool SafeAny<T>(this IEnumerable<T> source, Func<T, bool> predicate = null)
+    public static bool SafeAny<T>(this IEnumerable<T> source)
+    {
+        if (source.IsNullOrEmpty())
+        {
+            return false;
+        }
+
+        return source.Any(i => i is not null);
+    }
+
+    [DebuggerStepThrough]
+    public static bool SafeAny<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source.IsNullOrEmpty())
         {

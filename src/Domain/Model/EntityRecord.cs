@@ -47,9 +47,7 @@ public abstract record EntityRecord<TId> : IEntity<TId>
             return false;
         }
 
-        var a = EqualityComparer<TId>.Default.Equals(this.Id, other.Id);
-
-        return a;
+        return EqualityComparer<TId>.Default.Equals(this.Id, other.Id);
     }
 
     public override int GetHashCode()

@@ -16,22 +16,16 @@ public class ResilientTransaction
         this.context = context;
     }
 
-    public static ResilientTransaction Create(DbContext dbContext)
+    public static ResilientTransaction Create(DbContext context)
     {
-        return new ResilientTransaction(dbContext);
+        return new ResilientTransaction(context);
     }
 
-    [Obsolete("Please use ResilientTransaction.For() from now on")]
-    public static ResilientTransaction New(DbContext dbContext)
-    {
-        return new ResilientTransaction(dbContext);
-    }
-
-    public async Task ExecuteAsync(Func<Task> action)
+    public async Task ExecuteAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
-        if (this.context.Database.CurrentTransaction is null)
+        if (this.context.Database.CurrentTransaction is null) // No current transaction
         {
             // Use of an EF Core resiliency strategy when using multiple DbContexts
             // within an explicit BeginTransaction():
@@ -39,15 +33,15 @@ public class ResilientTransaction
             var strategy = this.context.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
                 {
-                    using var transaction = this.context.Database.BeginTransaction();
+                    await using var transaction = await this.context.Database.BeginTransactionAsync(cancellationToken);
                     try
                     {
                         await action().AnyContext();
-                        transaction.Commit();
+                        await transaction.CommitAsync(cancellationToken);
                     }
                     catch (Exception)
                     {
-                        await transaction.RollbackAsync().AnyContext();
+                        await transaction.RollbackAsync(cancellationToken).AnyContext();
 
                         throw;
                     }
@@ -59,7 +53,7 @@ public class ResilientTransaction
         }
     }
 
-    public async Task<TEntity> ExecuteAsync<TEntity>(Func<Task<TEntity>> action)
+    public async Task<TEntity> ExecuteAsync<TEntity>(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
         EnsureArg.IsNotNull(action, nameof(action));
@@ -73,22 +67,21 @@ public class ResilientTransaction
 
             return await strategy.ExecuteAsync(async () =>
                 {
-                    using var transaction = this.context.Database.BeginTransaction();
+                    await using var transaction = await this.context.Database.BeginTransactionAsync(cancellationToken);
                     try
                     {
                         var result = await action().AnyContext();
-                        transaction.Commit();
+                        await transaction.CommitAsync(cancellationToken);
 
                         return result;
                     }
                     catch (Exception)
                     {
-                        await transaction.RollbackAsync().AnyContext();
+                        await transaction.RollbackAsync(cancellationToken).AnyContext();
 
                         throw;
                     }
-                })
-                .AnyContext();
+                }).AnyContext();
         }
 
         return await action().AnyContext();

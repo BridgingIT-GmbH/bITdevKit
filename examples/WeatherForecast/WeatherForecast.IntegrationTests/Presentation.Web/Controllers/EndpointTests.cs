@@ -53,7 +53,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
             message, new NotificationSendOptions { SendImmediately = false }, CancellationToken.None);
         result.IsSuccess.ShouldBeTrue();
 
-        await Task.Delay(25 * 1000); // Wait for the outbox processing to complete
+        await Task.Delay(55 * 1000); // Wait for the outbox processing to complete
 
         // Assert
         using var scope = this.fixture.ServiceProvider.CreateScope();

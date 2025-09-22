@@ -16,42 +16,20 @@ public class DatabaseTransaction : IDatabaseTransaction
         this.context = context;
     }
 
-    [Obsolete("Please use ctor which only accepts a dbContext from now on")]
-    public DatabaseTransaction(EntityFrameworkRepositoryOptions options)
-    {
-        EnsureArg.IsNotNull(options, nameof(options));
-        EnsureArg.IsNotNull(options.DbContext, nameof(options.DbContext));
-
-        this.Options = options;
-        this.context = options.DbContext;
-    }
-
-    [Obsolete("Please use ctor which only accepts a dbContext from now on")]
-    public EntityFrameworkRepositoryOptions Options { get; }
-
-    public async Task ExecuteScopedAsync(Func<Task> action)
+    public async Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
         await ResilientTransaction.Create(this.context)
-            .ExecuteAsync(async () => await action().AnyContext())
-            .AnyContext();
+            .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
 
-    [Obsolete("Please use ExecuteScopedAsync from now on")]
-    public async Task<TEntity> ExecuteScopedWithResultAsync<TEntity>(Func<Task<TEntity>> action)
-        where TEntity : class, IEntity
-    {
-        return await this.ExecuteScopedAsync(action).AnyContext();
-    }
-
-    public async Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action)
+    public async Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {
         EnsureArg.IsNotNull(action, nameof(action));
 
         return await ResilientTransaction.Create(this.context)
-            .ExecuteAsync(async () => await action().AnyContext())
-            .AnyContext();
+            .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
 }

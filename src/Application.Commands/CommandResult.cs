@@ -79,7 +79,7 @@ public static class CommandResult
     /// <returns>A command response containing the mapped result with the specified output value.</returns>
     public static CommandResponse<Result<TOuput>> For<TValue, TOuput>(Result<TValue> result, TOuput value = default)
     {
-        return new CommandResponse<Result<TOuput>> { Result = result.ToResult(value) };
+        return new CommandResponse<Result<TOuput>> { Result = result.Wrap(value) };
     }
 
     /// <summary>

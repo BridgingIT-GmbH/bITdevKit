@@ -54,9 +54,8 @@ public static class CustomSpecificationBuilder
         }
 
         var searchTerm = searchTermObj as string;
-        var fields = fieldsObj as IEnumerable<string>;
 
-        if (string.IsNullOrEmpty(searchTerm) || fields == null || !fields.Any())
+        if (string.IsNullOrEmpty(searchTerm) || fieldsObj is not IEnumerable<string> fields || !fields.Any())
         {
             throw new ArgumentException("Invalid searchTerm or Fields for FullTextSearch.");
         }

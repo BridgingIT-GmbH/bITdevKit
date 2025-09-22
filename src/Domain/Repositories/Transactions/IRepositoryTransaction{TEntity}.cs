@@ -5,14 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-[Obsolete("To be removed. Please use IRepositoryTransaction")]
-public interface IGenericRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity>
-    where TEntity : class, IEntity;
-
 public interface IRepositoryTransaction<TEntity>
     where TEntity : class, IEntity
 {
-    Task ExecuteScopedAsync(Func<Task> action);
+    Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default);
 
-    Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action);
+    Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellationToken = default);
 }

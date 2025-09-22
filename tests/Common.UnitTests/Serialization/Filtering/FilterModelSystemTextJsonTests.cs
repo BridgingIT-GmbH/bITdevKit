@@ -263,7 +263,7 @@ public class FilterModelSystemTextJsonTests
         model.ShouldNotBeNull();
         model.Page.ShouldBe(2);
         model.PageSize.ShouldBe(15);
-        model.Filters.Count.ShouldBe(4);
+        model.Filters.Count.ShouldBe(3);
         model.Orderings.Count.ShouldBe(1);
         model.Includes.Count.ShouldBe(2);
 

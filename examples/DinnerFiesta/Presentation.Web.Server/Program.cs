@@ -3,10 +3,6 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.JobScheduling;
@@ -33,6 +29,10 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ModuleExtensions = Microsoft.Extensions.DependencyInjection.ModuleExtensions;
 
 // ===============================================================================================
@@ -81,9 +81,7 @@ builder.Services.AddQueries()
 
 builder.Services.PrintMediatRRegistrations(builder.Environment.IsDevelopment());
 
-builder.Services.AddJobScheduling(o => o
-            .StartupDelay("00:00:15"),
-        builder.Configuration)
+builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:30"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>()
     //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
     .WithBehavior<RetryJobSchedulingBehavior>()
@@ -107,9 +105,8 @@ builder.Services.AddStartupTasks(o => o
     .WithBehavior<RetryStartupTaskBehavior>()
     .WithBehavior<TimeoutStartupTaskBehavior>();
 
-builder.Services.AddMessaging(builder.Configuration,
-        o => o
-            .StartupDelay("00:00:10"))
+builder.Services.AddMessaging(builder.Configuration, o => o
+            .StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()

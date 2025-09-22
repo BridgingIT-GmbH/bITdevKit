@@ -375,10 +375,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine($"Created user: {result.Value.Name}"); // Safe to access Value
     /// </code>
     /// </example>
-    public static Result<T> Success(T value)
-    {
-        return new Result<T>(true, value);
-    }
+    public static Result<T> Success(T value) => new Result<T>(true, value);
 
     /// <summary>
     /// Creates a successful Result{T} with no value.
@@ -390,10 +387,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine($"Success: {result.IsSuccess}"); // True
     /// </code>
     /// </example>
-    public static Result<T> Success()
-    {
-        return new Result<T>(true);
-    }
+    public static Result<T> Success() => new Result<T>(true);
 
     /// <summary>
     /// Creates a successful Result{T} with a value and a message.
@@ -408,10 +402,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine(result.Messages.First()); // "User created successfully"
     /// </code>
     /// </example>
-    public static Result<T> Success(T value, string message)
-    {
-        return new Result<T>(true, value).WithMessage(message);
-    }
+    public static Result<T> Success(T value, string message) => new Result<T>(true, value).WithMessage(message);
 
     /// <summary>
     /// Creates a successful Result{T} with a value and multiple messages.
@@ -430,10 +421,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public static Result<T> Success(T value, IEnumerable<string> messages)
-    {
-        return new Result<T>(true, value).WithMessages(messages);
-    }
+    public static Result<T> Success(T value, IEnumerable<string> messages) => new Result<T>(true, value).WithMessages(messages);
 
     /// <summary>
     /// Creates a Result based on a condition and value.
@@ -452,10 +440,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// );
     /// </code>
     /// </example>
-    public static Result<T> SuccessIf(bool isSuccess, T value, IResultError error = null)
-    {
-        return isSuccess ? Success(value) : Failure().WithError(error);
-    }
+    public static Result<T> SuccessIf(bool isSuccess, T value, IResultError error = null) => isSuccess ? Success(value) : Failure().WithError(error);
 
     /// <summary>
     /// Creates a Result based on a predicate function evaluating the value.
@@ -503,10 +488,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine($"Failed: {result.IsFailure}"); // True
     /// </code>
     /// </example>
-    public static Result<T> Failure()
-    {
-        return new Result<T>(false);
-    }
+    public static Result<T> Failure() => new Result<T>(false);
 
     /// <summary>
     /// Creates a failed Result{T} with a specified value.
@@ -520,10 +502,7 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .WithError(new ValidationError("Invalid user data"));
     /// </code>
     /// </example>
-    public static Result<T> Failure(T value)
-    {
-        return new Result<T>(false, value);
-    }
+    public static Result<T> Failure(T value) => new Result<T>(false, value);
 
     /// <summary>
     /// Creates a failed Result{T} with a message and optional error.
@@ -635,10 +614,14 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public static Result<T> Failure<TError>()
-        where TError : IResultError, new()
-    {
-        return new Result<T>(false).WithError<TError>();
-    }
+        where TError : IResultError, new() => new Result<T>(false).WithError<TError>();
+
+    /// <summary>
+    /// Creates a failed Result{T} with a specific error instance.7
+    /// </summary>
+    /// <param name="error"></param>
+    /// <returns></returns>
+    public static Result<T> Failure(IResultError error) => new Result<T>(false).WithError(error);
 
     /// <summary>
     /// Creates a failed Result{T} with a specific error type and message.
@@ -654,10 +637,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public static Result<T> Failure<TError>(string message)
-        where TError : IResultError, new()
-    {
-        return new Result<T>(false).WithMessage(message).WithError<TError>();
-    }
+        where TError : IResultError, new() => new Result<T>(false).WithMessage(message).WithError<TError>();
 
     /// <summary>
     /// Creates a Result based on a failure condition and value.
@@ -676,10 +656,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// );
     /// </code>
     /// </example>
-    public static Result<T> FailureIf(bool isFailure, T value, IResultError error = null)
-    {
-        return isFailure ? Failure().WithError(error) : Success(value);
-    }
+    public static Result<T> FailureIf(bool isFailure, T value, IResultError error = null) => isFailure ? Failure().WithError(error) : Success(value);
 
     /// <summary>
     /// Creates a Result based on a failure predicate function evaluating the value.
@@ -804,6 +781,27 @@ public readonly partial struct Result<T> : IResult<T>
     }
 
     /// <summary>
+    /// Adds an exception to the Result and marks it as failed.
+    /// </summary>
+    /// <example>
+    /// var result = Result.Success()
+    ///     .WithError(exception);
+    /// if (result.HasError{ExceptionError}())
+    /// {
+    ///     Console.WriteLine(result.GetError{ExceptionError}().Message);
+    /// }
+    /// </example>
+    public Result<T> WithError(Exception ex)
+    {
+        if (ex is null)
+        {
+            return this;
+        }
+
+        return new Result<T>(false, default, this.messages, this.errors.Add(new ExceptionError(ex)));
+    }
+
+    /// <summary>
     /// Adds multiple errors to the Result and marks it as failed while maintaining immutability.
     /// </summary>
     /// <param name="errors">Collection of errors to add. If null, the Result is returned unchanged.</param>
@@ -856,10 +854,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// </code>
     /// </example>
     public Result<T> WithError<TError>()
-        where TError : IResultError, new()
-    {
-        return this.WithError(Activator.CreateInstance<TError>());
-    }
+        where TError : IResultError, new() => this.WithError(Activator.CreateInstance<TError>());
 
     /// <summary>
     /// Checks if the Result contains an error of a specific type.
@@ -899,10 +894,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// }
     /// </code>
     /// </example>
-    public bool HasError()
-    {
-        return !this.errors.IsEmpty;
-    }
+    public bool HasError() => !this.errors.IsEmpty;
 
     /// <summary>
     /// Tries to get all errors of a specific type from the Result.
@@ -1114,10 +1106,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Console.WriteLine(result.IsSuccess); // Still maintains success state
     /// </code>
     /// </example>
-    public Result Unwrap()
-    {
-        return this; // Uses implicit operator
-    }
+    public Result Unwrap() => this; // Uses implicit operator
 
     /// <summary>
     /// Creates a new Result{TOutput} from this Result.
@@ -1133,10 +1122,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// Result{UserDto} dtoResult = userResult.ToResult{UserDto}();
     /// </code>
     /// </example>
-    public Result<TOutput> ToResult<TOutput>()
-    {
-        return this.ToResult<TOutput>(default);
-    }
+    public Result<TOutput> Wrap<TOutput>() => this.Wrap<TOutput>(default);
 
     /// <summary>
     /// Creates a new Result{TOutput} from this Result with a specified value.
@@ -1158,7 +1144,7 @@ public readonly partial struct Result<T> : IResult<T>
     ///     .To(dto => new ApiResponse(dto));
     /// </code>
     /// </example>
-    public Result<TOutput> ToResult<TOutput>(TOutput value)
+    public Result<TOutput> Wrap<TOutput>(TOutput value)
     {
         var result = this; // struct cannot access this in lambda
 
@@ -1198,10 +1184,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// // - [ValidationError] Invalid email
     /// </code>
     /// </example>
-    public override string ToString()
-    {
-        return this.ToString(string.Empty);
-    }
+    public override string ToString() => this.ToString(string.Empty);
 
     public string ToString(string message)
     {
@@ -1254,5 +1237,60 @@ public readonly partial struct Result<T> : IResult<T>
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Combines multiple Results into a single Result.
+    /// The combined Result is successful only if all Results are successful.
+    /// </summary>
+    /// <example>
+    /// var result1 = Result.Success("First operation");
+    /// var result2 = Result.Success("Second operation");
+    /// var result3 = Result.Failure("Third operation failed");
+    ///
+    /// var combined = Result.Combine(result1, result2, result3);
+    /// // combined.IsFailure == true
+    /// // combined.Messages contains all three messages
+    /// </example>
+    public static Result<T> Merge(params Result<T>[] results)
+    {
+        if (results is null || results.Length == 0)
+        {
+            return Success();
+        }
+
+        var isSuccess = true;
+        T value = default;
+        var hasValue = false;
+
+        var combinedMessages = new ValueList<string>();
+        var combinedErrors = new ValueList<IResultError>();
+
+        foreach (var result in results)
+        {
+            // Only overwrite if the new value is not the default
+            if (!EqualityComparer<T>.Default.Equals(result.Value, default))
+            {
+                value = result.Value;
+                hasValue = true;
+            }
+
+            if (result.IsFailure)
+            {
+                isSuccess = false;
+            }
+
+            if (!result.messages.IsEmpty)
+            {
+                combinedMessages = combinedMessages.AddRange(result.messages.AsEnumerable());
+            }
+
+            if (!result.errors.IsEmpty)
+            {
+                combinedErrors = combinedErrors.AddRange(result.errors.AsEnumerable());
+            }
+        }
+
+        return new Result<T>(isSuccess, hasValue ? value : default, combinedMessages, combinedErrors);
     }
 }

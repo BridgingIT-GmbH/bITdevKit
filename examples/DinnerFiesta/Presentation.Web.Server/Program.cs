@@ -36,7 +36,7 @@ using System.Text.Json.Serialization;
 using ModuleExtensions = Microsoft.Extensions.DependencyInjection.ModuleExtensions;
 
 // ===============================================================================================
-// Create the webhost
+// Create the host
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureAppConfiguration();
 builder.Host.ConfigureLogging(builder.Configuration);

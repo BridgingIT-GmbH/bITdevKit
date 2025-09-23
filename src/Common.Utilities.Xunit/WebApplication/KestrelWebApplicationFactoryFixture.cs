@@ -83,7 +83,7 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFa
 
         // Modify the host builder to use Kestrel instead
         // of TestServer so we can listen on a real address.
-        builder.ConfigureWebHost(webHostBuilder => webHostBuilder.UseKestrel());
+        builder.ConfigureWebHost(c => c.UseKestrel());
         builder.ConfigureLogging(ctx => ctx // TODO: webapp logs are not visible in test log anymore (serilog?)
             .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.Output)));
 

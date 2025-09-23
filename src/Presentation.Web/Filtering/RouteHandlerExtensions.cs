@@ -176,30 +176,33 @@ public static class RouteHandlerExtensions
             }
         };
 
-        return builder.WithOpenApi(operation =>
-        {
-            if (isRequestBody)
+        return builder
+            .WithOpenApi(operation => // TODO: WithOpenApi is obsolete in dotnet 10 https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/10/withopenapi-deprecated
+            //.AddOpenApiOperationTransformer((operation, context, ct) =>
             {
-                operation.RequestBody = new OpenApiRequestBody
+                if (isRequestBody)
                 {
-                    Required = true,
-                    Content =
+                    operation.RequestBody = new OpenApiRequestBody
                     {
-                        ["application/json"] = new OpenApiMediaType { Schema = filterModelSchema }
-                    }
-                };
-            }
-            else
-            {
-                operation.Parameters.Add(new OpenApiParameter
+                        Required = true,
+                        Content =
+                        {
+                            ["application/json"] = new OpenApiMediaType { Schema = filterModelSchema }
+                        }
+                    };
+                }
+                else
                 {
-                    Name = "filter",
-                    In = ParameterLocation.Query,
-                    Required = false,
-                    Schema = filterModelSchema
-                });
-            }
-            return operation;
-        });
-    }
+                    operation.Parameters.Add(new OpenApiParameter
+                    {
+                        Name = "filter",
+                        In = ParameterLocation.Query,
+                        Required = false,
+                        Schema = filterModelSchema
+                    });
+                }
+
+                return operation;
+            });
+        }
 }

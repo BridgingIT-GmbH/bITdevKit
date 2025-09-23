@@ -47,12 +47,6 @@
           "Microsoft.AspNetCore.SignalR.Client.Core": "9.0.9"
         }
       },
-      "Microsoft.Extensions.ApiDescription.Client": {
-        "type": "Direct",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "Eo/YjI7tsbYE0ATBdImdRaV3a0d9+eb7DzF1G36cW41KpCJnOw2zKjY99cWu3mHR2xEQ/PNLqibnzcJBTxu2TA=="
-      },
       "Microsoft.Extensions.Http": {
         "type": "Direct",
         "requested": "[9.0.9, )",
@@ -249,6 +243,11 @@
         "dependencies": {
           "Microsoft.AspNetCore.SignalR.Common": "9.0.9"
         }
+      },
+      "Microsoft.Extensions.ApiDescription.Client": {
+        "type": "Transitive",
+        "resolved": "8.0.14",
+        "contentHash": "R7QsrA6RwSgAgjhV8zcGOEFWqvsAaKVk3WPwkXIoKaB91dFNp+IDwh9vH+WqTIJTg5DIKVocCokHXAjyTPD+2Q=="
       },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",

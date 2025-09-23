@@ -18,7 +18,6 @@ public struct Blacklists
         "coverlet*",
         "Dapper*",
         "DnsClient*",
-        "DotPulsar*",
         "Dumpify*",
         "Ensure*",
         "FluentAssertions*",

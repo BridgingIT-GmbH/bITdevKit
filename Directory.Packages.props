@@ -27,7 +27,6 @@
         <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
         <PackageVersion Include="CsvHelper" Version="33.1.0" />
         <PackageVersion Include="Dapper" Version="2.1.66" />
-        <PackageVersion Include="DotPulsar" Version="3.5.0" />
         <PackageVersion Include="Ensure.That" Version="10.1.0" />
         <PackageVersion Include="FluentValidation" Version="12.0.0" />
         <PackageVersion Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />

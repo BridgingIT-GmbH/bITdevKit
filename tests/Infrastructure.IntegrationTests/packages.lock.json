@@ -279,15 +279,6 @@
         "resolved": "4.4.0",
         "contentHash": "gwJEfIGS7FhykvtZoscwXj/XwW+mJY6UbAZk+qtLKFUGWC95kfKXnj8VkxsZQnWBxJemM/q664rGLN5nf+OHZw=="
       },
-      "HashDepot": {
-        "type": "Transitive",
-        "resolved": "2.0.3",
-        "contentHash": "K033sUok3i8MhGM/10tX6Bq/7MTWZJxS3eAU1z+zFv6k2+1FV9+gEAuvZYHYYJeB4v8rbkaL9fHzLoHBZOTXDA==",
-        "dependencies": {
-          "System.Memory": "4.5.3",
-          "System.Runtime": "4.3.1"
-        }
-      },
       "Mapster.Core": {
         "type": "Transitive",
         "resolved": "1.2.1",
@@ -612,11 +603,6 @@
           "Microsoft.Extensions.Primitives": "9.0.9"
         }
       },
-      "Microsoft.Extensions.ObjectPool": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "UbsU/gYe4nv1DeqMXIVzDfNNek7Sk2kKuAOXL/Y+sLcAR0HwFUqzg1EPiU88jeHNe0g81aPvvHbvHarQr3r9IA=="
-      },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",
         "resolved": "9.0.9",
@@ -798,22 +784,6 @@
         "type": "Transitive",
         "resolved": "8.6.3",
         "contentHash": "xRlcE+1FidqIfZ7zxBT6klSblJ/7MAJq1x5yvYoLnwNhs8Xc2gp3Srf8wHG2NpFxVBqrldc3svhkMPJjSzTmzw=="
-      },
-      "protobuf-net": {
-        "type": "Transitive",
-        "resolved": "3.2.45",
-        "contentHash": "5UZ/ukUHcGbFSl7vNMrHsfjqdxusdd9w7w0fCEXzf3UUtsrGNVCzV5SmF+sCHAbnRV2qPcD1ixiDP7Aj8lX/HA==",
-        "dependencies": {
-          "protobuf-net.Core": "3.2.45"
-        }
-      },
-      "protobuf-net.Core": {
-        "type": "Transitive",
-        "resolved": "3.2.45",
-        "contentHash": "PMWatW2NrT1uTXD7etJ4VdQ0wWZLFrIfdRGppD2QX7nzZ0+kIzqhq551u6ZiXJHWJgG4hWFEkSnUnt2aB6posg==",
-        "dependencies": {
-          "System.Collections.Immutable": "7.0.0"
-        }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -2375,16 +2345,6 @@
           "Ensure.That": "[10.1.0, )"
         }
       },
-      "BridgingIT.DevKit.Infrastructure.Pulsar": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "DotPulsar": "[3.5.0, )",
-          "Ensure.That": "[10.1.0, )"
-        }
-      },
       "BridgingIT.DevKit.Infrastructure.RabbitMQ": {
         "type": "Project",
         "dependencies": {
@@ -2517,18 +2477,6 @@
         "requested": "[33.1.0, )",
         "resolved": "33.1.0",
         "contentHash": "kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg=="
-      },
-      "DotPulsar": {
-        "type": "CentralTransitive",
-        "requested": "[3.5.0, )",
-        "resolved": "3.5.0",
-        "contentHash": "tGZtLj1yPilCLBUHgtOh2eG3SHO0FEmDoZ57jebElr9tNG3ZzbYuEXym93k8q0/qFJ65qRzlaCkRFwItdYrokg==",
-        "dependencies": {
-          "HashDepot": "2.0.3",
-          "Microsoft.Extensions.ObjectPool": "9.0.0",
-          "System.IO.Pipelines": "9.0.0",
-          "protobuf-net": "3.2.45"
-        }
       },
       "FluentValidation": {
         "type": "CentralTransitive",

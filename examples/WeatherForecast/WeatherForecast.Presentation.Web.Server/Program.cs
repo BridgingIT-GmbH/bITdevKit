@@ -278,7 +278,6 @@ app.UseCors();
 app.MapModules();
 app.MapControllers();
 app.MapEndpoints();
-app.MapHealthChecks();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
@@ -307,14 +306,6 @@ void ConfigureHealth(IServiceCollection services)
 {
     services.AddHealthChecks()
         .AddCheck("self", () => HealthCheckResult.Healthy(), ["self"]);
-    //.AddSeqPublisher(s => s.Endpoint = builder.Configuration["Serilog:SeqServerUrl"]); // TODO: url configuration does not work like this
-    //.AddCheck<RandomHealthCheck>("random")
-    //.AddAp/plicationInsightsPublisher()
-
-    //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-    services.AddHealthChecksUI() // https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/README.md
-        .AddInMemoryStorage();
-    //.AddSqliteStorage($"Data Source=data_health.db");
 }
 
 void ConfigureMetrics(MeterProviderBuilder provider)

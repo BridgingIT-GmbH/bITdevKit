@@ -28,8 +28,7 @@ public class CosmosDocumentStoreClientBuilderContextTests
             this.fixture.Services.AddMediatR();
 
             this.fixture.Services.AddCosmosClient(o => o
-                    .UseConnectionString(this.fixture.CosmosConnectionString))
-                .WithHealthChecks();
+                    .UseConnectionString(this.fixture.CosmosConnectionString));
 
             this.fixture.Services.AddCosmosDocumentStoreClient<PersonStubDocument>(o => o.Database("test")) // no need to setup the client+provider (sql)
                 .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()

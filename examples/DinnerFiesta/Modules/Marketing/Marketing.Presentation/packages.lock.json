@@ -810,8 +810,7 @@
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "[9.0.9, )"
+          "Ensure.That": "[10.1.0, )"
         }
       },
       "BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Marketing.Domain": {
@@ -867,7 +866,6 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": {
         "type": "Project",
         "dependencies": {
-          "AspNetCore.HealthChecks.SqlServer": "[9.0.0, )",
           "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -904,16 +902,6 @@
           "RazorSlices": "[0.9.5, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.14.0, )"
-        }
-      },
-      "AspNetCore.HealthChecks.SqlServer": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "UxCf65iCF2nU1u7AcB320abjL4CRg5swCgJECY6mKk1j5lrGMfVtskWwriGs1T29pYdRig9Vra3SPnP+4G82pA==",
-        "dependencies": {
-          "Microsoft.Data.SqlClient": "5.2.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11"
         }
       },
       "AutoMapper": {
@@ -1189,24 +1177,6 @@
         "requested": "[9.0.9, )",
         "resolved": "9.0.9",
         "contentHash": "/hymojfWbE9AlDOa0mczR44m00Jj+T3+HZO0ZnVTI032fVycI0ZbNOVFP6kqZMcXiLSYXzR2ilcwaRi6dzeGyA=="
-      },
-      "Microsoft.Extensions.Diagnostics.HealthChecks": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "pjNYR7BsjD6PS4K7Bef1sW/fRJtWZlwAtRoxppn0jEfJDAaCyCQddhIdCSxGBnyoob4eObT64W/DvFJGms6mQw==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Hosting.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Logging.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Options": "9.0.9"
-        }
-      },
-      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "6zgF8Fu8HvMxpo9imgBtasDJzb+KwSM9yrQ4vPwKfKpR1knAc+mbxUGQzM1V/d2nhxMs7DvjYGmcFW06eIkSLQ=="
       },
       "Microsoft.Extensions.Hosting": {
         "type": "CentralTransitive",

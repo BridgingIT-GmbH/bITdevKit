@@ -77,7 +77,6 @@ public class CoreModule : WebModuleBase
                 c => c
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     .CommandTimeout(30))
-            .WithHealthChecks()
             .WithDatabaseMigratorService(o => o
                 .Enabled(environment.IsDevelopment())
                 .PurgeOnStartup())

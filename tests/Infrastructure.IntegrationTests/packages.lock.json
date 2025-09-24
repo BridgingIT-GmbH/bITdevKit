@@ -2214,16 +2214,6 @@
           "Microsoft.Azure.Cosmos": "[3.53.1, )"
         }
       },
-      "BridgingIT.DevKit.Infrastructure.Azure.HealthChecks": {
-        "type": "Project",
-        "dependencies": {
-          "AspNetCore.HealthChecks.AzureStorage": "[7.0.0, )",
-          "AspNetCore.HealthChecks.CosmosDb": "[9.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.Azure.Cosmos": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.Azure.Storage": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
-        }
-      },
       "BridgingIT.DevKit.Infrastructure.Azure.ServiceBus": {
         "type": "Project",
         "dependencies": {
@@ -2306,7 +2296,6 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": {
         "type": "Project",
         "dependencies": {
-          "AspNetCore.HealthChecks.SqlServer": "[9.0.0, )",
           "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -2360,38 +2349,6 @@
         "dependencies": {
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
-        }
-      },
-      "AspNetCore.HealthChecks.AzureStorage": {
-        "type": "CentralTransitive",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "mjgooDDmZ2VB/xTf3A/uehD1XJfRcIM/oOxDDHkBQzjeTrdWSVpZobOMrEpNSlwCwzEdMvlWAhhSuZNdd+znNA==",
-        "dependencies": {
-          "Azure.Storage.Blobs": "12.17.0",
-          "Azure.Storage.Files.Shares": "12.15.0",
-          "Azure.Storage.Queues": "12.15.0",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9"
-        }
-      },
-      "AspNetCore.HealthChecks.CosmosDb": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "lb1dZiZE88ipN2Ied4XsgZYorEIOvXoX2cHI4K9JhzGCAe9Av28RaXuJoqYT/7GMSiCX1lzIZpYMoSp4r/xAOQ==",
-        "dependencies": {
-          "Microsoft.Azure.Cosmos": "3.46.0",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11"
-        }
-      },
-      "AspNetCore.HealthChecks.SqlServer": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "UxCf65iCF2nU1u7AcB320abjL4CRg5swCgJECY6mKk1j5lrGMfVtskWwriGs1T29pYdRig9Vra3SPnP+4G82pA==",
-        "dependencies": {
-          "Microsoft.Data.SqlClient": "5.2.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11"
         }
       },
       "AutoMapper": {
@@ -2459,17 +2416,6 @@
         "contentHash": "w3jiDByPHLjzo6EnrvHiAikvjQ8u0MAktmltOydDgVU3XH2W/nrJcH5EA3uCjvyjraWJ3++pvRkqxfCSCkzaHQ==",
         "dependencies": {
           "Azure.Storage.Common": "12.24.0"
-        }
-      },
-      "Azure.Storage.Queues": {
-        "type": "CentralTransitive",
-        "requested": "[12.17.1, )",
-        "resolved": "12.17.1",
-        "contentHash": "ziN15iQ4+h0zf9EbKzFd5Zj3LiDH21qIrCknkXhpqwftPfIvlftvdyXbKQLi9+sh8dwT6PFPi/wq4oLsKNGfcQ==",
-        "dependencies": {
-          "Azure.Storage.Common": "12.18.1",
-          "System.Memory.Data": "1.0.2",
-          "System.Text.Json": "4.7.2"
         }
       },
       "CsvHelper": {
@@ -2788,24 +2734,6 @@
         "requested": "[9.0.9, )",
         "resolved": "9.0.9",
         "contentHash": "/hymojfWbE9AlDOa0mczR44m00Jj+T3+HZO0ZnVTI032fVycI0ZbNOVFP6kqZMcXiLSYXzR2ilcwaRi6dzeGyA=="
-      },
-      "Microsoft.Extensions.Diagnostics.HealthChecks": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "pjNYR7BsjD6PS4K7Bef1sW/fRJtWZlwAtRoxppn0jEfJDAaCyCQddhIdCSxGBnyoob4eObT64W/DvFJGms6mQw==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Hosting.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Logging.Abstractions": "9.0.9",
-          "Microsoft.Extensions.Options": "9.0.9"
-        }
-      },
-      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "6zgF8Fu8HvMxpo9imgBtasDJzb+KwSM9yrQ4vPwKfKpR1knAc+mbxUGQzM1V/d2nhxMs7DvjYGmcFW06eIkSLQ=="
       },
       "Microsoft.Extensions.Hosting": {
         "type": "CentralTransitive",

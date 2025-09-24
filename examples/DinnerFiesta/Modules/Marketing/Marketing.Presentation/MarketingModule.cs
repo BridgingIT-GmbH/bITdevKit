@@ -48,7 +48,6 @@ public class MarketingModule : WebModuleBase
                 c => c
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     .CommandTimeout(30))
-            .WithHealthChecks()
             .WithDatabaseMigratorService(o => o
                 .StartupDelay("00:00:05")
                 .Enabled(environment.IsDevelopment())

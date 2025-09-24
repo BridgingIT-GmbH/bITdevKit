@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos"/>
   </ItemGroup>
 

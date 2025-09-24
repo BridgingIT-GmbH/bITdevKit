@@ -25,8 +25,7 @@ public class AzureTableDocumentStoreClientBuilderContextTests
         this.fixture.Services.AddMediatR();
 
         this.fixture.Services.AddAzureTableServiceClient(o => o
-                .UseConnectionString(this.fixture.AzuriteConnectionString))
-            .WithHealthChecks();
+                .UseConnectionString(this.fixture.AzuriteConnectionString));
 
         this.fixture.Services.AddAzureTableDocumentStoreClient<PersonStubDocument>() // no need to setup the client+provider (sql)
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()

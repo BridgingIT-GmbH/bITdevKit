@@ -25,7 +25,6 @@ public class DocumentStoreClientBuilderContextTests
         this.fixture.Services.AddMediatR();
 
         this.fixture.Services.AddSqlServerDbContext<StubDbContext>(this.fixture.SqlConnectionString)
-            .WithHealthChecks()
             .WithDatabaseCreatorService(o => o.DeleteOnStartup())
             .WithOutboxMessageService(o => o
                 .ProcessingInterval("00:00:10")

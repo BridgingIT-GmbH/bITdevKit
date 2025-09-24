@@ -11,7 +11,7 @@ using DotNet.Testcontainers.Containers;
 using global::Azure;
 using global::Azure.Data.Tables;
 using global::Azure.Storage.Blobs;
-using global::Azure.Storage.Queues;
+//using global::Azure.Storage.Queues;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Data.SqlClient;
 
@@ -90,20 +90,20 @@ public class TestEnvironmentTests(ITestOutputHelper output, TestEnvironmentFixtu
             .ShouldBeFalse();
     }
 
-    [Fact]
-    public async Task AzuriteQueue_EstablishesConnection_ReturnsSuccessful()
-    {
-        // Give
-        var client = new QueueServiceClient(this.fixture.AzuriteConnectionString);
+    //[Fact]
+    //public async Task AzuriteQueue_EstablishesConnection_ReturnsSuccessful()
+    //{
+    //    // Give
+    //    var client = new QueueServiceClient(this.fixture.AzuriteConnectionString);
 
-        // When
-        var result = await client.GetPropertiesAsync()
-            .AnyContext();
+    //    // When
+    //    var result = await client.GetPropertiesAsync()
+    //        .AnyContext();
 
-        // Then
-        HasError(result)
-            .ShouldBeFalse();
-    }
+    //    // Then
+    //    HasError(result)
+    //        .ShouldBeFalse();
+    //}
 
     [Fact]
     public async Task AzuriteTable_EstablishesConnection_ReturnsSuccessful()

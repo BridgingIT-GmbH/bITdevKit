@@ -25,8 +25,7 @@ public class AzureBlobDocumentStoreClientBuilderContextTests
         this.fixture.Services.AddMediatR();
 
         this.fixture.Services.AddAzureBlobServiceClient(o => o
-                .UseConnectionString(this.fixture.AzuriteConnectionString))
-            .WithHealthChecks();
+                .UseConnectionString(this.fixture.AzuriteConnectionString));
 
         this.fixture.Services.AddAzureBlobDocumentStoreClient<PersonStubDocument>() // no need to setup the client+provider (sql)
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()

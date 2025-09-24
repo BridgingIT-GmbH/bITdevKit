@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.Sqlite" />
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" />-->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="System.Data.SQLite" />

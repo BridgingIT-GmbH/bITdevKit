@@ -16,8 +16,7 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
     {
         s.AddMediatR();
         s.AddCosmosClient(o => o
-                .UseConnectionString("AccountEndpoint=https://dummy.documents.azure.com:443/;AccountKey=accountkey==;"))
-            .WithHealthChecks();
+                .UseConnectionString("AccountEndpoint=https://dummy.documents.azure.com:443/;AccountKey=accountkey==;"));
 
         s.AddCosmosSqlRepository<PersonStub>(o => o.PartitionKey(e => e.LastName))
             //s.AddCosmosSqlRepository<PersonStub>(sp => new CosmosSqlProvider<PersonStub>(o => o.Client(sp.GetRequiredService<CosmosClient>()).PartitionKey(e => e.Nationality)));

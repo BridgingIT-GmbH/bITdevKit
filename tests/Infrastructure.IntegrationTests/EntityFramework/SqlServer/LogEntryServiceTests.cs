@@ -36,7 +36,6 @@ public class LogEntryServiceTests
         //this.fixture.Services.AddHostedService<LogEntryPurgeService<StubDbContext>>();
 
         this.fixture.Services.AddSqlServerDbContext<StubDbContext>(this.fixture.SqlConnectionString)
-            .WithHealthChecks()
             .WithDatabaseCreatorService(o => o.DeleteOnStartup());
 
         this.context = this.fixture.EnsureSqlServerDbContext();

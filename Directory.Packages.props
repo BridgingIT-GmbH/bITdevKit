@@ -4,17 +4,6 @@
         <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     </PropertyGroup>
     <ItemGroup Label="dev dependencies">
-        <PackageVersion Include="AspNetCore.HealthChecks.AzureStorage" Version="7.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.CosmosDb" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
-        <PackageVersion Include="AspNetcore.HealthChecks.Publisher.Seq" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.Sqlite" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
         <PackageVersion Include="AutoMapper" Version="[14.0.0]" />
         <PackageVersion Include="AutoMapper.Extensions.ExpressionMapping" Version="[8.0.0]" />
         <PackageVersion Include="Azure.Data.Tables" Version="12.11.0" />
@@ -67,8 +56,6 @@
         <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.9" />
-        <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="9.0.9" />
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
         <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.9" />
         <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.9" />

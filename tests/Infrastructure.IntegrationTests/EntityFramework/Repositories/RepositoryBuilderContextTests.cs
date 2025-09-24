@@ -14,7 +14,6 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
     {
         services.AddMediatR()
             .AddSqlServerDbContext<StubDbContext>("dummy")
-            .WithHealthChecks()
             .WithDatabaseCreatorService(o => o.DeleteOnStartup())
             .WithOutboxMessageService(o => o
                 .ProcessingInterval("00:00:10")

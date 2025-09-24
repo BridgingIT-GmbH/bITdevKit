@@ -19,16 +19,11 @@ public class HealthCheckJob(ILoggerFactory loggerFactory, HealthCheckService hea
         {
             if (report.Status == HealthStatus.Healthy)
             {
-                this.Logger.LogInformation("{LogKey} health status is {HealthStatus}",
-                    "JOB",
-                    report.Status.ToString().ToLower());
+                this.Logger.LogInformation("{LogKey} health status is {HealthStatus}", "JOB", report.Status.ToString().ToLower());
             }
             else
             {
-                this.Logger.LogWarning("{LogKey} health status is {HealthStatus}: {@HealthReport}",
-                    "JOB",
-                    report.Status.ToString().ToLower(),
-                    report);
+                this.Logger.LogWarning("{LogKey} health status is {HealthStatus}: {@HealthReport}", "JOB", report.Status.ToString().ToLower(), report);
             }
         }
     }

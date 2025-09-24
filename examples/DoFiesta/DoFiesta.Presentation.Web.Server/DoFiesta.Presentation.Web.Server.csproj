@@ -14,8 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" />
-        <PackageReference Include="AspNetcore.HealthChecks.Publisher.Seq" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
@@ -55,7 +53,6 @@
         <ProjectReference Include="..\..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
-        <ProjectReference Include="..\..\..\src\Presentation.Web.HealthChecks\Presentation.Web.HealthChecks.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
         <ProjectReference Include="..\DoFiesta.Application\DoFiesta.Application.csproj" />

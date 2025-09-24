@@ -55,7 +55,6 @@
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Azure.HealthChecks\Infrastructure.Azure.HealthChecks.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />

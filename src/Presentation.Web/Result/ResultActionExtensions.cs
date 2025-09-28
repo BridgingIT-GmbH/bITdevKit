@@ -79,7 +79,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.IsSuccess ? result.Value.Select(mapper.Map<TSource, TModel>) : default;
+        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : default;
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, models)
@@ -103,7 +103,7 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         var resultPaged = result.IsSuccess
-            ? ResultPaged<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
+            ? ResultPaged<TModel>.Success(result.Value.Select(e => mapper.Map<TSource, TModel>(e)), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
             : ResultPaged<TModel>.Failure()
                 .WithMessages(result.Messages);
@@ -541,7 +541,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.IsSuccess ? result.Value.Select(mapper.Map<TSource, TModel>) : default;
+        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : default;
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, models, statusCode)
@@ -567,7 +567,7 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         var resultPaged = result.IsSuccess
-            ? ResultPaged<TModel>.Success(result.Value.Select(mapper.Map<TSource, TModel>), result.CurrentPage, result.PageSize)
+            ? ResultPaged<TModel>.Success(result.Value.Select(e => mapper.Map<TSource, TModel>(e)), result.CurrentPage, result.PageSize)
                 .WithMessages(result.Messages)
             : ResultPaged<TModel>.Failure()
                 .WithMessages(result.Messages);

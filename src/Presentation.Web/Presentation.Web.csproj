@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
-    <ProjectReference Include="..\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />

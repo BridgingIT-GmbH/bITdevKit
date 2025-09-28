@@ -1461,22 +1461,6 @@
         "resolved": "0.8.5",
         "contentHash": "TR4j17WeVSEb3ncgL2NqlXEqcy04I+Kk9CaebNDplUeL8XOgjkZ7fP4Wg4grBdPLIqsV86p2QaXTkZoRMVOsew=="
       },
-      "BridgingIT.DevKit.Application.Commands": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Humanizer.Core": "[2.14.1, )",
-          "MediatR": "[12.5.0, 12.5.0]",
-          "Microsoft.Extensions.Caching.Abstractions": "[9.0.9, )",
-          "Polly": "[8.6.3, )",
-          "Polly.Contrib.Simmy": "[0.3.0, )"
-        }
-      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -1526,23 +1510,6 @@
           "MailKit": "[4.13.0, )",
           "Microsoft.Extensions.Configuration.Binder": "[9.0.9, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.9, )"
-        }
-      },
-      "BridgingIT.DevKit.Application.Queries": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Humanizer.Core": "[2.14.1, )",
-          "MediatR": "[12.5.0, 12.5.0]",
-          "Microsoft.Extensions.Caching.Abstractions": "[9.0.9, )",
-          "Polly": "[8.6.3, )",
-          "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
       "BridgingIT.DevKit.Application.Storage": {
@@ -1741,11 +1708,9 @@
       "BridgingIT.DevKit.Examples.DoFiesta.Application": {
         "type": "Project",
         "dependencies": {
-          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
-          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
@@ -1761,7 +1726,6 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.CodeGen": "[1.0.0, )",
-          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
         }
       },
@@ -1876,7 +1840,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
-          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",

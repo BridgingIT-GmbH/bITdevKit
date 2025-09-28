@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using Microsoft.Extensions.Logging;
 using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
 

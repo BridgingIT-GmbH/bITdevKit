@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -43,8 +44,8 @@ public class NotifierBuilder
     {
         this.services = services ?? throw new ArgumentNullException(nameof(services));
 
-        this.services.AddSingleton(this.handlerCache);
-        this.services.AddSingleton(this.policyCache);
+        this.services.TryAddSingleton(this.handlerCache);
+        this.services.TryAddSingleton(this.policyCache);
         this.services.AddSingleton<INotificationHandlerProvider, NotificationHandlerProvider>();
         this.services.AddSingleton<INotificationBehaviorsProvider>(_ => new NotificationBehaviorsProvider(this.pipelineBehaviorTypes));
         this.services.AddScoped<INotifier>(sp => new Notifier(

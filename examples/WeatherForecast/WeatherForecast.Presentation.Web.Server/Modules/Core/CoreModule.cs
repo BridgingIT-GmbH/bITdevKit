@@ -108,7 +108,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<City>>()
             .WithBehavior<RepositoryNoTrackingBehavior<City>>()
             .WithBehavior<RepositoryDomainEventBehavior<City>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<City>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<City>>();
 
         //tag::Part2[]
         // Forecast repository
@@ -119,7 +119,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryNoTrackingBehavior<Forecast>>()
             .WithBehavior(inner => new RepositoryIncludeBehavior<Forecast>(e => e.Type, inner))
             .WithBehavior<RepositoryDomainEventBehavior<Forecast>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Forecast>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<Forecast>>();
         //end::Part2[]
 
         // Forecast Type repository
@@ -143,7 +143,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<UserAccount>>()
             .WithBehavior<RepositoryNoTrackingBehavior<UserAccount>>()
             .WithBehavior<RepositoryDomainEventBehavior<UserAccount>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<UserAccount>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<UserAccount>>();
 
         // UserAccount specific repository, demonstrates how Capper (raw sql) can be used inside normal EF repos
         services.AddScoped(sp =>
@@ -163,7 +163,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<TestGuidEntity>>()
             .WithBehavior<RepositoryNoTrackingBehavior<TestGuidEntity>>()
             .WithBehavior<RepositoryDomainEventBehavior<TestGuidEntity>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<TestGuidEntity>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<TestGuidEntity>>();
 
         // TestIntEntity repository
         services.AddEntityFrameworkRepository<TestIntEntity, CoreDbContext>()
@@ -171,7 +171,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<TestIntEntity>>()
             .WithBehavior<RepositoryNoTrackingBehavior<TestIntEntity>>()
             .WithBehavior<RepositoryDomainEventBehavior<TestIntEntity>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<TestIntEntity>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<TestIntEntity>>();
 
         // Weather data adapter (= anti corruption)
         services.AddScoped<IWeatherDataAdapter>(sp =>

@@ -11,10 +11,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
-//
-// RULE ===============================
-//
-
 public class TitleShouldBeUniqueRule(string title, IGenericRepository<TodoItem> repository) : AsyncRuleBase
 {
     public override string Message { get; } = "Title should not be used allready";

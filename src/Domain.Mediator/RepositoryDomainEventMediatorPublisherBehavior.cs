@@ -5,14 +5,25 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
-[Obsolete("Use GenericRepositoryDomainEventBehavior instead")]
-public class GenericRepositoryDomainEventDecorator<TEntity>(
-    ILoggerFactory loggerFactory,
-    IGenericRepository<TEntity> inner) : RepositoryDomainEventBehavior<TEntity>(loggerFactory, inner)
+[Obsolete("Use GenericRepositoryDomainEventPublisherBehavior instead")]
+public class GenericRepositoryDomainMediatorEventPublisherDecorator<TEntity> : RepositoryDomainEventMediatorPublisherBehavior<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
-{ }
+{
+    public GenericRepositoryDomainMediatorEventPublisherDecorator(
+        ILoggerFactory loggerFactory,
+        IMediator mediator,
+        IGenericRepository<TEntity> inner)
+        : base(loggerFactory, mediator, inner) { }
+
+    public GenericRepositoryDomainMediatorEventPublisherDecorator(
+        ILoggerFactory loggerFactory,
+        IDomainEventPublisher publisher,
+        IGenericRepository<TEntity> inner)
+        : base(loggerFactory, publisher, inner) { }
+}
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
@@ -26,27 +37,39 @@ public class GenericRepositoryDomainEventDecorator<TEntity>(
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
-public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository<TEntity>
+public class RepositoryDomainEventMediatorPublisherBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
 {
-    public RepositoryDomainEventBehavior(ILoggerFactory loggerFactory, IGenericRepository<TEntity> inner)
+    public RepositoryDomainEventMediatorPublisherBehavior(
+        ILoggerFactory loggerFactory,
+        IMediator mediator,
+        IGenericRepository<TEntity> inner)
+        : this(loggerFactory, new MediatorDomainEventPublisher(loggerFactory, mediator), inner) { }
+
+    public RepositoryDomainEventMediatorPublisherBehavior(
+        ILoggerFactory loggerFactory,
+        IDomainEventPublisher publisher,
+        IGenericRepository<TEntity> inner)
     {
+        EnsureArg.IsNotNull(publisher, nameof(publisher));
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.Logger = loggerFactory?.CreateLogger<RepositoryDomainEventBehavior<TEntity>>() ??
-            NullLoggerFactory.Instance.CreateLogger<RepositoryDomainEventBehavior<TEntity>>();
+        this.Logger = loggerFactory?.CreateLogger<RepositoryDomainEventMediatorPublisherBehavior<TEntity>>() ??
+            NullLoggerFactory.Instance.CreateLogger<RepositoryDomainEventMediatorPublisherBehavior<TEntity>>();
+        this.Publisher = publisher;
         this.Inner = inner;
     }
 
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
+
+    protected IDomainEventPublisher Publisher { get; }
 
     protected IGenericRepository<TEntity> Inner { get; }
 
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         var entity = await this.Inner
-            .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
-            .AnyContext();
+            .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
         if (entity is null || entity.Id == default)
         {
             return RepositoryActionResult.None;
@@ -59,14 +82,14 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new EntityDeletedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger,
-            Constants.LogKey,
-            @event.EventId.ToString("N"),
-            typeof(EntityDeletedDomainEvent<TEntity>).Name);
-        entity.DomainEvents.Register(@event);
+        var result = await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
 
-        return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
+        // publish all domain events after transaction ends
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
+        entity.DomainEvents.Clear();
+
+        return result;
     }
 
     public async Task<TEntity> FindOneAsync(
@@ -151,28 +174,28 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new EntityCreatedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger,
-            Constants.LogKey,
-            @event.EventId.ToString("N"),
-            typeof(EntityInsertedDomainEvent<TEntity>).Name);
-        entity.DomainEvents.Register(@event);
+        var result = await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
 
-        return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
+        // publish all domain events after transaction ends
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
+        entity.DomainEvents.Clear();
+
+        return result;
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        var @event = new EntityUpdatedDomainEvent<TEntity>(entity);
-        TypedLogger.LogRegister(this.Logger,
-            Constants.LogKey,
-            @event.EventId.ToString("N"),
-            typeof(EntityUpdatedDomainEvent<TEntity>).Name);
-        entity.DomainEvents.Register(@event);
+        var result = await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
 
-        return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
+        // publish all domain events after transaction ends
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
+        entity.DomainEvents.Clear();
+
+        return result;
     }
 
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
@@ -181,20 +204,14 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
 
-        DomainEventBase @event;
-        if (entity.Id == default || !await this.Inner.ExistsAsync(entity.Id, cancellationToken).AnyContext())
-        {
-            @event = new EntityCreatedDomainEvent<TEntity>(entity);
-        }
-        else
-        {
-            @event = new EntityUpdatedDomainEvent<TEntity>(entity);
-        }
+        var result = await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
 
-        TypedLogger.LogRegister(this.Logger, Constants.LogKey, @event.EventId.ToString("N"), @event.GetType().Name);
-        entity.DomainEvents.Register(@event);
+        // publish all domain events after transaction ends
+        await entity.DomainEvents.GetAll()
+            .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
+        entity.DomainEvents.Clear();
 
-        return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
+        return result;
     }
 
     public async Task<long> CountAsync(
@@ -214,11 +231,5 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         CancellationToken cancellationToken = default)
     {
         return await this.Inner.CountAsync(specifications, cancellationToken).AnyContext();
-    }
-
-    public static partial class TypedLogger
-    {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository register domain event (id={DomainEventId}, type={DomainEventType})")]
-        public static partial void LogRegister(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

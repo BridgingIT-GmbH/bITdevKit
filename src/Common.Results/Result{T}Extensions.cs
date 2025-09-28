@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Common;
 using FluentValidation;
 using FluentValidation.Internal;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 public static class ResultTExtensions
 {
@@ -721,6 +722,54 @@ public static class ResultTExtensions
     }
 
     /// <summary>
+    ///     Converts a successful result to a failure if the specified predicate is met (inverse of Filter).
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <param name="operation">The condition that must be false for the result to remain successful.</param>
+    /// <returns>The original result if successful and predicate is not met; otherwise, a failure with the specified error.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user)
+    ///     .Unless((user, ct) =>
+    ///         await Rule
+    ///            .Add(RuleSet.IsNotEmpty(user.Name))
+    ///            .Check());
+    /// </code>
+    /// </example>
+    public static Result<T> Unless<T>(this Result<T> result, Func<T, Result> operation)
+    {
+        if (!result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            var opResult = operation(result.Value);
+            if (opResult.IsFailure)
+            {
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(opResult.Errors)
+                    .WithError(new Error("Unless condition met"))
+                    .WithMessages(opResult.Messages);
+            }
+            else
+            {
+                return Result<T>.Success(result.Value)
+                    .WithMessages(opResult.Messages);
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
     ///     Asynchronously converts a successful result to a failure if the specified predicate is met.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
@@ -776,6 +825,66 @@ public static class ResultTExtensions
         }
 
         return result;
+    }
+
+    /// <summary>
+    ///     Asynchronously converts a successful result to a failure if the specified predicate is met.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to check.</param>
+    /// <param name="operation">The async condition that must be false for the result to remain successful.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The original result if successful and predicate is not met; otherwise, a failure with the specified error.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result{User}.Success(user)
+    ///     .UnlessAsync(async (user, ct) =>
+    ///         await Rule
+    ///            .Add(RuleSet.IsNotEmpty(user.Name))
+    ///            .Add(new NameShouldBeUniqueRule(user.Name, this.repository))
+    ///            .CheckAsync(cancellationToken). cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> UnlessAsync<T>(
+    this Result<T> result,
+    Func<T, CancellationToken, Task<Result>> operation,
+    CancellationToken cancellationToken = default)
+    {
+        if (!result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            var opResult = await operation(result.Value, cancellationToken);
+            if (opResult.IsFailure)
+            {
+                return Result<T>.Failure(result.Value)
+                    .WithErrors(opResult.Errors)
+                    .WithError(new Error("Unless condition met"))
+                    .WithMessages(opResult.Messages);
+            }
+            else
+            {
+                return Result<T>.Success(result.Value)
+                    .WithMessages(opResult.Messages);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
     }
 
     /// <summary>

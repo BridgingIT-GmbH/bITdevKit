@@ -2412,7 +2412,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
-          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",

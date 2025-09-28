@@ -31,6 +31,10 @@ public class RequesterTests
             .AddHandlers()
             .WithBehavior(typeof(TestBehavior<,>))
             .WithBehavior(typeof(AnotherTestBehavior<,>));
+        services.AddNotifier()
+            .AddHandlers()
+            .WithBehavior(typeof(TestBehavior<,>))
+            .WithBehavior(typeof(AnotherTestBehavior<,>));
         this.serviceProvider = services.BuildServiceProvider();
     }
 

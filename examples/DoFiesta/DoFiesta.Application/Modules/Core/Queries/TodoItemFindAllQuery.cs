@@ -25,17 +25,12 @@ public class TodoItemFindAllQueryHandler(
     ICurrentUserAccessor currentUserAccessor,
     IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemFindAllQuery, IEnumerable<TodoItemModel>>()
 {
-    protected override async Task<Result<IEnumerable<TodoItemModel>>> HandleAsync(
-        TodoItemFindAllQuery request,
-        SendOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await repository.FindAllResultAsync( // repo takes care of the filter
+    protected override async Task<Result<IEnumerable<TodoItemModel>>> HandleAsync(TodoItemFindAllQuery request, SendOptions options, CancellationToken cancellationToken) =>
+        await repository.FindAllResultAsync( // repo takes care of the filter
                 request.Filter,
                 [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken)
             .FilterItemsAsync(async (e, ct) =>
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Read, cancellationToken: ct), null, cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
-    }
 }

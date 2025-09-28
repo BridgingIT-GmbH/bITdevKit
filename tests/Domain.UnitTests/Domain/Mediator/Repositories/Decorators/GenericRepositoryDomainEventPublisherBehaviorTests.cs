@@ -21,7 +21,7 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
-            new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
+            new RepositoryDomainEventMediatorPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.InsertAsync(entity);
@@ -42,7 +42,7 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
-            new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
+            new RepositoryDomainEventMediatorPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.UpdateAsync(entity);
@@ -63,7 +63,7 @@ public class GenericRepositoryDomainEventPublisherBehaviorTests
         var inner = Substitute.For<IGenericRepository<PersonDtoStub>>();
         var entity = new PersonDtoStub { FullName = "John Doe" };
         var sut = new RepositoryDomainEventBehavior<PersonDtoStub>(logger,
-            new RepositoryDomainEventPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
+            new RepositoryDomainEventMediatorPublisherBehavior<PersonDtoStub>(logger, mediator, inner));
 
         // Act
         await sut.DeleteAsync(entity);

@@ -18,7 +18,7 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
             .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
             .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
             .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<StubEntity>>();
     })
 {
     [Fact]
@@ -43,7 +43,7 @@ public class RepositoryBuilderContextNoInMemoryContextTests(ITestOutputHelper ou
         .WithBehavior<RepositoryTracingBehavior<StubEntity>>()
         .WithBehavior<RepositoryLoggingBehavior<StubEntity>>()
         .WithBehavior<RepositoryDomainEventBehavior<StubEntity>>()
-        .WithBehavior<RepositoryDomainEventPublisherBehavior<StubEntity>>())
+        .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<StubEntity>>())
 {
     [Fact]
     public void GetRepository_WhenRequested_ShouldNotBeNull()

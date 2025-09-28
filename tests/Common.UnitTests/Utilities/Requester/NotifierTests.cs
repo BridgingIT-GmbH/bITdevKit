@@ -33,6 +33,10 @@ public class NotifierTests
             .AddHandlers()
             .WithBehavior(typeof(TestBehavior<,>))
             .WithBehavior(typeof(AnotherTestBehavior<,>));
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(TestBehavior<,>))
+            .WithBehavior(typeof(AnotherTestBehavior<,>));
         this.serviceProvider = services.BuildServiceProvider();
     }
 

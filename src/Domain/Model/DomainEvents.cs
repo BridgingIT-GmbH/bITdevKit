@@ -70,29 +70,29 @@ public class DomainEvents // TODO: create interface?
         return this;
     }
 
-    /// <summary>
-    ///     Dispatches all registered domain events asynchronously using the provided mediator.
-    /// </summary>
-    /// <param name="mediator">The mediator used to publish the events.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task DispatchAsync(IMediator mediator) // TODO: rename to publish?
-    {
-        EnsureArg.IsNotNull(mediator, nameof(mediator));
+    ///// <summary>
+    /////     Dispatches all registered domain events asynchronously using the provided mediator.
+    ///// </summary>
+    ///// <param name="mediator">The mediator used to publish the events.</param>
+    ///// <returns>A task representing the asynchronous operation.</returns>
+    //public async Task PublishAsync(IMediator mediator)
+    //{
+    //    EnsureArg.IsNotNull(mediator, nameof(mediator));
 
-        foreach (var @event in this.GetAll())
-        {
-            await mediator.Publish(@event).AnyContext();
-        }
+    //    foreach (var @event in this.GetAll())
+    //    {
+    //        await mediator.Publish(@event).AnyContext();
+    //    }
 
-        this.Clear();
-    }
+    //    this.Clear();
+    //}
 
     /// <summary>
     ///     Dispatches all registered domain events asynchronously using the provided notifier.
     /// </summary>
     /// <param name="notifier">The mediator used to publish the events.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task DispatchAsync(INotifier notifier, CancellationToken cancellationToken)
+    public async Task PublishAsync(INotifier notifier, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(notifier, nameof(notifier));
 

@@ -17,9 +17,7 @@
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Caching\Common.Caching.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.Commands\Application.Commands.csproj" />
     <ProjectReference Include="..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.Queries\Application.Queries.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\DoFiesta.Domain\DoFiesta.Domain.csproj" />
   </ItemGroup>

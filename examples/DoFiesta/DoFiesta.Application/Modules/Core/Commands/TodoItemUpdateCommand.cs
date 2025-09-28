@@ -33,20 +33,18 @@ public class TodoItemUpdateCommandHandler(
     ICurrentUserAccessor currentUserAccessor,
     IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemUpdateCommand, TodoItemModel>
 {
-    private readonly IMapper mapper = mapper;
-    private readonly IGenericRepository<TodoItem> repository = repository;
-
-    protected override async Task<Result<TodoItemModel>> HandleAsync(
-        TodoItemUpdateCommand request,
-        SendOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await Result<TodoItem>.Success(this.mapper.Map<TodoItemModel, TodoItem>(request.Model))
-            .EnsureAsync(async (e, ct) =>
+    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemUpdateCommand request, SendOptions options, CancellationToken cancellationToken) =>
+        await Result.Success()
+            .Map(mapper.Map<TodoItemModel, TodoItem>(request.Model))
+            .EnsureAsync(async (e, ct) => // check permissions
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Write, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
+            .UnlessAsync(async (e, ct) => await Rule // check rules
+                .Add(RuleSet.IsNotEmpty(e.Title))
+                .Add(RuleSet.NotEqual(e.Title, "todo"))
+                //.Add(new TitleShouldBeUniqueRule(e.Title, this.repository))
+                .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
             .BindAsync(async (e, ct) =>
-                await this.repository.UpdateResultAsync(e, ct), cancellationToken)
+                await repository.UpdateResultAsync(e, ct), cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Map(this.mapper.Map<TodoItem, TodoItemModel>);
-    }
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 }

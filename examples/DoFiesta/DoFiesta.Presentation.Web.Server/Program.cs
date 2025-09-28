@@ -5,8 +5,6 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BridgingIT.DevKit.Application.Commands;
-using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
@@ -42,16 +40,10 @@ builder.Services.AddHttpContextAccessor();
 // Configure the services
 builder.Services.AddRequester()
     .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
-builder.Services.AddMapping().WithMapster();
+builder.Services.AddNotifier()
+    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
 
-builder.Services.AddCommands()
-    .WithBehavior(typeof(ModuleScopeCommandBehavior<,>))
-    //.WithBehavior(typeof(ChaosExceptionCommandBehavior<,>))
-    .WithBehavior(typeof(TimeoutCommandBehavior<,>));
-builder.Services.AddQueries()
-    .WithBehavior(typeof(ModuleScopeQueryBehavior<,>))
-    //.WithBehavior(typeof(ChaosExceptionQueryBehavior<,>))
-    .WithBehavior(typeof(TimeoutQueryBehavior<,>));
+builder.Services.AddMapping().WithMapster();
 
 // Register the purge queue as a singleton
 builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
@@ -96,7 +88,8 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
 
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
-    .WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
+    //.WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
+    .WithIssuer("https://localhost:5001")
     .WithUsers(Fakes.UsersStarwars)
     .WithTokenLifetimes(
         accessToken: TimeSpan.FromHours(24),

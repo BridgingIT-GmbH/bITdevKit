@@ -9,7 +9,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 
 public class TodoItemFindOneQuery(string id) : RequestBase<TodoItemModel>
 {
@@ -32,15 +31,10 @@ public class TodoItemFindOneQueryHandler(
     ICurrentUserAccessor currentUserAccessor,
     IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemFindOneQuery, TodoItemModel>
 {
-    protected override async Task<Result<TodoItemModel>> HandleAsync(
-        TodoItemFindOneQuery request,
-        SendOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await repository.FindOneResultAsync(TodoItemId.Create(request.Id), cancellationToken: cancellationToken)
+    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemFindOneQuery request, SendOptions options, CancellationToken cancellationToken) =>
+        await repository.FindOneResultAsync(TodoItemId.Create(request.Id), cancellationToken: cancellationToken)
             .EnsureAsync(async (e, ct) =>
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Read, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
-    }
 }

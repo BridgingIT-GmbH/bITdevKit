@@ -11,6 +11,7 @@ using System.Reflection;
 using BridgingIT.DevKit.Common;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -46,8 +47,8 @@ public class RequesterBuilder
         this.services = services ?? throw new ArgumentNullException(nameof(services));
 
         // Register the core services needed for Requester to function
-        this.services.AddSingleton(this.handlerCache);
-        this.services.AddSingleton(this.policyCache);
+        this.services.TryAddSingleton(this.handlerCache);
+        this.services.TryAddSingleton(this.policyCache);
         this.services.AddSingleton<IRequestHandlerProvider, RequestHandlerProvider>();
         this.services.AddSingleton<IRequestBehaviorsProvider>(sp => new RequestBehaviorsProvider(this.pipelineBehaviorTypes));
         this.services.AddScoped<IRequester>(sp => new Requester(

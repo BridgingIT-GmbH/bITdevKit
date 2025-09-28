@@ -69,7 +69,7 @@ public class MarketingModule : WebModuleBase
             //.WithBehavior((inner) => new GenericRepositoryIncludeBehavior<Customer>(e => e.AuditState, inner));
             .WithBehavior<RepositoryDomainEventBehavior<Customer>>()
             .WithBehavior<RepositoryDomainEventMetricsBehavior<Customer>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Customer>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<Customer>>();
         //.WithBehavior<RepositoryOutboxDomainEventBehavior<Customer, CoreDbContext>>()
 
         return services;

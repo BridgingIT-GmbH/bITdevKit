@@ -12,7 +12,7 @@ using MediatR.Pipeline;
 /// <summary>
 ///    Provides extension methods for the IServiceCollection to inspect MediatR registrations.
 /// </summary>
-public static class MediatRInspector
+public static class MediatorInspector
 {
     private static readonly Type[] MediatRHandlerTypes =
     [

@@ -30,20 +30,13 @@ public class TodoItemDeleteCommandHandler(
     ICurrentUserAccessor currentUserAccessor,
     IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemDeleteCommand, Unit>
 {
-    private readonly IGenericRepository<TodoItem> repository = repository;
-
-    protected override async Task<Result<Unit>> HandleAsync(
-        TodoItemDeleteCommand request,
-        SendOptions options,
-        CancellationToken cancellationToken)
-    {
-        return await Result<Unit>.Success()
-            .EnsureAsync(async (e, ct) =>
+    protected override async Task<Result<Unit>> HandleAsync(TodoItemDeleteCommand request, SendOptions options, CancellationToken cancellationToken) =>
+        await Result<Unit>.Success()
+            .EnsureAsync(async (e, ct) => // check permissions
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, request.Id, Permission.Delete, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .BindAsync(async (e, ct) =>
-                await this.repository.DeleteResultAsync(TodoItemId.Create(request.Id), cancellationToken)
+                await repository.DeleteResultAsync(TodoItemId.Create(request.Id), cancellationToken)
             .Ensure(e => e == RepositoryActionResult.Deleted, new EntityNotFoundError())
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(_ => Unit.Value), cancellationToken: cancellationToken);
-    }
 }

@@ -75,18 +75,18 @@ public class DomainEventsTests
         var sut = new DomainEvents();
         var domainEvent1 = Substitute.For<IDomainEvent>();
         var domainEvent2 = Substitute.For<IDomainEvent>();
-        var mediator = Substitute.For<IMediator>();
+        var notifier = Substitute.For<INotifier>();
         sut.Register(domainEvent1);
         sut.Register(domainEvent2);
 
         // Act
-        await sut.DispatchAsync(mediator);
+        await sut.PublishAsync(notifier);
 
         // Assert
-        await mediator.Received(1)
-            .Publish(domainEvent1);
-        await mediator.Received(1)
-            .Publish(domainEvent2);
+        await notifier.Received(1)
+            .PublishAsync(domainEvent1);
+        await notifier.Received(1)
+            .PublishAsync(domainEvent2);
     }
 
     // Test for Clear method
@@ -125,7 +125,7 @@ public class DomainEventsTests
     {
         // Arrange
         var sut = new DomainEvents();
-        var act = () => sut.DispatchAsync(null);
+        var act = () => sut.PublishAsync((INotifier)null);
 
         // Act & Assert
         await act.ShouldThrowAsync<ArgumentNullException>();

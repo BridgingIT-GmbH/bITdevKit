@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.Controllers;
+namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
@@ -96,7 +96,6 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
     private static async Task<Results<Ok<TodoItemModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindOne(
         [FromServices] IRequester requester,
-        [FromServices] ICurrentUserAccessor currentUser,
         [FromRoute] string id,
         CancellationToken cancellationToken = default)
     {
@@ -157,17 +156,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
     private static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemDelete(
         [FromServices] IRequester requester,
-        [FromServices] ICurrentUserAccessor currentUser,
-        [FromServices] IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
         [FromRoute] string id,
         CancellationToken cancellationToken = default)
     {
-        var authResult = await permissionEvaluator.HasPermissionAsync(currentUser, id, Permission.Delete, cancellationToken: cancellationToken);
-        if (!authResult)
-        {
-            return TypedResults.Unauthorized();
-        }
-
         return (await requester.SendAsync(
             new TodoItemDeleteCommand(id), cancellationToken: cancellationToken))
             .MapHttpNoContent();

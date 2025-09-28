@@ -9,16 +9,13 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Application.Queries;
 using Common;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
-using Version = BridgingIT.DevKit.Common.Version;
 
 public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<SystemEndpoints> logger = null) : EndpointsBase
 {
@@ -83,26 +80,12 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         return Results.Ok(result);
     }
 
-    public async Task<IResult> GetEcho(IMediator mediator, HttpContext httpContext)
+    public IResult GetEcho(HttpContext httpContext)
     {
-        try
-        {
-            var response = await mediator.Send(new EchoQuery());
-            return Results.Ok(response.Result);
-        }
-        catch (Exception ex)
-        {
-            this.logger?.LogError(ex, "Failed to process echo request.");
-            return Results.Problem(new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.InternalServerError,
-                Title = "Echo Failed",
-                Detail = "An error occurred while processing the echo request."
-            });
-        }
+        return Results.Ok();
     }
 
-    public async Task<IResult> GetInfo(IMediator mediator, HttpContext httpContext, CancellationToken cancellationToken)
+    public async Task<IResult> GetInfo(HttpContext httpContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -119,8 +102,8 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
                 {
                     ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                     ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-                    ["version"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease),
-                    ["versionFull"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(),
+                    ["version"] = Common.Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease),
+                    ["versionFull"] = Common.Version.Parse(Assembly.GetEntryAssembly()).ToString(),
                     ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
                     ["processName"] = !this.options.HideSensitiveInformation ? (process.ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{process.ProcessName} (kestrel)" : process.ProcessName) : string.Empty,
                     ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,

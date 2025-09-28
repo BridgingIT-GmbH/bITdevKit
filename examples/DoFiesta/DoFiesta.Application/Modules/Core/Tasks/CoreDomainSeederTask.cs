@@ -57,8 +57,7 @@ public class CoreDomainSeederTask(
                 .WithPermission<Subscription>(Permission.Read)
                 .WithPermission<Subscription>(Permission.Write)
                 .WithPermission<Subscription>(Permission.List)
-                .WithPermission<Subscription>(Permission.Delete)
-            .Build();
+                .WithPermission<Subscription>(Permission.Delete).Build();
     }
 
     /// <summary>
@@ -82,8 +81,7 @@ public class CoreDomainSeederTask(
                     .ForUser(entity.UserId)
                         .WithPermission<TodoItem>(entity.Id, Permission.Read)
                         .WithPermission<TodoItem>(entity.Id, Permission.Write)
-                        .WithPermission<TodoItem>(entity.Id, Permission.Delete)
-                    .Build();
+                        .WithPermission<TodoItem>(entity.Id, Permission.Delete).Build();
             }
             else
             {

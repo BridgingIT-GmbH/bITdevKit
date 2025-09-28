@@ -23,7 +23,7 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
             .WithBehavior<RepositoryTracingBehavior<PersonStub>>()
             .WithBehavior<RepositoryLoggingBehavior<PersonStub>>()
             .WithBehavior<RepositoryDomainEventBehavior<PersonStub>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<PersonStub>>();
+            .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<PersonStub>>();
     })
 {
     [Fact]

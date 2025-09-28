@@ -20,9 +20,6 @@ public class TodoItemCompleteAllCommandHandler(
     IGenericRepository<TodoItem> repository,
     ICurrentUserAccessor currentUserAccessor) : RequestHandlerBase<TodoItemCompleteAllCommand, Unit>
 {
-    private readonly IGenericRepository<TodoItem> repository = repository;
-    private readonly ICurrentUserAccessor currentUserAccessor = currentUserAccessor;
-
     protected override async Task<Result<Unit>> HandleAsync(
         TodoItemCompleteAllCommand request,
         SendOptions options,
@@ -40,15 +37,13 @@ public class TodoItemCompleteAllCommandHandler(
             //.SetPaging(0, 10)
             .Build();
 
-        return await this.repository.FindAllResultAsync(
-            filter,
-            [new ForUserSpecification(this.currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken)
-                // work on the repository result
-                .Tap(e => Console.WriteLine("COMPLETEALL: #" + e.Count())) // do something
-                .Unless(e => e.Any(s => s.Status != TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
-                .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
-                //.Traverse(e => e.Validate(null))
-                .TraverseAsync(async (e, ct) => await this.repository.UpdateAsync(e, ct), cancellationToken: cancellationToken)
-                .Map(_ => Unit.Value);
+        return await repository.FindAllResultAsync(
+            filter, [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken)
+            .Tap(e => Console.WriteLine("COMPLETEALL: #" + e.Count())) // do something
+            .Unless(e => e.Any(s => s.Status != TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
+            .Tap(e => e.ForEach(f => f.SetCompleted())) // logic
+            //.TapItemsAsync(repository.UpdateAsync, cancellationToken: cancellationToken)
+            .TraverseAsync(async (e, ct) => await repository.UpdateAsync(e, ct), cancellationToken: cancellationToken)
+            .Map(_ => Unit.Value);
     }
 }

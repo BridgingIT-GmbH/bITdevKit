@@ -56,7 +56,7 @@ public static class Fakes
         new(
             "obi.wan@starwars.com",
             "Obi-Wan Kenobi",
-            [Role.Administrators, Role.Users],
+            [Role.Users, Role.Readers, Role.Writers],
             "starwars",
             new Dictionary<string, string>
             {
@@ -133,7 +133,7 @@ public static class Fakes
         new(
             "anakin.skywalker@starwars.com",
             "Anakin Skywalker",
-            [Role.Users, Role.Readers, Role.Writers],
+            [Role.Users],
             "starwars",
             new Dictionary<string, string>
             {

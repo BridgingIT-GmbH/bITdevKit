@@ -33,51 +33,24 @@ public class TodoItemCreateCommandHandler(
     IEntityPermissionProvider permissionProvider,
     ICurrentUserAccessor currentUserAccessor) : RequestHandlerBase<TodoItemCreateCommand, TodoItemModel>
 {
-    private readonly IMapper mapper = mapper;
-    private readonly IGenericRepository<TodoItem> repository = repository;
-    private readonly IEntityPermissionProvider permissionProvider = permissionProvider;
-    private readonly ICurrentUserAccessor currentUserAccessor = currentUserAccessor;
-
-    protected override async Task<Result<TodoItemModel>> HandleAsync(
-        TodoItemCreateCommand request,
-        SendOptions options,
-        CancellationToken cancellationToken)
-    {
-        // Map the model to the entity
-        var entity = this.mapper.Map<TodoItemModel, TodoItem>(request.Model);
-        entity.UserId = this.currentUserAccessor.UserId;
-
-        // Use rules to validate the entity
-        var ruleResult = await Rule
-            .Add(RuleSet.IsNotEmpty(entity.Title))
-            .Add(RuleSet.NotEqual(entity.Title, "todo"))
-            .Add(new TitleShouldBeUniqueRule(entity.Title, this.repository))
-            .CheckAsync(cancellationToken);
-
-        Console.WriteLine("RESULT: " + ruleResult.ToString());
-        if (ruleResult.IsFailure)
-        {
-            return Result<TodoItemModel>.Failure()
-                .WithErrors(ruleResult.Errors)
-                .WithMessages(ruleResult.Messages);
-        }
-
-        // Insert the entity into the repository
-        var result = await this.repository.InsertResultAsync(entity, cancellationToken)
+    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemCreateCommand request, SendOptions options, CancellationToken cancellationToken) =>
+        await Result.Success()
+            .Map(mapper.Map<TodoItemModel, TodoItem>(request.Model))
+            .Tap(e => e.UserId = currentUserAccessor.UserId)
+            .UnlessAsync(async (e, ct) => await Rule // check rules
+                .Add(RuleSet.IsNotEmpty(e.Title))
+                .Add(RuleSet.NotEqual(e.Title, "todo"))
+                .Add(new TitleShouldBeUniqueRule(e.Title, repository))
+                .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
+            .BindAsync(async (e, ct) =>
+                await repository.InsertResultAsync(e, cancellationToken), cancellationToken: cancellationToken)
+            .Tap(e =>
+                new EntityPermissionProviderBuilder(permissionProvider) // set permissions
+                    .ForUser(e.UserId)
+                        .WithPermission<TodoItem>(e.Id, Permission.Read)
+                        .WithPermission<TodoItem>(e.Id, Permission.Write)
+                        .WithPermission<TodoItem>(e.Id, Permission.Delete)
+                    .Build())
             .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Map(e => this.mapper.Map<TodoItem, TodoItemModel>(e));
-
-        // Set permissions for the user and the new entity
-        if (result.IsSuccess)
-        {
-            new EntityPermissionProviderBuilder(this.permissionProvider)
-                .ForUser(entity.UserId)
-                    .WithPermission<TodoItem>(entity.Id, Permission.Read)
-                    .WithPermission<TodoItem>(entity.Id, Permission.Write)
-                    .WithPermission<TodoItem>(entity.Id, Permission.Delete)
-                .Build();
-        }
-
-        return result;
-    }
+            .Map(mapper.Map<TodoItem, TodoItemModel>);
 }

@@ -832,6 +832,30 @@ public static partial class ResultTTaskExtensions
         }
     }
 
+    public static async Task<Result<T>> Unless<T>(
+    this Task<Result<T>> resultTask,
+    Func<T, Result> predicate)
+    {
+        if (predicate is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Predicate cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+
+            return result.Unless(predicate);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
     /// <summary>
     ///     Converts a successful Result task to a failure if an async condition is met.
     /// </summary>
@@ -868,6 +892,36 @@ public static partial class ResultTTaskExtensions
             var result = await resultTask;
 
             return await result.UnlessAsync(predicate, error, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    public static async Task<Result<T>> UnlessAsync<T>(
+    this Task<Result<T>> resultTask,
+    Func<T, CancellationToken, Task<Result>> predicate,
+    CancellationToken cancellationToken = default)
+    {
+        if (predicate is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Predicate cannot be null"));
+        }
+
+        try
+        {
+            var result = await resultTask;
+
+            return await result.UnlessAsync(predicate, cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -1729,7 +1783,7 @@ public static partial class ResultTTaskExtensions
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
     /// <param name="resultTask">The Result task to execute the action on.</param>
-    /// <param name="action">The action to execute.</param>
+    /// <param name="operation">The action to execute.</param>
     /// <returns>The original Result.</returns>
     /// <example>
     /// <code>
@@ -1740,9 +1794,9 @@ public static partial class ResultTTaskExtensions
     /// </example>
     public static async Task<Result<T>> Do<T>(
         this Task<Result<T>> resultTask,
-        Action action)
+        Action operation)
     {
-        if (action is null)
+        if (operation is null)
         {
             return Result<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
@@ -1752,7 +1806,7 @@ public static partial class ResultTTaskExtensions
         {
             var result = await resultTask;
 
-            return result.Do(action);
+            return result.Do(operation);
         }
         catch (Exception ex)
         {
@@ -1767,7 +1821,7 @@ public static partial class ResultTTaskExtensions
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
     /// <param name="resultTask">The Result task to execute the action on.</param>
-    /// <param name="action">The async action to execute.</param>
+    /// <param name="operation">The async action to execute.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The original Result.</returns>
     /// <example>
@@ -1781,10 +1835,10 @@ public static partial class ResultTTaskExtensions
     /// </example>
     public static async Task<Result<T>> DoAsync<T>(
         this Task<Result<T>> resultTask,
-        Func<CancellationToken, Task> action,
+        Func<CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
     {
-        if (action is null)
+        if (operation is null)
         {
             return Result<T>.Failure()
                 .WithError(new Error("Action cannot be null"));
@@ -1794,7 +1848,7 @@ public static partial class ResultTTaskExtensions
         {
             var result = await resultTask;
 
-            return await result.DoAsync(action, cancellationToken);
+            return await result.DoAsync(operation, cancellationToken);
         }
         catch (OperationCanceledException)
         {

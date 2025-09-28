@@ -1432,23 +1432,6 @@
           "Microsoft.AspNetCore.Authorization": "[9.0.9, )"
         }
       },
-      "BridgingIT.DevKit.Application.Queries": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Humanizer.Core": "[2.14.1, )",
-          "MediatR": "[12.5.0, 12.5.0]",
-          "Microsoft.Extensions.Caching.Abstractions": "[9.0.9, )",
-          "Polly": "[8.6.3, )",
-          "Polly.Contrib.Simmy": "[0.3.0, )"
-        }
-      },
       "BridgingIT.DevKit.Application.Utilities": {
         "type": "Project",
         "dependencies": {
@@ -1631,7 +1614,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
-          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
@@ -1693,16 +1675,6 @@
         "dependencies": {
           "Mapster": "7.4.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0"
-        }
-      },
-      "MediatR": {
-        "type": "CentralTransitive",
-        "requested": "[12.5.0, 12.5.0]",
-        "resolved": "12.5.0",
-        "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
-        "dependencies": {
-          "MediatR.Contracts": "[2.0.1, 3.0.0)",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
         }
       },
       "MediatR.Contracts": {

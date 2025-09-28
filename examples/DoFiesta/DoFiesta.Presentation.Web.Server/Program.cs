@@ -3,6 +3,8 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.Queries;
 using BridgingIT.DevKit.Application.Utilities;
@@ -17,8 +19,6 @@ using BridgingIT.DevKit.Presentation.Web;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 // ===============================================================================================
 // Create the webhost
@@ -40,7 +40,8 @@ builder.Services.AddHttpContextAccessor();
 
 // ===============================================================================================
 // Configure the services
-builder.Services.AddMediatR();
+builder.Services.AddRequester()
+    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
 builder.Services.AddMapping().WithMapster();
 
 builder.Services.AddCommands()
@@ -64,7 +65,7 @@ builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopme
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
     .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-                                                                                                                                     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+    //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 //builder.Services.AddJobScheduling(o => o

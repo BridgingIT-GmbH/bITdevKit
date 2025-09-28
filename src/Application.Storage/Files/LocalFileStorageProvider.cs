@@ -156,7 +156,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<Stream>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -254,7 +254,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (IOException ex)
@@ -322,7 +322,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -385,7 +385,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<string>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -452,7 +452,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result<FileMetadata>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -523,7 +523,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -597,7 +597,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -653,7 +653,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list files in '{path}' due to permissions"));
         }
         catch (Exception ex)
@@ -726,7 +726,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
@@ -811,7 +811,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
@@ -894,7 +894,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for directory at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
@@ -979,7 +979,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (IOException ex)
@@ -1075,7 +1075,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (IOException ex)
@@ -1127,7 +1127,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (IOException ex)
@@ -1182,7 +1182,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<IEnumerable<string>>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list directories in '{path}' due to permissions"));
         }
         catch (Exception ex)
@@ -1237,7 +1237,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", this.RootPath, ex))
+                .WithError(new FileSystemPermissionError("Access denied", this.RootPath, ex))
                 .WithMessage($"Permission denied for local storage at '{this.LocationName}'");
         }
         catch (Exception ex)

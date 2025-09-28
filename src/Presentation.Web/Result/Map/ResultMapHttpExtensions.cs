@@ -130,15 +130,15 @@ public static class ResultMapHttpExtensions
     /// Example response for other errors: HTTP 400 Problem with details.
     /// </example>
     public static Results<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem> Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue>(
-    Result<TValue> result,
-    Func<TValue, TSuccess> successFunc,
-    ILogger logger = null)
-    where TSuccess : IResult
-    where TNotFound : IResult
-    where TUnauthorized : IResult
-    where TBadRequest : IResult
-    where TProblem : IResult
-    where TValue : class
+        Result<TValue> result,
+        Func<TValue, TSuccess> successFunc,
+        ILogger logger = null)
+        where TSuccess : IResult
+        where TNotFound : IResult
+        where TUnauthorized : IResult
+        where TBadRequest : IResult
+        where TProblem : IResult
+        where TValue : class
     {
         ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
 
@@ -230,14 +230,14 @@ public static class ResultMapHttpExtensions
     /// Example response for other errors: HTTP 400 Problem with details.
     /// </example>
     public static Results<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem> Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem>(
-    Result result,
-    Func<TSuccess> successFunc,
-    ILogger logger = null)
-    where TSuccess : IResult
-    where TNotFound : IResult
-    where TUnauthorized : IResult
-    where TBadRequest : IResult
-    where TProblem : IResult
+        Result result,
+        Func<TSuccess> successFunc,
+        ILogger logger = null)
+        where TSuccess : IResult
+        where TNotFound : IResult
+        where TUnauthorized : IResult
+        where TBadRequest : IResult
+        where TProblem : IResult
     {
         ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
 
@@ -268,6 +268,100 @@ public static class ResultMapHttpExtensions
             { IsSuccess: true } => successFunc(),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<TNotFound>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<OperationCancelledError>() => MapOperationCancelledError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<TimeoutError>() => MapTimeoutError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ExceptionError>() => MapExceptionError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<RuleError>() => MapRuleError<TProblem>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<RuleExceptionError>() => MapRuleExceptionError<TProblem>(logger, result),
+            _ => MapError<TProblem>(logger, result)
+        };
+    }
+
+    /// <summary>
+    /// Maps a non-generic <see cref="Result"/> struct to HTTP results for operations,
+    /// handling success, unauthorized, not found, bad request, validation, conflict, rule violations, and other error cases in a flexible manner.
+    /// </summary>
+    /// <typeparam name="TSuccess">The type of the successful HTTP result (e.g., <see cref="Ok{T}"/>, <see cref="NoContent"/>, <see cref="Created{T}"/>).</typeparam>
+    /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result (e.g., <see cref="UnauthorizedHttpResult"/>).</typeparam>
+    /// <typeparam name="TBadRequest">The type of the bad request HTTP result (e.g., <see cref="BadRequest"/>).</typeparam>
+    /// <typeparam name="TProblem">The type of the problem HTTP result (e.g., <see cref="ProblemHttpResult"/>).</typeparam>
+    /// <param name="result">The <see cref="Result"/> struct containing the operation outcome.</param>
+    /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds. Must return <typeparamref name="TSuccess"/>.</param>
+    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> or <paramref name="successFunc"/> is null.</exception>
+    /// <example>
+    /// Usage for a generic result (e.g., GET operation):
+    /// <code>
+    /// var response = await mediator.Send(new AssetFindOneQuery(id), cancellationToken);
+    /// return MapResult{Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}(
+    ///     response.Result,
+    ///     logger,
+    ///     cancellationToken);
+    /// </code>
+    /// Usage for a non-generic result (e.g., DELETE operation):
+    /// <code>
+    /// var response = await mediator.Send(new AssetDeleteCommand(id), cancellationToken);
+    /// return MapResult{NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}(
+    ///     response.Result,
+    ///     _ => TypedResults.NoContent(),
+    ///     logger,
+    ///     cancellationToken);
+    /// </code>
+    /// Usage for a create operation:
+    /// <code>
+    /// var response = await mediator.Send(new AssetCreateCommand(asset), cancellationToken);
+    /// return MapResult{Created{Asset}, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}(
+    ///     response.Result,
+    ///     value => TypedResults.Created($"/api/core/assets/{value.Id}", value),
+    ///     logger,
+    ///     cancellationToken);
+    /// </code>
+    /// Example response for success: HTTP 200 OK, 204 No Content, or 201 Created (depending on <typeparamref name="TSuccess"/>).
+    /// Example response for unauthorized: HTTP 401 Unauthorized.
+    /// Example response for not found: HTTP 404 Not Found.
+    /// Example response for bad request: HTTP 400 Bad Request.
+    /// Example response for other errors: HTTP 400 Problem with details.
+    /// </example>
+    public static Results<TSuccess, TUnauthorized, TBadRequest, TProblem> Map<TSuccess, TUnauthorized, TBadRequest, TProblem>(
+        Result result,
+        Func<TSuccess> successFunc,
+        ILogger logger = null)
+        where TSuccess : IResult
+        where TUnauthorized : IResult
+        where TBadRequest : IResult
+        where TProblem : IResult
+    {
+        ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
+
+        // Check for custom handlers first
+        if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
+        {
+            switch (customResult)
+            {
+                case TSuccess successResult:
+                    return successResult;
+                case TUnauthorized unauthorizedResult:
+                    return unauthorizedResult;
+                case TBadRequest badRequestResult:
+                    return badRequestResult;
+                case TProblem problemResult:
+                    return problemResult;
+                default:
+                    // Fallback to MapError<TProblem> for unrecognized custom results
+                    logger?.LogInformation("Custom error handler returned an unrecognized type '{CustomResultType}'. Mapping to TProblem.", customResult.GetType().Name);
+                    return MapError<TProblem>(logger, result);
+            }
+        }
+
+        return result switch
+        {
+            { IsSuccess: true } => successFunc(),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),

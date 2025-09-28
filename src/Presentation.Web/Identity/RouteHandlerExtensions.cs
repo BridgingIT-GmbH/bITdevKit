@@ -31,7 +31,8 @@ public static class AuthorizationExtensions
     /// </code>
     /// </example>
     public static RouteHandlerBuilder RequireEntityPermission<TEntity>(
-        this RouteHandlerBuilder builder, string permission)
+        this RouteHandlerBuilder builder,
+        string permission)
         where TEntity : class, IEntity
     {
         return builder.RequireAuthorization(new AuthorizeAttribute

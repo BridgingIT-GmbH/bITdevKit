@@ -107,7 +107,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
 
     private bool IsRetryableError(IEnumerable<IResultError> errors)
     {
-        return errors.Any(e => e is FileSystemError || e is PermissionError || e is ExceptionError);
+        return errors.Any(e => e is FileSystemError || e is FileSystemPermissionError || e is ExceptionError);
     }
 
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)

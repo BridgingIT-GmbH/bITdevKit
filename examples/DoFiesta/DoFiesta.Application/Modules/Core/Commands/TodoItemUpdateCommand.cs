@@ -2,32 +2,17 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
+using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using DevKit.Application.Commands;
 using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
 
-//
-// COMMAND ===============================
-//
-
-public class TodoItemUpdateCommand : CommandRequestBase<Result<TodoItemModel>>,
-    ICacheInvalidateCommand
+public class TodoItemUpdateCommand : RequestBase<TodoItemModel>
 {
-    public TodoItemModel Model { get; set; } 
-
-    CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
-
-    public override ValidationResult Validate()
-    {
-        return new Validator().Validate(this);
-    }
+    public TodoItemModel Model { get; set; }
 
     public class Validator : AbstractValidator<TodoItemUpdateCommand>
     {
@@ -40,27 +25,28 @@ public class TodoItemUpdateCommand : CommandRequestBase<Result<TodoItemModel>>,
     }
 }
 
-//
-// HANDLER ===============================
-//
-
+[HandlerRetry(2, 100)]
+[HandlerTimeout(500)]
 public class TodoItemUpdateCommandHandler(
-    ILoggerFactory loggerFactory,
     IMapper mapper,
-    IGenericRepository<TodoItem> repository) : CommandHandlerBase<TodoItemUpdateCommand, Result<TodoItemModel>>(loggerFactory)
+    IGenericRepository<TodoItem> repository,
+    ICurrentUserAccessor currentUserAccessor,
+    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemUpdateCommand, TodoItemModel>
 {
-    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(
-        TodoItemUpdateCommand command,
+    private readonly IMapper mapper = mapper;
+    private readonly IGenericRepository<TodoItem> repository = repository;
+
+    protected override async Task<Result<TodoItemModel>> HandleAsync(
+        TodoItemUpdateCommand request,
+        SendOptions options,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"+++ update item: {command.Model.Title}");
-
-        var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
-        var result = await repository.UpdateResultAsync(entity, cancellationToken)
+        return await Result<TodoItem>.Success(this.mapper.Map<TodoItemModel, TodoItem>(request.Model))
+            .EnsureAsync(async (e, ct) =>
+                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Write, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
+            .BindAsync(async (e, ct) =>
+                await this.repository.UpdateResultAsync(e, ct), cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Map(mapper.Map<TodoItem, TodoItemModel>);
-
-        return CommandResult.For(result);
-        // TODO: invalidate query cache
+            .Map(this.mapper.Map<TodoItem, TodoItemModel>);
     }
 }

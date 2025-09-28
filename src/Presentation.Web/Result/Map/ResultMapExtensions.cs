@@ -29,6 +29,13 @@ public static class ResultMapExtensions
         return ResultMapHttpExtensions.MapNoContent(result, logger);
     }
 
+    public static Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpNoContent<T>(
+        this Result<T> result,
+        ILogger logger = null)
+    {
+        return ResultMapHttpExtensions.MapNoContent(result, logger);
+    }
+
     /// <summary>
     /// Maps a generic <see cref="Result{T}"/> to HTTP results for operations returning data.
     /// </summary>
@@ -213,6 +220,31 @@ public static class ResultMapExtensions
     /// Maps a generic <see cref="Result{T}"/> to HTTP results for operations.
     /// </summary>
     /// <typeparam name="TSuccess">The type of the successful HTTP result.</typeparam>
+    /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result.</typeparam>
+    /// <typeparam name="TBadRequest">The type of the bad request HTTP result.</typeparam>
+    /// <typeparam name="TProblem">The type of the problem HTTP result.</typeparam>
+    /// <typeparam name="TValue">The type of the result value.</typeparam>
+    /// <param name="result">The <see cref="Result{T}"/> to map.</param>
+    /// <param name="successFunc">A function to generate the success HTTP result when the operation succeeds.</param>
+    /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
+    /// <returns>A <see cref="Results{TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem}"/> representing the HTTP response.</returns>
+    public static Results<TSuccess, TUnauthorized, TBadRequest, TProblem> MapHttp<TSuccess, TUnauthorized, TBadRequest, TProblem, TValue>(
+        this Result<TValue> result,
+        Func<TSuccess> successFunc,
+        ILogger logger = null)
+        where TSuccess : IResult
+        where TUnauthorized : IResult
+        where TBadRequest : IResult
+        where TProblem : IResult
+        where TValue : class
+    {
+        return ResultMapHttpExtensions.Map<TSuccess, TUnauthorized, TBadRequest, TProblem>(result, successFunc, logger);
+    }
+
+    /// <summary>
+    /// Maps a generic <see cref="Result{T}"/> to HTTP results for operations.
+    /// </summary>
+    /// <typeparam name="TSuccess">The type of the successful HTTP result.</typeparam>
     /// <typeparam name="TNotFound">The type of the not found HTTP result.</typeparam>
     /// <typeparam name="TUnauthorized">The type of the unauthorized HTTP result.</typeparam>
     /// <typeparam name="TBadRequest">The type of the bad request HTTP result.</typeparam>
@@ -233,8 +265,7 @@ public static class ResultMapExtensions
         where TProblem : IResult
         where TValue : class
     {
-        return ResultMapHttpExtensions.Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue>(
-            result, successFunc, logger);
+        return ResultMapHttpExtensions.Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue>(result, successFunc, logger);
     }
 
     /// <summary>
@@ -259,8 +290,7 @@ public static class ResultMapExtensions
         where TBadRequest : IResult
         where TProblem : IResult
     {
-        return ResultMapHttpExtensions.Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem>(
-            result, successFunc, logger);
+        return ResultMapHttpExtensions.Map<TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem>(result, successFunc, logger);
     }
 }
 

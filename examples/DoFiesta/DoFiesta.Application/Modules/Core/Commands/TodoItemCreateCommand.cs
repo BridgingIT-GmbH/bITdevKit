@@ -2,32 +2,17 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
+using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using DevKit.Application.Commands;
 using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
 
-//
-// COMMAND ===============================
-//
-
-public class TodoItemCreateCommand : CommandRequestBase<Result<TodoItemModel>>,
-    ICacheInvalidateCommand
+public class TodoItemCreateCommand : RequestBase<TodoItemModel>
 {
     public TodoItemModel Model { get; set; }
-
-    CacheInvalidateCommandOptions ICacheInvalidateCommand.Options => new() { Key = "application_" };
-
-    public override ValidationResult Validate()
-    {
-        return new Validator().Validate(this);
-    }
 
     public class Validator : AbstractValidator<TodoItemCreateCommand>
     {
@@ -40,39 +25,59 @@ public class TodoItemCreateCommand : CommandRequestBase<Result<TodoItemModel>>,
     }
 }
 
-//
-// HANDLER ===============================
-//
-
+[HandlerRetry(2, 100)]
+[HandlerTimeout(500)]
 public class TodoItemCreateCommandHandler(
-    ILoggerFactory loggerFactory,
     IMapper mapper,
     IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor) : CommandHandlerBase<TodoItemCreateCommand, Result<TodoItemModel>>(loggerFactory)
+    IEntityPermissionProvider permissionProvider,
+    ICurrentUserAccessor currentUserAccessor) : RequestHandlerBase<TodoItemCreateCommand, TodoItemModel>
 {
-    public override async Task<CommandResponse<Result<TodoItemModel>>> Process(TodoItemCreateCommand command, CancellationToken cancellationToken)
-    {
-        // map the model to the entity
-        var entity = mapper.Map<TodoItemModel, TodoItem>(command.Model);
-        entity.UserId = currentUserAccessor.UserId;
+    private readonly IMapper mapper = mapper;
+    private readonly IGenericRepository<TodoItem> repository = repository;
+    private readonly IEntityPermissionProvider permissionProvider = permissionProvider;
+    private readonly ICurrentUserAccessor currentUserAccessor = currentUserAccessor;
 
-        // use some rules to validate the entity
+    protected override async Task<Result<TodoItemModel>> HandleAsync(
+        TodoItemCreateCommand request,
+        SendOptions options,
+        CancellationToken cancellationToken)
+    {
+        // Map the model to the entity
+        var entity = this.mapper.Map<TodoItemModel, TodoItem>(request.Model);
+        entity.UserId = this.currentUserAccessor.UserId;
+
+        // Use rules to validate the entity
         var ruleResult = await Rule
             .Add(RuleSet.IsNotEmpty(entity.Title))
             .Add(RuleSet.NotEqual(entity.Title, "todo"))
-            .Add(new TitleShouldBeUniqueRule(entity.Title, repository)) // custom rule
+            .Add(new TitleShouldBeUniqueRule(entity.Title, this.repository))
             .CheckAsync(cancellationToken);
+
         Console.WriteLine("RESULT: " + ruleResult.ToString());
         if (ruleResult.IsFailure)
         {
-            return CommandResult.For<TodoItemModel>(ruleResult);
+            return Result<TodoItemModel>.Failure()
+                .WithErrors(ruleResult.Errors)
+                .WithMessages(ruleResult.Messages);
         }
 
-        // insert the entity into the repository
-        var result = await repository.InsertResultAsync(entity, cancellationToken)
+        // Insert the entity into the repository
+        var result = await this.repository.InsertResultAsync(entity, cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Map(mapper.Map<TodoItem, TodoItemModel>);
+            .Map(e => this.mapper.Map<TodoItem, TodoItemModel>(e));
 
-        return CommandResult.For(result);
+        // Set permissions for the user and the new entity
+        if (result.IsSuccess)
+        {
+            new EntityPermissionProviderBuilder(this.permissionProvider)
+                .ForUser(entity.UserId)
+                    .WithPermission<TodoItem>(entity.Id, Permission.Read)
+                    .WithPermission<TodoItem>(entity.Id, Permission.Write)
+                    .WithPermission<TodoItem>(entity.Id, Permission.Delete)
+                .Build();
+        }
+
+        return result;
     }
 }

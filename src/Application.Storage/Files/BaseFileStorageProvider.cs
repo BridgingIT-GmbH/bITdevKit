@@ -38,7 +38,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -65,7 +65,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<Stream>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -92,7 +92,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -119,7 +119,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -146,7 +146,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<string>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -173,7 +173,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -200,7 +200,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -244,7 +244,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'"));
         }
         catch (Exception ex)
@@ -266,7 +266,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list files in '{path}'"));
         }
         catch (Exception ex)
@@ -293,7 +293,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
@@ -320,7 +320,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
@@ -347,7 +347,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for directory at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
@@ -374,7 +374,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'"));
         }
         catch (Exception ex)
@@ -589,7 +589,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (Exception ex)
@@ -616,7 +616,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (Exception ex)
@@ -643,7 +643,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'"));
         }
         catch (Exception ex)
@@ -665,7 +665,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result<IEnumerable<string>>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list directories in '{path}'"));
         }
         catch (Exception ex)
@@ -692,7 +692,7 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         catch (UnauthorizedAccessException ex)
         {
             return Task.FromResult(Result.Failure()
-                .WithError(new PermissionError("Access denied", this.LocationName, ex))
+                .WithError(new FileSystemPermissionError("Access denied", this.LocationName, ex))
                 .WithMessage($"Permission denied for storage at '{this.LocationName}'"));
         }
         catch (Exception ex)

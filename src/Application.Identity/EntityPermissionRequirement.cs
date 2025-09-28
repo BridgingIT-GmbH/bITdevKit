@@ -15,15 +15,22 @@ using Microsoft.AspNetCore.Authorization;
 /// <remarks>
 /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
 /// </remarks>
-/// <param name="permission">The permission value that is required for authorization.</param>
 [DebuggerDisplay("Permissions={Permissions}")]
 public class EntityPermissionRequirement : IAuthorizationRequirement
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
+    /// </summary>
+    /// <param name="permission">The permission value that is required for authorization.</param>
     public EntityPermissionRequirement(string permission)
     {
         this.Permissions = [permission];
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
+    /// </summary>
+    /// <param name="permissions">The permission value that is required for authorization.</param>
     public EntityPermissionRequirement(string[] permissions)
     {
         this.Permissions = permissions;

@@ -117,7 +117,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -171,7 +171,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result<Stream>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -243,7 +243,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -294,7 +294,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -353,7 +353,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result<string>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -423,7 +423,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result<FileMetadata>.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -493,7 +493,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}'");
             }
             catch (Exception ex)
@@ -570,7 +570,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -631,7 +631,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list files in '{path}' due to permissions");
         }
         catch (Exception ex)
@@ -687,7 +687,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (Exception ex)
@@ -751,7 +751,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", oldPath, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", oldPath, ex))
                     .WithMessage($"Permission denied for file at '{oldPath}' or '{newPath}'");
             }
             catch (Exception ex)
@@ -815,7 +815,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
             catch (UnauthorizedAccessException ex)
             {
                 return Result.Failure()
-                    .WithError(new PermissionError("Access denied", path, ex))
+                    .WithError(new FileSystemPermissionError("Access denied", path, ex))
                     .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
             }
             catch (Exception ex)
@@ -869,7 +869,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -912,7 +912,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -972,7 +972,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -1035,7 +1035,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result<IEnumerable<string>>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list directories in '{path}' due to permissions");
         }
         catch (Exception ex)
@@ -1084,7 +1084,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         catch (UnauthorizedAccessException ex)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", this.containerName, ex))
+                .WithError(new FileSystemPermissionError("Access denied", this.containerName, ex))
                 .WithMessage($"Permission denied for Azure Blob Storage at '{this.LocationName}'");
         }
         catch (Exception ex)

@@ -119,7 +119,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -172,7 +172,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<Stream>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -246,7 +246,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -296,7 +296,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -346,7 +346,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<string>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -408,7 +408,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -469,7 +469,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -540,7 +540,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<FileMetadata>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}'");
         }
         catch (Exception ex)
@@ -629,7 +629,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list files in '{path}' due to permissions");
         }
         catch (Exception ex)
@@ -703,7 +703,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
         }
         catch (Exception ex)
@@ -778,7 +778,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
         }
         catch (Exception ex)
@@ -853,7 +853,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for file at '{path}' or '{destinationPath}'");
         }
         catch (Exception ex)
@@ -899,7 +899,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -939,7 +939,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -997,7 +997,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Permission denied for path '{path}'");
         }
         catch (Exception ex)
@@ -1068,7 +1068,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result<IEnumerable<string>>.Failure()
-                .WithError(new PermissionError("Access denied", path, ex))
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
                 .WithMessage($"Failed to list directories in '{path}' due to permissions");
         }
         catch (Exception ex)
@@ -1117,7 +1117,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         catch (RequestFailedException ex) when (ex.Status == 403)
         {
             return Result.Failure()
-                .WithError(new PermissionError("Access denied", this.shareName, ex))
+                .WithError(new FileSystemPermissionError("Access denied", this.shareName, ex))
                 .WithMessage($"Permission denied for Azure Files storage at '{this.LocationName}'");
         }
         catch (Exception ex)

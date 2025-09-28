@@ -236,18 +236,18 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
             services.AddScoped(typeof(IAuthorizationHandler), handlerType2);
 
             // Register the evaluator
-            var checkerInterface = typeof(IEntityPermissionEvaluator<>)
+            var evaluatorInterface = typeof(IEntityPermissionEvaluator<>)
                 .MakeGenericType(entityConfig.EntityType);
 
             if (options.EvaluatorConfigurations.TryGetValue(entityConfig.EntityType, out var evaluatorType))
             {
-                services.AddScoped(checkerInterface, evaluatorType);
+                services.AddScoped(evaluatorInterface, evaluatorType);
             }
             else
             {
                 var defaultEvaluatorType = typeof(EntityPermissionEvaluator<>)
                     .MakeGenericType(entityConfig.EntityType);
-                services.AddScoped(checkerInterface, defaultEvaluatorType);
+                services.AddScoped(evaluatorInterface, defaultEvaluatorType);
             }
         }
 

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 #pragma warning restore SA1200 // Using directives should be placed correctly
 

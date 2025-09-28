@@ -7,12 +7,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 public class CoreEnumerationEndpoints : EndpointsBase
 {
@@ -27,10 +23,9 @@ public class CoreEnumerationEndpoints : EndpointsBase
             .WithTags("Core.Enumerations");
 
         // GET all Enumerations
-        group.MapGet("/{id:guid}", EnumerationsFindAll)
+        group.MapGet("", EnumerationsFindAll)
             .WithName("Core.Enumerations.GetAll")
-            .WithFilterSchema()
-            .Produces<TodoItem>(StatusCodes.Status200OK)
+            .Produces<EnumerationModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -39,8 +34,6 @@ public class CoreEnumerationEndpoints : EndpointsBase
 
     private static Results<Ok<EnumerationModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> EnumerationsFindAll(
         HttpContext context,
-        [FromServices] IMediator mediator,
-        [FromRoute] string id,
         CancellationToken cancellationToken = default)
     {
         return Result<EnumerationModel>.Success(

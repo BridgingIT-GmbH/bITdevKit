@@ -2,36 +2,18 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
+using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using DevKit.Application.Queries;
 using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
-//
-// QUERY ===============================
-//
-
-public class TodoItemFindOneQuery(string id) : QueryRequestBase<Result<TodoItemModel>>, ICacheQuery
+public class TodoItemFindOneQuery(string id) : RequestBase<TodoItemModel>
 {
     public string Id { get; } = id;
-
-    CacheQueryOptions ICacheQuery.Options =>
-        new()
-        {
-            Key = $"application_{nameof(TodoItemFindOneQuery)}_{this.Id}".TrimEnd('_'),
-            SlidingExpiration = new TimeSpan(0, 0, 30)
-        };
-
-    public override ValidationResult Validate()
-    {
-        return new Validator().Validate(this);
-    }
 
     public class Validator : AbstractValidator<TodoItemFindOneQuery>
     {
@@ -42,31 +24,23 @@ public class TodoItemFindOneQuery(string id) : QueryRequestBase<Result<TodoItemM
     }
 }
 
-//
-// HANDLER ===============================
-//
-
+[HandlerRetry(2, 100)]
+[HandlerTimeout(500)]
 public class TodoItemFindOneQueryHandler(
-    ILoggerFactory loggerFactory,
     IMapper mapper,
     IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor)
-    : QueryHandlerBase<TodoItemFindOneQuery, Result<TodoItemModel>>(loggerFactory)
+    ICurrentUserAccessor currentUserAccessor,
+    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemFindOneQuery, TodoItemModel>
 {
-    public override async Task<QueryResponse<Result<TodoItemModel>>> Process(
-        TodoItemFindOneQuery query,
+    protected override async Task<Result<TodoItemModel>> HandleAsync(
+        TodoItemFindOneQuery request,
+        SendOptions options,
         CancellationToken cancellationToken)
     {
-        var result = await repository.FindOneResultAsync(TodoItemId.Create(query.Id), cancellationToken: cancellationToken)
-            .Ensure(e => e != null, new EntityNotFoundError())
-            .Ensure(e => e.UserId == currentUserAccessor.UserId, new UnauthorizedError())
+        return await repository.FindOneResultAsync(TodoItemId.Create(request.Id), cancellationToken: cancellationToken)
+            .EnsureAsync(async (e, ct) =>
+                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Read, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
-
-        return QueryResult.For(result);
-
-        //return result.HasError()
-        //    ? QueryResult.For<TodoItemModel>(result)
-        //    : QueryResult.For(mapper.Map<TodoItem, TodoItemModel>(result.Value));
     }
 }

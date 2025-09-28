@@ -77,7 +77,7 @@ public class CoreDomainSeederTask(
                 entity.AuditState.SetCreated("seed", nameof(CoreDomainSeederTask));
                 await repository.InsertAsync(entity, cancellationToken);
 
-                // Seed User permissions for TodoItem
+                // Seed User permissions for this TodoItem
                 new EntityPermissionProviderBuilder(entityPermissionProvider)
                     .ForUser(entity.UserId)
                         .WithPermission<TodoItem>(entity.Id, Permission.Read)

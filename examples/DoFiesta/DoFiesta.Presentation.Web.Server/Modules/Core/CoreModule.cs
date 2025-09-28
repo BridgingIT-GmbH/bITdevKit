@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.Controllers;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using Common;
@@ -122,6 +123,10 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>();
+
+        // endpoints
+        services.AddEndpoints<CoreTodoItemEndpoints>();
+        services.AddEndpoints<CoreEnumerationEndpoints>();
 
         return services;
     }

@@ -165,7 +165,7 @@
     {
         try
         {
-            var response = await ApiClient.Enumeration_GetAsync();
+            var response = await ApiClient.Core_Enumerations_GetAllAsync();
             enums = response.Result;
         }
         catch (ApiException ex)
@@ -185,14 +185,14 @@
                 .AddFilter(p => p.Status, Common.FilterOperator.Equal, filterStatusId.Value)
                 .Build(); *@
 
-            var filter = new Client.FilterModel() { Filters = new List<Client.FilterCriteria>(), Orderings = new List<Client.FilterOrderCriteria>() };
+            var filter = new Client.Body2() { Filters = new List<Client.Filters>(), Orderings = new List<Client.Orderings>() };
             if (filterStatusId.HasValue)
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new Client.Filters
                         {
                             Field = "Status",
-                            Operator = Client.FilterOperator.Equal,
+                            Operator = Client.FiltersOperator.Equal,
                             Value = filterStatusId.Value
                         });
             }
@@ -200,10 +200,10 @@
             if (filterPriorityId.HasValue)
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new Client.Filters
                         {
                             Field = "Priority",
-                            Operator = Client.FilterOperator.GreaterThanOrEqual,
+                            Operator = Client.FiltersOperator.Greaterthanorequal,
                             Value = filterPriorityId.Value
                         });
             }
@@ -211,21 +211,21 @@
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new Client.Filters
                         {
                             Field = "Title",
-                            Operator = Client.FilterOperator.Contains,
+                        Operator = Client.FiltersOperator.Contains,
                             Value = filterTitle
                         });
             }
 
             // set ordering
-            filter.Orderings.Add(new Client.FilterOrderCriteria
+            filter.Orderings.Add(new Client.Orderings
                 {
                     Field = "DueDate",
                     Direction = currentSortDirection == SortDirection.Ascending
-                                    ? Client.OrderDirection.Ascending
-                                    : Client.OrderDirection.Descending
+                                    ? Client.OrderingsDirection.Ascending
+                                    : Client.OrderingsDirection.Descending
                 });
 
             // filter.Filters.Add(
@@ -236,8 +236,8 @@
             //         });
 
             //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
-            var response = await ApiClient.TodoItem_PostSearchAsync(filter);
-            items = response.Result.ToList();
+            var response = await ApiClient.Core_TodoItems_SearchAsync(filter);
+            items = response.Result;
         }
         catch (ApiException ex)
         {
@@ -294,7 +294,7 @@
         try
         {
 
-            var response = await ApiClient.TodoItem_PostAsync(newItem);
+            var response = await ApiClient.Core_TodoItems_CreateAsync(newItem);
 
             Snackbar.Add("Added successfully", Severity.Success);
             await LoadItems();
@@ -321,7 +321,7 @@
 
         try
         {
-            await ApiClient.TodoItem_PutAsync(item.Id, item);
+            await ApiClient.Core_TodoItems_UpdateAsync(item.Id, item);
 
             Snackbar.Add("Updated successfully", Severity.Success);
             await LoadItems();
@@ -343,7 +343,7 @@
 
         try
         {
-            await ApiClient.TodoItem_CompleteAllAsync();
+            await ApiClient.Core_TodoItems_CompleteAllAsync();
 
             Snackbar.Add("Completed successfully", Severity.Success);
             await LoadItems();
@@ -366,7 +366,7 @@
 
         try
         {
-            await ApiClient.TodoItem_DeleteByNameAsync(item.Id);
+            await ApiClient.Core_TodoItems_DeleteAsync(item.Id);
 
             Snackbar.Add("Deleted successfully", Severity.Success);
             await LoadItems();

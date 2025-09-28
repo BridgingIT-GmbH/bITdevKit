@@ -813,6 +813,21 @@ public class ResultValueTests
             .Ensure(persons => persons.All(p => p.Age >= 18), // ----------------------Ensure proper age
                 new Error("All persons must be adults")
             )
+            .EnsureAsync(async (persons, ct) => // -----------------------Ensure emails are not from banned domains
+                {
+                    await Task.Delay(10, ct); // Simulate async work
+                    var bannedDomains = new[] { "baddomain.com", "spamdomain.com" };
+                    foreach (var person in persons)
+                    {
+                        var domain = person.Email.Value.Split('@').Last();
+                        if (bannedDomains.Contains(domain))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+                new Error("One or more persons have emails from banned domains"))
             .Tap(list => logger.LogInformation($"Processing {list.Count} persons")) // Tap to log the count
             .Filter( // ---------------------------------------------------------------Ensure all have valid locations
                 persons => persons.All(p => p.Locations.Any()),

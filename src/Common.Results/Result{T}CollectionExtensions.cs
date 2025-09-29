@@ -1255,7 +1255,6 @@ public static class ResultTCollectionExtensions // TODO: needs to be refactored 
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<T>>> TraverseAsync<T>(
-        // No changes needed in this file for the current task
         this Task<Result<IEnumerable<T>>> resultTask,
         Func<T, CancellationToken, Task<Result<T>>> operation,
         ProcessingOptions options = null,

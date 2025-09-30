@@ -37,13 +37,14 @@ public class NotifierBuilder
     private readonly IServiceCollection services;
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
-    private readonly IHandlerCache handlerCache = new HandlerCache();
-    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = [];
+    private readonly IHandlerCache handlerCache = HandlerCacheFactory.Create();
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = HandlerCacheFactory.CreatePolicyCache();
 
     public NotifierBuilder(IServiceCollection services)
     {
         this.services = services ?? throw new ArgumentNullException(nameof(services));
 
+        // Register the core services needed for Notifier to function
         this.services.TryAddSingleton(this.handlerCache);
         this.services.TryAddSingleton(this.policyCache);
         this.services.AddSingleton<INotificationHandlerProvider, NotificationHandlerProvider>();
@@ -73,8 +74,7 @@ public class NotifierBuilder
                 }
 
                 var handlerInterfaces = type.GetInterfaces()
-                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
-                    .ToList();
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)).ToList();
 
                 if (handlerInterfaces.Count != 0)
                 {

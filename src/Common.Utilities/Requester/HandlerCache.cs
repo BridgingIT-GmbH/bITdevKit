@@ -52,3 +52,31 @@ public class HandlerCache : IHandlerCache
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
+
+/// <summary>
+/// Static factory for creating and managing a shared <see cref="IHandlerCache"/> instance.
+/// Ensures a single instance is used across Requester and Notifier systems.
+/// </summary>
+public static class HandlerCacheFactory
+{
+    private static readonly Lazy<IHandlerCache> handlerCache = new(() => new HandlerCache());
+    private static readonly Lazy<ConcurrentDictionary<Type, PolicyConfig>> policyCache = new(() => []);
+
+    /// <summary>
+    /// Creates (or returns the existing) shared handler cache instance.
+    /// </summary>
+    /// <returns>The shared <see cref="IHandlerCache"/> instance.</returns>
+    public static IHandlerCache Create()
+    {
+        return handlerCache.Value;
+    }
+
+    /// <summary>
+    /// Creates (or returns the existing) shared policy cache instance.
+    /// </summary>
+    /// <returns>The shared <see cref="ConcurrentDictionary{Type, PolicyConfig}"/> instance.</returns>
+    public static ConcurrentDictionary<Type, PolicyConfig> CreatePolicyCache()
+    {
+        return policyCache.Value;
+    }
+}

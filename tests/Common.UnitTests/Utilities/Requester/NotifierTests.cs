@@ -29,11 +29,11 @@ public class NotifierTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddNotifier()
+        services.AddRequester()
             .AddHandlers()
             .WithBehavior(typeof(TestBehavior<,>))
             .WithBehavior(typeof(AnotherTestBehavior<,>));
-        services.AddRequester()
+        services.AddNotifier()
             .AddHandlers()
             .WithBehavior(typeof(TestBehavior<,>))
             .WithBehavior(typeof(AnotherTestBehavior<,>));

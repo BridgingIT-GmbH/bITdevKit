@@ -5,10 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
-using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http.HttpResults;

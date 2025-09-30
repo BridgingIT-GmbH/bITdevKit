@@ -8,6 +8,7 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
 using FluentValidation;
 
 public class TodoItemCreateCommand : RequestBase<TodoItemModel>
@@ -42,6 +43,7 @@ public class TodoItemCreateCommandHandler(
                 .Add(RuleSet.NotEqual(e.Title, "todo"))
                 .Add(new TitleShouldBeUniqueRule(e.Title, repository))
                 .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
+            .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
             .BindAsync(async (e, ct) =>
                 await repository.InsertResultAsync(e, cancellationToken), cancellationToken: cancellationToken)
             .Tap(e =>

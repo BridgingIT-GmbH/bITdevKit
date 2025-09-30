@@ -39,8 +39,8 @@ public class RequesterBuilder
     private readonly IServiceCollection services;
     private readonly List<Type> pipelineBehaviorTypes = [];
     private readonly List<Type> validatorTypes = [];
-    private readonly IHandlerCache handlerCache = new HandlerCache();
-    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = [];
+    private readonly IHandlerCache handlerCache = HandlerCacheFactory.Create();
+    private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = HandlerCacheFactory.CreatePolicyCache();
 
     public RequesterBuilder(IServiceCollection services)
     {

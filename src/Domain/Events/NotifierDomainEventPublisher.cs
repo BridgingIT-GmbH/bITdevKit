@@ -16,19 +16,19 @@ public partial class NotifierDomainEventPublisher : IDomainEventPublisher
 {
     private readonly ILogger<NotifierDomainEventPublisher> logger;
 
-    private readonly INotifier mediator;
+    private readonly INotifier notifier;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="NotifierDomainEventPublisher" /> class.
     ///     Publishes domain events using the mediator pattern, also logging the events in the process.
     /// </summary>
-    public NotifierDomainEventPublisher(ILoggerFactory loggerFactory, INotifier mediator)
+    public NotifierDomainEventPublisher(ILoggerFactory loggerFactory, INotifier notifier)
     {
-        EnsureArg.IsNotNull(mediator, nameof(mediator));
+        EnsureArg.IsNotNull(notifier, nameof(notifier));
 
         this.logger = loggerFactory?.CreateLogger<NotifierDomainEventPublisher>() ??
             NullLoggerFactory.Instance.CreateLogger<NotifierDomainEventPublisher>();
-        this.mediator = mediator;
+        this.notifier = notifier;
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class NotifierDomainEventPublisher : IDomainEventPublisher
         {
             TypedLogger.LogSend(this.logger, Constants.LogKey, @event.EventId.ToString("N"), @event.GetType().Name);
 
-            await this.mediator.PublishAsync(@event, new PublishOptions(), cancellationToken).AnyContext();
+            await this.notifier.PublishDynamicAsync(@event, new PublishOptions(), cancellationToken).AnyContext();
         }
 
         return Result.Success();

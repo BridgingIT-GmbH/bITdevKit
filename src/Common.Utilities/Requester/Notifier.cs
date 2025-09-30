@@ -304,6 +304,7 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
         try
         {
+            var a = serviceProvider.GetServices<INotificationHandler<TNotification>>();
             return [.. serviceProvider.GetServices<INotificationHandler<TNotification>>()];
         }
         catch (InvalidOperationException)
@@ -549,6 +550,12 @@ public partial class Notifier(
             var handlers = this.handlerProvider.GetHandlers<TNotification>(this.serviceProvider);
             var behaviors = this.behaviorsProvider.GetBehaviors<TNotification>(this.serviceProvider);
 
+            if (!handlers.SafeAny())
+            {
+                this.logger.LogWarning("{LogKey} no handlers found for notification type {NotificationType} (notificationId={NotificationId})", RequestLogKey, notificationTypeName, notificationIdString);
+                return Result.Success(); // no handlers found
+            }
+
             var notificationLevelBehaviors = behaviors.Where(b => !b.IsHandlerSpecific()).ToArray();
             var handlerSpecificBehaviors = behaviors.Where(b => b.IsHandlerSpecific()).ToArray();
 
@@ -573,9 +580,8 @@ public partial class Notifier(
                             var currentNext = handlerNext;
                             handlerNext = async () =>
                             {
-                                var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
                                 //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
-                                return result;
+                                return await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
                             };
                         }
 
@@ -685,7 +691,7 @@ public partial class Notifier(
             }
             catch (Exception ex) when (options.HandleExceptionsAsResultError)
             {
-                TypedLogger.LogError(this.logger, ex, notificationTypeName, notificationIdString);
+                TypedLogger.LogError(this.logger, RequestLogKey, ex, notificationTypeName, notificationIdString);
                 return Result.Failure().WithError(new ExceptionError(ex));
             }
         }
@@ -743,14 +749,14 @@ public partial class Notifier(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={NotificationType}, id={NotificationId})")]
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing notification (type={NotificationType}, id={NotificationId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string notificationType, string notificationId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed notification (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
-        [LoggerMessage(2, LogLevel.Error, "Notification processing failed for {NotificationType} ({NotificationId})")]
-        public static partial void LogError(ILogger logger, Exception ex, string notificationType, string notificationId);
+        [LoggerMessage(2, LogLevel.Error, "{LogKey} processing notification failed for {NotificationType} ({NotificationId})")]
+        public static partial void LogError(ILogger logger, string logKey, Exception ex, string notificationType, string notificationId);
     }
 }
 

@@ -8,6 +8,7 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
 using FluentValidation;
 
 public class TodoItemDeleteCommand(string id) : RequestBase<Unit>

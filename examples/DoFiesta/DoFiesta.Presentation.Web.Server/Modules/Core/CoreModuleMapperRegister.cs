@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Mapster;
 
-public class CatalogMapperRegister : IRegister
+public class CoreModuleMapperRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

@@ -75,6 +75,7 @@ public class NotifierBuilder
 
                 var handlerInterfaces = type.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)).ToList();
+                // BUG: domain event handlers are not found because deeper level interfaces are not considered
 
                 if (handlerInterfaces.Count != 0)
                 {

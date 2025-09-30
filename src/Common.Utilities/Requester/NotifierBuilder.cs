@@ -2,36 +2,32 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace BridgingIT.DevKit.Common;
-
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Linq;
 
 /// <summary>
 /// Configures and builds the Notifier service for dependency injection registration.
 /// </summary>
 /// <remarks>
 /// This class provides a fluent API for registering handlers, behaviors, and providers for the Notifier system.
-/// It scans assemblies for handlers and validators, caches handler types, and registers services with the DI container.
+/// It scans assemblies for handlers and validators, caches handler types in a shared <see cref="IHandlerCache"/>,
+/// and registers services with the DI container. Uses <see cref="HandlerCacheFactory"/> to ensure a single shared cache.
 /// </remarks>
 /// <example>
 /// <code>
 /// var services = new ServiceCollection();
 /// services.AddNotifier()
 ///     .AddHandlers(new[] { "^System\\..*" })
-///     .WithBehavior<ValidationBehavior<,>>();
+///     .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;();
 /// var provider = services.BuildServiceProvider();
 /// </code>
 /// </example>
-/// <remarks>
-/// Initializes a new instance of the <see cref="NotifierBuilder"/> class.
-/// </remarks>
-/// <param name="services">The service collection for dependency injection registration.</param>
 public class NotifierBuilder
 {
     private readonly IServiceCollection services;
@@ -40,10 +36,14 @@ public class NotifierBuilder
     private readonly IHandlerCache handlerCache = HandlerCacheFactory.Create();
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = HandlerCacheFactory.CreatePolicyCache();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotifierBuilder"/> class.
+    /// </summary>
+    /// <param name="services">The service collection for dependency injection registration.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null.</exception>
     public NotifierBuilder(IServiceCollection services)
     {
         this.services = services ?? throw new ArgumentNullException(nameof(services));
-
         // Register the core services needed for Notifier to function
         this.services.TryAddSingleton(this.handlerCache);
         this.services.TryAddSingleton(this.policyCache);
@@ -58,12 +58,28 @@ public class NotifierBuilder
             this.pipelineBehaviorTypes));
     }
 
+    /// <summary>
+    /// Scans assemblies to register notification handlers, validators, and providers, excluding those matching blacklist patterns.
+    /// Populates the shared <see cref="IHandlerCache"/> with handler mappings and registers handlers in the DI container.
+    /// </summary>
+    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies (e.g., "^System\\..*"). Defaults to <see cref="Blacklists.ApplicationDependencies"/>.</param>
+    /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
+    /// <remarks>
+    /// Discovers types implementing <see cref="INotificationHandler{TNotification}"/> where <c>TNotification</c> implements
+    /// <see cref="INotification"/> directly or indirectly (e.g., via <see cref="IDomainEvent"/>). Also registers nested validators
+    /// if they implement <see cref="IValidator{T}"/> for the notification type.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// services.AddNotifier()
+    ///     .AddHandlers(new[] { "^System\\..*" });
+    /// </code>
+    /// </example>
     public NotifierBuilder AddHandlers(IEnumerable<string> blacklistPatterns = null)
     {
         blacklistPatterns ??= Blacklists.ApplicationDependencies;
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
-
         foreach (var assembly in assemblies)
         {
             foreach (var type in this.SafeGetTypes(assembly))
@@ -75,7 +91,6 @@ public class NotifierBuilder
 
                 var handlerInterfaces = type.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)).ToList();
-                // BUG: domain event handlers are not found because deeper level interfaces are not considered
 
                 if (handlerInterfaces.Count != 0)
                 {
@@ -115,6 +130,22 @@ public class NotifierBuilder
         return this;
     }
 
+    /// <summary>
+    /// Registers a specific notification handler for a given notification type.
+    /// </summary>
+    /// <typeparam name="TNotification">The notification type, which must implement <see cref="INotification"/>.</typeparam>
+    /// <typeparam name="THandler">The handler type, which must implement <see cref="INotificationHandler{TNotification}"/>.</typeparam>
+    /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
+    /// <remarks>
+    /// Adds the handler to the DI container and the shared <see cref="IHandlerCache"/>. Also registers any nested
+    /// <c>Validator</c> class implementing <see cref="IValidator{T}"/> for the notification type.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// services.AddNotifier()
+    ///     .AddHandler&lt;PersonCreatedEvent, PersonCreatedHandler&gt;();
+    /// </code>
+    /// </example>
     public NotifierBuilder AddHandler<TNotification, THandler>()
         where TNotification : INotification
         where THandler : class, INotificationHandler<TNotification>
@@ -123,7 +154,6 @@ public class NotifierBuilder
         var handlerType = typeof(THandler);
 
         this.services.AddScoped(handlerInterface, handlerType);
-
         if (!handlerType.IsGenericTypeDefinition)
         {
             this.handlerCache.TryAdd(handlerInterface, handlerType);
@@ -152,18 +182,35 @@ public class NotifierBuilder
         return this;
     }
 
+    /// <summary>
+    /// Registers generic notification handlers for a specified generic notification type using provided type arguments.
+    /// </summary>
+    /// <param name="genericHandlerType">The open generic handler type (e.g., <c>typeof(GenericNotificationHandler&lt;&gt;)</c>).</param>
+    /// <param name="genericNotificationType">The open generic notification type (e.g., <c>typeof(GenericNotification&lt;&gt;)</c>).</param>
+    /// <param name="typeArguments">The list of type arguments to create closed generic handlers (e.g., <c>new[] { typeof(UserData) }</c>).</param>
+    /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="genericHandlerType"/> or <paramref name="genericNotificationType"/> is not an open generic type definition, or if the number of type arguments does not match the generic parameters.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="genericHandlerType"/>, <paramref name="genericNotificationType"/>, or <paramref name="typeArguments"/> is null or empty.</exception>
+    /// <remarks>
+    /// Registers closed generic handlers in the DI container and the shared <see cref="IHandlerCache"/>. Also registers
+    /// nested validators for the closed notification types if they implement <see cref="IValidator{T}"/>.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// services.AddNotifier()
+    ///     .AddGenericHandler(typeof(GenericNotificationHandler&lt;&gt;), typeof(GenericNotification&lt;&gt;), new[] { typeof(UserData) });
+    /// </code>
+    /// </example>
     public NotifierBuilder AddGenericHandler(Type genericHandlerType, Type genericNotificationType, Type[] typeArguments)
     {
         if (genericHandlerType?.IsGenericTypeDefinition != true)
         {
             throw new ArgumentException("Generic handler type must be an open generic type definition.", nameof(genericHandlerType));
         }
-
         if (genericNotificationType?.IsGenericTypeDefinition != true)
         {
             throw new ArgumentException("Generic notification type must be an open generic type definition.", nameof(genericNotificationType));
         }
-
         if (typeArguments?.Any() != true)
         {
             throw new ArgumentException("At least one type argument must be provided.", nameof(typeArguments));
@@ -186,7 +233,6 @@ public class NotifierBuilder
 
             this.services.AddScoped(closedHandlerInterface, closedHandlerType);
             this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
-
             this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
             {
                 Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
@@ -206,6 +252,7 @@ public class NotifierBuilder
                         this.validatorTypes.Add(validatorType);
                     }
                 }
+
                 this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedNotificationType), validatorType);
             }
         }
@@ -213,13 +260,30 @@ public class NotifierBuilder
         return this;
     }
 
+    /// <summary>
+    /// Automatically discovers and registers generic notification handlers by scanning assemblies for open generic handlers
+    /// and their corresponding notification types, based on generic constraints.
+    /// </summary>
+    /// <param name="blacklistPatterns">Optional regex patterns to exclude assemblies (e.g., "^System\\..*"). Defaults to <see cref="Blacklists.ApplicationDependencies"/>.</param>
+    /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when a generic handler has an invalid number of generic parameters or no valid type arguments are found.</exception>
+    /// <remarks>
+    /// Discovers types implementing <see cref="INotificationHandler{TNotification}"/> where <c>TNotification</c> is a generic
+    /// type definition. Registers closed handlers for concrete types satisfying the generic constraints, along with nested validators.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// services.AddNotifier()
+    ///     .AddGenericHandlers(new[] { "^System\\..*" });
+    /// </code>
+    /// </example>
     public NotifierBuilder AddGenericHandlers(IEnumerable<string> blacklistPatterns = null)
     {
         blacklistPatterns ??= Blacklists.ApplicationDependencies;
         var assemblies = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.GetName().Name.MatchAny(blacklistPatterns)).ToList();
-
         var genericHandlers = new ConcurrentBag<(Type HandlerType, Type NotificationTypeDefinition)>();
+
         Parallel.ForEach(assemblies, assembly =>
         {
             var types = this.SafeGetTypes(assembly);
@@ -229,17 +293,13 @@ public class NotifierBuilder
                 {
                     continue;
                 }
-
                 var handlerInterfaces = type.GetInterfaces()
-                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
-                    .ToList();
-
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)).ToList();
                 if (handlerInterfaces.Count != 0)
                 {
                     foreach (var handlerInterface in handlerInterfaces)
                     {
                         var notificationType = handlerInterface.GetGenericArguments()[0];
-
                         if (type.IsGenericTypeDefinition)
                         {
                             var notificationTypeDefinition = notificationType.GetGenericTypeDefinition();
@@ -262,8 +322,8 @@ public class NotifierBuilder
             var constraints = typeParameter.GetGenericParameterConstraints();
             var isClassConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.ReferenceTypeConstraint) != 0;
             var hasDefaultConstructorConstraint = (typeParameter.GenericParameterAttributes & GenericParameterAttributes.DefaultConstructorConstraint) != 0;
-
             var typeArguments = new ConcurrentBag<Type>();
+
             Parallel.ForEach(assemblies, assembly =>
             {
                 var types = this.SafeGetTypes(assembly);
@@ -280,7 +340,6 @@ public class NotifierBuilder
                     }
 
                     var satisfiesConstraints = true;
-
                     if (hasDefaultConstructorConstraint && !candidateType.GetConstructors().Any(c => c.GetParameters().Length == 0))
                     {
                         satisfiesConstraints = false;
@@ -318,7 +377,6 @@ public class NotifierBuilder
 
                 this.services.AddScoped(closedHandlerInterface, closedHandlerType);
                 this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
-
                 this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
                 {
                     Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
@@ -338,6 +396,7 @@ public class NotifierBuilder
                             this.validatorTypes.Add(validatorType);
                         }
                     }
+
                     this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedNotificationType), validatorType);
                 }
             }
@@ -349,10 +408,19 @@ public class NotifierBuilder
     /// <summary>
     /// Adds a pipeline behavior to the notification processing pipeline.
     /// </summary>
-    /// <param name="behaviorType">The open generic type of the behavior (e.g., typeof(TestBehavior<,>)).</param>
-    /// <returns>The <see cref="NotifierBuilder"/> for fluent chaining.</returns>
+    /// <param name="behaviorType">The open generic type of the behavior (e.g., <c>typeof(TestBehavior&lt;,&gt;)</c>).</param>
+    /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="behaviorType"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="behaviorType"/> is not an open generic type.</exception>
+    /// <remarks>
+    /// Behaviors are executed in the order they are added and can handle cross-cutting concerns like validation or logging.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// services.AddNotifier()
+    ///     .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;();
+    /// </code>
+    /// </example>
     public NotifierBuilder WithBehavior(Type behaviorType)
     {
         if (behaviorType == null)
@@ -367,9 +435,18 @@ public class NotifierBuilder
 
         this.services.AddScoped(typeof(IPipelineBehavior<,>), behaviorType);
         this.pipelineBehaviorTypes.Add(behaviorType);
+
         return this;
     }
 
+    /// <summary>
+    /// Safely retrieves types from an assembly, handling reflection exceptions.
+    /// </summary>
+    /// <param name="assembly">The assembly to scan for types.</param>
+    /// <returns>An enumerable of types in the assembly, excluding null types from reflection errors.</returns>
+    /// <remarks>
+    /// Catches <see cref="ReflectionTypeLoadException"/> and returns non-null types to ensure robust assembly scanning.
+    /// </remarks>
     private IEnumerable<Type> SafeGetTypes(Assembly assembly)
     {
         try

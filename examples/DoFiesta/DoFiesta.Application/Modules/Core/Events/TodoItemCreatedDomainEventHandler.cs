@@ -35,8 +35,8 @@ public class TodoItemCreatedDomainEventHandler(ILoggerFactory loggerFactory)
     /// </summary>
     public override Task Process(TodoItemCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        // TODO: implement event reaction logic (audit, notify, etc.)
-        this.Logger.LogInformation("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        // implement event reaction logic (audit, notify, etc.)
+        this.Logger.LogInformation("DoFiesta - TodoItemCreatedDomainEvent handled in Application");
 
         return Task.CompletedTask;
     }

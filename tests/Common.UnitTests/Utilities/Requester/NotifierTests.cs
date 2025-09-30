@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;

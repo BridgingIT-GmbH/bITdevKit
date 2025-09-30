@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 /// Initializes a new instance of the handler with logging support.
 /// </remarks>
 /// <param name="loggerFactory">Factory used for creating loggers.</param>
-public class TodoItemUpdatedDomainEventHandler2(ILoggerFactory loggerFactory)
+public class TodoItemUpdatedDomainEventHandler(ILoggerFactory loggerFactory)
         : DomainEventHandlerBase<TodoItemUpdatedDomainEvent>(loggerFactory)
 {
     /// <summary>
@@ -35,8 +35,8 @@ public class TodoItemUpdatedDomainEventHandler2(ILoggerFactory loggerFactory)
     /// </summary>
     public override Task Process(TodoItemUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        // TODO: implement event reaction logic (audit, notify, etc.)
-        this.Logger.LogInformation("*******************************************");
+        // implement event reaction logic (audit, notify, etc.)
+        this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Domain");
 
         return Task.CompletedTask;
     }

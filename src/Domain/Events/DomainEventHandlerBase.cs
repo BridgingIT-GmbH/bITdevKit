@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 ///     should derive from this class and provide logic for handling events of type <typeparamref name="TEvent" />.
 /// </summary>
 /// <typeparam name="TEvent">The type of the domain event.</typeparam>
-public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandler<TEvent>
+public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandler<TEvent>, INotificationHandler<TEvent>
     where TEvent : class, IDomainEvent
 {
     /// <summary>
@@ -86,6 +87,13 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
                 throw;
             }
         }
+    }
+
+    public virtual async Task<Result> HandleAsync(TEvent notification, PublishOptions options, CancellationToken cancellationToken) // notifier handler interface
+    {
+        await this.Process(notification, cancellationToken);
+
+        return Result.Success();
     }
 
     /// <summary>

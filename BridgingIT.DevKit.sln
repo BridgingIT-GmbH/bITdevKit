@@ -71,11 +71,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4
 		docs\features-modules.md = docs\features-modules.md
 		docs\features-presentation-appstate.md = docs\features-presentation-appstate.md
 		docs\features-requester-notifier.md = docs\features-requester-notifier.md
+		docs\features-presentation-endpoints.md = docs\features-presentation-endpoints.md
 		docs\features-results.md = docs\features-results.md
 		docs\features-rules.md = docs\features-rules.md
 		docs\features-startuptasks.md = docs\features-startuptasks.md
 		docs\features-utilities.md = docs\features-utilities.md
-		docs\presentation-endpoints.md = docs\presentation-endpoints.md
 		README.md = README.md
 	EndProjectSection
 EndProject

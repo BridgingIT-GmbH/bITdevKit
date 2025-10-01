@@ -1,4 +1,4 @@
-# Domain Models Feature Documentation
+# Domain Feature Documentation
 
 [TOC]
 

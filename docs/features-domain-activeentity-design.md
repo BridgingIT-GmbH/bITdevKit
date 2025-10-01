@@ -1,4 +1,4 @@
-IEntityIdGenerator# Active Record Pattern Implementation Design Document
+# Active Record Pattern Implementation Design Document
 
 ## Overview
 

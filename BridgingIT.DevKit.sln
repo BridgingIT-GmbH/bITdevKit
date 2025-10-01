@@ -75,7 +75,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4
 		docs\features-rules.md = docs\features-rules.md
 		docs\features-startuptasks.md = docs\features-startuptasks.md
 		docs\features-utilities.md = docs\features-utilities.md
-		presentation-endpoints.md = presentation-endpoints.md
+		docs\presentation-endpoints.md = docs\presentation-endpoints.md
 		README.md = README.md
 	EndProjectSection
 EndProject

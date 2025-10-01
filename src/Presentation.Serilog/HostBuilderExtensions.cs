@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.Hosting;
 
+using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -12,18 +13,12 @@ using Serilog.Debugging;
 
 public static class HostBuilderExtensions
 {
-    //[Obsolete("Use the new builder.Host.ConfigureLogging(), without the configuration argument")]
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         IConfiguration configuration = null,
         string[] exclusionPatterns = null,
         bool selfLogEnabled = false)
     {
-        //    return builder.ConfigureLogging();
-        //}
-
-        //public static IHostBuilder ConfigureLogging(this IHostBuilder builder)
-        //{
         EnsureArg.IsNotNull(builder, nameof(builder));
 
         if (selfLogEnabled)
@@ -31,17 +26,14 @@ public static class HostBuilderExtensions
             SelfLog.Enable(Console.Error);
         }
 
-        if (Log.Logger.GetType().Name == "SilentLogger") // only setup serilog if not done already
+        if (Log.Logger.GetType().Name == "SilentLogger" && !EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // only setup serilog if not done already
         {
             builder.ConfigureLogging((ctx, c) =>
             {
                 var loggerConfiguration = new LoggerConfiguration();
-                loggerConfiguration.Filter.ByExcluding(
-                    "RequestPath like '/health%'"); // exclude health checks from logs
-                loggerConfiguration.Filter.ByExcluding(
-                    "RequestPath like '/api/events/raw'"); // exclude otel push from logs
-                loggerConfiguration.Filter.ByExcluding(
-                    "StartsWith(@Message, 'Execution attempt. Source')"); // exclude health/otel from logs
+                loggerConfiguration.Filter.ByExcluding("RequestPath like '/health%'"); // exclude health checks from logs
+                loggerConfiguration.Filter.ByExcluding("RequestPath like '/api/events/raw'"); // exclude otel push from logs
+                loggerConfiguration.Filter.ByExcluding("StartsWith(@Message, 'Execution attempt. Source')"); // exclude health/otel from logs
 
                 if (exclusionPatterns != null)
                 {

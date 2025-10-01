@@ -5,12 +5,13 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Collections.Specialized;
+using System.Reflection;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Configuration;
 using Extensions;
 using Quartz.Impl;
-using System.Collections.Specialized;
 
 public static class ServiceCollectionExtensions
 {
@@ -37,10 +38,7 @@ public static class ServiceCollectionExtensions
     {
         contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
 
-        return services.AddJobScheduling(contextOptions,
-            null,
-            configuration,
-            properties);
+        return services.AddJobScheduling(contextOptions, null, configuration, properties);
     }
 
     /// <summary>
@@ -68,11 +66,7 @@ public static class ServiceCollectionExtensions
     {
         contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
 
-        return services.AddJobScheduling(
-            contextOptions,
-            configure,
-            configuration,
-            properties);
+        return services.AddJobScheduling(contextOptions, configure, configuration, properties);
     }
 
     /// <summary>
@@ -135,7 +129,7 @@ public static class ServiceCollectionExtensions
             sp.GetRequiredService<ISchedulerFactory>(),
             sp.GetRequiredService<IJobStoreProvider>()));
 
-        if(contextOptions != null)
+        if (contextOptions != null)
         {
             services.TryAddSingleton(contextOptions);
         }
@@ -147,7 +141,11 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddSingleton<JobRunHistoryListener>(); // scheduler.ListenerManager.AddJobListener called in JobSchedulingService
-        services.AddHostedService<JobSchedulingService>();
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            services.AddHostedService<JobSchedulingService>();
+        }
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);
     }
@@ -360,5 +358,10 @@ public static class ServiceCollectionExtensions
         }
 
         return context;
+    }
+
+    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
+    {
+        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

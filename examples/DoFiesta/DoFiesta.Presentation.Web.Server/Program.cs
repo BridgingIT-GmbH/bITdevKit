@@ -13,7 +13,9 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
@@ -48,7 +50,10 @@ builder.Services.AddMapping().WithMapster();
 // Register the purge queue as a singleton
 builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
 builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
-builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
+if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
+{
+    builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
+}
 builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
 
 // logging services and endpoints
@@ -105,6 +110,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+builder.Services.AddOpenApi();
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
@@ -112,7 +118,7 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
-//builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
+builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddSwagger(builder.Configuration);
 
 // ===============================================================================================

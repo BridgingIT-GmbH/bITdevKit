@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
@@ -725,12 +726,16 @@ public class PersonStubCreatedDomainEvent(PersonStub person) : DomainEventBase
     public PersonStub PersonStub { get; } = person;
 }
 
-public class CustomerCreatedHandler : NotificationHandlerBase<PersonStubCreatedDomainEvent>
+public class CustomerCreatedHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<PersonStubCreatedDomainEvent>(loggerFactory)
 {
-    protected override async Task<Result> HandleAsync(PersonStubCreatedDomainEvent notification, PublishOptions options, CancellationToken cancellationToken)
+    public override bool CanHandle(PersonStubCreatedDomainEvent notification)
+    {
+        return true;
+    }
+
+    public override async Task Process(PersonStubCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         await Task.Delay(100, cancellationToken); // Delay longer than the timeout
         //logger.LogInformation($"PersonStub Created ================ {notification.PersonStub.LastName}");
-        return Result.Success();
     }
 }

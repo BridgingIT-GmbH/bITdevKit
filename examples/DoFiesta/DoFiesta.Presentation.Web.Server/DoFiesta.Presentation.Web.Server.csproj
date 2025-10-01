@@ -13,12 +13,23 @@
         <InternalsVisibleTo Include="BridgingIT.DevKit.Examples.DoFiesta.UnitTests" />
     </ItemGroup>
 
+    <!-- OpenAPI build-time generation configuration -->
+    <PropertyGroup>
+        <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+        <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
+    </PropertyGroup>
+    <!-- Generate OpenAPI document after build -->
+    <Target Name="GenerateOpenApiAfterBuild" AfterTargets="Build" DependsOnTargets="GenerateOpenApiDocuments" />
+
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" />
         <PackageReference Include="OpenTelemetry.Exporter.Console" />
         <PackageReference Include="OpenTelemetry.Exporter.Jaeger" />
         <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />

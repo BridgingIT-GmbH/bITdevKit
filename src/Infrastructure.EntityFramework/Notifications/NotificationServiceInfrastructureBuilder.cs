@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Reflection;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Infrastructure.Notifications;
 using Microsoft.EntityFrameworkCore;
@@ -30,10 +31,20 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
             new OutboxNotificationEmailQueue(
                 sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxNotificationEmailWorker>().ProcessAsync(id)));
-        this.Services.AddHostedService<OutboxNotificationEmailService>();
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            this.Services.AddHostedService<OutboxNotificationEmailService>();
+        }
+
         this.Options.IsOutboxConfigured = true;
 
         return this;
+    }
+
+    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
+    {
+        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }
 
@@ -59,9 +70,19 @@ public static class NotificationServiceBuilderExtensions
             new OutboxNotificationEmailQueue(
                 sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxNotificationEmailWorker>().ProcessAsync(id)));
-        serviceBuilder.Services.AddHostedService<OutboxNotificationEmailService>();
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            serviceBuilder.Services.AddHostedService<OutboxNotificationEmailService>();
+        }
+
         serviceBuilder.Options.IsOutboxConfigured = true;
 
         return serviceBuilder;
+    }
+
+    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
+    {
+        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

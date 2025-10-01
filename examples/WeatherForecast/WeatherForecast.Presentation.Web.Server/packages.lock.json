@@ -1779,6 +1779,7 @@
       "BridgingIT.DevKit.Presentation.Serilog": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Presentation": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[9.0.9, )",
           "Serilog": "[4.3.0, )",

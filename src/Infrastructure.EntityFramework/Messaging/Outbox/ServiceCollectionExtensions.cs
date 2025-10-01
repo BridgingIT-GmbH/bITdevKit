@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Reflection;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.Hosting;
@@ -51,7 +52,11 @@ public static partial class ServiceCollectionExtensions
         services.AddSingleton<IOutboxMessageQueue>(sp => // needed by RepositoryOutboxDomainEventBehavior (optional)
             new OutboxMessageQueue(sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxMessageWorker>().ProcessAsync(id)));
-        services.AddHostedService<OutboxMessageService>();
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            services.AddHostedService<OutboxMessageService>();
+        }
 
         return services;
     }
@@ -62,8 +67,7 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext, IOutboxMessageContext
         where TWorker : IOutboxMessageWorker
     {
-        return services.AddOutboxMessageService<TContext, TWorker>(optionsBuilder(new OutboxMessageOptionsBuilder())
-            .Build());
+        return services.AddOutboxMessageService<TContext, TWorker>(optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddOutboxMessageService<TContext, TWorker>(
@@ -73,12 +77,16 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxMessageWorker
     {
         services.AddSingleton(options ?? new OutboxMessageOptions());
-        services.AddHostedService(sp =>
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            services.AddHostedService(sp =>
             new OutboxMessageService(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<TWorker>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp.GetService<OutboxMessageOptions>()));
+        }
 
         return services;
     }

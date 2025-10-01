@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation;
 
 using System;
+using System.Reflection;
 using Microsoft.Extensions.Hosting;
 
 public static class EnvironmentExtensions
@@ -81,5 +82,10 @@ public static class EnvironmentExtensions
     public static bool IsContainerized(this IHostEnvironment env)
     {
         return env?.IsDocker() == true || env?.IsKubernetes() == true;
+    }
+
+    public static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
+    {
+        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

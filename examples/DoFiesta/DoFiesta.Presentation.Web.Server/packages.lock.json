@@ -45,6 +45,15 @@
         "resolved": "9.0.9",
         "contentHash": "q09vxOdWHTDrXSIqmuXL8D2kfXOOrlPaGwT6vdmditUo139fBaXNdEH8C6+Vr0FjC6ptdkhHOQmarqpkUz+pPQ=="
       },
+      "Microsoft.AspNetCore.OpenApi": {
+        "type": "Direct",
+        "requested": "[9.0.9, )",
+        "resolved": "9.0.9",
+        "contentHash": "3Sina0gS/CTYt9XG6DUFPdXOmJui7e551U0kO2bIiDk3vZ2sctxxenN+cE1a5CrUpjIVZfZr32neWYYRO+Piaw==",
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
+        }
+      },
       "Microsoft.EntityFrameworkCore.Design": {
         "type": "Direct",
         "requested": "[9.0.9, )",
@@ -65,6 +74,12 @@
           "Mono.TextTemplating": "3.0.0",
           "System.Text.Json": "9.0.9"
         }
+      },
+      "Microsoft.Extensions.ApiDescription.Server": {
+        "type": "Direct",
+        "requested": "[9.0.9, )",
+        "resolved": "9.0.9",
+        "contentHash": "e2ILNZ0omhAoMt0sAhDcNNediY3wxRInzE0FNAdSlKjy7nL2V2kQ5FkbVuYWaf1GwkfUsq+dxAHaox3Z/t352Q=="
       },
       "Microsoft.Net.Compilers.Toolset": {
         "type": "Direct",
@@ -694,11 +709,6 @@
         "type": "Transitive",
         "resolved": "9.0.9",
         "contentHash": "uiKeU/qR0YpaDUa4+g0rAjKCuwfq8YWZGcpPptnFWIr1K7dXQTm/15D2HDwwU4ln3Uf66krYybymuY58ua4hhw=="
-      },
-      "Microsoft.Extensions.ApiDescription.Server": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "1Kzzf7pRey40VaUkHN9/uWxrKVkLu2AQjt+GVeeKLLpiEHAJ1xZRsLSh4ZZYEnyS7Kt2OBOPmsXNdU+wbcOl5w=="
       },
       "Microsoft.Extensions.Azure": {
         "type": "Transitive",
@@ -1824,6 +1834,7 @@
       "BridgingIT.DevKit.Presentation.Serilog": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Presentation": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[9.0.9, )",
           "Serilog": "[4.3.0, )",
@@ -2083,15 +2094,6 @@
         "dependencies": {
           "Microsoft.AspNetCore.Components.Authorization": "9.0.9",
           "Microsoft.AspNetCore.Components.Web": "9.0.9"
-        }
-      },
-      "Microsoft.AspNetCore.OpenApi": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.9, )",
-        "resolved": "9.0.9",
-        "contentHash": "3Sina0gS/CTYt9XG6DUFPdXOmJui7e551U0kO2bIiDk3vZ2sctxxenN+cE1a5CrUpjIVZfZr32neWYYRO+Piaw==",
-        "dependencies": {
-          "Microsoft.OpenApi": "1.6.17"
         }
       },
       "Microsoft.AspNetCore.SignalR.Client": {

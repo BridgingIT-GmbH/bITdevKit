@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11012.119 d18.0
+VisualStudioVersion = 18.0.11012.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F9C93345-DA45-4BF5-89CB-31DF45B4A521}"
 	ProjectSection(SolutionItems) = preProject
@@ -55,12 +55,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.AutoMapper",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4AAB-482C-AF16-A3434D9716A8}"
 	ProjectSection(SolutionItems) = preProject
-		docs\features-commands.md = docs\features-commands.md
 		docs\features-documentstorage.md = docs\features-documentstorage.md
-		docs\features-domain-activeentity.md = docs\features-domain-activeentity.md
+		docs\features-application-commands-queries.md = docs\features-application-commands-queries.md
 		docs\features-domain-activeentity-design.md = docs\features-domain-activeentity-design.md
+		docs\features-domain-activeentity.md = docs\features-domain-activeentity.md
+		features-domain-events.md = features-domain-events.md
 		docs\features-domain-repositories.md = docs\features-domain-repositories.md
 		docs\features-entitypermissions.md = docs\features-entitypermissions.md
+		docs\features-domain.md = docs\features-domain.md
 		docs\features-filestorage.md = docs\features-filestorage.md
 		docs\features-filtering.md = docs\features-filtering.md
 		docs\features-identityprovider.md = docs\features-identityprovider.md
@@ -68,12 +70,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4
 		docs\features-messaging.md = docs\features-messaging.md
 		docs\features-modules.md = docs\features-modules.md
 		docs\features-presentation-appstate.md = docs\features-presentation-appstate.md
-		docs\features-queries.md = docs\features-queries.md
 		docs\features-requester-notifier.md = docs\features-requester-notifier.md
 		docs\features-results.md = docs\features-results.md
 		docs\features-rules.md = docs\features-rules.md
 		docs\features-startuptasks.md = docs\features-startuptasks.md
 		docs\features-utilities.md = docs\features-utilities.md
+		presentation-endpoints.md = presentation-endpoints.md
 		README.md = README.md
 	EndProjectSection
 EndProject

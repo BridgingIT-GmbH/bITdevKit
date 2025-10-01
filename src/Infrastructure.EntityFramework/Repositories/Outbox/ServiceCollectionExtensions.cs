@@ -30,7 +30,11 @@ public static partial class ServiceCollectionExtensions
         services.AddSingleton<IOutboxDomainEventQueue>(sp => // needed by OutboxMessagePublisherBehavior (optional)
             new OutboxDomainEventQueue(sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxDomainEventWorker>().ProcessAsync(id)));
-        services.AddHostedService<OutboxDomainEventService>();
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            services.AddHostedService<OutboxDomainEventService>();
+        }
 
         return services;
     }
@@ -52,12 +56,16 @@ public static partial class ServiceCollectionExtensions
         where TWorker : IOutboxDomainEventWorker
     {
         services.AddSingleton(options ?? new OutboxDomainEventOptions());
-        services.AddHostedService(sp =>
+
+        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        {
+            services.AddHostedService(sp =>
             new OutboxDomainEventService(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<TWorker>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp.GetService<OutboxDomainEventOptions>()));
+        }
 
         return services;
     }

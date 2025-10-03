@@ -122,3 +122,8 @@ For more details, see the `Common.Benchmarks` project in the `benchmarks/` folde
 
 Simply create a pull request with your ideas or contact us.
 Please refer to the [CONTRIBUTING](./CONTRIBUTION.md) guidelines for more information.
+
+--- 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

@@ -146,6 +146,46 @@ public static class FilterModelBuilder
         }
 
         /// <summary>
+        /// Sets the filter model to retrieve all items without paging.
+        /// </summary>
+        /// <param name="condition">If specified, applies the paging configuration only when the condition is <see langword="true"/>. </param>
+        /// <returns></returns>
+        public Builder<T> SetNoPaging(bool? condition = null)
+        {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
+            this.filterModel.Page = 0;
+            this.filterModel.PageSize = 0;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the query to disable entity tracking in the underlying context.
+        /// </summary>
+        /// <remarks>Disabling tracking can improve performance for read-only queries by preventing the
+        /// data context from monitoring changes to returned entities. Use this option when you do not intend to update
+        /// the queried entities.</remarks>
+        /// <param name="value">A value indicating whether entity tracking should be disabled. Defaults to <see langword="true"/>.</param>
+        /// <param name="condition">If specified, applies the no-tracking configuration only when the condition is <see langword="true"/>. </param>
+        /// <see langword="false"/>, the configuration is not changed.</param>
+        /// <returns>The current <see cref="Builder{T}"/> instance with the updated tracking configuration.</returns>
+        public Builder<T> SetNoTracking(bool value = true, bool? condition = null)
+        {
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
+            this.filterModel.NoTracking = value;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a filter criteria based on a specified property and value.
         /// </summary>
         /// <param name="propertySelector">An expression selecting the property to filter on.</param>

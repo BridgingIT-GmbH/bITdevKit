@@ -29,8 +29,8 @@ public static class FindOptionsBuilder
             Orders = OrderOptionBuilder.Build<TEntity>(filterModel.Orderings),
             Includes = IncludeOptionBuilder.Build<TEntity>(filterModel.Includes),
             Hierarchy = HierarchyOptionBuilder.Build<TEntity>(filterModel.Hierarchy, filterModel.HierarchyMaxDepth),
-            Skip = filterModel.PageSize * (filterModel.Page - 1),
-            Take = filterModel.PageSize,
+            Skip = filterModel.PageSize > 0 ? filterModel.PageSize * (filterModel.Page - 1) : null,
+            Take = filterModel.PageSize > 0 ? filterModel.PageSize : null,
             NoTracking = filterModel.NoTracking
         };
     }
@@ -46,6 +46,7 @@ public static class FindOptionsBuilder
     {
         var options = new FindOptions<TEntity>();
         configure?.Invoke(options);
+
         return options;
     }
 }

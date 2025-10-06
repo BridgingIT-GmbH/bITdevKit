@@ -149,6 +149,8 @@ public partial class EntityFrameworkGenericRepository<TEntity>
                 var originalVersion = concurrencyEntity.ConcurrencyVersion;
                 concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
 
+                this.Logger.LogDebug("{LogKey} update entity with optimistic concurrency (type={EntityType}, id={EntityId}, tracked={EntityTracked}, originalVersion={OriginalVersion}, newVersion={NewVersion})", Constants.LogKey, typeof(TEntity).Name, entity.Id, isTracked, originalVersion, concurrencyEntity.ConcurrencyVersion);
+
                 if (isTracked)
                 {
                     // For tracked entities, get the entry and set original version

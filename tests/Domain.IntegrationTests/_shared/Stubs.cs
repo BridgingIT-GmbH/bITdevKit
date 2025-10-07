@@ -6,9 +6,10 @@
 namespace BridgingIT.DevKit.Domain.IntegrationTests;
 
 using System.Linq.Expressions;
-using AutoMapper;
-using Model;
 using BridgingIT.DevKit.Domain;
+using Mapster;
+using MapsterMapper;
+using Model;
 
 public class StubPerson : Entity<int>
 {
@@ -86,83 +87,25 @@ public class StubHasIdSpecification : Specification<StubEntity> // TODO: this sh
     }
 }
 
-public static class StubEntityMapperConfiguration
+public static class StubEntityMapperFactory
 {
     public static IMapper Create()
     {
-        var mapper = new MapperConfiguration(c =>
-        {
-            c.CreateMap<StubEntity, StubDbEntity>()
-                .ForMember(d => d.Identifier, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.Nation, o => o.MapFrom(s => s.Country))
-                //.ForMember(d => d.FullName, o => o.ResolveUsing(new FullNameResolver()))
-                .ForMember(d => d.FullName, o => o.MapFrom(s => $"{s.FirstName} {s.LastName}"))
-                .ForMember(d => d.YearOfBirth, o => o.MapFrom(new YearOfBirthResolver()));
+        var config = new TypeAdapterConfig();
 
-            c.CreateMap<StubDbEntity, StubEntity>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
-                .ForMember(d => d.Country, o => o.MapFrom(s => s.Nation))
-                //.ForMember(d => d.FirstName, o => o.ResolveUsing(new FirstNameResolver()))
-                .ForMember(d => d.FirstName,
-                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
-                        .FirstOrDefault()))
-                //.ForMember(d => d.LastName, o => o.ResolveUsing(new LastNameResolver()))
-                .ForMember(d => d.LastName,
-                    o => o.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
-                        .LastOrDefault()))
-                .ForMember(d => d.Age, o => o.MapFrom(new AgeResolver()));
-        });
+        config.NewConfig<StubEntity, StubDbEntity>()
+            .Map(dest => dest.Identifier, src => src.Id)
+            .Map(dest => dest.Nation, src => src.Country)
+            .Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}")
+            .Map(dest => dest.YearOfBirth, src => DateTime.UtcNow.Year - src.Age);
 
-        mapper.AssertConfigurationIsValid();
+        config.NewConfig<StubDbEntity, StubEntity>()
+            .Map(dest => dest.Id, src => src.Identifier)
+            .Map(dest => dest.Country, src => src.Nation)
+            .Map(dest => dest.FirstName, src => src.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault())
+            .Map(dest => dest.LastName, src => src.FullName.Split(' ', StringSplitOptions.None).LastOrDefault())
+            .Map(dest => dest.Age, src => DateTime.UtcNow.Year - src.YearOfBirth);
 
-        return mapper.CreateMapper();
-    }
-
-    //private class FullNameResolver : IValueResolver<StubEntity, StubDto, string>
-    //{
-    //    public string Resolve(StubEntity source, StubDto destination, string destMember, ResolutionContext context)
-    //    {
-    //        return $"{source.FirstName} {source.LastName}";
-    //    }
-    //}
-
-    private class YearOfBirthResolver : IValueResolver<StubEntity, StubDbEntity, int>
-    {
-        public int Resolve(
-            StubEntity source,
-            StubDbEntity destination,
-            int destMember,
-            ResolutionContext context)
-        {
-            return DateTime.UtcNow.Year - source.Age;
-        }
-    }
-
-    //private class FirstNameResolver : IValueResolver<StubDto, StubEntity, string>
-    //{
-    //    public string Resolve(StubDto source, StubEntity destination, string destMember, ResolutionContext context)
-    //    {
-    //        return source.FullName.NullToEmpty().Split(' ').FirstOrDefault();
-    //    }
-    //}
-
-    //private class LastNameResolver : IValueResolver<StubDto, StubEntity, string>
-    //{
-    //    public string Resolve(StubDto source, StubEntity destination, string destMember, ResolutionContext context)
-    //    {
-    //        return source.FullName.NullToEmpty().Split(' ').LastOrDefault();
-    //    }
-    //}
-
-    private class AgeResolver : IValueResolver<StubDbEntity, StubEntity, int>
-    {
-        public int Resolve(
-            StubDbEntity source,
-            StubEntity destination,
-            int destMember,
-            ResolutionContext context)
-        {
-            return DateTime.UtcNow.Year - source.YearOfBirth;
-        }
+        return new Mapper(config);
     }
 }

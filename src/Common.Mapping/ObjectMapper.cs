@@ -30,6 +30,19 @@ public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : I
             this.action(source, target);
         }
     }
+
+    public Result MapResult(TSource source, TTarget target)
+    {
+        try
+        {
+            this.Map(source, target);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TTarget).FullName} failed: {ex.Message}"));
+        }
+    }
 }
 
 /// <summary>
@@ -90,6 +103,20 @@ public class ObjectMapper : IMapper
             $"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
     }
 
+    public Result<TTarget> MapResult<TSource, TTarget>(TSource source)
+        where TTarget : class
+    {
+        try
+        {
+            var target = this.Map<TSource, TTarget>(source);
+            return Result<TTarget>.Success(target);
+        }
+        catch (Exception ex)
+        {
+            return Result<TTarget>.Failure(new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TTarget).FullName} failed: {ex.Message}"));
+        }
+    }
+
     /// <summary>
     ///     Maps the specified source object into the destination object.
     /// </summary>
@@ -127,6 +154,22 @@ public class ObjectMapper : IMapper
 
         throw new InvalidOperationException(
             $"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
+    }
+
+    public Result<TTarget> MapResult<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class
+    {
+        try
+        {
+            var result = this.Map(source, target);
+            return Result<TTarget>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Result<TTarget>.Failure(
+
+                new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TTarget).FullName} failed: {ex.Message}"));
+        }
     }
 
     /// <summary>

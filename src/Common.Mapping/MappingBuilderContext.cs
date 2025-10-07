@@ -14,13 +14,6 @@ public class MappingBuilderContext(IServiceCollection services, IConfiguration c
     public IConfiguration Configuration { get; } = configuration;
 }
 
-public class AutoMapperBuilderContext(IServiceCollection services, IConfiguration configuration = null)
-{
-    public IServiceCollection Services { get; } = services;
-
-    public IConfiguration Configuration { get; } = configuration;
-}
-
 public class MapsterBuilderContext(IServiceCollection services, IConfiguration configuration = null)
 {
     public IServiceCollection Services { get; } = services;

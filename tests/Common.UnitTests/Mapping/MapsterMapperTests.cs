@@ -140,52 +140,6 @@ public class MapsterMapperTests
         result.FullName.ShouldBe($"{source.FirstName} {source.LastName}");
     }
 
-    //[Fact]
-    //public void CanMapExpression1_Test()
-    //{
-    //    // Arrange
-    //    var sourceDto1 = new PersonDtoStub { Age = 25, FullName = "John Doe" };
-    //    var sourceDto2 = new PersonDtoStub { Age = 5, FullName = "Mary Jane" };
-    //    var sourcesDto = new PersonDtoStub[] { sourceDto1, sourceDto2 }.AsQueryable();
-    //    var config = MapperConfig.Create();
-    //    var mapper = new MapsterMapper<PersonStub, PersonDtoStub>(config);
-    //    var autoMapper = new Mapper(config);
-    //    Expression<Func<PersonStub, bool>> expression = p => p.Age > 10;
-
-    //    // Act
-    //    var expressionDto = autoMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(expression);
-    //    var sources = sourcesDto.Where(expressionDto).ToList();
-
-    //    // Assert
-    //    sources.ShouldNotBeNull();
-    //    sources.Count.ShouldBe(1);
-    //    sources[0].Age.ShouldBe(25);
-    //    sources[0].FullName.ShouldBe("John Doe");
-    //}
-
-    //[Fact]
-    //public void CanMapExpression2_Test()
-    //{
-    //    // Arrange
-    //    var sourceDto1 = new PersonDtoStub { Age = 25, FullName = "John Doe" };
-    //    var sourceDto2 = new PersonDtoStub { Age = 5, FullName = "Mary Jane" };
-    //    var sourcesDto = new PersonDtoStub[] { sourceDto1, sourceDto2 }.AsQueryable();
-    //    var config = MapperConfig.Create();
-    //    var mapper = new MapsterMapper<PersonStub, PersonDtoStub>(config);
-    //    var autoMapper = new Mapper(config);
-    //    Expression<Func<PersonStub, bool>> expression = p => p.FirstName == "John";
-
-    //    // Act
-    //    var expressionDto = autoMapper.MapExpression<Expression<Func<PersonDtoStub, bool>>>(expression);
-    //    var sources = sourcesDto.Where(expressionDto).ToList();
-
-    //    // Assert
-    //    sources.ShouldNotBeNull();
-    //    sources.Count.ShouldBe(1);
-    //    sources[0].Age.ShouldBe(25);
-    //    sources[0].FullName.ShouldBe("John Doe");
-    //}
-
     public static class MapperConfig
     {
         public static TypeAdapterConfig Create()

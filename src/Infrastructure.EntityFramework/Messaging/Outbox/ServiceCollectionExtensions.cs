@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.Hosting;

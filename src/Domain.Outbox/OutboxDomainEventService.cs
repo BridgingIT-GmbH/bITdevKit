@@ -15,6 +15,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
     private readonly ILogger<OutboxDomainEventService> logger;
     private readonly IOutboxDomainEventWorker worker;
     private readonly IHostApplicationLifetime applicationLifetime;
+    private readonly IDatabaseReadyService databaseReadyService;
     private readonly OutboxDomainEventOptions options;
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
@@ -23,14 +24,15 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
         ILoggerFactory loggerFactory,
         IOutboxDomainEventWorker worker,
         IHostApplicationLifetime applicationLifetime,
+        IDatabaseReadyService databaseReadyService = null,
         OutboxDomainEventOptions options = null)
     {
         EnsureArg.IsNotNull(worker, nameof(worker));
 
-        this.logger = loggerFactory?.CreateLogger<OutboxDomainEventService>() ??
-            NullLoggerFactory.Instance.CreateLogger<OutboxDomainEventService>();
+        this.logger = loggerFactory?.CreateLogger<OutboxDomainEventService>() ?? NullLoggerFactory.Instance.CreateLogger<OutboxDomainEventService>();
         this.worker = worker;
         this.applicationLifetime = applicationLifetime;
+        this.databaseReadyService = databaseReadyService;
         this.options = options ?? new OutboxDomainEventOptions();
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
@@ -66,6 +68,11 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
                 {
                     await Task.Delay(this.options.StartupDelay, cancellationToken);
                 }
+            }
+
+            if (this.databaseReadyService != null)
+            {
+                await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken).AnyContext();
             }
 
             if (this.options.PurgeProcessedOnStartup)

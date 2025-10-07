@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Mediator;
 
 using DevKit.Domain.Model;
-using MediatR;
 
 [UnitTest("Domain")]
 public class DomainEventsTests

@@ -8,14 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Application.Commands.EventSourcing\Application.Commands.EventSourcing.csproj"/>
-    <ProjectReference Include="..\..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj"/>
-    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj"/>
-    <ProjectReference Include="..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj"/>
+    <ProjectReference Include="..\..\..\src\Application.Commands.EventSourcing\Application.Commands.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj" />
   </ItemGroup>
 
 </Project>

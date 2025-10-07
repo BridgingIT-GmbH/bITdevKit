@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient"/>
-    <PackageReference Include="NSwag.AspNetCore"/>
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="NSwag.AspNetCore" />
     <PackageReference Include="NSwag.MSBuild">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,15 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.Outbox.AutoMapper\Infrastructure.EntityFramework.Outbox.AutoMapper.csproj"/>
-    <ProjectReference Include="..\..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj"/>
-    <ProjectReference Include="..\..\..\src\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj"/>
-    <ProjectReference Include="..\..\..\src\Domain.EventSourcing.Outbox\Domain.EventSourcing.Outbox.csproj"/>
-    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj"/>
-    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj"/>
-    <ProjectReference Include="..\..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj"/>
-    <ProjectReference Include="..\EventSourcingDemo.Application\EventSourcingDemo.Application.csproj"/>
-    <ProjectReference Include="..\EventSourcingDemo.Infrastructure\EventSourcingDemo.Infrastructure.csproj"/>
+    <ProjectReference Include="..\..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+    <ProjectReference Include="..\..\..\src\Domain.EventSourcing.Outbox\Domain.EventSourcing.Outbox.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.Application\EventSourcingDemo.Application.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.Infrastructure\EventSourcingDemo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,24 +2,6 @@
   "version": 2,
   "dependencies": {
     "net9.0": {
-      "AutoMapper": {
-        "type": "Direct",
-        "requested": "[14.0.0, 14.0.0]",
-        "resolved": "14.0.0",
-        "contentHash": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Options": "8.0.0"
-        }
-      },
-      "AutoMapper.Extensions.ExpressionMapping": {
-        "type": "Direct",
-        "requested": "[8.0.0, 8.0.0]",
-        "resolved": "8.0.0",
-        "contentHash": "fR55QEOt8GiaVQPuEpyWJAzZxFSInCIYg6E1EoqQByWnjzQnQ5zHwQvMMF3E+AdtvAzbG7Intm08/8pK8eUTvQ==",
-        "dependencies": {
-          "AutoMapper": "[14.0.0, 15.0.0)"
-        }
-      },
       "Bogus": {
         "type": "Direct",
         "requested": "[35.6.4, )",
@@ -1476,7 +1458,6 @@
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "[14.0.0, 14.0.0]",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -1582,6 +1563,7 @@
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Rules": "[1.0.0, )",

@@ -9,9 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Commands.Outbox\Application.Commands.Outbox.csproj"/>
-    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj"/>
-    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj"/>
+    <ProjectReference Include="..\Application.Commands.Outbox\Application.Commands.Outbox.csproj" />
+    <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 
 </Project>

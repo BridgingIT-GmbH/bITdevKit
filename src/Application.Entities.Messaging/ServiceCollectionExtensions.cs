@@ -9,7 +9,6 @@ using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Application.Entities;
 using BridgingIT.DevKit.Common;
 using Extensions;
-using MediatR;
 
 public static class ServiceCollectionExtensions
 {

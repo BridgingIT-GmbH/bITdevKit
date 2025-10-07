@@ -29,7 +29,7 @@ public class EnumerationIdValueTests
         const string basicPlanId = "Basic";
 
         // Act
-        var result = SubscriptionPlans.FromId(basicPlanId);
+        var result = SubscriptionPlans.GetById(basicPlanId);
 
         // Assert
         result.ShouldNotBeNull();
@@ -45,7 +45,7 @@ public class EnumerationIdValueTests
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() =>
-                SubscriptionPlans.FromId(invalidId))
+                SubscriptionPlans.GetById(invalidId))
             .Message.ShouldBe($"'{invalidId}' is not a valid id for {typeof(SubscriptionPlans)}");
     }
 
@@ -80,7 +80,7 @@ public class EnumerationIdValueTests
     {
         // Arrange
         var plan1 = SubscriptionPlans.Basic;
-        var plan2 = SubscriptionPlans.FromId("Basic");
+        var plan2 = SubscriptionPlans.GetById("Basic");
 
         // Act & Assert
         plan1.Equals(plan2)
@@ -106,7 +106,7 @@ public class EnumerationIdValueTests
     {
         // Arrange
         var plan1 = SubscriptionPlans.Premium;
-        var plan2 = SubscriptionPlans.FromId("Premium");
+        var plan2 = SubscriptionPlans.GetById("Premium");
 
         // Act & Assert
         plan1.GetHashCode()
@@ -126,7 +126,11 @@ public class SubscriptionPlans(string id, StubSubscriptionPlanDetails value)
     public static readonly SubscriptionPlans Premium =
         new("Premium", new StubSubscriptionPlanDetails("Premium Plan", 19.99m, 1000, 10));
 
-    public static SubscriptionPlans FromId(string id)
+    private SubscriptionPlans() : this(default, default) // for json deserialization
+    {
+    }
+
+    public static SubscriptionPlans GetById(string id)
     {
         return FromId<SubscriptionPlans>(id);
     }

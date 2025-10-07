@@ -119,19 +119,19 @@ public class RepositoryBuilderContext<TEntity>(
         return this;
     }
 
-    /// <summary>
-    ///     Adds a behavior to the repository by decorating the generic repository with the specified behavior.
-    /// </summary>
-    /// <typeparam name="TBehavior">The type of the behavior to add.</typeparam>
-    /// <returns>The current <see cref="RepositoryBuilderContext{TEntity}" /> with the added behavior.</returns>
-    public RepositoryBuilderContext<TEntity> WithBehavior2<TBehavior>()
-        where TBehavior : class, IGenericRepository<TEntity>
-    {
-        this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>, TBehavior>());
-        this.RegisterBehaviors();
+    ///// <summary>
+    /////     Adds a behavior to the repository by decorating the generic repository with the specified behavior.
+    ///// </summary>
+    ///// <typeparam name="TBehavior">The type of the behavior to add.</typeparam>
+    ///// <returns>The current <see cref="RepositoryBuilderContext{TEntity}" /> with the added behavior.</returns>
+    //public RepositoryBuilderContext<TEntity> WithBehavior2<TBehavior>()
+    //    where TBehavior : class, IGenericRepository<TEntity>
+    //{
+    //    this.behaviors.Add(s => s.Decorate<IGenericRepository<TEntity>, TBehavior>());
+    //    this.RegisterBehaviors();
 
-        return this;
-    }
+    //    return this;
+    //}
 
     /// <summary>
     ///     Adds a behavior to the repository by decorating the generic repository with the provided behavior.

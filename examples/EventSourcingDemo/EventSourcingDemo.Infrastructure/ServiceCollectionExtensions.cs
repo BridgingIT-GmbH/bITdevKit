@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure;
 
-using AutoMapper;
 using DevKit.Infrastructure.EntityFramework;
 using DevKit.Infrastructure.Mapping;
 using Domain.Repositories;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Repositories;
@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
             new PersonOverviewRepository(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .DbContext(sp.GetRequiredService<EventSourcingDemoDbContext>())
-                .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))));
+                .Mapper(new MapsterEntityMapper(sp.GetService<IMapper>()))));
 
         return services;
     }

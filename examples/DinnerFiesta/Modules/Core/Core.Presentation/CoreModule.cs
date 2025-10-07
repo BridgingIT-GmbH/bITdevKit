@@ -89,7 +89,7 @@ public class CoreModule : WebModuleBase
             //    .PurgeOnStartup(false)) // << see AddMessaging().WithOutbox<CoreDbContext> in Program.cs
             .WithOutboxDomainEventService(o => o
                 .ProcessingInterval("00:00:30")
-                //.ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
+                .ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
                 .StartupDelay("00:00:15")
                 .PurgeOnStartup());
 

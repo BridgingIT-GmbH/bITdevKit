@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
+    IOutboxDomainEventContext,
     IEntityPermissionContext,
     IFileMonitoringContext,
     ILoggingContext
@@ -18,6 +19,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<TodoItem> TodoItems { get; set; }
 
     public DbSet<Subscription> Subscriptions { get; set; }
+
+    public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<EntityPermission> EntityPermissions { get; set; }
 

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.Extensions.Logging;
 
 public class EntityFrameworkActiveEntityProviderOptions<TContext, TEntity> : OptionsBase

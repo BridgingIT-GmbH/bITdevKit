@@ -6,12 +6,12 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests;
 
 using Application.Messaging;
-using AutoMapper;
 using Domain;
 using Domain.Model;
 using Domain.Repositories;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Repositories;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 public class PersonStub : AggregateRoot<Guid>
@@ -81,26 +81,24 @@ public sealed class StubDbContextFixture : IDisposable
     }
 }
 
-public class MapperProfile : Profile
+public static class MapperFactory
 {
-    public MapperProfile()
+    public static TypeAdapterConfig Create()
     {
-        this.CreateMap<PersonStub, PersonDtoStub>()
-            .ForMember(d => d.Identifier, o => o.MapFrom(s => s.Id))
-            .ForMember(d => d.Age, o => o.MapFrom(s => s.Age))
-            .ForMember(d => d.FullName, opt => opt.MapFrom(s => $"{s.FirstName} {s.LastName}"))
-            .IgnoreAllUnmapped();
+        var config = new TypeAdapterConfig();
 
-        this.CreateMap<PersonDtoStub, PersonStub>()
-            .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
-            .ForMember(d => d.Age, o => o.MapFrom(s => s.Age))
-            .ForMember(d => d.FirstName,
-                opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
-                    .FirstOrDefault()))
-            .ForMember(d => d.LastName,
-                opt => opt.MapFrom(s => s.FullName.Split(' ', StringSplitOptions.None)
-                    .LastOrDefault()))
-            .IgnoreAllUnmapped();
+        config.NewConfig<PersonStub, PersonDtoStub>()
+            .Map(dest => dest.Identifier, src => src.Id)
+            .Map(dest => dest.Age, src => src.Age)
+            .Map(dest => dest.FullName, src => $"{src.FirstName} {src.LastName}");
+
+        config.NewConfig<PersonDtoStub, PersonStub>()
+            .Map(dest => dest.Id, src => src.Identifier)
+            .Map(dest => dest.Age, src => src.Age)
+            .Map(dest => dest.FirstName, src => src.FullName.Split(' ', StringSplitOptions.None).FirstOrDefault())
+            .Map(dest => dest.LastName, src => src.FullName.Split(' ', StringSplitOptions.None).LastOrDefault());
+
+        return config;
     }
 }
 

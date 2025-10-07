@@ -56,13 +56,11 @@
     <ProjectReference Include="..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Azure.ServiceBus\Infrastructure.Azure.ServiceBus.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Outbox.AutoMapper\Infrastructure.EntityFramework.Outbox.AutoMapper.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />

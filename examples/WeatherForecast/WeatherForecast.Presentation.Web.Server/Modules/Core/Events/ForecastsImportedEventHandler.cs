@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherForecast.Presentation.Web.Server.Mod
 
 using Application.Modules.Core;
 using Common;
-using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 public class ForecastsImportedEventHandler(IHubContext<NotificationHub> hub)

@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
     <Using Include="BridgingIT.DevKit.Common"/>
     <Using Include="NSubstitute"/>
     <Using Include="Shouldly"/>

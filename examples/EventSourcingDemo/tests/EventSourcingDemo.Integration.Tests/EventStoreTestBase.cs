@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.IntegrationTests;
 
 using Application.Handlers;
-using AutoMapper;
 using DevKit.Application.Commands;
 using DevKit.Domain.EventSourcing.Registration;
 using DevKit.Domain.EventSourcing.Store;
@@ -43,7 +42,7 @@ public class EventstoreTestBase : TestsBase
                     })
                     .ToArray()));
 
-                s.AddMapping().WithAutoMapper();
+                s.AddMapping().WithMapster();
                 s.AddMediatR([typeof(PersonEventOccuredCommandHandler).Assembly]);
                 s.AddTransient(typeof(IPipelineBehavior<,>), typeof(DummyCommandBehavior<,>));
 
@@ -53,7 +52,7 @@ public class EventstoreTestBase : TestsBase
                 s.AddScoped<IPersonOverviewRepository>(sp =>
                     new PersonOverviewRepository(o => o
                         .DbContext(ctx)
-                        .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))));
+                        .Mapper(new MapsterEntityMapper(sp.GetService<MapsterMapper.IMapper>()))));
                 s.AddSingleton<IRegistrationForEventStoreAggregatesAndEvents,
                     RegistrationForEventStoreAggregatesAndEvents>();
 
@@ -62,11 +61,11 @@ public class EventstoreTestBase : TestsBase
                     .AddTransient<IEventStoreRepository, EventStoreRepository>()
                     .AddTransient<ISnapshotRepository>(sp => new SnapshotRepository(
                         sp.GetService<IEventStoreAggregateRegistration>(),
-                        o => o.DbContext(ctxEventStore).Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))))
+                        o => o.DbContext(ctxEventStore).Mapper(new MapsterEntityMapper(sp.GetService<MapsterMapper.IMapper>()))))
                     .AddTransient<IAggregateEventRepository>(sp =>
                         new AggregateEventRepository(sp.GetService<IEventStoreAggregateRegistration>(),
                             o => o.DbContext(ctxEventStore)
-                                .Mapper(new AutoMapperEntityMapper(sp.GetService<IMapper>()))))
+                                .Mapper(new MapsterEntityMapper(sp.GetService<MapsterMapper.IMapper>()))))
                     .AddTransient<IOutboxMessageWriterRepository>(sp =>
                         new OutboxMessageWriterRepository(new EntityFrameworkRepositoryOptions(ctxEventStore,
                             sp.GetRequiredService<IEntityMapper>())
@@ -75,18 +74,6 @@ public class EventstoreTestBase : TestsBase
                         new OutboxMessageWorkerRepository(new EntityFrameworkRepositoryOptions(ctxEventStore,
                             sp.GetRequiredService<IEntityMapper>())
                         { Autosave = true }));
-
-                s.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(a =>
-                        {
-                            var name = a.GetName().Name;
-
-                            return name != null &&
-                                !name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
-                        })
-                        .Union([typeof(EventStoreProfile).Assembly])
-                        .ToArray())
-                    .RegisterAutomapperAsEntityMapper();
 
                 s.AddSingleton<IEventTypeSelector, EventTypeSelectorNonMicrosoftAssemblies>();
                 CompositionRoot.RegisterAggregates(s);

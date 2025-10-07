@@ -1254,7 +1254,6 @@
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "[14.0.0, 14.0.0]",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -1360,6 +1359,7 @@
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Rules": "[1.0.0, )",
@@ -1417,8 +1417,8 @@
       "BridgingIT.DevKit.Examples.EventSourcingDemo.Application": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "[14.0.0, 14.0.0]",
           "BridgingIT.DevKit.Application.Commands.EventSourcing": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.EventSourcing": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.EventSourcingDemo.Domain": "[1.0.0, )",
@@ -1440,7 +1440,6 @@
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.Mapping": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
         }
       },
@@ -1453,22 +1452,10 @@
           "BridgingIT.DevKit.Examples.EventSourcingDemo.Infrastructure": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.SqlServer": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.AutoMapper": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EventSourcing": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.Mapping": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Data.SqlClient": "[6.1.1, )",
           "NSwag.AspNetCore": "[14.6.0, )"
-        }
-      },
-      "BridgingIT.DevKit.Infrastructure.AutoMapper": {
-        "type": "Project",
-        "dependencies": {
-          "AutoMapper.Extensions.ExpressionMapping": "[8.0.0, 8.0.0]",
-          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
-          "BridgingIT.DevKit.Domain": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.Mapping": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
         }
       },
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
@@ -1495,7 +1482,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Domain.EventSourcing": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.AutoMapper": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EventSourcing": "[1.0.0, )",
@@ -1514,18 +1500,9 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Commands.Outbox": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.Outbox": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
-        }
-      },
-      "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox.AutoMapper": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Application.Commands.Outbox": "[1.0.0, )",
-          "BridgingIT.DevKit.Domain.Outbox": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.AutoMapper": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
         }
       },
@@ -1546,36 +1523,8 @@
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.EventSourcing.Mediator": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.Outbox": "[1.0.0, )",
-          "BridgingIT.DevKit.Infrastructure.AutoMapper": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
-        }
-      },
-      "BridgingIT.DevKit.Infrastructure.Mapping": {
-        "type": "Project",
-        "dependencies": {
-          "AutoMapper.Extensions.ExpressionMapping": "[8.0.0, 8.0.0]",
-          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
-          "BridgingIT.DevKit.Domain": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
-        }
-      },
-      "AutoMapper": {
-        "type": "CentralTransitive",
-        "requested": "[14.0.0, 14.0.0]",
-        "resolved": "14.0.0",
-        "contentHash": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Options": "8.0.0"
-        }
-      },
-      "AutoMapper.Extensions.ExpressionMapping": {
-        "type": "CentralTransitive",
-        "requested": "[8.0.0, 8.0.0]",
-        "resolved": "8.0.0",
-        "contentHash": "fR55QEOt8GiaVQPuEpyWJAzZxFSInCIYg6E1EoqQByWnjzQnQ5zHwQvMMF3E+AdtvAzbG7Intm08/8pK8eUTvQ==",
-        "dependencies": {
-          "AutoMapper": "[14.0.0, 15.0.0)"
         }
       },
       "Azure.Identity": {

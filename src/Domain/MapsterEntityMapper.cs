@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.Mapping;
 using System.Linq.Expressions;
 using Domain.Repositories;
 using BridgingIT.DevKit.Domain;
-using MapsterMapper;
+using IMapper = MapsterMapper.IMapper;
 
 public class MapsterEntityMapper : IEntityMapper
 {

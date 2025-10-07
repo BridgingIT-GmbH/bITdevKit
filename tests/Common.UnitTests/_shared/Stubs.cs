@@ -14,6 +14,20 @@ public class StubMapper : IMapper<PersonStub, PersonDtoStub>
         target.Age = source.Age;
         target.FullName = $"{source.FirstName} {source.LastName}";
     }
+
+    public Result MapResult(PersonStub source, PersonDtoStub target)
+    {
+        try
+        {
+            this.Map(source, target);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(
+                new MappingError(ex, $"Mapping from {typeof(PersonStub).FullName} to {typeof(PersonDtoStub).FullName} failed: {ex.Message}"));
+        }
+    }
 }
 
 public class PersonStub
@@ -208,19 +222,15 @@ public class IsAdultRule(PersonStub person) : RuleBase
     }
 }
 
-public class ActiveStatus(int id, string value, string code, string description) : Enumeration(id, value)
+public partial class ActiveStatus : Enumeration
 {
     public static readonly ActiveStatus Active = new(0, "Active", "AKT", "Lorem Ipsum");
     public static readonly ActiveStatus Inactive = new(1, "Inactive", "INA", "Lorem Ipsum");
     public static readonly ActiveStatus Unknown = new(99, "Unknown", "UNK", "Lorem Ipsum");
 
-    public string Code { get; } = code;
+    public string Code { get; }
 
-    public string Description { get; } = description;
-
-    public static ActiveStatus FromId(int id) => FromId<ActiveStatus>(id);
-
-    public static IEnumerable<ActiveStatus> GetAll() => GetAll<ActiveStatus>();
+    public string Description { get; }
 
     public static ActiveStatus GetByCode(string code) => GetAll<ActiveStatus>().FirstOrDefault(e => e.Code == code);
 }

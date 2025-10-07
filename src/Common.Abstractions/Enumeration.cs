@@ -11,9 +11,13 @@ using System.Diagnostics;
 ///     Represents a base class for type safe enum-like classes, providing comparison and equality operations
 ///     as well as methods for retrieving all enumeration instances and looking up instances by id or value.
 /// </summary>
-[DebuggerDisplay("Id={Id}, Name={Value}")]
+[DebuggerDisplay("Id={Id}, Value={Value}")]
 public abstract class Enumeration(int id, string value) : Enumeration<int, string>(id, value), IEnumeration
 {
+    protected Enumeration() : this(default, default) // for json deserialization
+    {
+    }
+
     /// <summary>
     ///     Determines whether two Enumeration objects are considered equal.
     /// </summary>

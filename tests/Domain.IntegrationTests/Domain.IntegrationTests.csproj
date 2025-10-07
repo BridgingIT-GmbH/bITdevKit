@@ -12,7 +12,6 @@
     <Using Include="BridgingIT.DevKit.Common" />
     <Using Include="Bogus" />
     <Using Include="Bogus.DataSets" />
-    <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
     <Using Include="NSubstitute" />
     <Using Include="Shouldly" />
     <Using Include="Xunit" />
@@ -42,7 +41,6 @@
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
   </ItemGroup>
 
   <ItemGroup>

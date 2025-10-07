@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Profiles;
 
-using AutoMapper;
 using Domain.Model;
+using Mapster;
 using Persons;
 
-public class PersonOverviewViewModelProfile : Profile
+public class PersonMapperRegister : IRegister
 {
-    public PersonOverviewViewModelProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        this.CreateMap<PersonOverviewViewModel, Person>();
+        config.NewConfig<Person, PersonOverviewViewModel>(); config.NewConfig<Person, PersonOverview>();
     }
 }

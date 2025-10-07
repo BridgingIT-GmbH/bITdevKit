@@ -44,16 +44,10 @@
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Windows\Infrastructure.Windows.csproj" />
     <ProjectReference Include="..\Domain.UnitTests\Domain.UnitTests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AutoMapper\" />
-    <Folder Include="EntityFramework\Models\" />
   </ItemGroup>
 
 </Project>

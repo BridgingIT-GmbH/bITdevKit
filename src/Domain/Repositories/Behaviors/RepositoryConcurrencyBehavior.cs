@@ -17,6 +17,7 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <seealso cref="IGenericRepository{TEntity}" />
+//[Obsolete("Concurrency behavior is built in in repos")]
 public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IConcurrency
 {

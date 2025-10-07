@@ -4,11 +4,11 @@ using System.Text.Json;
 
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
-public class EnumerationtJsonConverter2Tests
+public class EnumerationtJsonConverterTests
 {
     private readonly JsonSerializerOptions options;
 
-    public EnumerationtJsonConverter2Tests()
+    public EnumerationtJsonConverterTests()
     {
         this.options = new JsonSerializerOptions { WriteIndented = true };
         this.options.Converters.Add(new EnumerationJsonConverter<StubUserRoles2, StubRoleDetails>());

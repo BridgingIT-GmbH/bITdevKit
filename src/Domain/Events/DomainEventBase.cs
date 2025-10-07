@@ -13,6 +13,10 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
 {
     private int? hashCode;
 
+    protected DomainEventBase() // for json deserialization
+    {
+    }
+
     /// <summary>
     ///     Gets the unique identifier for this event. Typically generated
     ///     sequentially to maintain order and uniqueness across events.

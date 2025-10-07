@@ -3,12 +3,12 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
+namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
-public class TodoItemUpdatedDomainEvent(TodoItem model) : DomainEventBase
+public partial class TodoItemUpdatedDomainEvent(TodoItem model) : DomainEventBase
 {
-    public TodoItem Model { get; } = model;
+    public TodoItem Model { get; private set; } = model;
 }

@@ -5,47 +5,33 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Infrastructure.EntityFramework;
 
-using AutoMapper;
 using Domain.Model;
+using Mapster;
+using MapsterMapper;
 
 public static class MapperFactory
 {
     public static IMapper Create()
     {
-        var configuration = new MapperConfiguration(c =>
-        {
-            c.CreateMap<UserAccount, DbUserAccount>()
-                .ForMember(d => d.Identifier, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.EmailAddress, o => o.MapFrom(s => s.Email))
-                .ForMember(d => d.Visits, o => o.MapFrom(s => s.VisitCount))
-                .ForMember(d => d.LastVisitDate, o => o.MapFrom(s => s.LastVisitDate))
-                .ForMember(d => d.RegisterDate, o => o.MapFrom(s => s.RegisterDate))
-                .ForMember(d => d.AdDomain, o => o.MapFrom(s => s.AdAccount.Domain))
-                .ForMember(d => d.AdName, o => o.MapFrom(s => s.AdAccount.Name));
+        var config = new TypeAdapterConfig();
 
-            c.CreateMap<DbUserAccount, UserAccount>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Identifier))
-                .ForMember(d => d.Email, o => o.MapFrom(s => s.EmailAddress))
-                .ForMember(d => d.VisitCount, o => o.MapFrom(s => s.Visits))
-                .ForMember(d => d.LastVisitDate, o => o.MapFrom(s => s.LastVisitDate))
-                .ForMember(d => d.RegisterDate, o => o.MapFrom(s => s.RegisterDate))
-                .ForMember(d => d.AdAccount, o => o.MapFrom(new AdAccountResolver()));
-        });
+        config.NewConfig<UserAccount, DbUserAccount>()
+            .Map(dest => dest.Identifier, src => src.Id)
+            .Map(dest => dest.EmailAddress, src => src.Email)
+            .Map(dest => dest.Visits, src => src.VisitCount)
+            .Map(dest => dest.LastVisitDate, src => src.LastVisitDate)
+            .Map(dest => dest.RegisterDate, src => src.RegisterDate)
+            .Map(dest => dest.AdDomain, src => src.AdAccount.Domain)
+            .Map(dest => dest.AdName, src => src.AdAccount.Name);
 
-        configuration.AssertConfigurationIsValid();
+        config.NewConfig<DbUserAccount, UserAccount>()
+            .Map(dest => dest.Id, src => src.Identifier)
+            .Map(dest => dest.Email, src => src.EmailAddress)
+            .Map(dest => dest.VisitCount, src => src.Visits)
+            .Map(dest => dest.LastVisitDate, src => src.LastVisitDate)
+            .Map(dest => dest.RegisterDate, src => src.RegisterDate)
+            .Map(dest => dest.AdAccount, src => AdAccount.Create($"{src.AdDomain}\\{src.AdName}"));
 
-        return configuration.CreateMapper();
-    }
-
-    private class AdAccountResolver : IValueResolver<DbUserAccount, UserAccount, AdAccount>
-    {
-        public AdAccount Resolve(
-            DbUserAccount source,
-            UserAccount destination,
-            AdAccount destMember,
-            ResolutionContext context)
-        {
-            return AdAccount.Create($"{source.AdDomain}\\{source.AdName}");
-        }
+        return new Mapper(config);
     }
 }

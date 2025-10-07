@@ -45,7 +45,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         // TODO: use a lock (semaphore) here, because ProcessAsync can also be triggered through the OutboxDomainEventQueue, not just the backgroundservice with it's timer
         using var scope = this.serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
-        var scopedPublisher = new MediatorDomainEventPublisher(this.loggerFactory, scope.ServiceProvider.GetRequiredService<IMediator>());
+        var publisher = new NotifierDomainEventPublisher(this.loggerFactory, scope.ServiceProvider.GetRequiredService<INotifier>());
         var count = 0;
         TypedLogger.LogProcessing(this.logger, Constants.LogKey, this.contextTypeName, eventId);
 #if DEBUG
@@ -61,7 +61,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
             .ForEachAsync(async e =>
                 {
                     count++;
-                    await this.ProcessEvent(e, context, scopedPublisher, cancellationToken);
+                    await this.ProcessEvent(e, context, publisher, cancellationToken);
                 },
                 cancellationToken);
 
@@ -114,6 +114,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessStatusKey, "Failure");
                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessMessageKey, $"max attempts reached (eventId={outboxEvent.EventId}, eventType={outboxEvent.Type.Split(',')[0]}, attempts={attempts - 1}) {existingMessage}");
                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessAttemptsKey, attempts - 1);
+
                 await context.SaveChangesAsync(cancellationToken).AnyContext(); // only save changes in this scoped context
             }
             catch (Exception ex)
@@ -142,6 +143,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                     outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessStatusKey, "Failure");
                     outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessMessageKey, $"event type could not be resolved (eventId={outboxEvent.EventId}, eventType={outboxEvent.Type.Split(',')[0]})");
                     outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessAttemptsKey, attempts);
+
                     await context.SaveChangesAsync(cancellationToken).AnyContext(); // only save changes in this scoped context
                 }
                 catch (Exception ex)
@@ -181,6 +183,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
                                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessStatusKey, "Success");
                                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessMessageKey, string.Empty);
                                 outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessAttemptsKey, attempts);
+
                                 await context.SaveChangesAsync<OutboxDomainEvent>(c).AnyContext(); // only save changes in this scoped context
                             },
                             ActivityKind.Consumer,

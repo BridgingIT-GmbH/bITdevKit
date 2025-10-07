@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using Common;
+using BridgingIT.DevKit.Common;
 
 public class ForecastModelMapper : IMapper<ForecastQueryResponse, ForecastModel>
 {
@@ -20,6 +20,19 @@ public class ForecastModelMapper : IMapper<ForecastQueryResponse, ForecastModel>
             target.Description = source.Forecast.Description;
             target.WindSpeed = source.Forecast.WindSpeed;
             target.Type = source.Forecast.Type?.Name; // included entity
+        }
+    }
+
+    public Result MapResult(ForecastQueryResponse source, ForecastModel target)
+    {
+        try
+        {
+            this.Map(source, target);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new MappingError(ex, $"Mapping from {typeof(ForecastQueryResponse).FullName} to {typeof(ForecastModel).FullName} failed: {ex.Message}"));
         }
     }
 }

@@ -3,10 +3,9 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
+namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;

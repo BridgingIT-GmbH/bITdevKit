@@ -21,17 +21,21 @@ using System.Reflection;
 public abstract class Enumeration<TId, TValue>(TId id, TValue value) : IEnumeration<TId, TValue>
     where TId : IComparable
 {
+    protected Enumeration() : this(default, default) // for json deserialization
+    {
+    }
+
     /// <summary>
     ///     Gets the unique identifier of the enumeration item.
     /// </summary>
-    public TId Id { get; } = id;
+    public TId Id { get; protected set; } = id;
 
     /// <summary>
     ///     Gets the value associated with the enumeration.
     ///     This property holds the value part of the enumeration, which can be any type that implements IComparable.
     ///     The value is set at the time of enumeration creation and cannot be changed.
     /// </summary>
-    public TValue Value { get; } = value;
+    public TValue Value { get; protected set; } = value;
 
     /// <summary>
     ///     Retrieves all instances of the enumeration type.

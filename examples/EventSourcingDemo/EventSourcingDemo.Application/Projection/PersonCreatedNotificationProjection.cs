@@ -5,14 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Projection;
 
-using System.Diagnostics;
 using Common;
 using DevKit.Domain.EventSourcing.AggregatePublish;
 using DevKit.Domain.Repositories;
 using Domain.Model;
 using Domain.Model.Events;
 using Domain.Repositories;
-using MediatR;
 
 public sealed class PersonCreatedNotificationProjection(
     IPersonOverviewRepository personOverviewRepository,

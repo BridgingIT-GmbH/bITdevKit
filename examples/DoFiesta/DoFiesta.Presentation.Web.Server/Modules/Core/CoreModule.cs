@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Domain.Repositories;
@@ -73,7 +74,12 @@ public class CoreModule : WebModuleBase
                 .UseLogger()/*.UseSimpleLogger()*/)
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
-                .DeleteOnStartup(environment.IsLocalDevelopment()));
+                .DeleteOnStartup(environment.IsLocalDevelopment()))
+            .WithOutboxDomainEventService(o => o
+                .ProcessingInterval("00:00:30")
+                //.ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
+                .StartupDelay("00:00:15")
+                .PurgeOnStartup());
 
         //services.AddInMemoryDbContext<CoreDbContext>()
         //    .WithDatabaseCreatorService(o => o
@@ -116,13 +122,15 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<TodoItem, CoreDbContext>>();
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>()
-            .WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
+            .WithBehavior<RepositoryOutboxDomainEventBehavior<Subscription, CoreDbContext>>();
+            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
 
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();

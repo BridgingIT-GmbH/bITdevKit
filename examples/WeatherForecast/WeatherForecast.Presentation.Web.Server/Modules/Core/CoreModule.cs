@@ -138,19 +138,19 @@ public class CoreModule : WebModuleBase
 
         // UserAccount repository
         services.AddEntityFrameworkRepository<UserAccount, DbUserAccount, CoreDbContext>(
-                new AutoMapperEntityMapper(MapperFactory.Create()))
+                new MapsterEntityMapper(MapperFactory.Create()))
             .WithBehavior<RepositoryTracingBehavior<UserAccount>>()
             .WithBehavior<RepositoryLoggingBehavior<UserAccount>>()
             .WithBehavior<RepositoryNoTrackingBehavior<UserAccount>>()
             .WithBehavior<RepositoryDomainEventBehavior<UserAccount>>()
             .WithBehavior<RepositoryDomainEventMediatorPublisherBehavior<UserAccount>>();
 
-        // UserAccount specific repository, demonstrates how Capper (raw sql) can be used inside normal EF repos
+        // UserAccount specific repository, demonstrates how Dapper (raw sql) can be used inside normal EF repos
         services.AddScoped(sp =>
             new UserAccountRepository(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .DbContext(sp.GetRequiredService<CoreDbContext>())
-                .Mapper(new AutoMapperEntityMapper(MapperFactory.Create()))));
+                .Mapper(new MapsterEntityMapper(MapperFactory.Create()))));
         //.Decorate<IGenericRepository<UserAccount>, RepositoryTracingDecorator<UserAccount>>() // first
         //.Decorate<IGenericRepository<UserAccount>, RepositoryLoggingDecorator<UserAccount>>()
         //.Decorate<IGenericRepository<UserAccount>, RepositoryNoTrackingDecorator<UserAccount>>()

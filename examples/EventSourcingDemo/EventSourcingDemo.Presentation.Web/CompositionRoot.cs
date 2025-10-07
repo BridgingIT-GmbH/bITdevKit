@@ -6,14 +6,11 @@
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Presentation.Web;
 
 using Application.Persons;
-using Application.Profiles;
 using Application.Projection;
 using DevKit.Domain.EventSourcing.Registration;
 using DevKit.Domain.Repositories;
-using DevKit.Infrastructure.EntityFramework.EventSourcing;
 using DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 using DevKit.Infrastructure.EntityFramework.EventSourcing.SqlServer.Migrations;
-using DevKit.Infrastructure.EntityFramework.Outbox.AutoMapper.Profiles;
 using DevKit.Infrastructure.EventSourcing;
 using DevKit.Infrastructure.EventSourcing.Publishing;
 using DevKit.Infrastructure.Mapping;
@@ -38,20 +35,10 @@ public static class CompositionRoot
             .Union([typeof(PersonService).Assembly, typeof(PersonCreatedNotificationProjection).Assembly])
             .ToArray();
 
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
         // application composition root
-        // tag::AutomapperSetup[]
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a =>
-                !a.GetName().Name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase))
-            .ToArray()
-            .Union(
-            [
-                typeof(OutboxMessageProfile).Assembly, typeof(EventStoreProfile).Assembly,
-                typeof(PersonProfile).Assembly
-            ])
-            .ToArray());
-        // end::AutomapperSetup[]
+        // tag::MapperSetup[]
+            services.AddMapping().WithMapster(); // finds all IRegister for mapster
+        // end::MapperSetup[]
 
         // tag::EventStoreConfiguration[]
         // Event Store Configuration

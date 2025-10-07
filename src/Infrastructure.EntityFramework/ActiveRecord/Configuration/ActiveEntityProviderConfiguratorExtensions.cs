@@ -7,8 +7,6 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
-using Humanizer.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

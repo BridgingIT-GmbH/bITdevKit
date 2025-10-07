@@ -9,16 +9,17 @@ namespace BridgingIT.DevKit.Common;
 ///     Represents an abstract base class for creating strongly-typed enumerations.
 /// </summary>
 /// <typeparam name="TValue">The type of the value represented by the enumeration.</typeparam>
-public abstract class Enumeration<TValue>
-    : Enumeration<int, TValue>, IEnumeration<TValue>, IEquatable<Enumeration<TValue>>
+/// <remarks>
+///     Initializes a new instance of the <see cref="Enumeration{TValue}" /> class.
+///     Defines a set of constants representing the different status codes
+///     an operation can result in within the application.
+/// </remarks>
+public abstract class Enumeration<TValue>(int id, TValue value)
+    : Enumeration<int, TValue>(id, value), IEnumeration<TValue>, IEquatable<Enumeration<TValue>>
 {
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="Enumeration{TValue}" /> class.
-    ///     Defines a set of constants representing the different status codes
-    ///     an operation can result in within the application.
-    /// </summary>
-    protected Enumeration(int id, TValue value)
-        : base(id, value) { }
+    protected Enumeration() : this(default, default) // for json deserialization
+    {
+    }
 
     /// <summary>
     ///     Defines the addition operator for the MyClass type.

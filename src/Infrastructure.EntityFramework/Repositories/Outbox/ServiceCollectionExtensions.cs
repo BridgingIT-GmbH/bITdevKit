@@ -16,8 +16,8 @@ public static partial class ServiceCollectionExtensions
         Builder<OutboxDomainEventOptionsBuilder, OutboxDomainEventOptions> optionsBuilder)
         where TContext : DbContext, IOutboxDomainEventContext
     {
-        return services.AddOutboxDomainEventService<TContext>(optionsBuilder(new OutboxDomainEventOptionsBuilder())
-            .Build());
+        return services.AddOutboxDomainEventService<TContext>(
+            optionsBuilder(new OutboxDomainEventOptionsBuilder()).Build());
     }
 
     public static IServiceCollection AddOutboxDomainEventService<TContext>(
@@ -64,6 +64,7 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<TWorker>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
+                sp.GetService<IDatabaseReadyService>(),
                 sp.GetService<OutboxDomainEventOptions>()));
         }
 

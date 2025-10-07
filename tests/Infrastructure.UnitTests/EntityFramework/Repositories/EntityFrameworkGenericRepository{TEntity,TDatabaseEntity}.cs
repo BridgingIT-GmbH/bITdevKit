@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories;
 
 using System.Transactions;
-using AutoMapper;
+using BridgingIT.DevKit.Infrastructure.Mapping;
 using Domain.Repositories;
 using Infrastructure.EntityFramework.Repositories;
-using Infrastructure.Mapping;
+using MapsterMapper;
 
 [UnitTest("Infrastructure")]
 public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : IClassFixture<TestDbContextFixture>
@@ -95,7 +95,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     }
 
     [Fact]
-    public void TestAutomapperConfigurationPerson()
+    public void TestMapperConfigurationPerson()
     {
         var sut = CreateMapper();
         var person = CreatePerson();
@@ -106,7 +106,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     }
 
     [Fact]
-    public void TestAutomapperConfigurationPersonDto()
+    public void TestMapperConfigurationPersonDto()
     {
         var sut = CreateMapper();
         var dto = CreateMalePersonEntity();
@@ -128,9 +128,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
 
     private static IEntityMapper CreateMapper()
     {
-        var config = new MapperConfiguration(cfg =>
-            cfg.AddProfile(new MapperProfile()));
-
-        return new AutoMapperEntityMapper(config.CreateMapper());
+        return new MapsterEntityMapper(
+            new Mapper(MapperFactory.Create()));
     }
 }

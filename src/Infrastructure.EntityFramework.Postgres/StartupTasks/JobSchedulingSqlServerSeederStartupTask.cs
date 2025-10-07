@@ -21,7 +21,10 @@ public class JobSchedulingPostgresSeederStartupTask
     private readonly string tablePrefix;
     private readonly IDatabaseReadyService databaseReadyService;
 
-    public JobSchedulingPostgresSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration, IDatabaseReadyService databaseReadyService = null)
+    public JobSchedulingPostgresSeederStartupTask(
+        ILoggerFactory loggerFactory,
+        IConfiguration configuration,
+        IDatabaseReadyService databaseReadyService = null)
         : this(loggerFactory,
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.dataSource.default.connectionString"],
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.jobStore.tablePrefix"])

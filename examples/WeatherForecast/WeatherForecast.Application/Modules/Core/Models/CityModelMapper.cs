@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherForecast.Application.Modules.Core;
 
-using Common;
+using BridgingIT.DevKit.Common;
 
 public class CityModelMapper : IMapper<CityQueryResponse, CityModel>
 {
@@ -28,6 +28,20 @@ public class CityModelMapper : IMapper<CityQueryResponse, CityModel>
                         WindSpeed = f.WindSpeed,
                         Timestamp = f.Timestamp
                     });
+        }
+    }
+
+    public Result MapResult(CityQueryResponse source, CityModel target)
+    {
+        try
+        {
+            this.Map(source, target);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(
+                new MappingError(ex, $"Mapping from {typeof(CityQueryResponse).FullName} to {typeof(CityModel).FullName} failed: {ex.Message}"));
         }
     }
 }

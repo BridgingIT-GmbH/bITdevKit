@@ -157,6 +157,10 @@ public class ColorEnumeration : Enumeration<Color>
     public static readonly ColorEnumeration Green = new(2, Color.Green);
     public static readonly ColorEnumeration Blue = new(3, Color.Blue);
 
+    private ColorEnumeration() // for json deserialization
+    {
+    }
+
     private ColorEnumeration(int id, Color value)
         : base(id, value) { }
 

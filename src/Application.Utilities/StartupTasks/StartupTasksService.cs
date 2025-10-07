@@ -39,8 +39,7 @@ public class StartupTasksService : IHostedService
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
 
-        this.logger = loggerFactory?.CreateLogger<StartupTasksService>() ??
-            NullLoggerFactory.Instance.CreateLogger<StartupTasksService>();
+        this.logger = loggerFactory?.CreateLogger<StartupTasksService>() ?? NullLoggerFactory.Instance.CreateLogger<StartupTasksService>();
         this.serviceProvider = serviceProvider;
         this.applicationLifetime = applicationLifetime;
         this.definitions = (definitions ?? []).ToArray();

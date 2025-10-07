@@ -17,7 +17,7 @@ public class InMemoryRepositoryDbTests
 {
     private readonly Faker faker;
     private readonly IEnumerable<StubEntity> entities;
-    private readonly AutoMapperEntityMapper mapper;
+    private readonly MapsterEntityMapper mapper;
 
     public InMemoryRepositoryDbTests()
     {
@@ -42,7 +42,7 @@ public class InMemoryRepositoryDbTests
         };
 
         this.entities = basicEntities.Concat([specialEntity]);
-        this.mapper = new AutoMapperEntityMapper(StubEntityMapperConfiguration.Create());
+        this.mapper = new MapsterEntityMapper(StubEntityMapperFactory.Create());
     }
 
     [Fact]

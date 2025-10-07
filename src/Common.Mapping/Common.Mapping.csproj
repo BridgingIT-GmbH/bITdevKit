@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper"/>
+    <!--<PackageReference Include="AutoMapper"/>-->
     <PackageReference Include="Mapster"/>
     <PackageReference Include="Mapster.DependencyInjection"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>

@@ -10,12 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application.Commands.EventSourcing\Application.Commands.EventSourcing.csproj"/>
-    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj"/>
-    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj"/>
-    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj"/>
-    <ProjectReference Include="..\Infrastructure.AutoMapper\Infrastructure.AutoMapper.csproj"/>
-    <ProjectReference Include="..\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj"/>
+    <ProjectReference Include="..\Application.Commands.EventSourcing\Application.Commands.EventSourcing.csproj" />
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Domain.EventSourcing.Mediator\Domain.EventSourcing.Mediator.csproj" />
+    <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core.Events;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;

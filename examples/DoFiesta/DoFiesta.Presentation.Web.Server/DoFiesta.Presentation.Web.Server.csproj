@@ -61,7 +61,6 @@
         <ProjectReference Include="..\..\..\src\Application.Utilities\Application.Utilities.csproj" />
         <ProjectReference Include="..\..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
         <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
-        <ProjectReference Include="..\..\..\src\Infrastructure.Mapping\Infrastructure.Mapping.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />

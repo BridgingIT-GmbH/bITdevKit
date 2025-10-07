@@ -28,6 +28,20 @@ public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = nul
             source.Adapt(destination, this.config);
         }
     }
+
+    public Result MapResult(TSource source, TDestination destination)
+    {
+        try
+        {
+            this.Map(source, destination);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(
+                new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TDestination).FullName} failed: {ex.Message}"));
+        }
+    }
 }
 
 /// <summary>
@@ -48,6 +62,21 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
         return source is null ? default : source.Adapt<TTarget>(this.config);
     }
 
+    public Result<TTarget> MapResult<TSource, TTarget>(TSource source)
+        where TTarget : class
+    {
+        try
+        {
+            var result = this.Map<TSource, TTarget>(source);
+            return Result<TTarget>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Result<TTarget>.Failure(
+                new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TTarget).FullName} failed: {ex.Message}"));
+        }
+    }
+
     /// <summary>
     ///     Maps the properties from the source object to the target object.
     /// </summary>
@@ -58,5 +87,20 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
         where TTarget : class
     {
         return source is null ? target : source.Adapt(target, this.config);
+    }
+
+    public Result<TTarget> MapResult<TSource, TTarget>(TSource source, TTarget target)
+        where TTarget : class
+    {
+        try
+        {
+            var result = this.Map(source, target);
+            return Result<TTarget>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Result<TTarget>.Failure(
+                new MappingError(ex, $"Mapping from {typeof(TSource).FullName} to {typeof(TTarget).FullName} failed: {ex.Message}"));
+        }
     }
 }

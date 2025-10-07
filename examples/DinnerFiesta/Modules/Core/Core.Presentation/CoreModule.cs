@@ -26,7 +26,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Host = Domain.Host;
 
-public class CoreModule : WebModuleBase
+public class CoreModule() : WebModuleBase(nameof(CoreModule).ToLower())
 {
     public override IServiceCollection Register(
         IServiceCollection services,

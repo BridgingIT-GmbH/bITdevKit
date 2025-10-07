@@ -134,11 +134,11 @@ public class ModuleDbContextFactory<TContext> : IDesignTimeDbContextFactory<TCon
         var moduleName = contextType.Name.ToLowerInvariant()
             .Replace("dbcontext", string.Empty, StringComparison.OrdinalIgnoreCase);
 
-        if (moduleName.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
-            !moduleName.Equals("module", StringComparison.OrdinalIgnoreCase))
-        {
-            moduleName = moduleName.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
-        }
+        //if (moduleName.EndsWith("module", StringComparison.OrdinalIgnoreCase) &&
+        //    !moduleName.Equals("module", StringComparison.OrdinalIgnoreCase))
+        //{
+        //    moduleName = moduleName.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
+        //}
 
         return $"Modules:{moduleName}:ConnectionStrings:Default";
     }

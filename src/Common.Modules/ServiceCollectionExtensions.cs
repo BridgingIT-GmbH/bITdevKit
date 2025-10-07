@@ -195,15 +195,9 @@ public static class ServiceCollectionExtensions
                 .Validate(
                     validationOptions => // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#options-validation
                     {
-                        Log.Logger.Information(
-                            "{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ",
-                            ModuleConstants.LogKey,
-                            module.Name,
-                            typeof(TOptions).Name);
-
+                        Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
                         return Factory<TValidator>.Create()
-                            .Validate(validationOptions, strategy => strategy.ThrowOnFailures())
-                            .IsValid;
+                            .Validate(validationOptions, strategy => strategy.ThrowOnFailures()).IsValid;
                     });
 
             if (validateOnStart)

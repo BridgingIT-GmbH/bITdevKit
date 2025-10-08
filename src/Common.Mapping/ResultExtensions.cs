@@ -14,29 +14,34 @@ public static class ResultExtensions
     ///     Transforms the value of the specified <see cref="Result{TValue}" /> object to a new result with the specified
     ///     result type.
     /// </summary>
-    /// <typeparam name="TValue">The type of the value in the source result.</typeparam>
-    /// <typeparam name="TResult">The type of the value in the result after transformation.</typeparam>
-    /// <param name="source">The source result containing the value to be transformed.</param>
+    /// <typeparam name="T">The type of the value in the source result.</typeparam>
+    /// <typeparam name="TNew">The type of the value in the result after transformation.</typeparam>
+    /// <param name="result">The source result containing the value to be transformed.</param>
     /// <param name="mapper">
-    ///     The mapper instance used to convert the value from <typeparamref name="TValue" /> to
-    ///     <typeparamref name="TResult" />.
+    ///     The mapper instance used to convert the value from <typeparamref name="T" /> to
+    ///     <typeparamref name="TNew" />.
     /// </param>
     /// <returns>
     ///     A new <see cref="Result{TValue}" /> instance containing the transformed value, with the original messages and
     ///     errors.
     /// </returns>
-    public static Result<TResult> Map<TValue, TResult>(this Result<TValue> source, IMapper mapper)
-        where TResult : class
+    public static Result<TNew> MapResult<T, TNew>(this Result<T> result, IMapper mapper)
+        where TNew : class
     {
-        EnsureArg.IsNotNull(mapper, nameof(mapper));
-
-        if (source.IsFailure == true)
+        if (!result.IsSuccess || mapper is null)
         {
-            return Result<TResult>.Failure().WithMessages(source.Messages).WithErrors(source.Errors);
+            return Result<TNew>.Failure()
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
         }
 
-        return Result<TResult>.Success(mapper.Map<TValue, TResult>(source.Value))
-            .WithMessages(source.Messages)
-            .WithErrors(source.Errors);
+        if (result.IsFailure)
+        {
+            return Result<TNew>.Failure().WithMessages(result.Messages).WithErrors(result.Errors);
+        }
+
+        return mapper.MapResult<T, TNew>(result.Value)
+            .WithMessages(result.Messages)
+            .WithErrors(result.Errors);
     }
 }

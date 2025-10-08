@@ -139,15 +139,15 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
         this.errors.AsEnumerable().ToList().AsReadOnly();
 
     /// <summary>
-    /// Tries to perform an operation on the current page collection.
+    /// Creates a Result from an operation, handling any exceptions that occur.
     /// </summary>
     /// <example>
-    /// var result = ResultPaged{User}.Try(() => {
+    /// var result = ResultPaged{User}.Bind(() => {
     ///     var users = _repository.GetPagedUsers(page, pageSize);
     ///     return (users, totalCount: _repository.GetTotalCount());
     /// });
     /// </example>
-    public static ResultPaged<T> From(
+    public static ResultPaged<T> Bind(
         Func<(IEnumerable<T> Values, long TotalCount)> operation)
     {
         if (operation is null)
@@ -170,10 +170,10 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
     }
 
     /// <summary>
-    /// Asynchronously tries to perform an operation that returns a paged collection.
+    ///     Creates a Result from an async operation, handling any exceptions that occur.
     /// </summary>
     /// <example>
-    /// var result = await ResultPaged{User}.TryAsync(
+    /// var result = await ResultPaged{User}.BindAsync(
     ///     async ct => {
     ///         var users = await _repository.GetPagedUsersAsync(page, pageSize, ct);
     ///         var count = await _repository.GetTotalCountAsync(ct);
@@ -182,7 +182,7 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
     ///     cancellationToken
     /// );
     /// </example>
-    public static async Task<ResultPaged<T>> FromAsync(
+    public static async Task<ResultPaged<T>> BindAsync(
         Func<CancellationToken, Task<(IEnumerable<T> Values, long TotalCount)>> operation,
         CancellationToken cancellationToken = default)
     {

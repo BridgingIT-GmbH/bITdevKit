@@ -261,17 +261,17 @@ public readonly partial struct Result<T> : IResult<T>
             _ => Failure().WithMessages(result.Messages).WithErrors(result.Errors));
 
     /// <summary>
-    ///     Creates a Result from an async operation, handling any exceptions that occur.
+    ///     Creates a Result from an operation, handling any exceptions that occur.
     /// </summary>
     /// <returns>A Result representing the outcome of the operation.</returns>
     /// <example>
     /// <code>
-    /// var result = Result.From(() => {
+    /// var result = Result.Bind(() => {
     ///     userRepository.DeleteAll();
     /// });
     /// </code>
     /// </example>
-    public static Result<T> From(Func<T> operation)
+    public static Result<T> Bind(Func<T> operation)
     {
         if (operation is null)
         {
@@ -301,13 +301,13 @@ public readonly partial struct Result<T> : IResult<T>
     /// <returns>A Result representing the outcome of the operation.</returns>
     /// <example>
     /// <code>
-    /// var result = await Result.FromAsync(
+    /// var result = await Result.BindAsync(
     ///     async ct => await DeleteAllUsersAsync(ct),
     ///     cancellationToken
     /// );
     /// </code>
     /// </example>
-    public static async Task<Result<T>> FromAsync(
+    public static async Task<Result<T>> BindAsync(
         Func<CancellationToken, Task<T>> operation,
         CancellationToken cancellationToken = default)
     {

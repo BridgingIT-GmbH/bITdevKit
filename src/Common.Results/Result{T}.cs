@@ -293,6 +293,28 @@ public readonly partial struct Result<T> : IResult<T>
         }
     }
 
+    public static Result<TNew> Bind<TNew>(Func<TNew> operation)
+    {
+        if (operation is null)
+        {
+            return Result<TNew>.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = operation();
+
+            return Result<TNew>.Success(value);
+        }
+        catch (Exception ex)
+        {
+            return Result<TNew>.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
     /// <summary>
     ///     Creates a Result from an async operation, handling any exceptions that occur.
     /// </summary>
@@ -332,6 +354,36 @@ public readonly partial struct Result<T> : IResult<T>
         catch (Exception ex)
         {
             return Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    public static async Task<Result<TNew>> BindAsync<TNew>(
+        Func<CancellationToken, Task<TNew>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (operation is null)
+        {
+            return Result<TNew>.Failure()
+                .WithError(new Error("Operation cannot be null"));
+        }
+
+        try
+        {
+            var value = await operation(cancellationToken);
+
+            return Result<TNew>.Success(value);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<TNew>.Failure()
+                .WithError(new OperationCancelledError())
+                .WithMessage("Operation was cancelled");
+        }
+        catch (Exception ex)
+        {
+            return Result<TNew>.Failure()
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }

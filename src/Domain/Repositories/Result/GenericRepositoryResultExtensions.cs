@@ -143,7 +143,7 @@ public static class GenericRepositoryResultExtensions
     /// <param name="entity">The entity to delete.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the deletion action result.</returns>
-    public static async Task<Result<(RepositoryActionResult, TEntity)>> DeleteResultAsync<TEntity>(
+    public static async Task<Result<(TEntity entity, RepositoryActionResult action)>> DeleteResultAsync<TEntity>(
         this IGenericRepository<TEntity> source,
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -154,20 +154,20 @@ public static class GenericRepositoryResultExtensions
             var result = await source.DeleteAsync(entity, cancellationToken).AnyContext();
             if (result == RepositoryActionResult.Deleted)
             {
-                return Result<(RepositoryActionResult, TEntity)>.Success((result, entity));
+                return Result<(TEntity, RepositoryActionResult)>.Success((entity, result));
             }
             else if (result == RepositoryActionResult.NotFound)
             {
-                return Result<(RepositoryActionResult, TEntity)>.Failure("Entity not found", new NotFoundError());
+                return Result<(TEntity, RepositoryActionResult)>.Failure("Entity not found", new NotFoundError());
             }
             else
             {
-                return Result<(RepositoryActionResult, TEntity)>.Failure("Entity not deleted", new Error("Entity not deleted"));
+                return Result<(TEntity, RepositoryActionResult)>.Failure("Entity not deleted", new Error("Entity not deleted"));
             }
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            return Result<(RepositoryActionResult, TEntity)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+            return Result<(TEntity, RepositoryActionResult)>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 

@@ -346,7 +346,7 @@ public class ResultNonGenericTests
         Action operation = () => operationExecuted = true;
 
         // Act
-        var result = Result.From(operation);
+        var result = Result.Bind(operation);
 
         // Assert
         result.ShouldBeSuccess();
@@ -360,7 +360,7 @@ public class ResultNonGenericTests
         Action operation = null;
 
         // Act
-        var result = Result.From(operation);
+        var result = Result.Bind(operation);
 
         // Assert
         result.ShouldBeFailure();
@@ -375,7 +375,7 @@ public class ResultNonGenericTests
         Action operation = () => throw new InvalidOperationException(errorMessage);
 
         // Act
-        var result = Result.From(operation);
+        var result = Result.Bind(operation);
 
         // Assert
         result.ShouldBeFailure();
@@ -395,7 +395,7 @@ public class ResultNonGenericTests
         };
 
         // Act
-        var result = await Result.FromAsync(operation);
+        var result = await Result.BindAsync(operation);
 
         // Assert
         result.ShouldBeSuccess();
@@ -414,7 +414,7 @@ public class ResultNonGenericTests
 
         // Act
         cts.Cancel();
-        var result = await Result.FromAsync(operation, cts.Token);
+        var result = await Result.BindAsync(operation, cts.Token);
 
         // Assert
         result.ShouldBeFailure();
@@ -476,7 +476,7 @@ public class ResultNonGenericTests
         Action operation = () => operationExecuted = true;
 
         // Act
-        var result = Result.From(operation);
+        var result = Result.Bind(operation);
 
         // Assert
         result.ShouldBeSuccess();
@@ -495,7 +495,7 @@ public class ResultNonGenericTests
         };
 
         // Act
-        var result = await Result.FromAsync(operation);
+        var result = await Result.BindAsync(operation);
 
         // Assert
         result.ShouldBeSuccess();

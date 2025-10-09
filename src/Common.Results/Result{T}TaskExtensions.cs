@@ -1862,4 +1862,32 @@ public static partial class ResultTTaskExtensions
                 .WithMessage(ex.Message);
         }
     }
+
+    public static async Task<Result<TOutput>> Wrap<TOutput>(this Task<Result<TOutput>> resultTask)
+    {
+        try
+        {
+            var result = await resultTask;
+
+            return result.Wrap<TOutput>();
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<TOutput>.Failure()
+                .WithError(new OperationCancelledError("Operation was cancelled"));
+        }
+        catch (Exception ex)
+        {
+            return Result<TOutput>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    public static async Task<Result> Unwrap<T>(this Task<Result<T>> resultTask)
+    {
+        var result = await resultTask;
+
+        return result.Unwrap();
+    }
 }

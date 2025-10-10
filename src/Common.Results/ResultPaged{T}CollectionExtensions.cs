@@ -1701,7 +1701,7 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
             // or default values if there are no successful results
             long totalCount = 0;
             var currentPage = 1;
-            var pageSize = 10;
+            var pageSize = 0;
             var metadataSet = false;
 
             foreach (var result in results)
@@ -1715,8 +1715,8 @@ public static class ResultPagedCollectionExtensions // TODO: needs to be refacto
                     if (!metadataSet)
                     {
                         totalCount = result.TotalCount;
-                        currentPage = result.CurrentPage;
-                        pageSize = result.PageSize;
+                        //currentPage = result.CurrentPage;
+                        pageSize = result.PageSize; // TODO: should be result.TotalCount but that would not mathc due to long vs int
                         metadataSet = true;
                     }
                     else

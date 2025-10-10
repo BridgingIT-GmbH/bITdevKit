@@ -85,8 +85,8 @@ public static class FilterModelExtensions
             return null;
         }
 
-        source.Page = 1;
-        source.PageSize = 10;
+        source.Page = 0;
+        source.PageSize = 0;
         source.NoTracking = true;
         source.Orderings = [];
         source.Filters = [];
@@ -143,8 +143,8 @@ public static class FilterModelExtensions
                !source.Orderings.Any() &&
                !source.Includes.Any() &&
                string.IsNullOrEmpty(source.Hierarchy) &&
-               source.Page == 1 &&
-               source.PageSize == 10;
+               source.Page == 0 &&
+               source.PageSize == 0;
     }
 
     public static bool HasFilters(this FilterModel source)

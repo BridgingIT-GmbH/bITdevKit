@@ -22,13 +22,13 @@ public class FilterModel
     /// Gets or sets the page number for pagination.
     /// Default value is 1.
     /// </summary>
-    public int Page { get; set; } = 1;
+    public int Page { get; set; }
 
     /// <summary>
     /// Gets or sets the number of items per page.
     /// Default value is 10.
     /// </summary>
-    public int PageSize { get; set; } = 10;
+    public int PageSize { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to disable change tracking for the query.

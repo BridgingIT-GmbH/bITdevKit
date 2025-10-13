@@ -89,6 +89,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public string SqlConnectionString => this.SqlContainer.GetConnectionString();
 
+    public string SqliteConnectionString => $"Data Source=.\\_tests_{nameof(StubDbContext)}_aaa_sqlite.db";
+
     public string AzuriteConnectionString => this.AzuriteContainer.GetConnectionString();
 
     public string CosmosConnectionString => this.CosmosContainer.GetConnectionString();
@@ -207,8 +209,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //}
 
             // TODO: remove file if exists?
-            optionsBuilder.UseSqlite(
-                $"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
+            optionsBuilder.UseSqlite(this.SqliteConnectionString); // _{DateOnly.FromDateTime(DateTime.Now)}
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 

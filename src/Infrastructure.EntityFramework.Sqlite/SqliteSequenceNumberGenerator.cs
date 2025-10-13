@@ -9,6 +9,9 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 /// <summary>
 /// SQLite implementation using sqlite_sequence table with thread-safe operations.
@@ -25,12 +28,29 @@ public class SqliteSequenceNumberGenerator<TContext>(
     : SequenceNumberGeneratorBase<TContext>(loggerFactory, serviceProvider, options)
     where TContext : DbContext
 {
+    private static readonly Regex IdentifierPattern = new(@"^[a-zA-Z0-9_]+$", RegexOptions.Compiled);
+
+    private static void ValidateIdentifier(string name, string type)
+    {
+        if (string.IsNullOrWhiteSpace(name) || !IdentifierPattern.IsMatch(name))
+        {
+            throw new ArgumentException($"{type} '{name}' contains invalid characters. Only alphanumeric and underscores are allowed.");
+        }
+    }
+
     protected override async Task<Result<long>> GetNextInternalAsync(
         TContext context,
         string sequenceName,
         string schema,
         CancellationToken cancellationToken)
     {
+        ValidateIdentifier(sequenceName, "Sequence name");
+        // Schema is ignored in SQLite, but validate if provided for consistency
+        if (!string.IsNullOrWhiteSpace(schema))
+        {
+            ValidateIdentifier(schema, "Schema name");
+        }
+
         try
         {
             var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
@@ -43,18 +63,19 @@ public class SqliteSequenceNumberGenerator<TContext>(
             if (!existsResult.Value)
             {
                 return Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "default"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
             }
 
-            await context.Database.ExecuteSqlAsync(
-                $@"UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = {sequenceName}", cancellationToken);
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+            await context.Database.ExecuteSqlRawAsync(
+                $"UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = {sequenceName}", cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var nextValue = await context.Database
-                .SqlQuery<long>(
-                    $"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
                 .FirstAsync(cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<long>.Success(nextValue);
         }
@@ -73,9 +94,11 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var exists = await context.Database
-                .SqlQuery<int>($"SELECT COUNT(*) FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQueryRaw<int>($"SELECT COUNT(*) AS Value FROM sqlite_sequence WHERE name = '{sequenceName}'")
                 .FirstAsync(cancellationToken) > 0;
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<bool>.Success(exists);
         }
@@ -94,16 +117,16 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var currentValue = await context.Database
-                .SqlQuery<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = '{sequenceName}'")
                 .FirstOrDefaultAsync(cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (currentValue == 0)
             {
                 return Result<SequenceInfo>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "default"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
             }
 
             // SQLite doesn't store min/max/increment in sqlite_sequence
@@ -134,9 +157,11 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var currentValue = await context.Database
-                .SqlQuery<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = '{sequenceName}")
                 .FirstOrDefaultAsync(cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (currentValue == 0)
             {
@@ -162,8 +187,10 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-            await context.Database.ExecuteSqlAsync(
-                $"UPDATE sqlite_sequence SET seq = {startValue} WHERE name = {sequenceName}", cancellationToken);
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+            await context.Database.ExecuteSqlRawAsync(
+                $"UPDATE sqlite_sequence SET seq = {startValue} WHERE name = '{sequenceName}'", cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result.Success();
         }

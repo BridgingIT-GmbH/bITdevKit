@@ -30,7 +30,7 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
         var db = this.fixture.EnsureSqliteDbContext(this.output);
         services.AddDbContext<StubDbContext>(options =>
         {
-            options.UseSqlServer(this.fixture.SqlConnectionString);
+            options.UseSqlite(this.fixture.SqliteConnectionString);
         });
 
         services.AddScoped<ISequenceNumberGenerator, SqliteSequenceNumberGenerator<StubDbContext>>(

@@ -246,12 +246,20 @@ public class StubDbContext : DbContext,
     {
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
-        modelBuilder.HasSequence<int>("TestSequence")
-            .StartsAt(1).IncrementsBy(1);
-        modelBuilder.HasSequence<int>("OtherTestSequence1")
-            .StartsAt(1).IncrementsBy(1);
-        modelBuilder.HasSequence<int>("OtherTestSequence2")
-            .StartsAt(1).IncrementsBy(1);
+        var provider = this.Database.ProviderName;
+        if (provider?.Contains("sqlserver", StringComparison.OrdinalIgnoreCase) == true || provider?.Contains("postgres", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            modelBuilder.HasSequence<int>("TestSequence")
+                .StartsAt(1).IncrementsBy(1);
+            modelBuilder.HasSequence<int>("OtherTestSequence1")
+                .StartsAt(1).IncrementsBy(1);
+            modelBuilder.HasSequence<int>("OtherTestSequence2")
+                .StartsAt(1).IncrementsBy(1);
+        }
+        else if (provider?.Contains("sqlite", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            // SQLite: No sequences, skip
+        }
     }
 }
 

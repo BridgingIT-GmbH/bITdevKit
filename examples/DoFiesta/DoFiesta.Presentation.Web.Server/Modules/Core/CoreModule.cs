@@ -72,6 +72,7 @@ public class CoreModule : WebModuleBase
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
                 .UseLogger()/*.UseSimpleLogger()*/)
+            .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
                 .DeleteOnStartup(environment.IsLocalDevelopment()))

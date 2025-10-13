@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -25,12 +26,25 @@ public class SqlServerSequenceNumberGenerator<TContext>(
     : SequenceNumberGeneratorBase<TContext>(loggerFactory, serviceProvider, options)
     where TContext : DbContext
 {
+    private static readonly Regex IdentifierPattern = new(@"^[a-zA-Z0-9_]+$", RegexOptions.Compiled);
+
+    private static void ValidateIdentifier(string name, string type)
+    {
+        if (string.IsNullOrWhiteSpace(name) || !IdentifierPattern.IsMatch(name))
+        {
+            throw new ArgumentException($"{type} '{name}' contains invalid characters. Only alphanumeric and underscores are allowed.");
+        }
+    }
+
     protected override async Task<Result<long>> GetNextInternalAsync(
         TContext context,
         string sequenceName,
         string schema,
         CancellationToken cancellationToken)
     {
+        ValidateIdentifier(sequenceName, "Sequence name");
+        ValidateIdentifier(schema ?? "dbo", "Schema name");
+
         try
         {
             var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
@@ -46,7 +60,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                     .WithError(new SequenceNotFoundError(sequenceName, schema ?? "dbo"));
             }
 
-            var qualifiedName = $"[{schema ?? "dbo"}].[{sequenceName}]";
+            var schemaName = schema ?? "dbo";
             var outputParam = new SqlParameter
             {
                 ParameterName = "@NextValue",
@@ -54,10 +68,10 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 Direction = ParameterDirection.Output
             };
 
-            var schemaName = schema ?? "dbo";
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection. (Qualified name is validated)
             await context.Database.ExecuteSqlRawAsync(
-                $"SET @NextValue = NEXT VALUE FOR [{schemaName}].[{sequenceName}]", outputParam);
+                $"SET @NextValue = NEXT VALUE FOR [{schemaName}].[{sequenceName}]",
+                outputParam);
 #pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<long>.Success((long)outputParam.Value);
@@ -80,16 +94,16 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         {
             var schemaName = schema ?? "dbo";
 
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var exists = await context.Database
                 .SqlQueryRaw<int>(
                     $@"SELECT COUNT(*) AS Value
                        FROM sys.sequences s
                        INNER JOIN sys.schemas sc ON s.schema_id = sc.schema_id
-                       WHERE s.name = '{sequenceName}'
-                       AND sc.name = '{schemaName}'")
+                       WHERE s.name = {{0}}
+                       AND sc.name = {{1}}",
+                    sequenceName,
+                    schemaName)
                 .FirstAsync(cancellationToken) > 0;
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<bool>.Success(exists);
         }
@@ -110,7 +124,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "dbo";
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+
             var info = await context.Database
                 .SqlQueryRaw<SequenceInfo>(
                     $@"SELECT 
@@ -123,10 +137,11 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                         s.is_cycling AS IsCyclic
                        FROM sys.sequences s
                        INNER JOIN sys.schemas sc ON s.schema_id = sc.schema_id
-                       WHERE s.name = '{sequenceName}'
-                       AND sc.name = '{schemaName}'")
+                       WHERE s.name = {{0}}
+                       AND sc.name = {{1}}",
+                    sequenceName,
+                    schemaName)
                 .FirstOrDefaultAsync(cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (info == null)
             {
@@ -153,15 +168,17 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "dbo";
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
-            var currentValue = await context.Database.SqlQueryRaw<long>(
+
+            var currentValue = await context.Database
+                .SqlQueryRaw<long>(
                     $@"SELECT CAST(current_value AS BIGINT) AS Value
                        FROM sys.sequences s
                        INNER JOIN sys.schemas sc ON s.schema_id = sc.schema_id
-                       WHERE s.name = '{sequenceName}'
-                       AND sc.name = '{schemaName}'")
+                       WHERE s.name = {{0}}
+                       AND sc.name = {{1}}",
+                    sequenceName,
+                    schemaName)
                 .FirstOrDefaultAsync(cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (currentValue == 0)
             {
@@ -186,11 +203,16 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         string schema,
         CancellationToken cancellationToken)
     {
+        ValidateIdentifier(sequenceName, "Sequence name");
+        ValidateIdentifier(schema ?? "dbo", "Schema name");
+
         try
         {
             var schemaName = schema ?? "dbo";
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
-            await context.Database.ExecuteSqlRawAsync($"ALTER SEQUENCE [{schemaName}].[{sequenceName}] RESTART WITH {startValue}", cancellationToken: cancellationToken);
+
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection. (Validated identifiers)
+            await context.Database.ExecuteSqlRawAsync(
+                $"ALTER SEQUENCE [{schemaName}].[{sequenceName}] RESTART WITH {startValue}");
 #pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result.Success();

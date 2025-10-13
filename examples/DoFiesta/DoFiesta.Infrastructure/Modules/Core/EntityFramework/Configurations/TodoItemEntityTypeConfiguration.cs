@@ -24,6 +24,9 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
             .ValueGeneratedOnAdd()
             .HasConversion(id => id.Value, value => TodoItemId.Create(value));
 
+        builder.Property(x => x.Number)
+            .IsRequired();
+
         builder.Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(200);

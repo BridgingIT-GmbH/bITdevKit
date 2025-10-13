@@ -19,13 +19,12 @@ public class InMemorySequenceNumberGeneratorTests : SequenceNumberGeneratorTests
     public InMemorySequenceNumberGeneratorTests()
     {
         this.mockLoggerFactory = Substitute.For<ILoggerFactory>();
-        this.mockLoggerFactory.CreateLogger(Arg.Any<string>())
-            .Returns(Substitute.For<ILogger>());
+        this.mockLoggerFactory.CreateLogger(Arg.Any<string>()).Returns(Substitute.For<ILogger>());
     }
 
     protected override ISequenceNumberGenerator CreateGenerator()
     {
-        var sut = new InMemorySequenceNumberGenerator();
+        var sut = new InMemorySequenceNumberGenerator(this.mockLoggerFactory);
         sut.ConfigureSequence("TestSequence", startValue: 1, increment: 1);
         sut.ConfigureSequence("OtherTestSequence1", startValue: 1, increment: 1);
         sut.ConfigureSequence("OtherTestSequence2", startValue: 1, increment: 1);

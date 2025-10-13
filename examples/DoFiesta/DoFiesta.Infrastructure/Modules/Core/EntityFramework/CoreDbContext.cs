@@ -30,7 +30,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasSequence<int>("TodoItemsSequence")
+        modelBuilder.HasSequence<int>("TodoItemSequence")
             .StartsAt(1).IncrementsBy(1);
 
         base.OnModelCreating(modelBuilder);

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,12 +18,13 @@ using System.Threading.Tasks;
 /// <remarks>
 /// Initializes a new instance of the <see cref="InMemorySequenceNumberGenerator"/> class.
 /// </remarks>
-/// <param name="logger">Optional logger instance.</param>
+/// <param name="loggerFactory">loggerFactory instance.</param>
 public class InMemorySequenceNumberGenerator(
-    ILogger<InMemorySequenceNumberGenerator> logger = null) : ISequenceNumberGenerator
+    ILoggerFactory loggerFactory) : ISequenceNumberGenerator
 {
     private readonly ConcurrentDictionary<string, SequenceState> sequences = [];
     private readonly ConcurrentDictionary<string, SemaphoreSlim> locks = [];
+    private readonly ILogger logger = loggerFactory?.CreateLogger<InMemorySequenceNumberGenerator>() ?? NullLoggerFactory.Instance.CreateLogger(nameof(InMemorySequenceNumberGenerator));
 
     /// <summary>
     /// Configures a sequence with specific settings.

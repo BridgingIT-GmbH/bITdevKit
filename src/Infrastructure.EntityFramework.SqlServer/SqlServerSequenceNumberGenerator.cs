@@ -56,13 +56,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(
-                ex,
-                "Failed to get next value from sequence {Sequence} " +
-                "(context={Context}): {ErrorMessage}",
-                sequenceName,
-                this.contextTypeName,
-                ex.Message);
+            this.logger.LogError(ex, "Failed to get next value from sequence {Sequence} (context={Context}): {ErrorMessage}", sequenceName, this.contextTypeName, ex.Message);
 
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -90,13 +84,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(
-                ex,
-                "Failed to check existence of sequence {Sequence} " +
-                "(context={Context}): {ErrorMessage}",
-                sequenceName,
-                this.contextTypeName,
-                ex.Message);
+            this.logger.LogError(ex, "Failed to check existence of sequence {Sequence} (context={Context}): {ErrorMessage}", sequenceName, this.contextTypeName, ex.Message);
 
             return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -137,13 +125,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(
-                ex,
-                "Failed to get sequence info for {Sequence} " +
-                "(context={Context}): {ErrorMessage}",
-                sequenceName,
-                this.contextTypeName,
-                ex.Message);
+            this.logger.LogError(ex, "Failed to get sequence info for {Sequence} (context={Context}): {ErrorMessage}", sequenceName, this.contextTypeName, ex.Message);
 
             return Result<SequenceInfo>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -177,13 +159,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(
-                ex,
-                "Failed to get current value from sequence {Sequence} " +
-                "(context={Context}): {ErrorMessage}",
-                sequenceName,
-                this.contextTypeName,
-                ex.Message);
+            this.logger.LogError(ex, "Failed to get current value from sequence {Sequence} (context={Context}): {ErrorMessage}", sequenceName, this.contextTypeName, ex.Message);
 
             return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
@@ -205,13 +181,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(
-                ex,
-                "Failed to reset sequence {Sequence} " +
-                "(context={Context}): {ErrorMessage}",
-                sequenceName,
-                this.contextTypeName,
-                ex.Message);
+            this.logger.LogError(ex, "Failed to reset sequence {Sequence} (context={Context}): {ErrorMessage}", sequenceName, this.contextTypeName, ex.Message);
 
             return Result.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }

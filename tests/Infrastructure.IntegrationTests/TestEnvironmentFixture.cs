@@ -46,8 +46,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
         this.PostgresContainer = new PostgreSqlBuilder()
              .WithImage("postgres:16-alpine")
              .WithDatabase("testdb")
-             .WithUsername("testuser")
-             .WithPassword("testpassword")
+             .WithUsername("postgres")
+             .WithPassword("postgres")
              .WithNetworkAliases(this.NetworkName)
              .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
              .Build();

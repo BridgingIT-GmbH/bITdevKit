@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -24,12 +25,25 @@ public class PostgresSequenceNumberGenerator<TContext>(
     : SequenceNumberGeneratorBase<TContext>(loggerFactory, serviceProvider, options)
     where TContext : DbContext
 {
+    private static readonly Regex IdentifierPattern = new(@"^[a-zA-Z0-9_]+$", RegexOptions.Compiled);
+
+    private static void ValidateIdentifier(string name, string type)
+    {
+        if (string.IsNullOrWhiteSpace(name) || !IdentifierPattern.IsMatch(name))
+        {
+            throw new ArgumentException($"{type} '{name}' contains invalid characters. Only alphanumeric and underscores are allowed.");
+        }
+    }
+
     protected override async Task<Result<long>> GetNextInternalAsync(
         TContext context,
         string sequenceName,
         string schema,
         CancellationToken cancellationToken)
     {
+        ValidateIdentifier(sequenceName, "Sequence name");
+        ValidateIdentifier(schema ?? "public", "Schema name");
+
         try
         {
             var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
@@ -46,10 +60,12 @@ public class PostgresSequenceNumberGenerator<TContext>(
             }
 
             var schemaName = schema ?? "public";
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var nextValue = await context.Database
-                .SqlQuery<long>(
-                    $"SELECT nextval('\"{schemaName}\".\"{sequenceName}\"')")
+                .SqlQueryRaw<long>(
+                    $"SELECT nextval('\"{schemaName}\".\"{sequenceName}\"') AS \"Value\"")
                 .FirstAsync(cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<long>.Success(nextValue);
         }
@@ -69,12 +85,15 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
+
             var exists = await context.Database
-                .SqlQuery<int>(
-                    $@"SELECT COUNT(*)
+                .SqlQueryRaw<int>(
+                    $@"SELECT COUNT(*) AS ""Value""
                        FROM information_schema.sequences
-                       WHERE sequence_name = {sequenceName}
-                       AND sequence_schema = {schemaName}")
+                       WHERE sequence_name = {{0}}
+                       AND sequence_schema = {{1}}",
+                    sequenceName,
+                    schemaName)
                 .FirstAsync(cancellationToken) > 0;
 
             return Result<bool>.Success(exists);
@@ -96,18 +115,20 @@ public class PostgresSequenceNumberGenerator<TContext>(
         {
             var schemaName = schema ?? "public";
             var info = await context.Database
-                .SqlQuery<SequenceInfo>(
+                .SqlQueryRaw<SequenceInfo>(
                     $@"SELECT 
-                        sequence_name AS Name,
-                        sequence_schema AS Schema,
-                        CAST(last_value AS BIGINT) AS CurrentValue,
-                        CAST(minimum_value AS BIGINT) AS MinValue,
-                        CAST(maximum_value AS BIGINT) AS MaxValue,
-                        CAST(increment_by AS INT) AS Increment,
-                        (CASE WHEN cycle_option = 'YES' THEN 1 ELSE 0 END) AS IsCyclic
-                       FROM information_schema.sequences
-                       WHERE sequence_name = {sequenceName}
-                       AND sequence_schema = {schemaName}")
+                        sequencename AS ""Name"",
+                        schemaname AS ""Schema"",
+                        CAST(last_value AS BIGINT) AS ""CurrentValue"",
+                        CAST(min_value AS BIGINT) AS ""MinValue"",
+                        CAST(max_value AS BIGINT) AS ""MaxValue"",
+                        CAST(increment_by AS INT) AS ""Increment"",
+                        cycle AS ""IsCyclic""
+                       FROM pg_sequences
+                       WHERE sequencename = {{0}}
+                       AND schemaname = {{1}}",
+                    sequenceName,
+                    schemaName)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (info == null)
@@ -134,10 +155,14 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
+
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var currentValue = await context.Database
-                .SqlQuery<long>(
-                    $@"SELECT last_value FROM ""{schemaName}"".""{sequenceName}""")
+                .SqlQueryRaw<long>(
+                    $@"SELECT last_value AS ""Value""
+                       FROM ""{schemaName}"".""{sequenceName}""")
                 .FirstOrDefaultAsync(cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<long>.Success(currentValue);
         }
@@ -155,11 +180,18 @@ public class PostgresSequenceNumberGenerator<TContext>(
         string schema,
         CancellationToken cancellationToken)
     {
+        ValidateIdentifier(sequenceName, "Sequence name");
+        ValidateIdentifier(schema ?? "public", "Schema name");
+
         try
         {
             var schemaName = schema ?? "public";
-            await context.Database.ExecuteSqlAsync(
-                $@"ALTER SEQUENCE ""{schemaName}"".""{sequenceName}"" RESTART WITH {startValue}", cancellationToken);
+
+#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
+            await context.Database.ExecuteSqlRawAsync(
+                $"ALTER SEQUENCE \"{schemaName}\".\"{sequenceName}\" RESTART WITH {startValue}",
+                cancellationToken);
+#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result.Success();
         }

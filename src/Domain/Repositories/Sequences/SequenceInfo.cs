@@ -23,25 +23,25 @@ public class SequenceInfo
     /// <summary>
     /// Gets or sets the current value of the sequence.
     /// </summary>
-    public long CurrentValue { get; set; }
+    public long? CurrentValue { get; set; }
 
     /// <summary>
     /// Gets or sets the minimum value the sequence can generate.
     /// </summary>
-    public long MinValue { get; set; }
+    public long? MinValue { get; set; }
 
     /// <summary>
     /// Gets or sets the maximum value the sequence can generate.
     /// </summary>
-    public long MaxValue { get; set; }
+    public long? MaxValue { get; set; }
 
     /// <summary>
     /// Gets or sets the increment step for the sequence.
     /// </summary>
-    public int Increment { get; set; }
+    public int? Increment { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the sequence cycles back to minimum after reaching maximum.
     /// </summary>
-    public bool IsCyclic { get; set; }
+    public bool? IsCyclic { get; set; }
 }

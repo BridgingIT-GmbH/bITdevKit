@@ -49,13 +49,13 @@
       },
       "NSwag.AspNetCore": {
         "type": "Direct",
-        "requested": "[14.6.0, )",
-        "resolved": "14.6.0",
-        "contentHash": "HfCWMcMLD6/lZo16jvx+ShXMe6je7Eq8bJMqmajCUET53cJgNrK2pZzDGQwueGj76XYpAXQFEndEkTR4ZMsZpg==",
+        "requested": "[14.6.1, )",
+        "resolved": "14.6.1",
+        "contentHash": "Fs85RYKbG6ooORPH17bLcLR3to9BF8RT0f59yk4h6p+42JkeMwwbvu2q5sf+uj7quQhGXggWE5MwfbFjFfSOmQ==",
         "dependencies": {
-          "NSwag.Annotations": "14.6.0",
-          "NSwag.Core.Yaml": "14.6.0",
-          "NSwag.Generation.AspNetCore": "14.6.0"
+          "NSwag.Annotations": "14.6.1",
+          "NSwag.Core.Yaml": "14.6.1",
+          "NSwag.Generation.AspNetCore": "14.6.1"
         }
       },
       "RazorSlices": {
@@ -352,74 +352,74 @@
       },
       "NJsonSchema": {
         "type": "Transitive",
-        "resolved": "11.5.0",
-        "contentHash": "PHBL8EZOXEflWdztsZTYKJp2PhVsMt8bsbWJzy8VI5lq/6sufvNOsylFThwcGplw1bj+eiHSYue76uLqQQgSGg==",
+        "resolved": "11.5.1",
+        "contentHash": "3a7ntoBncSKkLgpIhT3uQ8BiyDzYKOHIzpzNF4o1vtKc+Re4vWxBcDXFDarOWcr/UkxZ8nxRXbbWk05j6bXFzQ==",
         "dependencies": {
-          "NJsonSchema.Annotations": "11.5.0",
+          "NJsonSchema.Annotations": "11.5.1",
           "Namotion.Reflection": "3.4.3",
           "Newtonsoft.Json": "13.0.3"
         }
       },
       "NJsonSchema.Annotations": {
         "type": "Transitive",
-        "resolved": "11.5.0",
-        "contentHash": "X2BYA60mL9wAJBFTKfe9R0ozMb5j2bU38vrl0y7VKWcHMNTrPR98Tma/AxNc+D+a+6LoMF8wjba/RD7LSxp5rg=="
+        "resolved": "11.5.1",
+        "contentHash": "xiqZ2DBJM1HuV+EhXgueb5ZUBlWFN3kVfLTKdtpTSxvtyQCO/vit8lqZiUiejnReUMRMIUhtS9m0GbieHZlSow=="
       },
       "NJsonSchema.NewtonsoftJson": {
         "type": "Transitive",
-        "resolved": "11.5.0",
-        "contentHash": "BpBvCtND3fjwDrEjQRsaQVWb3BAde8BFvS5zT0Kczunwk4ZskD9zcWGfp86IV8w5tCTdjX67pLvtIbVB4OX27Q==",
+        "resolved": "11.5.1",
+        "contentHash": "0ibvc7n1V9JvtHf7OLl8lREN6yONl509eLjj8MokkgsqwsWe6UMmWq/Arki8YFSQpKpSFLbECQmBQauKyxkkmg==",
         "dependencies": {
-          "NJsonSchema": "11.5.0",
+          "NJsonSchema": "11.5.1",
           "Newtonsoft.Json": "13.0.3"
         }
       },
       "NJsonSchema.Yaml": {
         "type": "Transitive",
-        "resolved": "11.5.0",
-        "contentHash": "KGjYDLpgRacNKoezXp2IrprjuAgRZyM6bdC3crxqtOGEKmFqZE6oj1hVazr1JGr7M6yPI0nYhvY5fFtBJ7cmzw==",
+        "resolved": "11.5.1",
+        "contentHash": "WDnbkAviqxeKMqLXteB4Wfn4ecuWn0PUJEKgD9h3S4yEiT2WG3QbMOsqZC+kiC4jyOmbNIWEnJ3kkwbdXkqEBg==",
         "dependencies": {
-          "NJsonSchema": "11.5.0",
+          "NJsonSchema": "11.5.1",
           "YamlDotNet": "16.3.0"
         }
       },
       "NSwag.Annotations": {
         "type": "Transitive",
-        "resolved": "14.6.0",
-        "contentHash": "N0LWr74TXqzPVIaj/oj+BCvWNZ+RuGZ9DLr3RoBE3jOUVxgevgHq75zuYyQtYavqDjD//vBlKIGzsThzrI7eGw=="
+        "resolved": "14.6.1",
+        "contentHash": "okrdLvDERu4hHbcYZ22Qz87zmcigRjIEJHfHYC3OmP/kfcUORmwXFUdeGXUMUi0KnZeRIpFpJlVR8UhIEj/FvA=="
       },
       "NSwag.Core": {
         "type": "Transitive",
-        "resolved": "14.6.0",
-        "contentHash": "CAv9P15ZrDvjYWiMWVJXEN5jMXpMZiUyIjKZDy1UVZE/OGbsHt2Uzir4BRC8YfvpAT63LQdRZUB5vut767Tbcg==",
+        "resolved": "14.6.1",
+        "contentHash": "B5qQA9y1B6KClFL4/qpt3Xy+yjwonWzw1VGev8/qB4CXirbUEqWNKN3XOSZedaOeLEgGP2ZKZfag7oqbhZs+og==",
         "dependencies": {
-          "NJsonSchema": "11.4.0"
+          "NJsonSchema": "11.5.1"
         }
       },
       "NSwag.Core.Yaml": {
         "type": "Transitive",
-        "resolved": "14.6.0",
-        "contentHash": "q4omvT/OTKsfWRms90xTloakbMkQ8GhjKlk783zP4kR6Wwgd3UsE/jt4P5nenJgilLToy9y33+ZN8C4SrM9LgQ==",
+        "resolved": "14.6.1",
+        "contentHash": "k1w+8a7BoLJRIrvfg7T/sv/uviUa8xEXpVt/A1VGpKhLwUJ4uMDXFtO4lQPj4H78f8XfM1f/GvByuVfSxz+JqA==",
         "dependencies": {
-          "NJsonSchema.Yaml": "11.5.0",
-          "NSwag.Core": "14.6.0"
+          "NJsonSchema.Yaml": "11.5.1",
+          "NSwag.Core": "14.6.1"
         }
       },
       "NSwag.Generation": {
         "type": "Transitive",
-        "resolved": "14.6.0",
-        "contentHash": "UhFzOE/vLn9mqYpEfwDfZV4JPTLuS2eJ6GYr+ObukeBKAYVSI1vPEodsnqzhdh50nPcJp4az8ZfZpDvnMpV85A==",
+        "resolved": "14.6.1",
+        "contentHash": "lC1HkCRYgWfid7qvg3mSRvHUNEQodnO7IzW9MKYR2gWurkQDGV16it2XaYWKhH7g/a91ppXGPQeK1CUT54nB3Q==",
         "dependencies": {
-          "NJsonSchema.NewtonsoftJson": "11.5.0",
-          "NSwag.Core": "14.6.0"
+          "NJsonSchema.NewtonsoftJson": "11.5.1",
+          "NSwag.Core": "14.6.1"
         }
       },
       "NSwag.Generation.AspNetCore": {
         "type": "Transitive",
-        "resolved": "14.6.0",
-        "contentHash": "VBzx66NmcdAW3Fm1A5LHkH8ZxDXxHP10UVMBFYFxhIhVYINwtpT9Zagl9cpQ7QYonk6AFJRXd6WnJ6SpG2H0Ww==",
+        "resolved": "14.6.1",
+        "contentHash": "iL/Zg8ij9W1SFd/OpJ3nqdej7zahWfhKgdyyYFora5645XYi6qjegPmHni38VJcuVdb//C68VcRnp8Q/GwC/OA==",
         "dependencies": {
-          "NSwag.Generation": "14.6.0"
+          "NSwag.Generation": "14.6.1"
         }
       },
       "Polly.Core": {
@@ -624,7 +624,7 @@
           "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.9, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.8, )"
+          "System.Linq.Dynamic.Core": "[1.6.9, )"
         }
       },
       "BridgingIT.DevKit.Presentation": {
@@ -912,9 +912,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.8, )",
-        "resolved": "1.6.8",
-        "contentHash": "UjDFFyeNwoGN08bx04DDAhEFbxbc33pAn13V53FnXsPt6QlzlSbfJ8rEhTtXbq1uzjYweRguhs7Zav0bbDTT1g=="
+        "requested": "[1.6.9, )",
+        "resolved": "1.6.9",
+        "contentHash": "+3M85Vti20gPSo8fObzbmoxbL3bwNwHGl/ViI2FESuVUS+AORy8snrnvDE8jhYbyrTIfs9ge3lj8eOYw9HeY+w=="
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

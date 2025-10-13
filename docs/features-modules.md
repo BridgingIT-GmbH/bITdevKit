@@ -4,7 +4,9 @@
 
 ## Overview
 
-The `Modules` feature in bITDevKit enables developers to build modular monoliths, where an application is organized into independent, self-contained modules within a single host and repository. Each module encapsulates its own business logic, data access and presentation, providing clear boundaries for development and testing. Designed for .NET developers, this feature supports parallel development, feature toggling and request scoping, all while leveraging shared infrastructure. Modules integrate seamlessly with bITDevKit components like requesters, notifiers and repositories, using strongly-typed configurations and pluggable behaviors to ensure flexibility and maintainability.
+The `Modules` feature in bITDevKit enables developers to build modular monoliths, where an application is organized into independent, self-contained feature modules within a single host and repository. Each feature module encapsulates its own business logic, data access and presentation, providing clear boundaries for development and testing.
+
+Designed for .NET developers, this feature supports parallel development, feature toggling and request scoping, all while leveraging shared infrastructure. Modules integrate seamlessly with bITDevKit components like requesters, notifiers and repositories, using strongly-typed configurations and pluggable behaviors to ensure flexibility and maintainability.
 
 ### Background
 
@@ -16,7 +18,7 @@ Traditional monoliths often suffer from tightly coupled code, making changes ris
 
 ### Solution
 
-The `Modules` feature addresses these issues by enabling developers to define modules that encapsulate specific functionality, such as customer or order management. Each module handles its own services, configurations and endpoints, with support for enabling/disabling modules, scoping requests and integrating with bITDevKit features. This modular structure reduces coupling, simplifies testing and supports independent development, all within a single host, making it ideal for modern .NET applications.
+The `Modules` feature addresses these issues by enabling developers to define modules that encapsulate specific functionality, such as customer or order management. Each module handles its own services, configurations and endpoints, with support for enabling/disabling modules, scoping requests and integrating with other bITDevKit features. This modular structure reduces coupling, simplifies testing and supports independent development, all within a single host, making it ideal for modern .NET applications.
 
 ### Key Features
 

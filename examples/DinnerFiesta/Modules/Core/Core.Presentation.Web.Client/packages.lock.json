@@ -22,9 +22,9 @@
       },
       "NSwag.MSBuild": {
         "type": "Direct",
-        "requested": "[14.6.0, )",
-        "resolved": "14.6.0",
-        "contentHash": "RwEj96gQ0RjUanyvgC4lUaeY3p3ClI9J6VNOT5wrBgwVj7Nf9VzTVDOR9ruKcWPcxoa75kudE4aq22TSx2mb3A=="
+        "requested": "[14.6.1, )",
+        "resolved": "14.6.1",
+        "contentHash": "x3Nz/cMQG8HU+yYb+58SDrXAWddEk/J4kbl4pSupN3Rx2qyB5DPVimlny+33VNKivD0opejDhuWmQkEAEwr23g=="
       },
       "MessagePack.Annotations": {
         "type": "Transitive",

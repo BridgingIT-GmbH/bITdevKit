@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -38,19 +36,6 @@ public interface ISequenceNumberGenerator
         IEnumerable<string> sequenceNames,
         string schema = null,
         CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Gets the next value for a sequence based on entity type convention.
-    /// Convention: {EntityName}Sequence
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="schema">The schema containing the sequence (optional).</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Result containing the next sequence value or errors.</returns>
-    Task<Result<long>> GetNextForEntityAsync<TEntity>(
-        string schema = null,
-        CancellationToken cancellationToken = default)
-        where TEntity : class, IEntity;
 
     /// <summary>
     /// Checks if the specified sequence exists.
@@ -101,125 +86,4 @@ public interface ISequenceNumberGenerator
         long startValue,
         string schema = null,
         CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-/// Configuration options for sequence number generation.
-/// </summary>
-public class SequenceNumberGeneratorOptions
-{
-    /// <summary>
-    /// Gets or sets the timeout duration for acquiring sequence locks.
-    /// Default is 30 seconds.
-    /// </summary>
-    public TimeSpan LockTimeout { get; set; } = TimeSpan.FromSeconds(30);
-
-    /// <summary>
-    /// Gets or sets the operation timeout duration for database operations.
-    /// Default is 10 seconds.
-    /// </summary>
-    public TimeSpan OperationTimeout { get; set; } = TimeSpan.FromSeconds(10);
-
-    /// <summary>
-    /// Gets or sets the minimum log level for sequence operations.
-    /// Default is Information.
-    /// </summary>
-    public LogLevel MinimumLogLevel { get; set; } = LogLevel.Information;
-
-    /// <summary>
-    /// Gets or sets per-sequence configuration overrides.
-    /// Key is the sequence name, value is the sequence-specific options.
-    /// </summary>
-    public Dictionary<string, SequenceOptions> SequenceOverrides { get; set; } = [];
-}
-
-/// <summary>
-/// Configuration options for a specific sequence.
-/// </summary>
-public class SequenceOptions
-{
-    /// <summary>
-    /// Gets or sets the lock timeout for this specific sequence.
-    /// Overrides the global LockTimeout setting.
-    /// </summary>
-    public TimeSpan? LockTimeout { get; set; }
-
-    /// <summary>
-    /// Gets or sets the operation timeout for this specific sequence.
-    /// Overrides the global OperationTimeout setting.
-    /// </summary>
-    public TimeSpan? OperationTimeout { get; set; }
-}
-
-/// <summary>
-/// Contains metadata information about a database sequence.
-/// </summary>
-public class SequenceInfo
-{
-    /// <summary>
-    /// Gets or sets the name of the sequence.
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    /// Gets or sets the schema containing the sequence.
-    /// </summary>
-    public string Schema { get; set; }
-
-    /// <summary>
-    /// Gets or sets the current value of the sequence.
-    /// </summary>
-    public long CurrentValue { get; set; }
-
-    /// <summary>
-    /// Gets or sets the minimum value the sequence can generate.
-    /// </summary>
-    public long MinValue { get; set; }
-
-    /// <summary>
-    /// Gets or sets the maximum value the sequence can generate.
-    /// </summary>
-    public long MaxValue { get; set; }
-
-    /// <summary>
-    /// Gets or sets the increment step for the sequence.
-    /// </summary>
-    public int Increment { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the sequence cycles back to minimum after reaching maximum.
-    /// </summary>
-    public bool IsCyclic { get; set; }
-}
-
-/// <summary>
-/// Error indicating that a sequence was not found in the database.
-/// </summary>
-public class SequenceNotFoundError(string sequenceName, string schema) : ResultErrorBase($"Sequence '{sequenceName}' not found in schema '{schema}'")
-{
-    /// <summary>
-    /// Gets the name of the sequence that was not found.
-    /// </summary>
-    public string SequenceName { get; } = sequenceName;
-
-    /// <summary>
-    /// Gets the schema where the sequence was expected.
-    /// </summary>
-    public string Schema { get; } = schema;
-}
-
-/// <summary>
-/// Error indicating that a sequence lock could not be acquired within the timeout period.
-/// </summary>
-public class SequenceLockTimeoutError(string sequenceName, TimeSpan timeout) : ResultErrorBase($"Failed to acquire lock for sequence '{sequenceName}' within {timeout.TotalSeconds} seconds")
-{
-    /// <summary>
-    /// Gets the name of the sequence that could not be locked.
-    /// </summary>
-    public string SequenceName { get; } = sequenceName;
-
-    /// <summary>
-    /// Gets the timeout duration that was exceeded.
-    /// </summary>
-    public TimeSpan Timeout { get; } = timeout;
 }

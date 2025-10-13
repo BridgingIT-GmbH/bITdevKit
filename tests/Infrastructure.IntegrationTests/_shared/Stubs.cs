@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
-using System.Linq.Expressions;
 using Application.Messaging;
 using Domain;
 using Domain.Model;
@@ -14,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 public class PersonStub : AggregateRoot<Guid>
 {
@@ -245,6 +245,13 @@ public class StubDbContext : DbContext,
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+
+        modelBuilder.HasSequence<int>("TestSequence")
+            .StartsAt(1).IncrementsBy(1);
+        modelBuilder.HasSequence<int>("OtherTestSequence1")
+            .StartsAt(1).IncrementsBy(1);
+        modelBuilder.HasSequence<int>("OtherTestSequence2")
+            .StartsAt(1).IncrementsBy(1);
     }
 }
 

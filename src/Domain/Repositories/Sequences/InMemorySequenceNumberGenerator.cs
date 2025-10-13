@@ -65,6 +65,12 @@ public class InMemorySequenceNumberGenerator(
         var key = GetKey(sequenceName, schema);
         var semaphore = this.locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
+        if (!this.sequences.TryGetValue(key, out var foundState))
+        {
+            return Result<long>.Failure()
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
+        }
+
         await semaphore.WaitAsync(cancellationToken);
 
         try
@@ -120,7 +126,6 @@ public class InMemorySequenceNumberGenerator(
         foreach (var name in sequenceNames)
         {
             var result = await this.GetNextAsync(name, schema, cancellationToken);
-
             if (result.IsSuccess)
             {
                 results[name] = result.Value;
@@ -138,17 +143,6 @@ public class InMemorySequenceNumberGenerator(
         }
 
         return Result<Dictionary<string, long>>.Success(results);
-    }
-
-    public Task<Result<long>> GetNextForEntityAsync<TEntity>(
-        string schema = null,
-        CancellationToken cancellationToken = default)
-        where TEntity : class, IEntity
-    {
-        var entityName = typeof(TEntity).Name;
-        var sequenceName = $"{entityName}Sequence";
-
-        return this.GetNextAsync(sequenceName, schema, cancellationToken);
     }
 
     public Task<Result<bool>> ExistsAsync(
@@ -173,9 +167,7 @@ public class InMemorySequenceNumberGenerator(
         {
             return Task.FromResult(
                 Result<SequenceInfo>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "default")));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default")));
         }
 
         var info = new SequenceInfo

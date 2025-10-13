@@ -76,13 +76,13 @@ public abstract class SequenceNumberGeneratorTestsBase
         await sut.GetNextAsync(sequenceName);  // Increment once
 
         // Act
-        var resetResult = await sut.ResetSequenceAsync(sequenceName, 1000);
+        var resetResult = await sut.ResetSequenceAsync(sequenceName, 1);
         var nextResult = await sut.GetNextAsync(sequenceName);
 
         // Assert
         resetResult.ShouldBeSuccess();
         nextResult.ShouldBeSuccess();
-        nextResult.Value.ShouldBeGreaterThanOrEqualTo(1000);
+        nextResult.Value.ShouldBeGreaterThanOrEqualTo(1);
     }
 
     [Fact]

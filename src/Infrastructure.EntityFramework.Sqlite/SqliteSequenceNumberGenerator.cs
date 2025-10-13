@@ -66,16 +66,12 @@ public class SqliteSequenceNumberGenerator<TContext>(
                     .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
             }
 
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             await context.Database.ExecuteSqlRawAsync(
-                $"UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = {sequenceName}", cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
+                "UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = '{0}'", sequenceName);
 
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var nextValue = await context.Database
-                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQueryRaw<long>("SELECT seq AS Value FROM sqlite_sequence WHERE name = '{0}'", sequenceName)
                 .FirstAsync(cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             return Result<long>.Success(nextValue);
         }
@@ -94,11 +90,18 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var exists = await context.Database
-                .SqlQueryRaw<int>($"SELECT COUNT(*) AS Value FROM sqlite_sequence WHERE name = '{sequenceName}'")
+                .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM sqlite_sequence WHERE name = '{0}'", sequenceName)
                 .FirstAsync(cancellationToken) > 0;
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
+
+            if (!exists)
+            {
+                // Create the sequence entry if it doesn't exist
+                await context.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO sqlite_sequence (name, seq) VALUES ('{0}', 0)", sequenceName);
+                exists = true;  // Now it exists after insertion
+                this.logger.LogDebug("Created emulated sequence entry for {Sequence} in sqlite_sequence", sequenceName);
+            }
 
             return Result<bool>.Success(exists);
         }
@@ -117,11 +120,9 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var currentValue = await context.Database
-                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = '{sequenceName}'")
+                .SqlQueryRaw<long>("SELECT seq AS Value FROM sqlite_sequence WHERE name = '{0}'", sequenceName)
                 .FirstOrDefaultAsync(cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (currentValue == 0)
             {
@@ -157,11 +158,9 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             var currentValue = await context.Database
-                .SqlQueryRaw<long>($"SELECT seq FROM sqlite_sequence WHERE name = '{sequenceName}")
+                .SqlQueryRaw<long>("SELECT seq AS Value FROM sqlite_sequence WHERE name = '{0}'", sequenceName)
                 .FirstOrDefaultAsync(cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
 
             if (currentValue == 0)
             {
@@ -187,10 +186,8 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-#pragma warning disable EF1002 // Risk of vulnerability to SQL injection.
             await context.Database.ExecuteSqlRawAsync(
-                $"UPDATE sqlite_sequence SET seq = {startValue} WHERE name = '{sequenceName}'", cancellationToken);
-#pragma warning restore EF1002 // Risk of vulnerability to SQL injection.
+                "UPDATE sqlite_sequence SET seq = {0} WHERE name = '{1}'", startValue, sequenceName);
 
             return Result.Success();
         }

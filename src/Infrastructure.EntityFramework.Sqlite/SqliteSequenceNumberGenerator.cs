@@ -33,12 +33,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
     {
         try
         {
-            var existsResult = await this.ExistsInternalAsync(
-                context,
-                sequenceName,
-                schema,
-                cancellationToken);
-
+            var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
             if (existsResult.IsFailure)
             {
                 return Result<long>.Failure()
@@ -54,10 +49,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
             }
 
             await context.Database.ExecuteSqlAsync(
-                $@"UPDATE sqlite_sequence 
-                   SET seq = seq + 1 
-                   WHERE name = {sequenceName}",
-                cancellationToken);
+                $@"UPDATE sqlite_sequence SET seq = seq + 1 WHERE name = {sequenceName}", cancellationToken);
 
             var nextValue = await context.Database
                 .SqlQuery<long>(
@@ -66,7 +58,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
 
             return Result<long>.Success(nextValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -75,10 +67,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get next sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -91,15 +80,12 @@ public class SqliteSequenceNumberGenerator<TContext>(
         try
         {
             var exists = await context.Database
-                .SqlQuery<int>(
-                    $@"SELECT COUNT(*) 
-                       FROM sqlite_sequence 
-                       WHERE name = {sequenceName}")
+                .SqlQuery<int>($"SELECT COUNT(*) FROM sqlite_sequence WHERE name = {sequenceName}")
                 .FirstAsync(cancellationToken) > 0;
 
             return Result<bool>.Success(exists);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -108,10 +94,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<bool>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to check sequence existence: {ex.Message}");
+            return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -124,8 +107,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
         try
         {
             var currentValue = await context.Database
-                .SqlQuery<long>(
-                    $"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQuery<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (currentValue == 0)
@@ -149,7 +131,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 IsCyclic = false
             });
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -158,10 +140,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<SequenceInfo>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get sequence info: {ex.Message}");
+            return Result<SequenceInfo>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -174,21 +153,18 @@ public class SqliteSequenceNumberGenerator<TContext>(
         try
         {
             var currentValue = await context.Database
-                .SqlQuery<long>(
-                    $"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
+                .SqlQuery<long>($"SELECT seq FROM sqlite_sequence WHERE name = {sequenceName}")
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (currentValue == 0)
             {
                 return Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "default"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
             }
 
             return Result<long>.Success(currentValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -197,10 +173,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get current sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -214,14 +187,11 @@ public class SqliteSequenceNumberGenerator<TContext>(
         try
         {
             await context.Database.ExecuteSqlAsync(
-                $@"UPDATE sqlite_sequence 
-                   SET seq = {startValue} 
-                   WHERE name = {sequenceName}",
-                cancellationToken);
+                $"UPDATE sqlite_sequence SET seq = {startValue} WHERE name = {sequenceName}", cancellationToken);
 
             return Result.Success();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -230,10 +200,7 @@ public class SqliteSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to reset sequence: {ex.Message}");
+            return Result.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

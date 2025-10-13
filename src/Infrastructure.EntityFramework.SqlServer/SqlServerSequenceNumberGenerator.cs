@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using global::BridgingIT.DevKit.Common;
-using global::BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -31,12 +31,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
     {
         try
         {
-            var existsResult = await this.ExistsInternalAsync(
-                context,
-                sequenceName,
-                schema,
-                cancellationToken);
-
+            var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
             if (existsResult.IsFailure)
             {
                 return Result<long>.Failure()
@@ -46,9 +41,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
             if (!existsResult.Value)
             {
                 return Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "dbo"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "dbo"));
             }
 
             var qualifiedName = string.IsNullOrWhiteSpace(schema)
@@ -61,7 +54,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
 
             return Result<long>.Success(nextValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -71,9 +64,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 this.contextTypeName,
                 ex.Message);
 
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get next sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -86,7 +77,6 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "dbo";
-
             var exists = await context.Database
                 .SqlQuery<int>(
                     $@"SELECT COUNT(*)
@@ -98,7 +88,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
 
             return Result<bool>.Success(exists);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -108,9 +98,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 this.contextTypeName,
                 ex.Message);
 
-            return Result<bool>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to check sequence existence: {ex.Message}");
+            return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -123,7 +111,6 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "dbo";
-
             var info = await context.Database
                 .SqlQuery<SequenceInfo>(
                     $@"SELECT 
@@ -148,7 +135,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
 
             return Result<SequenceInfo>.Success(info);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -158,9 +145,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 this.contextTypeName,
                 ex.Message);
 
-            return Result<SequenceInfo>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get sequence info: {ex.Message}");
+            return Result<SequenceInfo>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -190,7 +175,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
 
             return Result<long>.Success(currentValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -200,9 +185,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 this.contextTypeName,
                 ex.Message);
 
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get current sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -216,13 +199,11 @@ public class SqlServerSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "dbo";
-
-            await context.Database.ExecuteSqlAsync(
-                $@"ALTER SEQUENCE [{schemaName}].[{sequenceName}] RESTART WITH {startValue}", cancellationToken);
+            await context.Database.ExecuteSqlAsync($"ALTER SEQUENCE [{schemaName}].[{sequenceName}] RESTART WITH {startValue}", cancellationToken);
 
             return Result.Success();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -232,9 +213,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
                 this.contextTypeName,
                 ex.Message);
 
-            return Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to reset sequence: {ex.Message}");
+            return Result.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

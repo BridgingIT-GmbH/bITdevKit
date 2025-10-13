@@ -32,12 +32,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
     {
         try
         {
-            var existsResult = await this.ExistsInternalAsync(
-                context,
-                sequenceName,
-                schema,
-                cancellationToken);
-
+            var existsResult = await this.ExistsInternalAsync(context, sequenceName, schema, cancellationToken);
             if (existsResult.IsFailure)
             {
                 return Result<long>.Failure()
@@ -47,13 +42,10 @@ public class PostgresSequenceNumberGenerator<TContext>(
             if (!existsResult.Value)
             {
                 return Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema ?? "public"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "public"));
             }
 
             var schemaName = schema ?? "public";
-
             var nextValue = await context.Database
                 .SqlQuery<long>(
                     $"SELECT nextval('\"{schemaName}\".\"{sequenceName}\"')")
@@ -61,7 +53,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
 
             return Result<long>.Success(nextValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -70,10 +62,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get next sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -86,7 +75,6 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
-
             var exists = await context.Database
                 .SqlQuery<int>(
                     $@"SELECT COUNT(*)
@@ -97,7 +85,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
 
             return Result<bool>.Success(exists);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -106,10 +94,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<bool>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to check sequence existence: {ex.Message}");
+            return Result<bool>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -122,7 +107,6 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
-
             var info = await context.Database
                 .SqlQuery<SequenceInfo>(
                     $@"SELECT 
@@ -146,7 +130,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
 
             return Result<SequenceInfo>.Success(info);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -155,10 +139,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<SequenceInfo>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get sequence info: {ex.Message}");
+            return Result<SequenceInfo>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -171,7 +152,6 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
-
             var currentValue = await context.Database
                 .SqlQuery<long>(
                     $@"SELECT last_value FROM ""{schemaName}"".""{sequenceName}""")
@@ -179,7 +159,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
 
             return Result<long>.Success(currentValue);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -188,10 +168,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result<long>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to get current sequence value: {ex.Message}");
+            return Result<long>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 
@@ -205,14 +182,12 @@ public class PostgresSequenceNumberGenerator<TContext>(
         try
         {
             var schemaName = schema ?? "public";
-
             await context.Database.ExecuteSqlAsync(
-                $@"ALTER SEQUENCE ""{schemaName}"".""{sequenceName}"" RESTART WITH {startValue}",
-                cancellationToken);
+                $@"ALTER SEQUENCE ""{schemaName}"".""{sequenceName}"" RESTART WITH {startValue}", cancellationToken);
 
             return Result.Success();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ex.IsTransientException())
         {
             this.logger.LogError(
                 ex,
@@ -221,10 +196,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
                 sequenceName,
                 this.contextTypeName,
                 ex.Message);
-
-            return Result.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage($"Failed to reset sequence: {ex.Message}");
+            return Result.Failure(ex.GetFullMessage(), new ExceptionError(ex));
         }
     }
 }

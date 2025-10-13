@@ -16,7 +16,7 @@ using Xunit;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
+public class PostgresSequenceNumberGeneratorTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     : SequenceNumberGeneratorTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
@@ -27,14 +27,14 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
         var services = new ServiceCollection();
         services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(this.output)));
 
-        var db = this.fixture.EnsureSqliteDbContext(this.output);
+        var db = this.fixture.EnsurePostgresDbContext(this.output);
         services.AddDbContext<StubDbContext>(options =>
         {
-            options.UseSqlite(this.fixture.SqliteConnectionString);
+            options.UseNpgsql(this.fixture.PostgresConnectionString);
         });
 
-        services.AddScoped<ISequenceNumberGenerator, SqliteSequenceNumberGenerator<StubDbContext>>(
-            sp => new SqliteSequenceNumberGenerator<StubDbContext>(
+        services.AddScoped<ISequenceNumberGenerator, PostgresSequenceNumberGenerator<StubDbContext>>(
+            sp => new PostgresSequenceNumberGenerator<StubDbContext>(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp.GetRequiredService<IServiceProvider>(),
                 new SequenceNumberGeneratorOptions()));
@@ -58,8 +58,7 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
     [Fact]
     public override async Task GetNextAsync_SequenceDoesNotExist_ReturnsFailureWithNotFoundError()
     {
-        await Task.CompletedTask; // SQLite implementation does not support non-existing sequences in the same way, they are always created on first use.
-        //await base.GetNextAsync_SequenceDoesNotExist_ReturnsFailureWithNotFoundError();
+        await base.GetNextAsync_SequenceDoesNotExist_ReturnsFailureWithNotFoundError();
     }
 
     [Fact]

@@ -679,7 +679,7 @@ public static class ResultTExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", valueType, messagesCount, errorsCount, args);
                 }
                 else
@@ -687,7 +687,7 @@ public static class ResultTExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", valueType, messagesCount, errorsCount, errorTypes, args);
                 }
             }
@@ -698,7 +698,7 @@ public static class ResultTExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} {ValueType} Messages={Messages} Errors={Errors}",
+                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors}",
                         "RES", valueType, messagesCount, errorsCount);
                 }
                 else
@@ -706,7 +706,7 @@ public static class ResultTExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", valueType, messagesCount, errorsCount, errorTypes);
                 }
             }

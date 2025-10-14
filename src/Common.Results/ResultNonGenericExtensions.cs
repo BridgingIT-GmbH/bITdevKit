@@ -841,7 +841,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "{LogKey} Success - Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, args);
                 }
                 else
@@ -849,7 +849,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, errorTypes, args);
                 }
             }
@@ -860,7 +860,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors}",
+                        "{LogKey} Success - Messages={Messages} Errors={Errors}",
                         "RES", messagesCount, errorsCount);
                 }
                 else
@@ -868,7 +868,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", messagesCount, errorsCount, errorTypes);
                 }
             }

@@ -1169,64 +1169,6 @@ public static class ResultMapHttpExtensions
             type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400");
     }
 
-    private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
-        where TResult : IResult
-    {
-        var validationErrors = new List<(string PropertyName, string Message)>();
-
-        foreach (var error in result.Errors)
-        {
-            if (error is ValidationError ve)
-            {
-                validationErrors.Add((
-                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
-            }
-            else if (error is FluentValidationError fve)
-            {
-                foreach (var failure in fve.Errors)
-                {
-                    validationErrors.Add((
-                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
-                }
-            }
-        }
-
-        var validations = validationErrors
-            .GroupBy(e => e.PropertyName)
-            .ToDictionary(
-                g => g.Key,
-                g => g.Select(e => e.Message).ToArray());
-
-        var problemDetails = new ProblemDetails
-        {
-            Title = "Validation Error",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-            Detail = result.ToString(),
-            Extensions = new Dictionary<string, object>
-            {
-                ["validations"] = validations
-            }
-        };
-
-        // Always return ProblemHttpResult, as it's compatible with most result unions
-        if (typeof(TResult) == typeof(ProblemHttpResult))
-        {
-            return (TResult)(IResult)TypedResults.Problem(problemDetails);
-        }
-
-        // If TResult is BadRequest, return a plain BadRequest with the problem details in the log
-        if (typeof(TResult) == typeof(BadRequest))
-        {
-            logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
-            return (TResult)(IResult)TypedResults.BadRequest();
-        }
-
-        // Fallback for other TResult types
-        logger?.LogWarning("Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.", typeof(TResult).Name);
-        return (TResult)(IResult)TypedResults.Problem(problemDetails);
-    }
-
     public static TProblem MapConflictError<TProblem>(ILogger logger, Result result)
         where TProblem : IResult
     {
@@ -1448,5 +1390,63 @@ public static class ResultMapHttpExtensions
             statusCode: 500,
             title: "Unexpected Error",
             type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+    }
+
+    private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
+        where TResult : IResult
+    {
+        var validationErrors = new List<(string PropertyName, string Message)>();
+
+        foreach (var error in result.Errors)
+        {
+            if (error is ValidationError ve)
+            {
+                validationErrors.Add((
+                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
+            }
+            else if (error is FluentValidationError fve)
+            {
+                foreach (var failure in fve.Errors)
+                {
+                    validationErrors.Add((
+                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
+                }
+            }
+        }
+
+        var validations = validationErrors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(e => e.Message).ToArray());
+
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Validation Error",
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+            Detail = result.ToString(),
+            Extensions = new Dictionary<string, object>
+            {
+                ["validations"] = validations
+            }
+        };
+
+        // Always return ProblemHttpResult, as it's compatible with most result unions
+        if (typeof(TResult) == typeof(ProblemHttpResult))
+        {
+            return (TResult)(IResult)TypedResults.Problem(problemDetails);
+        }
+
+        // If TResult is BadRequest, return a plain BadRequest with the problem details in the log
+        if (typeof(TResult) == typeof(BadRequest))
+        {
+            logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
+            return (TResult)(IResult)TypedResults.BadRequest();
+        }
+
+        // Fallback for other TResult types
+        logger?.LogWarning("Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.", typeof(TResult).Name);
+        return (TResult)(IResult)TypedResults.Problem(problemDetails);
     }
 }

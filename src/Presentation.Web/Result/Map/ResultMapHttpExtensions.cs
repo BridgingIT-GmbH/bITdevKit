@@ -1102,8 +1102,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - unauthorized access detected: {Error}", result.ToString());
@@ -1122,9 +1121,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - not found: {Error}", result.ToString());
@@ -1181,8 +1178,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - conflict error occurred: {Error}", result.ToString());
@@ -1228,9 +1224,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - domain policy error occurred: {Error}", result.ToString());
@@ -1253,9 +1247,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - operation cancelled: {Error}", result.ToString());
@@ -1278,9 +1270,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - timeout error occurred: {Error}", result.ToString());
@@ -1303,9 +1293,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogError("result - exception error occurred: {Error}", result.ToString());
@@ -1328,9 +1316,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - rule error occurred: {Error}", result.ToString());
@@ -1353,9 +1339,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TResult).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TResult).Name, customResult.GetType().Name);
         }
 
         logger?.LogError("result - rule exception error occurred: {Error}", result.ToString());

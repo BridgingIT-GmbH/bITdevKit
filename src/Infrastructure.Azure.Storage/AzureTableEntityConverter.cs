@@ -10,11 +10,11 @@ using System.Text.Json;
 
 public static class AzureTableEntityConverter
 {
-    private static JsonSerializerOptions defaultJsonSerializerOptions = new();
+    private static JsonSerializerOptions defaultJsonSerializerOptions = DefaultSystemTextJsonSerializerOptions.Create();
 
     public static void SetDefaultJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions = default)
     {
-        defaultJsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
+        defaultJsonSerializerOptions = jsonSerializerOptions ?? DefaultSystemTextJsonSerializerOptions.Create();
     }
 
     public static TableEntity ToTableEntity<T>(

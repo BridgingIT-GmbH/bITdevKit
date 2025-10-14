@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 using Application.Messaging;
 using Domain;
 using Domain.Model;
+using global::Azure.Storage.Blobs.Models;
 using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -63,25 +64,16 @@ public class PersonStub : AggregateRoot<Guid>
     }
 }
 
-public class Status(int id, string value, string code, string description) : Enumeration(id, value)
+public partial class Status : Enumeration
 {
     public static readonly Status Active = new(1, "Active", "ACT", "Lorem Ipsum");
     public static readonly Status Inactive = new(2, "Inactive", "INA", "Lorem Ipsum");
 
-    public string Code { get; } = code;
+    public string Code { get; }
 
-    public string Description { get; } = description;
+    public string Description { get; }
 
-    public static IEnumerable<Status> GetAll()
-    {
-        return GetAll<Status>();
-    }
-
-    public static Status GetByCode(string code)
-    {
-        return GetAll<Status>()
-            .FirstOrDefault(e => e.Code == code);
-    }
+    public static Status GetByCode(string code) => GetAll<Status>().FirstOrDefault(e => e.Code == code);
 }
 
 public class EmailAddressStub : ValueObject
